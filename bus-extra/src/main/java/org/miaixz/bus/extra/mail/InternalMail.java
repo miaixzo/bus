@@ -36,8 +36,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * An internal utility class for mail-related operations, such as parsing addresses and encoding text. This class is not
- * intended for public use and provides helper methods for the mail API.
+ * An internal class that handles mail-related operations, such as parsing addresses and encoding text. This class is
+ * not intended for public use and provides methods for the mail API.
  *
  * @author Kimi Liu
  * @since Java 21+

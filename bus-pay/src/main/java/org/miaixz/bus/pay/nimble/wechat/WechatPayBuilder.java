@@ -48,7 +48,7 @@ import org.miaixz.bus.pay.Builder;
 import org.miaixz.bus.pay.magic.Message;
 
 /**
- * Utility class for WeChat Pay.
+ * Builds and signs WeChat Pay requests.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -62,7 +62,7 @@ public class WechatPayBuilder {
         // No initialization required.
     }
 
-    private static final String OS = Keys.get(Keys.OS_NAME) + "/" + Keys.get(Keys.OS_VERSION);
+    private static final String OS = Keys.get(Keys.OS_NAME) + Symbol.SLASH + Keys.get(Keys.OS_VERSION);
     private static final String VERSION = Keys.get(Keys.JAVA_VERSION);
 
     private static final String FIELD_SIGN = "sign";

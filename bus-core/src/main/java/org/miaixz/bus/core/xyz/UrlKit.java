@@ -42,7 +42,7 @@ import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.net.url.UrlQuery;
 
 /**
- * URL (Uniform Resource Locator) related utility class.
+ * URL (Uniform Resource Locator) related class.
  *
  * <p>
  * A Uniform Resource Locator describes the specific location of a resource on a particular server. URL composition:
@@ -511,11 +511,11 @@ public class UrlKit {
             body = body.replace(Symbol.BACKSLASH, Symbol.SLASH);
             if (replaceSlash) {
                 // Double slashes are allowed in URLs and are not replaced by default
-                body = body.replaceAll(Symbol.FORWARDSLASH + "+", Symbol.SLASH);
+                body = body.replaceAll(Symbol.FORWARDSLASH + Symbol.PLUS, Symbol.SLASH);
             }
         }
 
-        final int pathSepIndex = StringKit.indexOf(body, '/');
+        final int pathSepIndex = StringKit.indexOf(body, Symbol.C_SLASH);
         String domain = body;
         String path = null;
         if (pathSepIndex > 0) {
@@ -748,7 +748,7 @@ public class UrlKit {
 
         paramPart = normalizeQuery(paramPart, charset);
 
-        return StringKit.isBlank(urlPart) ? paramPart : urlPart + "?" + paramPart;
+        return StringKit.isBlank(urlPart) ? paramPart : urlPart + Symbol.QUESTION_MARK + paramPart;
     }
 
     /**

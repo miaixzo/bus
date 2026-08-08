@@ -113,7 +113,7 @@ public final class NvmlKit {
     }
 
     // -------------------------------------------------------------------------
-    // Init/uninit helpers (COM pattern)
+    // NVML lifecycle management
     // -------------------------------------------------------------------------
 
     /**
@@ -401,12 +401,12 @@ public final class NvmlKit {
     }
 
     /**
-     * Returns GPU core utilization percentage (0–100), or -1 if unavailable.
+     * Returns GPU core usage as a percentage from 0 to 100, or -1 if unavailable.
      *
      * @param deviceId stable device identifier returned by {@link #findDevice} or {@link #findDeviceByName}
-     * @return utilization percentage or -1
+     * @return GPU core usage percentage, or -1
      */
-    public static double getGpuUtilization(String deviceId) {
+    public static double getGpuUsage(String deviceId) {
         if (deviceId == null || deviceId.isEmpty()) {
             return -1d;
         }
@@ -419,10 +419,10 @@ public final class NvmlKit {
             if (device == null) {
                 return -1d;
             }
-            Nvml.NvmlUtilization util = new Nvml.NvmlUtilization();
-            if (Holder.LIB.nvmlDeviceGetUtilizationRates(device, util) == Nvml.NVML_SUCCESS) {
-                util.read();
-                return util.gpu;
+            Nvml.NvmlUtilization rates = new Nvml.NvmlUtilization();
+            if (Holder.LIB.nvmlDeviceGetUtilizationRates(device, rates) == Nvml.NVML_SUCCESS) {
+                rates.read();
+                return rates.gpu;
             }
             return -1d;
         } finally {

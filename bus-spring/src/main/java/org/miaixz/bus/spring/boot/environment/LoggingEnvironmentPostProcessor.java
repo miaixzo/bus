@@ -36,6 +36,8 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Bridges Bus logging properties to Spring Boot's native logging namespace.
  * <p>
@@ -58,11 +60,34 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
      * Name of the generated logging bridge property source.
      */
     private static final String PROPERTY_SOURCE = "busLoggingNamespaceBridge";
+    /**
+     * Name of the property source containing Bus logging pattern defaults.
+     */
+    private static final String DEFAULTS_PROPERTY_SOURCE = "busLoggingPatternDefaults";
+
+    /**
+     * Property that controls whether Bus logging pattern defaults are contributed.
+     */
+    private static final ConfigurationPropertyName PATTERN_DEFAULTS = ConfigurationPropertyName
+            .of(EnvironmentKeys.BUS_LOGGING_PATTERN_DEFAULTS);
+
+    /**
+     * Default console logging pattern.
+     */
+    private static final String CONSOLE_PATTERN = "%green(%d{yyyy-MM-dd HH:mm:ss.SSSXXX}) [%highlight(%5p)] "
+            + "%magenta(${PID:- }) %yellow(-) %highlight(%-50.50logger{50}) %yellow(%5.5L) %cyan(:) %magenta(%m%n)";
+
+    /**
+     * Default file logging pattern.
+     */
+    private static final String FILE_PATTERN = "%d{yyyy-MM-dd HH:mm:ss.SSSXXX} [%5p] ${PID:- } - "
+            + "%-50.50logger{50} %5.5L : %m%n";
 
     /**
      * Source namespace for Bus logging properties.
      */
-    private static final ConfigurationPropertyName SOURCE_NAMESPACE = ConfigurationPropertyName.of("bus.logging");
+    private static final ConfigurationPropertyName SOURCE_NAMESPACE = ConfigurationPropertyName
+            .of(EnvironmentKeys.BUS_LOGGING_PREFIX);
     /**
      * Source namespace element count.
      */
@@ -77,6 +102,7 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         MutablePropertySources propertySources = environment.getPropertySources();
+        addPatternDefaults(environment, propertySources);
         if (propertySources.contains(PROPERTY_SOURCE)) {
             propertySources.remove(PROPERTY_SOURCE);
         }
@@ -102,7 +128,29 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
      */
     private boolean isBusLoggingProperty(ConfigurationPropertyName name) {
         return name != null && name.getNumberOfElements() > SOURCE_NAMESPACE_ELEMENTS
-                && SOURCE_NAMESPACE.isAncestorOf(name);
+                && SOURCE_NAMESPACE.isAncestorOf(name) && !PATTERN_DEFAULTS.equals(name);
+    }
+
+    /**
+     * Contributes the Bus console and file patterns as low-priority defaults.
+     *
+     * @param environment     configurable application environment
+     * @param propertySources mutable environment property sources
+     */
+    private void addPatternDefaults(ConfigurableEnvironment environment, MutablePropertySources propertySources) {
+        if (propertySources.contains(DEFAULTS_PROPERTY_SOURCE)) {
+            propertySources.remove(DEFAULTS_PROPERTY_SOURCE);
+        }
+
+        boolean enabled = environment.getProperty(PATTERN_DEFAULTS.toString(), Boolean.class, true);
+        if (!enabled) {
+            return;
+        }
+
+        Map<String, Object> defaults = new LinkedHashMap<>();
+        defaults.put(EnvironmentKeys.LOGGING_PATTERN_CONSOLE, CONSOLE_PATTERN);
+        defaults.put(EnvironmentKeys.LOGGING_PATTERN_FILE, FILE_PATTERN);
+        propertySources.addLast(new MapPropertySource(DEFAULTS_PROPERTY_SOURCE, defaults));
     }
 
     /**
@@ -136,7 +184,7 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
         StringBuilder targetName = new StringBuilder(EnvironmentKeys.LOGGING_PREFIX);
         for (int i = SOURCE_NAMESPACE_ELEMENTS; i < name.getNumberOfElements(); i++) {
             if (i > SOURCE_NAMESPACE_ELEMENTS) {
-                targetName.append('.');
+                targetName.append(Symbol.C_DOT);
             }
             targetName.append(name.getElement(i, Form.ORIGINAL));
         }

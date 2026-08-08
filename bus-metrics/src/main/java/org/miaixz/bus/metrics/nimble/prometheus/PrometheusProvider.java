@@ -25,6 +25,7 @@ import java.util.function.ToDoubleFunction;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Provider;
@@ -132,7 +133,7 @@ public class PrometheusProvider implements Provider {
      * @return Prometheus-compatible metric name
      */
     private String prometheusName(String name) {
-        return name.replace('.', '_').replace('-', '_');
+        return name.replace(Symbol.C_DOT, Symbol.C_UNDERLINE).replace(Symbol.C_MINUS, Symbol.C_UNDERLINE);
     }
 
     /**

@@ -26,7 +26,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.windows.WmiQueryHandler;
 
 /**
- * Utility to query WMI classes in Storage namespace assocaited with Storage Pools
+ * Queries WMI classes in Storage namespace assocaited with Storage Pools
  *
  * @author Kimi Liu
  * @since Java 21+

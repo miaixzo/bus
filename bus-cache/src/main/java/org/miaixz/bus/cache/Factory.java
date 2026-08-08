@@ -318,7 +318,7 @@ public class Factory {
      * @return normalized backend type
      */
     private String normalizeType(String type) {
-        return StringKit.isBlank(type) ? null : type.trim().toLowerCase().replace('_', '-');
+        return StringKit.isBlank(type) ? null : type.trim().toLowerCase().replace(Symbol.C_UNDERLINE, Symbol.C_MINUS);
     }
 
     /**

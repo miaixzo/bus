@@ -26,7 +26,7 @@
  * </p>
  *
  * <pre>
- * Builder.md5(); // Using the Builder utility class
+ * Builder.md5(); // Using the Builder class
  * // or
  * MD5 md5 = new MD5(); // Using a specific algorithm class
  * </pre>

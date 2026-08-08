@@ -20,6 +20,7 @@
 package org.miaixz.bus.fabric.network;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.CompletableFuture;
@@ -30,6 +31,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.io.timout.AsyncTimeout;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -90,6 +92,18 @@ public final class Ingress implements Connection, Conduit {
     private final ReentrantLock readLock;
 
     /**
+     * Per-read watchdog configured by the owning stream protocol. Expiration closes the channel to unblock the native
+     * read and makes the ingress non-reusable.
+     */
+    private final AsyncTimeout readTimeout;
+
+    /**
+     * Per-write watchdog configured independently from reads so full-duplex operations never share an enter/exit
+     * lifecycle.
+     */
+    private final AsyncTimeout writeTimeout;
+
+    /**
      * Terminal close flag shared by the source, sink, and owning ingress.
      */
     private final AtomicBoolean closed;
@@ -110,6 +124,8 @@ public final class Ingress implements Connection, Conduit {
         this.sink = new IngressSink();
         this.readBuffer = ByteBuffer.allocateDirect(Normal._8192);
         this.readLock = new ReentrantLock();
+        this.readTimeout = new ChannelOperationTimeout("Ingress read timed out");
+        this.writeTimeout = new ChannelOperationTimeout("Ingress write timed out");
         this.closed = new AtomicBoolean();
     }
 
@@ -213,7 +229,7 @@ public final class Ingress implements Connection, Conduit {
             try {
                 readBuffer.clear();
                 readBuffer.limit(readCapacity(byteCount));
-                final int read = channel.read(readBuffer);
+                final int read = readChannel(readBuffer);
                 if (read == Normal.__1) {
                     return CompletableFuture.completedFuture((long) Normal.__1);
                 }
@@ -260,7 +276,7 @@ public final class Ingress implements Connection, Conduit {
                     return CompletableFuture.failedFuture(new SocketException("Ingress closed during write"));
                 }
                 final ByteBuffer view = source.nioBuffer(toIntSize(remaining));
-                final int count = channel.write(view);
+                final int count = writeChannel(view);
                 if (count == Normal._0) {
                     zeroProgress++;
                     if (zeroProgress >= Normal._16) {
@@ -363,6 +379,94 @@ public final class Ingress implements Connection, Conduit {
     }
 
     /**
+     * Performs one physical blocking channel read under the current ingress read timeout.
+     *
+     * @param target writable native destination
+     * @return bytes read, zero for no progress, or {@code -1} at end-of-stream
+     * @throws IOException when the channel fails or the configured timeout expires
+     */
+    private int readChannel(final ByteBuffer target) throws IOException {
+        readTimeout.enter();
+        try {
+            final int read = channel.read(target);
+            if (readTimeout.exit()) {
+                throw new SocketTimeoutException("Ingress read timed out");
+            }
+            return read;
+        } catch (final IOException failure) {
+            if (readTimeout.exit() && !(failure instanceof SocketTimeoutException)) {
+                final SocketTimeoutException timeout = new SocketTimeoutException("Ingress read timed out");
+                timeout.initCause(failure);
+                throw timeout;
+            }
+            throw failure;
+        }
+    }
+
+    /**
+     * Performs one physical blocking channel write under the current ingress write timeout.
+     *
+     * @param source readable native source
+     * @return bytes accepted by the channel
+     * @throws IOException when the channel fails or the configured timeout expires
+     */
+    private int writeChannel(final ByteBuffer source) throws IOException {
+        writeTimeout.enter();
+        try {
+            final int written = channel.write(source);
+            if (writeTimeout.exit()) {
+                throw new SocketTimeoutException("Ingress write timed out");
+            }
+            return written;
+        } catch (final IOException failure) {
+            if (writeTimeout.exit() && !(failure instanceof SocketTimeoutException)) {
+                final SocketTimeoutException timeout = new SocketTimeoutException("Ingress write timed out");
+                timeout.initCause(failure);
+                throw timeout;
+            }
+            throw failure;
+        }
+    }
+
+    /**
+     * Watchdog that turns a blocking-channel close into an authoritative socket timeout.
+     */
+    private final class ChannelOperationTimeout extends AsyncTimeout {
+
+        /** Message identifying the timed operation. */
+        private final String message;
+
+        /**
+         * Creates an operation watchdog.
+         *
+         * @param message timeout message exposed to the protocol layer
+         */
+        private ChannelOperationTimeout(final String message) {
+            this.message = message;
+        }
+
+        /** Creates the checked timeout while retaining the close-induced I/O failure. */
+        @Override
+        protected IOException newTimeoutException(final IOException cause) {
+            final SocketTimeoutException failure = new SocketTimeoutException(message);
+            if (cause != null) {
+                failure.initCause(cause);
+            }
+            return failure;
+        }
+
+        /** Closes the channel so its current blocking operation returns promptly. */
+        @Override
+        protected void timedOut() {
+            try {
+                channel.close();
+            } catch (final IOException ignored) {
+                // Timeout has already won.
+            }
+        }
+    }
+
+    /**
      * Awaits a core IO operation and converts checked failures.
      *
      * @param future  operation future
@@ -420,14 +524,10 @@ public final class Ingress implements Connection, Conduit {
             return read;
         }
 
-        /**
-         * Returns the no-op timeout.
-         *
-         * @return timeout
-         */
+        /** Returns the physical channel read timeout. */
         @Override
         public Timeout timeout() {
-            return Timeout.NONE;
+            return readTimeout;
         }
 
         /**
@@ -470,14 +570,10 @@ public final class Ingress implements Connection, Conduit {
             // SocketChannel writes are flushed by the operating system.
         }
 
-        /**
-         * Returns the no-op timeout.
-         *
-         * @return timeout
-         */
+        /** Returns the physical channel write timeout. */
         @Override
         public Timeout timeout() {
-            return Timeout.NONE;
+            return writeTimeout;
         }
 
         /**

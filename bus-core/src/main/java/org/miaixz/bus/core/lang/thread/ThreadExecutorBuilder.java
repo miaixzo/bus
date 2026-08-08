@@ -22,8 +22,8 @@ package org.miaixz.bus.core.lang.thread;
 import java.util.concurrent.*;
 
 /**
- * A utility class for creating various types of {@link Executor} instances, similar to {@link Executors}. It provides
- * convenient methods to build thread pools with common configurations.
+ * Creates various types of {@link Executor} instances, similar to {@link Executors}. It provides convenient methods to
+ * build thread pools with common configurations.
  *
  * @author Kimi Liu
  * @since Java 21+

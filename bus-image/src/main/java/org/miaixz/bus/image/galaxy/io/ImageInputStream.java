@@ -366,9 +366,9 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
 
     /**
      * Create a new DicomInputStream for the given input stream, Transfer Syntax UID and read limit. It ensures to never
-     * read more than the limit from the stream by wrapping it with a {@link LimitedInputStream}. The limit also helps
-     * to avoid OutOfMemory errors on parsing corrupt DICOM streams without the need to create temporary arrays when
-     * allocating large tag values. (See also {@link #setAllocateLimit}.)
+     * read more than the limit from the stream by wrapping it with a {@link LimitedInputStream}. The limit also
+     * prevents to avoid OutOfMemory errors on parsing corrupt DICOM streams without the need to create temporary arrays
+     * when allocating large tag values. (See also {@link #setAllocateLimit}.)
      *
      * @param in    input stream to read data from
      * @param tsuid Transfer Syntax UID
@@ -382,7 +382,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
 
     /**
      * Create a new DicomInputStream for the given input stream and read limit. It ensures to never read more than the
-     * limit from the stream by wrapping it with a {@link LimitedInputStream}. The limit also helps to avoid OutOfMemory
+     * limit from the stream by wrapping it with a {@link LimitedInputStream}. The limit also avoids out-of-memory
      * errors on parsing corrupt DICOM streams without the need to create temporary arrays when allocating large tag
      * values. (See also {@link #setAllocateLimit}.)
      *
@@ -1705,8 +1705,9 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
         try {
             boolean limitedStream = in instanceof LimitedInputStream;
             if (limitedStream && valLen > ((LimitedInputStream) in).getRemaining()) {
-                throw new EOFException("Length " + valLen + " for tag " + Tag.toString(tag) + " @ " + tagPos
-                        + " exceeds remaining " + ((LimitedInputStream) in).getRemaining() + " (pos: " + pos + ")");
+                throw new EOFException(
+                        "Length " + valLen + " for tag " + Tag.toString(tag) + " @ " + tagPos + " exceeds remaining "
+                                + ((LimitedInputStream) in).getRemaining() + " (pos: " + pos + Symbol.PARENTHESE_RIGHT);
             }
             int allocLen = allocateLimit != -1 && !limitedStream ? Math.min(valLen, allocateLimit) : valLen;
             byte[] value = new byte[allocLen];

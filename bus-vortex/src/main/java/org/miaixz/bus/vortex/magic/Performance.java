@@ -34,7 +34,7 @@ import lombok.experimental.SuperBuilder;
  * Performance optimizations controlled by this configuration:
  * <ul>
  * <li>Request body size limits for DoS prevention</li>
- * <li>Streaming thresholds for memory optimization</li>
+ * <li>Streaming and download concurrency isolation</li>
  * <li>Connection pool sizing for HTTP clients</li>
  * <li>Cache size limits for MQ producers</li>
  * <li>Registry L2 cache configuration (Caffeine)</li>
@@ -44,18 +44,36 @@ import lombok.experimental.SuperBuilder;
  * <p>
  * <b>Default Values:</b>
  * <ul>
- * <li>streamingRequestThreshold: 10 MB</li>
  * <li>maxRequestSize: 100 MB</li>
  * <li>maxMultipartRequestSize: 1024 MB</li>
+ * <li>multipartMemoryThresholdBytes: 64 KB per part</li>
+ * <li>maxBufferedRequestSize: 1 MB</li>
+ * <li>maxBufferedResponseSize: 32 MB</li>
+ * <li>requestBufferBudgetBytes: 64 MB</li>
+ * <li>responseBufferBudgetBytes: 160 MB</li>
+ * <li>transformBufferBudgetBytes: 32 MB</li>
+ * <li>maxTransformResponseSize: 8 MB</li>
+ * <li>bufferAcquireTimeoutSeconds: 30 seconds</li>
+ * <li>maxInFlightRequests: 5000</li>
+ * <li>maxTotalStreamingRequests: 4000</li>
+ * <li>maxDownloadRequests: 4000</li>
+ * <li>maxRealtimeStreamingRequests: 1000</li>
+ * <li>directMemoryHighWatermark: 0.70</li>
+ * <li>directMemoryLowWatermark: 0.50</li>
+ * <li>memorySampleIntervalMillis: 100 milliseconds</li>
+ * <li>writeBufferLowWatermarkBytes: 32 KB</li>
+ * <li>writeBufferHighWatermarkBytes: 64 KB</li>
+ * <li>downloadNoProgressTimeoutSeconds: 60 seconds</li>
+ * <li>downloadMinimumBytesPerSecond: 32 KB/s</li>
  * <li>maxConnections: 5000</li>
- * <li>pendingAcquireTimeoutSeconds: 45 seconds</li>
- * <li>pendingAcquireMaxCount: 0 (derived as maxConnections * 2)</li>
+ * <li>pendingAcquireTimeoutSeconds: 5 seconds</li>
+ * <li>pendingAcquireMaxCount: 5000</li>
  * <li>outboundRetryBackoffMillis: 100 milliseconds</li>
  * <li>outboundRetryMaxBackoffMillis: 5000 milliseconds</li>
  * <li>outboundMaxIdleSeconds: 20 seconds</li>
  * <li>outboundMaxLifeMinutes: 5 minutes</li>
  * <li>outboundEvictSeconds: 30 seconds</li>
- * <li>maxProducerCacheSize: 100</li>
+ * <li>maxProducerCacheSize: 1000</li>
  * <li>registryL2CacheSize: 10,000 (assets)</li>
  * <li>registryL2CacheExpireMs: 300,000 (5 minutes)</li>
  * <li>clusterSyncIntervalSeconds: 60 (1 minute)</li>
@@ -81,27 +99,138 @@ public class Performance {
     }
 
     /**
-     * The threshold in bytes for enabling streaming request body processing.
+     * Transport-level maximum size in bytes for non-multipart request bodies.
      * <p>
-     * Request bodies smaller than this threshold will be cached in memory for faster processing. Request bodies larger
-     * than this threshold will use streaming processing to avoid high memory pressure.
-     */
-    @Builder.Default
-    private long streamingRequestThreshold = 10 * 1024 * 1024;
-
-    /**
-     * Maximum size in bytes for non-multipart request bodies (JSON, form-urlencoded).
-     * <p>
-     * Acts as a DoS prevention limit. Requests exceeding this size will be rejected.
+     * This is the outer DoS limit. Operations that must materialize a body are further restricted by
+     * {@link #maxBufferedRequestSize}.
      */
     @Builder.Default
     private long maxRequestSize = 100 * 1024 * 1024;
 
     /**
-     * Maximum size in bytes for multipart/form-data requests (file uploads).
+     * Maximum accepted size in bytes for one multipart/form-data request, including file uploads.
      */
     @Builder.Default
     private long maxMultipartRequestSize = 1024 * 1024 * 1024;
+
+    /**
+     * Maximum bytes retained for one multipart part before the part reader spills it to disk.
+     */
+    @Builder.Default
+    private int multipartMemoryThresholdBytes = 64 * 1024;
+
+    /**
+     * Maximum request bytes allowed to be materialized for parsing, signing or replay.
+     */
+    @Builder.Default
+    private long maxBufferedRequestSize = 1024 * 1024;
+
+    /**
+     * Maximum downstream response bytes allowed to be materialized by an atomic route.
+     */
+    @Builder.Default
+    private long maxBufferedResponseSize = 32 * 1024 * 1024;
+
+    /**
+     * Process-wide logical-byte budget for simultaneously materialized request bodies.
+     */
+    @Builder.Default
+    private long requestBufferBudgetBytes = 64 * 1024 * 1024;
+
+    /**
+     * Process-wide logical-byte budget for buffered downstream responses.
+     */
+    @Builder.Default
+    private long responseBufferBudgetBytes = 160 * 1024 * 1024;
+
+    /**
+     * Process-wide logical-byte budget for response transformations.
+     */
+    @Builder.Default
+    private long transformBufferBudgetBytes = 32 * 1024 * 1024;
+
+    /**
+     * Maximum input or output size accepted by a bounded response transformation.
+     */
+    @Builder.Default
+    private long maxTransformResponseSize = 8 * 1024 * 1024;
+
+    /**
+     * Maximum time in seconds that buffered work may wait asynchronously for byte-budget capacity.
+     */
+    @Builder.Default
+    private int bufferAcquireTimeoutSeconds = 30;
+
+    /**
+     * Maximum complete reactive request lifecycles admitted to the gateway at one time.
+     */
+    @Builder.Default
+    private int maxInFlightRequests = 5000;
+
+    /**
+     * Maximum downloads and realtime streaming responses active concurrently.
+     */
+    @Builder.Default
+    private int maxTotalStreamingRequests = 4000;
+
+    /**
+     * Maximum concurrently active file downloads.
+     */
+    @Builder.Default
+    private int maxDownloadRequests = 4000;
+
+    /**
+     * Maximum concurrently active SSE, LLM-streaming and similar latency-sensitive responses.
+     */
+    @Builder.Default
+    private int maxRealtimeStreamingRequests = 1000;
+
+    /**
+     * Direct-memory ratio at which the gateway rejects new realtime streams.
+     * <p>
+     * Downloads are rejected ten percentage points earlier, while emergency rejection begins ten percentage points
+     * later. Validation keeps the emergency threshold below the direct-memory maximum.
+     */
+    @Builder.Default
+    private double directMemoryHighWatermark = 0.70d;
+
+    /**
+     * Direct-memory ratio below which throttled traffic may return to normal admission.
+     * <p>
+     * Recovery also requires heap usage below the pressure state's recovery threshold.
+     */
+    @Builder.Default
+    private double directMemoryLowWatermark = 0.50d;
+
+    /**
+     * Sampling interval for heap and direct-memory pressure.
+     */
+    @Builder.Default
+    private int memorySampleIntervalMillis = 100;
+
+    /**
+     * Netty channel writable low watermark.
+     */
+    @Builder.Default
+    private int writeBufferLowWatermarkBytes = 32 * 1024;
+
+    /**
+     * Netty channel writable high watermark.
+     */
+    @Builder.Default
+    private int writeBufferHighWatermarkBytes = 64 * 1024;
+
+    /**
+     * Maximum number of seconds a download may emit no data before it is terminated.
+     */
+    @Builder.Default
+    private int downloadNoProgressTimeoutSeconds = 60;
+
+    /**
+     * Minimum average download rate, evaluated after the no-progress interval, in bytes per second.
+     */
+    @Builder.Default
+    private long downloadMinimumBytesPerSecond = 32 * 1024;
 
     /**
      * Maximum number of HTTP connections in the connection pool.
@@ -112,20 +241,26 @@ public class Performance {
     /**
      * Maximum time in seconds to wait for a pooled HTTP connection.
      * <p>
-     * Requests waiting longer than this value fail instead of staying queued indefinitely. Values less than or equal to
-     * zero are treated as the default 45 seconds by the connection provider.
+     * Requests waiting longer than this value fail instead of staying queued indefinitely. Starter validation requires
+     * a positive value; direct runtime use falls back to 5 seconds when no valid value was supplied.
      */
     @Builder.Default
-    private int pendingAcquireTimeoutSeconds = 45;
+    private int pendingAcquireTimeoutSeconds = 5;
 
     /**
      * Maximum number of pending HTTP connection acquisition requests.
      * <p>
-     * Values greater than zero are used directly. Values less than or equal to zero are resolved to
-     * {@code maxConnections * 2}, providing bounded backpressure without requiring explicit configuration.
+     * Values greater than zero are used directly. Values less than or equal to zero are resolved to the configured
+     * connection count.
      */
     @Builder.Default
-    private int pendingAcquireMaxCount = 0;
+    private int pendingAcquireMaxCount = 5000;
+
+    /**
+     * Maximum retries for safe, idempotent outbound methods.
+     */
+    @Builder.Default
+    private int maxRetries = 2;
 
     /**
      * Initial retry backoff in milliseconds.

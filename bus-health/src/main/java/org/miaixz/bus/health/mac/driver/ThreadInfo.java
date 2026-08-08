@@ -33,7 +33,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSProcess;
 
 /**
- * Utility to query threads for a process on macOS.
+ * Queries threads for a process on macOS.
  *
  * @author Kimi Liu
  * @since Java 21+

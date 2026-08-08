@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric.protocol.http.codec;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -189,10 +190,10 @@ final class Http1Framing {
         long length = Normal._0;
         for (int index = Normal._0; index < value.length(); index++) {
             final char current = value.charAt(index);
-            if (current < '0' || current > '9') {
+            if (current < Symbol.C_ZERO || current > Symbol.C_NINE) {
                 throw new ProtocolException("Invalid Content-Length");
             }
-            final int digit = current - '0';
+            final int digit = current - Symbol.C_ZERO;
             if (length > (Long.MAX_VALUE - digit) / Normal._10) {
                 throw new ProtocolException("Invalid Content-Length");
             }

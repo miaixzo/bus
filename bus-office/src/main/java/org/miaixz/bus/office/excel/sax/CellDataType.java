@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.office.excel.sax;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Enumeration of cell data types for SAX parsing of Excel files.
  *
@@ -50,7 +52,7 @@ public enum CellDataType {
     /**
      * Numeric type.
      */
-    NUMBER(""),
+    NUMBER(Normal.EMPTY),
     /**
      * Date type. This type is determined by value, not by an attribute.
      */
@@ -58,7 +60,7 @@ public enum CellDataType {
     /**
      * Null type.
      */
-    NULL("");
+    NULL(Normal.EMPTY);
 
     /**
      * The attribute value corresponding to the cell data type.

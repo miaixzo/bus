@@ -484,7 +484,7 @@ public class Dcm2Jpg {
      * @return The new filename string.
      */
     private String suffix(File src) {
-        return src.getName() + '.' + suffix;
+        return src.getName() + Symbol.C_DOT + suffix;
     }
 
     /**

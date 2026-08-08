@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
@@ -297,7 +298,7 @@ public final class DnsTcpEndpoint implements AutoCloseable, Lifecycle {
             return remoteAddress(input.channel);
         }
         final byte[] prefix = new byte[] { (byte) first, (byte) second, suffix[0], suffix[1], suffix[2], suffix[3] };
-        if (prefix[2] != 'O' || prefix[3] != 'X' || prefix[4] != 'Y' || prefix[5] != ' ') {
+        if (prefix[2] != 'O' || prefix[3] != Symbol.C_X || prefix[4] != 'Y' || prefix[5] != Symbol.C_SPACE) {
             input.unread(prefix);
             return remoteAddress(input.channel);
         }
@@ -326,10 +327,10 @@ public final class DnsTcpEndpoint implements AutoCloseable, Lifecycle {
             if (value == null) {
                 throw new IOException("PROXY protocol v1 header is truncated");
             }
-            if (value == '\n') {
+            if (value == Symbol.C_LF) {
                 return line.toString().trim();
             }
-            if (value != '\r') {
+            if (value != Symbol.C_CR) {
                 line.append((char) value.intValue());
             }
         }

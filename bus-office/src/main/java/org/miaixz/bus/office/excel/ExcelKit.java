@@ -45,8 +45,8 @@ import org.miaixz.bus.office.excel.writer.ExcelWriteConfig;
 import org.miaixz.bus.office.excel.writer.ExcelWriter;
 
 /**
- * Excel utility class. It is not recommended to operate on sheets directly using an index, as the display order of
- * sheets in WPS/Excel is not related to the index, and there may be hidden sheets.
+ * Excel class. It is not recommended to operate on sheets directly using an index, as the display order of sheets in
+ * WPS/Excel is not related to the index, and there may be hidden sheets.
  *
  * @author Kimi Liu
  * @since Java 21+

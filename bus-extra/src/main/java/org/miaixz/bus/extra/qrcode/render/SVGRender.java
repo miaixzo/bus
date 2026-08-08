@@ -26,6 +26,7 @@ import java.io.OutputStreamWriter;
 
 import com.google.zxing.common.BitMatrix;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ColorKit;
@@ -83,7 +84,7 @@ public class SVGRender implements BitMatrixRender {
         final int moduleHeight = (qrHeight == 1) ? qrWidth / 2 : 1;
 
         qrHeight *= moduleHeight;
-        String logoBase64 = "";
+        String logoBase64 = Normal.EMPTY;
         int logoWidth = 0;
         int logoHeight = 0;
         int logoX = 0;
@@ -129,7 +130,7 @@ public class SVGRender implements BitMatrixRender {
             writer.append("\" ");
             if (foreColor != null) {
                 final Color fore = new Color(foreColor, true);
-                writer.append("stroke=\"").append(ColorKit.toCssRgba(fore)).append("\"");
+                writer.append("stroke=\"").append(ColorKit.toCssRgba(fore)).append(Symbol.DOUBLE_QUOTES);
             }
             writer.append(" /> \n");
             if (StringKit.isNotBlank(logoBase64)) {

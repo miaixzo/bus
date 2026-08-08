@@ -35,7 +35,7 @@ import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.jna.Struct;
 
 /**
- * Utility to query device interfaces via Config Manager Device Tree functions
+ * Queries device interfaces via Config Manager Device Tree functions
  *
  * @author Kimi Liu
  * @since Java 21+

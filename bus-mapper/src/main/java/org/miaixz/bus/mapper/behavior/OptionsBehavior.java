@@ -29,7 +29,7 @@ import org.miaixz.bus.mapper.Charter.Group;
  * Behavior capability options exposed by a database dialect.
  *
  * <p>
- * This contract declares the mapper behavior types supported by a dialect and provides common lookup helpers for
+ * This contract declares the mapper behavior types supported by a dialect and provides common lookup operations for
  * callers that need to gate SQL generation by database capability.
  * </p>
  *

@@ -36,7 +36,7 @@ import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.software.OSDesktopWindow;
 
 /**
- * Utility to query Desktop windows
+ * Queries Desktop windows
  *
  * @author Kimi Liu
  * @since Java 21+

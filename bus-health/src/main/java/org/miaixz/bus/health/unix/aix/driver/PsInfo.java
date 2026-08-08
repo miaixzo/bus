@@ -35,7 +35,7 @@ import org.miaixz.bus.health.unix.shared.jna.AixLibc;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Utility to query /proc/psinfo
+ * Queries /proc/psinfo
  *
  * @author Kimi Liu
  * @since Java 21+

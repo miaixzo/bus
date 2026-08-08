@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -69,7 +70,7 @@ public class OpenBsdFirmware extends AbstractFirmware {
             // bios0: vendor LENOVO version "GLET90WW (2.44 )" date 09/13/2017
             // bios0: LENOVO 20AWA08J00
             if (line.startsWith("bios0: vendor")) {
-                version = Parsing.getStringBetween(line, '"');
+                version = Parsing.getStringBetween(line, Symbol.C_DOUBLE_QUOTES);
                 releaseDate = Parsing.parseMmDdYyyyToYyyyMmDD(Parsing.parseLastString(line));
                 vendor = line.split("vendor")[1].trim();
             }

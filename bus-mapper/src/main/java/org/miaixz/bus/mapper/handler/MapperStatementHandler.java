@@ -28,7 +28,7 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
 
 /**
- * A utility class for manipulating MyBatis {@link org.apache.ibatis.executor.statement.StatementHandler} objects.
+ * Manipulates MyBatis {@link org.apache.ibatis.executor.statement.StatementHandler} objects.
  *
  * @author Kimi Liu
  * @since Java 21+

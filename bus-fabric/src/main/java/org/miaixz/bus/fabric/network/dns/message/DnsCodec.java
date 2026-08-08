@@ -133,9 +133,10 @@ public final class DnsCodec {
     private static final int EDNS_OPTION_EXTENDED_DNS_ERROR = 15;
 
     /**
-     * Prevents instantiation of this utility class.
+     * Restricts the class to static operations.
      */
     private DnsCodec() {
+        // No initialization required.
     }
 
     /**

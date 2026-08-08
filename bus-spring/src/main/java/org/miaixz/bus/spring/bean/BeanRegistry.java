@@ -28,6 +28,8 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Bean definition and singleton mutations scoped to one Spring application context.
  *
@@ -108,7 +110,8 @@ public class BeanRegistry {
         DefaultListableBeanFactory factory = beanFactory();
         requireName(name);
         if (!factory.containsBeanDefinition(name)) {
-            throw new IllegalStateException("No Bean definition is registered with name '" + name + "'");
+            throw new IllegalStateException(
+                    "No Bean definition is registered with name '" + name + Symbol.SINGLE_QUOTE);
         }
         factory.removeBeanDefinition(name);
     }
@@ -122,7 +125,7 @@ public class BeanRegistry {
         DefaultListableBeanFactory factory = beanFactory();
         requireName(name);
         if (!factory.containsSingleton(name)) {
-            throw new IllegalStateException("No singleton is registered with name '" + name + "'");
+            throw new IllegalStateException("No singleton is registered with name '" + name + Symbol.SINGLE_QUOTE);
         }
         factory.destroySingleton(name);
     }

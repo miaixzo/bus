@@ -105,7 +105,7 @@ public abstract class AbstractNetworkParams implements NetworkParams {
             localHost = InetAddress.getLoopbackAddress();
         }
         String hn = localHost.getHostName();
-        int dot = hn.indexOf('.');
+        int dot = hn.indexOf(Symbol.C_DOT);
         if (dot == -1) {
             return hn;
         }

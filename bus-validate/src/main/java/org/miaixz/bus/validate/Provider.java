@@ -38,7 +38,7 @@ import org.miaixz.bus.validate.magic.ErrorCode;
 import org.miaixz.bus.validate.magic.annotation.Complex;
 
 /**
- * Service provider for validation operations. This class provides static methods to initiate validation and helper
+ * Service provider for validation operations. This class provides static methods to initiate validation and validation
  * methods for the validation process.
  *
  * @author Kimi Liu

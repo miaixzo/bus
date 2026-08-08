@@ -28,6 +28,7 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.text.placeholder.StringTemplate;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -143,7 +144,8 @@ public class Criterion {
      * @return The interpolated error message string.
      */
     public String getMessage() {
-        String message = StringTemplate.ofNamed(this.errmsg).prefix("${").suffix("}").build().format(this.param);
+        String message = StringTemplate.ofNamed(this.errmsg).prefix("${").suffix(Symbol.BRACE_RIGHT).build()
+                .format(this.param);
         return StringTemplate.ofNamed(message).build().format(this.param);
     }
 

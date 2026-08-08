@@ -88,7 +88,7 @@ public final class MapperPluginBuilder {
     private static final String PACKAGE_SPLIT_PATTERN = "[,;\\s]+";
 
     /**
-     * Prevents instantiation of this mapper plugin assembly utility.
+     * Restricts the class to static mapper plugin assembly operations.
      */
     private MapperPluginBuilder() {
         // No initialization required.
@@ -199,7 +199,7 @@ public final class MapperPluginBuilder {
                 || hasProviderBean(beanProvider, TenantProvider.class)) {
             providers.setTenantProvider(provider(beanProvider, TenantProvider.class));
         }
-        if (properties.getPrefix() != null || hasScope(resolved, Args.TABLE_KEY)
+        if (properties.getPrefix() != null || hasScope(resolved, Args.PREFIX_KEY)
                 || hasProviderBean(beanProvider, TablePrefixProvider.class)) {
             providers.setPrefixProvider(provider(beanProvider, TablePrefixProvider.class));
         }
@@ -294,8 +294,8 @@ public final class MapperPluginBuilder {
             prefixProperties.putAll(resolvedProperties);
         }
         if (prefixOptions != null) {
-            String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
-            String defaultPrefix = Normal.DEFAULT + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
+            String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT;
+            String defaultPrefix = Normal.DEFAULT + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT;
             if (StringKit.isNotEmpty(prefixOptions.getPrefix())
                     && !prefixProperties.containsKey(sharedPrefix + Args.TABLE_PREFIX)) {
                 prefixProperties.setProperty(sharedPrefix + Args.TABLE_PREFIX, prefixOptions.getPrefix());

@@ -78,7 +78,7 @@ public class BeanPath<T> implements Iterator<BeanPath<T>> {
 
         for (int i = 0; i < length; i++) {
             c = expression.charAt(i);
-            if ('\'' == c) {
+            if (Symbol.C_SINGLE_QUOTE == c) {
                 // Toggle quote mode
                 isInQuotes = !isInQuotes;
                 continue;

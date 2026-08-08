@@ -43,8 +43,8 @@ import org.miaixz.bus.shade.safety.complex.AnyComplex;
 import org.miaixz.bus.shade.safety.complex.NotComplex;
 
 /**
- * Utility class providing methods for I/O operations, key generation, and filter management within the context of JAR
- * safety and shading.
+ * Provides methods for I/O operations, key generation, and filter management within the context of JAR safety and
+ * shading.
  *
  * @author Kimi Liu
  * @since Java 21+

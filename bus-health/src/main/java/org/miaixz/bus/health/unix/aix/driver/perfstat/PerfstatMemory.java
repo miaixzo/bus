@@ -25,7 +25,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_memory_total_t;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
- * Utility to query performance stats for memory
+ * Queries performance stats for memory
  *
  * @author Kimi Liu
  * @since Java 21+

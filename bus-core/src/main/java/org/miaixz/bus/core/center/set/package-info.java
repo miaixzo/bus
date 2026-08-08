@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides various encapsulations and utility classes related to {@link java.util.Set}.
+ * Provides various encapsulations and classes related to {@link java.util.Set}.
  *
  * @author Kimi Liu
  * @since Java 21+

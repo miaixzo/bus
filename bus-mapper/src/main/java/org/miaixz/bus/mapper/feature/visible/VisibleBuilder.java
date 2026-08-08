@@ -278,23 +278,25 @@ public class VisibleBuilder {
             return true;
         }
         char previous = condition.charAt(index - 1);
-        return Character.isWhitespace(previous) || previous == '(' || previous == '[' || previous == '{'
-                || previous == ',' || previous == '=' || previous == '<' || previous == '>' || previous == '!'
-                || previous == '&' || previous == '|' || previous == '+' || previous == '-' || previous == '*'
-                || previous == '/';
+        return Character.isWhitespace(previous) || previous == Symbol.C_PARENTHESE_LEFT
+                || previous == Symbol.C_BRACKET_LEFT || previous == Symbol.C_BRACE_LEFT || previous == Symbol.C_COMMA
+                || previous == Symbol.C_EQUAL || previous == Symbol.C_LT || previous == Symbol.C_GT
+                || previous == Symbol.C_NOT || previous == Symbol.C_AND || previous == Symbol.C_OR
+                || previous == Symbol.C_PLUS || previous == Symbol.C_MINUS || previous == Symbol.C_STAR
+                || previous == Symbol.C_SLASH;
     }
 
     /**
      * Tests whether a character may start an unquoted SQL token during condition parsing.
      * <p>
-     * This parser helper does not validate identifier compliance.
+     * This clause parser does not validate identifiers.
      * </p>
      *
      * @param value the character to test
      * @return {@code true} when the character can start the parsed token
      */
     private boolean identifierStart(char value) {
-        return Character.isLetter(value) || value == '_';
+        return Character.isLetter(value) || value == Symbol.C_UNDERLINE;
     }
 
     /**
@@ -318,7 +320,7 @@ public class VisibleBuilder {
             int insertPosition = findInsertPosition(sql);
             String beforeTail = sql.substring(0, insertPosition).stripTrailing();
             String tail = sql.substring(insertPosition).stripLeading();
-            return beforeTail + " WHERE (" + condition + ")"
+            return beforeTail + " WHERE (" + condition + Symbol.PARENTHESE_RIGHT
                     + (StringKit.isEmpty(tail) ? Normal.EMPTY : Symbol.SPACE + tail);
         }
     }
@@ -399,13 +401,13 @@ public class VisibleBuilder {
                 continue;
             }
             if (backtickQuoted) {
-                if (current == '`') {
+                if (current == Symbol.C_BACKTICK) {
                     backtickQuoted = false;
                 }
                 continue;
             }
             if (bracketQuoted) {
-                if (current == ']') {
+                if (current == Symbol.C_BRACKET_RIGHT) {
                     bracketQuoted = false;
                 }
                 continue;
@@ -418,19 +420,19 @@ public class VisibleBuilder {
                 doubleQuoted = true;
                 continue;
             }
-            if (current == '`') {
+            if (current == Symbol.C_BACKTICK) {
                 backtickQuoted = true;
                 continue;
             }
-            if (current == '[') {
+            if (current == Symbol.C_BRACKET_LEFT) {
                 bracketQuoted = true;
                 continue;
             }
-            if (current == '(') {
+            if (current == Symbol.C_PARENTHESE_LEFT) {
                 depth++;
                 continue;
             }
-            if (current == ')' && depth > 0) {
+            if (current == Symbol.C_PARENTHESE_RIGHT && depth > 0) {
                 depth--;
                 continue;
             }
@@ -444,7 +446,7 @@ public class VisibleBuilder {
     /**
      * Tests whether a structural SQL keyword starts at the specified index.
      * <p>
-     * This parser helper locates clauses and does not validate database identifiers or reserved words.
+     * This clause parser locates SQL clauses without validating identifiers or reserved words.
      * </p>
      *
      * @param sql     the SQL statement
@@ -480,14 +482,14 @@ public class VisibleBuilder {
     /**
      * Tests whether a character belongs to an unquoted SQL token for boundary detection.
      * <p>
-     * This parser helper is not an identifier compliance rule.
+     * This clause parser does not enforce identifier rules.
      * </p>
      *
      * @param value the character to test
      * @return {@code true} when the character belongs to the surrounding token
      */
     private boolean identifierPart(char value) {
-        return Character.isLetterOrDigit(value) || value == '_';
+        return Character.isLetterOrDigit(value) || value == Symbol.C_UNDERLINE;
     }
 
     /**

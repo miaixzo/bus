@@ -23,6 +23,7 @@ import org.miaixz.bus.core.center.date.culture.Direction;
 import org.miaixz.bus.core.center.date.culture.Element;
 import org.miaixz.bus.core.center.date.culture.Samsara;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Represents the Nine Stars in Chinese metaphysics, often associated with Feng Shui and other divinatory practices.
@@ -36,7 +37,8 @@ public class NineStar extends Samsara {
     /**
      * Array of names for the Nine Stars.
      */
-    public static final String[] NAMES = { "一", "二", "三", "四", "五", "六", "七", "八", "九" };
+    public static final String[] NAMES = { Symbol.L_ONE, Symbol.S_TWO, Symbol.S_THREE, Symbol.S_FOUR, Symbol.S_FIVE,
+            Symbol.L_SIX, Symbol.L_SEVEN, Symbol.L_EIGHT, Symbol.L_NINE };
 
     /**
      * Constructs a {@code NineStar} instance with the specified index.

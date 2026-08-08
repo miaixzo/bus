@@ -52,11 +52,11 @@ public class XmlEscape extends ReplacerChain {
      * Lookup table for XML escape characters. This array defines the mapping from special characters to their XML
      * entity references.
      */
-    protected static final String[][] BASIC_ESCAPE = { { "'", "&apos;" }, // " - single-quote
-            { "\"", "&quot;" }, // " - double-quote
+    protected static final String[][] BASIC_ESCAPE = { { Symbol.SINGLE_QUOTE, "&apos;" }, // " - single-quote
+            { Symbol.DOUBLE_QUOTES, "&quot;" }, // " - double-quote
             { Symbol.AND, "&amp;" }, // & - ampersand
-            { "<", "&lt;" }, // < - less-than
-            { ">", "&gt;" }, // > - greater-than
+            { Symbol.LT, "&lt;" }, // < - less-than
+            { Symbol.GT, "&gt;" }, // > - greater-than
     };
 
     /**

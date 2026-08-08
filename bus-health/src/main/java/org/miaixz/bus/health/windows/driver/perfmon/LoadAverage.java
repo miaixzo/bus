@@ -27,8 +27,8 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 
 /**
- * Utility to calculate a load average equivalent metric on Windows. Starts a daemon thread to collect the necessary
- * counters and averages in 5-second intervals.
+ * Calculates a load average equivalent metric on Windows. Starts a daemon thread to collect the necessary counters and
+ * averages in 5-second intervals.
  *
  * @author Kimi Liu
  * @since Java 21+

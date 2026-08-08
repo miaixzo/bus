@@ -32,8 +32,8 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * A utility class for writing data to an {@link OutputStream}. This class provides methods to write byte arrays,
- * serializable objects, and character sequences to an output stream, with an option to close the stream after writing.
+ * Writes data to an {@link OutputStream}. This class provides methods to write byte arrays, serializable objects, and
+ * character sequences to an output stream, with an option to close the stream after writing.
  *
  * @author Kimi Liu
  * @since Java 21+

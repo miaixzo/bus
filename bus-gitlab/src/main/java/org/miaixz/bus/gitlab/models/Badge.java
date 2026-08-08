@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The badge class.
@@ -215,7 +215,7 @@ public class Badge implements Serializable {
          */
         GROUP;
 
-        private static JacksonJsonEnumHelper<BadgeKind> enumHelper = new JacksonJsonEnumHelper<>(BadgeKind.class);
+        private static JacksonJsonEnumCodec<BadgeKind> enumCodec = new JacksonJsonEnumCodec<>(BadgeKind.class);
 
         /**
          * Executes the for value operation.
@@ -226,7 +226,7 @@ public class Badge implements Serializable {
 
         @JsonCreator
         public static BadgeKind forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -237,7 +237,7 @@ public class Badge implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -248,7 +248,7 @@ public class Badge implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

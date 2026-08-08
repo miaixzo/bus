@@ -230,7 +230,7 @@ public class MapperPluginFactory {
             }
             if (prefixOptions != null && StringKit.isNotEmpty(prefixOptions.getPrefix())) {
                 props.setProperty(
-                        DEFAULT_KEY + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.TABLE_PREFIX,
+                        DEFAULT_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT + Args.TABLE_PREFIX,
                         prefixOptions.getPrefix());
             }
         }
@@ -277,11 +277,11 @@ public class MapperPluginFactory {
             defaultKey = DEFAULT_KEY;
         }
         String tablePrefix = props.getProperty(
-                defaultKey + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.TABLE_PREFIX,
+                defaultKey + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT + Args.TABLE_PREFIX,
                 props.getProperty(
-                        DEFAULT_KEY + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.TABLE_PREFIX,
+                        DEFAULT_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT + Args.TABLE_PREFIX,
                         props.getProperty(
-                                Args.SHARED_KEY + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.TABLE_PREFIX)));
+                                Args.SHARED_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT + Args.TABLE_PREFIX)));
         if (StringKit.isEmpty(tablePrefix)) {
             return config;
         }
@@ -448,7 +448,7 @@ public class MapperPluginFactory {
             List<MapperHandler> handlers) {
         MapperOptions.PrefixOptions prefixOptions = options.getPrefix();
         boolean hasSimplifiedConfig = prefixOptions != null;
-        boolean hasConfigFile = hasConfiguration(resolved, Args.TABLE_KEY);
+        boolean hasConfigFile = hasConfiguration(resolved, Args.PREFIX_KEY);
         boolean hasProvider = providers != null && providers.getPrefixProvider() != null;
         if (!hasSimplifiedConfig && !hasConfigFile && !hasProvider) {
             return;
@@ -460,12 +460,12 @@ public class MapperPluginFactory {
             Logger.debug(false, "Mapper", "Loading prefix config from simplified YAML configuration");
             if (StringKit.isNotEmpty(prefixOptions.getPrefix())) {
                 props.setProperty(
-                        DEFAULT_KEY + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.TABLE_PREFIX,
+                        DEFAULT_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT + Args.TABLE_PREFIX,
                         prefixOptions.getPrefix());
             }
             if (StringKit.isNotEmpty(prefixOptions.getIgnore())) {
                 props.setProperty(
-                        DEFAULT_KEY + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.PROP_IGNORE,
+                        DEFAULT_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_IGNORE,
                         prefixOptions.getIgnore());
             }
         }
@@ -598,9 +598,9 @@ public class MapperPluginFactory {
 
         MapperOptions.PrefixOptions prefix = options.getPrefix();
         if (prefix != null) {
-            shared(properties, Args.TABLE_KEY, Args.PROP_ENABLED, prefix.isEnabled());
-            shared(properties, Args.TABLE_KEY, Args.TABLE_PREFIX, prefix.getPrefix());
-            shared(properties, Args.TABLE_KEY, Args.PROP_IGNORE, prefix.getIgnore());
+            shared(properties, Args.PREFIX_KEY, Args.PROP_ENABLED, prefix.isEnabled());
+            shared(properties, Args.PREFIX_KEY, Args.TABLE_PREFIX, prefix.getPrefix());
+            shared(properties, Args.PREFIX_KEY, Args.PROP_IGNORE, prefix.getIgnore());
         }
         MapperOptions.TenantOptions tenant = options.getTenant();
         if (tenant != null) {

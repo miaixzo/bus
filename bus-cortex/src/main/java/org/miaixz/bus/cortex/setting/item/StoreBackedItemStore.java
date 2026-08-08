@@ -275,7 +275,7 @@ public class StoreBackedItemStore {
         List<String> keys = new ArrayList<>();
         String sharedKey = entryKey(namespace, group, data_id, null);
         keys.add(sharedKey);
-        Map<String, Object> profileEntries = cacheX.scan(sharedKey + ":");
+        Map<String, Object> profileEntries = cacheX.scan(sharedKey + Symbol.COLON);
         if (profileEntries != null && !profileEntries.isEmpty()) {
             keys.addAll(profileEntries.keySet());
         }

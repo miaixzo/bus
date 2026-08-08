@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides utility classes for working with Java's reference objects, primarily encapsulating functionality related to
+ * Provides classes for working with Java's reference objects, primarily encapsulating functionality related to
  * {@link java.lang.ref.Reference}. The main encapsulated references include:
  *
  * <pre>

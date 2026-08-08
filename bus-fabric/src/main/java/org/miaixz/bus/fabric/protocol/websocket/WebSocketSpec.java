@@ -25,6 +25,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
+import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
 import org.miaixz.bus.fabric.observe.EventObserver;
 
 /**
@@ -35,6 +36,7 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @param address  normalized HTTP address used for the upgrade request
  * @param headers  upgrade request headers
  * @param timeout  connect and session timeout policy
+ * @param proxy    outbound proxy policy propagated to the HTTP upgrade
  * @param guard    optional policy guard for WebSocket messages
  * @param filter   optional message filter for WebSocket open, inbound, and outbound messages
  * @param observer observer receiving WebSocket lifecycle events
@@ -43,8 +45,9 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @author Kimi Liu
  * @since Java 21+
  */
-record WebSocketSpec(Context context, URI uri, Address address, Headers headers, Timeout timeout, GuardRule guard,
-        Filter filter, EventObserver observer, Handler handler, Listener<? super WebSocketSession> listener) {
+record WebSocketSpec(Context context, URI uri, Address address, Headers headers, Timeout timeout, ProxyPlan proxy,
+        GuardRule guard, Filter filter, EventObserver observer, Handler handler,
+        Listener<? super WebSocketSession> listener) {
 
     /**
      * Creates a validated specification.
@@ -54,6 +57,7 @@ record WebSocketSpec(Context context, URI uri, Address address, Headers headers,
      * @param address  normalized upgrade address
      * @param headers  upgrade request headers
      * @param timeout  WebSocket timeout policy
+     * @param proxy    non-null outbound proxy policy
      * @param guard    optional WebSocket message guard
      * @param filter   optional WebSocket message filter
      * @param observer WebSocket lifecycle observer
@@ -66,6 +70,7 @@ record WebSocketSpec(Context context, URI uri, Address address, Headers headers,
         address = require(address, "Address");
         headers = require(headers, "Headers");
         timeout = require(timeout, "Timeout");
+        proxy = require(proxy, "Proxy plan");
         observer = EventObserver.safe(require(observer, "Observer"));
         handler = require(handler, "Handler");
     }

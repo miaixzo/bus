@@ -20,11 +20,10 @@
 package org.miaixz.bus.vortex.strategy;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.PooledDataBuffer;
+import org.springframework.core.io.buffer.DataBufferLimitException;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.FormFieldPart;
@@ -44,6 +43,7 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Holder;
+import org.miaixz.bus.vortex.Octets;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 
 import reactor.core.publisher.Flux;
@@ -52,7 +52,7 @@ import reactor.core.publisher.Mono;
 /**
  * Basic request strategy for routes without protocol-specific request parsing.
  * <p>
- * This class initializes request metadata and provides protected parsing helpers for protocol request strategies.
+ * This class initializes request metadata and provides protected parsing operations for protocol request strategies.
  * Protocol-specific classes decide whether to parse and cache the body or pass the request through untouched.
  *
  * @author Kimi Liu
@@ -191,12 +191,10 @@ public class RequestStrategy extends AbstractStrategy {
     }
 
     /**
-     * Handles {@code application/json} requests. It reads the request body and delegates to
-     * {@link #processJsonData(ServerWebExchange, Chain, Context, List)}.
+     * Handles a bounded {@code application/json} request after acquiring its exact logical-byte budget.
      * <p>
-     * This process is wrapped in a retry mechanism to handle transient network or parsing errors.
-     * <p>
-     * Performance optimization: Checks Content-Length first to determine if streaming should be used.
+     * Buffered request modes require Content-Length. The resulting lease remains active through downstream request
+     * replay and the complete response lifecycle.
      *
      * @param exchange The current server exchange.
      * @param chain    The next strategy in the chain.
@@ -204,55 +202,37 @@ public class RequestStrategy extends AbstractStrategy {
      * @return A {@code Mono<Void>} that signals the completion of processing.
      */
     private Mono<Void> handleJsonRequest(ServerWebExchange exchange, Chain chain, Context context) {
-        long contentLength = exchange.getRequest().getHeaders().getContentLength();
-        boolean shouldStream = contentLength > Holder.getStreamingRequestThreshold();
-
-        if (shouldStream) {
-            Logger.info(
-                    true,
-                    "Vortex",
-                    "Large JSON request detected: strategy=request, clientIp={}, bytes={}, mode=streaming",
-                    context.getX_request_ip(),
-                    contentLength);
-        }
-
-        return exchange.getRequest().getBody().collectList()
-                .flatMap(dataBuffers -> processJsonData(exchange, chain, context, dataBuffers));
+        return Octets
+                .readForParsing(
+                        exchange.getRequest().getBody(),
+                        Math.toIntExact(Holder.get().getMaxBufferedRequestSize()),
+                        Holder.requestBufferBudget(),
+                        exchange.getRequest().getHeaders().getContentLength())
+                .onErrorMap(DataBufferLimitException.class, error -> new ValidateException(ErrorCode._100530))
+                .flatMap(body -> processJsonData(exchange, chain, context, body).doFinally(signal -> body.close()));
     }
 
     /**
      * Performs the actual parsing of a JSON request body.
      * <p>
-     * This method merges the data buffers and supports JSON objects and arrays as request roots. Object properties are
-     * added to the {@link Context}; arrays are validated and marked for original-body forwarding. It then decorates the
-     * request to allow the body to be re-read downstream.
-     * <p>
-     * Performance optimization: For large requests, adds detailed logging to track memory usage.
+     * The body has already been copied into one exact array. Object properties are added to the {@link Context}; array
+     * roots are validated and marked for original-body forwarding. A request decorator then exposes the same bytes to
+     * the downstream client without another aggregation.
      *
-     * @param exchange    The current server exchange.
-     * @param chain       The next strategy in the chain.
-     * @param context     The request context to be populated.
-     * @param dataBuffers A list of data buffer fragments from the request body.
+     * @param exchange The current server exchange.
+     * @param chain    The next strategy in the chain.
+     * @param context  The request context to be populated.
+     * @param body     bounded request body and its logical-byte lease
      * @return A {@code Mono<Void>} that signals the completion of processing.
      */
     private Mono<Void> processJsonData(
             ServerWebExchange exchange,
             Chain chain,
             Context context,
-            List<DataBuffer> dataBuffers) {
+            Octets.BufferedBody body) {
 
         return Mono.fromCallable(() -> {
-            byte[] bytes = readBodyToBytes(dataBuffers);
-
-            if (bytes.length > Holder.getStreamingRequestThreshold()) {
-                Logger.info(
-                        true,
-                        "Vortex",
-                        "Large JSON content cached in memory: strategy=request, clientIp={}, bytes={}",
-                        context.getX_request_ip(),
-                        bytes.length);
-            }
-
+            byte[] bytes = body.bytes();
             String jsonBody = new String(bytes, Charset.UTF_8);
             boolean jsonArray = isJsonArray(jsonBody);
             try {
@@ -288,14 +268,15 @@ public class RequestStrategy extends AbstractStrategy {
                 /**
                  * Returns the cached request body as a Flux of DataBuffer.
                  * <p>
-                 * This override allows the request body to be read multiple times by returning the cached byte array
-                 * wrapped in a DataBuffer.
+                 * The wrapped array is retained by the emitted buffer. This container drops its own byte references
+                 * after publication, while the outer request lifecycle retains the logical-byte lease.
                  *
                  * @return A Flux emitting a single DataBuffer containing the cached body
                  */
                 @Override
                 public Flux<DataBuffer> getBody() {
-                    return Flux.defer(() -> Mono.just(exchange.getResponse().bufferFactory().wrap(bytes)));
+                    return Flux.defer(() -> Mono.just(exchange.getResponse().bufferFactory().wrap(body.bytes())))
+                            .doFinally(signal -> body.discardBytes());
                 }
             };
 
@@ -359,10 +340,7 @@ public class RequestStrategy extends AbstractStrategy {
     }
 
     /**
-     * Handles {@code application/x-www-form-urlencoded} requests. It reads the request body and delegates to
-     * {@link #processFormData(ServerWebExchange, Chain, Context, List)}.
-     * <p>
-     * Note: Timeout and retry are handled at VortexHandler level, not here.
+     * Handles a bounded {@code application/x-www-form-urlencoded} body under the request-byte budget.
      *
      * @param exchange The current server exchange.
      * @param chain    The next strategy in the chain.
@@ -370,50 +348,55 @@ public class RequestStrategy extends AbstractStrategy {
      * @return A {@code Mono<Void>} that signals the completion of processing.
      */
     private Mono<Void> handleFormRequest(ServerWebExchange exchange, Chain chain, Context context) {
-        return exchange.getRequest().getBody().collectList()
-                .flatMap(dataBuffers -> processFormData(exchange, chain, context, dataBuffers));
+        return Octets
+                .readForParsing(
+                        exchange.getRequest().getBody(),
+                        Math.toIntExact(Holder.get().getMaxBufferedRequestSize()),
+                        Holder.requestBufferBudget(),
+                        exchange.getRequest().getHeaders().getContentLength())
+                .onErrorMap(DataBufferLimitException.class, error -> new ValidateException(ErrorCode._100530))
+                .flatMap(body -> processFormData(exchange, chain, context, body).doFinally(signal -> body.close()));
     }
 
     /**
      * Performs the actual parsing of a form-data request body.
      * <p>
-     * This method caches the request body, decorates the request to make it re-readable, and then uses the built-in
-     * {@link ServerWebExchange#getFormData()} to parse the parameters into the {@link Context}.
+     * This method decorates the consumed request with its exact buffered bytes, then uses
+     * {@link ServerWebExchange#getFormData()} to parse parameters into the {@link Context}. The logical-byte lease is
+     * retained through the complete downstream lifecycle.
      *
-     * @param exchange    The current server exchange.
-     * @param chain       The next strategy in the chain.
-     * @param context     The request context to be populated.
-     * @param dataBuffers A list of data buffer fragments from the request body.
+     * @param exchange The current server exchange.
+     * @param chain    The next strategy in the chain.
+     * @param context  The request context to be populated.
+     * @param body     bounded request body and its logical-byte lease
      * @return A {@code Mono<Void>} that signals the completion of processing.
      */
     private Mono<Void> processFormData(
             ServerWebExchange exchange,
             Chain chain,
             Context context,
-            List<DataBuffer> dataBuffers) {
+            Octets.BufferedBody body) {
 
         return Mono.fromCallable(() -> {
-            byte[] bytes = readBodyToBytes(dataBuffers);
-
             /**
-             * Decorator that caches the request body for multiple reads.
+             * Decorator that exposes the already buffered request body to the form reader.
              * <p>
-             * This inner class overrides getBody() to return the cached byte array, allowing the request body to be
-             * consumed multiple times.
+             * The form reader consumes one wrapped view of the exact array; no second aggregation is performed.
              */
             ServerHttpRequest newRequest = new ServerHttpRequestDecorator(exchange.getRequest()) {
 
                 /**
                  * Returns the cached request body as a Flux of DataBuffer.
                  * <p>
-                 * This override allows the request body to be read multiple times by returning the cached byte array
-                 * wrapped in a DataBuffer.
+                 * The emitted buffer retains the array after this container drops its own byte references. The
+                 * logical-byte lease remains attached to the complete request lifecycle.
                  *
                  * @return A Flux emitting a single DataBuffer containing the cached body
                  */
                 @Override
                 public Flux<DataBuffer> getBody() {
-                    return Flux.just(exchange.getResponse().bufferFactory().wrap(bytes));
+                    return Flux.defer(() -> Mono.just(exchange.getResponse().bufferFactory().wrap(body.bytes())))
+                            .doFinally(signal -> body.discardBytes());
                 }
             };
             return exchange.mutate().request(newRequest).build();
@@ -567,53 +550,6 @@ public class RequestStrategy extends AbstractStrategy {
                             e.getClass().getSimpleName());
                     return Mono.error(e);
                 });
-    }
-
-    /**
-     * Reads a list of {@link DataBuffer}s into a single byte array, while enforcing a maximum size limit.
-     * <p>
-     * This is a synchronous, in-memory operation. It is intended to be called from within a {@code Mono.fromCallable}
-     * to prevent blocking and to ensure exceptions are captured by the reactive stream.
-     * <p>
-     * <b>Performance Optimization:</b>
-     * <ul>
-     * <li>Pre-calculates total size to validate before allocation</li>
-     * <li>Efficient single-pass copy algorithm</li>
-     * <li>Detailed logging for large bodies to track memory usage</li>
-     * </ul>
-     * <p>
-     * <b>Note:</b> The collected {@link DataBuffer}s are released after their bytes are copied into the replayable
-     * request body.
-     *
-     * @param dataBuffers The list of {@link DataBuffer}s to read.
-     * @return A byte array containing the merged data from all buffers.
-     * @throws ValidateException if the total size of the data buffers exceeds {@link Holder#getMaxRequestSize()}.
-     */
-    private byte[] readBodyToBytes(List<DataBuffer> dataBuffers) {
-        try {
-            int totalSize = dataBuffers.stream().mapToInt(DataBuffer::readableByteCount).sum();
-
-            if (totalSize > Holder.getMaxRequestSize()) {
-                throw new ValidateException(ErrorCode._100530);
-            }
-
-            byte[] bytes = new byte[totalSize];
-            int pos = 0;
-
-            for (DataBuffer buffer : dataBuffers) {
-                int length = buffer.readableByteCount();
-                buffer.read(bytes, pos, length);
-                pos += length;
-            }
-
-            return bytes;
-        } finally {
-            dataBuffers.forEach(dataBuffer -> {
-                if (dataBuffer instanceof PooledDataBuffer pooledDataBuffer && pooledDataBuffer.isAllocated()) {
-                    pooledDataBuffer.release();
-                }
-            });
-        }
     }
 
 }

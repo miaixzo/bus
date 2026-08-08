@@ -38,6 +38,9 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * The {@code Tpl2Xml} class converts a proprietary text-based template file for private DICOM dictionaries into
  * standard XML dictionary files. Each private dictionary, identified by a private creator string in the template, is
@@ -160,11 +163,13 @@ public class Tpl2Xml {
     private void convert(String template) throws Exception {
         Path dir = outputDirectory(template);
         for (Map.Entry<String, List<DictionaryElement>> entry : privateDictsFrom(template).entrySet()) {
-            Path file = Files.createFile(dir.resolve(entry.getKey().replaceAll("[:;?\\s/]", "-") + ".xml"));
+            Path file = Files.createFile(dir.resolve(entry.getKey().replaceAll("[:;?\\s/]", Symbol.MINUS) + ".xml"));
             DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
             Document document = documentBuilder.newDocument();
-            document.insertBefore(document.createComment("\n" + licenseBlock + "\n"), document.getDocumentElement());
+            document.insertBefore(
+                    document.createComment(Symbol.LF + licenseBlock + Symbol.LF),
+                    document.getDocumentElement());
             Element root = document.createElement(elements);
             document.appendChild(root);
             Set<String> keywords = new HashSet<>();
@@ -202,7 +207,7 @@ public class Tpl2Xml {
         System.out.println(
                 "Ignoring duplicate tag or keyword entry: [tag=" + dictElement.getTag() + ", keyword="
                         + dictElement.getKeyword() + ", vr=" + dictElement.getVr() + ", vm=" + dictElement.getVm()
-                        + ", value=" + dictElement.getValue() + "]");
+                        + ", value=" + dictElement.getValue() + Symbol.BRACKET_RIGHT);
         return true;
     }
 
@@ -217,7 +222,7 @@ public class Tpl2Xml {
         Transformer transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, indent ? "yes" : "no");
         if (indent)
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Symbol.TWO);
         transformer.setOutputProperty(OutputKeys.VERSION, xmlVersion);
         return transformer;
     }
@@ -277,7 +282,7 @@ public class Tpl2Xml {
         DictionaryElement(String[] fields) {
             this.vr = fields[2].substring(4);
             this.vm = fields[3].substring(4);
-            this.value = fields[6].endsWith("\"") ? fields[6].substring(6, fields[6].length() - 1)
+            this.value = fields[6].endsWith(Symbol.DOUBLE_QUOTES) ? fields[6].substring(6, fields[6].length() - 1)
                     : fields[6].substring(6);
             setTagAndKeyword(fields[0], fields[5].substring(9));
         }
@@ -336,7 +341,8 @@ public class Tpl2Xml {
         private void setTagAndKeyword(String tag, String keyword) {
             String groupTag = tag.substring(1, 5).toUpperCase();
             String elementTag = "xx" + tag.substring(8, 10).toUpperCase();
-            this.keyword = keyword.equals("?") ? "_" + groupTag + "_" + elementTag + "_"
+            this.keyword = keyword.equals(Symbol.QUESTION_MARK)
+                    ? Symbol.UNDERLINE + groupTag + Symbol.UNDERLINE + elementTag + Symbol.UNDERLINE
                     : !Pattern.compile("^[a-zA-Z][a-zA-Z0-9]*$").matcher(keyword).matches()
                             ? improveInvalidKeyword(keyword)
                             : keyword;
@@ -352,7 +358,7 @@ public class Tpl2Xml {
         private String improveInvalidKeyword(String keyword) {
             if (Character.isDigit(keyword.charAt(0)))
                 keyword = wordForFirstDigit(keyword) + keyword.substring(1);
-            return keyword.replaceAll("[^A-Za-z0-9]", "");
+            return keyword.replaceAll("[^A-Za-z0-9]", Normal.EMPTY);
         }
 
         /**
@@ -363,34 +369,34 @@ public class Tpl2Xml {
          */
         private String wordForFirstDigit(String keyword) {
             switch (keyword.charAt(0)) {
-                case '0':
+                case Symbol.C_ZERO:
                     return "Zero";
 
-                case '1':
+                case Symbol.C_ONE:
                     return "One";
 
-                case '2':
+                case Symbol.C_TWO:
                     return "Two";
 
-                case '3':
+                case Symbol.C_THREE:
                     return "Three";
 
-                case '4':
+                case Symbol.C_FOUR:
                     return "Four";
 
-                case '5':
+                case Symbol.C_FIVE:
                     return "Five";
 
-                case '6':
+                case Symbol.C_SIX:
                     return "Six";
 
-                case '7':
+                case Symbol.C_SEVEN:
                     return "Seven";
 
-                case '8':
+                case Symbol.C_EIGHT:
                     return "Eight";
 
-                case '9':
+                case Symbol.C_NINE:
                     return "Nine";
 
                 default:

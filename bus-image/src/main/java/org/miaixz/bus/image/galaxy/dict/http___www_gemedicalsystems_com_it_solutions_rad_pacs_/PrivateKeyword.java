@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.image.galaxy.dict.http___www_gemedicalsystems_com_it_solutions_rad_pacs_;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Represents the PrivateKeyword type.
  *
@@ -37,7 +39,7 @@ public class PrivateKeyword {
     /**
      * The private creator value.
      */
-    public static final String PrivateCreator = "";
+    public static final String PrivateCreator = Normal.EMPTY;
 
     /**
      * Executes the value of operation.
@@ -57,7 +59,7 @@ public class PrivateKeyword {
             case PrivateTag.PacsExamnotesFlag:
                 return "PacsExamnotesFlag";
         }
-        return "";
+        return Normal.EMPTY;
     }
 
 }

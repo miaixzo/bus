@@ -35,9 +35,10 @@ import java.util.concurrent.atomic.LongAdder;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * Utility class for converting between numbers and bytes. Data type sizes are as follows:
+ * Converts between numbers and bytes. Data type sizes are as follows:
  * <ul>
  * <li>byte: 8 bits</li>
  * <li>char: 2 bytes, 16 bits</li>
@@ -695,11 +696,11 @@ public class ByteKit {
         final List<Integer> idxList = new LinkedList<>();
         final StringBuilder sb = new StringBuilder();
         for (final byte b : bytes) {
-            sb.append(StringKit.padPre(Integer.toBinaryString((b & 0xFF)), 8, "0"));
+            sb.append(StringKit.padPre(Integer.toBinaryString((b & 0xFF)), 8, Symbol.ZERO));
         }
         final String bitStr = sb.toString();
         for (int i = 0; i < bitStr.length(); i++) {
-            if (bitStr.charAt(i) == '1') {
+            if (bitStr.charAt(i) == Symbol.C_ONE) {
                 idxList.add(i);
             }
         }

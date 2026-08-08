@@ -45,11 +45,11 @@ import org.miaixz.bus.vortex.Strategy;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 
 /**
- * An abstract base class for {@link Strategy} implementations, providing a collection of common utility methods.
+ * An abstract base class for {@link Strategy} implementations, providing a collection of common methods.
  * <p>
- * This class offers helper methods for tasks frequently performed by strategies, such as validating parameters,
- * enriching the context with request details (like IP and domain), and handling HTTP-specific logic. Concrete
- * strategies should extend this class to reduce boilerplate code.
+ * This class offers methods for tasks frequently performed by strategies, such as validating parameters, enriching the
+ * context with request details (like IP and domain), and handling HTTP-specific logic. Concrete strategies should
+ * extend this class to reduce boilerplate code.
  *
  * @author Kimi Liu
  * @since Java 21+

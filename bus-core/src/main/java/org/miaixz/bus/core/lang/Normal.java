@@ -29,7 +29,7 @@ import org.miaixz.bus.core.io.file.FileType;
 import org.miaixz.bus.core.xyz.SetKit;
 
 /**
- * Provides a collection of common constants and utility methods.
+ * Provides a collection of common constants and methods.
  *
  * @author Kimi Liu
  * @since Java 21+

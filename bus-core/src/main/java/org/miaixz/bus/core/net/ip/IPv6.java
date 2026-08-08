@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.NetKit;
 
 /**
- * A utility class for IPv6 addresses.
+ * Parses, validates, and converts IPv6 addresses.
  *
  * @author Kimi Liu
  * @since Java 21+

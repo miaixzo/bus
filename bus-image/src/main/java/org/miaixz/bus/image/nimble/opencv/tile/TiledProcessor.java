@@ -22,6 +22,8 @@ package org.miaixz.bus.image.nimble.opencv.tile;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Not an API. This class is under development and can be changed or removed at any moment.
  *
@@ -126,7 +128,7 @@ public class TiledProcessor {
     public void process(Mat sourceImage, Mat resultImage, int tileSize) {
 
         if (sourceImage.rows() != resultImage.rows() || sourceImage.cols() != resultImage.cols()) {
-            throw new IllegalStateException("");
+            throw new IllegalStateException(Normal.EMPTY);
         }
 
         final int rowTiles = (sourceImage.rows() / tileSize) + (sourceImage.rows() % tileSize != 0 ? 1 : 0);

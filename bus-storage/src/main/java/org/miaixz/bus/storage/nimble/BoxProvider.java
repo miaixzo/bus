@@ -98,7 +98,7 @@ public class BoxProvider extends AbstractProvider {
             this.context.setEndpoint(API_BASE);
         }
         if (StringKit.isBlank(this.context.getBucket())) {
-            this.context.setBucket("0");
+            this.context.setBucket(Symbol.ZERO);
         }
     }
 
@@ -383,7 +383,7 @@ public class BoxProvider extends AbstractProvider {
                             extend.put("id", entry.get("id"));
                             extend.put("modified_at", entry.get("modified_at"));
 
-                            String size = entry.get("size") != null ? entry.get("size").toString() : "0";
+                            String size = entry.get("size") != null ? entry.get("size").toString() : Symbol.ZERO;
                             blobs.add(
                                     Blob.builder().name((String) entry.get("name")).size(size).extend(extend).build());
                         }
@@ -801,7 +801,7 @@ public class BoxProvider extends AbstractProvider {
         extend.put("extension", metadata.get("extension"));
 
         return Blob.builder().inputStream(inputStream).bucket(bucket).key(objectKey).name((String) metadata.get("name"))
-                .path(objectKey).size(metadata.get("size") == null ? "0" : String.valueOf(metadata.get("size")))
+                .path(objectKey).size(metadata.get("size") == null ? Symbol.ZERO : String.valueOf(metadata.get("size")))
                 .hash((String) metadata.get("sha1")).extend(extend).build();
     }
 

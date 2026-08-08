@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -99,7 +100,7 @@ public class MaskingProcessor {
      */
     private boolean isHtmlContent(final String text) {
         // Simple check for HTML tags
-        return text.contains("<") && text.contains(">") && (text.contains("</") || text.contains("/>"));
+        return text.contains(Symbol.LT) && text.contains(Symbol.GT) && (text.contains("</") || text.contains("/>"));
     }
 
     /**
@@ -117,7 +118,7 @@ public class MaskingProcessor {
         for (int i = 0; i < html.length(); i++) {
             final char c = html.charAt(i);
 
-            if (c == '<') {
+            if (c == Symbol.C_LT) {
                 // Process the text content before the tag
                 if (!inTag && i > lastIndex) {
                     final String textContent = html.substring(lastIndex, i);
@@ -131,21 +132,21 @@ public class MaskingProcessor {
                 int tagNameStart = i + 1;
                 if (tagNameStart < html.length()) {
                     // Skip the slash of the closing tag
-                    if (html.charAt(tagNameStart) == '/') {
+                    if (html.charAt(tagNameStart) == Symbol.C_SLASH) {
                         tagNameStart++;
                     }
 
                     // Find the end of the tag name
-                    int tagNameEnd = html.indexOf(' ', tagNameStart);
+                    int tagNameEnd = html.indexOf(Symbol.C_SPACE, tagNameStart);
                     if (tagNameEnd == -1) {
-                        tagNameEnd = html.indexOf('>', tagNameStart);
+                        tagNameEnd = html.indexOf(Symbol.C_GT, tagNameStart);
                     }
 
                     if (tagNameEnd > tagNameStart) {
                         currentTag = html.substring(tagNameStart, tagNameEnd).toLowerCase();
                     }
                 }
-            } else if (c == '>' && inTag) {
+            } else if (c == Symbol.C_GT && inTag) {
                 inTag = false;
                 result.append(html, lastIndex, i + 1); // Preserve the tag
                 lastIndex = i + 1;

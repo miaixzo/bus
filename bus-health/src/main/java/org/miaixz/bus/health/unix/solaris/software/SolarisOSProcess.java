@@ -694,7 +694,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
                 }
             }
             return bitMask;
-        } else if (cpuset.endsWith(".") && cpuset.contains("strongly bound to processor(s)")) {
+        } else if (cpuset.endsWith(Symbol.DOT) && cpuset.contains("strongly bound to processor(s)")) {
             String parse = cpuset.substring(0, cpuset.length() - 1);
             String[] split = Pattern.SPACES_PATTERN.split(parse);
             for (int i = split.length - 1; i >= 0; i--) {
@@ -764,7 +764,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
         // 80 character truncation but enough for path and name (usually)
         this.commandLineBackup = Native.toString(info.pr_psargs);
         this.path = Pattern.SPACES_PATTERN.split(commandLineBackup)[0];
-        this.name = this.path.substring(this.path.lastIndexOf('/') + 1);
+        this.name = this.path.substring(this.path.lastIndexOf(Symbol.C_SLASH) + 1);
         if (usage != null) {
             this.userTime = usage.pr_utime.tv_sec.longValue() * 1000L + usage.pr_utime.tv_nsec.longValue() / 1_000_000L;
             this.kernelTime = usage.pr_stime.tv_sec.longValue() * 1000L

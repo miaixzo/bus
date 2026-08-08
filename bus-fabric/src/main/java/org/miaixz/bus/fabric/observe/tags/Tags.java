@@ -207,7 +207,7 @@ public final class Tags {
      */
     public static String redact(final String value) {
         final String checked = normalize(value, "Redacted value");
-        return TAG_REDACTED.substring(0, TAG_REDACTED.length() - 1) + Symbol.C_COLON + fingerprint(checked) + ">";
+        return TAG_REDACTED.substring(0, TAG_REDACTED.length() - 1) + Symbol.C_COLON + fingerprint(checked) + Symbol.GT;
     }
 
     /**

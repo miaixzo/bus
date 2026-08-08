@@ -738,7 +738,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
                 break;
 
             case 'D':
-            case 'L':
+            case Symbol.C_L:
             case 'U':
                 this.state = State.WAITING;
                 break;
@@ -773,7 +773,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         this.userTime = Parsing.parseDHMSOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.TIME), 0L)
                 - this.kernelTime;
         this.path = psMap.get(FreeBsdOperatingSystem.PsKeywords.COMM);
-        this.name = this.path.substring(this.path.lastIndexOf('/') + 1);
+        this.name = this.path.substring(this.path.lastIndexOf(Symbol.C_SLASH) + 1);
         this.minorFaults = Parsing.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.MINFLT), 0L);
         this.majorFaults = Parsing.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.MAJFLT), 0L);
         this.voluntaryContextSwitches = Parsing

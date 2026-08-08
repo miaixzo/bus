@@ -279,19 +279,19 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         for (int i = 0; i < value.length(); ++i) {
             final char c = value.charAt(i);
             switch (c) {
-                case '\\':
-                case '^':
+                case Symbol.C_BACKSLASH:
+                case Symbol.C_CARET:
                 case Symbol.C_DOLLAR:
-                case '.':
-                case '|':
-                case '?':
+                case Symbol.C_DOT:
+                case Symbol.C_OR:
+                case Symbol.C_QUESTION_MARK:
                 case Symbol.C_STAR:
                 case Symbol.C_PLUS:
                 case Symbol.C_PARENTHESE_LEFT:
-                case ')':
-                case '[':
-                case '{':
-                    sb.append('\\');
+                case Symbol.C_PARENTHESE_RIGHT:
+                case Symbol.C_BRACKET_LEFT:
+                case Symbol.C_BRACE_LEFT:
+                    sb.append(Symbol.C_BACKSLASH);
                 default:
                     sb.append(c);
             }
@@ -485,7 +485,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
             case 's':
                 return SECOND_STRATEGY;
 
-            case 'u':
+            case Symbol.C_U:
                 return DAY_OF_WEEK_STRATEGY;
 
             case 'w':
@@ -495,7 +495,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
             case 'Y':
                 return width > 2 ? LITERAL_YEAR_STRATEGY : ABBREVIATED_YEAR_STRATEGY;
 
-            case 'X':
+            case Symbol.C_X:
                 return ISO8601TimeZoneStrategy.getStrategy(width);
 
             case 'Z':
@@ -952,7 +952,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         TimeZoneStrategy(final Locale locale) {
             this.locale = locale;
             final StringBuilder sb = new StringBuilder();
-            sb.append("((?iu)" + RFC_822_TIME_ZONE + "|" + UTC_TIME_ZONE_WITH_OFFSET + "|" + GMT_OPTION);
+            sb.append("((?iu)" + RFC_822_TIME_ZONE + Symbol.OR + UTC_TIME_ZONE_WITH_OFFSET + Symbol.OR + GMT_OPTION);
             final Set<String> sorted = new TreeSet<>(LONGER_FIRST_LOWERCASE);
             final String[][] zones = DateFormatSymbols.getInstance(locale).getZoneStrings();
             for (final String[] zoneNames : zones) {
@@ -1183,7 +1183,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
                 final char c = pattern.charAt(currentIdx);
                 if (!activeQuote && isFormatLetter(c)) {
                     break;
-                } else if (c == '\'' && (++currentIdx == pattern.length() || pattern.charAt(currentIdx) != '\'')) {
+                } else if (c == Symbol.C_SINGLE_QUOTE
+                        && (++currentIdx == pattern.length() || pattern.charAt(currentIdx) != Symbol.C_SINGLE_QUOTE)) {
                     activeQuote = !activeQuote;
                     continue;
                 }

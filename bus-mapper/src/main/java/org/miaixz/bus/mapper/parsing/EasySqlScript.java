@@ -42,9 +42,9 @@ public interface EasySqlScript extends SqlScript {
      * Generates the corresponding SQL, with support for dynamic tags.
      *
      * @param entity The entity class information.
-     * @param util   A reference to the current object, useful for using its methods within a lambda.
+     * @param script A reference to the current script for invoking its methods within a lambda.
      * @return The XML SQL script.
      */
-    String getSql(TableMeta entity, SqlScript util);
+    String getSql(TableMeta entity, SqlScript script);
 
 }

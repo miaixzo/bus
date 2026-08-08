@@ -262,7 +262,8 @@ public final class Callout {
          * @return local result snapshot
          */
         private Result postJson(String url, String body) {
-            return execute(() -> Fabric.http(context).post(url).json(body == null ? "" : body).build().call());
+            return execute(
+                    () -> Fabric.http(context).post(url).json(body == null ? Normal.EMPTY : body).build().call());
         }
 
         /**

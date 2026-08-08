@@ -39,8 +39,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 public @interface Async {
 
     /**
-     * An internal utility class used by the framework to generate a unique name for the asynchronous method that wraps
-     * the original annotated method. When a {@code public void} method is annotated with {@code @Async}, the framework
+     * An internal class used by the framework to generate a unique name for the asynchronous method that wraps the
+     * original annotated method. When a {@code public void} method is annotated with {@code @Async}, the framework
      * enhances the class by adding a new method that invokes the original. This class provides the naming convention
      * for that new method.
      *

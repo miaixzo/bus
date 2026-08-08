@@ -26,6 +26,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
+import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
 import org.miaixz.bus.fabric.observe.EventObserver;
 
 /**
@@ -37,6 +38,7 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @param headers     connect-frame headers supplied by the caller
  * @param timeout     connect and session timeout policy
  * @param policy      complete STOMP policy
+ * @param proxy       outbound proxy policy propagated to the WebSocket carrier
  * @param destination default destination used by convenience send operations
  * @param login       login header for the opening CONNECT frame, or {@code null}
  * @param passcode    passcode header for the opening CONNECT frame, or {@code null}
@@ -49,8 +51,8 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @since Java 21+
  */
 record StompSpec(Context context, URI uri, Address address, Headers headers, Timeout timeout, StompPolicy policy,
-        String destination, String login, String passcode, GuardRule guard, Filter filter, EventObserver observer,
-        Consumer<StompMessage> handler, Listener<? super StompSession> listener) {
+        ProxyPlan proxy, String destination, String login, String passcode, GuardRule guard, Filter filter,
+        EventObserver observer, Consumer<StompMessage> handler, Listener<? super StompSession> listener) {
 
     /**
      * Creates a validated specification.
@@ -61,6 +63,7 @@ record StompSpec(Context context, URI uri, Address address, Headers headers, Tim
      * @param headers     CONNECT frame headers
      * @param timeout     timeout policy copied into the specification
      * @param policy      complete STOMP policy
+     * @param proxy       non-null outbound proxy policy
      * @param destination default send destination
      * @param login       optional CONNECT login
      * @param passcode    optional CONNECT passcode
@@ -79,6 +82,7 @@ record StompSpec(Context context, URI uri, Address address, Headers headers, Tim
         timeout = new Timeout(currentTimeout.connect(), currentTimeout.read(), currentTimeout.write(),
                 currentTimeout.call(), currentTimeout.ping(), currentTimeout.close());
         policy = require(policy, "STOMP policy");
+        proxy = require(proxy, "Proxy plan");
         observer = EventObserver.safe(require(observer, "Observer"));
         handler = require(handler, "STOMP handler");
     }

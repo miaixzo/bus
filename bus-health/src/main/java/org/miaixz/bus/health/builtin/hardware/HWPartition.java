@@ -20,7 +20,6 @@
 package org.miaixz.bus.health.builtin.hardware;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Formats;
@@ -95,7 +94,7 @@ public class HWPartition {
      */
     public HWPartition(String identification, String name, String type, String uuid, long size, int major, int minor,
             String mountPoint) {
-        this(identification, name, type, uuid, "", size, major, minor, mountPoint);
+        this(identification, name, type, uuid, Normal.EMPTY, size, major, minor, mountPoint);
     }
 
     /**
@@ -231,16 +230,13 @@ public class HWPartition {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(getIdentification()).append(Symbol.COLON).append(Symbol.SPACE);
-        sb.append(getName()).append(Symbol.SPACE);
-        sb.append(Symbol.PARENTHESE_LEFT).append(getType()).append(Symbol.PARENTHESE_RIGHT).append(Symbol.SPACE);
-        sb.append(
-                StringKit.isBlank(getLabel()) ? Normal.EMPTY
-                        : Symbol.BRACKET_LEFT + getLabel() + Symbol.BRACKET_RIGHT + Symbol.SPACE);
-        sb.append("Maj:Min=").append(getMajor()).append(Symbol.COLON).append(getMinor()).append(Symbol.COMMA)
-                .append(Symbol.SPACE);
+        sb.append(getIdentification()).append(":").append(" ");
+        sb.append(getName()).append(" ");
+        sb.append("(").append(getType()).append(")").append(" ");
+        sb.append(StringKit.isBlank(getLabel()) ? "" : "[" + getLabel() + "]" + " ");
+        sb.append("Maj:Min=").append(getMajor()).append(":").append(getMinor()).append(",").append(" ");
         sb.append("size: ").append(Formats.formatBytesDecimal(getSize()));
-        sb.append(getMountPoint().isEmpty() ? Normal.EMPTY : Symbol.SPACE + Symbol.AT + Symbol.SPACE + getMountPoint());
+        sb.append(getMountPoint().isEmpty() ? "" : " " + "@" + " " + getMountPoint());
         return sb.toString();
     }
 

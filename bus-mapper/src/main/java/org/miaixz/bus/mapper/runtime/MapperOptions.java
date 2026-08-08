@@ -35,9 +35,9 @@ import org.miaixz.bus.mapper.Charter.Schema;
  * Runtime mapper configuration options.
  * <p>
  * This class provides the pure Java/MyBatis configuration model shared by the starter adapter and mapper runtime
- * assembly code. It exposes lightweight resolution helpers while delegating parsing details to package-private runtime
- * infrastructure. It deliberately avoids Spring resource resolution, bean lookup, classpath scanning, and application
- * context concerns so it can live inside {@code bus-mapper}.
+ * assembly code. It exposes lightweight resolution operations while delegating parsing details to package-private
+ * runtime infrastructure. It deliberately avoids Spring resource resolution, bean lookup, classpath scanning, and
+ * application context concerns so it can live inside {@code bus-mapper}.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -101,7 +101,7 @@ public class MapperOptions {
      * Externalized properties for MyBatis configuration and mapper handlers.
      * <p>
      * The value supports both existing flattened keys and indexed namespace keys such as {@code namespaces[0].name},
-     * {@code namespaces[0].tenant.column}, {@code namespaces[0].table.prefix}, and
+     * {@code namespaces[0].tenant.column}, {@code namespaces[0].prefix.prefix}, and
      * {@code namespaces[0].schema.enabled}.
      */
     private Properties configurationProperties;

@@ -103,7 +103,7 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
                             break;
 
                         case "Locator":
-                            locator = "/" + split[1].trim();
+                            locator = Symbol.SLASH + split[1].trim();
                             break;
 
                         case "Size":

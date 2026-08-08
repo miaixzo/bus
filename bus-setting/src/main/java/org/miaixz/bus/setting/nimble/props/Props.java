@@ -207,7 +207,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
         return CACHE_PROPS.computeIfAbsent(name, (filePath) -> {
             final String extName = FileName.extName(filePath);
             if (StringKit.isEmpty(extName)) {
-                filePath = filePath + "." + Setting.EXT_NAME;
+                filePath = filePath + Symbol.DOT + Setting.EXT_NAME;
             }
             return new Props(filePath);
         });

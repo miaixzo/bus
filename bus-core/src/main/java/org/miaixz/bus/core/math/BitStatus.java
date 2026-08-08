@@ -20,8 +20,7 @@
 package org.miaixz.bus.core.math;
 
 /**
- * A utility class for representing states using bitwise operations. Parameters must be `even` and `greater than or
- * equal to 0`.
+ * Represents states with bitwise operations. Parameters must be `even` and `greater than or equal to 0`.
  *
  * @author Kimi Liu
  * @since Java 21+

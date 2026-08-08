@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
 
 /**
- * Utility to read info from {@code dmidecode}
+ * Reads info from {@code dmidecode}
  *
  * @author Kimi Liu
  * @since Java 21+

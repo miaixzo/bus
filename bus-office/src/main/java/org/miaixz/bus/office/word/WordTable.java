@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.MapKit;
 
 /**
- * Utility class for Word table related operations.
+ * Creates and modifies Word tables.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -20,6 +20,7 @@
 package org.miaixz.bus.image.builtin;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Implements the Kölner Phonetik (Cologne Phonetics) algorithm for fuzzy string matching. This algorithm converts a
@@ -54,7 +55,7 @@ public class KPhonetik implements FuzzyString {
         char[] in = s.toUpperCase().toCharArray();
         int countX = 0;
         for (char c : in)
-            if (c == 'X')
+            if (c == Symbol.C_X)
                 countX++;
         char[] out = countX > 0 ? new char[in.length + countX] : in;
         int i = 0;
@@ -81,35 +82,35 @@ public class KPhonetik implements FuzzyString {
                 case 'Ö':
                 case 'Ü':
                     if (j > 0) {
-                        prevout = '0';
+                        prevout = Symbol.C_ZERO;
                         continue;
                     }
-                    curout = '0';
+                    curout = Symbol.C_ZERO;
                     break;
 
                 case 'B':
-                    curout = '1';
+                    curout = Symbol.C_ONE;
                     break;
 
                 case 'P':
-                    curout = next == 'H' ? '3' : '1';
+                    curout = next == 'H' ? Symbol.C_THREE : Symbol.C_ONE;
                     break;
 
                 case 'D':
                 case 'T':
-                    curout = (next == 'C' || next == 'S' || next == 'Z') ? '8' : '2';
+                    curout = (next == 'C' || next == 'S' || next == 'Z') ? Symbol.C_EIGHT : Symbol.C_TWO;
                     break;
 
                 case 'F':
                 case 'V':
                 case 'W':
-                    curout = '3';
+                    curout = Symbol.C_THREE;
                     break;
 
                 case 'G':
                 case 'K':
                 case 'Q':
-                    curout = '4';
+                    curout = Symbol.C_FOUR;
                     break;
 
                 case 'C':
@@ -120,40 +121,40 @@ public class KPhonetik implements FuzzyString {
                         case 'O':
                         case 'Q':
                         case 'U':
-                        case 'X':
-                            curout = i == 0 || (prev != 'S' && prev != 'Z') ? '4' : '8';
+                        case Symbol.C_X:
+                            curout = i == 0 || (prev != 'S' && prev != 'Z') ? Symbol.C_FOUR : Symbol.C_EIGHT;
                             break;
 
-                        case 'L':
+                        case Symbol.C_L:
                         case 'R':
-                            curout = i == 0 ? '4' : '8';
+                            curout = i == 0 ? Symbol.C_FOUR : Symbol.C_EIGHT;
                             break;
                     }
                     break;
 
-                case 'X':
-                    if (prev != 'C' && prev != 'K' && prev != 'Q' && prevout != '4')
-                        out[j++] = prevout = '4';
-                    curout = '8';
+                case Symbol.C_X:
+                    if (prev != 'C' && prev != 'K' && prev != 'Q' && prevout != Symbol.C_FOUR)
+                        out[j++] = prevout = Symbol.C_FOUR;
+                    curout = Symbol.C_EIGHT;
                     break;
 
-                case 'L':
-                    curout = '5';
+                case Symbol.C_L:
+                    curout = Symbol.C_FIVE;
                     break;
 
                 case 'M':
                 case 'N':
-                    curout = '6';
+                    curout = Symbol.C_SIX;
                     break;
 
                 case 'R':
-                    curout = '7';
+                    curout = Symbol.C_SEVEN;
                     break;
 
                 case 'S':
                 case 'Z':
                 case 'ß':
-                    curout = '8';
+                    curout = Symbol.C_EIGHT;
                     break;
 
                 default:

@@ -269,8 +269,8 @@ public class SpecificCharacterSet {
                         false,
                         "Image",
                         "Invalid Specific Character Set: source={}, fallback={}",
-                        Builder.concat(codes, '\\'),
-                        Builder.maskNull(codes[0], ""));
+                        Builder.concat(codes, Symbol.C_BACKSLASH),
+                        Builder.maskNull(codes[0], Normal.EMPTY));
                 return new String[] { codes[0] };
             }
         }
@@ -279,8 +279,8 @@ public class SpecificCharacterSet {
                     false,
                     "Image",
                     "Invalid Specific Character Set: source={}, fallback={}",
-                    Builder.concat(codes, '\\'),
-                    Builder.concat(results, '\\'));
+                    Builder.concat(codes, Symbol.C_BACKSLASH),
+                    Builder.concat(results, Symbol.C_BACKSLASH));
         }
         return ensureFirstContainsASCII(results);
     }
@@ -303,20 +303,20 @@ public class SpecificCharacterSet {
                         false,
                         "Image",
                         "Invalid Specific Character Set: source={}, fallback={}",
-                        Builder.concat(codes, '\\'),
-                        Builder.concat(clone, '\\'));
+                        Builder.concat(codes, Symbol.C_BACKSLASH),
+                        Builder.concat(clone, Symbol.C_BACKSLASH));
                 return clone;
             }
         }
         String[] withASCII = new String[1 + codes.length];
-        withASCII[0] = "";
+        withASCII[0] = Normal.EMPTY;
         System.arraycopy(codes, 0, withASCII, 1, codes.length);
         Logger.info(
                 false,
                 "Image",
                 "Invalid Specific Character Set: source={}, fallback={}",
-                Builder.concat(codes, '\\'),
-                Builder.concat(withASCII, '\\'));
+                Builder.concat(codes, Symbol.C_BACKSLASH),
+                Builder.concat(withASCII, Symbol.C_BACKSLASH));
         return withASCII;
     }
 

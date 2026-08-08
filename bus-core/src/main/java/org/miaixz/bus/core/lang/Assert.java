@@ -25,8 +25,8 @@ import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * Assertion utility class that assists in validating arguments. Throws an {@link IllegalArgumentException} if an
- * argument fails an assertion. This class is commonly used for parameter checking.
+ * Assertion class that assists in validating arguments. Throws an {@link IllegalArgumentException} if an argument fails
+ * an assertion. This class is commonly used for parameter checking.
  *
  * @author Kimi Liu
  * @since Java 21+

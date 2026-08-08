@@ -587,6 +587,11 @@ public final class SocketSession implements Session {
         this.dispatcher = require(dispatcher, "Socket dispatcher");
         this.clock = require(clock, "Socket clock");
         this.timeout = require(timeout, "Socket timeout");
+        if (connection != null) {
+            // Stream sessions own these policies; datagram and KCP sessions retain their future-level timers.
+            connection.source().timeout().timeout(this.timeout.read());
+            connection.sink().timeout().timeout(this.timeout.write());
+        }
         this.cancellation = require(cancellation, "Socket cancellation");
         this.ownsDispatcher = ownsDispatcher;
         this.exclusiveReader = exclusiveReader;

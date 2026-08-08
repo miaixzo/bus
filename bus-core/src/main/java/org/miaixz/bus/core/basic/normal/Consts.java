@@ -1480,7 +1480,7 @@ public class Consts extends Normal {
     /**
      * Key name for error message in response results.
      * <p>
-     * In API responses or service call results, this key provides human-readable error descriptions, helping developers
+     * In API responses or service call results, this key provides human-readable error descriptions, so developers can
      * and end-users understand the issue.
      */
     public static final String ERRMSG = "errmsg";

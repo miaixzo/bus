@@ -120,6 +120,7 @@ public class QualifierStrategy extends AbstractStrategy {
             })).flatMap(match -> {
                 Assets assets = match.assets();
                 context.setAssets(assets);
+                context.setRemainingPath(match.remainingPath());
                 Logger.info(
                         true,
                         "Vortex",
@@ -352,9 +353,7 @@ public class QualifierStrategy extends AbstractStrategy {
             return null;
         }
         boolean token = EnumValue.Credential.TOKEN.equals(credential.type());
-        if (token) {
-            context.setBearer(credential.value());
-        }
+        context.setBearer(credential.value());
         String name = token && "Bearer".equalsIgnoreCase(credential.scheme()) ? "Bearer" : token ? "Token" : "API key";
         return this.selectedCredential(context, policy, token ? Consts.ONE : Consts.TWO, credential, name);
     }

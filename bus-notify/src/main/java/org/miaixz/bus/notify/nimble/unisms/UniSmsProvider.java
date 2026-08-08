@@ -65,7 +65,7 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
      */
     @Override
     public Message<Void> send(UniNotice entity) {
-        if ("".equals(entity.getTemplate()) && "".equals(entity.getTemplateName())) {
+        if (Normal.EMPTY.equals(entity.getTemplate()) && Normal.EMPTY.equals(entity.getTemplateName())) {
             Logger.warn(
                     false,
                     "Notify",
@@ -121,7 +121,7 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
                 bodys == null ? 0 : bodys.size(),
                 entity != null && entity.isSimple());
         Map<String, String> headers = new HashMap<>();
-        headers.put(Http.Header.USER_AGENT, "uni-java-sdk" + "/" + "0.0.4");
+        headers.put(Http.Header.USER_AGENT, "uni-java-sdk" + Symbol.SLASH + "0.0.4");
         headers.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         headers.put(Http.Header.ACCEPT, MediaType.APPLICATION_JSON);
         String url;

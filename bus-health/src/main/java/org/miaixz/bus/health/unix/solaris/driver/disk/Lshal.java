@@ -23,12 +23,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 
 /**
- * Utility to query lshal
+ * Queries lshal
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -61,7 +62,7 @@ public final class Lshal {
         for (String line : lshal) {
             if (line.startsWith("udi ")) {
                 String udi = Parsing.getSingleQuoteStringValue(line);
-                diskName = udi.substring(udi.lastIndexOf('/') + 1);
+                diskName = udi.substring(udi.lastIndexOf(Symbol.C_SLASH) + 1);
             } else {
                 line = line.trim();
                 if (line.startsWith("block.major") && diskName != null) {

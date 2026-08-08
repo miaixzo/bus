@@ -107,7 +107,7 @@ final class MacDisplay extends AbstractDisplay {
     }
 
     /**
-     * Helper method to get displays from a specific IOKit service.
+     * Returns displays from a specific IOKit service.
      *
      * @param serviceName    The IOKit service name to search for (e.g., "IODisplayConnect").
      * @param edidKeyName    The key name for the EDID property within the service (e.g., "IODisplayEDID").

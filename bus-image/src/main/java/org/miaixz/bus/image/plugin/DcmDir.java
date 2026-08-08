@@ -511,7 +511,7 @@ public class DcmDir {
                     if (checkDuplicate) {
                         instRec = in.findLowerInstanceRecord(seriesRec, false, iuid);
                         if (instRec != null) {
-                            System.out.print('-');
+                            System.out.print(Symbol.C_MINUS);
                             return 0;
                         }
                     }

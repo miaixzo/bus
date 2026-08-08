@@ -30,6 +30,7 @@ import java.util.stream.StreamSupport;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.Constants;
 import org.miaixz.bus.gitlab.support.JacksonJson;
@@ -130,7 +131,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
 
         // Set the page param to 1
         pageParam = new ArrayList<>();
-        pageParam.add("1");
+        pageParam.add(Symbol.ONE);
         queryParams.put(PAGE_PARAM, pageParam);
         Logger.debug(
                 true,

@@ -107,7 +107,7 @@ public class TokenGuardConfig {
     /**
      * Bearer prefix expected in header transport.
      */
-    private String bearerPrefix = "Bearer ";
+    private String bearerPrefix = Http.Auth.BEARER_PREFIX;
 
     /**
      * Optional per-scope lifetime override expressed in seconds.

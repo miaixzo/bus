@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.Type;
@@ -108,7 +109,7 @@ public final class ItemNormalizer {
      */
     public static String checksum(Item entry) {
         if (entry == null) {
-            return "0";
+            return Symbol.ZERO;
         }
         Map<String, Object> extension = entry.getExtension();
         return Integer.toHexString(

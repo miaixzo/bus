@@ -17238,6 +17238,12 @@
       "type": "org.openxmlformats.schemas.drawingml.x2006.main.CTNonVisualDrawingProps[]"
     },
     {
+      "type": "org.openxmlformats.schemas.drawingml.x2006.main.CTTextCharacterProperties[]"
+    },
+    {
+      "type": "org.openxmlformats.schemas.drawingml.x2006.main.CTTextParagraphProperties[]"
+    },
+    {
       "type": "org.openxmlformats.schemas.drawingml.x2006.main.impl.BlipDocumentImpl",
       "methods": [
         {

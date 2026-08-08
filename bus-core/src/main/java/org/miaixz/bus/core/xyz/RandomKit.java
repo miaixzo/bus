@@ -30,12 +30,13 @@ import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.center.date.Various;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.selector.WeightObject;
 import org.miaixz.bus.core.lang.selector.WeightRandomSelector;
 
 /**
- * Random utility class.
+ * Generates random values.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -183,7 +184,7 @@ public class RandomKit {
      * @return A random Chinese character.
      */
     public static char randomChinese() {
-        return (char) randomInt('\u4E00', '\u9FFF');
+        return (char) randomInt(Symbol.C_L_ONE, '\u9FFF');
     }
 
     /**

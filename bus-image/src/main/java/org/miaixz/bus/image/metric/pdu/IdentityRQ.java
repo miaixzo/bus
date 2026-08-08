@@ -21,6 +21,7 @@ package org.miaixz.bus.image.metric.pdu;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
 
 /**
@@ -59,7 +60,7 @@ public class IdentityRQ {
     /**
      * The types value.
      */
-    private static final String[] TYPES = { "0", "1 - Username", "2 - Username and passcode",
+    private static final String[] TYPES = { Symbol.ZERO, "1 - Username", "2 - Username and passcode",
             "3 - Kerberos Service ticket", "4 - SAML Assertion", "5 - JSON Web Token (JWT)" };
 
     /**
@@ -283,14 +284,14 @@ public class IdentityRQ {
         if (type == USERNAME || type == USERNAME_PASSCODE)
             sb.append("    username: ").append(getUsername());
         else
-            sb.append("    primaryField: byte[").append(primaryField.length).append(']');
+            sb.append("    primaryField: byte[").append(primaryField.length).append(Symbol.C_BRACKET_RIGHT);
         if (type == USERNAME_PASSCODE) {
             sb.append(Builder.LINE_SEPARATOR).append("    passcode: ");
             for (int i = secondaryField.length; --i >= 0;)
-                sb.append('*');
+                sb.append(Symbol.C_STAR);
         } else if (secondaryField.length > 0) {
             sb.append(Builder.LINE_SEPARATOR).append("    secondaryField: byte[").append(secondaryField.length)
-                    .append(']');
+                    .append(Symbol.C_BRACKET_RIGHT);
         }
         return sb.append(Builder.LINE_SEPARATOR).append("  ]");
     }

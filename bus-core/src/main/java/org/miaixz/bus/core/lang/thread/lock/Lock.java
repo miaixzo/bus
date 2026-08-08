@@ -25,8 +25,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.StampedLock;
 
 /**
- * Utility class for creating and managing various types of locks and synchronization primitives. This class provides
- * factory methods for standard Java locks as well as custom segment locks.
+ * Creates and manages various types of locks and synchronization primitives. This class provides factory methods for
+ * standard Java locks as well as custom segment locks.
  *
  * @author Kimi Liu
  * @since Java 21+

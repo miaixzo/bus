@@ -172,7 +172,7 @@ public class MultiframeExtractor {
      * @param instanceNumberFormat the instance number format.
      */
     public final void setInstanceNumberFormat(String instanceNumberFormat) {
-        String.format(instanceNumberFormat, "1", 1);
+        String.format(instanceNumberFormat, Symbol.ONE, 1);
         this.instanceNumberFormat = instanceNumberFormat;
     }
 
@@ -296,7 +296,7 @@ public class MultiframeExtractor {
                 newRef.setString(
                         Tag.ReferencedSOPInstanceUID,
                         VR.UI,
-                        iuid + '.' + (frames != null ? frames[i] : (i + 1)));
+                        iuid + Symbol.C_DOT + (frames != null ? frames[i] : (i + 1)));
                 newRefs.add(newRef);
             }
         }

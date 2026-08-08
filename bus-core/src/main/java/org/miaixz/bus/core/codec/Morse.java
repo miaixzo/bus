@@ -54,14 +54,14 @@ public class Morse {
         registerMorse('B', "1000");
         registerMorse('C', "1010");
         registerMorse('D', "100");
-        registerMorse('E', "0");
+        registerMorse('E', Symbol.ZERO);
         registerMorse('F', "0010");
         registerMorse('G', "110");
         registerMorse('H', "0000");
         registerMorse('I', "00");
         registerMorse('J', "0111");
         registerMorse('K', "101");
-        registerMorse('L', "0100");
+        registerMorse(Symbol.C_L, "0100");
         registerMorse('M', "11");
         registerMorse('N', "10");
         registerMorse('O', "111");
@@ -69,33 +69,33 @@ public class Morse {
         registerMorse('Q', "1101");
         registerMorse('R', "010");
         registerMorse('S', "000");
-        registerMorse('T', "1");
+        registerMorse('T', Symbol.ONE);
         registerMorse('U', "001");
         registerMorse('V', "0001");
         registerMorse('W', "011");
-        registerMorse('X', "1001");
+        registerMorse(Symbol.C_X, "1001");
         registerMorse('Y', "1011");
         registerMorse('Z', "1100");
         // Numbers
-        registerMorse('0', "11111");
-        registerMorse('1', "01111");
-        registerMorse('2', "00111");
-        registerMorse('3', "00011");
-        registerMorse('4', "00001");
-        registerMorse('5', "00000");
-        registerMorse('6', "10000");
-        registerMorse('7', "11000");
-        registerMorse('8', "11100");
-        registerMorse('9', "11110");
+        registerMorse(Symbol.C_ZERO, "11111");
+        registerMorse(Symbol.C_ONE, "01111");
+        registerMorse(Symbol.C_TWO, "00111");
+        registerMorse(Symbol.C_THREE, "00011");
+        registerMorse(Symbol.C_FOUR, "00001");
+        registerMorse(Symbol.C_FIVE, "00000");
+        registerMorse(Symbol.C_SIX, "10000");
+        registerMorse(Symbol.C_SEVEN, "11000");
+        registerMorse(Symbol.C_EIGHT, "11100");
+        registerMorse(Symbol.C_NINE, "11110");
         // Punctuation
-        registerMorse('.', "010101");
+        registerMorse(Symbol.C_DOT, "010101");
         registerMorse(Symbol.C_COMMA, "110011");
-        registerMorse('?', "001100");
-        registerMorse('\'', "011110");
+        registerMorse(Symbol.C_QUESTION_MARK, "001100");
+        registerMorse(Symbol.C_SINGLE_QUOTE, "011110");
         registerMorse(Symbol.C_NOT, "101011");
-        registerMorse('/', "10010");
+        registerMorse(Symbol.C_SLASH, "10010");
         registerMorse(Symbol.C_PARENTHESE_LEFT, "10110");
-        registerMorse(')', "101101");
+        registerMorse(Symbol.C_PARENTHESE_RIGHT, "101101");
         registerMorse(Symbol.C_AND, "01000");
         registerMorse(Symbol.C_COLON, "111000");
         registerMorse(Symbol.C_SEMICOLON, "101010");
@@ -103,7 +103,7 @@ public class Morse {
         registerMorse(Symbol.C_PLUS, "01010");
         registerMorse(Symbol.C_MINUS, "100001");
         registerMorse(Symbol.C_UNDERLINE, "001101");
-        registerMorse('"', "010010");
+        registerMorse(Symbol.C_DOUBLE_QUOTES, "010010");
         registerMorse(Symbol.C_DOLLAR, "0001001");
         registerMorse(Symbol.C_AT, "011010");
     }
@@ -176,7 +176,7 @@ public class Morse {
             if (word == null) {
                 word = Integer.toBinaryString(codePoint);
             }
-            morseBuilder.append(word.replace('0', dit).replace('1', dah)).append(split);
+            morseBuilder.append(word.replace(Symbol.C_ZERO, dit).replace(Symbol.C_ONE, dah)).append(split);
         }
         return morseBuilder.toString();
     }
@@ -207,7 +207,7 @@ public class Morse {
             if (StringKit.isEmpty(word)) {
                 continue;
             }
-            word = word.replace(dit, '0').replace(dah, '1');
+            word = word.replace(dit, Symbol.C_ZERO).replace(dah, Symbol.C_ONE);
             codePoint = DICTIONARIES.get(word);
             if (codePoint == null) {
                 codePoint = Integer.valueOf(word, 2);

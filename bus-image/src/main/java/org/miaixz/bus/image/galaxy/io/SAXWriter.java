@@ -25,6 +25,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.*;
@@ -75,7 +76,7 @@ public class SAXWriter implements ImageInputHandler {
     /**
      * The namespace value.
      */
-    private String namespace = "";
+    private String namespace = Normal.EMPTY;
 
     /**
      * Creates a new instance.
@@ -119,7 +120,7 @@ public class SAXWriter implements ImageInputHandler {
      * @param includeNameSpaceDeclaration the include name space declaration.
      */
     public final void setIncludeNamespaceDeclaration(boolean includeNameSpaceDeclaration) {
-        this.namespace = includeNameSpaceDeclaration ? NAMESPACE : "";
+        this.namespace = includeNameSpaceDeclaration ? NAMESPACE : Normal.EMPTY;
     }
 
     /**
@@ -195,7 +196,7 @@ public class SAXWriter implements ImageInputHandler {
      */
     private void startDocument() throws SAXException {
         ch.startDocument();
-        atts.addAttribute("", "space", "xml:space", "NMTOKEN", "preserve");
+        atts.addAttribute(Normal.EMPTY, "space", "xml:space", "NMTOKEN", "preserve");
         startElement("NativeDicomModel");
     }
 

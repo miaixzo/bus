@@ -432,7 +432,7 @@ public class GoogleDriveProvider extends AbstractProvider {
                         extend.put("mimeType", file.get("mimeType"));
                         extend.put("modifiedTime", file.get("modifiedTime"));
 
-                        String size = file.get("size") != null ? file.get("size").toString() : "0";
+                        String size = file.get("size") != null ? file.get("size").toString() : Symbol.ZERO;
 
                         blobs.add(Blob.builder().name((String) file.get("name")).size(size).extend(extend).build());
                     }
@@ -846,8 +846,10 @@ public class GoogleDriveProvider extends AbstractProvider {
      * @throws IOException If the search fails.
      */
     private String findFileByName(String fileName, String parentId) throws IOException {
-        String query = String
-                .format("name='%s' and '%s' in parents and trashed=false", fileName.replace("'", "\\'"), parentId);
+        String query = String.format(
+                "name='%s' and '%s' in parents and trashed=false",
+                fileName.replace(Symbol.SINGLE_QUOTE, "\\'"),
+                parentId);
 
         String url = context.getEndpoint() + "/files?q=" + URLEncoder.encode(query, Charset.UTF_8)
                 + "&fields=files(id,name)";
@@ -938,7 +940,7 @@ public class GoogleDriveProvider extends AbstractProvider {
         String hash = metadata.get("md5Checksum") == null ? (String) metadata.get("sha256Checksum")
                 : (String) metadata.get("md5Checksum");
         return Blob.builder().inputStream(inputStream).bucket(bucket).key(objectKey).name((String) metadata.get("name"))
-                .path(objectKey).size(metadata.get("size") == null ? "0" : String.valueOf(metadata.get("size")))
+                .path(objectKey).size(metadata.get("size") == null ? Symbol.ZERO : String.valueOf(metadata.get("size")))
                 .type((String) metadata.get("mimeType")).hash(hash).extend(extend).build();
     }
 

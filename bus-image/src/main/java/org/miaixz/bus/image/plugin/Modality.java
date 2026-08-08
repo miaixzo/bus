@@ -34,7 +34,7 @@ import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * The {@code Modality} class provides a set of static utility methods to simulate the behavior of a DICOM modality. It
+ * The {@code Modality} class provides a set of static methods to simulate the behavior of a DICOM modality. It
  * orchestrates the sending of DICOM objects (C-STORE), Modality Performed Procedure Step (MPPS) messages, and Storage
  * Commitment requests. This class is designed for testing and demonstration purposes, with methods that pause for user
  * interaction.

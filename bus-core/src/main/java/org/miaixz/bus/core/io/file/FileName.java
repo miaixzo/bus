@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * A utility class for file name operations, providing methods to extract, modify, and validate file names and their
+ * Extracts, modifies, and validates file names, providing methods to extract, modify, and validate file names and their
  * components.
  *
  * @author Kimi Liu
@@ -313,7 +313,8 @@ public class FileName {
 
         pathToUse = pathToUse.replaceAll("[/\\\\]+", Symbol.SLASH);
         pathToUse = StringKit.trimPrefix(pathToUse);
-        pathToUse = StringKit.trim(pathToUse, StringTrimer.TrimMode.SUFFIX, (c) -> c == '\n' || c == '\r');
+        pathToUse = StringKit
+                .trim(pathToUse, StringTrimer.TrimMode.SUFFIX, (c) -> c == Symbol.C_LF || c == Symbol.C_CR);
 
         String prefix = Normal.EMPTY;
         final int prefixIndex = pathToUse.indexOf(Symbol.COLON);
@@ -355,8 +356,8 @@ public class FileName {
     }
 
     /**
-     * Resolves path elements by handling "." (current directory) and ".." (parent directory) segments. This is a helper
-     * method for path normalization.
+     * Resolves path elements by handling "." (current directory) and ".." (parent directory) segments. This method is
+     * used method for path normalization.
      *
      * @param pathList The list of path segments (strings).
      * @return The resolved list of path segments, with "." and ".." handled.

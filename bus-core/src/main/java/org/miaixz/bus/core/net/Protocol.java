@@ -381,7 +381,7 @@ public enum Protocol {
         }
 
         // If the port is not needed, check if a port number exists
-        int portIndex = withoutProtocol.indexOf(':');
+        int portIndex = withoutProtocol.indexOf(Symbol.C_COLON);
         if (portIndex != -1) {
             return withoutProtocol.substring(0, portIndex);
         }

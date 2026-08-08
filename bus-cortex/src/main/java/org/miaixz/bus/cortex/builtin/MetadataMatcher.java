@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import org.miaixz.bus.cortex.Assets;
 
 /**
- * Metadata-based entry matching and filtering utility.
+ * Matches and filters entries by metadata.
  *
  * @author Kimi Liu
  * @since Java 21+

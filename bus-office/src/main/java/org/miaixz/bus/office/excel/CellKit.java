@@ -34,7 +34,7 @@ import org.miaixz.bus.office.excel.cell.values.CompositeCellValue;
 import org.miaixz.bus.office.excel.style.StyleSet;
 
 /**
- * Utility class for cell operations in Excel tables.
+ * Reads and modifies cells in Excel tables.
  *
  * @author Kimi Liu
  * @since Java 21+

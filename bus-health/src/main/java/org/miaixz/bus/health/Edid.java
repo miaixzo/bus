@@ -144,18 +144,20 @@ public final class Edid {
      */
     public static String getManufacturerID(byte[] edid) {
         // Bytes 8-9 are manufacturer ID, 3 5-bit characters
-        String temp = String.format(
-                Locale.ROOT,
-                "%8s%8s",
-                Integer.toBinaryString(edid[MANUFACTURER_ID_OFFSET] & 0xFF),
-                Integer.toBinaryString(edid[MANUFACTURER_ID_OFFSET + 1] & 0xFF)).replace(Symbol.C_SPACE, '0');
+        String temp = String
+                .format(
+                        Locale.ROOT,
+                        "%8s%8s",
+                        Integer.toBinaryString(edid[MANUFACTURER_ID_OFFSET] & 0xFF),
+                        Integer.toBinaryString(edid[MANUFACTURER_ID_OFFSET + 1] & 0xFF))
+                .replace(Symbol.C_SPACE, Symbol.C_ZERO);
         Logger.debug(false, "Health", "Manufacurer ID: {}", temp);
         return String.format(
                 Locale.ROOT,
                 "%s%s%s",
                 (char) (64 + Integer.parseInt(temp.substring(1, 6), 2)),
                 (char) (64 + Integer.parseInt(temp.substring(6, 11), 2)),
-                (char) (64 + Integer.parseInt(temp.substring(11, 16), 2))).replace("@", "");
+                (char) (64 + Integer.parseInt(temp.substring(11, 16), 2))).replace(Symbol.AT, Normal.EMPTY);
     }
 
     /**
@@ -238,7 +240,7 @@ public final class Edid {
      */
     public static String getVersion(byte[] edid) {
         // Bytes 18-19 are EDID version
-        return edid[VERSION_OFFSET] + "." + edid[VERSION_OFFSET + 1];
+        return edid[VERSION_OFFSET] + Symbol.DOT + edid[VERSION_OFFSET + 1];
     }
 
     /**
@@ -594,7 +596,7 @@ public final class Edid {
     public static void setYear(byte[] edid, int year) {
         if (year < YEAR_BASE || year > YEAR_BASE + 0xFF) {
             throw new IllegalArgumentException(
-                    "Year must be in the range " + YEAR_BASE + "-" + (YEAR_BASE + 0xFF) + ": " + year);
+                    "Year must be in the range " + YEAR_BASE + Symbol.MINUS + (YEAR_BASE + 0xFF) + ": " + year);
         }
         edid[YEAR_OFFSET] = (byte) (year - YEAR_BASE);
     }

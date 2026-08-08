@@ -38,7 +38,7 @@ import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Date parsing utility.
+ * Parses date and time values.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -197,7 +197,7 @@ public class Resolver extends Converter {
                 final int paddingWidth = 3 - (format.length() - Fields.PURE_DATETIME.length());
                 if (paddingWidth > 0) {
                     // Unify yyyyMMddHHmmssS, yyyyMMddHHmmssSS dates to yyyyMMddHHmmssSSS format, padded with 0s
-                    date += StringKit.repeat('0', paddingWidth);
+                    date += StringKit.repeat(Symbol.C_ZERO, paddingWidth);
                 }
                 formatter = Formatter.PURE_DATETIME_MS_FORMATTER;
             } else {
@@ -345,7 +345,7 @@ public class Resolver extends Converter {
             String timePart = dateAndTime.get(1).replaceAll("[时分秒]", Symbol.COLON);
             timePart = StringKit.removeSuffix(timePart, Symbol.COLON);
             // Replace comma in ISO8601 with dot
-            timePart = timePart.replace(Symbol.C_COMMA, '.');
+            timePart = timePart.replace(Symbol.C_COMMA, Symbol.C_DOT);
             builder.append(timePart);
         }
 

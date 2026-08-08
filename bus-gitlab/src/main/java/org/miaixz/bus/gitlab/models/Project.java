@@ -30,10 +30,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.gitlab.models.Constants.*;
 import org.miaixz.bus.gitlab.models.ImportStatus.Status;
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 import tools.jackson.databind.annotation.JsonSerialize;
 
@@ -229,7 +230,7 @@ public class Project implements Serializable {
      * @return a fully qualified project path based on the provided namespace and project path
      */
     public static final String getPathWithNammespace(String namespace, String path) {
-        return (namespace.trim() + "/" + path.trim());
+        return (namespace.trim() + Symbol.SLASH + path.trim());
     }
 
     /**
@@ -3872,7 +3873,7 @@ public class Project implements Serializable {
          */
         FF;
 
-        private static JacksonJsonEnumHelper<MergeMethod> enumHelper = new JacksonJsonEnumHelper<>(MergeMethod.class);
+        private static JacksonJsonEnumCodec<MergeMethod> enumCodec = new JacksonJsonEnumCodec<>(MergeMethod.class);
 
         /**
          * Returns the value.
@@ -3883,7 +3884,7 @@ public class Project implements Serializable {
 
         @JsonCreator
         public static MergeMethod forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -3894,7 +3895,7 @@ public class Project implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -3905,7 +3906,7 @@ public class Project implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

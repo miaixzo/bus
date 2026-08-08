@@ -124,11 +124,11 @@ public record Http2Header(String name, String value, boolean pseudo) {
      * @return {@code true} when the character is valid in a lower-case field name
      */
     private static boolean token(final char value) {
-        if ((value >= 'a' && value <= 'z') || (value >= '0' && value <= '9')) {
+        if ((value >= 'a' && value <= 'z') || (value >= Symbol.C_ZERO && value <= Symbol.C_NINE)) {
             return true;
         }
         return switch (value) {
-            case Symbol.C_NOT, Symbol.C_HASH, Symbol.C_DOLLAR, Symbol.C_PERCENT, Symbol.C_AND, Symbol.C_SINGLE_QUOTE, Symbol.C_STAR, Symbol.C_PLUS, Symbol.C_MINUS, Symbol.C_DOT, Symbol.C_CARET, Symbol.C_UNDERLINE, '`', Symbol.C_OR, Symbol.C_TILDE -> true;
+            case Symbol.C_NOT, Symbol.C_HASH, Symbol.C_DOLLAR, Symbol.C_PERCENT, Symbol.C_AND, Symbol.C_SINGLE_QUOTE, Symbol.C_STAR, Symbol.C_PLUS, Symbol.C_MINUS, Symbol.C_DOT, Symbol.C_CARET, Symbol.C_UNDERLINE, Symbol.C_BACKTICK, Symbol.C_OR, Symbol.C_TILDE -> true;
             default -> false;
         };
     }

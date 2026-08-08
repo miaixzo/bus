@@ -131,7 +131,7 @@ public class KujialeProvider extends AbstractProvider {
                 throw new AuthorizedException("Failed to parse response: empty response");
             }
             String code = (String) object.get("c");
-            if (!"0".equals(code)) {
+            if (!Symbol.ZERO.equals(code)) {
                 String message = (String) object.get("m");
                 throw new AuthorizedException(message != null ? message : "Unknown error");
             }
@@ -160,7 +160,7 @@ public class KujialeProvider extends AbstractProvider {
                 throw new AuthorizedException("Failed to parse user info response: empty response");
             }
             String code = (String) object.get("c");
-            if (!"0".equals(code)) {
+            if (!Symbol.ZERO.equals(code)) {
                 String message = (String) object.get("m");
                 throw new AuthorizedException(message != null ? message : "Unknown error");
             }

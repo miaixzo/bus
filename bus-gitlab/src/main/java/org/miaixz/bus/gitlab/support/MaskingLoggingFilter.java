@@ -214,7 +214,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      */
 
     protected StringBuilder appendId(final StringBuilder sb, final long id) {
-        sb.append(Long.toString(id)).append(' ');
+        sb.append(Long.toString(id)).append(Symbol.C_SPACE);
         return (sb);
     }
 
@@ -235,8 +235,9 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
             final String method,
             final URI uri) {
         appendId(sb, id).append(SECTION_PREFIX).append(note).append(" on thread ")
-                .append(Thread.currentThread().getName()).append('\n');
-        appendId(sb, id).append(REQUEST_PREFIX).append(method).append(' ').append(uri.toASCIIString()).append('\n');
+                .append(Thread.currentThread().getName()).append(Symbol.C_LF);
+        appendId(sb, id).append(REQUEST_PREFIX).append(method).append(Symbol.C_SPACE).append(uri.toASCIIString())
+                .append(Symbol.C_LF);
     }
 
     /**
@@ -250,8 +251,8 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
 
     protected void printResponseLine(final StringBuilder sb, final String note, final long id, final int status) {
         appendId(sb, id).append(SECTION_PREFIX).append(note).append(" on thread ")
-                .append(Thread.currentThread().getName()).append('\n');
-        appendId(sb, id).append(RESPONSE_PREFIX).append(Integer.toString(status)).append('\n');
+                .append(Thread.currentThread().getName()).append(Symbol.C_LF);
+        appendId(sb, id).append(RESPONSE_PREFIX).append(Integer.toString(status)).append(Symbol.C_LF);
     }
 
     /**
@@ -326,7 +327,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
             sb.append("...more...");
         }
 
-        sb.append('\n');
+        sb.append(Symbol.C_LF);
     }
 
     private InputStream logResponseEntity(final StringBuilder sb, InputStream stream, final Charset charset)

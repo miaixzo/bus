@@ -24,6 +24,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.dns.message.DnsClientSubnet;
@@ -86,7 +87,7 @@ public final class DnsCacheKey {
         this.typeCode = DnsCodec.validateUnsignedShort(typeCode, "DNS cache key type");
         this.recordClass = DnsCodec.validateUnsignedShort(recordClass, "DNS cache key class");
         this.stream = stream;
-        this.viewName = viewName == null ? "" : viewName;
+        this.viewName = viewName == null ? Normal.EMPTY : viewName;
         this.ecsScope = ecsScope(clientSubnet);
     }
 
@@ -197,7 +198,7 @@ public final class DnsCacheKey {
      */
     private static String ecsScope(final DnsClientSubnet clientSubnet) {
         if (clientSubnet == null) {
-            return "";
+            return Normal.EMPTY;
         }
         final byte[] scoped = mask(clientSubnet.address().getAddress(), clientSubnet.scopePrefixLength());
         try {

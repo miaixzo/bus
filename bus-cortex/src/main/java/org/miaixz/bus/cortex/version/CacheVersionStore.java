@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.extra.json.JsonKit;
 
@@ -94,8 +95,9 @@ public class CacheVersionStore implements VersionStore {
      */
     @Override
     public List<VersionRecord> list(String namespace, String track) {
-        String prefix = track == null || track.isBlank() ? PREFIX + CortexIdentity.namespace(namespace) + ":"
-                : PREFIX + CortexIdentity.namespace(namespace) + ":" + ReleaseTrack.normalize(track) + ":";
+        String prefix = track == null || track.isBlank() ? PREFIX + CortexIdentity.namespace(namespace) + Symbol.COLON
+                : PREFIX + CortexIdentity.namespace(namespace) + Symbol.COLON + ReleaseTrack.normalize(track)
+                        + Symbol.COLON;
         Map<String, Object> entries = cacheX.scan(prefix);
         if (entries == null || entries.isEmpty()) {
             return List.of();
@@ -211,7 +213,8 @@ public class CacheVersionStore implements VersionStore {
      * @return release cache key
      */
     private String key(String namespace, String track, String version) {
-        return PREFIX + CortexIdentity.namespace(namespace) + ":" + ReleaseTrack.normalize(track) + ":" + version;
+        return PREFIX + CortexIdentity.namespace(namespace) + Symbol.COLON + ReleaseTrack.normalize(track)
+                + Symbol.COLON + version;
     }
 
     /**
@@ -222,7 +225,7 @@ public class CacheVersionStore implements VersionStore {
      * @return current pointer cache key
      */
     private String currentKey(String namespace, String track) {
-        return PREFIX + "current:" + CortexIdentity.namespace(namespace) + ":" + ReleaseTrack.normalize(track);
+        return PREFIX + "current:" + CortexIdentity.namespace(namespace) + Symbol.COLON + ReleaseTrack.normalize(track);
     }
 
     /**

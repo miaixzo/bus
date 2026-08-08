@@ -23,6 +23,8 @@ import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Spatial geometry of a single cross-sectional DICOM image slice.
  *
@@ -208,7 +210,7 @@ public class GeometryOfSlice {
     public static String getOrientation(Vector3 orientation, boolean quadruped) {
         StringBuilder builder = new StringBuilder();
         if (orientation != null) {
-            String orientationX = orientation.x() < 0 ? (quadruped ? "Rt" : "R") : (quadruped ? "Le" : "L");
+            String orientationX = orientation.x() < 0 ? (quadruped ? "Rt" : "R") : (quadruped ? "Le" : Symbol.L);
             String orientationY = orientation.y() < 0 ? (quadruped ? "V" : "A") : (quadruped ? "D" : "P");
             String orientationZ = orientation.z() < 0 ? (quadruped ? "Cd" : "F") : (quadruped ? "Cr" : "H");
 

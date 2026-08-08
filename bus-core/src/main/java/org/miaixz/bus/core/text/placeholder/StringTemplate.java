@@ -27,6 +27,7 @@ import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.text.placeholder.segment.AbstractSegment;
@@ -321,7 +322,7 @@ public abstract class StringTemplate {
             return "null";
         }
         if (Feature.FORMAT_MISSING_KEY_PRINT_EMPTY.contains(features)) {
-            return "";
+            return Normal.EMPTY;
         }
         if (Feature.FORMAT_MISSING_KEY_PRINT_VARIABLE_NAME.contains(features)) {
             return segment.getPlaceholder();
@@ -345,7 +346,7 @@ public abstract class StringTemplate {
             return "null";
         }
         if (Feature.FORMAT_NULL_VALUE_TO_EMPTY.contains(features)) {
-            return "";
+            return Normal.EMPTY;
         }
         if (Feature.FORMAT_NULL_VALUE_TO_WHOLE_PLACEHOLDER.contains(features)) {
             return segment.getText();
@@ -466,7 +467,7 @@ public abstract class StringTemplate {
     }
 
     /**
-     * A helper method to process a single matched key-value pair according to the configured features.
+     * Processes a single matched key-value pair according to the configured features.
      *
      * @param keyValueConsumer     The consumer for the final key-value pair.
      * @param key                  The placeholder variable.
@@ -494,7 +495,7 @@ public abstract class StringTemplate {
             }
         }
 
-        if ("".equals(value)) {
+        if (Normal.EMPTY.equals(value)) {
             if (Feature.MATCH_EMPTY_VALUE_TO_NULL.contains(features)) {
                 keyValueConsumer.accept(key, null);
             } else if (Feature.MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE.contains(features)) {

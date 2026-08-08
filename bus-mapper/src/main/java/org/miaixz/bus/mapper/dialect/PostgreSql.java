@@ -25,6 +25,8 @@ import java.sql.SQLException;
 import java.util.EnumSet;
 import java.util.Locale;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.feature.paging.Pageable;
 import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
@@ -193,7 +195,7 @@ public class PostgreSql extends AbstractDialect {
         String catalog = firstNonBlank(table.catalog(), connection.getCatalog());
         String schema = firstNonBlank(table.schema(), connection.getSchema());
         String tableName = table.tableName();
-        return stableHash(normalize(catalog) + ":" + normalize(schema) + ":" + normalize(tableName));
+        return stableHash(normalize(catalog) + Symbol.COLON + normalize(schema) + Symbol.COLON + normalize(tableName));
     }
 
     /**
@@ -208,7 +210,7 @@ public class PostgreSql extends AbstractDialect {
                 return value;
             }
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     /**
@@ -218,7 +220,7 @@ public class PostgreSql extends AbstractDialect {
      * @return the normalized value
      */
     private String normalize(String value) {
-        return value == null ? "" : value.toLowerCase(Locale.ROOT);
+        return value == null ? Normal.EMPTY : value.toLowerCase(Locale.ROOT);
     }
 
     /**

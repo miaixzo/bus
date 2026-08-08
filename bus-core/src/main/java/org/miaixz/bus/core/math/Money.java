@@ -50,7 +50,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * providing better performance for bulk statistics.</li>
  * <li>Provides basic formatting functionality.</li>
  * <li>The Money class does not include business-related statistical and formatting functions. It is recommended to
- * implement business-related functions using utility classes.</li>
+ * implement business-related functions using classes.</li>
  * <li>The Money class implements the Serializable interface, allowing it to be used as a parameter and return value in
  * remote calls.</li>
  * <li>The Money class implements the equals and hashCode methods.</li>

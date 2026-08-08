@@ -30,12 +30,13 @@ import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.platform.win32.WinReg;
 import com.sun.jna.platform.win32.WinReg.HKEY;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.software.OSSession;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Utility to read session data from HKEY_USERS
+ * Reads session data from HKEY_USERS
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -53,7 +54,7 @@ public final class HkeyUserData {
     /**
      * The PATH_DELIMITER constant.
      */
-    private static final String PATH_DELIMITER = "\\";
+    private static final String PATH_DELIMITER = Symbol.BACKSLASH;
 
     /**
      * The DEFAULT_DEVICE constant.
@@ -83,7 +84,7 @@ public final class HkeyUserData {
     public static List<OSSession> queryUserSessions() {
         List<OSSession> sessions = new ArrayList<>();
         for (String sidKey : Advapi32Util.registryGetKeys(WinReg.HKEY_USERS)) {
-            if (!sidKey.startsWith(".") && !sidKey.endsWith("_Classes")) {
+            if (!sidKey.startsWith(Symbol.DOT) && !sidKey.endsWith("_Classes")) {
                 try {
                     Account a = Advapi32Util.getAccountBySid(sidKey);
                     String name = a.name;

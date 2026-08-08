@@ -22,13 +22,13 @@ package org.miaixz.bus.health.windows.driver.perfmon;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 
 /**
- * Utility to query GPU Engine and GPU Adapter Memory performance counters. Available on Windows 10 version 1709 and
- * later.
+ * Queries GPU Engine and GPU Adapter Memory performance counters. Available on Windows 10 version 1709 and later.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -58,7 +58,7 @@ public final class GpuInformation {
         /**
          * Instance filter for all GPU engine instances.
          */
-        NAME("*"),
+        NAME(Symbol.STAR),
 
         /**
          * Running time in 100ns units.
@@ -107,7 +107,7 @@ public final class GpuInformation {
         /**
          * Instance filter for all GPU adapter memory instances.
          */
-        NAME("*"),
+        NAME(Symbol.STAR),
 
         /**
          * Dedicated memory usage counter.

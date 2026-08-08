@@ -25,6 +25,7 @@ import java.io.OutputStreamWriter;
 
 import com.google.zxing.common.BitMatrix;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.ansi.AnsiElement;
 import org.miaixz.bus.core.lang.ansi.AnsiEncoder;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -85,7 +86,7 @@ public class AsciiArtRender implements BitMatrixRender {
                     final boolean tp = matrix.get(i, j);
                     final boolean bt = i + 1 >= height || matrix.get(i + 1, j);
                     if (tp && bt) {
-                        rowBuilder.append(' ');// '\u0020'
+                        rowBuilder.append(Symbol.C_SPACE);// '\u0020'
                     } else if (tp) {
                         rowBuilder.append('▄');// '\u2584'
                     } else if (bt) {
@@ -94,7 +95,7 @@ public class AsciiArtRender implements BitMatrixRender {
                         rowBuilder.append('█');// '\u2588'
                     }
                 }
-                writer.append(AnsiEncoder.encode(foreground, background, rowBuilder)).append('\n');
+                writer.append(AnsiEncoder.encode(foreground, background, rowBuilder)).append(Symbol.C_LF);
             }
         } catch (final IOException e) {
             throw new InternalException(e);

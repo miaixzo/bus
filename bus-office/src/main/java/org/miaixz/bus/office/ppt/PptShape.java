@@ -24,6 +24,8 @@ import java.awt.geom.Rectangle2D;
 
 import org.apache.poi.xslf.usermodel.*;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Wrapper around {@link XSLFShape} providing unified operations for text boxes, pictures, auto shapes, and tables on a
  * PowerPoint slide.
@@ -284,7 +286,7 @@ public class PptShape {
         if (this.shape instanceof XSLFTextShape textShape) {
             final StringBuilder sb = new StringBuilder();
             for (final XSLFTextParagraph paragraph : textShape.getTextParagraphs()) {
-                sb.append(paragraph.getText()).append('\n');
+                sb.append(paragraph.getText()).append(Symbol.C_LF);
             }
             sd.setText(sb.toString().trim());
         }

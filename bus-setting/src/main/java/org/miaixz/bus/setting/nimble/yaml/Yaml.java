@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * A utility class for reading and writing YAML files, based on the SnakeYAML library.
+ * Reads and writing YAML files, based on the SnakeYAML library.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -30,8 +30,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * A utility class for creating ByteBuddy proxies to intercept method calls. This class generates a subclass of a given
- * original class and intercepts all its methods using a {@link ByteBuddyHandler} to apply limiting rules.
+ * Creates ByteBuddy proxies to intercept method calls. This class generates a subclass of a given original class and
+ * intercepts all its methods using a {@link ByteBuddyHandler} to apply limiting rules.
  *
  * @author Kimi Liu
  * @since Java 21+

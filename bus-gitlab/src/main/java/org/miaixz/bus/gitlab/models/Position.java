@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The position class.
@@ -60,7 +60,7 @@ public class Position implements Serializable {
          */
         FILE;
 
-        private static JacksonJsonEnumHelper<PositionType> enumHelper = new JacksonJsonEnumHelper<>(PositionType.class,
+        private static JacksonJsonEnumCodec<PositionType> enumCodec = new JacksonJsonEnumCodec<>(PositionType.class,
                 false, false);
 
         /**
@@ -72,7 +72,7 @@ public class Position implements Serializable {
 
         @JsonCreator
         public static PositionType forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -83,7 +83,7 @@ public class Position implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -94,7 +94,7 @@ public class Position implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

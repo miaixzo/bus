@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * Utility class for validating {@link Map} objects, primarily providing convenient checks for their empty state.
+ * Validates {@link Map} objects, primarily providing convenient checks for their empty state.
  * <p>
  * A map is considered <b>empty</b> if it is {@code null} or contains no key-value mappings.
  *

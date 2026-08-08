@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.reflect.kotlin.KClassImpl;
 import org.miaixz.bus.core.lang.reflect.kotlin.KParameter;
 
 /**
- * Utility class for Kotlin reflection wrapper.
+ * Invokes Kotlin reflection through Java wrappers.
  *
  * @author Kimi Liu
  * @since Java 21+

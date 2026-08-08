@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_SMS_USG_S2000_3D_VOLUME;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Represents the PrivateKeyword type.
  *
@@ -37,7 +39,7 @@ public class PrivateKeyword {
     /**
      * The private creator value.
      */
-    public static final String PrivateCreator = "";
+    public static final String PrivateCreator = Normal.EMPTY;
 
     /**
      * Executes the value of operation.
@@ -342,7 +344,7 @@ public class PrivateKeyword {
             case PrivateTag._0039_xxF6_:
                 return "_0039_xxF6_";
         }
-        return "";
+        return Normal.EMPTY;
     }
 
 }

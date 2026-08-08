@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.guard.CortexGuard;
 import org.miaixz.bus.cortex.guard.GuardContext;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
@@ -272,13 +273,14 @@ public class VersionPublisher {
         change.setDomain("version");
         change.setAction(action);
         change.setResourceType("VERSION");
-        change.setResourceId(ReleaseTrack.normalize(record.getTrack()) + ":" + record.getVersion());
+        change.setResourceId(ReleaseTrack.normalize(record.getTrack()) + Symbol.COLON + record.getVersion());
         change.setNamespace_id(record.getNamespace_id());
         change.setPayload(JsonKit.toJsonString(record));
         change.setSequence(
                 record.getPublished() == null ? record.getCreated() == null ? 0L : record.getCreated()
                         : record.getPublished());
-        change.setIdempotencyKey("version:" + action + ":" + change.getNamespace_id() + ":" + change.getResourceId());
+        change.setIdempotencyKey(
+                "version:" + action + Symbol.COLON + change.getNamespace_id() + Symbol.COLON + change.getResourceId());
         changeLogStore.append(change);
     }
 
@@ -388,8 +390,8 @@ public class VersionPublisher {
      * @return watch key
      */
     private String watchKey(VersionRecord record) {
-        return "version:" + record.getNamespace_id() + ":" + ReleaseTrack.normalize(record.getTrack()) + ":"
-                + record.getVersion();
+        return "version:" + record.getNamespace_id() + Symbol.COLON + ReleaseTrack.normalize(record.getTrack())
+                + Symbol.COLON + record.getVersion();
     }
 
     /**
@@ -453,7 +455,7 @@ public class VersionPublisher {
         context.setDomain("version");
         context.setAction(action);
         context.setResourceType("VERSION");
-        context.setResourceId(ReleaseTrack.normalize(track) + ":" + version);
+        context.setResourceId(ReleaseTrack.normalize(track) + Symbol.COLON + version);
         context.namespace_id(namespace);
         context.putAttribute("track", ReleaseTrack.normalize(track));
         context.putAttribute("version", version);

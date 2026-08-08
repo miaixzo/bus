@@ -36,8 +36,8 @@ import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * A utility for binding properties from a {@link PropertySource} to an object or class. It can also resolve
- * placeholders in string values.
+ * Binds properties from a {@link PropertySource} to an object or class. It can also resolve placeholders in string
+ * values.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -63,7 +63,7 @@ public class Binder {
     /**
      * A default instance of the binder with standard configurations.
      */
-    public static final Binder DEFAULT_HELPER;
+    public static final Binder DEFAULT_BINDER;
 
     /**
      * A map of simple prefixes for handling nested placeholders.
@@ -75,7 +75,7 @@ public class Binder {
         SIMPLE_PREFIXES.put(Symbol.BRACKET_RIGHT, Symbol.BRACKET_LEFT);
         SIMPLE_PREFIXES.put(Symbol.PARENTHESE_RIGHT, Symbol.PARENTHESE_LEFT);
 
-        DEFAULT_HELPER = new Binder(DEFAULT_PLACEHOLDER_PREFIX, DEFAULT_PLACEHOLDER_SUFFIX, DEFAULT_VALUE_SEPARATOR,
+        DEFAULT_BINDER = new Binder(DEFAULT_PLACEHOLDER_PREFIX, DEFAULT_PLACEHOLDER_SUFFIX, DEFAULT_VALUE_SEPARATOR,
                 true);
     }
 

@@ -20,7 +20,7 @@
 /**
  * Provides magic constants and utilities for payment processing.
  * <p>
- * This package contains configuration values, constants, and helper classes used throughout the payment framework.
+ * This package contains configuration values, constants, and internal types used throughout the payment framework.
  *
  * @author Kimi Liu
  * @since Java 21+

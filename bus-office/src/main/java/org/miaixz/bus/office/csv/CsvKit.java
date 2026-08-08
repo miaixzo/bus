@@ -25,7 +25,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 
 /**
- * Utility class for CSV operations.
+ * Reads and writes CSV data.
  *
  * @author Kimi Liu
  * @since Java 21+

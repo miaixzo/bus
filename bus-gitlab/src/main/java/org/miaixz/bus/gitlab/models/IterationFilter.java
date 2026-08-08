@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.support.ISO8601;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The iteration filter class.
@@ -319,7 +319,7 @@ public class IterationFilter implements Serializable {
          */
         ALL;
 
-        private static JacksonJsonEnumHelper<IterationFilterState> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<IterationFilterState> enumCodec = new JacksonJsonEnumCodec<>(
                 IterationFilterState.class, false, true);
 
         /**
@@ -331,7 +331,7 @@ public class IterationFilter implements Serializable {
 
         @JsonCreator
         public static IterationFilterState forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -342,7 +342,7 @@ public class IterationFilter implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -353,7 +353,7 @@ public class IterationFilter implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -375,7 +375,7 @@ public class IterationFilter implements Serializable {
          */
         CADENCE_TITLE;
 
-        private static JacksonJsonEnumHelper<IterationFilterIn> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<IterationFilterIn> enumCodec = new JacksonJsonEnumCodec<>(
                 IterationFilterIn.class, false, false, true);
 
         /**
@@ -387,7 +387,7 @@ public class IterationFilter implements Serializable {
 
         @JsonCreator
         public static IterationFilterIn forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -398,7 +398,7 @@ public class IterationFilter implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -409,7 +409,7 @@ public class IterationFilter implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

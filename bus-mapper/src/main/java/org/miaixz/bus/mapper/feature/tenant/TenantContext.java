@@ -72,7 +72,7 @@ public class TenantContext {
     private static final ThreadLocal<Boolean> IGNORE = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
     /**
-     * Prevents instantiation of this thread-local tenant context utility.
+     * Restricts the class to static thread-local tenant context operations.
      */
     private TenantContext() {
         // No initialization required.

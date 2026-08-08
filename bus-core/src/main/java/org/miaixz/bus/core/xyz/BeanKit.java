@@ -50,7 +50,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
 
 /**
- * Bean utility class.
+ * Reads, writes, and converts bean properties.
  *
  * <p>
  * A class with getter and setter methods for its properties can be called a JavaBean.

@@ -29,9 +29,9 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * Provides utility methods for validating collections and other iterable data structures. This class offers a
- * consistent way to check for empty or non-empty states across various types, including {@link Collection},
- * {@link Iterable}, {@link Iterator}, {@link Enumeration}, and {@link Map}.
+ * Provides methods for validating collections and other iterable data structures. This class offers a consistent way to
+ * check for empty or non-empty states across various types, including {@link Collection}, {@link Iterable},
+ * {@link Iterator}, {@link Enumeration}, and {@link Map}.
  * <p>
  * <b>Definitions:</b>
  *

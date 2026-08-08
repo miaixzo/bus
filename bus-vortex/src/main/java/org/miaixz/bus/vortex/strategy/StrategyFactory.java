@@ -241,15 +241,17 @@ public class StrategyFactory {
     /**
      * Determines if a strategy is applicable to LLM requests.
      * <p>
-     * LLM requests are simple proxies similar to MCP; they don't need complex validation like method/version
-     * qualification or rate limiting. Authentication is handled at the router level via project API keys.
+     * LLM requests reuse the common qualifier for route-asset resolution and policy-based credential authorization.
+     * Protocol-specific request parsing, signature validation, and rate limiting remain outside the lightweight LLM
+     * chain.
      *
      * @param strategy The strategy to check.
      * @return {@code false} if the strategy is one of the business-logic strategies to be skipped for LLM, {@code true}
      *         otherwise.
      */
     public boolean isLlmStrategy(Strategy strategy) {
-        return strategy.getClass() == RequestStrategy.class || strategy instanceof ResponseStrategy;
+        return strategy.getClass() == RequestStrategy.class || strategy.getClass() == QualifierStrategy.class
+                || strategy instanceof ResponseStrategy;
     }
 
     /**
@@ -338,7 +340,7 @@ public class StrategyFactory {
     }
 
     /**
-     * Helper method to get a clean list of class names for logging.
+     * Returns a clean list of class names for logging.
      *
      * @param strategies The list of strategies.
      * @return A comma-separated string of simple class names.

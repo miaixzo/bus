@@ -22,7 +22,7 @@ package org.miaixz.bus.gitlab.models;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The package type enum.
@@ -69,7 +69,7 @@ public enum PackageType {
      */
     GENERIC;
 
-    private static JacksonJsonEnumHelper<PackageType> enumHelper = new JacksonJsonEnumHelper<>(PackageType.class);
+    private static JacksonJsonEnumCodec<PackageType> enumCodec = new JacksonJsonEnumCodec<>(PackageType.class);
 
     /**
      * Returns the value.
@@ -80,7 +80,7 @@ public enum PackageType {
 
     @JsonCreator
     public static PackageType forValue(String value) {
-        return enumHelper.forValue(value);
+        return enumCodec.forValue(value);
     }
 
     /**
@@ -91,7 +91,7 @@ public enum PackageType {
 
     @JsonValue
     public String toValue() {
-        return (enumHelper.toString(this));
+        return (enumCodec.toString(this));
     }
 
     /**
@@ -102,7 +102,7 @@ public enum PackageType {
 
     @Override
     public String toString() {
-        return (enumHelper.toString(this));
+        return (enumCodec.toString(this));
     }
 
 }

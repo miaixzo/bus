@@ -28,9 +28,9 @@ import org.miaixz.bus.core.text.escape.XmlEscape;
 import org.miaixz.bus.core.text.escape.XmlUnescape;
 
 /**
- * Utility class for escaping and unescaping strings. This is equivalent to JavaScript's `escape()` and `unescape()`
- * functions, which encode strings using the ISO Latin character set. All spaces, punctuation, special characters, and
- * other non-ASCII characters are converted to %xx format.
+ * Escapes and unescapes strings. This is equivalent to JavaScript's `escape()` and `unescape()` functions, which encode
+ * strings using the ISO Latin character set. All spaces, punctuation, special characters, and other non-ASCII
+ * characters are converted to %xx format.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -180,7 +180,7 @@ public class EscapeKit {
         while (lastPos < len) {
             pos = content.indexOf(Symbol.PERCENT, lastPos);
             if (pos == lastPos) {
-                if (pos + 1 < len && content.charAt(pos + 1) == 'u') {
+                if (pos + 1 < len && content.charAt(pos + 1) == Symbol.C_U) {
                     if (pos + 6 <= len) {
                         ch = (char) Integer.parseInt(content.substring(pos + 2, pos + 6), 16);
                         tmp.append(ch);

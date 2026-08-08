@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
@@ -76,15 +77,15 @@ public class ImageDirWriter extends ImageDirReader {
     /**
      * Byte array representing the header for Directory Information.
      */
-    private final byte[] dirInfoHeader = { 0x04, 0x00, 0x00, 0x12, 'U', 'L', 4, 0, 0, 0, 0, 0, 0x04, 0x00, 0x02, 0x12,
-            'U', 'L', 4, 0, 0, 0, 0, 0, 0x04, 0x00, 0x12, 0x12, 'U', 'S', 2, 0, 0, 0, 0x04, 0x00, 0x20, 0x12, 'S', 'Q',
-            0, 0, 0, 0, 0, 0 };
+    private final byte[] dirInfoHeader = { 0x04, 0x00, 0x00, 0x12, 'U', Symbol.C_L, 4, 0, 0, 0, 0, 0, 0x04, 0x00, 0x02,
+            0x12, 'U', Symbol.C_L, 4, 0, 0, 0, 0, 0, 0x04, 0x00, 0x12, 0x12, 'U', 'S', 2, 0, 0, 0, 0x04, 0x00, 0x20,
+            0x12, 'S', 'Q', 0, 0, 0, 0, 0, 0 };
 
     /**
      * Byte array representing the header for Directory Records.
      */
-    private final byte[] dirRecordHeader = { 0x04, 0x00, 0x00, 0x14, 'U', 'L', 4, 0, 0, 0, 0, 0, 0x04, 0x00, 0x10, 0x14,
-            'U', 'S', 2, 0, 0, 0, 0x04, 0x00, 0x20, 0x14, 'U', 'L', 4, 0, 0, 0, 0, 0 };
+    private final byte[] dirRecordHeader = { 0x04, 0x00, 0x00, 0x14, 'U', Symbol.C_L, 4, 0, 0, 0, 0, 0, 0x04, 0x00,
+            0x10, 0x14, 'U', 'S', 2, 0, 0, 0, 0x04, 0x00, 0x20, 0x14, 'U', Symbol.C_L, 4, 0, 0, 0, 0, 0 };
 
     /**
      * The {@link ImageOutputStream} used for writing to the DICOMDIR file.

@@ -37,11 +37,11 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * A utility class for building cache keys, patterns, and other cache-related constructs.
+ * Builds cache keys, patterns, and other cache-related constructs.
  * <p>
- * This class provides static methods to handle the generation of cache keys from method arguments and annotations,
- * supporting both single and multi-key scenarios. It also includes helpers for processing results for batch operations
- * and generating patterns for statistics.
+ * This class provides static methods to handle the generation of cache keys from method arguments and annotations, for
+ * both single-key and multi-key scenarios. It also processes results for batch operations and generating patterns for
+ * statistics.
  * </p>
  *
  * @author Kimi Liu

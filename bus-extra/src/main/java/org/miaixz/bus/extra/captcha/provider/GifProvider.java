@@ -24,6 +24,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.Serial;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.extra.captcha.AbstractProvider;
 import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
@@ -262,7 +263,7 @@ public class GifProvider extends AbstractProvider {
                         RandomKit.randomInt(height),
                         RandomKit.randomInt(5, 30),
                         5 + RandomKit.randomInt(5, 30)); // Draw oval border
-                g2d.drawString(words[i] + "", x + (font.getSize() + m) * i, y);
+                g2d.drawString(words[i] + Normal.EMPTY, x + (font.getSize() + m) * i, y);
             }
         } finally {
             g2d.dispose();

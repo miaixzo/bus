@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.protocol.http.chain;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
@@ -32,7 +33,6 @@ import org.miaixz.bus.fabric.network.tls.TlsPolicy;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.registry.route.Route;
 
 /**
  * Pure HTTP route planner that performs no DNS, socket, pool, or TLS I/O.
@@ -68,15 +68,9 @@ final class HttpRoutePlanner {
      */
     ProxyPlan proxy(final HttpRequest request) {
         final ProxyPlan configured = request.proxy();
-        if (!configured.isDirect()) {
-            return configured;
-        }
-        if (request.tag() instanceof ProxyPlan plan) {
-            return plan;
-        }
-        if (request.tag() instanceof Route route) {
-            return route.proxy();
-        }
+        Assert.isTrue(
+                configured.isResolved(),
+                () -> new ValidateException("HTTP route requires a resolved proxy plan"));
         return configured;
     }
 
@@ -93,10 +87,7 @@ final class HttpRoutePlanner {
         final Protocol protocol = target.secure() ? Protocol.HTTPS : Protocol.HTTP;
         Options options = Options.of(Builder.OPTION_TLS, target.secure()).with(Builder.OPTION_SECURE, target.secure())
                 .with(Builder.OPTION_MULTIPLEX, protocol == Protocol.HTTP_2)
-                .with(Builder.OPTION_PROTOCOL, protocol.name)
-                .with(
-                        Builder.OPTION_ROUTE_PROXY,
-                        proxy.proxy().map(Address::toUri).map(Object::toString).orElse(Builder.PROXY_PLAN_DIRECT_ID))
+                .with(Builder.OPTION_PROTOCOL, protocol.name).with(Builder.OPTION_ROUTE_PROXY, routeIdentity(proxy))
                 .with(Builder.OPTION_ROUTE_TUNNEL, proxy.requiresTunnel(target));
         if (tlsPolicy != null) {
             options = options.with(TlsPolicy.OPTION, tlsPolicy);
@@ -136,9 +127,24 @@ final class HttpRoutePlanner {
             return Builder.PROXY_PLAN_DIRECT_ID;
         }
         if (proxy.isSocks()) {
-            return "socks";
+            return Builder.PROXY_PLAN_SOCKS_ID;
         }
-        return proxy.isHttp() ? Protocol.HTTP.name : "custom";
+        return proxy.isHttp() ? Builder.PROXY_PLAN_HTTP_ID : "custom";
+    }
+
+    /**
+     * Builds a credential-safe pool partition key for one resolved route.
+     *
+     * @param proxy resolved direct, HTTP, or SOCKS route plan
+     * @return redacted route identity including an authorization partition hash when required
+     */
+    private static String routeIdentity(final ProxyPlan proxy) {
+        if (proxy.isDirect()) {
+            return Builder.PROXY_PLAN_DIRECT_ID;
+        }
+        final String authentication = proxy.authorization().size() == 0 ? ""
+                : "#auth=" + Integer.toHexString(proxy.authorization().asMap().hashCode());
+        return proxy.id() + authentication;
     }
 
     /**

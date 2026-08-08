@@ -26,7 +26,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_id_t;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
- * Utility to query performance stats for disk_stats
+ * Queries performance stats for disk_stats
  *
  * @author Kimi Liu
  * @since Java 21+

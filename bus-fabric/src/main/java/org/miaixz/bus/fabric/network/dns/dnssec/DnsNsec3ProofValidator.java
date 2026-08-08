@@ -28,6 +28,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.dns.cache.DnsValidationCache;
@@ -640,11 +642,11 @@ public final class DnsNsec3ProofValidator {
             return null;
         }
         final String queryWithoutRoot = normalizedQuery.substring(0, normalizedQuery.length() - 1);
-        final String closestWithoutRoot = DnsName.ROOT.equals(normalizedClosest) ? ""
+        final String closestWithoutRoot = DnsName.ROOT.equals(normalizedClosest) ? Normal.EMPTY
                 : normalizedClosest.substring(0, normalizedClosest.length() - 1);
         final String prefix = closestWithoutRoot.isEmpty() ? queryWithoutRoot
                 : queryWithoutRoot.substring(0, queryWithoutRoot.length() - closestWithoutRoot.length() - 1);
-        final int dot = prefix.lastIndexOf('.');
+        final int dot = prefix.lastIndexOf(Symbol.C_DOT);
         final String label = dot < 0 ? prefix : prefix.substring(dot + 1);
         return closestWithoutRoot.isEmpty() ? DnsName.normalize(label)
                 : DnsName.normalize(label + DnsName.ROOT + closestWithoutRoot);
@@ -819,7 +821,7 @@ public final class DnsNsec3ProofValidator {
          */
         private String ownerHash() {
             final String withoutRoot = owner.substring(0, owner.length() - 1);
-            final int dot = withoutRoot.indexOf('.');
+            final int dot = withoutRoot.indexOf(Symbol.C_DOT);
             if (dot <= 0) {
                 throw new ProtocolException("DNSSEC NSEC3 owner name does not contain a zone suffix");
             }
@@ -833,7 +835,7 @@ public final class DnsNsec3ProofValidator {
          */
         private String zone() {
             final String withoutRoot = owner.substring(0, owner.length() - 1);
-            final int dot = withoutRoot.indexOf('.');
+            final int dot = withoutRoot.indexOf(Symbol.C_DOT);
             if (dot <= 0) {
                 throw new ProtocolException("DNSSEC NSEC3 owner name does not contain a zone suffix");
             }

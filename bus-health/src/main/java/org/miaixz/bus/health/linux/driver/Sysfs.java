@@ -28,7 +28,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.linux.SysPath;
 
 /**
- * Utility to read info from {@code sysfs}
+ * Reads info from {@code sysfs}
  *
  * @author Kimi Liu
  * @since Java 21+

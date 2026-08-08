@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.DoubleAdder;
 import java.util.concurrent.atomic.LongAdder;
 
 import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.xyz.*;
 
@@ -280,7 +281,7 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
         if (result.length() > 1) {
             // Check trailing identifier for non-single characters
             final char c = Character.toUpperCase(result.charAt(result.length() - 1));
-            if (c == 'D' || c == 'L' || c == 'F') {
+            if (c == 'D' || c == Symbol.C_L || c == 'F') {
                 // Type identifier form (e.g., 123.6D)
                 return StringKit.subPre(result, -1);
             }

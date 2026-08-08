@@ -180,10 +180,10 @@ public final class Parsing {
      *         match.
      */
     public static boolean wildcardMatch(String text, String pattern) {
-        if (!pattern.isEmpty() && pattern.charAt(0) == '^') {
+        if (!pattern.isEmpty() && pattern.charAt(0) == Symbol.C_CARET) {
             return !wildcardMatch(text, pattern.substring(1));
         }
-        return text.matches(pattern.replace("?", ".?").replace(Symbol.STAR, ".*?"));
+        return text.matches(pattern.replace(Symbol.QUESTION_MARK, ".?").replace(Symbol.STAR, ".*?"));
     }
 
     /**
@@ -793,7 +793,7 @@ public final class Parsing {
      * @return The value between the single quotes.
      */
     public static String getSingleQuoteStringValue(String line) {
-        return getStringBetween(line, '\'');
+        return getStringBetween(line, Symbol.C_SINGLE_QUOTE);
     }
 
     /**
@@ -803,7 +803,7 @@ public final class Parsing {
      * @return The value between the double quotes.
      */
     public static String getDoubleQuoteStringValue(String line) {
-        return getStringBetween(line, '"');
+        return getStringBetween(line, Symbol.C_DOUBLE_QUOTES);
     }
 
     /**
@@ -942,11 +942,11 @@ public final class Parsing {
             } else if (indices[parsedIndex] != stringIndex || c == Symbol.C_PLUS || !numeric) {
                 // Does not affect parsing, ignore
                 delimCurrent = false;
-            } else if (c >= '0' && c <= '9' && !dashSeen) {
-                if (power > 18 || power == 17 && c == '9' && parsed[parsedIndex] > 223_372_036_854_775_807L) {
+            } else if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE && !dashSeen) {
+                if (power > 18 || power == 17 && c == Symbol.C_NINE && parsed[parsedIndex] > 223_372_036_854_775_807L) {
                     parsed[parsedIndex] = Long.MAX_VALUE;
                 } else {
-                    parsed[parsedIndex] += (c - '0') * Parsing.POWERS_OF_TEN[power++];
+                    parsed[parsedIndex] += (c - Symbol.C_ZERO) * Parsing.POWERS_OF_TEN[power++];
                 }
                 delimCurrent = false;
             } else if (c == Symbol.C_MINUS) {
@@ -1032,7 +1032,7 @@ public final class Parsing {
             } else if (c == Symbol.C_PLUS || !numeric) {
                 // Does not affect parsing, ignore
                 delimCurrent = false;
-            } else if (c >= '0' && c <= '9' && !dashSeen) {
+            } else if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE && !dashSeen) {
                 delimCurrent = false;
             } else if (c == Symbol.C_MINUS) {
                 delimCurrent = false;
@@ -1137,7 +1137,7 @@ public final class Parsing {
      */
     public static boolean filePathStartsWith(List<String> prefixList, String path) {
         for (String match : prefixList) {
-            if (path.equals(match) || path.startsWith(match + "/")) {
+            if (path.equals(match) || path.startsWith(match + Symbol.SLASH)) {
                 return true;
             }
         }
@@ -1494,7 +1494,7 @@ public final class Parsing {
      */
     public static String removeLeadingDots(String dotPrefixedStr) {
         int pos = 0;
-        while (pos < dotPrefixedStr.length() && dotPrefixedStr.charAt(pos) == '.') {
+        while (pos < dotPrefixedStr.length() && dotPrefixedStr.charAt(pos) == Symbol.C_DOT) {
             pos++;
         }
         return pos < dotPrefixedStr.length() ? dotPrefixedStr.substring(pos) : Normal.EMPTY;
@@ -1513,7 +1513,7 @@ public final class Parsing {
         // Iterate characters
         do {
             // If we hit a delimiter or end of array or newline (Linux), add to list
-            if (end == bytes.length || bytes[end] == 0 || bytes[end] == '\n') {
+            if (end == bytes.length || bytes[end] == 0 || bytes[end] == Symbol.C_LF) {
                 // Zero-length string means two nulls, done
                 if (start == end) {
                     break;

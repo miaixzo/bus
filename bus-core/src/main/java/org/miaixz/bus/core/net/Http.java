@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * HTTP protocol constants, conventional endpoint contracts, and framework-independent authentication helpers.
+ * HTTP protocol constants, conventional endpoint contracts, and framework-independent authentication operations.
  * <p>
  * This class centralizes HTTP methods, status codes, header fields, HTTP/2 settings, request parameter names, endpoint
  * paths, cache directives, WebSocket handshake values, and credential extraction from plain request-value maps.
@@ -45,7 +45,7 @@ import org.miaixz.bus.core.lang.Symbol;
 public final class Http {
 
     /**
-     * Keeps all HTTP definitions and helpers on the static API.
+     * Keeps all HTTP definitions and operations on the static API.
      */
     private Http() {
         // No initialization required.
@@ -1277,7 +1277,7 @@ public final class Http {
     }
 
     /**
-     * HTTP authentication values and credential extraction helpers.
+     * HTTP authentication values and credential extraction operations.
      */
     public static final class Auth {
 

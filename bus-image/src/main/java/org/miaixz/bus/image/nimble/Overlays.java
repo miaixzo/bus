@@ -25,6 +25,7 @@ import java.util.Arrays;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.Sequence;
@@ -386,10 +387,11 @@ public class Overlays {
         if (ovlyData == null)
             throw new IllegalArgumentException("Missing " + Tag.toString(tagOverlayData) + " Overlay Data");
         if (ovlyRows <= 0)
-            throw new IllegalArgumentException(Tag.toString(tagOverlayRows) + " Overlay Rows [" + ovlyRows + "]");
+            throw new IllegalArgumentException(
+                    Tag.toString(tagOverlayRows) + " Overlay Rows [" + ovlyRows + Symbol.BRACKET_RIGHT);
         if (ovlyColumns <= 0)
             throw new IllegalArgumentException(
-                    Tag.toString(tagOverlayColumns) + " Overlay Columns [" + ovlyColumns + "]");
+                    Tag.toString(tagOverlayColumns) + " Overlay Columns [" + ovlyColumns + Symbol.BRACKET_RIGHT);
         if (ovlyOrigin == null)
             throw new IllegalArgumentException("Missing " + Tag.toString(tagOverlayOrigin) + " Overlay Origin");
         if (ovlyOrigin.length != 2)

@@ -37,8 +37,7 @@ import org.miaixz.bus.setting.nimble.yaml.Yaml;
 
 /**
  * A builder and facade for creating and accessing various configuration file types like {@link IniSetting},
- * {@link Props}, and {@link Yaml}. This class provides static helper methods that delegate to the specific format
- * handlers.
+ * {@link Props}, and {@link Yaml}. This class provides static methods that delegate to the specific format handlers.
  *
  * @author Kimi Liu
  * @since Java 21+

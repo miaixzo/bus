@@ -22,6 +22,7 @@ package org.miaixz.bus.core.center.date.format.parser;
 import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.center.date.DateTime;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * A global date parser that uses a set of predefined and customizable regular expression rules to parse date strings.
@@ -84,9 +85,9 @@ public class NormalDateParser implements PredicateDateParser {
         // Regex for the day of the week, optional.
         final String weekRegexWithSuff = "((?<week>[mwfts][oeruha][ndieut](\\w{3,6})?|(星期|周)[一二三四五六日])\\W+)?";
         // Regex for time part, optional.
-        final String timeRegexWithPre = "(" + "(\\W+|T)(at\\s)?(?<hour>\\d{1,2})" + "\\W(?<minute>\\d{1,2})"
-                + "(\\W(?<second>\\d{1,2}))?秒?" + "(?:[.,](?<nanosecond>\\d{1,9}))?(?<zero>z)?" + "(\\s?(?<m>[ap]m))?"
-                + ")?";
+        final String timeRegexWithPre = Symbol.PARENTHESE_LEFT + "(\\W+|T)(at\\s)?(?<hour>\\d{1,2})"
+                + "\\W(?<minute>\\d{1,2})" + "(\\W(?<second>\\d{1,2}))?秒?"
+                + "(?:[.,](?<nanosecond>\\d{1,9}))?(?<zero>z)?" + "(\\s?(?<m>[ap]m))?" + ")?";
         // Date format like "May 8"
         final String dateRegexMonthFirst = monthRegex + "\\W+" + dayRegex;
         // Date format like "02-Jan"
@@ -95,7 +96,7 @@ public class NormalDateParser implements PredicateDateParser {
         final String zoneRegex = "\\s?(?<zone>" + "[a-z ]*" // Matches timezone names like GMT, MST
                 + "(\\s?[-+]\\d{1,2}:?(?:\\d{2})?)*" // Matches offsets like +08:00, +0800
                 + "(\\s?[(]?[a-z ]+[)]?)?" // Matches display names like (GMT Daylight Time)
-                + ")";
+                + Symbol.PARENTHESE_RIGHT;
         final String maskRegex = "(\\smsk m=[+-]\\d[.]\\d+)?";
 
         return RegexDateParser.of(

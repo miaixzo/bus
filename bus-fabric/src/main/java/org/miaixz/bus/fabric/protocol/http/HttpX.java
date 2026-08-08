@@ -403,45 +403,52 @@ public final class HttpX {
             this.context = context;
             final Timeout configured = context.options().get(OPTION_TIMEOUT);
             this.timeout = configured == null ? Timeout.defaults() : configured;
-            this.proxy = configuredProxy();
+            this.proxy = ProxyPlan.inherit();
             this.materializeMaxBytes = context.options().materializeMaxBytes();
         }
 
+        /**
+         * Returns the mutable query-entry collection, creating it lazily.
+         *
+         * @return non-null mutable query-entry list owned by this builder
+         */
         private List<QueryEntry> queryEntries() {
             if (query == null)
                 query = new ArrayList<>(2);
             return query;
         }
 
+        /**
+         * Returns the mutable encoded-path segment collection, creating it lazily.
+         *
+         * @return non-null mutable path-segment list owned by this builder
+         */
         private List<String> pathSegments() {
             if (pathSegments == null)
                 pathSegments = new ArrayList<>(2);
             return pathSegments;
         }
 
+        /**
+         * Returns the mutable path-variable mapping, creating it lazily.
+         *
+         * @return non-null insertion-ordered path-variable map owned by this builder
+         */
         private Map<String, String> pathVariables() {
             if (pathVariables == null)
                 pathVariables = new LinkedHashMap<>(2);
             return pathVariables;
         }
 
+        /**
+         * Returns the mutable multipart collection, creating it lazily.
+         *
+         * @return non-null mutable multipart list owned by this builder
+         */
         private List<MultipartBody.Part> parts() {
             if (parts == null)
                 parts = new ArrayList<>(2);
             return parts;
-        }
-
-        /**
-         * Returns configured proxy plan.
-         *
-         * @return proxy plan
-         */
-        private ProxyPlan configuredProxy() {
-            if (context.options().contains(ProxyPlan.OPTION)) {
-                final ProxyPlan value = context.options().get(ProxyPlan.OPTION);
-                return value == null ? ProxyPlan.direct() : value;
-            }
-            return ProxyPlan.direct();
         }
 
         /**
@@ -1403,6 +1410,47 @@ public final class HttpX {
         }
 
         /**
+         * Inherits the context-level network proxy policy.
+         *
+         * @return this builder
+         */
+        public Builder inheritProxy() {
+            this.proxy = ProxyPlan.inherit();
+            return this;
+        }
+
+        /**
+         * Forces proxy selection through the current system selector.
+         *
+         * @return this builder
+         */
+        public Builder systemProxy() {
+            this.proxy = ProxyPlan.system();
+            return this;
+        }
+
+        /**
+         * Sets a SOCKS proxy for this request.
+         *
+         * @param proxy plain stream address of the SOCKS5 server
+         * @return this builder
+         */
+        public Builder socksProxy(final Address proxy) {
+            this.proxy = ProxyPlan.socks(require(proxy, "SOCKS proxy address"));
+            return this;
+        }
+
+        /**
+         * Sets a SOCKS proxy URL for this request.
+         *
+         * @param proxy plain stream URL of the SOCKS5 server
+         * @return this builder
+         */
+        public Builder socksProxy(final String proxy) {
+            return socksProxy(Address.parse(validateText(proxy, "SOCKS proxy URL")));
+        }
+
+        /**
          * Sets proxy authorization headers for the current HTTP proxy.
          *
          * @param authorization authorization headers
@@ -1542,6 +1590,9 @@ public final class HttpX {
 
         /**
          * Matches an unmodified absolute URL without reparsing it on repeated builder calls.
+         *
+         * @param request cached request candidate to compare with the current builder state
+         * @return {@code true} when the target URL and all path/query mutations remain unchanged
          */
         private boolean simpleTargetMatches(final HttpRequest request) {
             return url != null && baseUrl == null && (query == null || query.isEmpty())
@@ -1609,7 +1660,8 @@ public final class HttpX {
         /**
          * Builds headers with body metadata.
          *
-         * @param body request body supplying content headers
+         * @param body     request body supplying content headers
+         * @param reusable immutable header snapshot that may be returned when no metadata changes are required
          * @return headers
          */
         private Headers buildHeaders(final PayloadBody body, final Headers reusable) {

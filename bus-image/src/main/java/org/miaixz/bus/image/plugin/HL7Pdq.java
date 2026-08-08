@@ -24,6 +24,8 @@ import java.net.Socket;
 import java.security.GeneralSecurityException;
 import java.util.Iterator;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.Connection;
@@ -64,7 +66,7 @@ public class HL7Pdq extends Device {
     /**
      * The receiving application and facility, formatted as application^facility.
      */
-    private String receivingApplication = "";
+    private String receivingApplication = Normal.EMPTY;
 
     /**
      * The character set to be specified in the MSH-18 field.
@@ -99,7 +101,7 @@ public class HL7Pdq extends Device {
      */
     private static int countQueryParams(Iterator<String> args) {
         int count = 0;
-        while (args.hasNext() && args.next().charAt(0) == '@')
+        while (args.hasNext() && args.next().charAt(0) == Symbol.C_AT)
             count++;
         return count;
     }

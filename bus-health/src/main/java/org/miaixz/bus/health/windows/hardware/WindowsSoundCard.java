@@ -27,6 +27,7 @@ import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.platform.win32.WinReg;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.builtin.hardware.SoundCard;
@@ -99,10 +100,10 @@ final class WindowsSoundCard extends AbstractSoundCard {
      */
     private static String getRegString(String keyPath, String valueName) {
         if (!Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, keyPath, valueName)) {
-            return "";
+            return Normal.EMPTY;
         }
         Object val = Advapi32Util.registryGetValue(WinReg.HKEY_LOCAL_MACHINE, keyPath, valueName);
-        return val instanceof String ? (String) val : "";
+        return val instanceof String ? (String) val : Normal.EMPTY;
     }
 
 }

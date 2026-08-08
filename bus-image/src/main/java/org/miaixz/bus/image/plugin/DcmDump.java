@@ -29,8 +29,8 @@ import org.miaixz.bus.image.galaxy.io.ImageInputHandler;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 
 /**
- * The {@code DcmDump} class provides a utility to print a textual representation of a DICOM file's structure and
- * content. It implements the {@link ImageInputHandler} interface to process the DICOM stream and format the output.
+ * The {@code DcmDump} class prints a textual representation of a DICOM file's structure and content. It implements the
+ * {@link ImageInputHandler} interface to process the DICOM stream and format the output.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -139,7 +139,7 @@ public class DcmDump implements ImageInputHandler {
         byte[] b = probeValue(dis);
         line.append(Symbol.SPACE).append(Symbol.C_BRACKET_LEFT);
         if (vr.prompt(b, dis.bigEndian(), attrs.getSpecificCharacterSet(), width - line.length() - 1, line)) {
-            line.append(']');
+            line.append(Symbol.C_BRACKET_RIGHT);
             appendKeyword(dis, privateCreator, line);
         }
         System.out.println(line);
@@ -281,7 +281,7 @@ public class DcmDump implements ImageInputHandler {
         byte[] b = probeValue(dis);
         line.append(Symbol.SPACE).append(Symbol.C_BRACKET_LEFT);
         if (vr.prompt(b, dis.bigEndian(), null, width - line.length() - 1, line)) {
-            line.append(']');
+            line.append(Symbol.C_BRACKET_RIGHT);
             appendKeyword(dis, null, line);
         }
         System.out.println(line);
@@ -299,7 +299,7 @@ public class DcmDump implements ImageInputHandler {
         StringBuilder line = new StringBuilder(width);
         line.append("0: [");
         if (VR.OB.prompt(preamble, false, null, width - 5, line))
-            line.append(']');
+            line.append(Symbol.C_BRACKET_RIGHT);
         System.out.println(line);
     }
 

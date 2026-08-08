@@ -38,7 +38,7 @@ import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * A utility class for IPv4 addresses.
+ * Parses, validates, and converts IPv4 addresses.
  *
  * <p>
  * Glossary:

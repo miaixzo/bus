@@ -259,7 +259,7 @@ public enum Registry implements Complex {
             Map<Endpoint, String> map = new HashMap<>();
             map.put(Endpoint.AUTHORIZE, "https://appleid.apple.com/auth/authorize");
             map.put(Endpoint.TOKEN, "https://appleid.apple.com/auth/token");
-            map.put(Endpoint.USERINFO, "");
+            map.put(Endpoint.USERINFO, Normal.EMPTY);
             return map;
         }
 

@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The environment class.
@@ -226,7 +226,7 @@ public class Environment implements Serializable {
          */
         STOPPED;
 
-        private static JacksonJsonEnumHelper<EnvironmentState> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<EnvironmentState> enumCodec = new JacksonJsonEnumCodec<>(
                 EnvironmentState.class);
 
         /**
@@ -238,7 +238,7 @@ public class Environment implements Serializable {
 
         @JsonCreator
         public static EnvironmentState forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -249,7 +249,7 @@ public class Environment implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -260,7 +260,7 @@ public class Environment implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

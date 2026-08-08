@@ -124,19 +124,20 @@ public final class SoapBody implements RequestBody {
     public String xml() {
         final StringBuilder builder = new StringBuilder(256);
         builder.append("<?xml version=\"1.0\" encoding=\"").append(charset.name()).append("\"?>");
-        builder.append('<').append(SOAP_BODY_SOAP_PREFIX).append(":Envelope xmlns:").append(SOAP_BODY_SOAP_PREFIX)
-                .append("=\"").append(SOAP_BODY_SOAP_NAMESPACE).append('"');
+        builder.append(Symbol.C_LT).append(SOAP_BODY_SOAP_PREFIX).append(":Envelope xmlns:")
+                .append(SOAP_BODY_SOAP_PREFIX).append("=\"").append(SOAP_BODY_SOAP_NAMESPACE)
+                .append(Symbol.C_DOUBLE_QUOTES);
         if (!namespace.isBlank()) {
             builder.append(" xmlns:").append(SOAP_METHOD_PREFIX).append("=\"").append(escapeAttribute(namespace))
-                    .append('"');
+                    .append(Symbol.C_DOUBLE_QUOTES);
         }
-        builder.append('>');
+        builder.append(Symbol.C_GT);
         if (!headers.isEmpty()) {
-            builder.append('<').append(SOAP_BODY_SOAP_PREFIX).append(":Header>");
+            builder.append(Symbol.C_LT).append(SOAP_BODY_SOAP_PREFIX).append(":Header>");
             appendElements(builder, headers);
             builder.append("</").append(SOAP_BODY_SOAP_PREFIX).append(":Header>");
         }
-        builder.append('<').append(SOAP_BODY_SOAP_PREFIX).append(":Body>");
+        builder.append(Symbol.C_LT).append(SOAP_BODY_SOAP_PREFIX).append(":Body>");
         appendOpen(builder, method, !namespace.isBlank());
         appendElements(builder, params);
         appendClose(builder, method, !namespace.isBlank());
@@ -206,11 +207,11 @@ public final class SoapBody implements RequestBody {
      * @param method  whether to use method namespace prefix
      */
     private static void appendOpen(final StringBuilder builder, final String name, final boolean method) {
-        builder.append('<');
+        builder.append(Symbol.C_LT);
         if (method) {
             builder.append(SOAP_METHOD_PREFIX).append(Symbol.C_COLON);
         }
-        builder.append(name).append('>');
+        builder.append(name).append(Symbol.C_GT);
     }
 
     /**
@@ -225,7 +226,7 @@ public final class SoapBody implements RequestBody {
         if (method) {
             builder.append(SOAP_METHOD_PREFIX).append(Symbol.C_COLON);
         }
-        builder.append(name).append('>');
+        builder.append(name).append(Symbol.C_GT);
     }
 
     /**

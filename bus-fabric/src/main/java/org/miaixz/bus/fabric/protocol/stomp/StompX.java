@@ -38,6 +38,7 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
+import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Itinerary;
 import org.miaixz.bus.fabric.protocol.Mediator;
@@ -77,8 +78,8 @@ public final class StompX {
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
         final Headers connectHeaders = connectHeaders(builder.headers.build(), builder.policy);
         this.spec = new StompSpec(current, builder.uri, Address.from(builder.uri), connectHeaders,
-                copyTimeout(builder.timeout), builder.policy, builder.destination, builder.login, builder.passcode,
-                builder.guard, builder.filter, currentObserver,
+                copyTimeout(builder.timeout), builder.policy, builder.proxy, builder.destination, builder.login,
+                builder.passcode, builder.guard, builder.filter, currentObserver,
                 builder.handler == null ? noopHandler() : builder.handler, builder.listener);
         this.runner = new StompRunner(spec);
         this.callback = builder.callback;
@@ -377,6 +378,11 @@ public final class StompX {
         private EventObserver observer;
 
         /**
+         * Outbound proxy policy inherited by the WebSocket carrier.
+         */
+        private ProxyPlan proxy;
+
+        /**
          * Callback.
          */
         private Callback<StompSession> callback;
@@ -413,6 +419,7 @@ public final class StompX {
             this.timeout = copyTimeout(configured == null ? Timeout.defaults() : configured);
             this.policy = StompPolicy.resolve(context.options());
             this.observer = EventObserver.noop();
+            this.proxy = ProxyPlan.inherit();
             this.callback = null;
             this.handler = noopHandler();
             this.listener = null;
@@ -619,9 +626,67 @@ public final class StompX {
         }
 
         /**
-         * Sets observer.
+         * Sets the outbound proxy policy inherited by the WebSocket carrier.
          *
-         * @param observer event observer, or {@code null} to disable observation
+         * @param proxy non-null policy propagated to the carrier upgrade request
+         * @return this builder
+         */
+        public Builder proxy(final ProxyPlan proxy) {
+            this.proxy = require(proxy, "Proxy plan");
+            return this;
+        }
+
+        /**
+         * Inherits the context-level network proxy policy for the WebSocket carrier.
+         *
+         * @return this builder
+         */
+        public Builder inheritProxy() {
+            return proxy(ProxyPlan.inherit());
+        }
+
+        /**
+         * Resolves the WebSocket carrier through the current system proxy selector.
+         *
+         * @return this builder
+         */
+        public Builder systemProxy() {
+            return proxy(ProxyPlan.system());
+        }
+
+        /**
+         * Bypasses configured and system proxies for the WebSocket carrier.
+         *
+         * @return this builder
+         */
+        public Builder directProxy() {
+            return proxy(ProxyPlan.direct());
+        }
+
+        /**
+         * Uses a fixed HTTP proxy for the WebSocket carrier.
+         *
+         * @param proxy non-null plain HTTP proxy address
+         * @return this builder
+         */
+        public Builder httpProxy(final Address proxy) {
+            return proxy(ProxyPlan.http(require(proxy, "HTTP proxy")));
+        }
+
+        /**
+         * Uses a fixed SOCKS5 proxy for the WebSocket carrier.
+         *
+         * @param proxy non-null plain stream address of the SOCKS5 server
+         * @return this builder
+         */
+        public Builder socksProxy(final Address proxy) {
+            return proxy(ProxyPlan.socks(require(proxy, "SOCKS proxy")));
+        }
+
+        /**
+         * Sets the event observer used by the STOMP session.
+         *
+         * @param observer observer implementation, or {@code null} to disable observation
          * @return this builder
          */
         public Builder observe(final EventObserver observer) {

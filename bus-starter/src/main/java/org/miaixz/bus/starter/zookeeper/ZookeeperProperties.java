@@ -88,7 +88,8 @@ public class ZookeeperProperties {
      */
     public ZookeeperProperties(@DefaultValue("false") boolean enabled, String connectString, String namespace,
             @DefaultValue("15s") Duration connectionTimeout, @DefaultValue("60s") Duration sessionTimeout,
-            @DefaultValue("1s") Duration baseSleepTime, @DefaultValue("3") int maxRetries, String authReference) {
+            @DefaultValue("1s") Duration baseSleepTime, @DefaultValue(Symbol.THREE) int maxRetries,
+            String authReference) {
         positive(connectionTimeout, "connection-timeout");
         positive(sessionTimeout, "session-timeout");
         positive(baseSleepTime, "base-sleep-time");

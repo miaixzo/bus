@@ -28,8 +28,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Data Masking utility class for masking sensitive information (e.g., ID card number, mobile phone number, card number,
- * name, address, email, etc.).
+ * Data Masking class for masking sensitive information (e.g., ID card number, mobile phone number, card number, name,
+ * address, email, etc.).
  * <p>
  * Supports automatic masking for the following types of information:
  *
@@ -273,7 +273,7 @@ public class Masking {
      */
     public static TextMaskingRule createEmailRule() {
         return new TextMaskingRule("Email", "[\\w.-]+@[\\w.-]+\\.\\w+", EnumValue.Masking.PARTIAL, null)
-                .setPreserveLeft(1).setPreserveRight(0).setMaskChar('*');
+                .setPreserveLeft(1).setPreserveRight(0).setMaskChar(Symbol.C_STAR);
     }
 
     /**
@@ -293,7 +293,7 @@ public class Masking {
      * @return The sensitive word masking rule.
      */
     public static TextMaskingRule createSensitiveWordRule(final String pattern) {
-        return new TextMaskingRule("Sensitive Word", pattern, EnumValue.Masking.FULL, null).setMaskChar('*');
+        return new TextMaskingRule("Sensitive Word", pattern, EnumValue.Masking.FULL, null).setMaskChar(Symbol.C_STAR);
     }
 
     /**
@@ -345,7 +345,7 @@ public class Masking {
         // Email masking rule
         processor.addRule(
                 new TextMaskingRule("Email", "[\\w.-]+@[\\w.-]+\\.\\w+", EnumValue.Masking.PARTIAL, "[Email Hidden]")
-                        .setPreserveLeft(1).setPreserveRight(0).setMaskChar('*'));
+                        .setPreserveLeft(1).setPreserveRight(0).setMaskChar(Symbol.C_STAR));
 
         // URL masking rule
         processor.addRule(
@@ -355,7 +355,7 @@ public class Masking {
         // Sensitive word masking rule (example)
         processor.addRule(
                 new TextMaskingRule("Sensitive Word", "(Confidential|Top Secret|Internal|Secret|Proprietary)",
-                        EnumValue.Masking.FULL, "***").setMaskChar('*'));
+                        EnumValue.Masking.FULL, "***").setMaskChar(Symbol.C_STAR));
 
         return processor;
     }

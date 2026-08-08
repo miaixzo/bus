@@ -225,7 +225,8 @@ final class SseRunner {
                 Message.of(Protocol.HTTP, spec.address(), builder.build(), Payload.empty(), Builder.SSE_TAG_OPEN));
         checkGuard(opening);
         final HttpRequest request = HttpRequest.builder().method(Http.Method.GET)
-                .url(UnoUrl.parse(spec.uri().toString())).headers(opening.headers()).timeout(spec.timeout()).build();
+                .url(UnoUrl.parse(spec.uri().toString())).headers(opening.headers()).timeout(spec.timeout())
+                .proxy(spec.proxy()).build();
         final HttpRunner.Stream response = Mediator.convert(
                 Type.SSE,
                 Type.HTTP_STREAM,

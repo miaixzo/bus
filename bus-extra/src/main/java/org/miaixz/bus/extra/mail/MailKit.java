@@ -35,8 +35,8 @@ import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * A utility class for sending emails, built on top of the Jakarta Mail API. This class provides a set of static methods
- * for conveniently sending plain text and HTML emails.
+ * Sends emails, built on top of the Jakarta Mail API. This class provides a set of static methods for conveniently
+ * sending plain text and HTML emails.
  *
  * @author Kimi Liu
  * @since Java 21+

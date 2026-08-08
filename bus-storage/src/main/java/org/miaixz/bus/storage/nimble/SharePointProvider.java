@@ -32,6 +32,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -447,8 +448,8 @@ public class SharePointProvider extends AbstractProvider {
                             }
 
                             files.add(
-                                    Blob.builder().name((String) item.get("name"))
-                                            .size(item.containsKey("size") ? String.valueOf(item.get("size")) : "0")
+                                    Blob.builder().name((String) item.get("name")).size(
+                                            item.containsKey("size") ? String.valueOf(item.get("size")) : Symbol.ZERO)
                                             .extend(extend).build());
                         }
                     }
@@ -890,7 +891,7 @@ public class SharePointProvider extends AbstractProvider {
         }
 
         return Blob.builder().inputStream(inputStream).bucket(bucket).key(objectKey).name((String) metadata.get("name"))
-                .path(objectKey).size(metadata.get("size") == null ? "0" : String.valueOf(metadata.get("size")))
+                .path(objectKey).size(metadata.get("size") == null ? Symbol.ZERO : String.valueOf(metadata.get("size")))
                 .type(mimeType).hash(hash).extend(extend).build();
     }
 

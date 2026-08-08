@@ -30,6 +30,8 @@ import javax.sql.DataSource;
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Routes JDBC access to a registered datasource using the current {@link DataSourceHolder} key.
  *
@@ -124,7 +126,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Auto
             return this.primary;
         }
         if (!this.keySet.contains(key)) {
-            throw new IllegalStateException("Unable to locate datasource by key '" + key + "'");
+            throw new IllegalStateException("Unable to locate datasource by key '" + key + Symbol.SINGLE_QUOTE);
         }
         return key;
     }

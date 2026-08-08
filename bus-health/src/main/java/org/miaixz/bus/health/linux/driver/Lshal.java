@@ -26,7 +26,7 @@ import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 
 /**
- * Utility to read info from {@code lshal}
+ * Reads info from {@code lshal}
  *
  * @author Kimi Liu
  * @since Java 21+

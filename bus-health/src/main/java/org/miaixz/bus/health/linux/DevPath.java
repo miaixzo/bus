@@ -48,7 +48,7 @@ public final class DevPath {
     /**
      * The /dev filesystem location.
      */
-    public static final String DEV = queryDevConfig() + "/";
+    public static final String DEV = queryDevConfig() + Symbol.SLASH;
 
     /**
      * The DISK_BY_UUID constant.
@@ -81,11 +81,11 @@ public final class DevPath {
      * @return the query dev config result
      */
     private static String queryDevConfig() {
-        String devPath = Builder.get(Builder._UTIL_DEV_PATH, Symbol.SLASH + "dev");
+        String devPath = Builder.get(Builder._DEV_PATH, Symbol.SLASH + "dev");
         // Ensure prefix begins with path separator, but doesn't end with one
-        devPath = '/' + devPath.replaceAll("/$|^/", Normal.EMPTY);
+        devPath = Symbol.C_SLASH + devPath.replaceAll("/$|^/", Normal.EMPTY);
         if (!new File(devPath).exists()) {
-            throw new NotFoundException(Builder._UTIL_DEV_PATH, "The path does not exist");
+            throw new NotFoundException(Builder._DEV_PATH, "The path does not exist");
         }
         return devPath;
     }

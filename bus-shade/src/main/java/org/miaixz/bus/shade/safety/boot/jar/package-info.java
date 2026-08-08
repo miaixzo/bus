@@ -18,6 +18,6 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides utility classes for encrypting and decrypting standard JAR packages.
+ * Provides classes for encrypting and decrypting standard JAR packages.
  */
 package org.miaixz.bus.shade.safety.boot.jar;

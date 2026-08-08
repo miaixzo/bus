@@ -152,7 +152,7 @@ public enum GithubScope implements AuthorizeScope {
     /**
      * Grants access to upload or publish a package in GitHub Packages. For more information, see
      * "<a href="https://help.github.com/github/managing-packages-with-github-packages/publishing-a-package">Publishing
-     * a package</a>" in the GitHub Help documentation.
+     * a package</a>" in the GitHub documentation.
      */
     WRITE_PACKAGES("write:packages",
             "Grants access to upload or publish a package in GitHub Packages. For more information, see \"<a href=\"https://help.github.com/github/managing-packages-with-github-packages/publishing-a-package\">Publishing a package</a>\" in the GitHub Help documentation.",
@@ -160,7 +160,7 @@ public enum GithubScope implements AuthorizeScope {
     /**
      * Grants access to download or install packages from GitHub Packages. For more information, see
      * "<a href="https://help.github.com/github/managing-packages-with-github-packages/installing-a-package">Installing
-     * a package</a>" in the GitHub Help documentation.
+     * a package</a>" in the GitHub documentation.
      */
     READ_PACKAGES("read:packages",
             "Grants access to download or install packages from GitHub Packages. For more information, see \"<a href=\"https://help.github.com/github/managing-packages-with-github-packages/installing-a-package\">Installing a package</a>\" in the GitHub Help documentation.",
@@ -168,7 +168,7 @@ public enum GithubScope implements AuthorizeScope {
     /**
      * Grants access to delete packages from GitHub Packages. For more information, see
      * "<a href="https://help.github.com/github/managing-packages-with-github-packages/deleting-a-package">Deleting
-     * packages</a>" in the GitHub Help documentation.
+     * packages</a>" in the GitHub documentation.
      */
     DELETE_PACKAGES("delete:packages",
             "Grants access to delete packages from GitHub Packages. For more information, see \"<a href=\"https://help.github.com/github/managing-packages-with-github-packages/deleting-a-package\">Deleting packages</a>\" in the GitHub Help documentation.",

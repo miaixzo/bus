@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ModifierKit;
 
 /**
- * Utility class for method reflection operations. This class provides functionalities to retrieve and filter methods
+ * Finds, filters, and invokes reflected methods. This class provides functionalities to retrieve and filter methods
  * from a class, including declared methods, public methods, and all methods in the class hierarchy.
  *
  * @author Kimi Liu

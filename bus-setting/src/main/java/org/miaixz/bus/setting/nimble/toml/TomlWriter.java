@@ -127,8 +127,8 @@ public class TomlWriter {
     }
 
     private static boolean isValidCharOfKey(final char c) {
-        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == Symbol.C_MINUS
-                || c == Symbol.C_UNDERLINE;
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= Symbol.C_ZERO && c <= Symbol.C_NINE)
+                || c == Symbol.C_MINUS || c == Symbol.C_UNDERLINE;
     }
 
     static void addEscaped(final char c, final StringBuilder sb) {
@@ -137,19 +137,19 @@ public class TomlWriter {
                 sb.append("\\b");
                 break;
 
-            case '\t':
+            case Symbol.C_TAB:
                 sb.append("\\t");
                 break;
 
-            case '\n':
+            case Symbol.C_LF:
                 sb.append("\\n");
                 break;
 
-            case '\\':
+            case Symbol.C_BACKSLASH:
                 sb.append("\\\\");
                 break;
 
-            case '\r':
+            case Symbol.C_CR:
                 sb.append("\\r");
                 break;
 
@@ -157,7 +157,7 @@ public class TomlWriter {
                 sb.append("\\f");
                 break;
 
-            case '"':
+            case Symbol.C_DOUBLE_QUOTES:
                 sb.append("\\\"");
                 break;
 
@@ -240,7 +240,7 @@ public class TomlWriter {
             final String namePart = it.next();
             writeKey(namePart);
             if (it.hasNext()) {
-                write('.');
+                write(Symbol.C_DOT);
             }
         }
     }
@@ -316,9 +316,9 @@ public class TomlWriter {
                 tablesNames.addLast(name);
                 indentationLevel++;
                 indent();
-                write('[');
+                write(Symbol.C_BRACKET_LEFT);
                 writeTableName();
-                write(']');
+                write(Symbol.C_BRACKET_RIGHT);
                 newLine();
                 writeTableContent((Map<String, Object>) value);
                 indentationLevel--;
@@ -350,17 +350,17 @@ public class TomlWriter {
 
     private void writeString(final String text) throws InternalException {
         final StringBuilder sb = new StringBuilder();
-        sb.append('"');
+        sb.append(Symbol.C_DOUBLE_QUOTES);
         for (int i = 0; i < text.length(); i++) {
             final char c = text.charAt(i);
             addEscaped(c, sb);
         }
-        sb.append('"');
+        sb.append(Symbol.C_DOUBLE_QUOTES);
         write(sb.toString());
     }
 
     private void writeArray(final Collection<?> c) throws InternalException {
-        write('[');
+        write(Symbol.C_BRACKET_LEFT);
         Iterator<?> it = c.iterator();
         while (it.hasNext()) {
             writeValue(it.next());
@@ -368,7 +368,7 @@ public class TomlWriter {
                 write(", ");
             }
         }
-        write(']');
+        write(Symbol.C_BRACKET_RIGHT);
     }
 
     private void writeValue(final Object value) throws InternalException {

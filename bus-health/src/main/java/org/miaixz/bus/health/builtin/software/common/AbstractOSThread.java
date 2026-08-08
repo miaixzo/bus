@@ -22,6 +22,7 @@ package org.miaixz.bus.health.builtin.software.common;
 import java.util.Locale;
 
 import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.software.OSProcess;
@@ -55,7 +56,7 @@ public abstract class AbstractOSThread implements OSThread {
     /**
      * The thread name.
      */
-    protected volatile String name = "";
+    protected volatile String name = Normal.EMPTY;
 
     /**
      * The thread state.
@@ -143,7 +144,7 @@ public abstract class AbstractOSThread implements OSThread {
      */
     @Override
     public String getName() {
-        return this.name == null ? "" : this.name;
+        return this.name == null ? Normal.EMPTY : this.name;
     }
 
     /**

@@ -20,6 +20,7 @@
 package org.miaixz.bus.image.builtin;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Implements the Metaphone algorithm for phonetic encoding of words. This algorithm converts a word into a phonetic
@@ -63,7 +64,7 @@ public class Metaphone implements FuzzyString {
         char[] in = s.toUpperCase().toCharArray();
         int countX = 0;
         for (char c : in)
-            if (c == 'X')
+            if (c == Symbol.C_X)
                 countX++;
         char[] out = countX > 0 ? new char[in.length + countX] : in;
         int i = 0;
@@ -80,7 +81,7 @@ public class Metaphone implements FuzzyString {
             next2 = in.length > 2 ? in[2] : 0;
             i++;
             // Initial x- -> change to "s"
-        } else if (next1 == 'X') {
+        } else if (next1 == Symbol.C_X) {
             next1 = 'S';
             // Initial wh- -> change to "w"
         } else if (next1 == 'W' && next2 == 'H') {
@@ -120,9 +121,9 @@ public class Metaphone implements FuzzyString {
                 case 'C':
                     if (next1 == 'I' || next1 == 'E' || next1 == 'Y') {
                         if (prev != 'S')
-                            out[j++] = next1 == 'I' && next2 == 'A' ? 'X' : 'S';
+                            out[j++] = next1 == 'I' && next2 == 'A' ? Symbol.C_X : 'S';
                     } else
-                        out[j++] = next1 == 'H' && prev != 'S' ? 'X' : 'K';
+                        out[j++] = next1 == 'H' && prev != 'S' ? Symbol.C_X : 'K';
                     break;
 
                 // D -> J if in -dge-, -dgy- or -dgi-
@@ -139,7 +140,7 @@ public class Metaphone implements FuzzyString {
                 // R -> R
                 case 'F':
                 case 'J':
-                case 'L':
+                case Symbol.C_L:
                 case 'M':
                 case 'N':
                 case 'R':
@@ -204,7 +205,7 @@ public class Metaphone implements FuzzyString {
                 // S -> X (sh) if before "h" or in -sio- or -sia-
                 // S otherwise
                 case 'S':
-                    out[j++] = next1 == 'H' || next1 == 'I' && (next2 == 'O' || next2 == 'A') ? 'X' : 'S';
+                    out[j++] = next1 == 'H' || next1 == 'I' && (next2 == 'O' || next2 == 'A') ? Symbol.C_X : 'S';
                     break;
 
                 // T -> X (sh) if -tia- or -tio-
@@ -213,7 +214,8 @@ public class Metaphone implements FuzzyString {
                 // T otherwise
                 case 'T':
                     if (!(next1 == 'C' || next2 == 'H'))
-                        out[j++] = next1 == 'I' && (next2 == 'A' || next2 == 'O') ? 'X' : (next1 == 'H') ? '0' : 'T';
+                        out[j++] = next1 == 'I' && (next2 == 'A' || next2 == 'O') ? Symbol.C_X
+                                : (next1 == 'H') ? Symbol.C_ZERO : 'T';
                     break;
 
                 // V -> F
@@ -232,7 +234,7 @@ public class Metaphone implements FuzzyString {
                     break;
 
                 // X -> KS
-                case 'X':
+                case Symbol.C_X:
                     out[j++] = 'K';
                     out[j++] = 'S';
                     break;

@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -115,7 +116,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongNotice, Context>
         // Password
         bodys.put("password", Builder.md5(Builder.md5(password) + tKey));
         // tKey
-        bodys.put("tKey", tKey + "");
+        bodys.put("tKey", tKey + Normal.EMPTY);
         // Mobile number
         bodys.put("mobile", entity.getReceive());
         // Content
@@ -166,9 +167,9 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongNotice, Context>
         // Signature
         bodys.put("signature", entity.getSignature());
         // Extension number
-        bodys.put("ext", "");
+        bodys.put("ext", Normal.EMPTY);
         // Custom parameters
-        bodys.put("extend", "");
+        bodys.put("extend", Normal.EMPTY);
         // Send record collection
         Map<String, String> records = new HashMap<>();
 

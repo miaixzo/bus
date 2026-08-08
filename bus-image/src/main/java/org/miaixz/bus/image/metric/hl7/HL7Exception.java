@@ -22,6 +22,7 @@ package org.miaixz.bus.image.metric.hl7;
 import java.io.Serial;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Represents the HL7Exception type.
@@ -126,7 +127,7 @@ public class HL7Exception extends Exception {
      * @return the operation result.
      */
     private static String toAck(HL7Segment err) {
-        return err.getField(3, Normal.EMPTY).startsWith("1") ? AE : AR;
+        return err.getField(3, Normal.EMPTY).startsWith(Symbol.ONE) ? AE : AR;
     }
 
     /**

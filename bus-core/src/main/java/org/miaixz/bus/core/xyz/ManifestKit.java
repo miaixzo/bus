@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Utility class for retrieving and parsing `manifest.mf` files from JARs.
+ * Retrieves and parses `manifest.mf` files from JARs.
  *
  * @author Kimi Liu
  * @since Java 21+

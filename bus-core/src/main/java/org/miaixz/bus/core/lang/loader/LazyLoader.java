@@ -26,7 +26,7 @@ import org.miaixz.bus.core.Loader;
 
 /**
  * A lazy loader that defers object loading until the {@code get()} method is called. This loader is typically used for
- * objects that are large and may not always be used, helping to reduce resource consumption during startup. It uses a
+ * objects that are large and may not always be used, which reduces resource consumption during startup. It uses a
  * double-checked locking mechanism to ensure thread-safe initialization and prevent duplicate or lost loading in a
  * multi-threaded environment.
  *

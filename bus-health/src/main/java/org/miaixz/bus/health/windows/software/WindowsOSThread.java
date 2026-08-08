@@ -232,7 +232,7 @@ public class WindowsOSThread extends AbstractOSThread {
         } else if (pcb.getName().contains(Symbol.SLASH) || procName == null || procName.isEmpty()) {
             this.name = pcb.getName();
         } else {
-            this.name = procName + "/" + pcb.getName();
+            this.name = procName + Symbol.SLASH + pcb.getName();
         }
         if (pcb.getThreadWaitReason() == 5) {
             state = OSProcess.State.SUSPENDED;

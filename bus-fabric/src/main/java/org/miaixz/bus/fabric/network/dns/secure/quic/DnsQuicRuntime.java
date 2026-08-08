@@ -26,7 +26,7 @@ import org.miaixz.bus.fabric.network.dns.server.DnsTransport;
  * DNS-over-QUIC optional dependency isolation.
  *
  * <p>
- * This utility performs all QUIC class-path probing through class names so UDP, TCP, DoT, and DoH runtime paths do not
+ * This class performs all QUIC class-path probing through class names so UDP, TCP, DoT, and DoH runtime paths do not
  * link to Netty Incubator QUIC unless a DoQ endpoint or upstream is explicitly configured.
  * </p>
  *
@@ -51,9 +51,10 @@ public final class DnsQuicRuntime {
     public static final String ALPN = DnsTransport.DOQ.alpn();
 
     /**
-     * Prevents instantiation of this utility class.
+     * Restricts the class to static operations.
      */
     private DnsQuicRuntime() {
+        // No initialization required.
     }
 
     /**

@@ -31,11 +31,11 @@ import org.miaixz.bus.core.lang.reflect.lookup.LookupFactory;
 import org.miaixz.bus.core.lang.reflect.lookup.MethodLookupFactory;
 
 /**
- * Utility for {@link MethodHandles.Lookup}.
+ * Creates trusted {@link MethodHandles.Lookup} instances.
  * <p>
  * A {@link MethodHandles.Lookup} is an object for finding method handles in a specific class. In JDK 8, the `Lookup`
  * object obtained by directly calling {@link MethodHandles#lookup()} may lack sufficient permissions for `findSpecial`
- * and `unreflectSpecial`, leading to a "no private access for invokespecial" exception. This utility provides a
+ * and `unreflectSpecial`, leading to a "no private access for invokespecial" exception. This class provides a
  * workaround for both JDK 8 and JDK 9+.
  *
  * @author Kimi Liu

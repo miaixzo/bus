@@ -346,7 +346,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                                                 : device.getPropertyValue(ID_FS_TYPE),
                                                         device.getPropertyValue(ID_FS_UUID) == null ? Normal.EMPTY
                                                                 : device.getPropertyValue(ID_FS_UUID),
-                                                        device.getPropertyValue(ID_FS_LABEL) == null ? ""
+                                                        device.getPropertyValue(ID_FS_LABEL) == null ? Normal.EMPTY
                                                                 : device.getPropertyValue(ID_FS_LABEL),
                                                         Parsing.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
                                                                 * SECTORSIZE,
@@ -425,7 +425,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
      * @return the get partition name for dm device result
      */
     private static String getPartitionNameForDmDevice(String vgName, String lvName) {
-        return DevPath.DEV + vgName + '/' + lvName;
+        return DevPath.DEV + vgName + Symbol.C_SLASH + lvName;
     }
 
     /**
@@ -580,13 +580,13 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
      */
     private static String detectDiskType(UdevDevice device) {
         String removable = device.getSysattrValue("removable");
-        if ("1".equals(removable)) {
+        if (Symbol.ONE.equals(removable)) {
             return "Removable";
         }
         String rotational = device.getSysattrValue("queue/rotational");
-        if ("0".equals(rotational)) {
+        if (Symbol.ZERO.equals(rotational)) {
             return "SSD";
-        } else if ("1".equals(rotational)) {
+        } else if (Symbol.ONE.equals(rotational)) {
             return "HDD";
         }
         return "Unknown";

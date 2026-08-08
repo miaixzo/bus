@@ -85,7 +85,7 @@ public class UrlPath {
      */
     private static String fixPath(final CharSequence path) {
         Assert.notNull(path, "Path segment must be not null!");
-        if ("/".contentEquals(path)) {
+        if (Symbol.SLASH.contentEquals(path)) {
             return Normal.EMPTY;
         }
 

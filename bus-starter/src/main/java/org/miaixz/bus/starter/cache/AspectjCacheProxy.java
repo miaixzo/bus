@@ -120,8 +120,8 @@ public class AspectjCacheProxy {
     /**
      * Retrieves the actual {@link Method} from a {@link JoinPoint}.
      * <p>
-     * This helper method is necessary to handle cases where the intercepted method is defined in an interface. It
-     * ensures that the method from the actual target class is retrieved, which is required for annotation processing.
+     * Handles cases where the intercepted method is defined in an interface. It ensures that the method from the actual
+     * target class is retrieved, which is required for annotation processing.
      * </p>
      *
      * @param point The join point.

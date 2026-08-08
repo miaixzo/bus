@@ -30,6 +30,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
@@ -189,14 +190,14 @@ public class ContentHandlerAdapter extends DefaultHandler {
      */
     private static String prefix(String privateCreator, int level) {
         if (privateCreator == null && level == 0) {
-            return "";
+            return Normal.EMPTY;
         }
         StringBuilder sb = new StringBuilder();
         if (privateCreator != null) {
-            sb.append(privateCreator).append(':');
+            sb.append(privateCreator).append(Symbol.C_COLON);
         }
         for (int i = 0; i < level; i++) {
-            sb.append('>');
+            sb.append(Symbol.C_GT);
         }
         return sb.toString();
     }

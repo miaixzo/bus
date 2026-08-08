@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
@@ -278,16 +279,16 @@ public class LinuxCgroupInfo implements CgroupInfo {
     private String parseCgroupPath() {
         List<String> selfCgroup = selfCgroupSupplier.get();
         if (selfCgroup.isEmpty()) {
-            return "";
+            return Normal.EMPTY;
         }
         if (getVersion() == 2) {
             String line = selfCgroup.get(0);
             if (line.startsWith("0::")) {
                 String path = line.substring(3);
-                return path.isEmpty() ? "/" : path;
+                return path.isEmpty() ? Symbol.SLASH : path;
             }
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     /**
@@ -303,7 +304,7 @@ public class LinuxCgroupInfo implements CgroupInfo {
         if (cgroupPath.startsWith(Symbol.SLASH)) {
             cgroupPath = cgroupPath.substring(1);
         }
-        return SysPath.CGROUP + cgroupPath + "/";
+        return SysPath.CGROUP + cgroupPath + Symbol.SLASH;
     }
 
     /**
@@ -341,7 +342,7 @@ public class LinuxCgroupInfo implements CgroupInfo {
                 }
             }
         }
-        return SysPath.CGROUP + controller + "/";
+        return SysPath.CGROUP + controller + Symbol.SLASH;
     }
 
     /**

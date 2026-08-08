@@ -22,7 +22,7 @@ package org.miaixz.bus.gitlab.models;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The membership source type enum.
@@ -41,7 +41,7 @@ public enum MembershipSourceType {
      */
     NAMESPACE;
 
-    private static JacksonJsonEnumHelper<MembershipSourceType> enumHelper = new JacksonJsonEnumHelper<>(
+    private static JacksonJsonEnumCodec<MembershipSourceType> enumCodec = new JacksonJsonEnumCodec<>(
             MembershipSourceType.class, true);
 
     /**
@@ -53,7 +53,7 @@ public enum MembershipSourceType {
 
     @JsonCreator
     public static MembershipSourceType forValue(String value) {
-        return enumHelper.forValue(value);
+        return enumCodec.forValue(value);
     }
 
     /**
@@ -64,7 +64,7 @@ public enum MembershipSourceType {
 
     @JsonValue
     public String toValue() {
-        return (enumHelper.toString(this));
+        return (enumCodec.toString(this));
     }
 
     /**
@@ -75,7 +75,7 @@ public enum MembershipSourceType {
 
     @Override
     public String toString() {
-        return (enumHelper.toString(this));
+        return (enumCodec.toString(this));
     }
 
 }

@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.*;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * A class for handling arrangements (permutations), mathematically noted as $A(n, m)$ or $P(n, k)$.
@@ -86,7 +87,7 @@ public class Arrangement implements Serializable {
             final long next = result * (n - i);
             // Overflow check
             if (next < result) {
-                throw new ArithmeticException("Overflow computing A(" + n + "," + m + ")");
+                throw new ArithmeticException("Overflow computing A(" + n + Symbol.COMMA + m + Symbol.PARENTHESE_RIGHT);
             }
             result = next;
         }

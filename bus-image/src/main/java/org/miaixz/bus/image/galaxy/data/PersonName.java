@@ -22,6 +22,7 @@ package org.miaixz.bus.image.galaxy.data;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.logger.Logger;
@@ -103,7 +104,7 @@ public class PersonName {
                     cindex = 0;
                     break;
 
-                case '^':
+                case Symbol.C_CARET:
                     ++cindex;
                     break;
 
@@ -118,7 +119,7 @@ public class PersonName {
                                     "illegal PN: valueChars={} - subsumes {}th component in suffix",
                                     s == null ? 0 : s.length(),
                                     cindex + 1);
-                            set(gindex, 4, Builder.maskNull(get(gindex, 4), "") + ' ' + tk);
+                            set(gindex, 4, Builder.maskNull(get(gindex, 4), Normal.EMPTY) + Symbol.C_SPACE + tk);
                         }
                     } else
                         throw new IllegalArgumentException(s);
@@ -134,10 +135,10 @@ public class PersonName {
      */
     public void set(Group g, String s) {
         int gindex = g.ordinal();
-        if (s.indexOf('=') >= 0)
+        if (s.indexOf(Symbol.C_EQUAL) >= 0)
             throw new IllegalArgumentException(s);
 
-        String[] ss = Builder.split(s, '^');
+        String[] ss = Builder.split(s, Symbol.C_CARET);
         if (ss.length > 5)
             throw new IllegalArgumentException(s);
 
@@ -176,7 +177,7 @@ public class PersonName {
                 if (s != null) {
                     int d = c.ordinal() - lastCompOfGroup.ordinal();
                     while (d-- > 0)
-                        ch[wpos++] = Symbol.C_CARET;
+                        ch[wpos++] = '^';
                     d = s.length();
                     s.getChars(0, d, ch, wpos);
                     wpos += d;
@@ -185,7 +186,7 @@ public class PersonName {
             }
             if (g == lastGroup)
                 break;
-            ch[wpos++] = Symbol.C_EQUAL;
+            ch[wpos++] = '=';
         }
         return new String(ch);
     }

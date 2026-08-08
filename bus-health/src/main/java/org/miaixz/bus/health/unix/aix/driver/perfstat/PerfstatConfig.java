@@ -25,7 +25,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_partition_config_t;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
- * Utility to query partition config
+ * Queries partition config
  *
  * @author Kimi Liu
  * @since Java 21+

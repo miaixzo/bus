@@ -264,9 +264,9 @@ public class WindowsFileSystem extends AbstractFileSystem {
 
                     fs.add(
                             new WindowsOSFileStore(String.format(Locale.ROOT, "%s (%s)", strName, strMount), volume,
-                                    strName, strMount, options.toString(), uuid, true, "", getDriveType(strMount),
-                                    strFsType, systemFreeBytes.getValue(), userFreeBytes.getValue(),
-                                    totalBytes.getValue(), 0, 0));
+                                    strName, strMount, options.toString(), uuid, true, Normal.EMPTY,
+                                    getDriveType(strMount), strFsType, systemFreeBytes.getValue(),
+                                    userFreeBytes.getValue(), totalBytes.getValue(), 0, 0));
                 }
             } while (Kernel32.INSTANCE.FindNextVolume(hVol, aVolume, BUFSIZE));
             return fs;
@@ -311,7 +311,7 @@ public class WindowsFileSystem extends AbstractFileSystem {
             boolean local = driveType == 2 || driveType == 3 || driveType == 6;
             fs.add(
                     new WindowsOSFileStore(String.format(Locale.ROOT, "%s (%s)", description, name), volume, label,
-                            name + "\\", options, "", local, "", getDriveType(name),
+                            name + Symbol.BACKSLASH, options, Normal.EMPTY, local, Normal.EMPTY, getDriveType(name),
                             WmiKit.getString(drives, LogicalDiskProperty.FILESYSTEM, i), free, free, total, 0, 0));
         }
         return fs;
@@ -376,8 +376,8 @@ public class WindowsFileSystem extends AbstractFileSystem {
                 result.add(
                         new WindowsOSFileStore(wmiVolume.getName(), volume.getVolume(),
                                 volume.getLabel().isEmpty() ? wmiVolume.getLabel() : volume.getLabel(),
-                                volume.getMount(), volume.getOptions(), volume.getUUID(), volume.isLocal(), "",
-                                volume.getDescription(), volume.getType(), volume.getFreeSpace(),
+                                volume.getMount(), volume.getOptions(), volume.getUUID(), volume.isLocal(),
+                                Normal.EMPTY, volume.getDescription(), volume.getType(), volume.getFreeSpace(),
                                 volume.getUsableSpace(), volume.getTotalSpace(), 0, 0));
             } else if (!localOnly) {
                 // Otherwise add the new volume in its entirety

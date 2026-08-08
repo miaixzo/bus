@@ -32,8 +32,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Abstract base class for FTP operations. This class provides common utility methods and a basic structure for FTP
- * client implementations, handling tasks like path existence checks, directory creation, and robust file downloading.
+ * Abstract base class for FTP operations. This class provides common methods and a basic structure for FTP client
+ * implementations, handling tasks like path existence checks, directory creation, and robust file downloading.
  *
  * @author Kimi Liu
  * @since Java 21+

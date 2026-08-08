@@ -464,7 +464,7 @@ public class ApplicationEntity implements Serializable {
     public void setMasqueradeCallingAETitles(String... aets) {
         masqueradeCallingAETs.clear();
         for (String aet : aets) {
-            if (aet.charAt(0) == '[') {
+            if (aet.charAt(0) == Symbol.C_BRACKET_LEFT) {
                 int end = aet.indexOf(Symbol.C_BRACKET_RIGHT);
                 if (end > 0)
                     masqueradeCallingAETs.put(aet.substring(1, end), aet.substring(end + 1));
@@ -525,7 +525,7 @@ public class ApplicationEntity implements Serializable {
      * @return true if the condition is met; otherwise false.
      */
     public boolean isMasqueradeCallingAETitle(String calledAET) {
-        return masqueradeCallingAETs.containsKey(calledAET) || masqueradeCallingAETs.containsKey("*");
+        return masqueradeCallingAETs.containsKey(calledAET) || masqueradeCallingAETs.containsKey(Symbol.STAR);
     }
 
     /**
@@ -934,7 +934,7 @@ public class ApplicationEntity implements Serializable {
             if (tc != null)
                 return tc;
         }
-        return tcs.get("*");
+        return tcs.get(Symbol.STAR);
     }
 
     /**
@@ -1072,7 +1072,7 @@ public class ApplicationEntity implements Serializable {
      */
     @Override
     public String toString() {
-        return promptTo(new StringBuilder(Normal._512), Normal.EMPTY).toString();
+        return promptTo(new StringBuilder(Normal._512), "").toString();
     }
 
     /**

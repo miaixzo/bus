@@ -61,7 +61,7 @@ public class NumericEntityUnescaper extends StringReplacer {
             int start = pos + 2;
             boolean isHex = false;
             final char firstChar = text.charAt(start);
-            if (firstChar == 'x' || firstChar == 'X') {
+            if (firstChar == 'x' || firstChar == Symbol.C_X) {
                 start++;
                 isHex = true;
             }

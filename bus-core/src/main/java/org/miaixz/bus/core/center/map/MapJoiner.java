@@ -28,8 +28,8 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * A utility for joining {@link Map} entries into a formatted string. This class provides a fluent API for concatenating
- * key-value pairs with specified delimiters, similar to how {@link StringJoiner} works for sequences.
+ * Joins {@link Map} entries into a formatted string. This class provides a fluent API for concatenating key-value pairs
+ * with specified delimiters, similar to how {@link StringJoiner} works for sequences.
  *
  * @author Kimi Liu
  * @since Java 21+

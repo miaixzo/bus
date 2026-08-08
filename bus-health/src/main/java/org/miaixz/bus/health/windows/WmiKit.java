@@ -34,7 +34,7 @@ import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 
 /**
- * Helper class for WMI
+ * Executes WMI queries and converts their result values.
  *
  * @author Kimi Liu
  * @since Java 21+

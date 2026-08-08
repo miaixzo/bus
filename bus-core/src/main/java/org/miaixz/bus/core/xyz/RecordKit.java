@@ -27,7 +27,7 @@ import java.util.Map;
 import org.miaixz.bus.core.bean.copier.ValueProvider;
 
 /**
- * Utility class for `java.lang.Record`.
+ * Inspects Java record classes and components.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -21,12 +21,19 @@ package org.miaixz.bus.vortex.routing;
 
 import java.util.Map;
 
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferLimitException;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Holder;
+import org.miaixz.bus.vortex.Octets;
 import org.miaixz.bus.vortex.Router;
+import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.routing.grpc.GrpcExecutor;
 
 import reactor.core.publisher.Mono;
@@ -40,7 +47,7 @@ import reactor.core.publisher.Mono;
  * The executor handles all protocol-specific logic including:
  * <ul>
  * <li>Invoking the gRPC method via HTTP gateway</li>
- * <li>Selecting execution strategy (streaming vs buffering)</li>
+ * <li>Applying the strict buffered, realtime-streaming or download response mode</li>
  * <li>Building the appropriate {@link ServerResponse}</li>
  * </ul>
  * <p>
@@ -68,9 +75,9 @@ public class GrpcRouter implements Router<ServerRequest, ServerResponse> {
     /**
      * Routes a client request by invoking a gRPC method on the target service.
      * <p>
-     * This method retrieves the {@link Context} from the reactive stream and delegates the execution to the
-     * {@link GrpcExecutor}. The executor is responsible for protocol interaction, strategy selection, and response
-     * building.
+     * The request requires Content-Length and is read directly into one bounded array. After conversion to the payload
+     * string, the request-byte lease remains owned until executor completion so the equivalent parsed representation is
+     * still included in process-wide memory accounting.
      *
      * @param input The ServerRequest object (strongly typed)
      * @return A {@code Mono<ServerResponse>} containing the response from the gRPC service
@@ -98,28 +105,38 @@ public class GrpcRouter implements Router<ServerRequest, ServerResponse> {
                     context.getX_request_ip(),
                     input.headers().asHttpHeaders().toSingleValueMap());
 
-            return input.bodyToMono(String.class).switchIfEmpty(Mono.just("{}")).flatMap(body -> {
-                Logger.debug(
-                        true,
-                        "Vortex",
-                        "Request parameter snapshot: protocol=grpc, clientIp={}, path={}, bodyChars={}",
-                        context.getX_request_ip(),
-                        input.path(),
-                        body.length());
-                Logger.debug(
-                        true,
-                        "Vortex",
-                        "Request parameters: protocol=grpc, clientIp={}, parameters={}",
-                        context.getX_request_ip(),
-                        Map.of("body", body));
-                return executor.execute(context, body);
-            }).doOnError(
-                    error -> Logger.error(
-                            true,
-                            "Vortex",
-                            "GRPC routing failed: protocol=grpc, event=GRPC_ROUTER_ERROR, service={}, exception={}",
-                            context.getAssets().getMethod(),
-                            error.getMessage()));
+            return Octets
+                    .readForParsing(
+                            input.bodyToFlux(DataBuffer.class),
+                            Math.toIntExact(Holder.get().getMaxBufferedRequestSize()),
+                            Holder.requestBufferBudget(),
+                            input.headers().contentLength().orElse(-1))
+                    .onErrorMap(DataBufferLimitException.class, error -> new ValidateException(ErrorCode._100530))
+                    .flatMap(bufferedBody -> {
+                        String body = bufferedBody.bytes().length == 0 ? "{}"
+                                : new String(bufferedBody.bytes(), Charset.UTF_8);
+                        bufferedBody.discardBytes();
+                        Logger.debug(
+                                true,
+                                "Vortex",
+                                "Request parameter snapshot: protocol=grpc, clientIp={}, path={}, bodyChars={}",
+                                context.getX_request_ip(),
+                                input.path(),
+                                body.length());
+                        Logger.debug(
+                                true,
+                                "Vortex",
+                                "Request parameters: protocol=grpc, clientIp={}, parameters={}",
+                                context.getX_request_ip(),
+                                Map.of("body", body));
+                        return executor.execute(context, body).doFinally(signal -> bufferedBody.close());
+                    }).doOnError(
+                            error -> Logger.error(
+                                    true,
+                                    "Vortex",
+                                    "GRPC routing failed: protocol=grpc, event=GRPC_ROUTER_ERROR, service={}, exception={}",
+                                    context.getAssets().getMethod(),
+                                    error.getMessage()));
         });
     }
 

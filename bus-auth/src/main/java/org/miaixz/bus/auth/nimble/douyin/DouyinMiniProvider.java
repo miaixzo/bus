@@ -33,6 +33,7 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -188,7 +189,7 @@ public class DouyinMiniProvider extends AbstractProvider {
         }
         Object errorCodeObj = data.get("error_code");
         String errorCode = errorCodeObj != null ? String.valueOf(errorCodeObj) : null;
-        if ("error".equals(message) || !"0".equals(errorCode)) {
+        if ("error".equals(message) || !Symbol.ZERO.equals(errorCode)) {
             String description = (String) data.get("description");
             throw new AuthorizedException(errorCode, description != null ? description : "Unknown error");
         }

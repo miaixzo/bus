@@ -36,11 +36,12 @@ import reactor.core.publisher.Mono;
  * Router implementation for Large Language Model (LLM) proxy requests.
  * <p>
  * This router handles requests to the {@code /router/llm/{model}} endpoint and delegates execution to the
- * {@link LlmExecutor}. It extracts the model name from the URL path and validates the project API key from the request
- * headers.
+ * {@link LlmExecutor}. It extracts the model name from the URL path after the shared qualifier has resolved the route
+ * asset and authorized the request credential.
  * <p>
- * The project API key is used for authentication at the bus-vortex level, while the actual model API keys are stored in
- * Assets metadata and used by providers to access the real LLM services.
+ * Client credentials are resolved uniformly by {@code QualifierStrategy}: a standard Bearer token has priority over the
+ * supported API-key headers. Provider API keys remain stored in Assets metadata and are used only for calls to the
+ * underlying LLM service.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -64,8 +65,8 @@ public class LlmRouter implements Router<ServerRequest, ServerResponse> {
     /**
      * Routes an LLM request to the appropriate executor.
      * <p>
-     * This method extracts the model name from the URL path (e.g., {@code /router/llm/gpt-4}), validates the project
-     * API key from the {@code X-API-Key} header, and delegates to the executor.
+     * This method extracts the model name from the URL path (e.g., {@code /router/llm/gpt-4}) and delegates to the
+     * executor. Route qualification and credential authorization have already completed before the router is invoked.
      *
      * @param input The incoming server request.
      * @return A {@link Mono} emitting the server response.
@@ -84,15 +85,7 @@ public class LlmRouter implements Router<ServerRequest, ServerResponse> {
                         "{\"error\":{\"message\":\"Model name is required in path: /router/llm/{model}\",\"type\":\"invalid_request_error\",\"code\":\"model_name_missing\"}}");
             }
 
-            final String projectApiKey = input.headers().firstHeader("X-API-Key");
-            if (StringKit.isBlank(projectApiKey)) {
-                Logger.warn(false, "Vortex", "{} Project API key is missing in header", context.getX_request_ip());
-                return ServerResponse.status(HttpStatus.UNAUTHORIZED).bodyValue(
-                        "{\"error\":{\"message\":\"Project API key is required in X-API-Key header\",\"type\":\"authentication_error\",\"code\":\"api_key_missing\"}}");
-            }
-
             context.getParameters().put("modelName", modelName);
-            context.getParameters().put("projectApiKey", projectApiKey);
             context.getParameters().put("serverRequest", input);
 
             Logger.debug(

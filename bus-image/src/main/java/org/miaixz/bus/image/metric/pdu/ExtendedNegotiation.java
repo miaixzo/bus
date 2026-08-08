@@ -114,7 +114,7 @@ public class ExtendedNegotiation {
         UID.promptTo(cuid, sb).append(Builder.LINE_SEPARATOR).append("    info: [");
         for (byte b : info)
             sb.append(b).append(Symbol.COMMA).append(Symbol.SPACE);
-        return sb.append(']').append(Builder.LINE_SEPARATOR).append("  ]");
+        return sb.append(Symbol.C_BRACKET_RIGHT).append(Builder.LINE_SEPARATOR).append("  ]");
     }
 
 }

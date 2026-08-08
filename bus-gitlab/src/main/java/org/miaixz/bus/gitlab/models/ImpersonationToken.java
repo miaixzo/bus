@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 import tools.jackson.databind.annotation.JsonSerialize;
 
@@ -267,9 +267,9 @@ public class ImpersonationToken implements Serializable {
         SUDO;
 
         /**
-         * JSON enum conversion helper.
+         * Converts enum constants to and from JSON values.
          */
-        private static JacksonJsonEnumHelper<Scope> enumHelper = new JacksonJsonEnumHelper<>(Scope.class);
+        private static JacksonJsonEnumCodec<Scope> enumCodec = new JacksonJsonEnumCodec<>(Scope.class);
 
         /**
          * Converts a GitLab API value into an impersonation token scope.
@@ -279,7 +279,7 @@ public class ImpersonationToken implements Serializable {
          */
         @JsonCreator
         public static Scope forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -289,7 +289,7 @@ public class ImpersonationToken implements Serializable {
          */
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -299,7 +299,7 @@ public class ImpersonationToken implements Serializable {
          */
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

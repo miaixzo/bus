@@ -26,7 +26,7 @@ import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
 
 /**
- * Provides utility methods for safely retrieving and converting values from a {@link Map}. This class extends
+ * Provides methods for safely retrieving and converting values from a {@link Map}. This class extends
  * {@link MapValidator} and offers a suite of {@code getXXX} methods for common data types, simplifying data extraction
  * and type conversion.
  *

@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
@@ -132,12 +133,12 @@ public final class LinuxBluetoothDevice extends AbstractBluetoothDevice {
                     continue;
                 }
 
-                Map<String, String> props = Builder.getKeyValueMapFromFile(infoFile.getAbsolutePath(), "=");
+                Map<String, String> props = Builder.getKeyValueMapFromFile(infoFile.getAbsolutePath(), Symbol.EQUAL);
                 String name = props.getOrDefault("Name", Normal.EMPTY);
                 boolean paired = Boolean.parseBoolean(props.getOrDefault("Paired", "true"));
                 boolean connected = Boolean.parseBoolean(props.getOrDefault("Connected", "false"));
                 int batteryLevel = Parsing.parseIntOrDefault(props.get("Battery"), -1);
-                int classOfDevice = Parsing.hexStringToInt(props.getOrDefault("Class", "0"), 0);
+                int classOfDevice = Parsing.hexStringToInt(props.getOrDefault("Class", Symbol.ZERO), 0);
                 String majorClass = parseMajorDeviceClass(classOfDevice);
 
                 devices.add(

@@ -653,7 +653,7 @@ public final class DnsPolicyRule {
      */
     private static Pattern wildcardPattern(final String name) {
         final String body = name.substring(0, name.length() - 1);
-        final StringBuilder expression = new StringBuilder("^");
+        final StringBuilder expression = new StringBuilder(Symbol.CARET);
         final String[] labels = DnsName.labels(body);
         for (final String label : labels) {
             if (label.contains(Symbol.STAR) && !Symbol.STAR.equals(label)) {
@@ -661,7 +661,7 @@ public final class DnsPolicyRule {
             }
             expression.append(Symbol.STAR.equals(label) ? "[^.]+" : Pattern.quote(label)).append("\\.");
         }
-        expression.append('$');
+        expression.append(Symbol.C_DOLLAR);
         return Pattern.compile(expression.toString());
     }
 

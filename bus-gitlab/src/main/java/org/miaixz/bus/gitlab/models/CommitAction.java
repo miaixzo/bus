@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.models.Constants.Encoding;
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -375,7 +375,7 @@ public class CommitAction implements Serializable {
          */
         CHMOD;
 
-        private static JacksonJsonEnumHelper<Action> enumHelper = new JacksonJsonEnumHelper<>(Action.class);
+        private static JacksonJsonEnumCodec<Action> enumCodec = new JacksonJsonEnumCodec<>(Action.class);
 
         /**
          * Returns the value.
@@ -386,7 +386,7 @@ public class CommitAction implements Serializable {
 
         @JsonCreator
         public static Action forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -397,7 +397,7 @@ public class CommitAction implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -408,7 +408,7 @@ public class CommitAction implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

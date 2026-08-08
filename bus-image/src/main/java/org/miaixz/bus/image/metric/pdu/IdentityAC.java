@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.image.metric.pdu;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
 
 /**
@@ -79,7 +80,8 @@ public class IdentityAC {
      */
     StringBuilder promptTo(StringBuilder sb) {
         return sb.append("  UserIdentity[").append(Builder.LINE_SEPARATOR).append("    serverResponse: byte[")
-                .append(serverResponse.length).append(']').append(Builder.LINE_SEPARATOR).append("  ]");
+                .append(serverResponse.length).append(Symbol.C_BRACKET_RIGHT).append(Builder.LINE_SEPARATOR)
+                .append("  ]");
     }
 
 }

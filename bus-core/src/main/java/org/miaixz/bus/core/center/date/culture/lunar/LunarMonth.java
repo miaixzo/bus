@@ -31,6 +31,7 @@ import org.miaixz.bus.core.center.date.culture.ren.MinorRen;
 import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Represents a month in the Lunar calendar.
@@ -209,7 +210,7 @@ public class LunarMonth extends MonthParts {
      * @return the name
      */
     public String getName() {
-        return (leap ? "闰" : "") + NAMES[month - 1];
+        return (leap ? "闰" : Normal.EMPTY) + NAMES[month - 1];
     }
 
     /**

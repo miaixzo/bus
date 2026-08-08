@@ -19,9 +19,13 @@
 */
 package org.miaixz.bus.metrics.observe.tag;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * An immutable key=value metric tag.
  *
+ * @param key   tag key; must not be blank
+ * @param value tag value; {@code null} is normalised to {@code ""}
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -37,7 +41,7 @@ public record Tag(String key, String value) {
             throw new IllegalArgumentException("Tag key must not be blank");
         }
         if (value == null) {
-            value = "";
+            value = Normal.EMPTY;
         }
     }
 

@@ -31,8 +31,8 @@ import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Utility class for validating {@link Iterator} and {@link Iterable} objects. Provides methods for checking if
- * iterators/iterables are empty, blank, or contain null elements.
+ * Validates {@link Iterator} and {@link Iterable} objects. Provides methods for checking if iterators/iterables are
+ * empty, blank, or contain null elements.
  * <ul>
  * <li>Empty definition: {@code null} or an empty string {@code ""}</li>
  * <li>Blank definition: {@code null} or an empty string {@code ""} or invisible characters like spaces, full-width

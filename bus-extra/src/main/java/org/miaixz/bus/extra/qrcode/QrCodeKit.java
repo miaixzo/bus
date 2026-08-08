@@ -42,7 +42,7 @@ import org.miaixz.bus.extra.qrcode.render.ImageRender;
 import org.miaixz.bus.extra.qrcode.render.SVGRender;
 
 /**
- * QR code utility class based on Zxing, supporting:.
+ * Generates QR codes with Zxing in the following forms:
  * <ul>
  * <li>QR code generation and recognition, see {@link BarcodeFormat#QR_CODE}</li>
  * <li>Barcode generation and recognition, see {@link BarcodeFormat#CODE_39} and many other standard formats</li>

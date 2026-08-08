@@ -31,9 +31,9 @@ import org.miaixz.bus.core.lang.Symbol;
  * Hexadecimal (abbreviated as hex or subscript 16) is a base-16 numeral system in mathematics, generally represented by
  * digits 0 to 9 and letters A to F (where A-F are 10-15). For example, the decimal number 57 is written as 111001 in
  * binary and 39 in hexadecimal. Languages like Java and C distinguish hexadecimal from decimal values by prefixing
- * hexadecimal numbers with 0x, for instance, 0x20 is decimal 32, not decimal 20. This utility class provides
- * hexadecimal related tools, including encoding and decoding inherited from {@link Hex}, as well as other conversion
- * and identification tools.
+ * hexadecimal numbers with 0x, for instance, 0x20 is decimal 32, not decimal 20. This class provides hexadecimal
+ * related tools, including encoding and decoding inherited from {@link Hex}, as well as other conversion and
+ * identification tools.
  *
  * @author Kimi Liu
  * @see Hex
@@ -70,17 +70,17 @@ public class HexKit extends Hex {
         String colorHex;
         colorHex = Integer.toHexString(color.getRed());
         if (1 == colorHex.length()) {
-            builder.append('0');
+            builder.append(Symbol.C_ZERO);
         }
         builder.append(colorHex);
         colorHex = Integer.toHexString(color.getGreen());
         if (1 == colorHex.length()) {
-            builder.append('0');
+            builder.append(Symbol.C_ZERO);
         }
         builder.append(colorHex);
         colorHex = Integer.toHexString(color.getBlue());
         if (1 == colorHex.length()) {
-            builder.append('0');
+            builder.append(Symbol.C_ZERO);
         }
         builder.append(colorHex);
         return builder.toString();
@@ -323,7 +323,7 @@ public class HexKit extends Hex {
 
         String normalizedHex = text;
         if (normalizedHex.length() % 2 != 0) {
-            normalizedHex = "0" + normalizedHex;
+            normalizedHex = Symbol.ZERO + normalizedHex;
         }
 
         final int length = normalizedHex.length();
@@ -351,11 +351,11 @@ public class HexKit extends Hex {
         if (StringKit.length(text) > 1) {
             final char c0 = text.charAt(0);
             switch (c0) {
-                case '0':
-                    if (text.charAt(1) == 'x' || text.charAt(1) == 'X') {
+                case Symbol.C_ZERO:
+                    if (text.charAt(1) == 'x' || text.charAt(1) == Symbol.C_X) {
                         return text.substring(2);
                     }
-                case '#':
+                case Symbol.C_HASH:
                     return text.substring(1);
             }
         }

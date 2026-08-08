@@ -253,7 +253,7 @@ public final class Headers {
         }
         for (int i = 0; i < value.length(); i++) {
             final char current = value.charAt(i);
-            if (current < '0' || current > '9') {
+            if (current < Symbol.C_ZERO || current > Symbol.C_NINE) {
                 throw new ProtocolException("Invalid Content-Length");
             }
         }
@@ -435,11 +435,12 @@ public final class Headers {
      * @return true for RFC tchar
      */
     private static boolean isTokenCharacter(final char value) {
-        if ((value >= '0' && value <= '9') || (value >= 'A' && value <= 'Z') || (value >= 'a' && value <= 'z')) {
+        if ((value >= Symbol.C_ZERO && value <= Symbol.C_NINE) || (value >= 'A' && value <= 'Z')
+                || (value >= 'a' && value <= 'z')) {
             return true;
         }
         return switch (value) {
-            case Symbol.C_NOT, Symbol.C_HASH, Symbol.C_DOLLAR, Symbol.C_PERCENT, Symbol.C_AND, Symbol.C_SINGLE_QUOTE, Symbol.C_STAR, Symbol.C_PLUS, Symbol.C_MINUS, Symbol.C_DOT, Symbol.C_CARET, Symbol.C_UNDERLINE, '`', Symbol.C_OR, Symbol.C_TILDE -> true;
+            case Symbol.C_NOT, Symbol.C_HASH, Symbol.C_DOLLAR, Symbol.C_PERCENT, Symbol.C_AND, Symbol.C_SINGLE_QUOTE, Symbol.C_STAR, Symbol.C_PLUS, Symbol.C_MINUS, Symbol.C_DOT, Symbol.C_CARET, Symbol.C_UNDERLINE, Symbol.C_BACKTICK, Symbol.C_OR, Symbol.C_TILDE -> true;
             default -> false;
         };
     }

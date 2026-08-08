@@ -34,7 +34,7 @@ import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Utility to read HKEY_PERFORMANCE_DATA information.
+ * Reads HKEY_PERFORMANCE_DATA information.
  *
  * @author Kimi Liu
  * @since Java 21+

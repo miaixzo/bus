@@ -29,9 +29,8 @@ import org.miaixz.bus.extra.ssh.provider.jsch.ChannelType;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Jsch (Java Secure Channel) utility class. JSch is a pure Java implementation of the SSH2 protocol, enabling
- * connections to SSH servers for operations like port forwarding, X11 forwarding, file transfers, and remote command
- * execution.
+ * Jsch (Java Secure Channel) class. JSch is a pure Java implementation of the SSH2 protocol, enabling connections to
+ * SSH servers for operations like port forwarding, X11 forwarding, file transfers, and remote command execution.
  *
  * @author Kimi Liu
  * @since Java 21+

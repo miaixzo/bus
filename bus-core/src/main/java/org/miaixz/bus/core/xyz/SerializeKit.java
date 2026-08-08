@@ -26,8 +26,8 @@ import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Serialization utility class. Note: This utility relies on Java's default serialization mechanism, which may have
- * security vulnerabilities in some JDK versions.
+ * Serialization class. Note: This class relies on Java's default serialization mechanism, which may have security
+ * vulnerabilities in some JDK versions.
  *
  * @author Kimi Liu
  * @since Java 21+

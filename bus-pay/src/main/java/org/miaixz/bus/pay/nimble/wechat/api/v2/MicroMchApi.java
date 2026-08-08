@@ -80,10 +80,10 @@ public enum MicroMchApi implements Matcher {
     GET_UPGRADE_STATE("/applyment/micro/getupgradestate", "Query upgrade application status"),
 
     /**
-     * Service provider helps micro merchants re-initiate automatic withdrawal.
+     * Allows micro merchants to initiate another automatic withdrawal.
      */
     RE_AUTO_WITH_DRAW_BY_DATE("/fund/reautowithdrawbydate",
-            "Service provider helps micro merchants re-initiate automatic withdrawal");
+            "Allows micro merchants to initiate another automatic withdrawal");
 
     /**
      * The API method.

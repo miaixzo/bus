@@ -28,7 +28,7 @@ import org.miaixz.bus.health.unix.solaris.KstatKit.KstatChain;
 import org.miaixz.bus.health.unix.solaris.software.SolarisOperatingSystem;
 
 /**
- * Utility to query geom part list
+ * Queries geom part list
  *
  * @author Kimi Liu
  * @since Java 21+

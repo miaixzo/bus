@@ -226,7 +226,7 @@ public class Log4jLoggingProvider extends AbstractProvider {
 
     /**
      * Logs a message. This method is used to support underlying logging implementations by passing the fully qualified
-     * class name of the caller, which helps in correcting the line number in the log output.
+     * class name of the caller, which corrects the line number in the log output.
      *
      * @param fqcn   the fully qualified class name of the caller.
      * @param level  the logging level, using the constants from {@link org.apache.logging.log4j.Level}.

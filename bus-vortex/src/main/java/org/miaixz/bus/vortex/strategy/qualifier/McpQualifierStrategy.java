@@ -24,7 +24,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.PooledDataBuffer;
+import org.springframework.core.io.buffer.DataBufferLimitException;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.web.server.ServerWebExchange;
@@ -47,6 +47,8 @@ import org.miaixz.bus.crypto.center.HMac;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Holder;
+import org.miaixz.bus.vortex.Octets;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
@@ -66,6 +68,11 @@ import reactor.core.publisher.Mono;
  */
 @org.springframework.core.annotation.Order(Order.THIRD)
 public class McpQualifierStrategy extends QualifierStrategy {
+
+    /**
+     * Exchange attribute that owns a signed POST body's replay buffer until request termination.
+     */
+    private static final String CACHED_BODY = "X.MCP_CACHED_BODY";
 
     /**
      * Creates an MCP qualifier strategy.
@@ -157,12 +164,16 @@ public class McpQualifierStrategy extends QualifierStrategy {
                                     appId,
                                     method,
                                     version))
-                            .then(chain.apply(validatedExchange)));
+                            .then(chain.apply(validatedExchange))
+                            .doFinally(signal -> closeCachedBody(validatedExchange)));
         });
     }
 
     /**
-     * Verifies an MCP route signature and restores the POST body when it was consumed for hashing.
+     * Verifies an MCP route signature and restores the bounded POST body after hashing.
+     * <p>
+     * Signed POST bodies require Content-Length. Their request-byte lease remains attached to the cached replay body
+     * until the complete qualified request chain terminates.
      *
      * @param exchange current exchange
      * @param context  request context
@@ -182,38 +193,19 @@ public class McpQualifierStrategy extends QualifierStrategy {
                             () -> verifyMcpSignature(exchange.getRequest(), context, assets, Normal.EMPTY_BYTE_ARRAY))
                     .thenReturn(exchange);
         }
-        return exchange.getRequest().getBody().collectList().map(this::readAndRelease).flatMap(
-                body -> Mono.fromRunnable(() -> verifyMcpSignature(exchange.getRequest(), context, assets, body))
-                        .thenReturn(cacheBody(exchange, body)));
-    }
-
-    /**
-     * Reads all request body buffers into one byte array and releases pooled buffers directly.
-     *
-     * @param buffers request body buffers
-     * @return request body bytes
-     */
-    private byte[] readAndRelease(List<DataBuffer> buffers) {
-        if (buffers == null || buffers.isEmpty()) {
-            return Normal.EMPTY_BYTE_ARRAY;
-        }
-        int size = buffers.stream().mapToInt(DataBuffer::readableByteCount).sum();
-        byte[] bytes = new byte[size];
-        int offset = 0;
-        try {
-            for (DataBuffer buffer : buffers) {
-                int readable = buffer.readableByteCount();
-                buffer.read(bytes, offset, readable);
-                offset += readable;
-            }
-            return bytes;
-        } finally {
-            buffers.forEach(dataBuffer -> {
-                if (dataBuffer instanceof PooledDataBuffer pooledDataBuffer && pooledDataBuffer.isAllocated()) {
-                    pooledDataBuffer.release();
-                }
-            });
-        }
+        return Octets
+                .readForParsing(
+                        exchange.getRequest().getBody(),
+                        Math.toIntExact(Holder.get().getMaxBufferedRequestSize()),
+                        Holder.requestBufferBudget(),
+                        exchange.getRequest().getHeaders().getContentLength())
+                .onErrorMap(DataBufferLimitException.class, error -> new ValidateException(ErrorCode._100530))
+                .flatMap(body -> {
+                    return Mono
+                            .fromRunnable(
+                                    () -> verifyMcpSignature(exchange.getRequest(), context, assets, body.bytes()))
+                            .thenReturn(cacheBody(exchange, body)).doOnError(error -> body.close());
+                });
     }
 
     /**
@@ -265,22 +257,30 @@ public class McpQualifierStrategy extends QualifierStrategy {
     }
 
     /**
-     * Replaces the consumed request body with a replayable body backed by cached bytes.
+     * Replaces the consumed request body with one replay publisher backed by the leased byte array.
      *
      * @param exchange current web exchange
-     * @param body     cached body bytes
+     * @param body     cached body and its request-byte lease
      * @return exchange carrying a decorated request body
      */
-    private ServerWebExchange cacheBody(ServerWebExchange exchange, byte[] body) {
+    private ServerWebExchange cacheBody(ServerWebExchange exchange, Octets.BufferedBody body) {
+        exchange.getAttributes().put(CACHED_BODY, body);
         ServerHttpRequest request = new ServerHttpRequestDecorator(exchange.getRequest()) {
 
             @Override
             public Flux<DataBuffer> getBody() {
-                return Flux.defer(() -> Mono.just(exchange.getResponse().bufferFactory().wrap(body)));
+                return Flux.defer(() -> Mono.just(exchange.getResponse().bufferFactory().wrap(body.bytes())));
             }
 
         };
         return exchange.mutate().request(request).build();
+    }
+
+    private void closeCachedBody(ServerWebExchange exchange) {
+        Object cached = exchange.getAttributes().remove(CACHED_BODY);
+        if (cached instanceof Octets.BufferedBody body) {
+            body.close();
+        }
     }
 
     /**

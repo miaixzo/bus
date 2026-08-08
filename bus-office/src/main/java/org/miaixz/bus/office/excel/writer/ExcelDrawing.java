@@ -34,7 +34,7 @@ import org.miaixz.bus.office.excel.shape.ExcelPictureType;
 import org.miaixz.bus.office.excel.style.ShapeConfig;
 
 /**
- * Excel drawing utility class, used to assist in writing specified graphics.
+ * Writes Excel drawing data for writing specified graphics.
  *
  * @author Kimi Liu
  * @since Java 21+

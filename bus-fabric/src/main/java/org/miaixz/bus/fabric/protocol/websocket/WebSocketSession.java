@@ -404,12 +404,38 @@ public final class WebSocketSession implements Session {
             final GuardRule guard, final WebSocketRole role, final Map<String, Object> attributes,
             final AutoCloseable owner, final Filter filter, final EventObserver observer,
             final Listener<? super WebSocketSession> listener, final Cancellation cancellation) {
-        this(address,
-                new WebSocketWriter(require(sink, "WebSocket sink"), require(role, "WebSocket role").writerMask()),
-                new WebSocketReader(require(source, "WebSocket source"), role.readerExpectMasked()), sink, lease, owner,
+        this(address, new WebSocketWriter(configureSink(sink, timeout), require(role, "WebSocket role").writerMask()),
+                new WebSocketReader(configureSource(source, timeout), role.readerExpectMasked()), sink, lease, owner,
                 handler, require(context, "Context").reactor().dispatcher(), false, dispatchKey, context.clock(),
                 require(timeout, "WebSocket timeout"), guard, role, attributes, filter, observer, listener,
                 cancellation, context.options().materializeMaxBytes());
+    }
+
+    /**
+     * Applies the session read timeout at upgrade ownership transfer. Zero clears any HTTP drain timeout retained by
+     * the reused source.
+     *
+     * @param source  upgraded connection source
+     * @param timeout WebSocket timeout policy
+     * @return the same configured source
+     */
+    private static Source configureSource(final Source source, final Timeout timeout) {
+        final Source current = require(source, "WebSocket source");
+        current.timeout().timeout(require(timeout, "WebSocket timeout").read());
+        return current;
+    }
+
+    /**
+     * Applies the session write timeout at upgrade ownership transfer.
+     *
+     * @param sink    upgraded connection sink
+     * @param timeout WebSocket timeout policy
+     * @return the same configured sink
+     */
+    private static Sink configureSink(final Sink sink, final Timeout timeout) {
+        final Sink current = require(sink, "WebSocket sink");
+        current.timeout().timeout(require(timeout, "WebSocket timeout").write());
+        return current;
     }
 
     /**
@@ -1046,7 +1072,7 @@ public final class WebSocketSession implements Session {
     }
 
     /**
-     * Waits for an entry using the shared thread helper.
+     * Waits for an entry using the shared thread coordinator.
      *
      * @param entry outbound entry whose completion is awaited
      */

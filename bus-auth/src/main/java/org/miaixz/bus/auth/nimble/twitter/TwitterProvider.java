@@ -37,6 +37,7 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -113,7 +114,7 @@ public class TwitterProvider extends AbstractProvider {
         String text = Builder.parseMapToString(map, true);
         String baseStr = method.toUpperCase() + Symbol.AND + UrlEncoder.encodeAll(baseUrl) + Symbol.AND
                 + UrlEncoder.encodeAll(text);
-        String signKey = apiSecret + Symbol.AND + (StringKit.isEmpty(tokenSecret) ? "" : tokenSecret);
+        String signKey = apiSecret + Symbol.AND + (StringKit.isEmpty(tokenSecret) ? Normal.EMPTY : tokenSecret);
         byte[] signature = Builder
                 .sign(signKey.getBytes(Charset.UTF_8), baseStr.getBytes(Charset.UTF_8), Algorithm.HMACSHA1.getValue());
 

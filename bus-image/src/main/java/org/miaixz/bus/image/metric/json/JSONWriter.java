@@ -26,6 +26,7 @@ import java.util.function.LongFunction;
 import jakarta.json.JsonValue;
 import jakarta.json.stream.JsonGenerator;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Format;
 import org.miaixz.bus.image.Tag;
@@ -115,7 +116,7 @@ public class JSONWriter implements ImageInputHandler {
         String[] ss = new String[map.size()];
         int i = 0;
         for (Map.Entry<String, T> entry : map.entrySet())
-            ss[i++] = entry.getKey() + '=' + entry.getValue();
+            ss[i++] = entry.getKey() + Symbol.C_EQUAL + entry.getValue();
         return ss;
     }
 

@@ -185,6 +185,7 @@ public final class Http2Codec implements HttpCodec {
         }
         state = CodecState.BUSY;
         try {
+            stream.readTimeout(current.timeout().read());
             final Headers headers = validateResponseHeaders(
                     stream.awaitResponseHeaders(current.timeout().read()),
                     stream.responseStatus());

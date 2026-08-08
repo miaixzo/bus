@@ -126,7 +126,7 @@ public class IniSectionService extends AbstractElement implements IniSection {
      */
     @Override
     protected String valueChanged(String newValue) {
-        return "[" + newValue + "]";
+        return Symbol.BRACKET_LEFT + newValue + Symbol.BRACKET_RIGHT;
     }
 
     /**

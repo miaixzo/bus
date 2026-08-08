@@ -21,7 +21,7 @@
  * Builds and validates the HTTP upgrade handshake for WebSocket sessions.
  *
  * <p>
- * Upgrade helpers create the Sec-WebSocket-Key, validate the server accept value and prepare HTTP request/response
+ * Upgrade operations create the Sec-WebSocket-Key, validate the server accept value, and prepare HTTP request/response
  * metadata. They do not read or write WebSocket frames after the upgrade succeeds.
  * </p>
  *

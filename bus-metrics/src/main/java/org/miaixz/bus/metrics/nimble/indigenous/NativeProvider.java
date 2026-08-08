@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.ToDoubleFunction;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Provider;
@@ -420,13 +421,13 @@ public class NativeProvider implements Provider {
         }
         Tag[] sorted = tags.clone();
         Arrays.sort(sorted, Comparator.comparing(Tag::key));
-        StringBuilder sb = new StringBuilder(name).append('{');
+        StringBuilder sb = new StringBuilder(name).append(Symbol.C_BRACE_LEFT);
         for (int i = 0; i < sorted.length; i++) {
             if (i > 0)
-                sb.append(',');
+                sb.append(Symbol.C_COMMA);
             sb.append(sorted[i]);
         }
-        return sb.append('}').toString();
+        return sb.append(Symbol.C_BRACE_RIGHT).toString();
     }
 
 }

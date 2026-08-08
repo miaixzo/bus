@@ -27,7 +27,7 @@ import org.miaixz.bus.core.compare.IndexedCompare;
 import org.miaixz.bus.core.compare.PinyinCompare;
 
 /**
- * Comparison utility class.
+ * Compares values and collections.
  *
  * @author Kimi Liu
  * @since Java 21+

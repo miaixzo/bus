@@ -84,15 +84,15 @@ public interface WorkflowIdGenerator {
         if (value == null) {
             return null;
         }
-        String normalized = value.trim().replaceAll("[^A-Za-z0-9._:-]+", "_");
-        normalized = normalized.replaceAll("_+", "_");
+        String normalized = value.trim().replaceAll("[^A-Za-z0-9._:-]+", Symbol.UNDERLINE);
+        normalized = normalized.replaceAll("_+", Symbol.UNDERLINE);
         if (!StringKit.hasText(normalized)) {
             return null;
         }
         if (normalized.length() <= Normal._128) {
             return normalized;
         }
-        return normalized.substring(0, 64) + "_" + Builder.sha256Hex(normalized).substring(0, 16);
+        return normalized.substring(0, 64) + Symbol.UNDERLINE + Builder.sha256Hex(normalized).substring(0, 16);
     }
 
 }

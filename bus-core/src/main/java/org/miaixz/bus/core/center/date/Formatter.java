@@ -47,8 +47,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ZoneKit;
 
 /**
- * Date formatting and parsing utility. Supports various date and time formats including milliseconds, microseconds, and
- * nanoseconds for precise time. Examples: yyyy-MM-dd HH:mm:ss, yyyy-MM-dd HH:mm:ss.SSS, yyyy-MM-dd HH:mm:ss.SSSSSS,
+ * Formats and parses date and time values. Supports various date and time formats including milliseconds, microseconds,
+ * and nanoseconds for precise time. Examples: yyyy-MM-dd HH:mm:ss, yyyy-MM-dd HH:mm:ss.SSS, yyyy-MM-dd HH:mm:ss.SSSSSS,
  * yyyy-MM-dd HH:mm:ss.SSSSSSSSS, yyyy-MM-dd'T'HH:mm:ss.SSSZ, etc.
  *
  * @author Kimi Liu

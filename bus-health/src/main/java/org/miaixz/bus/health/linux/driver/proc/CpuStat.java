@@ -29,7 +29,7 @@ import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
 import org.miaixz.bus.health.linux.ProcPath;
 
 /**
- * Utility to read CPU statistics from {@code /proc/stat}
+ * Reads CPU statistics from {@code /proc/stat}
  *
  * @author Kimi Liu
  * @since Java 21+

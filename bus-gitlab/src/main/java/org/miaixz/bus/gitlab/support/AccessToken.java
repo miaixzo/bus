@@ -37,6 +37,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.core.net.Http;
@@ -98,7 +99,7 @@ public final class AccessToken {
          */
         WRITE_REPOSITORY;
 
-        private static JacksonJsonEnumHelper<Scope> enumHelper = new JacksonJsonEnumHelper<>(Scope.class);
+        private static JacksonJsonEnumCodec<Scope> enumCodec = new JacksonJsonEnumCodec<>(Scope.class);
 
         /**
          * Executes the for value operation.
@@ -109,7 +110,7 @@ public final class AccessToken {
 
         @JsonCreator
         public static Scope forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -120,7 +121,7 @@ public final class AccessToken {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -131,7 +132,7 @@ public final class AccessToken {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -304,7 +305,7 @@ public final class AccessToken {
             StringBuilder formData = new StringBuilder();
             addFormData(formData, "authenticity_token", csrfToken);
             addFormData(formData, "personal_access_token[name]", tokenName);
-            addFormData(formData, "personal_access_token[expires_at]", "");
+            addFormData(formData, "personal_access_token[expires_at]", Normal.EMPTY);
 
             if (scopes != null && scopes.size() > 0) {
                 for (Scope scope : scopes) {
@@ -482,7 +483,7 @@ public final class AccessToken {
             }
 
             content = content.substring(0, indexOfLinkEnd);
-            String scopesText = "";
+            String scopesText = Normal.EMPTY;
             if (scopes != null && scopes.size() > 0) {
                 final StringJoiner joiner = new StringJoiner(", ");
                 scopes.forEach(s -> joiner.add(s.toString()));

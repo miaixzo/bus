@@ -32,6 +32,7 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.network.Connection;
+import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
@@ -84,10 +85,32 @@ public final class WebSocketRunner {
             final Headers headers,
             final Timeout timeout,
             final Handler handler) {
+        return create(context, uri, headers, timeout, ProxyPlan.inherit(), handler);
+    }
+
+    /**
+     * Creates an internal WebSocket carrier with an explicit outbound proxy policy.
+     *
+     * @param context shared runtime context used for HTTP upgrade and filtering
+     * @param uri     target WebSocket URI
+     * @param headers headers included in the opening handshake
+     * @param timeout timeout policy applied to the upgrade and session
+     * @param proxy   non-null outbound proxy policy propagated to the upgrade request
+     * @param handler handler for messages received by the opened session
+     * @return runner backed by a new immutable exchange specification
+     * @throws ValidateException if a required argument is {@code null}
+     */
+    public static WebSocketRunner create(
+            final Context context,
+            final URI uri,
+            final Headers headers,
+            final Timeout timeout,
+            final ProxyPlan proxy,
+            final Handler handler) {
         final URI currentUri = require(uri, "WebSocket URI");
         return new WebSocketRunner(new WebSocketSpec(require(context, "Context"), currentUri, Address.from(currentUri),
-                require(headers, "Headers"), require(timeout, "Timeout"), null, null, EventObserver.noop(),
-                require(handler, "Handler"), null));
+                require(headers, "Headers"), require(timeout, "Timeout"), require(proxy, "Proxy plan"), null, null,
+                EventObserver.noop(), require(handler, "Handler"), null));
     }
 
     /**
@@ -130,7 +153,7 @@ public final class WebSocketRunner {
             final WebSocketUpgrade upgrade = new WebSocketUpgrade();
             final HttpRequest request = HttpRequest.builder().method(Http.Method.GET)
                     .url(UnoUrl.parse(upgrade.httpUri(spec.uri()).toString()))
-                    .headers(upgrade.headers(opening.headers())).timeout(spec.timeout()).build();
+                    .headers(upgrade.headers(opening.headers())).timeout(spec.timeout()).proxy(spec.proxy()).build();
             upgraded = Mediator.convert(
                     Type.WEBSOCKET,
                     Type.HTTP_UPGRADE,

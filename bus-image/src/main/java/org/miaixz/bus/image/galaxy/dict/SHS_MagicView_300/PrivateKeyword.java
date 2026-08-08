@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.image.galaxy.dict.SHS_MagicView_300;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Represents the PrivateKeyword type.
  *
@@ -37,7 +39,7 @@ public class PrivateKeyword {
     /**
      * The private creator value.
      */
-    public static final String PrivateCreator = "";
+    public static final String PrivateCreator = Normal.EMPTY;
 
     /**
      * Executes the value of operation.
@@ -54,7 +56,7 @@ public class PrivateKeyword {
             case PrivateTag._0029_xx03_:
                 return "_0029_xx03_";
         }
-        return "";
+        return Normal.EMPTY;
     }
 
 }

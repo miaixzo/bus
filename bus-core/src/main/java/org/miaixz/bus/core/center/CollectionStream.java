@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * Provides a rich set of stream-based operations for Java collections. This utility class offers convenient methods for
+ * Provides a rich set of stream-based operations for Java collections. This class offers convenient methods for
  * transforming, grouping, and merging collections by leveraging the power of the Java Stream API.
  *
  * @author Kimi Liu

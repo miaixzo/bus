@@ -268,7 +268,7 @@ public record Challenge(String scheme, String realm, Map<String, String> paramet
     private static boolean isToken(final char value) {
         return Character.isLetterOrDigit(value) || (Symbol.NOT + Symbol.HASH + Symbol.DOLLAR + Symbol.PERCENT
                 + Symbol.AND + Symbol.SINGLE_QUOTE + Symbol.STAR + Symbol.PLUS + Symbol.MINUS + Symbol.DOT
-                + Symbol.CARET + Symbol.UNDERLINE + "`" + Symbol.OR + Symbol.TILDE).indexOf(value) >= 0;
+                + Symbol.CARET + Symbol.UNDERLINE + Symbol.BACKTICK + Symbol.OR + Symbol.TILDE).indexOf(value) >= 0;
     }
 
     /**

@@ -30,6 +30,7 @@ import com.sun.jna.platform.linux.Udev.UdevEnumerate;
 import com.sun.jna.platform.linux.Udev.UdevListEntry;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
@@ -202,10 +203,10 @@ public final class LinuxPowerSource extends AbstractPowerSource {
         for (File ps : psArr) {
             String name = ps.getName();
             if (!name.startsWith("ADP") && !name.startsWith("AC") && !name.contains("USBC")) {
-                List<String> psInfo = Builder.readFile(powerSupplyPath + "/" + name + "/uevent", false);
+                List<String> psInfo = Builder.readFile(powerSupplyPath + Symbol.SLASH + name + "/uevent", false);
                 Map<Prop, String> props = new EnumMap<>(Prop.class);
                 for (String line : psInfo) {
-                    String[] split = line.split("=", 2);
+                    String[] split = line.split(Symbol.EQUAL, 2);
                     if (split.length > 1 && !split[1].isEmpty()) {
                         Prop p = PropByName.MAP.get(split[0]);
                         if (p != null) {

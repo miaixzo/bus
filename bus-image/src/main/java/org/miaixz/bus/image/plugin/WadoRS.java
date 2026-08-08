@@ -83,7 +83,7 @@ public class WadoRS {
     /**
      * The value for the HTTP Accept header.
      */
-    private static String accept = "*";
+    private static String accept = Symbol.STAR;
 
     /**
      * The directory where retrieved files will be stored.
@@ -152,9 +152,9 @@ public class WadoRS {
      */
     private void setAccept(String... accept) {
         StringBuilder sb = new StringBuilder();
-        sb.append(!header ? accept[0].replace("+", "%2B") : accept[0]);
+        sb.append(!header ? accept[0].replace(Symbol.PLUS, "%2B") : accept[0]);
         for (int i = 1; i < accept.length; i++)
-            sb.append(Symbol.COMMA).append(!header ? accept[i].replace("+", "%2B") : accept[i]);
+            sb.append(Symbol.COMMA).append(!header ? accept[i].replace(Symbol.PLUS, "%2B") : accept[i]);
 
         WadoRS.accept = sb.toString();
     }
@@ -253,7 +253,7 @@ public class WadoRS {
      * @return The URL with the accept parameter appended.
      */
     private String appendAcceptToURL(String url) {
-        return url + (url.contains("?") ? "&" : "?") + "accept=" + accept;
+        return url + (url.contains(Symbol.QUESTION_MARK) ? Symbol.AND : Symbol.QUESTION_MARK) + "accept=" + accept;
     }
 
     /**
@@ -263,11 +263,17 @@ public class WadoRS {
      * @return The extracted UID string.
      */
     private String uidFrom(String url) {
-        return url.contains("metadata")
-                ? url.substring(url.substring(0, url.lastIndexOf('/')).lastIndexOf('/') + 1, url.lastIndexOf('/'))
-                : url.contains("?")
-                        ? url.substring(url.substring(0, url.indexOf('?')).lastIndexOf('/') + 1, url.indexOf('?'))
-                        : url.substring(url.lastIndexOf('/') + 1);
+        return url
+                .contains("metadata")
+                        ? url.substring(
+                                url.substring(0, url.lastIndexOf(Symbol.C_SLASH)).lastIndexOf(Symbol.C_SLASH) + 1,
+                                url.lastIndexOf(Symbol.C_SLASH))
+                        : url.contains(Symbol.QUESTION_MARK)
+                                ? url.substring(
+                                        url.substring(0, url.indexOf(Symbol.C_QUESTION_MARK))
+                                                .lastIndexOf(Symbol.C_SLASH) + 1,
+                                        url.indexOf(Symbol.C_QUESTION_MARK))
+                                : url.substring(url.lastIndexOf(Symbol.C_SLASH) + 1);
     }
 
     /**
@@ -420,7 +426,7 @@ public class WadoRS {
      * @return The generated filename.
      */
     private String fileName(int partNumber, String uid, String ext) {
-        return uid + "-" + String.format("%03d", partNumber) + "." + ext;
+        return uid + Symbol.MINUS + String.format("%03d", partNumber) + Symbol.DOT + ext;
     }
 
 }

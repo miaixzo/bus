@@ -29,7 +29,7 @@ import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 
 /**
- * Utility to query lscfg
+ * Queries lscfg
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -49,9 +49,10 @@ import tools.jackson.databind.JsonNode;
 public final class GitLabFailure {
 
     /**
-     * Prevents utility class instantiation.
+     * Restricts the class to static operations.
      */
     private GitLabFailure() {
+        // No initialization required.
     }
 
     /**

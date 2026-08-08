@@ -100,7 +100,7 @@ public class FigmaProvider extends AbstractProvider {
                 Http.Header.AUTHORIZATION,
                 "Basic ".concat(
                         Base64.encode(
-                                (this.context.getClientId().concat(":").concat(this.context.getClientSecret()))
+                                (this.context.getClientId().concat(Symbol.COLON).concat(this.context.getClientSecret()))
                                         .getBytes(Charset.UTF_8))));
         String response = post(super.tokenUrl(callback.getCode()), null, headers);
         try {
@@ -255,8 +255,8 @@ public class FigmaProvider extends AbstractProvider {
         if (object.containsKey("error")) {
             String error = (String) object.get("error");
             String message = (String) object.get("message");
-            throw new AuthorizedException(
-                    (error != null ? error : "Unknown error") + ":" + (message != null ? message : "Unknown message"));
+            throw new AuthorizedException((error != null ? error : "Unknown error") + Symbol.COLON
+                    + (message != null ? message : "Unknown message"));
         }
     }
 

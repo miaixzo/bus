@@ -28,6 +28,7 @@ import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.*;
 
@@ -771,7 +772,7 @@ public class PipelineApi extends AbstractApi implements Constants {
 
         Response response = post(
                 Response.Status.OK,
-                "",
+                Normal.EMPTY,
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "pipeline_schedules",

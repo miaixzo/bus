@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * This package provides enhanced annotation resolution and utility classes. It is designed to handle complex annotation
+ * This package provides enhanced annotation resolution and classes. It is designed to handle complex annotation
  * hierarchies, including:
  * <ul>
  * <li>Annotations present on {@link java.lang.reflect.AnnotatedElement}s.</li>

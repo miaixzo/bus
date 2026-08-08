@@ -23,10 +23,10 @@
  * {@code builtin.batch} provides bulk register/deregister operations, {@code builtin.event} provides ready-to-use watch
  * listeners and setting publishers, and {@code builtin.graph} provides upstream/downstream dependency analysis. Shared
  * runtime infrastructure belongs under {@code magic}; this package should stay focused on optional assembled features.
- * During the current structure-freeze period, the root-level metadata helpers {@code Label}, {@code LabelMapper},
- * {@code Selector}, and {@code MetadataMatcher} remain here as historical compatibility helpers. Root, setting, and
- * watch code may depend only on those helpers; optional batch/event/graph implementations stay outside the foundation
- * path.
+ * During the current structure-freeze period, the root-level metadata operations {@code Label}, {@code LabelMapper},
+ * {@code Selector}, and {@code MetadataMatcher} remain here as historical compatibility operations. Root, setting, and
+ * watch code may depend only on those operations; optional batch/event/graph implementations stay outside the
+ * foundation path.
  *
  * @author Kimi Liu
  * @since Java 21+

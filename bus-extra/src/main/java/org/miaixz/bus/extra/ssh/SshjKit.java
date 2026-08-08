@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Utility class for SSHJ, a Java library for SSH. This class provides a simplified way to create and configure an
+ * Creates and configures SSH connections through SSHJ. This class provides a simplified way to create and configure an
  * {@link SSHClient}. Project homepage:
  * <a href="https://github.com/hierynomus/sshj">https://github.com/hierynomus/sshj</a>
  *

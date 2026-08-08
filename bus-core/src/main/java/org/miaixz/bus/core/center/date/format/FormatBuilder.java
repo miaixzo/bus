@@ -34,7 +34,6 @@ import org.miaixz.bus.core.center.date.format.parser.FastDateParser;
 import org.miaixz.bus.core.center.date.format.parser.PositionDateParser;
 import org.miaixz.bus.core.center.date.printer.FastDatePrinter;
 import org.miaixz.bus.core.center.date.printer.FormatPrinter;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.DateException;
 
 /**
@@ -523,8 +522,8 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
      */
     @Override
     public String toString() {
-        return "FastFormat[" + printer.getPattern() + Symbol.COMMA + printer.getLocale() + Symbol.COMMA
-                + printer.getTimeZone().getID() + "]";
+        return "FastFormat[" + printer.getPattern() + "," + printer.getLocale() + "," + printer.getTimeZone().getID()
+                + "]";
     }
 
 }

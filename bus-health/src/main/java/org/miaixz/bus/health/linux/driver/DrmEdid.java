@@ -29,9 +29,9 @@ import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.linux.SysPath;
 
 /**
- * Utility to read EDID data from the Linux DRM (Direct Rendering Manager) subsystem. The kernel exposes raw EDID bytes
- * for each connected display at {@code /sys/class/drm/card<N>-<connector>/edid}, which works regardless of whether X11
- * or Wayland is in use.
+ * Reads EDID data from the Linux DRM (Direct Rendering Manager) subsystem. The kernel exposes raw EDID bytes for each
+ * connected display at {@code /sys/class/drm/card<N>-<connector>/edid}, which works regardless of whether X11 or
+ * Wayland is in use.
  *
  * @author Kimi Liu
  * @since Java 21+

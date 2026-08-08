@@ -25,8 +25,8 @@ import java.io.IOException;
 import org.miaixz.bus.core.center.date.StopWatch;
 
 /**
- * A utility class for high concurrency testing. It allows simulating a specified number of threads executing a given
- * task concurrently and measures the total execution time.
+ * Runs coordinated high-concurrency tests. It allows simulating a specified number of threads executing a given task
+ * concurrently and measures the total execution time.
  *
  * <p>
  * Example usage:

@@ -42,10 +42,9 @@ import reactor.core.publisher.Mono;
 /**
  * The primary {@link WebFilter} that acts as the main entry point and orchestrator for the Vortex gateway.
  * <p>
- * Annotated with {@code @org.springframework.core.annotation.Order(Order.MIN_VALUE)}, this filter intercepts all
- * incoming requests before any other Spring WebFilter. Its sole responsibility is to set up the request context and
- * dispatch the request to a dynamic, inner chain of responsibility composed of {@link Strategy} objects. It does not
- * contain any business logic itself.
+ * After process-wide admission, this filter creates the request context and dispatches the exchange to a dynamic inner
+ * chain of {@link Strategy} objects. Its minimum order keeps it ahead of protocol-level filters; the explicitly
+ * installed {@link AdmissionFilter} remains the outer lifecycle boundary.
  *
  * @author Kimi Liu
  * @since Java 21+

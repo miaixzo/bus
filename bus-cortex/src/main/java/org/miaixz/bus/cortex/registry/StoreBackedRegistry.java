@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
@@ -546,8 +548,8 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         record.setPayload(JsonKit.toJsonString(event));
         record.setSequence(event.getSequence());
         record.setIdempotencyKey(
-                "registry:" + event.getType() + ":" + event.getNamespace_id() + ":" + event.getId() + ":"
-                        + record.getAction() + ":" + registryOutboxResource(event));
+                "registry:" + event.getType() + Symbol.COLON + event.getNamespace_id() + Symbol.COLON + event.getId()
+                        + Symbol.COLON + record.getAction() + Symbol.COLON + registryOutboxResource(event));
         changeLogStore.append(record);
     }
 
@@ -578,9 +580,9 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
             return event.getId();
         }
         if (event.getApp_id() != null || event.getMethod() != null || event.getVersion() != null) {
-            return (event.getApp_id() == null ? "" : event.getApp_id()) + ":"
-                    + (event.getMethod() == null ? "" : event.getMethod()) + ":"
-                    + (event.getVersion() == null ? "" : event.getVersion());
+            return (event.getApp_id() == null ? Normal.EMPTY : event.getApp_id()) + Symbol.COLON
+                    + (event.getMethod() == null ? Normal.EMPTY : event.getMethod()) + Symbol.COLON
+                    + (event.getVersion() == null ? Normal.EMPTY : event.getVersion());
         }
         return "unknown";
     }

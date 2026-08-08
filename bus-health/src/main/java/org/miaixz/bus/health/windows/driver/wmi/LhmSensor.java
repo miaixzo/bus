@@ -24,12 +24,13 @@ import java.util.Objects;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.windows.WmiKit;
 import org.miaixz.bus.health.windows.WmiQueryHandler;
 
 /**
- * Utility to query LibreHardwareMonitor WMI sensor data for GPU metrics.
+ * Queries LibreHardwareMonitor WMI sensor data for GPU metrics.
  *
  * <p>
  * LHM publishes sensor data to {@code ROOT\LibreHardwareMonitor} when it is running. This class queries the
@@ -143,7 +144,7 @@ public final class LhmSensor {
     public static String buildSensorWmiClassNameWithWhere(String parent, String sensorType) {
         StringBuilder sb = new StringBuilder(SENSOR);
         sb.append(" WHERE Parent=\"").append(parent);
-        sb.append("\" AND SensorType=\"").append(sensorType).append('"');
+        sb.append("\" AND SensorType=\"").append(sensorType).append(Symbol.C_DOUBLE_QUOTES);
         return sb.toString();
     }
 

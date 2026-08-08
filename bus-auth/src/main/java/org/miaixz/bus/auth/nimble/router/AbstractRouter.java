@@ -29,6 +29,8 @@ import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -38,8 +40,8 @@ import org.miaixz.bus.logger.Logger;
 /**
  * Abstract base class for OAuth2 routers.
  * <p>
- * Provides common OAuth2 protocol forwarding functionality and encapsulates frequently used utility methods. Subclasses
- * only need to implement platform-specific logic.
+ * Provides common OAuth2 protocol forwarding functionality and encapsulates frequently used methods. Subclasses only
+ * need to implement platform-specific logic.
  * </p>
  * <p>
  * This class integrates codec functionality (state/token encoding/decoding) and parameter extraction, eliminating the
@@ -105,7 +107,7 @@ public abstract class AbstractRouter extends FabricX implements OAuth2Router {
                 false,
                 "Auth",
                 "OAuth router authorize URL built: endpoint={}, scopePresent={}, statePresent={}, extraParamCount={}, urlBytes={}",
-                authUrl == null ? null : authUrl.replaceFirst("\\?.*$", ""),
+                authUrl == null ? null : authUrl.replaceFirst("\\?.*$", Normal.EMPTY),
                 StringKit.isNotEmpty(scope),
                 StringKit.isNotEmpty(state),
                 params == null ? 0 : params.size(),
@@ -144,7 +146,7 @@ public abstract class AbstractRouter extends FabricX implements OAuth2Router {
                     true,
                     "Auth",
                     "OAuth router credential request started: endpoint={}, codePresent={}, extraParamCount={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     callback != null && StringKit.isNotEmpty(callback.getCode()),
                     params == null ? 0 : params.size());
 
@@ -170,7 +172,7 @@ public abstract class AbstractRouter extends FabricX implements OAuth2Router {
                     "Auth",
                     e,
                     "OAuth router credential request failed: endpoint={}, exception={}",
-                    tokenUrl == null ? null : tokenUrl.replaceFirst("\\?.*$", ""),
+                    tokenUrl == null ? null : tokenUrl.replaceFirst("\\?.*$", Normal.EMPTY),
                     e.getClass().getSimpleName());
             throw new RuntimeException("Failed to get token: " + e.getMessage(), e);
         }
@@ -192,7 +194,7 @@ public abstract class AbstractRouter extends FabricX implements OAuth2Router {
                     true,
                     "Auth",
                     "OAuth router userinfo request started: endpoint={}, tokenPresent={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     authorization != null && StringKit.isNotEmpty(authorization.getToken()));
 
             // Send request
@@ -216,7 +218,7 @@ public abstract class AbstractRouter extends FabricX implements OAuth2Router {
                     "Auth",
                     e,
                     "OAuth router userinfo request failed: endpoint={}, exception={}",
-                    userinfoUrl == null ? null : userinfoUrl.replaceFirst("\\?.*$", ""),
+                    userinfoUrl == null ? null : userinfoUrl.replaceFirst("\\?.*$", Normal.EMPTY),
                     e.getClass().getSimpleName());
             throw new RuntimeException("Failed to get userinfo: " + e.getMessage(), e);
         }
@@ -374,7 +376,7 @@ public abstract class AbstractRouter extends FabricX implements OAuth2Router {
      * @return the encoded token
      */
     protected String encodeToken(String token, String prefix) {
-        return prefix + ":" + token;
+        return prefix + Symbol.COLON + token;
     }
 
     /**
@@ -388,7 +390,7 @@ public abstract class AbstractRouter extends FabricX implements OAuth2Router {
      * @return the original token
      */
     protected String decodeToken(String encodedToken, String prefix) {
-        if (encodedToken.startsWith(prefix + ":")) {
+        if (encodedToken.startsWith(prefix + Symbol.COLON)) {
             return encodedToken.substring(prefix.length() + 1);
         }
         return encodedToken;

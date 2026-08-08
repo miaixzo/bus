@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The event label class.
@@ -57,7 +57,7 @@ public class EventLabel implements Serializable {
          */
         GROUP_LABEL;
 
-        private static JacksonJsonEnumHelper<LabelType> enumHelper = new JacksonJsonEnumHelper<>(LabelType.class, true,
+        private static JacksonJsonEnumCodec<LabelType> enumCodec = new JacksonJsonEnumCodec<>(LabelType.class, true,
                 true);
 
         /**
@@ -69,7 +69,7 @@ public class EventLabel implements Serializable {
 
         @JsonCreator
         public static LabelType forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -80,7 +80,7 @@ public class EventLabel implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -91,7 +91,7 @@ public class EventLabel implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

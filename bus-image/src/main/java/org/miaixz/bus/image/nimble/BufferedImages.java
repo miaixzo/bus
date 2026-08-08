@@ -32,6 +32,7 @@ import javax.imageio.metadata.IIOInvalidTreeException;
 
 import org.w3c.dom.Node;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.VR;
@@ -364,7 +365,8 @@ public class BufferedImages {
         try {
             return Integer.parseInt(getStringAttribute(node, name));
         } catch (NumberFormatException e) {
-            throw new IIOInvalidTreeException("Bad value for " + node.getNodeName() + " attribute " + name + "!", node);
+            throw new IIOInvalidTreeException("Bad value for " + node.getNodeName() + " attribute " + name + Symbol.NOT,
+                    node);
         }
     }
 
@@ -442,7 +444,7 @@ public class BufferedImages {
      * @return the operation result.
      */
     private static String toFrameTime(String delayTime) {
-        return "0".equals(delayTime) ? "0" : (delayTime + "0");
+        return Symbol.ZERO.equals(delayTime) ? Symbol.ZERO : (delayTime + Symbol.ZERO);
     }
 
     /**
@@ -456,7 +458,7 @@ public class BufferedImages {
         for (int i = 0, n = cs.getNumComponents(); i < n; i++) {
             sb.append(i > 0 ? ", 0" : "ColorSpace[").append(cs.getName(i));
         }
-        return sb.append(']').toString();
+        return sb.append(Symbol.C_BRACKET_RIGHT).toString();
     }
 
     /**

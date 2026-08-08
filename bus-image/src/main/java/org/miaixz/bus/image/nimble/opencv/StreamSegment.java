@@ -33,6 +33,7 @@ import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.galaxy.data.BulkData;
 import org.miaixz.bus.image.nimble.codec.BytesWithImageImageDescriptor;
 import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
@@ -94,7 +95,7 @@ public abstract class StreamSegment {
         } else if (iis instanceof BytesWithImageImageDescriptor stream) {
             return new MemoryStreamSegment(stream.getBytes(), stream.getImageDescriptor());
         }
-        throw new IllegalArgumentException("No stream adaptor found for " + iis.getClass().getName() + "!");
+        throw new IllegalArgumentException("No stream adaptor found for " + iis.getClass().getName() + Symbol.NOT);
     }
 
     /**

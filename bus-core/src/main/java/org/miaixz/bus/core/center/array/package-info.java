@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides utility classes for working with arrays, including validators and helpers for primitive arrays.
+ * Provides array operations, including validation and primitive-array handling.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.gitlab.models.AccessLevel;
 import org.miaixz.bus.gitlab.models.GitLabForm;
 import org.miaixz.bus.gitlab.models.GitLabFormValue;
@@ -227,7 +228,7 @@ public class GitLabApiForm extends Form {
         for (Entry<String, ?> variable : variables.entrySet()) {
             Object value = variable.getValue();
             if (value != null) {
-                this.param(name + "[" + variable.getKey() + "]", value.toString());
+                this.param(name + Symbol.BRACKET_LEFT + variable.getKey() + Symbol.BRACKET_RIGHT, value.toString());
             }
         }
 
@@ -278,7 +279,7 @@ public class GitLabApiForm extends Form {
         variables.forEach(v -> {
             String value = v.getValue();
             if (value != null) {
-                this.param("variables[" + v.getKey() + "]", value);
+                this.param("variables[" + v.getKey() + Symbol.BRACKET_RIGHT, value);
             }
         });
 

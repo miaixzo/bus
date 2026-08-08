@@ -25,21 +25,21 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  * An immutable snapshot of cumulative GPU active and idle tick counters in opaque, platform-native units.
  *
  * <p>
- * Because {@code activeTicks + idleTicks = total elapsed ticks}, callers can compute utilization from two snapshots
- * without needing a separate timestamp:
+ * Because {@code activeTicks + idleTicks = total elapsed ticks}, callers can compute usage from two snapshots without
+ * needing a separate timestamp:
  *
  * <pre>{@code
  *
  * long dActive = curr.getActiveTicks() - prev.getActiveTicks();
  * long dIdle = curr.getIdleTicks() - prev.getIdleTicks();
  * long dTotal = dActive + dIdle;
- * double util = dTotal > 0 ? dActive * 100.0 / dTotal : -1d;
+ * double usage = dTotal > 0 ? dActive * 100.0 / dTotal : -1d;
  * }</pre>
  *
  * <p>
  * Both counters are {@code 0} when tick-level metrics are not available on this platform. Because {@code 0} is also the
  * natural starting value of a real counter, callers cannot distinguish "not available" from "counter just started" —
- * but the {@code dTotal > 0} guard in the utilization formula handles both cases correctly.
+ * but the {@code dTotal > 0} guard in the usage formula handles both cases correctly.
  *
  * @author Kimi Liu
  * @since Java 21+

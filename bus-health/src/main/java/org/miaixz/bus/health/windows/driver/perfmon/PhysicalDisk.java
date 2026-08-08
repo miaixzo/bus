@@ -29,7 +29,7 @@ import org.miaixz.bus.health.windows.PerfCounterQuery;
 import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 
 /**
- * Utility to query PhysicalDisk performance counter
+ * Queries PhysicalDisk performance counter
  *
  * @author Kimi Liu
  * @since Java 21+

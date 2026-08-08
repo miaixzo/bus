@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
 /**
  * A meta-annotation that identifies a custom annotation as a binding annotation. Binding annotations are used in
  * dependency injection frameworks to associate a specific implementation with an injection point (e.g., a field or
- * parameter). This helps the injector distinguish between multiple implementations of the same type.
+ * parameter). This allows the injector to distinguish between multiple implementations of the same type.
  * <p>
  * For example, you could create a custom annotation like {@code @Red}:
  *

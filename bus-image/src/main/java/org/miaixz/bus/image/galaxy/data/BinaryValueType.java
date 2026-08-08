@@ -23,6 +23,7 @@ import java.time.temporal.Temporal;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
@@ -1041,7 +1042,7 @@ enum BinaryValueType implements ValueType {
                 return false;
             }
             if (i > 0)
-                sb.append('\\');
+                sb.append(Symbol.C_BACKSLASH);
         }
         return true;
     }

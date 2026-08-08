@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -616,7 +617,7 @@ public interface Broker<T> {
                 final Map<String, String> attributes) {
             return session.segments().computeIfAbsent(
                     segmentIndex,
-                    index -> new SessionSegmentState(segmentIndex, segmentName != null ? segmentName : "",
+                    index -> new SessionSegmentState(segmentIndex, segmentName != null ? segmentName : Normal.EMPTY,
                             attributes != null ? Map.copyOf(attributes) : Map.of()));
         }
 

@@ -26,6 +26,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_memory_total_t;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -151,7 +152,7 @@ final class AixGlobalMemory extends AbstractGlobalMemory {
                         bankLabel = bankLabel.substring(4);
                     }
                 } else if (s.startsWith("Physical Location:")) {
-                    locator = "/" + s.substring(18).trim();
+                    locator = Symbol.SLASH + s.substring(18).trim();
                 } else if (s.startsWith("Size")) {
                     capacity = Parsing.parseLongOrDefault(Parsing.removeLeadingDots(s.substring(4).trim()), 0L) << 20;
                 } else if (s.startsWith("Hardware Location Code")) {

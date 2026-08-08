@@ -104,7 +104,7 @@ public class MaskingManager {
     private static MaskingManager registerDefault(final char maskChar) {
         final MaskingManager manager = new MaskingManager(new ConcurrentHashMap<>(15, 1), maskChar);
 
-        manager.register(EnumValue.Masking.USER_ID.name(), (str) -> "0");
+        manager.register(EnumValue.Masking.USER_ID.name(), (str) -> Symbol.ZERO);
         manager.register(EnumValue.Masking.CHINESE_NAME.name(), manager::firstMask);
         manager.register(EnumValue.Masking.CITIZENID.name(), (str) -> manager.idCardNum(str, 1, 2));
         manager.register(EnumValue.Masking.PHONE.name(), manager::fixedPhone);
@@ -240,7 +240,7 @@ public class MaskingManager {
         if (StringKit.isBlank(email)) {
             return Normal.EMPTY;
         }
-        final int index = StringKit.indexOf(email, '@');
+        final int index = StringKit.indexOf(email, Symbol.C_AT);
         if (index <= 1) {
             return email.toString();
         }
@@ -322,7 +322,7 @@ public class MaskingManager {
      * @return The masked address.
      */
     public String ipv4(final CharSequence ipv4) {
-        return StringKit.subBefore(ipv4, '.', false) + StringKit.repeat("." + maskChar, 3);
+        return StringKit.subBefore(ipv4, Symbol.C_DOT, false) + StringKit.repeat(Symbol.DOT + maskChar, 3);
     }
 
     /**
@@ -332,7 +332,7 @@ public class MaskingManager {
      * @return The masked address.
      */
     public String ipv6(final CharSequence ipv6) {
-        return StringKit.subBefore(ipv6, ':', false) + StringKit.repeat(":" + maskChar, 7);
+        return StringKit.subBefore(ipv6, Symbol.C_COLON, false) + StringKit.repeat(Symbol.COLON + maskChar, 7);
     }
 
     /**

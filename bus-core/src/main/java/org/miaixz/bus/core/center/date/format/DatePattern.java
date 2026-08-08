@@ -26,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.DateException;
 
 /**
@@ -85,12 +86,12 @@ public class DatePattern {
                 i++;
             }
         } else {
-            buf.append('\'');
+            buf.append(Symbol.C_SINGLE_QUOTE);
             boolean inLiteral = false;
             for (; i < length; i++) {
                 c = pattern.charAt(i);
-                if (c == '\'') {
-                    if (i + 1 < length && pattern.charAt(i + 1) == '\'') {
+                if (c == Symbol.C_SINGLE_QUOTE) {
+                    if (i + 1 < length && pattern.charAt(i + 1) == Symbol.C_SINGLE_QUOTE) {
                         i++;
                         buf.append(c);
                     } else {
@@ -132,8 +133,8 @@ public class DatePattern {
      * @throws IOException if an I/O error occurs.
      */
     private static void appendDigits(final Appendable buffer, final int value) throws IOException {
-        buffer.append((char) (value / 10 + '0'));
-        buffer.append((char) (value % 10 + '0'));
+        buffer.append((char) (value / 10 + Symbol.C_ZERO));
+        buffer.append((char) (value % 10 + Symbol.C_ZERO));
     }
 
     /**
@@ -157,38 +158,38 @@ public class DatePattern {
                 }
             }
             for (int i = minFieldWidth - nDigits; i > 0; --i) {
-                buffer.append('0');
+                buffer.append(Symbol.C_ZERO);
             }
             switch (nDigits) {
                 case 4:
-                    buffer.append((char) (value / 1000 + '0'));
+                    buffer.append((char) (value / 1000 + Symbol.C_ZERO));
                     value %= 1000;
                 case 3:
                     if (value >= 100) {
-                        buffer.append((char) (value / 100 + '0'));
+                        buffer.append((char) (value / 100 + Symbol.C_ZERO));
                         value %= 100;
                     } else {
-                        buffer.append('0');
+                        buffer.append(Symbol.C_ZERO);
                     }
                 case 2:
                     if (value >= 10) {
-                        buffer.append((char) (value / 10 + '0'));
+                        buffer.append((char) (value / 10 + Symbol.C_ZERO));
                         value %= 10;
                     } else {
-                        buffer.append('0');
+                        buffer.append(Symbol.C_ZERO);
                     }
                 case 1:
-                    buffer.append((char) (value + '0'));
+                    buffer.append((char) (value + Symbol.C_ZERO));
             }
         } else {
             char[] work = new char[Normal._10];
             int digit = 0;
             while (value != 0) {
-                work[digit++] = (char) (value % 10 + '0');
+                work[digit++] = (char) (value % 10 + Symbol.C_ZERO);
                 value = value / 10;
             }
             while (digit < minFieldWidth) {
-                buffer.append('0');
+                buffer.append(Symbol.C_ZERO);
                 --minFieldWidth;
             }
             while (--digit >= 0) {
@@ -314,7 +315,7 @@ public class DatePattern {
                 case 's' -> rule = selectNumberRule(Calendar.SECOND, tokenLen);
                 case 'S' -> rule = selectNumberRule(Calendar.MILLISECOND, tokenLen);
                 case 'E' -> rule = new TextField(Calendar.DAY_OF_WEEK, tokenLen < 4 ? shortWeekdays : weekdays);
-                case 'u' -> rule = new DayInWeekField(selectNumberRule(Calendar.DAY_OF_WEEK, tokenLen));
+                case Symbol.C_U -> rule = new DayInWeekField(selectNumberRule(Calendar.DAY_OF_WEEK, tokenLen));
                 case 'D' -> rule = selectNumberRule(Calendar.DAY_OF_YEAR, tokenLen);
                 case 'F' -> rule = selectNumberRule(Calendar.DAY_OF_WEEK_IN_MONTH, tokenLen);
                 case 'w' -> rule = selectNumberRule(Calendar.WEEK_OF_YEAR, tokenLen);
@@ -322,7 +323,7 @@ public class DatePattern {
                 case 'a' -> rule = new TextField(Calendar.AM_PM, AmPmStrings);
                 case 'k' -> rule = new TwentyFourHourField(selectNumberRule(Calendar.HOUR_OF_DAY, tokenLen));
                 case 'K' -> rule = selectNumberRule(Calendar.HOUR, tokenLen);
-                case 'X' -> rule = Iso8601_Rule.getRule(tokenLen);
+                case Symbol.C_X -> rule = Iso8601_Rule.getRule(tokenLen);
                 case 'z' -> rule = new TimeZoneNameRule(timeZone, locale,
                         tokenLen < 4 ? TimeZone.SHORT : TimeZone.LONG);
                 case 'Z' -> {
@@ -334,7 +335,7 @@ public class DatePattern {
                         rule = TimeZoneNumberRule.INSTANCE_COLON;
                     }
                 }
-                case '\'' -> {
+                case Symbol.C_SINGLE_QUOTE -> {
                     final String sub = token.substring(1);
                     if (sub.length() == 1) {
                         rule = new CharacterLiteral(sub.charAt(0));
@@ -577,7 +578,7 @@ public class DatePattern {
         @Override
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
             if (value < 10) {
-                buffer.append((char) (value + '0'));
+                buffer.append((char) (value + Symbol.C_ZERO));
             } else if (value < 100) {
                 appendDigits(buffer, value);
             } else {
@@ -637,7 +638,7 @@ public class DatePattern {
         @Override
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
             if (value < 10) {
-                buffer.append((char) (value + '0'));
+                buffer.append((char) (value + Symbol.C_ZERO));
             } else {
                 appendDigits(buffer, value);
             }
@@ -1191,15 +1192,15 @@ public class DatePattern {
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             int offset = calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET);
             if (offset < 0) {
-                buffer.append('-');
+                buffer.append(Symbol.C_MINUS);
                 offset = -offset;
             } else {
-                buffer.append('+');
+                buffer.append(Symbol.C_PLUS);
             }
             final int hours = offset / (60 * 60 * 1000);
             appendDigits(buffer, hours);
             if (mColon) {
-                buffer.append(':');
+                buffer.append(Symbol.C_COLON);
             }
             final int minutes = offset / (60 * 1000) - 60 * hours;
             appendDigits(buffer, minutes);
@@ -1261,10 +1262,10 @@ public class DatePattern {
                 return;
             }
             if (offset < 0) {
-                buffer.append('-');
+                buffer.append(Symbol.C_MINUS);
                 offset = -offset;
             } else {
-                buffer.append('+');
+                buffer.append(Symbol.C_PLUS);
             }
             final int hours = offset / (60 * 60 * 1000);
             appendDigits(buffer, hours);
@@ -1272,7 +1273,7 @@ public class DatePattern {
                 return;
             }
             if (length == 6) {
-                buffer.append(':');
+                buffer.append(Symbol.C_COLON);
             }
             final int minutes = offset / (60 * 1000) - 60 * hours;
             appendDigits(buffer, minutes);

@@ -36,7 +36,7 @@ import org.miaixz.bus.core.math.EnglishNumberFormatter;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * Type Converter utility.
+ * Converts values between supported types.
  *
  * @author Kimi Liu
  * @since Java 21+

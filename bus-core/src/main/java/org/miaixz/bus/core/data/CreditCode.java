@@ -28,7 +28,7 @@ import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Unified Social Credit Code (GB32100-2015) utility class. Standard see:
+ * Unified Social Credit Code (GB32100-2015) class. Standard see:
  * <a href="https://www.cods.org.cn/c/2020-10-29/12575.html">GB 32100-2015</a> After the policy of "three certificates
  * in one, one license one code", the taxpayer identification number == unified social credit code. Policy see the State
  * Administration of Taxation: <a href="https://www.chinatax.gov.cn/n810219/n810724/c1838941/content.html">What are the

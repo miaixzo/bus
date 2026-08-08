@@ -30,13 +30,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.logger.Logger;
 
+import io.netty.channel.ChannelOption;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.http.client.PrematureCloseException;
@@ -137,10 +137,6 @@ public final class Egress {
                     || current instanceof IOException) {
                 return true;
             }
-            if (current instanceof WebClientResponseException responseException) {
-                return responseException.getStatusCode().is5xxServerError()
-                        || responseException.getStatusCode().value() == 429;
-            }
             current = current.getCause();
         }
         return false;
@@ -156,7 +152,7 @@ public final class Egress {
      * @return retry specification
      */
     public static Retry retrySpec(int retries, String scene, String method, URI uri) {
-        int maxRetries = Math.max(retries, 0);
+        int maxRetries = isRetrySafe(method) ? Math.min(Math.max(retries, 0), Holder.get().getMaxRetries()) : 0;
         if (maxRetries <= 0) {
             return Retry.max(0).filter(error -> false);
         }
@@ -206,6 +202,30 @@ public final class Egress {
     }
 
     /**
+     * Resolves retries for methods that can be repeated without changing downstream state.
+     *
+     * @param assets route asset
+     * @param method outbound method
+     * @return retries in range {@code 0..2}
+     */
+    public static int retryAttempts(Assets assets, HttpMethod method) {
+        if (method == null || !isRetrySafe(method.name())) {
+            return 0;
+        }
+        return Math.min(retryAttempts(assets), Holder.get().getMaxRetries());
+    }
+
+    /**
+     * Reports whether an outbound method is eligible for replay before response headers arrive.
+     *
+     * @param method HTTP method name
+     * @return whether an attempt can safely be replayed before response headers arrive
+     */
+    public static boolean isRetrySafe(String method) {
+        return HttpMethod.GET.matches(method) || HttpMethod.HEAD.matches(method) || HttpMethod.OPTIONS.matches(method);
+    }
+
+    /**
      * Applies timeout and retry protection to one outbound request.
      *
      * @param mono           outbound publisher
@@ -251,9 +271,12 @@ public final class Egress {
      * @return The newly created outbound WebClient.
      */
     private static WebClient create() {
-        HttpClient httpClient = HttpClient.create(Holder.connectionProvider()).runOn(Holder.loopResources(), false);
+        HttpClient httpClient = HttpClient.create(Holder.connectionProvider()).runOn(Holder.loopResources(), false)
+                .option(ChannelOption.ALLOCATOR, Holder.allocator());
         ExchangeStrategies strategies = ExchangeStrategies.builder()
-                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128)))
+                .codecs(
+                        configurer -> configurer.defaultCodecs()
+                                .maxInMemorySize(Math.toIntExact(Holder.get().getMaxBufferedResponseSize())))
                 .build();
         WebClient webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(httpClient))
                 .exchangeStrategies(strategies).build();

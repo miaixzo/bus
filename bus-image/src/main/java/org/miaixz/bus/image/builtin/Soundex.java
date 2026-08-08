@@ -20,6 +20,7 @@
 package org.miaixz.bus.image.builtin;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Implements the Soundex algorithm for phonetic encoding of words. This algorithm converts a word into a phonetic code,
@@ -128,7 +129,7 @@ public class Soundex implements FuzzyString {
             }
         }
         while (j < padLength)
-            out[j++] = '0';
+            out[j++] = Symbol.C_ZERO;
         return new String(out, 0, j);
     }
 

@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Secret-handling helpers for the curator.
+ * Encodes, decodes, and masks secrets for the curator.
  * <p>
  * {@code SecretCodec} abstracts encryption and decryption of protected values, while {@code SecretMasker} produces
  * management-safe views that do not leak secret or encrypted content.

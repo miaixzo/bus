@@ -49,7 +49,7 @@ import org.miaixz.bus.core.text.replacer.StringRangeReplacer;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * Utility class for {@link CharSequence} operations, including but not limited to:
+ * Inspects and transforms {@link CharSequence} values, including but not limited to:
  * <ul>
  * <li>Adding prefixes or suffixes to strings: {@code addXXX}</li>
  * <li>Padding strings to a specific length: {@code padXXX}</li>
@@ -3935,10 +3935,10 @@ public class CharsBacker extends CharsValidator {
                 return String.valueOf(text.charAt(0));
 
             case 2:
-                return text.charAt(0) + ".";
+                return text.charAt(0) + Symbol.DOT;
 
             case 3:
-                return text.charAt(0) + "." + text.charAt(strLength - 1);
+                return text.charAt(0) + Symbol.DOT + text.charAt(strLength - 1);
 
             case 4:
                 return text.charAt(0) + ".." + text.charAt(strLength - 1);
@@ -4033,7 +4033,8 @@ public class CharsBacker extends CharsValidator {
         }
         final int len = text.length();
         if (startInclude < 0 || endExclude > len || startInclude > endExclude) {
-            throw new IndexOutOfBoundsException("Invalid range: [" + startInclude + ", " + endExclude + ")");
+            throw new IndexOutOfBoundsException(
+                    "Invalid range: [" + startInclude + ", " + endExclude + Symbol.PARENTHESE_RIGHT);
         }
 
         // Separate the "block to move" and the "remaining string"

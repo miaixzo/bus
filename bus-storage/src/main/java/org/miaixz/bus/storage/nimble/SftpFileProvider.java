@@ -636,13 +636,13 @@ public class SftpFileProvider extends AbstractProvider {
      */
     private String parseHostFromEndpoint(String endpoint) {
         if (StringKit.isBlank(endpoint)) {
-            return "";
+            return Normal.EMPTY;
         }
         // Remove protocol header (e.g., sftp://, ssh://)
-        String host = endpoint.replaceFirst("^(sftp|ssh)://", "");
+        String host = endpoint.replaceFirst("^(sftp|ssh)://", Normal.EMPTY);
         // Remove port and path
-        int colonIndex = host.indexOf(':');
-        int slashIndex = host.indexOf('/');
+        int colonIndex = host.indexOf(Symbol.C_COLON);
+        int slashIndex = host.indexOf(Symbol.C_SLASH);
         if (colonIndex != -1) {
             host = host.substring(0, colonIndex);
         } else if (slashIndex != -1) {
@@ -663,8 +663,8 @@ public class SftpFileProvider extends AbstractProvider {
         }
         try {
             // Extract the port part
-            String portStr = endpoint.replaceFirst("^(sftp|ssh)://[^:]+:?", "");
-            int slashIndex = portStr.indexOf('/');
+            String portStr = endpoint.replaceFirst("^(sftp|ssh)://[^:]+:?", Normal.EMPTY);
+            int slashIndex = portStr.indexOf(Symbol.C_SLASH);
             if (slashIndex != -1) {
                 portStr = portStr.substring(0, slashIndex); // Remove path part
             }

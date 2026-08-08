@@ -25,6 +25,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Enumerates the possible source channels of a request, allowing for channel-specific logic and authorization.
  * <p>
@@ -42,27 +44,27 @@ public enum Channel {
     /**
      * Indicates a request initiated from a standard web browser or web page.
      */
-    WEB("1", 0),
+    WEB(Symbol.ONE, 0),
 
     /**
      * Indicates a request initiated from a native mobile application (iOS, Android).
      */
-    APP("2", 1),
+    APP(Symbol.TWO, 1),
 
     /**
      * Indicates a request initiated from the DingTalk platform (e.g., a mini-app or bot).
      */
-    DINGTALK("3", 1),
+    DINGTALK(Symbol.THREE, 1),
 
     /**
      * Indicates a request initiated from the WeChat platform (e.g., a mini-program or official account).
      */
-    WECHAT("4", 1),
+    WECHAT(Symbol.FOUR, 1),
 
     /**
      * A fallback value for requests from an unknown or unspecified channel.
      */
-    OTHER("5", 0);
+    OTHER(Symbol.FIVE, 0);
 
     /**
      * The raw string value representing the channel, typically sent in a request header like {@code x_remote_channel}.

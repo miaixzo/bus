@@ -26,11 +26,12 @@ import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinReg.HKEY;
 
 import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Utility class for reading data from the Windows Registry.
+ * Reads data from the Windows Registry.
  * <p>
  * This class provides methods to retrieve Long and String values from the registry, handling various data types
  * (REG_DWORD, REG_SZ, REG_BINARY) and converting them to appropriate Java types. It also includes logic to interpret
@@ -104,7 +105,7 @@ public final class RegistryKit {
     public static Object getRegistryValueOrNull(HKEY root, String path, String key, int accessFlag) {
         try {
             Map<String, Object> values = Advapi32Util.registryGetValues(root, path, accessFlag);
-            String valueName = key == null ? "" : key;
+            String valueName = key == null ? Normal.EMPTY : key;
             Object value = values.get(valueName);
             if (value == null) {
                 for (Map.Entry<String, Object> entry : values.entrySet()) {

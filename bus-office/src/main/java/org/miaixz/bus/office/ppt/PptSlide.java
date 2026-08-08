@@ -27,6 +27,7 @@ import java.util.List;
 import org.apache.poi.sl.usermodel.PictureData;
 import org.apache.poi.xslf.usermodel.*;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 
@@ -265,7 +266,7 @@ public class PptSlide {
         for (final PptShape shape : getShapes()) {
             final PptShape.Data data = shape.toData();
             if (null != data.getText() && !data.getText().isEmpty()) {
-                sb.append(data.getText()).append('\n');
+                sb.append(data.getText()).append(Symbol.C_LF);
             }
         }
         return sb.toString().trim();

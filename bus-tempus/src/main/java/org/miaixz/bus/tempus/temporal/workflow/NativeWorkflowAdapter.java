@@ -36,6 +36,7 @@ import java.util.Set;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 import io.temporal.activity.ActivityInterface;
 import io.temporal.activity.ActivityMethod;
@@ -91,8 +92,8 @@ public final class NativeWorkflowAdapter {
                 }
                 for (Map.Entry<String, Method> entry : activityMethods(activity).entrySet()) {
                     if (registered.containsKey(entry.getKey())) {
-                        throw new TypeAlreadyRegisteredException(entry.getKey(),
-                                "\"" + entry.getKey() + "\" activity type is already registered with the worker");
+                        throw new TypeAlreadyRegisteredException(entry.getKey(), Symbol.DOUBLE_QUOTES + entry.getKey()
+                                + "\" activity type is already registered with the worker");
                     }
                     registered.put(entry.getKey(), activityExecutor(taskHandler, activity, entry.getValue()));
                 }
@@ -105,9 +106,9 @@ public final class NativeWorkflowAdapter {
     /**
      * Registers a single-argument workflow using Temporal dynamic workflow dispatch.
      * <p>
-     * Temporal 1.35 loads an internal utility class that hard-links Jackson 2 while scanning POJO workflow metadata.
-     * This path keeps the public workflow type unchanged and delegates execution to the original handler without
-     * loading the Jackson 2-bound metadata utility.
+     * Temporal 1.35 loads an internal class that hard-links Jackson 2 while scanning POJO workflow metadata. This path
+     * keeps the public workflow type unchanged and delegates execution to the original handler without loading the
+     * Jackson 2-bound metadata class.
      *
      * @param worker       Temporal worker
      * @param workflowType Temporal workflow type

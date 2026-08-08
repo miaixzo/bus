@@ -22,7 +22,7 @@ package org.miaixz.bus.core.lang.loader;
 import java.util.Collection;
 
 /**
- * Utility class for creating and combining {@link Filter} instances.
+ * Creates and combines {@link Filter} instances.
  *
  * @author Kimi Liu
  * @since Java 21+

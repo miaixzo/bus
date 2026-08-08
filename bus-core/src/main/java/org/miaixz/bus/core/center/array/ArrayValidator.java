@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Array validation utility class, providing checks for blank and empty objects.
+ * Array validation class, providing checks for blank and empty objects.
  * <ul>
  * <li>Empty definition: {@code null} or empty string: {@code ""}</li>
  * <li>Blank definition: {@code null} or empty string: {@code ""} or whitespace characters (spaces, full-width spaces,

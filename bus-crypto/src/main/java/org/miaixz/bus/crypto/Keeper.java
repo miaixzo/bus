@@ -69,9 +69,9 @@ import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Key utility class for generating, reading, and managing cryptographic keys. This class provides a comprehensive set
- * of static methods for handling various key types, including symmetric keys, asymmetric key pairs, and certificates.
- * It supports operations such as:
+ * Generates, reads, and manages generating, reading, and managing cryptographic keys. This class provides a
+ * comprehensive set of static methods for handling various key types, including symmetric keys, asymmetric key pairs,
+ * and certificates. It supports operations such as:
  * <ul>
  * <li>Generating symmetric keys and asymmetric key pairs.</li>
  * <li>Reading keys and certificates from various formats (e.g., JKS, PKCS12, PEM).</li>

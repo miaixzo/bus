@@ -31,13 +31,14 @@ import java.util.*;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Alipay configuration and utility class.
+ * Alipay configuration and class.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -120,7 +121,7 @@ public class AliPayBuilder {
         }
         for (String key : params.keySet()) {
             String value = params.get(key);
-            if (value == null || "".equals(value) || "sign".equalsIgnoreCase(key)
+            if (value == null || Normal.EMPTY.equals(value) || "sign".equalsIgnoreCase(key)
                     || "sign_type".equalsIgnoreCase(key)) {
                 continue;
             }

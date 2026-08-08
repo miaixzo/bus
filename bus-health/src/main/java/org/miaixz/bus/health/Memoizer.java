@@ -54,7 +54,7 @@ public final class Memoizer {
      * @return The configured expiration time in nanoseconds.
      */
     private static long queryExpirationConfig() {
-        return TimeUnit.MILLISECONDS.toNanos(Builder.get(Builder._UTIL_MEMOIZER_EXPIRATION, 300));
+        return TimeUnit.MILLISECONDS.toNanos(Builder.get(Builder._MEMOIZER_EXPIRATION, 300));
     }
 
     /**

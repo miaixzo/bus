@@ -24,6 +24,7 @@ import java.io.Serializable;
 
 import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.codec.Encoder;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Implements the ZeroMQ Z85 encoding scheme, as defined in the <a href="https://rfc.zeromq.org/spec:32/Z85/">Z85
@@ -55,11 +56,15 @@ public class Z85 implements Encoder<byte[], String>, Decoder<String, byte[]>, Se
     /**
      * The Z85 character set for encoding.
      */
-    private static final char[] ENCODE_TABLE = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b',
-            'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w',
-            'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
-            'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '.', '-', ':', '+', '=', '^', '!', '/', '*', '?', '&', '<', '>',
-            '(', ')', '[', ']', '{', '}', '@', '%', '$', '#' };
+    private static final char[] ENCODE_TABLE = new char[] { Symbol.C_ZERO, Symbol.C_ONE, Symbol.C_TWO, Symbol.C_THREE,
+            Symbol.C_FOUR, Symbol.C_FIVE, Symbol.C_SIX, Symbol.C_SEVEN, Symbol.C_EIGHT, Symbol.C_NINE, 'a', 'b', 'c',
+            'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', Symbol.C_U, 'v', 'w',
+            'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', Symbol.C_L, 'M', 'N', 'O', 'P', 'Q',
+            'R', 'S', 'T', 'U', 'V', 'W', Symbol.C_X, 'Y', 'Z', Symbol.C_DOT, Symbol.C_MINUS, Symbol.C_COLON,
+            Symbol.C_PLUS, Symbol.C_EQUAL, Symbol.C_CARET, Symbol.C_NOT, Symbol.C_SLASH, Symbol.C_STAR,
+            Symbol.C_QUESTION_MARK, Symbol.C_AND, Symbol.C_LT, Symbol.C_GT, Symbol.C_PARENTHESE_LEFT,
+            Symbol.C_PARENTHESE_RIGHT, Symbol.C_BRACKET_LEFT, Symbol.C_BRACKET_RIGHT, Symbol.C_BRACE_LEFT,
+            Symbol.C_BRACE_RIGHT, Symbol.C_AT, Symbol.C_PERCENT, Symbol.C_DOLLAR, Symbol.C_HASH };
 
     /**
      * The Z85 lookup table for decoding.

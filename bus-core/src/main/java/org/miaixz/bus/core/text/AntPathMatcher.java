@@ -78,7 +78,7 @@ public class AntPathMatcher {
     /**
      * An array of characters that are considered wildcards in a pattern.
      */
-    private static final char[] WILDCARD_CHARS = { Symbol.C_STAR, Symbol.C_QUESTION_MARK, '{' };
+    private static final char[] WILDCARD_CHARS = { Symbol.C_STAR, Symbol.C_QUESTION_MARK, Symbol.C_BRACE_LEFT };
 
     /**
      * A cache for tokenized pattern strings, mapping a pattern string to its tokenized parts.
@@ -576,7 +576,8 @@ public class AntPathMatcher {
         final Map<String, String> variables = new LinkedHashMap<>();
         final boolean result = doMatch(pattern, path, true, variables);
         if (!result) {
-            throw new IllegalStateException("Pattern \"" + pattern + "\" is not a match for \"" + path + "\"");
+            throw new IllegalStateException(
+                    "Pattern \"" + pattern + "\" is not a match for \"" + path + Symbol.DOUBLE_QUOTES);
         }
         return variables;
     }
@@ -600,7 +601,7 @@ public class AntPathMatcher {
             return pattern1;
         }
 
-        final boolean pattern1ContainsUriVar = (pattern1.indexOf('{') != -1);
+        final boolean pattern1ContainsUriVar = (pattern1.indexOf(Symbol.C_BRACE_LEFT) != -1);
         if (!pattern1.equals(pattern2) && !pattern1ContainsUriVar && match(pattern1, pattern2)) {
             return pattern2;
         }
@@ -614,14 +615,14 @@ public class AntPathMatcher {
         }
 
         final int starDotPos1 = pattern1.indexOf("*.");
-        if (pattern1ContainsUriVar || starDotPos1 == -1 || this.pathSeparator.equals(".")) {
+        if (pattern1ContainsUriVar || starDotPos1 == -1 || this.pathSeparator.equals(Symbol.DOT)) {
             return concat(pattern1, pattern2);
         }
 
         final String ext1 = pattern1.substring(starDotPos1 + 1);
-        final int dotPos2 = pattern2.indexOf('.');
+        final int dotPos2 = pattern2.indexOf(Symbol.C_DOT);
         final String file2 = (dotPos2 == -1 ? pattern2 : pattern2.substring(0, dotPos2));
-        final String ext2 = (dotPos2 == -1 ? "" : pattern2.substring(dotPos2));
+        final String ext2 = (dotPos2 == -1 ? Normal.EMPTY : pattern2.substring(dotPos2));
         final boolean ext1All = (ext1.equals(".*") || ext1.isEmpty());
         final boolean ext2All = (ext2.equals(".*") || ext2.isEmpty());
         if (!ext1All && !ext2All) {
@@ -662,7 +663,7 @@ public class AntPathMatcher {
     }
 
     /**
-     * A helper class for matching a string against a single Ant-style pattern.
+     * A class for matching a string against a single Ant-style pattern.
      *
      * @author Kimi Liu
      * @since Java 21+
@@ -719,8 +720,8 @@ public class AntPathMatcher {
             while (matcher.find()) {
                 patternBuilder.append(quote(pattern, end, matcher.start()));
                 final String match = matcher.group();
-                if ("?".equals(match)) {
-                    patternBuilder.append('.');
+                if (Symbol.QUESTION_MARK.equals(match)) {
+                    patternBuilder.append(Symbol.C_DOT);
                 } else if (Symbol.STAR.equals(match)) {
                     patternBuilder.append(".*");
                 } else if (match.startsWith(Symbol.BRACE_LEFT) && match.endsWith(Symbol.BRACE_RIGHT)) {
@@ -760,7 +761,7 @@ public class AntPathMatcher {
          */
         private String quote(final String s, final int start, final int end) {
             if (start == end) {
-                return "";
+                return Normal.EMPTY;
             }
             return Pattern.quote(s.substring(start, end));
         }
@@ -895,7 +896,7 @@ public class AntPathMatcher {
         }
 
         /**
-         * A helper class to hold information about a pattern's specificity.
+         * A class to hold information about a pattern's specificity.
          *
          * @author Kimi Liu
          * @since Java 21+
@@ -961,7 +962,7 @@ public class AntPathMatcher {
                 int pos = 0;
                 if (this.pattern != null) {
                     while (pos < this.pattern.length()) {
-                        if (this.pattern.charAt(pos) == '{') {
+                        if (this.pattern.charAt(pos) == Symbol.C_BRACE_LEFT) {
                             this.uriVars++;
                             pos++;
                         } else if (this.pattern.charAt(pos) == Symbol.C_STAR) {
@@ -1043,7 +1044,7 @@ public class AntPathMatcher {
             public int getLength() {
                 if (this.length == null) {
                     this.length = (this.pattern != null
-                            ? VARIABLE_PATTERN.matcher(this.pattern).replaceAll("#").length()
+                            ? VARIABLE_PATTERN.matcher(this.pattern).replaceAll(Symbol.HASH).length()
                             : 0);
                 }
                 return this.length;

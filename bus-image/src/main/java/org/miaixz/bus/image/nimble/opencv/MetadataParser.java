@@ -26,6 +26,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Represents the MetadataParser type.
@@ -81,7 +82,7 @@ public final class MetadataParser {
      */
     private static String parseTagRow(Mat row) {
         if (row.empty()) {
-            return "";
+            return Normal.EMPTY;
         }
         int byteCount = (int) row.elemSize() * row.cols() * row.channels();
         var tagBytes = new byte[byteCount];

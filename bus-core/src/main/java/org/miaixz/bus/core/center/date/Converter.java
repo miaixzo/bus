@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * Date conversion utility.
+ * Converts date and time values.
  *
  * @author Kimi Liu
  * @since Java 21+

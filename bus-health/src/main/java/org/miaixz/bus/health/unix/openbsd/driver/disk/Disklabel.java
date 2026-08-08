@@ -33,7 +33,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
 
 /**
- * Utility class parsing partition information from disklabel command
+ * Parses partition information from disklabel command
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -125,7 +125,7 @@ public final class Disklabel {
                     // get major and minor from stat
                     Pair<Integer, Integer> majorMinor = getMajorMinor(diskName, name);
                     partitions.add(
-                            new HWPartition(diskName + name, name, split[3], duid + "." + name,
+                            new HWPartition(diskName + name, name, split[3], duid + Symbol.DOT + name,
                                     Parsing.parseLongOrDefault(split[1], 0L) * bytesPerSector, majorMinor.getLeft(),
                                     majorMinor.getRight(), split.length > 5 ? split[split.length - 1] : Normal.EMPTY));
                 }

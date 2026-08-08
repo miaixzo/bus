@@ -36,7 +36,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.gitlab.models.Constants.*;
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * This class is used to filter merge requests when getting lists of them.
@@ -1014,7 +1014,7 @@ public class MergeRequestFilter implements Serializable {
          */
         MY_REACTION_EMOJI;
 
-        private static JacksonJsonEnumHelper<MergeRequestField> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<MergeRequestField> enumCodec = new JacksonJsonEnumCodec<>(
                 MergeRequestField.class);
 
         /**
@@ -1026,7 +1026,7 @@ public class MergeRequestFilter implements Serializable {
 
         @JsonCreator
         public static MergeRequestField forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -1037,7 +1037,7 @@ public class MergeRequestFilter implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -1048,7 +1048,7 @@ public class MergeRequestFilter implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

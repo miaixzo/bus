@@ -25,6 +25,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Builder;
@@ -664,7 +666,8 @@ public class VortexBridge
         record.setPayload(JsonKit.toJsonString(event));
         record.setSequence(event.getSequence());
         record.setIdempotencyKey(
-                "vortex:" + event.getNamespace_id() + ":" + record.getAction() + ":" + record.getResourceId());
+                "vortex:" + event.getNamespace_id() + Symbol.COLON + record.getAction() + Symbol.COLON
+                        + record.getResourceId());
         return record;
     }
 
@@ -681,8 +684,8 @@ public class VortexBridge
         if (event.getId() != null) {
             return event.getId();
         }
-        return (event.getMethod() == null ? "" : event.getMethod()) + ":"
-                + (event.getVersion() == null ? "" : event.getVersion());
+        return (event.getMethod() == null ? Normal.EMPTY : event.getMethod()) + Symbol.COLON
+                + (event.getVersion() == null ? Normal.EMPTY : event.getVersion());
     }
 
     /**

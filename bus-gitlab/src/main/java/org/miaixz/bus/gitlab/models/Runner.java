@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The runner class.
@@ -196,7 +196,7 @@ public class Runner implements Serializable {
          */
         OFFLINE;
 
-        private static JacksonJsonEnumHelper<RunnerStatus> enumHelper = new JacksonJsonEnumHelper<>(RunnerStatus.class);
+        private static JacksonJsonEnumCodec<RunnerStatus> enumCodec = new JacksonJsonEnumCodec<>(RunnerStatus.class);
 
         /**
          * Returns the value.
@@ -207,7 +207,7 @@ public class Runner implements Serializable {
 
         @JsonCreator
         public static RunnerStatus forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -218,7 +218,7 @@ public class Runner implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -229,7 +229,7 @@ public class Runner implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -255,7 +255,7 @@ public class Runner implements Serializable {
          */
         PROJECT_TYPE;
 
-        private static JacksonJsonEnumHelper<RunnerType> enumHelper = new JacksonJsonEnumHelper<>(RunnerType.class);
+        private static JacksonJsonEnumCodec<RunnerType> enumCodec = new JacksonJsonEnumCodec<>(RunnerType.class);
 
         /**
          * Returns the value.
@@ -266,7 +266,7 @@ public class Runner implements Serializable {
 
         @JsonCreator
         public static RunnerType forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -277,7 +277,7 @@ public class Runner implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -288,7 +288,7 @@ public class Runner implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

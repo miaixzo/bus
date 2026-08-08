@@ -316,7 +316,7 @@ public class Slf4jLoggingProvider extends AbstractProvider {
 
     /**
      * Logs a message. This method is used to support underlying logging implementations by passing the fully qualified
-     * class name of the caller, which helps in correcting the line number in the log output.
+     * class name of the caller, which corrects the line number in the log output.
      *
      * @param logger    the {@link LocationAwareLogger} instance.
      * @param fqcn      the fully qualified class name of the caller.

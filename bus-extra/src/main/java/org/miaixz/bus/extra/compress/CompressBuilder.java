@@ -44,7 +44,7 @@ import org.miaixz.bus.extra.compress.extractor.SevenZExtractor;
 import org.miaixz.bus.extra.compress.extractor.StreamExtractor;
 
 /**
- * Compression utility class. A wrapper for compression and decompression based on commons-compress.
+ * Compresses and decompresses data. A wrapper for compression and decompression based on commons-compress.
  *
  * @author Kimi Liu
  * @since Java 21+

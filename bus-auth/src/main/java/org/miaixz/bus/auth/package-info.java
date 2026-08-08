@@ -18,12 +18,12 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * As you can see, it is merely a utility library for third-party authorization login, which frees us from tedious
- * third-party login SDKs, making login so easy! The most comprehensive open-source library for integrating third-party
- * logins. Currently supports authorization login for third-party platforms such as Github, Gitee, Weibo, DingTalk,
- * Baidu, Coding, Tencent Cloud Developer Platform, OSChina, Alipay, QQ, WeChat, Taobao, GoogleS, Facebook, Douyin,
- * LinkedIn, Xiaomi, Microsoft, Toutiao, Teambition, StackOverflow, Pinterest, Renren, Huawei, and WeChat Enterprise.
- * Login, so easy!
+ * As you can see, it is merely a library for third-party authorization login, which frees us from tedious third-party
+ * login SDKs, making login so easy! The most comprehensive open-source library for integrating third-party logins.
+ * Currently supports authorization login for third-party platforms such as Github, Gitee, Weibo, DingTalk, Baidu,
+ * Coding, Tencent Cloud Developer Platform, OSChina, Alipay, QQ, WeChat, Taobao, GoogleS, Facebook, Douyin, LinkedIn,
+ * Xiaomi, Microsoft, Toutiao, Teambition, StackOverflow, Pinterest, Renren, Huawei, and WeChat Enterprise. Login, so
+ * easy!
  *
  * @author Kimi Liu
  * @since Java 21+

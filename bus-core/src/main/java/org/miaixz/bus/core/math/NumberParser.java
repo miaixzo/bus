@@ -321,7 +321,7 @@ public class NumberParser {
             // Alternative hex (allowed by Long/Integer).
             radix = 16;
             pos++;
-        } else if (text.startsWith("0", pos) && text.length() > pos + 1) {
+        } else if (text.startsWith(Symbol.ZERO, pos) && text.length() > pos + 1) {
             // Octal, so long as there are additional digits.
             radix = 8;
             pos++;

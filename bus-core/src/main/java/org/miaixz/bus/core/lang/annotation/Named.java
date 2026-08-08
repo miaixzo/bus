@@ -69,7 +69,7 @@ public @interface Named {
         }
 
         /**
-         * A utility method to check for null references, similar to {@code java.util.Objects.requireNonNull}.
+         * A method to check for null references, similar to {@code java.util.Objects.requireNonNull}.
          *
          * @param reference    The reference to check.
          * @param errorMessage The error message to use if the reference is null.

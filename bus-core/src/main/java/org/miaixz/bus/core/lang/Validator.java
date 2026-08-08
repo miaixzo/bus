@@ -540,7 +540,7 @@ public class Validator {
     }
 
     /**
-     * Helper method: checks if a string contains only digits
+     * Checks if a string contains only digits
      *
      * @param text The string
      * @return Whether it contains only digits

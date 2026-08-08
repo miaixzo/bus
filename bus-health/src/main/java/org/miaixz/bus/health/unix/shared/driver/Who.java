@@ -43,7 +43,7 @@ import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.software.OSSession;
 
 /**
- * Utility to query logged in users.
+ * Queries logged in users.
  *
  * @author Kimi Liu
  * @since Java 21+

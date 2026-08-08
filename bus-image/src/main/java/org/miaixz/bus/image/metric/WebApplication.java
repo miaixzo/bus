@@ -454,7 +454,7 @@ public class WebApplication {
     public void setProperties(String[] ss) {
         properties.clear();
         for (String s : ss) {
-            int index = s.indexOf('=');
+            int index = s.indexOf(Symbol.C_EQUAL);
             if (index < 0)
                 throw new IllegalArgumentException("Property in incorrect format : " + s);
             setProperty(s.substring(0, index), s.substring(index + 1));

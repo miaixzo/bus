@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Watch service utility class, mainly for the convenient creation of file watchers.
+ * Creates the convenient creation of file watchers.
  *
  * @author Kimi Liu
  * @since Java 21+

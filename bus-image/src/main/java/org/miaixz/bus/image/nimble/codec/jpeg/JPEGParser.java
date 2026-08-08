@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.SafeBuffer;
@@ -834,7 +835,7 @@ public class JPEGParser implements XPEGParser {
                 return s;
             StringBuilder sb = new StringBuilder(s);
             while (l > 4)
-                sb.insert(l -= 4, '_');
+                sb.insert(l -= 4, Symbol.C_UNDERLINE);
             return sb.toString();
         }
 

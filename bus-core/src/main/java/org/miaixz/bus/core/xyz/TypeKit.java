@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.reflect.ParameterizedType;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
 
 /**
- * Utility class for {@link Type}. Main functions include:
+ * Inspects and resolves Java types. Main functions include:
  *
  * <pre>
  * 1. Getting parameter and return types of methods.

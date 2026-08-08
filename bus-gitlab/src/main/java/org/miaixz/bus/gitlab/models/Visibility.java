@@ -22,7 +22,7 @@ package org.miaixz.bus.gitlab.models;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The visibility enum.
@@ -45,7 +45,7 @@ public enum Visibility {
      */
     INTERNAL;
 
-    private static JacksonJsonEnumHelper<Visibility> enumHelper = new JacksonJsonEnumHelper<>(Visibility.class);
+    private static JacksonJsonEnumCodec<Visibility> enumCodec = new JacksonJsonEnumCodec<>(Visibility.class);
 
     /**
      * Returns the value.
@@ -56,7 +56,7 @@ public enum Visibility {
 
     @JsonCreator
     public static Visibility forValue(String value) {
-        return enumHelper.forValue(value);
+        return enumCodec.forValue(value);
     }
 
     /**
@@ -67,7 +67,7 @@ public enum Visibility {
 
     @JsonValue
     public String toValue() {
-        return (enumHelper.toString(this));
+        return (enumCodec.toString(this));
     }
 
     /**
@@ -78,7 +78,7 @@ public enum Visibility {
 
     @Override
     public String toString() {
-        return (enumHelper.toString(this));
+        return (enumCodec.toString(this));
     }
 
 }

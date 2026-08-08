@@ -24,6 +24,8 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
@@ -1773,7 +1775,7 @@ public enum FileMagicNumber {
     /**
      * DBX format.
      */
-    DBX("", "dbx") {
+    DBX(Normal.EMPTY, "dbx") {
 
         /**
          * Checks if the given bytes match the DBX file signature.
@@ -1916,9 +1918,9 @@ public enum FileMagicNumber {
      * @return the FileMagicNumber
      */
     private static FileMagicNumber matchOpenXmlMime(final byte[] bytes, final int offset) {
-        final byte[] word = new byte[] { 'w', 'o', 'r', 'd', '/' };
-        final byte[] ppt = new byte[] { 'p', 'p', 't', '/' };
-        final byte[] xl = new byte[] { 'x', 'l', '/' };
+        final byte[] word = new byte[] { 'w', 'o', 'r', 'd', Symbol.C_SLASH };
+        final byte[] ppt = new byte[] { 'p', 'p', 't', Symbol.C_SLASH };
+        final byte[] xl = new byte[] { 'x', 'l', Symbol.C_SLASH };
         if (FileMagicNumber.compareBytes(bytes, word, offset)) {
             return FileMagicNumber.DOCX;
         }

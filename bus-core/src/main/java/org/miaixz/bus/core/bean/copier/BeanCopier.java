@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.copier.Copier;
 
 /**
- * A utility class for copying properties between different types of objects, including:
+ * Copies properties between different types of objects, including:
  *
  * <pre>
  *     1. Bean to Bean

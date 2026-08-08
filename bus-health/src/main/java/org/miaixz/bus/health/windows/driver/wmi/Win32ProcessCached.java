@@ -34,7 +34,7 @@ import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.windows.WmiKit;
 
 /**
- * Utility to query WMI class {@code Win32_Process} using cache
+ * Queries WMI class {@code Win32_Process} using cache
  *
  * @author Kimi Liu
  * @since Java 21+

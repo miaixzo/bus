@@ -82,7 +82,7 @@ public class PartParser {
      * @return {@code true} if the value is a wildcard, {@code false} otherwise.
      */
     private static boolean isMatchAllString(final String value) {
-        return (1 == value.length()) && (Symbol.STAR.equals(value) || "?".equals(value));
+        return (1 == value.length()) && (Symbol.STAR.equals(value) || Symbol.QUESTION_MARK.equals(value));
     }
 
     /**
@@ -272,7 +272,7 @@ public class PartParser {
      * @throws CrontabException if the alias is not recognized.
      */
     private int parseAlias(final String name) throws CrontabException {
-        if ("L".equalsIgnoreCase(name)) {
+        if (Symbol.L.equalsIgnoreCase(name)) {
             // 'L' represents the maximum value for the part.
             return part.getMax();
         }

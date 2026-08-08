@@ -35,6 +35,7 @@ import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xml.DocumentBuilder;
 import org.miaixz.bus.core.xml.XmlMapper;
@@ -42,8 +43,8 @@ import org.miaixz.bus.core.xml.XmlSaxReader;
 import org.miaixz.bus.core.xml.XmlWriter;
 
 /**
- * XML utility class. This utility uses the W3C DOM tools and does not require third-party libraries. It encapsulates
- * the creation, reading, writing, and some operations of XML documents.
+ * XML class. This class uses the W3C DOM APIs and does not require third-party libraries. It encapsulates the creation,
+ * reading, writing, and some operations of XML documents.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -75,7 +76,7 @@ public class XmlKit {
      */
     public static Document readXml(String pathOrContent) {
         pathOrContent = StringKit.trim(pathOrContent);
-        if (StringKit.startWith(pathOrContent, '<')) {
+        if (StringKit.startWith(pathOrContent, Symbol.C_LT)) {
             return parseXml(pathOrContent);
         }
         return readXml(FileKit.file(pathOrContent));

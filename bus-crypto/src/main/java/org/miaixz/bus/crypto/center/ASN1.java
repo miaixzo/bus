@@ -35,9 +35,9 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * ASN.1 (Abstract Syntax Notation One) utility class. ASN.1 describes a data format for representing, encoding,
- * transmitting, and decoding data. Its encoding formats include DER (Distinguished Encoding Rules), BER (Basic Encoding
- * Rules), and DL (Definite Length).
+ * ASN.1 (Abstract Syntax Notation One) class. ASN.1 describes a data format for representing, encoding, transmitting,
+ * and decoding data. Its encoding formats include DER (Distinguished Encoding Rules), BER (Basic Encoding Rules), and
+ * DL (Definite Length).
  *
  * @author Kimi Liu
  * @since Java 21+

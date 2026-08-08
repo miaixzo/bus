@@ -1265,7 +1265,7 @@ public class Connection implements Serializable {
      */
     @Override
     public String toString() {
-        return promptTo(new StringBuilder(), Normal.EMPTY).toString();
+        return promptTo(new StringBuilder(), "").toString();
     }
 
     /**
@@ -1616,7 +1616,8 @@ public class Connection implements Serializable {
         String response = new HTTPResponse(s).toString();
         s.setSoTimeout(0);
         if (!response.startsWith("HTTP/1.1 2"))
-            throw new IOException("Unable to tunnel through " + s + ". Proxy returns \"" + response + '\"');
+            throw new IOException(
+                    "Unable to tunnel through " + s + ". Proxy returns \"" + response + Symbol.C_DOUBLE_QUOTES);
     }
 
     /**

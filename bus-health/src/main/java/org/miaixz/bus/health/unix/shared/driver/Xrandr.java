@@ -28,7 +28,7 @@ import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.health.Executor;
 
 /**
- * Utility to query xrandr for display information.
+ * Queries xrandr for display information.
  *
  * @author Kimi Liu
  * @since Java 21+

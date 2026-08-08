@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
@@ -110,7 +111,7 @@ public class PresentationLutObject implements PresentationStateLut {
         // http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_A.33.3.3.html
         // http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_A.33.4.3.html
         // http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_A.33.6.3.html
-        if (!dcmPR.getString(Tag.SOPClassUID, "").startsWith("1.2.840.10008.5.1.4.1.1.11.")) {
+        if (!dcmPR.getString(Tag.SOPClassUID, Normal.EMPTY).startsWith("1.2.840.10008.5.1.4.1.1.11.")) {
             throw new IllegalStateException("SOPClassUID does not match to a DICOM Presentation State");
         }
         this.modalityLUT = desc == null ? new ModalityLutModule(dcmPR) : desc.getModalityLUT();

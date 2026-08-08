@@ -36,6 +36,7 @@ import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.FileKit;
@@ -53,8 +54,7 @@ import org.miaixz.bus.office.excel.style.ShapeConfig;
 import org.miaixz.bus.office.excel.style.StyleSet;
 
 /**
- * Excel Writer. This utility is used to write data to Excel through POI. This object can accomplish the following two
- * functions:
+ * Writes data to Excel through POI. This object can accomplish the following two functions:
  *
  * <pre>
  * 1. Edit an existing Excel file, can write to the original Excel file, or write to another location (to file or to stream)
@@ -194,11 +194,11 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @param selectList dropdown list content.
      */
     public static void addSelect(final Sheet sheet, final CellRangeAddressList regions, final String... selectList) {
-        final DataValidationHelper validationHelper = sheet.getDataValidationHelper();
-        final DataValidationConstraint constraint = validationHelper.createExplicitListConstraint(selectList);
+        final DataValidationHelper validationFactory = sheet.getDataValidationHelper();
+        final DataValidationConstraint constraint = validationFactory.createExplicitListConstraint(selectList);
 
         // Set dropdown box data
-        final DataValidation dataValidation = validationHelper.createValidation(constraint, regions);
+        final DataValidation dataValidation = validationFactory.createValidation(constraint, regions);
 
         // Handle Excel compatibility issues
         if (dataValidation instanceof XSSFDataValidation) {
@@ -1173,7 +1173,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      */
     public ExcelWriter setRowStyleIfHasData(final int y, final CellStyle style) {
         if (y < 0) {
-            throw new IllegalArgumentException("Invalid row number (" + y + ")");
+            throw new IllegalArgumentException("Invalid row number (" + y + Symbol.PARENTHESE_RIGHT);
         }
         final int columnCount = this.getColumnCount();
         for (int i = 0; i < columnCount; i++) {
@@ -1207,10 +1207,10 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      */
     public ExcelWriter setColumnStyleIfHasData(final int x, final int y, final CellStyle style) {
         if (x < 0) {
-            throw new IllegalArgumentException("Invalid column number (" + x + ")");
+            throw new IllegalArgumentException("Invalid column number (" + x + Symbol.PARENTHESE_RIGHT);
         }
         if (y < 0) {
-            throw new IllegalArgumentException("Invalid row number (" + y + ")");
+            throw new IllegalArgumentException("Invalid row number (" + y + Symbol.PARENTHESE_RIGHT);
         }
         final int rowCount = this.getRowCount();
         for (int i = y; i < rowCount; i++) {

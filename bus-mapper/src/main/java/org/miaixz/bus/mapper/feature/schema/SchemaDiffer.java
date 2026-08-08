@@ -28,6 +28,7 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Risk;
 import org.miaixz.bus.mapper.behavior.SchemaBehavior;
@@ -346,7 +347,7 @@ public class SchemaDiffer {
             return null;
         }
         String key = mappingKey.trim();
-        int dot = key.lastIndexOf('.');
+        int dot = key.lastIndexOf(Symbol.C_DOT);
         if (dot < 0) {
             return key;
         }
@@ -537,7 +538,10 @@ public class SchemaDiffer {
         }
         for (ColumnMeta column : table.columns()) {
             if (Boolean.TRUE.equals(column.unique())) {
-                addIndex(indexes, IndexMeta.of(table.table() + "_" + column.column() + "_uk", true, column.column()));
+                addIndex(
+                        indexes,
+                        IndexMeta
+                                .of(table.table() + Symbol.UNDERLINE + column.column() + "_uk", true, column.column()));
             }
         }
         indexes.sort((left, right) -> Boolean.compare(right.unique(), left.unique()));

@@ -22,8 +22,8 @@ package org.miaixz.bus.core.center.regex;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Regular expression validation utility class. This class provides methods to check if a given content matches a
- * regular expression or if it contains any substring that matches a regular expression.
+ * Regular expression validation class. This class provides methods to check if a given content matches a regular
+ * expression or if it contains any substring that matches a regular expression.
  *
  * @author Kimi Liu
  * @since Java 21+

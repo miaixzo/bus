@@ -22,8 +22,8 @@
  *
  * <p>
  * The package owns DNS name normalization, question and response models, EDNS metadata, TSIG parsing and signing, raw
- * wire encoding, unsigned DNS field helpers, and decoded response views shared by server, resolver, cache, and DNSSEC
- * packages.
+ * wire encoding, unsigned DNS field operations, and decoded response views shared by server, resolver, cache, and
+ * DNSSEC packages.
  * </p>
  *
  * @author Kimi Liu

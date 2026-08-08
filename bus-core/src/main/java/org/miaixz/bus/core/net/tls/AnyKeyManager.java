@@ -28,8 +28,8 @@ import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * {@link KeyManager} related utility class. This utility is used to read and use digital certificates, symmetric keys,
- * and other related information.
+ * {@link KeyManager} related class. This class reads and uses digital certificates, symmetric keys, and other related
+ * information.
  *
  * @author Kimi Liu
  * @since Java 21+

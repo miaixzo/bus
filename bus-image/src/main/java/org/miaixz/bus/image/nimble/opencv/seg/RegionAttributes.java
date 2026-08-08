@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.nimble.opencv.lut.ColorLut;
 
@@ -69,7 +71,7 @@ public class RegionAttributes implements Comparable<RegionAttributes> {
     /**
      * The label separators value.
      */
-    private static final String[] LABEL_SEPARATORS = { " ", "_", "-" };
+    private static final String[] LABEL_SEPARATORS = { Symbol.SPACE, Symbol.UNDERLINE, Symbol.MINUS };
 
     /**
      * The min prefix length value.
@@ -329,7 +331,7 @@ public class RegionAttributes implements Comparable<RegionAttributes> {
      */
     public String getPrefix() {
         if (label == null) {
-            return "";
+            return Normal.EMPTY;
         }
 
         int earliest = label.length();

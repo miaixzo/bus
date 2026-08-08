@@ -660,7 +660,7 @@ public enum I18n {
         if (this == AUTO_DETECT) {
             return Locale.getDefault();
         }
-        return Locale.forLanguageTag(this.lang.replace('_', '-'));
+        return Locale.forLanguageTag(this.lang.replace(Symbol.C_UNDERLINE, Symbol.C_MINUS));
     }
 
     /**

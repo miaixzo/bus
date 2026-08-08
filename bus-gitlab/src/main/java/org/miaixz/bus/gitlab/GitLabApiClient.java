@@ -44,6 +44,7 @@ import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 
 import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
@@ -616,7 +617,7 @@ public class GitLabApiClient implements AutoCloseable {
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response patch(MultivaluedMap<String, String> queryParams, URL url) {
-        Entity<?> empty = Entity.text("");
+        Entity<?> empty = Entity.text(Normal.EMPTY);
         // use "X-HTTP-Method-Override" header on POST to override to unsupported PATCH
         Logger.debug(
                 true,
@@ -977,7 +978,7 @@ public class GitLabApiClient implements AutoCloseable {
                     fileToUpload == null ? null : fileToUpload.getName(),
                     fileToUpload == null ? -1 : fileToUpload.length());
             if (fileToUpload == null) {
-                multiPart.bodyPart(new FormDataBodyPart(name, "", MediaType.APPLICATION_OCTET_STREAM_TYPE));
+                multiPart.bodyPart(new FormDataBodyPart(name, Normal.EMPTY, MediaType.APPLICATION_OCTET_STREAM_TYPE));
             } else {
                 multiPart.bodyPart(new FileDataBodyPart(name, fileToUpload, MediaType.APPLICATION_OCTET_STREAM_TYPE));
             }
@@ -1025,7 +1026,7 @@ public class GitLabApiClient implements AutoCloseable {
                 queryParams == null ? 0 : queryParams.size());
         Response response;
         if (queryParams == null || queryParams.isEmpty()) {
-            Entity<?> empty = Entity.text("");
+            Entity<?> empty = Entity.text(Normal.EMPTY);
             response = invocation(url, null).put(empty);
         } else {
             response = invocation(url, null)
@@ -1274,7 +1275,7 @@ public class GitLabApiClient implements AutoCloseable {
     private String getAuthValue() {
         switch (tokenType) {
             case OAUTH2_ACCESS:
-                return "Bearer " + authToken.get();
+                return Http.Auth.BEARER_PREFIX + authToken.get();
 
             default:
                 return authToken.get();

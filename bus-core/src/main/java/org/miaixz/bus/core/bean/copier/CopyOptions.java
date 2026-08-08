@@ -95,13 +95,13 @@ public class CopyOptions implements Serializable {
     protected boolean override = true;
 
     /**
-     * Whether to automatically convert property names to camelCase for matching. This helps resolve mismatches between
-     * map keys (e.g., snake_case) and bean property names (camelCase).
+     * Whether to automatically convert property names to camelCase for matching. This resolves mismatches between map
+     * keys (e.g., snake_case) and bean property names (camelCase).
      */
     protected boolean autoTransCamelCase = true;
 
     /**
-     * A custom type converter. If not set, the global {@link Convert} utility is used.
+     * A custom type converter. If not set, the global {@link Convert} converter is used.
      */
     protected Converter converter = (type, value) -> Convert.convertWithCheck(type, value, null, ignoreError);
 

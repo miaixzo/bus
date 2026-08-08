@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.health.builtin.hardware.common;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.builtin.hardware.Printer;
 
@@ -195,11 +197,11 @@ public abstract class AbstractPrinter implements Printer {
      */
     private static String redactPortName(String portName) {
         if (portName == null || portName.isEmpty()) {
-            return "";
+            return Normal.EMPTY;
         }
         int schemeEnd = portName.indexOf("://");
         if (schemeEnd > 0) {
-            int atIndex = portName.indexOf('@', schemeEnd + 3);
+            int atIndex = portName.indexOf(Symbol.C_AT, schemeEnd + 3);
             if (atIndex > schemeEnd + 3) {
                 return portName.substring(0, schemeEnd + 3) + "***" + portName.substring(atIndex);
             }

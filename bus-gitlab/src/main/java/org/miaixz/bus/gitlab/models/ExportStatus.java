@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The export status class.
@@ -68,7 +68,7 @@ public class ExportStatus implements Serializable {
          */
         AFTER_EXPORT_ACTION;
 
-        private static JacksonJsonEnumHelper<Status> enumHelper = new JacksonJsonEnumHelper<>(Status.class);
+        private static JacksonJsonEnumCodec<Status> enumCodec = new JacksonJsonEnumCodec<>(Status.class);
 
         /**
          * Returns the value.
@@ -79,7 +79,7 @@ public class ExportStatus implements Serializable {
 
         @JsonCreator
         public static Status forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -90,7 +90,7 @@ public class ExportStatus implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -101,7 +101,7 @@ public class ExportStatus implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

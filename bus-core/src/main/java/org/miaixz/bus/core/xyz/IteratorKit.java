@@ -31,10 +31,11 @@ import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.center.iterator.*;
 import org.miaixz.bus.core.convert.Convert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.StringJoiner;
 
 /**
- * Utility class for {@link Iterable} and {@link Iterator}.
+ * Creates and traverses iterators and iterable values.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -611,7 +612,7 @@ public class IteratorKit extends IteratorValidator {
      * @return a string representation of the iterator's elements
      */
     public static <E> String toString(final Iterator<E> iterator, final FunctionX<? super E, String> transFunc) {
-        return toString(iterator, transFunc, ", ", "[", "]");
+        return toString(iterator, transFunc, ", ", Symbol.BRACKET_LEFT, Symbol.BRACKET_RIGHT);
     }
 
     /**

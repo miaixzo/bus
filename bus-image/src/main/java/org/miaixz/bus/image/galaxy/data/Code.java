@@ -105,20 +105,21 @@ public class Code implements Serializable {
      */
     public Code(String s) {
         int len = s.length();
-        if (len < 9 || s.charAt(0) != '(' || s.charAt(len - 2) != '"' || s.charAt(len - 1) != ')')
+        if (len < 9 || s.charAt(0) != Symbol.C_PARENTHESE_LEFT || s.charAt(len - 2) != Symbol.C_DOUBLE_QUOTES
+                || s.charAt(len - 1) != Symbol.C_PARENTHESE_RIGHT)
             throw new IllegalArgumentException(s);
 
-        int endVal = s.indexOf(',');
-        int endScheme = s.indexOf(',', endVal + 1);
-        int startMeaning = s.indexOf('"', endScheme + 1) + 1;
+        int endVal = s.indexOf(Symbol.C_COMMA);
+        int endScheme = s.indexOf(Symbol.C_COMMA, endVal + 1);
+        int startMeaning = s.indexOf(Symbol.C_DOUBLE_QUOTES, endScheme + 1) + 1;
         this.codeValue = trimsubstring(s, 1, endVal, false);
         if (isURN(codeValue)) {
             trimsubstring(s, endVal + 1, endScheme, true);
         } else {
             this.codingSchemeDesignator = trimsubstring(s, endVal + 1, endScheme, false);
-            if (codingSchemeDesignator.endsWith("]")) {
-                int endVersion = s.lastIndexOf(']', endScheme - 1);
-                endScheme = s.lastIndexOf('[', endVersion - 1);
+            if (codingSchemeDesignator.endsWith(Symbol.BRACKET_RIGHT)) {
+                int endVersion = s.lastIndexOf(Symbol.C_BRACKET_RIGHT, endScheme - 1);
+                endScheme = s.lastIndexOf(Symbol.C_BRACKET_LEFT, endVersion - 1);
                 this.codingSchemeDesignator = trimsubstring(s, endVal + 1, endScheme, false);
                 this.codingSchemeVersion = nullifyDCM01(
                         codingSchemeDesignator,
@@ -195,7 +196,7 @@ public class Code implements Serializable {
      * @return true if the condition is met; otherwise false.
      */
     private static boolean isURN(String codeValue) {
-        if (codeValue.indexOf(':') > 0)
+        if (codeValue.indexOf(Symbol.C_COLON) > 0)
             try {
                 if (!codeValue.startsWith("urn:"))
                     new URL(codeValue);
@@ -288,15 +289,13 @@ public class Code implements Serializable {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(Symbol.C_PARENTHESE_LEFT).append(codeValue).append(Symbol.COMMA).append(Symbol.SPACE);
+        sb.append('(').append(codeValue).append(",").append(" ");
         if (codingSchemeDesignator != null) {
             sb.append(codingSchemeDesignator);
             if (codingSchemeVersion != null)
-                sb.append(Symbol.SPACE).append(Symbol.C_BRACKET_LEFT).append(codingSchemeVersion)
-                        .append(Symbol.C_BRACKET_RIGHT);
+                sb.append(" ").append('[').append(codingSchemeVersion).append(']');
         }
-        sb.append(Symbol.COMMA).append(Symbol.SPACE).append(Symbol.C_DOUBLE_QUOTES).append(codeMeaning)
-                .append(Symbol.C_DOUBLE_QUOTES).append(Symbol.C_PARENTHESE_RIGHT);
+        sb.append(",").append(" ").append('"').append(codeMeaning).append('"').append(')');
         return sb.toString();
     }
 

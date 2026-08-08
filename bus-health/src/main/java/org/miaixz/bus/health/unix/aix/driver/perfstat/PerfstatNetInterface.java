@@ -26,7 +26,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_netinterface_t;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
- * Utility to query performance stats for network interfaces
+ * Queries performance stats for network interfaces
  *
  * @author Kimi Liu
  * @since Java 21+

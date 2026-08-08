@@ -24,6 +24,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StreamKit;
 import org.miaixz.bus.image.Builder;
@@ -142,13 +144,13 @@ public class BulkData implements Value, Serializable {
         this.uriPathEnd = 0;
         if (uri == null)
             return;
-        int pathEnd = uri.indexOf('?');
+        int pathEnd = uri.indexOf(Symbol.C_QUESTION_MARK);
         if (pathEnd < 0) {
             this.uriPathEnd = uri.length();
             return;
         }
         this.uriPathEnd = pathEnd;
-        for (String qparam : Builder.split(uri.substring(pathEnd + 1), '&')) {
+        for (String qparam : Builder.split(uri.substring(pathEnd + 1), Symbol.C_AND)) {
             try {
                 if (qparam.startsWith("offset=")) {
                     this.offset = Long.parseLong(qparam.substring(7));
@@ -347,8 +349,8 @@ public class BulkData implements Value, Serializable {
      */
     private void writeObject(ObjectOutputStream oos) throws IOException {
         oos.defaultWriteObject();
-        oos.writeUTF(Builder.maskNull(uuid, ""));
-        oos.writeUTF(Builder.maskNull(uri, ""));
+        oos.writeUTF(Builder.maskNull(uuid, Normal.EMPTY));
+        oos.writeUTF(Builder.maskNull(uri, Normal.EMPTY));
         oos.writeBoolean(bigEndian);
     }
 

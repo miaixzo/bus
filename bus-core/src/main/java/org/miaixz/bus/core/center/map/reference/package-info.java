@@ -21,7 +21,7 @@
  * This package provides specialized {@link java.util.Map} implementations that utilize Java's reference objects
  * ({@link java.lang.ref.SoftReference} and {@link java.lang.ref.WeakReference}) for their keys or values. These maps
  * are designed for caching scenarios where entries can be automatically garbage-collected when memory is low or when
- * keys/values are no longer strongly reachable, helping to prevent memory leaks.
+ * keys/values are no longer strongly reachable, which prevents memory leaks.
  *
  * @author Kimi Liu
  * @since Java 21+

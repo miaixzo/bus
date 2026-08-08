@@ -36,7 +36,7 @@ import org.miaixz.bus.health.windows.WmiKit;
 import org.miaixz.bus.health.windows.driver.wmi.Win32Processor;
 
 /**
- * Utility to query Logical Processor Information
+ * Queries Logical Processor Information
  *
  * @author Kimi Liu
  * @since Java 21+

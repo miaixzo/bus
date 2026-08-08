@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.Executor;
@@ -124,7 +125,7 @@ public final class Systat {
         Set<String> psNames = new HashSet<>();
         for (String line : systatLines) {
             if (line.contains(".amphour") || line.contains(".watthour")) {
-                int dot = line.indexOf('.');
+                int dot = line.indexOf(Symbol.C_DOT);
                 psNames.add(line.substring(0, dot));
             }
         }

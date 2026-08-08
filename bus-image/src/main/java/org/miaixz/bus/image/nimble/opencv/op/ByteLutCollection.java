@@ -28,10 +28,11 @@ import java.util.Objects;
 import java.util.Scanner;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.nimble.opencv.lut.ByteLut;
 
 /**
- * Utility methods for BGR byte lookup tables.
+ * Creates and transforms BGR byte lookup tables.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -132,7 +133,7 @@ public final class ByteLutCollection {
 
         while (scanner.hasNext() && lineIndex < STANDARD_LUT_SIZE) {
             String line = scanner.nextLine().trim();
-            if (line.isEmpty() || line.startsWith("#")) {
+            if (line.isEmpty() || line.startsWith(Symbol.HASH)) {
                 continue;
             }
             if (parseLutLine(line, lut, lineIndex)) {
@@ -230,7 +231,7 @@ public final class ByteLutCollection {
      * @return the operation result.
      */
     private static String nameWithoutExtension(String name) {
-        int index = name.lastIndexOf('.');
+        int index = name.lastIndexOf(Symbol.C_DOT);
         return index > 0 ? name.substring(0, index) : name;
     }
 

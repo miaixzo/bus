@@ -22,6 +22,7 @@ package org.miaixz.bus.image.galaxy.io;
 import java.util.*;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.AttributeSelector;
@@ -299,8 +300,8 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
             Iterator<VR> vr = entry.getValue().iterator();
             sb.append(vr.next());
             while (vr.hasNext())
-                sb.append(',').append(vr.next());
-            ss[i++] = sb.append('=').append(entry.getKey()).toString();
+                sb.append(Symbol.C_COMMA).append(vr.next());
+            ss[i++] = sb.append(Symbol.C_EQUAL).append(entry.getKey()).toString();
         }
         return ss;
     }
@@ -315,12 +316,12 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
     public void setLengthsThresholdsFromStrings(String... ss) {
         EnumMap<VR, Integer> tmp = new EnumMap<>(VR.class);
         for (String s : ss) {
-            String[] entry = Builder.split(s, '=');
+            String[] entry = Builder.split(s, Symbol.C_EQUAL);
             if (entry.length != 2)
                 throw new IllegalArgumentException(s);
             try {
                 Integer length = Integer.valueOf(entry[1]);
-                for (String vr : Builder.split(entry[0], ',')) {
+                for (String vr : Builder.split(entry[0], Symbol.C_COMMA)) {
                     tmp.put(VR.valueOf(vr), length);
                 }
             } catch (IllegalArgumentException e) {

@@ -22,7 +22,6 @@ package org.miaixz.bus.vortex.routing.rest;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.core.io.buffer.DataBuffer;
@@ -40,7 +39,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -53,8 +51,12 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Delivery;
 import org.miaixz.bus.vortex.Egress;
+import org.miaixz.bus.vortex.Holder;
+import org.miaixz.bus.vortex.Octets;
 import org.miaixz.bus.vortex.routing.Coordinator;
+import org.miaixz.bus.vortex.routing.StreamingRelay;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -65,6 +67,10 @@ import reactor.core.publisher.Mono;
  * This executor encapsulates all the logic for using Spring's {@link WebClient} to act as a reverse proxy. It builds
  * the downstream request based on the provided {@link Assets} and {@link Context}, sends it, and then transforms the
  * downstream response back into a {@link ServerResponse} for the original client.
+ * <p>
+ * The route asset explicitly selects bounded atomic relay, realtime streaming or protected file download. Atomic
+ * responses require Content-Length and retain an exact logical-byte lease through the network write; streaming modes
+ * preserve downstream backpressure and never aggregate the body.
  * <p>
  * Generic type parameters: {@code Executor<ServerRequest, ServerResponse>}
  *
@@ -219,7 +225,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 method,
                 path);
 
-        boolean isStreaming = assets.getStream() != null && assets.getStream() == 2;
+        Delivery delivery = Delivery.of(assets.getStream());
+        boolean isStreaming = delivery != Delivery.BUFFERED;
 
         if (isStreaming) {
             Logger.info(
@@ -229,7 +236,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     ip,
                     method,
                     path);
-            return executeStreaming(bodySpec, ip, method, path);
+            return executeStreaming(bodySpec, assets, targetUri, delivery, ip, method, path);
         } else {
             Logger.info(
                     true,
@@ -238,7 +245,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     ip,
                     method,
                     path);
-            return executeBuffering(bodySpec, ip, method, path);
+            return executeBuffering(bodySpec, assets, targetUri, ip, method, path);
         }
     }
 
@@ -259,6 +266,22 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             String ip,
             String method,
             String path) {
+        if (Boolean.TRUE.equals(request.exchange().getAttribute(Context.RAW_JSON_PASSTHROUGH_ATTRIBUTE))) {
+            MediaType mediaType = request.headers().contentType().orElse(MediaType.APPLICATION_JSON);
+            bodySpec.contentType(mediaType);
+            request.headers().contentLength().ifPresent(bodySpec::contentLength);
+            Flux<DataBuffer> rawBody = request.exchange().getRequest().getBody()
+                    .doOnDiscard(PooledDataBuffer.class, Octets::release);
+            bodySpec.body(BodyInserters.fromDataBuffers(rawBody));
+            Logger.info(
+                    true,
+                    "Vortex",
+                    "CST JSON body configured for single-subscription passthrough: protocol=http, clientIp={}, method={}, path={}",
+                    ip,
+                    method,
+                    path);
+            return;
+        }
         if (Boolean.TRUE.equals(request.exchange().getAttribute(Context.JSON_ARRAY_BODY_ATTRIBUTE))) {
             MediaType mediaType = request.headers().contentType().orElse(MediaType.APPLICATION_JSON);
             bodySpec.contentType(mediaType);
@@ -487,20 +510,35 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
     }
 
     /**
-     * Handles the execution for a STREAMING request such as SSE.
+     * Handles a realtime-streaming or download response without materializing its body.
      * <p>
      * The response entity exposes a downstream {@link DataBuffer} stream that is written with a raw data-buffer body
-     * inserter so long-lived streams are not materialized in memory.
+     * inserter so long-lived streams and large files are not materialized in memory. The mode-specific lease remains
+     * owned until response termination.
      * </p>
+     *
+     * @param bodySpec  downstream request specification
+     * @param assets    resolved route asset used by retry policy
+     * @param targetUri downstream target URI used by retry diagnostics
+     * @param delivery  realtime-stream or download delivery mode
+     * @param ip        client IP for logging
+     * @param method    incoming HTTP method
+     * @param path      incoming request path
+     * @return proxied streaming response
      */
     private Mono<ServerResponse> executeStreaming(
             WebClient.RequestBodySpec bodySpec,
+            Assets assets,
+            URI targetUri,
+            Delivery delivery,
             String ip,
             String method,
             String path) {
-        return bodySpec.retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
-                .toEntityFlux(DataBuffer.class)
-                .flatMap(responseEntity -> buildStreamingResponse(responseEntity, ip, method, path, "stream=2"))
+        HttpMethod httpMethod = HttpMethod.valueOf(method);
+        Mono<ResponseEntity<Flux<DataBuffer>>> response = bodySpec.retrieve()
+                .onStatus(status -> true, clientResponse -> Mono.empty()).toEntityFlux(DataBuffer.class);
+        return Egress.guard(response, 0, Egress.retryAttempts(assets, httpMethod), "rest-streaming", method, targetUri)
+                .flatMap(responseEntity -> buildStreamingResponse(responseEntity, delivery, ip, method, path))
                 .doOnSubscribe(
                         subscription -> Logger.info(
                                 true,
@@ -541,24 +579,31 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
     /**
      * Handles the execution for an ATOMIC request using buffered downstream response passthrough.
      * <p>
-     * The downstream response body is consumed inside the WebClient exchange and materialized as bytes before the
-     * {@link ServerResponse} is returned. This keeps the existing atomic route semantics and avoids deferred
-     * {@link DataBuffer} subscriptions after the downstream response has already been released.
+     * The downstream response requires Content-Length, acquires that exact logical capacity, and is materialized into
+     * bounded segments before the {@link ServerResponse} is returned. Ownership remains active through the gateway
+     * network write, including cancellation.
      * </p>
      *
-     * @param bodySpec the downstream request specification
-     * @param ip       the client IP for logging
-     * @param method   the incoming request method for logging
-     * @param path     the incoming request path for logging
+     * @param bodySpec  the downstream request specification
+     * @param assets    resolved route asset used by retry policy
+     * @param targetUri downstream target URI used by retry diagnostics
+     * @param ip        the client IP for logging
+     * @param method    the incoming request method for logging
+     * @param path      the incoming request path for logging
      * @return a buffered {@link ServerResponse}
      */
     private Mono<ServerResponse> executeBuffering(
             WebClient.RequestBodySpec bodySpec,
+            Assets assets,
+            URI targetUri,
             String ip,
             String method,
             String path) {
-        return bodySpec.retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
-                .toEntityFlux(DataBuffer.class).flatMap(responseEntity -> {
+        HttpMethod httpMethod = HttpMethod.valueOf(method);
+        Mono<ResponseEntity<Flux<DataBuffer>>> response = bodySpec.retrieve()
+                .onStatus(status -> true, clientResponse -> Mono.empty()).toEntityFlux(DataBuffer.class);
+        return Egress.guard(response, 0, Egress.retryAttempts(assets, httpMethod), "rest-atomic", method, targetUri)
+                .flatMap(responseEntity -> {
                     Logger.info(
                             false,
                             "Vortex",
@@ -567,20 +612,6 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                             method,
                             path,
                             responseEntity.getStatusCode());
-
-                    HttpHeaders responseHeaders = responseEntity.getHeaders();
-                    String streamingReason = streamingReason(responseHeaders);
-                    if (StringKit.isNotBlank(streamingReason)) {
-                        Logger.info(
-                                true,
-                                "Vortex",
-                                "Switching buffered response to streaming: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_AUTO_STREAM, reason={}",
-                                ip,
-                                method,
-                                path,
-                                streamingReason);
-                        return buildStreamingResponse(responseEntity, ip, method, path, "auto");
-                    }
 
                     return buildBufferedResponse(responseEntity, ip, method, path);
                 })
@@ -646,14 +677,41 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
 
         ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
         copyResponseHeaders(responseBuilder, responseEntity.getHeaders());
+        if (responseEntity.getHeaders().getContentLength() >= 0) {
+            responseBuilder.contentLength(responseEntity.getHeaders().getContentLength());
+        }
 
         Flux<DataBuffer> bodyFlux = responseEntity.getBody();
+        boolean bodyForbidden = HttpMethod.HEAD.matches(method) || responseEntity.getStatusCode().is1xxInformational()
+                || responseEntity.getStatusCode().value() == 204 || responseEntity.getStatusCode().value() == 304;
         if (bodyFlux == null) {
             return buildEmptyBufferedResponse(responseBuilder, ip, method, path);
         }
+        if (bodyForbidden) {
+            return discardResponseBody(bodyFlux).then(buildEmptyBufferedResponse(responseBuilder, ip, method, path));
+        }
 
-        return collectBufferedBody(bodyFlux).flatMap(body -> {
-            if (body.length > 0) {
+        long declaredLength = responseEntity.getHeaders().getContentLength();
+        if (declaredLength < 0 || declaredLength > Math.toIntExact(Holder.get().getMaxBufferedResponseSize())) {
+            return discardResponseBody(bodyFlux).then(
+                    Mono.error(
+                            new DataBufferLimitException("Atomic response requires Content-Length in range 0.."
+                                    + Math.toIntExact(Holder.get().getMaxBufferedResponseSize()))));
+        }
+
+        return collectBufferedBody(bodyFlux, declaredLength).flatMap(body -> Mono.deferContextual(contextView -> {
+            Context context = contextView.getOrDefault(Context.class, null);
+            if (context == null) {
+                body.close();
+                return Mono.error(new IllegalStateException("Vortex request context is missing"));
+            }
+            int bodyLength = body.length();
+            if (bodyLength != declaredLength) {
+                return Mono.error(
+                        new DataBufferLimitException("Atomic response length mismatch: declared=" + declaredLength
+                                + ", actual=" + bodyLength));
+            }
+            if (bodyLength > 0) {
                 Logger.info(
                         false,
                         "Vortex",
@@ -661,56 +719,38 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                         ip,
                         method,
                         path,
-                        body.length);
-                return responseBuilder.bodyValue(body);
+                        bodyLength);
+                return responseBuilder.contentLength(bodyLength)
+                        .body(BodyInserters.fromDataBuffers(Octets.chunksAndClose(body)));
             }
+            body.close();
             return buildEmptyBufferedResponse(responseBuilder, ip, method, path);
-        }).switchIfEmpty(Mono.defer(() -> buildEmptyBufferedResponse(responseBuilder, ip, method, path)));
+        })).switchIfEmpty(Mono.defer(() -> buildEmptyBufferedResponse(responseBuilder, ip, method, path)));
     }
 
     /**
      * Collects a downstream response body while enforcing the buffered-response size limit.
      *
+     * @param bodyFlux       downstream response buffers
+     * @param declaredLength validated downstream Content-Length
+     * @return buffered body with an attached response-byte lease
+     */
+    private Mono<Octets.BufferedBody> collectBufferedBody(Flux<DataBuffer> bodyFlux, long declaredLength) {
+        return Octets.readForRelay(
+                bodyFlux,
+                Math.toIntExact(Holder.get().getMaxBufferedResponseSize()),
+                Holder.responseBufferBudget(),
+                declaredLength);
+    }
+
+    /**
+     * Drains a downstream body that cannot be forwarded and releases every received pooled buffer.
+     *
      * @param bodyFlux downstream response buffers
-     * @return collected response bytes
+     * @return completion after the connection is reusable
      */
-    private Mono<byte[]> collectBufferedBody(Flux<DataBuffer> bodyFlux) {
-        return bodyFlux.doOnDiscard(PooledDataBuffer.class, this::releaseBuffer)
-                .collect(FastByteArrayOutputStream::new, this::appendBuffer)
-                .map(FastByteArrayOutputStream::toByteArray);
-    }
-
-    /**
-     * Appends one response buffer and always releases pooled storage after consumption.
-     *
-     * @param output     accumulated response bytes
-     * @param dataBuffer current response buffer
-     * @throws DataBufferLimitException when the buffered response exceeds the configured limit
-     */
-    private void appendBuffer(FastByteArrayOutputStream output, DataBuffer dataBuffer) {
-        try {
-            int readableBytes = dataBuffer.readableByteCount();
-            int limit = Math.toIntExact(Normal.MEBI_128);
-            if (readableBytes > limit - output.size()) {
-                throw new DataBufferLimitException("Exceeded buffered response limit of " + limit + " bytes");
-            }
-            byte[] chunk = new byte[readableBytes];
-            dataBuffer.read(chunk);
-            output.write(chunk, 0, chunk.length);
-        } finally {
-            releaseBuffer(dataBuffer);
-        }
-    }
-
-    /**
-     * Releases a pooled response buffer when it remains allocated.
-     *
-     * @param dataBuffer response buffer
-     */
-    private void releaseBuffer(DataBuffer dataBuffer) {
-        if (dataBuffer instanceof PooledDataBuffer pooledDataBuffer && pooledDataBuffer.isAllocated()) {
-            pooledDataBuffer.release();
-        }
+    private Mono<Void> discardResponseBody(Flux<DataBuffer> bodyFlux) {
+        return Octets.discard(bodyFlux);
     }
 
     /**
@@ -744,15 +784,15 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @param ip             client IP for logging
      * @param method         incoming HTTP method
      * @param path           incoming request path
-     * @param mode           streaming decision source
+     * @param delivery       realtime-stream or download delivery mode
      * @return streaming response
      */
     private Mono<ServerResponse> buildStreamingResponse(
             ResponseEntity<Flux<DataBuffer>> responseEntity,
+            Delivery delivery,
             String ip,
             String method,
-            String path,
-            String mode) {
+            String path) {
         ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
         Logger.debug(
                 false,
@@ -761,10 +801,14 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 ip,
                 method,
                 path,
-                mode,
+                delivery,
                 responseEntity.getHeaders());
 
         copyResponseHeaders(responseBuilder, responseEntity.getHeaders());
+
+        if (responseEntity.getHeaders().getContentLength() >= 0) {
+            responseBuilder.contentLength(responseEntity.getHeaders().getContentLength());
+        }
 
         Flux<DataBuffer> bodyFlux = responseEntity.getBody() == null ? Flux.empty()
                 : responseEntity.getBody().doOnNext(
@@ -775,56 +819,13 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                                 ip,
                                 method,
                                 path,
-                                mode,
-                                dataBuffer.readableByteCount()));
+                                delivery,
+                                dataBuffer.readableByteCount()))
+                        .doOnDiscard(PooledDataBuffer.class, Octets::release);
+
+        bodyFlux = StreamingRelay.relay(bodyFlux, delivery);
 
         return responseBuilder.body(BodyInserters.fromDataBuffers(bodyFlux));
-    }
-
-    /**
-     * Returns why one downstream response must be streamed, or {@code null} when buffering is safe.
-     *
-     * @param headers downstream response headers
-     * @return streaming reason
-     */
-    private String streamingReason(HttpHeaders headers) {
-        long contentLength = headers.getContentLength();
-        if (contentLength > Normal.MEBI_128) {
-            return "contentLength=" + contentLength + ", limit=" + Normal.MEBI_128;
-        }
-        MediaType contentType = headers.getContentType();
-        if (isStreamingMediaType(contentType)) {
-            return "contentType=" + contentType;
-        }
-        if (contentLength < 0) {
-            return "contentLength=unknown";
-        }
-        return null;
-    }
-
-    /**
-     * Checks whether a media type should be forwarded as a stream.
-     *
-     * @param mediaType downstream content type
-     * @return {@code true} if streaming is required
-     */
-    private boolean isStreamingMediaType(MediaType mediaType) {
-        if (mediaType == null) {
-            return false;
-        }
-        if (MediaType.APPLICATION_OCTET_STREAM.isCompatibleWith(mediaType)
-                || MediaType.TEXT_EVENT_STREAM.isCompatibleWith(mediaType)) {
-            return true;
-        }
-        String type = mediaType.getType();
-        if (StringKit.equalsIgnoreCase("image", type) || StringKit.equalsIgnoreCase("audio", type)
-                || StringKit.equalsIgnoreCase("video", type)) {
-            return true;
-        }
-        String value = mediaType.toString().toLowerCase(Locale.ROOT);
-        return value.contains("pdf") || value.contains("zip") || value.contains("tar") || value.contains("gzip")
-                || value.contains("excel") || value.contains("spreadsheet") || value.contains("word")
-                || value.contains("presentation") || value.contains("download") || value.contains("stream");
     }
 
     /**

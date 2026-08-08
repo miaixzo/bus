@@ -45,7 +45,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 final class HttpCacheCodec {
 
     /**
-     * Hidden constructor for HTTP cache metadata encoding helpers.
+     * Restricts the class to static cache metadata encoding operations.
      */
     private HttpCacheCodec() {
         // No initialization required.

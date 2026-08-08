@@ -143,7 +143,7 @@ public class TenantBuilder {
 
         // If cache is enabled, retrieve from cache first
         if (sqlCache != null) {
-            String cacheKey = originalSql + ":" + tenantId;
+            String cacheKey = originalSql + Symbol.COLON + tenantId;
             return sqlCache.computeIfAbsent(cacheKey, k -> doHandleSql(originalSql, tenantId));
         }
 
@@ -266,7 +266,7 @@ public class TenantBuilder {
 
         // Add tenant ID column and value
         String newColumns = columns + ", " + tenantColumn;
-        String newValues = values + ", '" + tenantId + "'";
+        String newValues = values + ", '" + tenantId + Symbol.SINGLE_QUOTE;
 
         return String.format("INSERT INTO %s (%s) VALUES (%s)", tableName, newColumns, newValues);
     }
@@ -442,7 +442,7 @@ public class TenantBuilder {
         int begin = index;
         while (index < sql.length()) {
             char current = sql.charAt(index);
-            if (!Character.isLetterOrDigit(current) && current != '_') {
+            if (!Character.isLetterOrDigit(current) && current != Symbol.C_UNDERLINE) {
                 break;
             }
             index++;
@@ -521,13 +521,13 @@ public class TenantBuilder {
                 continue;
             }
             if (backtickQuoted) {
-                if (current == '`') {
+                if (current == Symbol.C_BACKTICK) {
                     backtickQuoted = false;
                 }
                 continue;
             }
             if (bracketQuoted) {
-                if (current == ']') {
+                if (current == Symbol.C_BRACKET_RIGHT) {
                     bracketQuoted = false;
                 }
                 continue;
@@ -540,19 +540,19 @@ public class TenantBuilder {
                 doubleQuoted = true;
                 continue;
             }
-            if (current == '`') {
+            if (current == Symbol.C_BACKTICK) {
                 backtickQuoted = true;
                 continue;
             }
-            if (current == '[') {
+            if (current == Symbol.C_BRACKET_LEFT) {
                 bracketQuoted = true;
                 continue;
             }
-            if (current == '(') {
+            if (current == Symbol.C_PARENTHESE_LEFT) {
                 depth++;
                 continue;
             }
-            if (current == ')' && depth > 0) {
+            if (current == Symbol.C_PARENTHESE_RIGHT && depth > 0) {
                 depth--;
                 continue;
             }
@@ -581,7 +581,7 @@ public class TenantBuilder {
     /**
      * Tests whether a structural SQL keyword starts at the index with token boundaries.
      * <p>
-     * This parser helper locates clauses and does not validate database identifiers or reserved words.
+     * This clause parser locates SQL clauses without validating identifiers or reserved words.
      * </p>
      *
      * @param sql     the SQL fragment
@@ -602,14 +602,14 @@ public class TenantBuilder {
     /**
      * Tests whether a character belongs to an unquoted SQL token for boundary detection.
      * <p>
-     * This parser helper is not an identifier compliance rule.
+     * This clause parser does not enforce identifier rules.
      * </p>
      *
      * @param value the character to test
      * @return {@code true} when it belongs to the surrounding token
      */
     private boolean identifierPart(char value) {
-        return Character.isLetterOrDigit(value) || value == '_';
+        return Character.isLetterOrDigit(value) || value == Symbol.C_UNDERLINE;
     }
 
     /**
@@ -670,13 +670,13 @@ public class TenantBuilder {
                 continue;
             }
             if (backtickQuoted) {
-                if (current == '`') {
+                if (current == Symbol.C_BACKTICK) {
                     backtickQuoted = false;
                 }
                 continue;
             }
             if (bracketQuoted) {
-                if (current == ']') {
+                if (current == Symbol.C_BRACKET_RIGHT) {
                     bracketQuoted = false;
                 }
                 continue;
@@ -689,19 +689,19 @@ public class TenantBuilder {
                 doubleQuoted = true;
                 continue;
             }
-            if (current == '`') {
+            if (current == Symbol.C_BACKTICK) {
                 backtickQuoted = true;
                 continue;
             }
-            if (current == '[') {
+            if (current == Symbol.C_BRACKET_LEFT) {
                 bracketQuoted = true;
                 continue;
             }
-            if (current == '(') {
+            if (current == Symbol.C_PARENTHESE_LEFT) {
                 depth++;
                 continue;
             }
-            if (current == ')' && depth > 0) {
+            if (current == Symbol.C_PARENTHESE_RIGHT && depth > 0) {
                 depth--;
                 continue;
             }

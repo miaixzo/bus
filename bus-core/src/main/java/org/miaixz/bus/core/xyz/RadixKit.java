@@ -22,7 +22,7 @@ package org.miaixz.bus.core.xyz;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * Radix (base) conversion utility class. This can be used to convert a decimal integer to a custom-defined base.
+ * Radix (base) conversion class. This can be used to convert a decimal integer to a custom-defined base.
  * <p>
  * Applications include:
  * <ul>
@@ -105,7 +105,7 @@ public class RadixKit {
     }
 
     /**
-     * Private helper for encoding.
+     * Encodes the supplied value.
      *
      * @param radixs    The custom radix characters.
      * @param num       The number.

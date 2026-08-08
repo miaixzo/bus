@@ -309,14 +309,14 @@ public class Manifest implements ManifestXml {
         writer.append(Symbol.LF).append(Symbol.LT).append(TAG_DOCUMENT_ROOT).append(Symbol.SPACE);
         ManifestXml.addXmlAttribute(VERSION, version, writer);
         ManifestXml.addXmlAttribute(MANIFEST_UID, uid, writer);
-        writer.append(">");
+        writer.append(Symbol.GT);
 
         ArrayList<ManifestPatient> sortedPatients = new ArrayList<>(patients.values());
         Collections.sort(sortedPatients);
         for (ManifestPatient patient : sortedPatients) {
             patient.toXml(writer);
         }
-        writer.append("\n</").append(TAG_DOCUMENT_ROOT).append(">");
+        writer.append("\n</").append(TAG_DOCUMENT_ROOT).append(Symbol.GT);
     }
 
     /**

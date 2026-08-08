@@ -31,13 +31,14 @@ import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.math.*;
 
 /**
- * Number utility class. For precise calculations, {@link BigDecimal} should be used. Note that in JDK7, the
- * `BigDecimal(double val)` constructor can have unpredictable results. For example, `new BigDecimal(0.1)` does not
- * represent 0.1, but a much more complex number. This is because 0.1 cannot be represented exactly as a double.
- * Therefore, it is recommended to use `new BigDecimal(String)`.
+ * Number class. For precise calculations, {@link BigDecimal} should be used. Note that in JDK7, the `BigDecimal(double
+ * val)` constructor can have unpredictable results. For example, `new BigDecimal(0.1)` does not represent 0.1, but a
+ * much more complex number. This is because 0.1 cannot be represented exactly as a double. Therefore, it is recommended
+ * to use `new BigDecimal(String)`.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -599,18 +600,20 @@ public class MathKit extends NumberValidator {
             return Long.toBinaryString(number.longValue());
         } else if (number instanceof Byte) {
             // Byte uses 8 bits and is left-padded with zeros.
-            return String.format("%8s", Integer.toBinaryString(number.byteValue() & 0xFF)).replace(' ', '0');
+            return String.format("%8s", Integer.toBinaryString(number.byteValue() & 0xFF))
+                    .replace(Symbol.C_SPACE, Symbol.C_ZERO);
         } else if (number instanceof Short) {
             // Short uses 16 bits and is left-padded with zeros.
-            return String.format("%16s", Integer.toBinaryString(number.shortValue() & 0xFFFF)).replace(' ', '0');
+            return String.format("%16s", Integer.toBinaryString(number.shortValue() & 0xFFFF))
+                    .replace(Symbol.C_SPACE, Symbol.C_ZERO);
         } else if (number instanceof Float) {
             // Float is converted to its IEEE 754 32-bit binary form.
             final int floatBits = Float.floatToIntBits(number.floatValue());
-            return String.format("%32s", Integer.toBinaryString(floatBits)).replace(' ', '0');
+            return String.format("%32s", Integer.toBinaryString(floatBits)).replace(Symbol.C_SPACE, Symbol.C_ZERO);
         } else if (number instanceof Double) {
             // Double is converted to its IEEE 754 64-bit binary form.
             final long doubleBits = Double.doubleToLongBits(number.doubleValue());
-            return String.format("%64s", Long.toBinaryString(doubleBits)).replace(' ', '0');
+            return String.format("%64s", Long.toBinaryString(doubleBits)).replace(Symbol.C_SPACE, Symbol.C_ZERO);
         } else if (number instanceof BigInteger) {
             // Larger integer-like number types.
             return ((BigInteger) number).toString(2);
@@ -692,11 +695,11 @@ public class MathKit extends NumberValidator {
         Assert.isTrue(isValidNumber(number), "Number is non-finite!");
         String string = number.toString();
         if (isStripTrailingZeros) {
-            if (string.indexOf('.') > 0 && string.indexOf('e') < 0 && string.indexOf('E') < 0) {
-                while (string.endsWith("0")) {
+            if (string.indexOf(Symbol.C_DOT) > 0 && string.indexOf('e') < 0 && string.indexOf('E') < 0) {
+                while (string.endsWith(Symbol.ZERO)) {
                     string = string.substring(0, string.length() - 1);
                 }
-                if (string.endsWith(".")) {
+                if (string.endsWith(Symbol.DOT)) {
                     string = string.substring(0, string.length() - 1);
                 }
             }
@@ -1567,7 +1570,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * Helper for permutation calculation.
+     * Calculates permutations.
      *
      * @param selectNum The number of items to select from.
      * @param minNum    The number of items to select.
@@ -1582,7 +1585,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * Helper for factorial calculation.
+     * Calculates factorials.
      *
      * @param selectNum The number to calculate factorial for.
      * @return The factorial result.

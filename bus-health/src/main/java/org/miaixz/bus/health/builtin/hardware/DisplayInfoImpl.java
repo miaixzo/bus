@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Edid;
 import org.miaixz.bus.health.Formats;
@@ -379,7 +378,7 @@ public class DisplayInfoImpl implements DisplayInfo {
         StringBuilder sb = new StringBuilder();
         sb.append("  Manuf. ID=").append(this.manufacturerID);
         sb.append(", Product ID=").append(this.productID);
-        sb.append(Symbol.COMMA).append(Symbol.SPACE).append(this.digital ? "Digital" : "Analog");
+        sb.append(",").append(" ").append(this.digital ? "Digital" : "Analog");
         sb.append(", Serial=").append(this.serialNo);
         sb.append(", ManufDate=").append(this.week * 12 / 52 + 1).append('/').append(this.year);
         sb.append(", EDID v").append(this.version);

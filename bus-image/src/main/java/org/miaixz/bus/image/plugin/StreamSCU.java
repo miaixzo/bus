@@ -61,7 +61,7 @@ public class StreamSCU {
     private static final long OUTSTANDING_RSP_TIMEOUT_MS = 10_000;
 
     /**
-     * Helper for managing SOP Class Relationship extended negotiation.
+     * Manages SOP Class Relationship extended negotiation.
      */
     public final RelatedSOPClasses relSOPClasses = new RelatedSOPClasses();
 

@@ -826,7 +826,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                         if (entry != null) {
                             String syspath = entry.getName(); // /sys/devices/system/cpu/cpu0
                             policyMax = queryMaxFreqFromCpuFreqPath(
-                                    syspath.substring(0, syspath.lastIndexOf('/')) + "/cpufreq");
+                                    syspath.substring(0, syspath.lastIndexOf(Symbol.C_SLASH)) + "/cpufreq");
                         }
                     } finally {
                         enumerate.unref();

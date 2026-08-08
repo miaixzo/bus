@@ -29,6 +29,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Class GifDecoder - Decodes a GIF file into one or more frames.
  * <p>
@@ -701,7 +703,7 @@ public class GifDecoder {
 
                         case 0xff: // application extension
                             readBlock();
-                            String app = "";
+                            String app = Normal.EMPTY;
                             for (int i = 0; i < 11; i++) {
                                 app += (char) block[i];
                             }
@@ -749,7 +751,7 @@ public class GifDecoder {
      * Reads GIF file header information.
      */
     protected void readHeader() {
-        String id = "";
+        String id = Normal.EMPTY;
         for (int i = 0; i < 6; i++) {
             id += (char) read();
         }

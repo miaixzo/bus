@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 
 import jakarta.ws.rs.core.*;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.*;
 import org.miaixz.bus.logger.Logger;
@@ -353,7 +354,7 @@ public class RepositoryApi extends AbstractApi {
      * @throws RelevantException if any exception occurs
      */
     public List<TreeItem> getTree(Object projectIdOrPath) throws RelevantException {
-        return (getTree(projectIdOrPath, "/", "master"));
+        return (getTree(projectIdOrPath, Symbol.SLASH, "master"));
     }
 
     /**
@@ -369,7 +370,7 @@ public class RepositoryApi extends AbstractApi {
      * @throws RelevantException if any exception occurs
      */
     public Pager<TreeItem> getTree(Object projectIdOrPath, int itemsPerPage) throws RelevantException {
-        return (getTree(projectIdOrPath, "/", "master", false, itemsPerPage));
+        return (getTree(projectIdOrPath, Symbol.SLASH, "master", false, itemsPerPage));
     }
 
     /**
@@ -384,7 +385,7 @@ public class RepositoryApi extends AbstractApi {
      * @throws RelevantException if any exception occurs
      */
     public Stream<TreeItem> getTreeStream(Object projectIdOrPath) throws RelevantException {
-        return (getTreeStream(projectIdOrPath, "/", "master"));
+        return (getTreeStream(projectIdOrPath, Symbol.SLASH, "master"));
     }
 
     /**
@@ -638,7 +639,7 @@ public class RepositoryApi extends AbstractApi {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "repository",
-                "archive" + "." + format);
+                "archive" + Symbol.DOT + format);
         return (response.readEntity(InputStream.class));
     }
 
@@ -763,7 +764,7 @@ public class RepositoryApi extends AbstractApi {
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
                 "repository",
-                "archive" + "." + format.toString());
+                "archive" + Symbol.DOT + format.toString());
 
         try {
 

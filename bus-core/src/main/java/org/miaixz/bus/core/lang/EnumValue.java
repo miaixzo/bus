@@ -169,7 +169,7 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
         /**
          * Equal to.
          */
-        EQ("="),
+        EQ(Symbol.EQUAL),
         /**
          * Not equal to.
          */
@@ -177,7 +177,7 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
         /**
          * Less than.
          */
-        LT("<"),
+        LT(Symbol.LT),
         /**
          * Less than or equal to.
          */
@@ -185,7 +185,7 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
         /**
          * Greater than.
          */
-        GT(">"),
+        GT(Symbol.GT),
         /**
          * Greater than or equal to.
          */

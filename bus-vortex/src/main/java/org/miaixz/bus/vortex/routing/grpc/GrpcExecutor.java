@@ -22,13 +22,15 @@ package org.miaixz.bus.vortex.routing.grpc;
 import java.net.URI;
 
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferLimitException;
+import org.springframework.core.io.buffer.PooledDataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -38,8 +40,12 @@ import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Delivery;
 import org.miaixz.bus.vortex.Egress;
+import org.miaixz.bus.vortex.Holder;
+import org.miaixz.bus.vortex.Octets;
 import org.miaixz.bus.vortex.routing.Coordinator;
+import org.miaixz.bus.vortex.routing.StreamingRelay;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -50,8 +56,9 @@ import reactor.core.publisher.Mono;
  * This executor uses HTTP as transport protocol instead of direct gRPC, avoiding third-party gRPC library dependencies.
  * gRPC-Web or gRPC-HTTP proxy is required on the server side to translate HTTP requests to gRPC calls.
  * <ul>
- * <li>Buffering mode (stream = 1 or null): Buffers the complete response before returning</li>
- * <li>Streaming mode (stream = 2): Streams the response in chunks</li>
+ * <li>{@code stream=1}: validates Content-Length and atomically relays a bounded response</li>
+ * <li>{@code stream=2}: relays a latency-sensitive response under realtime-stream admission</li>
+ * <li>{@code stream=3}: relays a file response under download admission and progress protection</li>
  * </ul>
  * Generic type parameters: {@code Executor<String, ServerResponse>}
  *
@@ -71,7 +78,7 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      * Executes a gRPC request using the provided context and String payload.
      * <p>
      * This method is required by the {@link org.miaixz.bus.vortex.Executor} interface. It invokes the gRPC method and
-     * selects the appropriate execution strategy (streaming or buffering) based.
+     * selects the strict response delivery from the route asset.
      *
      * @param context The request context containing the assets configuration
      * @param input   The String payload to send to the gRPC service
@@ -82,25 +89,27 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
         Assets assets = context.getAssets();
         String payload = input;
 
-        boolean isStreaming = assets.getStream() != null && assets.getStream() == 2;
+        Delivery delivery = Delivery.of(assets.getStream());
+        boolean isStreaming = delivery != Delivery.BUFFERED;
 
         if (isStreaming) {
-            return executeStreaming(assets, payload);
+            return executeStreaming(assets, payload, delivery);
         } else {
-            return executeBuffering(assets, payload);
+            return executeBuffering(context, assets, payload);
         }
     }
 
     /**
      * Executes the gRPC call in streaming mode.
      * <p>
-     * Converts the gRPC response into a flux of data buffers for streaming transfer.
+     * Relays the gRPC response without aggregation and retains a mode-specific streaming lease until termination.
      *
-     * @param assets  The asset configuration
-     * @param payload The JSON payload to send to the gRPC gateway
+     * @param assets   The asset configuration
+     * @param payload  The JSON payload to send to the gRPC gateway
+     * @param delivery realtime-stream or download delivery mode
      * @return A streaming ServerResponse
      */
-    private Mono<ServerResponse> executeStreaming(Assets assets, String payload) {
+    private Mono<ServerResponse> executeStreaming(Assets assets, String payload, Delivery delivery) {
         return request(assets, payload).retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
                 .toEntityFlux(DataBuffer.class).flatMap(responseEntity -> {
                     Logger.info(
@@ -112,7 +121,8 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
                     ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
                     copyDownstreamHeaders(responseBuilder, responseEntity.getHeaders());
                     Flux<DataBuffer> dataFlux = responseEntity.getBody() == null ? Flux.empty()
-                            : responseEntity.getBody();
+                            : responseEntity.getBody().doOnDiscard(PooledDataBuffer.class, Octets::release);
+                    dataFlux = StreamingRelay.relay(dataFlux, delivery);
 
                     return responseBuilder.body(BodyInserters.fromDataBuffers(dataFlux));
                 });
@@ -121,32 +131,67 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
     /**
      * Executes the gRPC call in atomic/buffering mode.
      * <p>
-     * Buffers the complete gRPC response before sending.
+     * Requires a bounded Content-Length, reserves its exact logical size, and retains the response lease until the
+     * network write terminates.
      *
+     * @param context request context retained for response processing
      * @param assets  The asset configuration
      * @param payload The JSON payload to send to the gRPC gateway
      * @return A buffered ServerResponse
      */
-    private Mono<ServerResponse> executeBuffering(Assets assets, String payload) {
-        return request(assets, payload).exchangeToMono(clientResponse -> {
-            Logger.info(
-                    false,
-                    "Vortex",
-                    "GRPC service invocation completed: protocol=grpc, event=GRPC_SUCCESS_ATOMIC, service={}, mode=atomic",
-                    assets.getMethod());
+    private Mono<ServerResponse> executeBuffering(Context context, Assets assets, String payload) {
+        return request(assets, payload).retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
+                .toEntityFlux(DataBuffer.class).flatMap(responseEntity -> {
+                    Logger.info(
+                            false,
+                            "Vortex",
+                            "GRPC service invocation completed: protocol=grpc, event=GRPC_SUCCESS_ATOMIC, service={}, mode=atomic",
+                            assets.getMethod());
 
-            ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(clientResponse.statusCode());
-            copyDownstreamHeaders(responseBuilder, clientResponse.headers().asHttpHeaders());
-            return clientResponse.bodyToMono(String.class).defaultIfEmpty(Normal.EMPTY)
-                    .flatMap(responseBuilder::bodyValue);
-        });
+                    ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
+                    copyDownstreamHeaders(responseBuilder, responseEntity.getHeaders());
+                    Flux<DataBuffer> bodyFlux = responseEntity.getBody() == null ? Flux.empty()
+                            : responseEntity.getBody();
+                    boolean bodyForbidden = responseEntity.getStatusCode().is1xxInformational()
+                            || responseEntity.getStatusCode().value() == 204
+                            || responseEntity.getStatusCode().value() == 304;
+                    if (bodyForbidden) {
+                        return Octets.discard(bodyFlux).then(responseBuilder.build());
+                    }
+                    long declaredLength = responseEntity.getHeaders().getContentLength();
+                    if (declaredLength < 0
+                            || declaredLength > Math.toIntExact(Holder.get().getMaxBufferedResponseSize())) {
+                        return Octets.discard(bodyFlux).then(
+                                Mono.error(
+                                        new DataBufferLimitException(
+                                                "Atomic gRPC response requires Content-Length in range 0.."
+                                                        + Math.toIntExact(Holder.get().getMaxBufferedResponseSize()))));
+                    }
+                    return Octets.readForRelay(
+                            bodyFlux,
+                            Math.toIntExact(Holder.get().getMaxBufferedResponseSize()),
+                            Holder.responseBufferBudget(),
+                            declaredLength).flatMap(bufferedBody -> {
+                                int bodyLength = bufferedBody.length();
+                                if (bodyLength != declaredLength) {
+                                    bufferedBody.close();
+                                    return Mono.error(
+                                            new DataBufferLimitException(
+                                                    "Atomic gRPC response length mismatch: declared=" + declaredLength
+                                                            + ", actual=" + bodyLength));
+                                }
+                                return responseBuilder.contentLength(bodyLength)
+                                        .body(BodyInserters.fromDataBuffers(Octets.chunksAndClose(bufferedBody)));
+                            });
+                });
     }
 
     /**
      * Invokes a gRPC method via HTTP gateway.
      * <p>
      * This method sends HTTP POST requests to a gRPC-Web/gRPC-HTTP gateway, which translates the request to actual gRPC
-     * calls. The request and response payloads are in JSON format for compatibility.
+     * calls. The JSON response requires Content-Length and retains an exact response-byte lease until conversion to the
+     * returned string completes.
      *
      * @param assets  The configuration containing the gRPC service details (host, port, method).
      * @param payload The JSON string content of the request message.
@@ -168,7 +213,18 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
 
             Logger.info(true, "Vortex", "GRPC method {} invoked successfully: protocol=grpc", fullMethodName);
             return Egress.request(HttpMethod.POST, uri).header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                    .bodyValue(payload).retrieve().bodyToMono(String.class);
+                    .bodyValue(payload).retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
+                    .toEntityFlux(DataBuffer.class).flatMap(
+                            responseEntity -> Octets
+                                    .readForParsing(
+                                            responseEntity.getBody() == null ? Flux.empty() : responseEntity.getBody(),
+                                            Math.toIntExact(Holder.get().getMaxBufferedResponseSize()),
+                                            Holder.responseBufferBudget(),
+                                            responseEntity.getHeaders().getContentLength())
+                                    .flatMap(
+                                            bufferedBody -> Mono
+                                                    .fromCallable(() -> new String(bufferedBody.bytes(), Charset.UTF_8))
+                                                    .doFinally(signalType -> bufferedBody.close())));
 
         } catch (Exception e) {
             Logger.error(false, "Vortex", "Failed to invoke gRPC method '{}': protocol=grpc", assets.getMethod(), e);

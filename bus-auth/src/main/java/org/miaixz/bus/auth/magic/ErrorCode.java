@@ -21,6 +21,7 @@ package org.miaixz.bus.auth.magic;
 
 import org.miaixz.bus.core.basic.normal.ErrorRegistry;
 import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Authorization error codes: 110xxx.
@@ -130,58 +131,62 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
         /**
          * Indicates that the API call was successful.
          */
-        public static final Errors EC0 = ErrorRegistry.builder().key("0").value("API call successful").build();
+        public static final Errors EC0 = ErrorRegistry.builder().key(Symbol.ZERO).value("API call successful").build();
 
         /**
          * Indicates an API configuration error: Client Key is missing.
          */
-        public static final Errors EC1 = ErrorRegistry.builder().key("1")
+        public static final Errors EC1 = ErrorRegistry.builder().key(Symbol.ONE)
                 .value("API configuration error: Client Key missing").build();
 
         /**
          * Indicates an API configuration error: Client Key is incorrect. Please check if it matches the ClientKey in
          * the open platform.
          */
-        public static final Errors EC2 = ErrorRegistry.builder().key("2").value(
+        public static final Errors EC2 = ErrorRegistry.builder().key(Symbol.TWO).value(
                 "API configuration error: Client Key incorrect. Please check if it matches the ClientKey in the open platform")
                 .build();
 
         /**
          * Indicates missing authorization information.
          */
-        public static final Errors EC3 = ErrorRegistry.builder().key("3").value("Missing authorization information")
-                .build();
+        public static final Errors EC3 = ErrorRegistry.builder().key(Symbol.THREE)
+                .value("Missing authorization information").build();
 
         /**
          * Indicates an incorrect response type.
          */
-        public static final Errors EC4 = ErrorRegistry.builder().key("4").value("Incorrect response type").build();
+        public static final Errors EC4 = ErrorRegistry.builder().key(Symbol.FOUR).value("Incorrect response type")
+                .build();
 
         /**
          * Indicates an incorrect authorization type.
          */
-        public static final Errors EC5 = ErrorRegistry.builder().key("5").value("Incorrect authorization type").build();
+        public static final Errors EC5 = ErrorRegistry.builder().key(Symbol.FIVE).value("Incorrect authorization type")
+                .build();
 
         /**
          * Indicates an incorrect client_secret.
          */
-        public static final Errors EC6 = ErrorRegistry.builder().key("6").value("Incorrect client_secret").build();
+        public static final Errors EC6 = ErrorRegistry.builder().key(Symbol.SIX).value("Incorrect client_secret")
+                .build();
 
         /**
          * Indicates that the authorize_code has expired.
          */
-        public static final Errors EC7 = ErrorRegistry.builder().key("7").value("Authorize_code expired").build();
+        public static final Errors EC7 = ErrorRegistry.builder().key(Symbol.SEVEN).value("Authorize_code expired")
+                .build();
 
         /**
          * Indicates that the scheme of the specified URL is not HTTPS.
          */
-        public static final Errors EC8 = ErrorRegistry.builder().key("8").value("Specified URL scheme is not HTTPS")
-                .build();
+        public static final Errors EC8 = ErrorRegistry.builder().key(Symbol.EIGHT)
+                .value("Specified URL scheme is not HTTPS").build();
 
         /**
          * Indicates an internal API error. Please contact Toutiao technical support.
          */
-        public static final Errors EC9 = ErrorRegistry.builder().key("9")
+        public static final Errors EC9 = ErrorRegistry.builder().key(Symbol.NINE)
                 .value("Internal API error. Please contact Toutiao technical support").build();
 
         /**

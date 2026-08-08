@@ -184,7 +184,7 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
     @Override
     protected String userInfoUrl(Authorization authorization) {
         // Calculate signature value based on timestamp and appSecret
-        String timestamp = System.currentTimeMillis() + "";
+        String timestamp = System.currentTimeMillis() + Normal.EMPTY;
         String urlEncodeSignature = sign(context.getClientSecret(), timestamp);
 
         return Builder.fromUrl(this.complex.userinfo()).queryParam("signature", urlEncodeSignature)

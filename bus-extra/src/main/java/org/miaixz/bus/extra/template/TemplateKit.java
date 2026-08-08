@@ -23,7 +23,7 @@ import java.io.Writer;
 import java.util.Map;
 
 /**
- * Provides template utility methods for quick template merging and rendering.
+ * Provides template methods for quick template merging and rendering.
  *
  * @author Kimi Liu
  * @since Java 21+

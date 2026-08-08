@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * Shared archive models and low-level binary archive access helpers.
+ * Defines shared archive models and low-level binary archive access.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -415,9 +415,9 @@ public class Archive {
             final String baseName = "segment-" + segmentIndex;
             final File dataFile = new File(this.rootDir, baseName + ".bin");
             final File indexFile = new File(this.rootDir, baseName + ".idx");
-            state = new SegmentState(segmentIndex, null == segmentName ? "" : segmentName, dataFile, indexFile,
-                    new DataOutputStream(new BufferedOutputStream(new FileOutputStream(dataFile))), new ArrayList<>(),
-                    new LinkedHashMap<>(null == attributes ? Map.of() : attributes), 0L, 0L);
+            state = new SegmentState(segmentIndex, null == segmentName ? Normal.EMPTY : segmentName, dataFile,
+                    indexFile, new DataOutputStream(new BufferedOutputStream(new FileOutputStream(dataFile))),
+                    new ArrayList<>(), new LinkedHashMap<>(null == attributes ? Map.of() : attributes), 0L, 0L);
             this.states.put(segmentIndex, state);
             return state;
         }

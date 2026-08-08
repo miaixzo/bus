@@ -25,7 +25,7 @@ import java.net.URL;
 import java.util.jar.JarFile;
 
 /**
- * Utility class for creating various types of resource loaders.
+ * Creates various types of resource loaders.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -25,6 +25,8 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Represents the HL7Charset type.
  *
@@ -81,7 +83,7 @@ public class HL7Charset {
      */
     public static String toCharsetName(String code) {
         if (code == null)
-            code = "";
+            code = Normal.EMPTY;
         String value = CHARSET_NAMES_MAP.get(code);
         if (value != null)
             return value;

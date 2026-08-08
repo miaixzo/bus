@@ -183,7 +183,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                 true,
                 "Pay",
                 "Payment HTTP request started: method=POST, url={}, dataBytes={}",
-                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                 data == null ? 0 : data.getBytes(Charset.UTF_8).length);
         try {
             FabricX.Response response = FabricX.post(url, null, data);
@@ -192,7 +192,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     false,
                     "Pay",
                     "Payment HTTP request completed: method=POST, url={}, status={}, responseBytes={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     response.code(),
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
             return body;
@@ -202,7 +202,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     "Pay",
                     e,
                     "Payment HTTP request failed: method=POST, url={}, exception={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
@@ -224,7 +224,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     false,
                     "Pay",
                     "Payment HTTP response assembled: method=POST, url={}, status={}, headerCount={}, responseBytes={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     response.code(),
                     response.headerCount(),
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
@@ -235,7 +235,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     "Pay",
                     e,
                     "Payment HTTP response read failed: method=POST, url={}, exception={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
@@ -257,7 +257,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     false,
                     "Pay",
                     "Payment HTTP response assembled: method=GET, url={}, status={}, headerCount={}, responseBytes={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     response.code(),
                     response.headerCount(),
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
@@ -268,7 +268,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     "Pay",
                     e,
                     "Payment HTTP response read failed: method=GET, url={}, exception={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
@@ -290,7 +290,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     false,
                     "Pay",
                     "Payment HTTP response assembled: method=POST, url={}, status={}, headerCount={}, responseBytes={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     response.code(),
                     response.headerCount(),
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
@@ -301,7 +301,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     "Pay",
                     e,
                     "Payment HTTP response read failed: method=POST, url={}, exception={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
@@ -322,7 +322,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     true,
                     "Pay",
                     "Payment file request started: method=POST, url={}, paramCount={}, file={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     formMap == null ? 0 : formMap.size(),
                     file == null ? null : file.getName());
             FabricX.Response response = FabricX.post(url, headerMap, formMap, file);
@@ -331,7 +331,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     false,
                     "Pay",
                     "Payment file request completed: method=POST, url={}, status={}, file={}, responseBytes={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     response.code(),
                     file == null ? null : file.getName(),
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
@@ -342,7 +342,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     "Pay",
                     e,
                     "Payment file request failed: method=POST, url={}, file={}, exception={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     file == null ? null : file.getName(),
                     e.getClass().getSimpleName());
             throw new RuntimeException(e);
@@ -364,7 +364,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                 true,
                 "Pay",
                 "Payment SSL request started: method=POST, url={}, certSource={}, protocol={}, dataBytes={}",
-                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                 certPath == null ? "stream" : "path",
                 protocol,
                 data == null ? 0 : data.getBytes(Charset.UTF_8).length);
@@ -377,7 +377,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     false,
                     "Pay",
                     "Payment SSL request completed: method=POST, url={}, protocol={}, responseBytes={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     protocol,
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
             return body;
@@ -387,7 +387,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     "Pay",
                     e,
                     "Payment SSL request failed: method=POST, url={}, certSource={}, protocol={}, exception={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     certPath == null ? "stream" : "path",
                     protocol,
                     e.getClass().getSimpleName());
@@ -410,7 +410,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                 true,
                 "Pay",
                 "Payment SSL request started: method=POST, url={}, certSource={}, protocol={}, dataBytes={}",
-                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                 "stream",
                 protocol,
                 data == null ? 0 : data.getBytes(Charset.UTF_8).length);
@@ -423,7 +423,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     false,
                     "Pay",
                     "Payment SSL request completed: method=POST, url={}, protocol={}, responseBytes={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     protocol,
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
             return body;
@@ -433,7 +433,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     "Pay",
                     e,
                     "Payment SSL request failed: method=POST, url={}, certSource={}, protocol={}, exception={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     "stream",
                     protocol,
                     e.getClass().getSimpleName());
@@ -457,7 +457,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     false,
                     "Pay",
                     "Payment HTTP response assembled: method=PUT, url={}, status={}, headerCount={}, responseBytes={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     response.code(),
                     response.headerCount(),
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
@@ -468,7 +468,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     "Pay",
                     e,
                     "Payment HTTP response read failed: method=PUT, url={}, exception={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }
@@ -497,7 +497,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                 true,
                 "Pay",
                 "Payment upload request started: method=POST, url={}, certSource={}, file={}, protocol={}, dataBytes={}",
-                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                 certPath == null ? "stream" : "path",
                 filePath == null ? null : Paths.get(filePath).getFileName(),
                 protocol,
@@ -508,7 +508,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     false,
                     "Pay",
                     "Payment upload request completed: method=POST, url={}, file={}, responseBytes={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     filePath == null ? null : Paths.get(filePath).getFileName(),
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
             return body;
@@ -518,7 +518,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     "Pay",
                     e,
                     "Payment upload request failed: method=POST, url={}, file={}, exception={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     filePath == null ? null : Paths.get(filePath).getFileName(),
                     e.getClass().getSimpleName());
             throw new RuntimeException(e);
@@ -627,7 +627,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     false,
                     "Pay",
                     "Payment HTTP response assembled: method=PUT, url={}, status={}, headerCount={}, responseBytes={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     response.code(),
                     response.headerCount(),
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
@@ -638,7 +638,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     "Pay",
                     e,
                     "Payment HTTP response read failed: method=PUT, url={}, exception={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     e.getClass().getSimpleName());
             throw new RuntimeException(e);
         }

@@ -324,9 +324,9 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
     /**
      * Resolves one route together with the remaining request path.
      * <p>
-     * Exact route-key lookup is attempted first. MCP requests additionally support path-segment-safe longest prefix
-     * matching, and the returned {@link RouteMatch#remainingPath()} is calculated from the same winning route prefix so
-     * downstream executors do not repeat route matching.
+     * Exact route-key lookup is attempted first. MCP and LLM requests additionally support path-segment-safe longest
+     * prefix matching, and the returned {@link RouteMatch#remainingPath()} is calculated from the same winning route
+     * prefix so downstream executors do not repeat route matching.
      *
      * @param spec runtime route dimensions
      * @return matching route or {@code null}
@@ -385,14 +385,16 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
      */
     private RouteMatch prefixRouteMatch(Keying.RegistrySpec spec) {
         String requestPath = spec.methodPart();
-        if (!Args.isMcpRequest(requestPath)) {
+        boolean mcpRequest = Args.isMcpRequest(requestPath);
+        boolean llmRequest = Args.isLlmRequest(requestPath);
+        if (!mcpRequest && !llmRequest) {
             return null;
         }
         RouteMatch best = null;
         int bestLevel = Integer.MAX_VALUE;
         int bestPrefixLength = -1;
         for (Assets candidate : getAll()) {
-            if (!isMcp(candidate)) {
+            if (mcpRequest ? !isMcp(candidate) : !isLlm(candidate)) {
                 continue;
             }
             if (!Objects.equals(candidate.getVersion(), spec.versionPart())
@@ -417,7 +419,7 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
                 Logger.warn(
                         false,
                         "Vortex",
-                        "MCP route prefix '{}' is ambiguous for namespace={}, type={}, appId={}, method={}, version={}, verb={}",
+                        "Route prefix '{}' is ambiguous for namespace={}, type={}, appId={}, method={}, version={}, verb={}",
                         routePrefix,
                         spec.namespacePart(),
                         spec.typeKeyPart(),
@@ -544,6 +546,16 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
     private boolean isMcp(Assets asset) {
         return asset != null && Type.MCP.is(RegistryAssets.typeOf(asset))
                 && Integer.valueOf(Args.PROTOCOL_MCP).equals(asset.getProtocol());
+    }
+
+    /**
+     * Returns whether the asset belongs to LLM routing.
+     *
+     * @param asset asset to inspect
+     * @return {@code true} when the asset uses the LLM protocol
+     */
+    private boolean isLlm(Assets asset) {
+        return asset != null && Integer.valueOf(Args.PROTOCOL_LLM).equals(asset.getProtocol());
     }
 
     /**

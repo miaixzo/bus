@@ -22,6 +22,7 @@ package org.miaixz.bus.auth;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -64,7 +65,7 @@ public class Checker {
         if (isSupported && Registry.XIMALAYA == complex) {
             isSupported = StringKit.isNotEmpty(context.getDeviceId()) && null != context.getType();
             if (isSupported) {
-                isSupported = "3".equals(context.getType()) || StringKit.isNotEmpty(context.getUnionId());
+                isSupported = Symbol.THREE.equals(context.getType()) || StringKit.isNotEmpty(context.getUnionId());
             }
         }
         return isSupported;

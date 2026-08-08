@@ -12480,6 +12480,7 @@ public class Imgproc {
     private static native int connectedComponents_2(long image_nativeObj, long labels_nativeObj);
 
     // C++: int cv::connectedComponentsWithStats(Mat image, Mat& labels, Mat& stats, Mat& centroids, int connectivity,
+
     // int ltype, int ccltype)
     private static native int connectedComponentsWithStatsWithAlgorithm_0(
             long image_nativeObj,
@@ -12491,6 +12492,7 @@ public class Imgproc {
             int ccltype);
 
     // C++: int cv::connectedComponentsWithStats(Mat image, Mat& labels, Mat& stats, Mat& centroids, int connectivity =
+
     // 8, int ltype = CV_32S)
     private static native int connectedComponentsWithStats_0(
             long image_nativeObj,

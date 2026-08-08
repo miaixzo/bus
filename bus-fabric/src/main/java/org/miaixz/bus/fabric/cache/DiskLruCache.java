@@ -853,7 +853,8 @@ public class DiskLruCache implements Closeable, Flushable {
     private void validateKey(String key) {
         Matcher matcher = Builder.DISK_LRU_CACHE_LEGAL_KEY_PATTERN.matcher(key);
         if (!matcher.matches()) {
-            throw new IllegalArgumentException("keys must match regex [a-z0-9_-]{1,120}: \"" + key + "\"");
+            throw new IllegalArgumentException(
+                    "keys must match regex [a-z0-9_-]{1,120}: \"" + key + Symbol.DOUBLE_QUOTES);
         }
     }
 
@@ -1635,7 +1636,7 @@ public class DiskLruCache implements Closeable, Flushable {
                     || !Integer.toString(appVersion).equals(appVersionString)
                     || !Integer.toString(valueCount).equals(valueCountString) || !Normal.EMPTY.equals(blank)) {
                 throw new IOException("unexpected journal header: [" + magic + ", " + version + ", " + valueCountString
-                        + ", " + blank + "]");
+                        + ", " + blank + Symbol.BRACKET_RIGHT);
             }
         }
 

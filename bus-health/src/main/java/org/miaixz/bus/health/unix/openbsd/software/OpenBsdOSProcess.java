@@ -751,7 +751,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
                 break;
 
             case 'D':
-            case 'L':
+            case Symbol.C_L:
             case 'U':
                 this.state = OSProcess.State.WAITING;
                 break;
@@ -785,7 +785,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         // kernel time is included in user time
         this.kernelTime = 0L;
         this.path = psMap.get(PsKeywords.COMM);
-        this.name = this.path.substring(this.path.lastIndexOf('/') + 1);
+        this.name = this.path.substring(this.path.lastIndexOf(Symbol.C_SLASH) + 1);
         this.minorFaults = Parsing.parseLongOrDefault(psMap.get(PsKeywords.MINFLT), 0L);
         this.majorFaults = Parsing.parseLongOrDefault(psMap.get(PsKeywords.MAJFLT), 0L);
         this.voluntaryContextSwitches = Parsing.parseLongOrDefault(psMap.get(PsKeywords.NVCSW), 0L);

@@ -48,9 +48,12 @@ public class ChineseNumberParser {
      * Mapping of Chinese characters to their numeric values and unit properties.
      */
     private static final ChineseUnit[] CHINESE_NAME_VALUE = { new ChineseUnit(Symbol.C_SPACE, 1, false),
-            new ChineseUnit('十', 10, false), new ChineseUnit('拾', 10, false), new ChineseUnit('百', 100, false),
-            new ChineseUnit('佰', 100, false), new ChineseUnit('千', 1000, false), new ChineseUnit('仟', 1000, false),
-            new ChineseUnit('万', 1_0000, true), new ChineseUnit('亿', 1_0000_0000, true), };
+            new ChineseUnit(Symbol.C_L_TEN, 10, false), new ChineseUnit(Symbol.C_U_TEN, 10, false),
+            new ChineseUnit(Symbol.C_L_ONE_HUNDRED, 100, false), new ChineseUnit(Symbol.C_U_ONE_HUNDRED, 100, false),
+            new ChineseUnit(Symbol.C_L_ONE_THOUSAND, 1000, false),
+            new ChineseUnit(Symbol.C_U_ONE_THOUSAND, 1000, false),
+            new ChineseUnit(Symbol.C_L_TEN_THOUSAND, 1_0000, true),
+            new ChineseUnit(Symbol.C_L_ONE_HUNDRED_MILLION, 1_0000_0000, true), };
 
     /**
      * Converts a Chinese numeral string to a BigDecimal. For example, "二百二十" becomes 220.
@@ -63,7 +66,7 @@ public class ChineseNumberParser {
      * @return The corresponding BigDecimal.
      */
     public static BigDecimal parseFromChinese(final String chinese) {
-        if (StringKit.containsAny(chinese, '元', '圆', '角', '分')) {
+        if (StringKit.containsAny(chinese, Symbol.C_CNY_YUAN, '圆', Symbol.C_CNY_JIAO, Symbol.C_CNY_FEN)) {
             return parseFromChineseMoney(chinese);
         }
 
@@ -121,7 +124,7 @@ public class ChineseNumberParser {
         }
 
         final char[] charArray = chineseMoneyAmount.toCharArray();
-        int yEnd = ArrayKit.indexOf(charArray, '元');
+        int yEnd = ArrayKit.indexOf(charArray, Symbol.C_CNY_YUAN);
         if (yEnd < 0) {
             yEnd = ArrayKit.indexOf(charArray, '圆');
         }
@@ -134,7 +137,7 @@ public class ChineseNumberParser {
 
         // Then, find the number part for Jiao.
         long j = 0;
-        final int jEnd = ArrayKit.indexOf(charArray, '角');
+        final int jEnd = ArrayKit.indexOf(charArray, Symbol.C_CNY_JIAO);
         if (jEnd > 0) {
             if (yEnd >= 0) {
                 // If Yuan exists, Jiao must come after it.
@@ -149,7 +152,7 @@ public class ChineseNumberParser {
 
         // Then, find the number part for Fen.
         long f = 0;
-        final int fEnd = ArrayKit.indexOf(charArray, '分');
+        final int fEnd = ArrayKit.indexOf(charArray, Symbol.C_CNY_FEN);
         if (fEnd > 0) {
             if (jEnd >= 0) {
                 // If Jiao exists, Fen must come after it.
@@ -269,7 +272,7 @@ public class ChineseNumberParser {
     private static int chineseToNumber(char chinese) {
         if ('两' == chinese) {
             // Colloquial correction for '两' (liǎng) to '二' (èr).
-            chinese = '二';
+            chinese = Symbol.C_L_TWO;
         }
         final int i = ArrayKit.indexOf(ChineseNumberFormatter.DIGITS, chinese);
         if (i > 0) {

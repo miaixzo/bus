@@ -36,7 +36,7 @@ import org.miaixz.bus.image.nimble.opencv.lut.WindLevelParameters;
 import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
 
 /**
- * A utility class for performing various rendering operations on DICOM images.
+ * Performs various rendering operations on DICOM images.
  * <p>
  * This class provides static methods for applying transformations such as Modality LUTs, VOI LUTs (window/level), and
  * handling embedded overlays. It supports processing images with different data types.

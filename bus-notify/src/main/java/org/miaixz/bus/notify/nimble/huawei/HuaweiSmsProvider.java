@@ -27,6 +27,7 @@ import java.util.*;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.Http;
@@ -84,7 +85,7 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiNotice, Context> {
         for (byte aByte : bytes) {
             temp = Integer.toHexString(aByte & 0xFF);
             if (temp.length() == 1) {
-                sb.append("0");
+                sb.append(Symbol.ZERO);
             }
             sb.append(temp);
         }
@@ -151,7 +152,7 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiNotice, Context> {
     private String buildWsseHeader() {
         try {
             String time = DateKit.format(new Date(), Fields.UTC);
-            String nonce = UUID.randomUUID().toString().replace(Symbol.MINUS, "");
+            String nonce = UUID.randomUUID().toString().replace(Symbol.MINUS, Normal.EMPTY);
             String text = nonce + time + context.getAppSecret();
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             digest.update(text.getBytes(Charset.UTF_8));

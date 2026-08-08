@@ -264,7 +264,7 @@ public class Builder {
      * @return The concatenated string.
      */
     public static String createLinkString(Map<String, String> params, boolean encode) {
-        return createLinkString(params, "&", encode);
+        return createLinkString(params, Symbol.AND, encode);
     }
 
     /**
@@ -327,7 +327,7 @@ public class Builder {
      */
     public static String urlEncode(String src) {
         try {
-            return URLEncoder.encode(src, Charset.DEFAULT_UTF_8).replace("+", "%20");
+            return URLEncoder.encode(src, Charset.DEFAULT_UTF_8).replace(Symbol.PLUS, "%20");
         } catch (UnsupportedEncodingException e) {
             Logger.warn(
                     false,
@@ -360,9 +360,9 @@ public class Builder {
             if (StringKit.isEmpty(value)) {
                 continue;
             }
-            xml.append("<").append(key).append(">");
+            xml.append(Symbol.LT).append(key).append(Symbol.GT);
             xml.append(entry.getValue());
-            xml.append("</").append(key).append(">");
+            xml.append("</").append(key).append(Symbol.GT);
         }
         if (StringKit.isNotEmpty(suffix)) {
             xml.append(suffix);
@@ -552,8 +552,8 @@ public class Builder {
      * @return The merchant private key.
      */
     public static String getPrivateKeyByContent(String originalKey) {
-        return originalKey.replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", "")
-                .replaceAll("\\s+", "");
+        return originalKey.replace("-----BEGIN PRIVATE KEY-----", Normal.EMPTY)
+                .replace("-----END PRIVATE KEY-----", Normal.EMPTY).replaceAll("\\s+", Normal.EMPTY);
     }
 
     /**
@@ -563,8 +563,8 @@ public class Builder {
      * @return The merchant public key.
      */
     public static String getPublicKeyByContent(String originalKey) {
-        return originalKey.replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "")
-                .replaceAll("\\s+", "");
+        return originalKey.replace("-----BEGIN PUBLIC KEY-----", Normal.EMPTY)
+                .replace("-----END PUBLIC KEY-----", Normal.EMPTY).replaceAll("\\s+", Normal.EMPTY);
     }
 
     /**

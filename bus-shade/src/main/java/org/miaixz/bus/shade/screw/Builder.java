@@ -23,7 +23,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.shade.screw.execute.ProduceExecute;
 
 /**
- * Default constants and utility methods for document generation.
+ * Default constants and methods for document generation.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -65,7 +65,7 @@ public class Builder {
     /**
      * A constant string representing zero decimal digits ("0").
      */
-    public static final String ZERO_DECIMAL_DIGITS = "0";
+    public static final String ZERO_DECIMAL_DIGITS = Symbol.ZERO;
 
     /**
      * The default description for the database design document.
@@ -85,7 +85,7 @@ public class Builder {
     /**
      * The string representation of zero ("0").
      */
-    public static final String ZERO = "0";
+    public static final String ZERO = Symbol.ZERO;
 
     /**
      * The string "N", typically representing "No".

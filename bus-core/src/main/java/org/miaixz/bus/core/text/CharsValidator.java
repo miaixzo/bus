@@ -27,7 +27,7 @@ import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.CollKit;
 
 /**
- * String validation utility class, providing checks for blank and empty strings.
+ * String validation class, providing checks for blank and empty strings.
  * <ul>
  * <li>Empty definition: {@code null} or empty string: {@code ""}</li>
  * <li>Blank definition: {@code null} or empty string: {@code ""} or spaces, full-width spaces, tabs, newlines, and
@@ -158,8 +158,8 @@ public class CharsValidator {
      * Recommendation:
      *
      * <ul>
-     * <li>This method is recommended for use in utility classes or for validating method parameters where the expected
-     * input is known.</li>
+     * <li>This method is recommended for use in classes or for validating method parameters where the expected input is
+     * known.</li>
      * <li>When checking multiple strings simultaneously, it is recommended to use {@link #hasEmpty(CharSequence...)} or
      * {@link #isAllEmpty(CharSequence...)}.</li>
      * </ul>
@@ -190,8 +190,8 @@ public class CharsValidator {
      * for whitespace characters.
      *
      * <p>
-     * Recommendation: This method is recommended for use in utility classes or for validating method parameters where
-     * the expected input is known.
+     * Recommendation: This method is recommended for use in classes or for validating method parameters where the
+     * expected input is known.
      *
      * @param text The {@link CharSequence} to check.
      * @return {@code true} if the string is not empty, {@code false} otherwise.

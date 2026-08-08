@@ -146,10 +146,10 @@ public abstract class AbstractGraphicsCard implements GraphicsCard {
      * hot paths. Cache the result if repeated string representations are needed.
      *
      * <p>
-     * Delta-based metric backends ({@link GpuStats#getGpuUtilization()} and {@link GpuStats#getPowerDraw()}) may return
-     * -1 on the first call after a session is opened while they record the initial baseline. Backends that read
-     * instantaneous values (e.g. Linux sysfs and the macOS IOAccelerator fallback) can return a valid value on the
-     * first call. Use a persistent {@link GpuStats} session with a polling loop for reliable delta values.
+     * Delta-based metric backends ({@link GpuStats#getGpuUsage()} and {@link GpuStats#getPowerDraw()}) may return -1 on
+     * the first call after a session is opened while they record the initial baseline. Backends that read instantaneous
+     * values (e.g. Linux sysfs and the macOS IOAccelerator fallback) can return a valid value on the first call. Use a
+     * persistent {@link GpuStats} session with a polling loop for reliable delta values.
      *
      * @return a human-readable description of this graphics card
      */
@@ -179,10 +179,10 @@ public abstract class AbstractGraphicsCard implements GraphicsCard {
                 builder.append(", sharedMemUsed=");
                 builder.append(sharedUsed);
             }
-            double utilization = stats.getGpuUtilization();
-            if (utilization >= 0) {
-                builder.append(", utilization=");
-                builder.append(String.format(Locale.ROOT, "%.1f%%", utilization));
+            double usage = stats.getGpuUsage();
+            if (usage >= 0) {
+                builder.append(", usage=");
+                builder.append(String.format(Locale.ROOT, "%.1f%%", usage));
             }
             double temp = stats.getTemperature();
             if (temp >= 0) {

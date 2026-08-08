@@ -19,9 +19,9 @@
 */
 /**
  * This package provides a comprehensive set of core utilities and data structures designed to simplify common Java
- * programming tasks. It includes specialized collections, iterators, and helper classes for handling arrays, dates,
- * lists, maps, and other fundamental data types. These tools are designed to enhance code readability, maintainability,
- * and performance by offering efficient and reusable solutions for a wide range of applications.
+ * programming tasks. It includes specialized collections, iterators, and classes for handling arrays, dates, lists,
+ * maps, and other fundamental data types. These tools are designed to enhance code readability, maintainability, and
+ * performance by offering efficient and reusable solutions for a wide range of applications.
  *
  * @author Kimi Liu
  * @since Java 21+

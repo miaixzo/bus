@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.gitlab.models.Constants.StateEvent;
 
@@ -320,7 +321,7 @@ public class MergeRequestParams implements Serializable {
 
         String titleToUse;
         if (Boolean.TRUE.equals(draft)) {
-            titleToUse = "Draft: " + (title != null ? title : "");
+            titleToUse = "Draft: " + (title != null ? title : Normal.EMPTY);
         } else {
             titleToUse = title;
         }

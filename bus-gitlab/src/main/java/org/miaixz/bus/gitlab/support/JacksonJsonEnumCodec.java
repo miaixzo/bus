@@ -24,14 +24,16 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
- * The jackson JSON enum helper class.
+ * Converts enum constants between Java names and their JSON representations.
  *
  * @param <E> the enum type
  * @author Kimi Liu
  * @since Java 21+
  */
-public class JacksonJsonEnumHelper<E extends Enum<E>> {
+public class JacksonJsonEnumCodec<E extends Enum<E>> {
 
     /**
      * Maps serialized enum names to enum values.
@@ -48,7 +50,7 @@ public class JacksonJsonEnumHelper<E extends Enum<E>> {
      *
      * @param enumType the enum type
      */
-    public JacksonJsonEnumHelper(Class<E> enumType) {
+    public JacksonJsonEnumCodec(Class<E> enumType) {
         this(enumType, false);
     }
 
@@ -58,7 +60,7 @@ public class JacksonJsonEnumHelper<E extends Enum<E>> {
      * @param enumType               the enum type
      * @param firstLetterCapitalized whether the first letter is capitalized
      */
-    public JacksonJsonEnumHelper(Class<E> enumType, boolean firstLetterCapitalized) {
+    public JacksonJsonEnumCodec(Class<E> enumType, boolean firstLetterCapitalized) {
 
         valuesMap = new HashMap<>();
         namesMap = new HashMap<>();
@@ -82,7 +84,7 @@ public class JacksonJsonEnumHelper<E extends Enum<E>> {
      * @param firstLetterCapitalized whether the first letter is capitalized
      * @param camelCased             whether underscore-separated names are converted to camel case
      */
-    public JacksonJsonEnumHelper(Class<E> enumType, boolean firstLetterCapitalized, boolean camelCased) {
+    public JacksonJsonEnumCodec(Class<E> enumType, boolean firstLetterCapitalized, boolean camelCased) {
         this(enumType, firstLetterCapitalized, camelCased, false);
     }
 
@@ -95,7 +97,7 @@ public class JacksonJsonEnumHelper<E extends Enum<E>> {
      * @param camelCased             whether underscore-separated names are converted to camel case
      * @param preserveUnderscores    whether underscores are preserved
      */
-    public JacksonJsonEnumHelper(Class<E> enumType, boolean firstLetterCapitalized, boolean camelCased,
+    public JacksonJsonEnumCodec(Class<E> enumType, boolean firstLetterCapitalized, boolean camelCased,
             boolean preserveUnderscores) {
 
         valuesMap = new HashMap<>();
@@ -107,14 +109,14 @@ public class JacksonJsonEnumHelper<E extends Enum<E>> {
             StringBuilder nameBuf = new StringBuilder(chars.length);
             boolean nextCharIsCapitalized = firstLetterCapitalized;
             for (char ch : chars) {
-                if (ch == '_') {
+                if (ch == Symbol.C_UNDERLINE) {
                     if (preserveUnderscores) {
                         nameBuf.append(ch);
                     } else {
                         if (camelCased) {
                             nextCharIsCapitalized = true;
                         } else {
-                            nameBuf.append(' ');
+                            nameBuf.append(Symbol.C_SPACE);
                         }
                     }
                 } else if (nextCharIsCapitalized) {

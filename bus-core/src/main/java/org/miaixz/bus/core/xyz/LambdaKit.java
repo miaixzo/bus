@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.reflect.method.MethodInvoker;
 
 /**
- * Utility class for Lambda expressions.
+ * Resolves serialized lambda metadata.
  *
  * @author Kimi Liu
  * @since Java 21+

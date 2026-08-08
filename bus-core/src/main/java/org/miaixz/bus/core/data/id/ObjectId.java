@@ -86,7 +86,7 @@ public class ObjectId {
         char c;
         for (int i = 0; i < len; i++) {
             c = s.charAt(i);
-            if (c >= '0' && c <= '9') {
+            if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) {
                 continue;
             }
             if (c >= 'a' && c <= 'f') {

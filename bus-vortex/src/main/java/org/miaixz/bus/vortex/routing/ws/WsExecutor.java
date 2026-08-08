@@ -75,7 +75,7 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
     /**
      * Pattern used to strip any WebSocket scheme prefix from configured hosts.
      */
-    private static final String WS_SCHEME_PATTERN = "^(" + WS_SCHEME + Symbol.OR + WSS_SCHEME + ")";
+    private static final String WS_SCHEME_PATTERN = "^(" + WS_SCHEME + Symbol.OR + WSS_SCHEME + Symbol.PARENTHESE_RIGHT;
 
     /**
      * Creates a WebSocket executor.

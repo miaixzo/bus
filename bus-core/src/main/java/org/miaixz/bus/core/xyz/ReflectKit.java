@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.reflect.creator.DefaultObjectCreator;
 import org.miaixz.bus.core.text.StringTrimer;
 
 /**
- * Reflection utility class.
+ * Provides reflection operations.
  * <p>
  * This class has been refactored, and many of its methods have been moved to {@link FieldKit}, {@link MethodKit},
  * {@link ModifierKit}, etc.
@@ -167,7 +167,7 @@ public class ReflectKit {
 
         desc = StringKit.trim(desc, StringTrimer.TrimMode.SUFFIX, (c) -> Symbol.C_SLASH == c || Symbol.C_DOT == c);
 
-        if ('L' == firstChar) {
+        if (Symbol.C_L == firstChar) {
             // "Ljava/lang/Object;" ==> "java.lang.Object"
             desc = desc.substring(1, desc.length() - 1);
         }
@@ -190,7 +190,7 @@ public class ReflectKit {
     public static String getDesc(Class<?> c) {
         final StringBuilder ret = new StringBuilder();
         while (c.isArray()) {
-            ret.append('[');
+            ret.append(Symbol.C_BRACKET_LEFT);
             c = c.getComponentType();
         }
         if (c.isPrimitive()) {
@@ -199,8 +199,8 @@ public class ReflectKit {
                 ret.append(desc.charValue());
             }
         } else {
-            ret.append('L');
-            ret.append(c.getName().replace('.', '/'));
+            ret.append(Symbol.C_L);
+            ret.append(c.getName().replace(Symbol.C_DOT, Symbol.C_SLASH));
             ret.append(Symbol.C_SEMICOLON);
         }
         return ret.toString();
@@ -288,7 +288,7 @@ public class ReflectKit {
         name = StringKit.trim(name, StringTrimer.TrimMode.SUFFIX, (c) -> Symbol.C_SLASH == c || Symbol.C_DOT == c);
 
         int c = 0;
-        final int index = name.indexOf('[');
+        final int index = name.indexOf(Symbol.C_BRACKET_LEFT);
         if (index > 0) {
             c = (name.length() - index) / 2;
             name = name.substring(0, index);
@@ -297,13 +297,13 @@ public class ReflectKit {
         if (c > 0) {
             final StringBuilder sb = new StringBuilder();
             while (c-- > 0) {
-                sb.append('[');
+                sb.append(Symbol.C_BRACKET_LEFT);
             }
             final Class<?> clazz = PRIMITIVE_TABLE.getLeftByRight(name);
             if (null != clazz) {
                 sb.append(PRIMITIVE_TABLE.getMiddleByLeft(clazz).charValue());
             } else {
-                sb.append('L').append(name).append(Symbol.C_SEMICOLON);
+                sb.append(Symbol.C_L).append(name).append(Symbol.C_SEMICOLON);
             }
             name = sb.toString();
         } else {
@@ -325,19 +325,19 @@ public class ReflectKit {
     public static String nameToDesc(String name) {
         final StringBuilder sb = new StringBuilder();
         int c = 0;
-        final int index = name.indexOf('[');
+        final int index = name.indexOf(Symbol.C_BRACKET_LEFT);
         if (index > 0) {
             c = (name.length() - index) / 2;
             name = name.substring(0, index);
         }
         while (c-- > 0) {
-            sb.append('[');
+            sb.append(Symbol.C_BRACKET_LEFT);
         }
         final Class<?> clazz = PRIMITIVE_TABLE.getLeftByRight(name);
         if (null != clazz) {
             sb.append(PRIMITIVE_TABLE.getMiddleByLeft(clazz).charValue());
         } else {
-            sb.append('L').append(name.replace(Symbol.C_DOT, Symbol.C_SLASH)).append(Symbol.C_SEMICOLON);
+            sb.append(Symbol.C_L).append(name.replace(Symbol.C_DOT, Symbol.C_SLASH)).append(Symbol.C_SEMICOLON);
         }
         return sb.toString();
     }
@@ -350,7 +350,7 @@ public class ReflectKit {
      */
     public static String descToName(final String desc) {
         final StringBuilder sb = new StringBuilder();
-        int c = desc.lastIndexOf('[') + 1;
+        int c = desc.lastIndexOf(Symbol.C_BRACKET_LEFT) + 1;
         if (desc.length() == c + 1) {
             final char descChar = desc.charAt(c);
             final Class<?> clazz = PRIMITIVE_TABLE.getLeftByMiddle(descChar);

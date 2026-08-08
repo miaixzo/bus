@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
- * Utility to query fsstat on macOS.
+ * Queries fsstat on macOS.
  *
  * @author Kimi Liu
  * @since Java 21+

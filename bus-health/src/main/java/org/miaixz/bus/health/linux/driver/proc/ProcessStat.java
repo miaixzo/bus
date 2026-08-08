@@ -34,7 +34,7 @@ import org.miaixz.bus.health.builtin.software.OSProcess;
 import org.miaixz.bus.health.linux.ProcPath;
 
 /**
- * Utility to read process statistics from {@code /proc/[pid]/stat}
+ * Reads process statistics from {@code /proc/[pid]/stat}
  *
  * @author Kimi Liu
  * @since Java 21+

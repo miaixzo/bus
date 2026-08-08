@@ -25,7 +25,7 @@ import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.linux.SysPath;
 
 /**
- * Utility to read info from the devicetree
+ * Reads info from the devicetree
  *
  * @author Kimi Liu
  * @since Java 21+

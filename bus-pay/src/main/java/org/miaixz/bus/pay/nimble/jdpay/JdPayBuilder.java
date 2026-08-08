@@ -34,6 +34,7 @@ import lombok.SneakyThrows;
 
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.PaymentException;
 import org.miaixz.bus.core.lang.exception.SignatureException;
@@ -46,7 +47,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pay.nimble.wechat.WechatPayBuilder;
 
 /**
- * Utility class for JD Pay, providing methods for signing, encryption, decryption, and XML manipulation.
+ * Builds and signs JD Pay requests, providing methods for signing, encryption, decryption, and XML manipulation.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -116,15 +117,15 @@ public class JdPayBuilder {
     }
 
     /**
-     * Helper method to extract the value between XML tags.
+     * Extracts the value between XML tags.
      *
      * @param xml     The XML string.
      * @param tagName The name of the tag.
      * @return The value within the specified tag, or null if not found.
      */
     private static String extractTagValue(String xml, String tagName) {
-        String startTag = "<" + tagName + ">";
-        String endTag = "</" + tagName + ">";
+        String startTag = Symbol.LT + tagName + Symbol.GT;
+        String endTag = "</" + tagName + Symbol.GT;
         int startIndex = xml.indexOf(startTag);
         int endIndex = xml.indexOf(endTag);
         if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
@@ -157,7 +158,7 @@ public class JdPayBuilder {
      * @return The XML string with a header.
      */
     public static String addXmlHead(String xml) {
-        if (xml != null && !"".equals(xml) && !xml.trim().startsWith("<?xml")) {
+        if (xml != null && !Normal.EMPTY.equals(xml) && !xml.trim().startsWith("<?xml")) {
             xml = XML_HEAD + xml;
         }
         return xml;
@@ -170,7 +171,7 @@ public class JdPayBuilder {
      * @return The modified XML string.
      */
     public static String addXmlHeadAndElJdPay(String xml) {
-        if (xml != null && !"".equals(xml)) {
+        if (xml != null && !Normal.EMPTY.equals(xml)) {
             if (!xml.contains(XML_JDPAY_START)) {
                 xml = XML_JDPAY_START + xml;
             }
@@ -192,9 +193,9 @@ public class JdPayBuilder {
      * @return The content of the XML element.
      */
     public static String getXmlElm(String xml, String elName) {
-        String result = "";
-        String elStart = "<" + elName + ">";
-        String elEnd = "</" + elName + ">";
+        String result = Normal.EMPTY;
+        String elStart = Symbol.LT + elName + Symbol.GT;
+        String elEnd = "</" + elName + Symbol.GT;
         if (xml.contains(elStart) && xml.contains(elEnd)) {
             int from = xml.indexOf(elStart) + elStart.length();
             int to = xml.lastIndexOf(elEnd);
@@ -211,8 +212,8 @@ public class JdPayBuilder {
      * @return The XML string with the element removed.
      */
     public static String delXmlElm(String xml, String elmName) {
-        String elStart = "<" + elmName + ">";
-        String elEnd = "</" + elmName + ">";
+        String elStart = Symbol.LT + elmName + Symbol.GT;
+        String elEnd = "</" + elmName + Symbol.GT;
         if (xml.contains(elStart) && xml.contains(elEnd)) {
             int i1 = xml.indexOf(elStart);
             int i2 = xml.lastIndexOf(elEnd);
@@ -253,7 +254,7 @@ public class JdPayBuilder {
      * @return The Base64-encoded signature.
      */
     public static String signRemoveSelectedKeys(Object object, String rsaPriKey, List<String> signKeyList) {
-        String result = "";
+        String result = Normal.EMPTY;
         try {
             String sourceSignString = signString(object, signKeyList);
             String sha256SourceSignString = Builder.sha256(sourceSignString);
@@ -300,7 +301,7 @@ public class JdPayBuilder {
         }
 
         String result = sb.toString();
-        if (result.endsWith("&")) {
+        if (result.endsWith(Symbol.AND)) {
             result = result.substring(0, result.length() - 1);
         }
         return result;

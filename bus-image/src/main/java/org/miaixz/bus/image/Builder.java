@@ -61,9 +61,9 @@ import org.miaixz.bus.image.nimble.CIELab;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * A utility class providing a collection of static helper methods for common tasks within the DICOM toolkit. This
- * includes data conversion, string manipulation, DICOM attribute handling, date/time formatting, file I/O, and other
- * miscellaneous functions.
+ * A class providing a collection of static methods for common tasks within the DICOM toolkit. This includes data
+ * conversion, string manipulation, DICOM attribute handling, date/time formatting, file I/O, and other miscellaneous
+ * functions.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -80,10 +80,11 @@ public class Builder {
     /**
      * Characters for Base64 encoding.
      */
-    private static final char[] BASE64 = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
-            'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
-            'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4',
-            '5', '6', '7', '8', '9', '+', '/' };
+    private static final char[] BASE64 = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', Symbol.C_L, 'M', 'N',
+            'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', Symbol.C_X, 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+            'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', Symbol.C_U, 'v', 'w', 'x', 'y', 'z',
+            Symbol.C_ZERO, Symbol.C_ONE, Symbol.C_TWO, Symbol.C_THREE, Symbol.C_FOUR, Symbol.C_FIVE, Symbol.C_SIX,
+            Symbol.C_SEVEN, Symbol.C_EIGHT, Symbol.C_NINE, Symbol.C_PLUS, Symbol.C_SLASH };
 
     /**
      * Lookup table for Base64 decoding.
@@ -130,7 +131,7 @@ public class Builder {
         long th = (long) Math.ceil(Math.pow(unit, exp) * (unit - 0.05));
         if (exp < 6 && absBytes >= th - ((th & 0xFFF) == 0xD00 ? 51 : 0))
             exp++;
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? Normal.EMPTY : "i");
         if (exp > 4) {
             bytes /= unit;
             exp -= 1;
@@ -199,7 +200,7 @@ public class Builder {
     public static void addAttributes(Attributes attrs, String[] optVals) {
         if (optVals != null)
             for (String optVal : optVals) {
-                int delim = optVal.indexOf('=');
+                int delim = optVal.indexOf(Symbol.C_EQUAL);
                 if (delim < 0) {
                     addAttributes(attrs, Tag.toTags(StringKit.splitToArray(optVal, Symbol.SLASH)));
                 } else {
@@ -271,13 +272,13 @@ public class Builder {
         Objects.requireNonNull(name, "Thread factory name cannot be null");
         return runnable -> {
             Thread thread = Executors.defaultThreadFactory().newThread(runnable);
-            thread.setName(name + "-" + thread.getName());
+            thread.setName(name + Symbol.MINUS + thread.getName());
             return thread;
         };
     }
 
     /**
-     * Alias for service-style callers that use the Weasis utility naming.
+     * Alias for service-style callers that use the Weasis API naming.
      *
      * @param executorService the executor service to shut down.
      */
@@ -313,13 +314,13 @@ public class Builder {
             if (r == 1) {
                 dest[destPos++] = BASE64[((b1 = src[srcPos]) >>> 2) & 0x3F];
                 dest[destPos++] = BASE64[((b1 & 0x03) << 4)];
-                dest[destPos++] = '=';
-                dest[destPos++] = '=';
+                dest[destPos++] = Symbol.C_EQUAL;
+                dest[destPos++] = Symbol.C_EQUAL;
             } else {
                 dest[destPos++] = BASE64[((b1 = src[srcPos++]) >>> 2) & 0x3F];
                 dest[destPos++] = BASE64[((b1 & 0x03) << 4) | (((b2 = src[srcPos]) >>> 4) & 0x0F)];
                 dest[destPos++] = BASE64[(b2 & 0x0F) << 2];
-                dest[destPos++] = '=';
+                dest[destPos++] = Symbol.C_EQUAL;
             }
         }
     }
@@ -337,10 +338,10 @@ public class Builder {
         byte b2, b3;
         while ((len -= 2) >= 0) {
             out.write((byte) ((INV_BASE64[ch[off++]] << 2) | ((b2 = INV_BASE64[ch[off++]]) >>> 4)));
-            if ((len-- == 0) || ch[off] == '=')
+            if ((len-- == 0) || ch[off] == Symbol.C_EQUAL)
                 break;
             out.write((byte) ((b2 << 4) | ((b3 = INV_BASE64[ch[off++]]) >>> 2)));
-            if ((len-- == 0) || ch[off] == '=')
+            if ((len-- == 0) || ch[off] == Symbol.C_EQUAL)
                 break;
             out.write((byte) ((b3 << 6) | INV_BASE64[ch[off++]]));
         }
@@ -457,7 +458,7 @@ public class Builder {
         if (value instanceof String string) {
             str = string;
         } else if (value instanceof String[] strings) {
-            str = String.join("\\", Arrays.asList(strings));
+            str = String.join(Symbol.BACKSLASH, Arrays.asList(strings));
         } else if (value instanceof TemporalAccessor temporal) {
             str = Format.formatDateTime(temporal, locale);
         } else if (value instanceof TemporalAccessor[] temporal) {
@@ -497,7 +498,7 @@ public class Builder {
         int fmLength = 2;
         if (index != -1) {
             boolean suffix = format.length() > index + fmLength;
-            if (suffix && format.charAt(index + fmLength) == ':') {
+            if (suffix && format.charAt(index + fmLength) == Symbol.C_COLON) {
                 fmLength++;
                 if (format.charAt(index + fmLength) == 'f' && decimal) {
                     fmLength++;
@@ -544,8 +545,8 @@ public class Builder {
      * @return the extracted pattern, or {@code null}.
      */
     private static String getPattern(int startIndex, String format) {
-        int beginIndex = format.indexOf('$', startIndex);
-        int endIndex = format.indexOf('$', startIndex + 2);
+        int beginIndex = format.indexOf(Symbol.C_DOLLAR, startIndex);
+        int endIndex = format.indexOf(Symbol.C_DOLLAR, startIndex + 2);
         if (beginIndex == -1 || endIndex == -1) {
             return null;
         }
@@ -1432,11 +1433,11 @@ public class Builder {
     public static String concat(String[] ss, char delim) {
         int n = ss.length;
         if (n == 0)
-            return "";
+            return Normal.EMPTY;
 
         if (n == 1) {
             String s = ss[0];
-            return s != null ? s : "";
+            return s != null ? s : Normal.EMPTY;
         }
         int len = n - 1;
         for (String s : ss)
@@ -1535,11 +1536,11 @@ public class Builder {
      * @return the trimmed substring.
      */
     private static String substring(String s, int beginIndex, int endIndex) {
-        while (beginIndex < endIndex && s.charAt(beginIndex) <= ' ')
+        while (beginIndex < endIndex && s.charAt(beginIndex) <= Symbol.C_SPACE)
             beginIndex++;
-        while (beginIndex < endIndex && s.charAt(endIndex - 1) <= ' ')
+        while (beginIndex < endIndex && s.charAt(endIndex - 1) <= Symbol.C_SPACE)
             endIndex--;
-        return beginIndex < endIndex ? s.substring(beginIndex, endIndex) : "";
+        return beginIndex < endIndex ? s.substring(beginIndex, endIndex) : Normal.EMPTY;
     }
 
     /**
@@ -1550,7 +1551,7 @@ public class Builder {
      */
     public static String trimTrailing(String s) {
         int endIndex = s.length();
-        while (endIndex > 0 && s.charAt(endIndex - 1) <= ' ')
+        while (endIndex > 0 && s.charAt(endIndex - 1) <= Symbol.C_SPACE)
             endIndex--;
         return s.substring(0, endIndex);
     }
@@ -1582,7 +1583,7 @@ public class Builder {
      * @return the parsed double value.
      */
     public static double parseDS(String s) {
-        return s != null && !s.isEmpty() ? Double.parseDouble(s.replace(',', '.')) : 0;
+        return s != null && !s.isEmpty() ? Double.parseDouble(s.replace(Symbol.C_COMMA, Symbol.C_DOT)) : 0;
     }
 
     /**
@@ -1618,7 +1619,7 @@ public class Builder {
     }
 
     /**
-     * Helper method to cut a section out of a string.
+     * Method to cut a section out of a string.
      */
     private static String cut(String s, int begin, int end) {
         int l = s.length();
@@ -1661,10 +1662,10 @@ public class Builder {
         while (stk.hasMoreTokens()) {
             String tk = stk.nextToken();
             char ch1 = tk.charAt(0);
-            if (ch1 == '*') {
+            if (ch1 == Symbol.C_STAR) {
                 regex.append(".*");
-            } else if (ch1 == '?') {
-                regex.append(".");
+            } else if (ch1 == Symbol.C_QUESTION_MARK) {
+                regex.append(Symbol.DOT);
             } else {
                 regex.append("\\Q").append(tk).append("\\E");
             }
@@ -1679,7 +1680,7 @@ public class Builder {
      * @return {@code true} if wildcards are present.
      */
     public static boolean containsWildCard(String s) {
-        return (s.indexOf('*') >= 0 || s.indexOf('?') >= 0);
+        return (s.indexOf(Symbol.C_STAR) >= 0 || s.indexOf(Symbol.C_QUESTION_MARK) >= 0);
     }
 
     /**
@@ -1773,11 +1774,11 @@ public class Builder {
         int j = -1;
         do {
             sb.append(s, j + 1, i);
-            if ((j = s.indexOf('}', i + 2)) == -1) {
+            if ((j = s.indexOf(Symbol.C_BRACE_RIGHT, i + 2)) == -1) {
                 j = i - 1;
                 break;
             }
-            int k = s.lastIndexOf(':', j);
+            int k = s.lastIndexOf(Symbol.C_COLON, j);
             String val = s.startsWith("env.", i + 2) ? System.getenv(s.substring(i + 6, k < i ? j : k))
                     : System.getProperty(s.substring(i + 2, k < i ? j : k));
             sb.append(val != null ? val : k < 0 ? s.substring(i, j + 1) : s.substring(k + 1, j));

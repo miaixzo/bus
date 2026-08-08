@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import org.apache.ibatis.builder.annotation.ProviderContext;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.parsing.SqlScript;
 import org.miaixz.bus.mapper.parsing.TableMeta;
@@ -51,13 +52,13 @@ public class ConditionProvider extends BasicProvider {
     public static String deleteByCondition(ProviderContext context) {
         return SqlScript.caching(
                 context,
-                (entity, util) -> util.ifTest("startSql != null and startSql != ''", () -> "${startSql}")
-                        + "DELETE FROM " + entity.tableName() + util.parameterNotNull("Condition cannot be null")
+                (entity, script) -> script.ifTest("startSql != null and startSql != ''", () -> "${startSql}")
+                        + "DELETE FROM " + entity.tableName() + script.parameterNotNull("Condition cannot be null")
                         // Whether to allow empty conditions; defaults to true, allowing deletion without a WHERE
                         // clause.
-                        + (entity.getBoolean("deleteByCondition.allowEmpty", true) ? ""
-                                : util.variableIsFalse("_parameter.isEmpty()", "Condition Criteria cannot be empty"))
-                        + CONDITION_ROOT_WHERE + util.ifTest("endSql != null and endSql != ''", () -> "${endSql}"));
+                        + (entity.getBoolean("deleteByCondition.allowEmpty", true) ? Normal.EMPTY
+                                : script.variableIsFalse("_parameter.isEmpty()", "Condition Criteria cannot be empty"))
+                        + CONDITION_ROOT_WHERE + script.ifTest("endSql != null and endSql != ''", () -> "${endSql}"));
     }
 
     /**
@@ -79,7 +80,7 @@ public class ConditionProvider extends BasicProvider {
                                         .collect(Collectors.joining(Symbol.COMMA)))
                         + variableNotNull("condition", "Condition cannot be null")
                 // Whether to allow empty conditions; defaults to true.
-                        + (entity.getBoolean("updateByCondition.allowEmpty", true) ? ""
+                        + (entity.getBoolean("updateByCondition.allowEmpty", true) ? Normal.EMPTY
                                 : variableIsFalse("condition.isEmpty()", "Condition Criteria cannot be empty"))
                         + CONDITION_PARAMETER_WHERE
                         + ifTest("condition.endSql != null and condition.endSql != ''", () -> "${condition.endSql}");
@@ -103,7 +104,7 @@ public class ConditionProvider extends BasicProvider {
                         + entity.tableName() + CONDITION_SET_VALUES
                         + variableNotNull("condition", "Condition cannot be null")
                 // Whether to allow empty conditions; defaults to true.
-                        + (entity.getBoolean("updateByCondition.allowEmpty", true) ? ""
+                        + (entity.getBoolean("updateByCondition.allowEmpty", true) ? Normal.EMPTY
                                 : variableIsFalse("condition.isEmpty()", "Condition Criteria cannot be empty"))
                         + CONDITION_PARAMETER_WHERE
                         + ifTest("condition.endSql != null and condition.endSql != ''", () -> "${condition.endSql}");
@@ -133,7 +134,7 @@ public class ConditionProvider extends BasicProvider {
                                         .collect(Collectors.joining(Symbol.LF)))
                         + variableNotNull("condition", "Condition cannot be null")
                 // Whether to allow empty conditions; defaults to true.
-                        + (entity.getBoolean("updateByConditionSelective.allowEmpty", true) ? ""
+                        + (entity.getBoolean("updateByConditionSelective.allowEmpty", true) ? Normal.EMPTY
                                 : variableIsFalse("condition.isEmpty()", "Condition Criteria cannot be empty"))
                         + CONDITION_PARAMETER_WHERE
                         + ifTest("condition.endSql != null and condition.endSql != ''", () -> "${condition.endSql}");
@@ -158,7 +159,7 @@ public class ConditionProvider extends BasicProvider {
                         + ifTest("selectColumns == null or selectColumns == ''", entity::baseColumnAsPropertyList)
                         + " FROM " + entity.tableName() + ifParameterNotNull(() -> CONDITION_ROOT_WHERE)
                         + ifTest("orderByClause != null", () -> " Order BY ${orderByClause}")
-                        + ifTest("orderByClause == null", () -> entity.orderByColumn().orElse(""))
+                        + ifTest("orderByClause == null", () -> entity.orderByColumn().orElse(Normal.EMPTY))
                         + ifTest("endSql != null and endSql != ''", () -> "${endSql}");
             }
         });
@@ -180,8 +181,8 @@ public class ConditionProvider extends BasicProvider {
                         + ifTest(
                                 "simpleSelectColumns != null and simpleSelectColumns != ''",
                                 () -> "${simpleSelectColumns}")
-                        + ifTest("simpleSelectColumns == null or simpleSelectColumns == ''", () -> "*") + ") FROM "
-                        + entity.tableName() + ifParameterNotNull(() -> CONDITION_ROOT_WHERE)
+                        + ifTest("simpleSelectColumns == null or simpleSelectColumns == ''", () -> Symbol.STAR)
+                        + ") FROM " + entity.tableName() + ifParameterNotNull(() -> CONDITION_ROOT_WHERE)
                         + ifTest("endSql != null and endSql != ''", () -> "${endSql}");
             }
         });

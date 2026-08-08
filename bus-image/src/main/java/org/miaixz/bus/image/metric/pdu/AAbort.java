@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.Serial;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Represents the AAbort type.
@@ -81,18 +82,18 @@ public class AAbort extends IOException {
     /**
      * The sources value.
      */
-    private static final String[] SOURCES = { "0 - service-user", "1", "2 - service-provider", };
+    private static final String[] SOURCES = { "0 - service-user", Symbol.ONE, "2 - service-provider", };
 
     /**
      * The service user reasons value.
      */
-    private static final String[] SERVICE_USER_REASONS = { "0", };
+    private static final String[] SERVICE_USER_REASONS = { Symbol.ZERO, };
 
     /**
      * The service provider reasons value.
      */
     private static final String[] SERVICE_PROVIDER_REASONS = { "0 - reason-not-specified", "1 - unrecognized-PDU",
-            "2 - unexpected-PDU", "3", "4 - unrecognized-PDU-parameter", "5 - unexpected-PDU-parameter",
+            "2 - unexpected-PDU", Symbol.THREE, "4 - unrecognized-PDU-parameter", "5 - unexpected-PDU-parameter",
             "6 - invalid-PDU-parameter-value" };
 
     /**
@@ -118,7 +119,8 @@ public class AAbort extends IOException {
      * @param reason the reason.
      */
     public AAbort(int source, int reason) {
-        super("A-ABORT[source: " + toString(SOURCES, source) + ", reason: " + toReason(source, reason) + ']');
+        super("A-ABORT[source: " + toString(SOURCES, source) + ", reason: " + toReason(source, reason)
+                + Symbol.C_BRACKET_RIGHT);
         this.source = source;
         this.reason = reason;
     }

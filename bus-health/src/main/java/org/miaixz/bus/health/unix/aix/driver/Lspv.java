@@ -33,7 +33,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
 
 /**
- * Utility to query lspv
+ * Queries lspv
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -158,7 +158,7 @@ public class ElasticConfiguration {
     }
 
     /**
-     * Helper method to build a {@link URI} from a host string (e.g., "ip:port").
+     * Builds a {@link URI} from a host string (e.g., "ip:port").
      *
      * @param host The host string.
      * @return A new {@link URI} instance.

@@ -24,7 +24,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Utility class for {@link javax.xml.parsers.DocumentBuilder}.
+ * Creates securely configured XML document builders.
  *
  * @author Kimi Liu
  * @since Java 21+

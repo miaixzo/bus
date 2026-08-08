@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 
 /**
- * Utility class for Word Document (DOCX) operations.
+ * Reads, creates, and modifies Word documents (DOCX).
  *
  * @author Kimi Liu
  * @since Java 21+

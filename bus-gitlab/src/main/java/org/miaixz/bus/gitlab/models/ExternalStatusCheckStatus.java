@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The external status check status class.
@@ -65,7 +65,7 @@ public class ExternalStatusCheckStatus implements Serializable {
          */
         PENDING;
 
-        private static JacksonJsonEnumHelper<Status> enumHelper = new JacksonJsonEnumHelper<>(Status.class);
+        private static JacksonJsonEnumCodec<Status> enumCodec = new JacksonJsonEnumCodec<>(Status.class);
 
         /**
          * Returns the value.
@@ -76,7 +76,7 @@ public class ExternalStatusCheckStatus implements Serializable {
 
         @JsonCreator
         public static Status forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -87,7 +87,7 @@ public class ExternalStatusCheckStatus implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -98,7 +98,7 @@ public class ExternalStatusCheckStatus implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

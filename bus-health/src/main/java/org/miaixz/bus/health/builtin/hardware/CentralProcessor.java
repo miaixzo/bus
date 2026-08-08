@@ -366,15 +366,15 @@ public interface CentralProcessor {
     enum TickType {
 
         /**
-         * CPU utilization that occurred while executing at the user level (application).
+         * CPU time that occurred while executing at the user level (application).
          */
         USER(0),
         /**
-         * CPU utilization that occurred while executing at the user level with nice priority.
+         * CPU time that occurred while executing at the user level with nice priority.
          */
         NICE(1),
         /**
-         * CPU utilization that occurred while executing at the system level (kernel).
+         * CPU time that occurred while executing at the system level (kernel).
          */
         SYSTEM(2),
         /**
@@ -815,7 +815,7 @@ public interface CentralProcessor {
          */
         @Override
         public String toString() {
-            return "ProcessorCache [L" + level + Symbol.SPACE + type + ", cacheSize=" + cacheSize + ", "
+            return "ProcessorCache [L" + level + " " + type + ", cacheSize=" + cacheSize + ", "
                     + (associativity > 0 ? associativity + "-way" : "unknown") + " associativity, lineSize=" + lineSize
                     + "]";
         }
@@ -1156,13 +1156,13 @@ public interface CentralProcessor {
 
             if (StringKit.isBlank(arch)) {
                 // Append model
-                sb.append('.').append(this.cpuModel);
+                sb.append(Symbol.C_DOT).append(this.cpuModel);
                 arch = archProps.getProperty(sb.toString());
             }
 
             if (StringKit.isBlank(arch)) {
                 // Append stepping
-                sb.append('.').append(this.cpuStepping);
+                sb.append(Symbol.C_DOT).append(this.cpuStepping);
                 arch = archProps.getProperty(sb.toString());
             }
 

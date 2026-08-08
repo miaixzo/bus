@@ -72,9 +72,10 @@ public final class DnsName {
     private static final int MAX_POINTER_HOPS = 32;
 
     /**
-     * Prevents instantiation of this utility class.
+     * Restricts the class to static operations.
      */
     private DnsName() {
+        // No initialization required.
     }
 
     /**

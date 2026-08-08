@@ -22,7 +22,7 @@ package org.miaixz.bus.image.metric.web;
 import org.miaixz.bus.core.lang.Charset;
 
 /**
- * Utility for extracting multipart boundary values from Content-Type headers.
+ * Extracts multipart boundary values from Content-Type headers.
  *
  * @author Kimi Liu
  * @since Java 21+

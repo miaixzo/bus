@@ -25,15 +25,15 @@ import org.miaixz.bus.mapper.dialect.Dialect;
  * An aided SQL script interface with enhanced building capabilities.
  *
  * <p>
- * "Aided" means this interface provides additional aid (helper references) to facilitate SQL building. It extends the
- * base {@link SqlScript} interface by providing contextual helpers for more powerful SQL generation.
+ * "Aided" means this interface provides additional aid (script references) to facilitate SQL building. It extends the
+ * base {@link SqlScript} interface by providing contextual operations for more powerful SQL generation.
  * </p>
  *
  * <p>
  * This interface combines two powerful SQL generation approaches:
  * </p>
  * <ul>
- * <li>Callback-based SQL generation - Passes a helper reference for simplified coding</li>
+ * <li>Callback-based SQL generation - Passes a script reference for simplified coding</li>
  * <li>Dialect-based SQL generation - Adapts SQL to different database dialects dynamically</li>
  * </ul>
  *
@@ -108,11 +108,11 @@ public interface AidedSqlScript extends SqlScript {
     String getSql(TableMeta entity, Dialect dialect);
 
     /**
-     * Generates SQL with callback support for using helper methods.
+     * Generates SQL with callback support for using methods.
      *
      * <p>
      * This method is designed for simplified SQL building where you can use the provided {@code sqlScript} reference to
-     * access helper methods like {@code where()}, {@code ifTest()}, {@code foreach()}, etc.
+     * access methods like {@code where()}, {@code ifTest()}, {@code foreach()}, etc.
      * </p>
      *
      * <p>

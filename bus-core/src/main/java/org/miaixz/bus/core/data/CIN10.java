@@ -68,7 +68,7 @@ public class CIN10 {
         TW_FIRST_CODE.put('H', 17);
         TW_FIRST_CODE.put('J', 18);
         TW_FIRST_CODE.put('K', 19);
-        TW_FIRST_CODE.put('L', 20);
+        TW_FIRST_CODE.put(Symbol.C_L, 20);
         TW_FIRST_CODE.put('M', 21);
         TW_FIRST_CODE.put('N', 22);
         TW_FIRST_CODE.put('P', 23);
@@ -78,7 +78,7 @@ public class CIN10 {
         TW_FIRST_CODE.put('T', 27);
         TW_FIRST_CODE.put('U', 28);
         TW_FIRST_CODE.put('V', 29);
-        TW_FIRST_CODE.put('X', 30);
+        TW_FIRST_CODE.put(Symbol.C_X, 30);
         TW_FIRST_CODE.put('Y', 31);
         TW_FIRST_CODE.put('W', 32);
         TW_FIRST_CODE.put('Z', 33);
@@ -122,9 +122,9 @@ public class CIN10 {
             if (PatternKit.isMatch(PATTERN_TW, code)) {
                 this.province = "Taiwan";
                 final char char2 = code.charAt(1);
-                if ('1' == char2) {
+                if (Symbol.C_ONE == char2) {
                     this.gender = Gender.MALE;
-                } else if ('2' == char2) {
+                } else if (Symbol.C_TWO == char2) {
                     this.gender = Gender.FEMALE;
                 } else {
                     this.gender = Gender.UNKNOWN;

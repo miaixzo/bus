@@ -22,6 +22,7 @@ package org.miaixz.bus.image.metric.net;
 import java.io.IOException;
 import java.net.*;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.logger.Logger;
 
@@ -74,7 +75,7 @@ public class UDPListener implements Listener {
                     conn.getBindPoint().getHostName(),
                     conn.getBindPoint().getPort(),
                     e.getClass().getSimpleName());
-            throw new IOException("Cannot start UDP listener on " + conn.getBindPoint().getHostName() + ":"
+            throw new IOException("Cannot start UDP listener on " + conn.getBindPoint().getHostName() + Symbol.COLON
                     + conn.getBindPoint().getPort(), e);
         }
         conn.setReceiveBufferSize(ds);

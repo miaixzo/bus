@@ -910,7 +910,7 @@ public final class StompSession implements Session {
     }
 
     /**
-     * Subscribes once by destination for topic and queue helpers.
+     * Subscribes once by destination for topic and queue operations.
      *
      * @param destination destination to normalize and subscribe to
      * @param headers     extra headers

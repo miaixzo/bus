@@ -31,8 +31,8 @@ import org.miaixz.bus.proxy.invoker.ProxyChain;
  * An abstract base class for cache readers.
  * <p>
  * This class provides a foundational framework for cache reading logic, including dependency injection for core
- * components and a utility method for logging method invocation times. Subclasses must implement the specific logic for
- * reading from the cache.
+ * components and a method for logging method invocation times. Subclasses must implement the specific logic for reading
+ * from the cache.
  * </p>
  *
  * @author Kimi Liu

@@ -199,8 +199,8 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         if (cpuName.startsWith("Apple")) {
             // Processing an M1 chip
             cpuVendor = vendor.get();
-            cpuStepping = "0"; // No correlation yet
-            cpuModel = "0"; // No correlation yet
+            cpuStepping = Symbol.ZERO; // No correlation yet
+            cpuModel = Symbol.ZERO; // No correlation yet
             int type;
             int family;
             if (isArmCpu) {

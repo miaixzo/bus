@@ -23,6 +23,7 @@ import org.apache.ibatis.builder.annotation.ProviderContext;
 
 import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Caching;
 
@@ -55,17 +56,17 @@ public interface SqlScript {
      * Creates and caches an SQL script with callback support.
      *
      * <p>
-     * This method accepts a lambda that receives both entity and sqlScript helper, allowing you to use helper methods
-     * like {@code where()}, {@code ifTest()}, {@code foreach()} etc.
+     * This method accepts a lambda that receives both the entity and SQL script, allowing you to use methods like
+     * {@code where()}, {@code ifTest()}, {@code foreach()} etc.
      * </p>
      *
      * @param context          The execution method context.
-     * @param sqlScriptBuilder The SQL builder function that accepts entity and sqlScript helper.
+     * @param sqlScriptBuilder The SQL builder function that accepts the entity and SQL script.
      * @return The cache key.
      */
     static String caching(ProviderContext context, BiFunctionX<TableMeta, SqlScript, String> sqlScriptBuilder) {
         TableMeta entity = MapperFactory.of(context.getMapperType(), context.getMapperMethod());
-        SqlScript wrapper = SqlScriptWrapper.wrapSqlScript(context, entity, ignored -> "");
+        SqlScript wrapper = SqlScriptWrapper.wrapSqlScript(context, entity, ignored -> Normal.EMPTY);
         return Caching.cache(
                 context,
                 entity,

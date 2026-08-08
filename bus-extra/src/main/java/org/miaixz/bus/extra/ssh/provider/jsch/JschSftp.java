@@ -541,7 +541,7 @@ public class JschSftp extends AbstractFtp {
             return true;
         }
         try {
-            getClient().cd(directory.replace('\\', '/'));
+            getClient().cd(directory.replace(Symbol.C_BACKSLASH, Symbol.C_SLASH));
             return true;
         } catch (final SftpException e) {
             Logger.warn(

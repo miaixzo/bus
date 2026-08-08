@@ -31,6 +31,7 @@ import jakarta.json.stream.JsonParser.Event;
 import jakarta.json.stream.JsonParsingException;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Format;
 import org.miaixz.bus.image.Tag;
@@ -489,14 +490,14 @@ public class JSONReader {
         if (s != null)
             sb.append(s);
 
-        sb.append('=');
+        sb.append(Symbol.C_EQUAL);
         s = pnGroups.get(Group.Ideographic);
         if (s != null)
             sb.append(s);
 
         s = pnGroups.get(Group.Phonetic);
         if (s != null)
-            sb.append('=').append(s);
+            sb.append(Symbol.C_EQUAL).append(s);
 
         return sb.toString();
     }

@@ -166,9 +166,10 @@ public abstract class BasicProvider {
      * @return INSERT SQL
      */
     protected static String buildInsertAll(TableMeta entity) {
-        return "INSERT INTO " + entity.tableName() + " (" + entity.insertColumnList() + ")" + " VALUES ("
+        return "INSERT INTO " + entity.tableName() + " (" + entity.insertColumnList() + Symbol.PARENTHESE_RIGHT
+                + " VALUES ("
                 + entity.insertColumns().stream().map(ColumnMeta::variables).collect(Collectors.joining(Symbol.COMMA))
-                + ")";
+                + Symbol.PARENTHESE_RIGHT;
     }
 
     /**
@@ -180,11 +181,11 @@ public abstract class BasicProvider {
     protected static String buildInsertSelective(TableMeta entity) {
         return "INSERT INTO " + entity.tableName() + "<trim prefix='(' suffix=')' suffixOverrides=','>"
                 + entity.insertColumns().stream()
-                        .map(col -> "<if test='" + col.notNullTest() + "'>" + col.column() + "," + "</if>")
+                        .map(col -> "<if test='" + col.notNullTest() + "'>" + col.column() + Symbol.COMMA + "</if>")
                         .collect(Collectors.joining(Symbol.LF))
                 + "</trim>" + "<trim prefix='VALUES (' suffix=')' suffixOverrides=','>"
                 + entity.insertColumns().stream()
-                        .map(col -> "<if test='" + col.notNullTest() + "'>" + col.variables() + "," + "</if>")
+                        .map(col -> "<if test='" + col.notNullTest() + "'>" + col.variables() + Symbol.COMMA + "</if>")
                         .collect(Collectors.joining(Symbol.LF))
                 + "</trim>";
     }
@@ -209,9 +210,13 @@ public abstract class BasicProvider {
      * @return UPDATE SQL (dynamic SQL)
      */
     protected static String buildUpdateSelective(TableMeta entity) {
-        return "UPDATE " + entity.tableName() + "<set>" + entity.updateColumns().stream().map(
-                col -> "<if test='" + col.notNullTest() + "'>" + col.column() + " = " + col.variables() + "," + "</if>")
-                .collect(Collectors.joining(Symbol.LF)) + "</set>" + buildWherePrimaryKey(entity, null);
+        return "UPDATE " + entity.tableName() + "<set>"
+                + entity.updateColumns().stream()
+                        .map(
+                                col -> "<if test='" + col.notNullTest() + "'>" + col.column() + " = " + col.variables()
+                                        + Symbol.COMMA + "</if>")
+                        .collect(Collectors.joining(Symbol.LF))
+                + "</set>" + buildWherePrimaryKey(entity, null);
     }
 
     /**
@@ -381,7 +386,7 @@ public abstract class BasicProvider {
         StringBuilder sql = new StringBuilder();
         sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">\n");
         for (ColumnMeta col : entity.insertColumns()) {
-            String itemRef = collection + "[" + prefix + "]";
+            String itemRef = collection + Symbol.BRACKET_LEFT + prefix + Symbol.BRACKET_RIGHT;
             sql.append("  <if test=\"").append(requiredUpsertColumnCondition(itemRef, col)).append("\">")
                     .append(col.column()).append(",</if>\n");
         }

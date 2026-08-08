@@ -22,6 +22,8 @@ package org.miaixz.bus.image.galaxy.media;
 import java.util.Locale;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Structured message for manifest consumers.
  *
@@ -157,7 +159,7 @@ public record ViewerMessage(String title, String message, Level level) {
      * @return the display text.
      */
     public String getDisplayText() {
-        return "[" + level.getDisplayName() + "] " + title + ": " + message;
+        return Symbol.BRACKET_LEFT + level.getDisplayName() + "] " + title + ": " + message;
     }
 
     /**

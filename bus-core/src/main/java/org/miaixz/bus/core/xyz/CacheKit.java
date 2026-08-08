@@ -22,7 +22,7 @@ package org.miaixz.bus.core.xyz;
 import org.miaixz.bus.core.cache.provider.*;
 
 /**
- * Cache utility class.
+ * Creates and accesses shared caches.
  *
  * @author Kimi Liu
  * @since Java 21+

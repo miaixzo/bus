@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -111,7 +112,7 @@ public class VoiLutModule {
 
         Sequence voiSeq = dcm.getSequence(Tag.VOILUTSequence);
         if (voiSeq != null && !voiSeq.isEmpty()) {
-            this.lutExplanation = voiSeq.stream().map(i -> i.getString(Tag.LUTExplanation, "")).toList();
+            this.lutExplanation = voiSeq.stream().map(i -> i.getString(Tag.LUTExplanation, Normal.EMPTY)).toList();
             this.lut = voiSeq.stream().map(i -> RGBImageVoiLut.createLut(i).orElse(null)).toList();
         }
 

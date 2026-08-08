@@ -30,6 +30,7 @@ import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.DateKit;
@@ -1142,7 +1143,7 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * Life utility bill payment query
+     * Household bill payment query
      *
      * @param orderType       the Alipay order type
      * @param merchantOrderNo the business serial number
@@ -1156,7 +1157,7 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * Life utility bill payment query (certificate mode)
+     * Household bill payment query (certificate mode)
      *
      * @param orderType       the Alipay order type
      * @param merchantOrderNo the business serial number
@@ -1668,14 +1669,14 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
                 true,
                 "Pay",
                 "Alipay HTTP request dispatched: url={}, paramCount={}",
-                getUrl() == null ? null : getUrl().replaceFirst("\\?.*$", ""),
+                getUrl() == null ? null : getUrl().replaceFirst("\\?.*$", Normal.EMPTY),
                 params == null ? 0 : params.size());
         String response = post(getUrl(), params);
         Logger.info(
                 false,
                 "Pay",
                 "Alipay HTTP request completed: url={}, responseBytes={}",
-                getUrl() == null ? null : getUrl().replaceFirst("\\?.*$", ""),
+                getUrl() == null ? null : getUrl().replaceFirst("\\?.*$", Normal.EMPTY),
                 response == null ? 0 : response.getBytes(Charset.UTF_8).length);
         return response;
     }

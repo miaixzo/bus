@@ -26,6 +26,7 @@ import java.util.*;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -113,7 +114,7 @@ public class MegaProvider extends AbstractProvider {
             this.context.setEndpoint(API_BASE);
         }
         if (StringKit.isBlank(this.context.getBucket())) {
-            this.context.setBucket("/");
+            this.context.setBucket(Symbol.SLASH);
         }
 
         // Check if session ID is provided in extension
@@ -380,7 +381,7 @@ public class MegaProvider extends AbstractProvider {
                     if (typeObj != null && typeObj.equals(0)) {
                         String name = (String) file.get("a");
                         Object sizeObj = file.get("s");
-                        String size = sizeObj != null ? sizeObj.toString() : "0";
+                        String size = sizeObj != null ? sizeObj.toString() : Symbol.ZERO;
 
                         Map<String, Object> extend = new HashMap<>();
                         extend.put("h", file.get("h")); // File handle
@@ -531,7 +532,7 @@ public class MegaProvider extends AbstractProvider {
             // Get upload URL
             List<Map<String, Object>> command = new ArrayList<>();
             Map<String, Object> getUploadUrl = new HashMap<>();
-            getUploadUrl.put("a", "u");
+            getUploadUrl.put("a", Symbol.U);
             getUploadUrl.put("s", content.length);
             command.add(getUploadUrl);
 
@@ -559,10 +560,11 @@ public class MegaProvider extends AbstractProvider {
             List<Map<String, Object>> completeCommand = new ArrayList<>();
             Map<String, Object> createNode = new HashMap<>();
             createNode.put("a", "p");
-            createNode.put("t", rootHandle != null ? rootHandle : "");
+            createNode.put("t", rootHandle != null ? rootHandle : Normal.EMPTY);
             createNode.put(
                     "n",
-                    Arrays.asList(Map.of("h", completionHandle, "t", 0, "a", Map.of("n", fileName), "k", "")));
+                    Arrays.asList(
+                            Map.of("h", completionHandle, "t", 0, "a", Map.of("n", fileName), "k", Normal.EMPTY)));
             completeCommand.add(createNode);
 
             Map<String, Object> completeResult = makeApiRequest(completeCommand);

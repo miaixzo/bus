@@ -85,7 +85,7 @@ public class RFC3986 {
     /**
      * The set of characters allowed in a path. {@code path = *( "/" / segment )}
      */
-    public static final PercentCodec PATH = PercentCodec.Builder.of(SEGMENT).addSafe('/').build();
+    public static final PercentCodec PATH = PercentCodec.Builder.of(SEGMENT).addSafe(Symbol.C_SLASH).build();
 
     /**
      * The set of characters allowed in a query. {@code query = *( pchar / "/" / "?" )}
@@ -106,8 +106,8 @@ public class RFC3986 {
     /**
      * The set of characters allowed for a query parameter name. The name cannot include "&amp;" or "=".
      */
-    public static final PercentCodec QUERY_PARAM_NAME = PercentCodec.Builder.of(QUERY_PARAM_VALUE).removeSafe('=')
-            .build();
+    public static final PercentCodec QUERY_PARAM_NAME = PercentCodec.Builder.of(QUERY_PARAM_VALUE)
+            .removeSafe(Symbol.C_EQUAL).build();
 
     /**
      * A strict encoder for query parameter values, where the value cannot contain any delimiters.
@@ -137,7 +137,7 @@ public class RFC3986 {
         }
 
         // DIGIT
-        for (char c = '0'; c <= '9'; c++) {
+        for (char c = Symbol.C_ZERO; c <= Symbol.C_NINE; c++) {
             sb.append(c);
         }
 

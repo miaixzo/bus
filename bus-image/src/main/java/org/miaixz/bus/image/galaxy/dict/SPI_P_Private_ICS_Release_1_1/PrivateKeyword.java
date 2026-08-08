@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.image.galaxy.dict.SPI_P_Private_ICS_Release_1_1;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Represents the PrivateKeyword type.
  *
@@ -37,7 +39,7 @@ public class PrivateKeyword {
     /**
      * The private creator value.
      */
-    public static final String PrivateCreator = "";
+    public static final String PrivateCreator = Normal.EMPTY;
 
     /**
      * Executes the value of operation.
@@ -99,7 +101,7 @@ public class PrivateKeyword {
             case PrivateTag._0029_xxD6_:
                 return "_0029_xxD6_";
         }
-        return "";
+        return Normal.EMPTY;
     }
 
 }

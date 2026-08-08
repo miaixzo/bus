@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * Cache for mapping relationships between generic type variables and their actual types. This class provides utility
+ * Cache for mapping relationships between generic type variables and their actual types. This class provides shared
  * methods to resolve actual type arguments for generic types.
  *
  * @author Kimi Liu

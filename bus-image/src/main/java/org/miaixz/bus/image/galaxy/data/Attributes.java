@@ -2882,7 +2882,7 @@ public class Attributes implements Serializable {
      */
     private static String[] splitRange(String s) {
         String[] range = new String[2];
-        int delim = s.indexOf('-');
+        int delim = s.indexOf(Symbol.C_MINUS);
         if (delim == -1)
             range[0] = range[1] = s;
         else {
@@ -3252,7 +3252,7 @@ public class Attributes implements Serializable {
                         if (tmRange != null) {
                             String[] daRange = splitRange((String) da);
                             if (daRange[0] == null) {
-                                daRange[0] = "";
+                                daRange[0] = Normal.EMPTY;
                                 tmRange[0] = updateTimeZoneTM(from, to, tmRange[0]);
                             } else {
                                 String dt = updateTimeZoneDT(from, to, daRange[0] + tmRange[0]);
@@ -3260,7 +3260,7 @@ public class Attributes implements Serializable {
                                 tmRange[0] = dt.substring(8);
                             }
                             if (daRange[1] == null) {
-                                daRange[1] = "";
+                                daRange[1] = Normal.EMPTY;
                                 tmRange[1] = updateTimeZoneTM(from, to, tmRange[1]);
                             } else {
                                 String dt = updateTimeZoneDT(from, to, daRange[1] + tmRange[1]);
@@ -3287,7 +3287,7 @@ public class Attributes implements Serializable {
      * @return Whether the value is a range
      */
     private static boolean isRange(String s) {
-        return s.indexOf('-') >= 0;
+        return s.indexOf(Symbol.C_MINUS) >= 0;
     }
 
     /**
@@ -3302,7 +3302,7 @@ public class Attributes implements Serializable {
         int dtlen = dt.length();
         if (dtlen > 8) {
             char ch = dt.charAt(dtlen - 5);
-            if (ch == '+' || ch == '-')
+            if (ch == Symbol.C_PLUS || ch == Symbol.C_MINUS)
                 return dt;
         }
         try {
@@ -3820,9 +3820,9 @@ public class Attributes implements Serializable {
     private static String toString(DateRange range, VR vr, TimeZone tz, DatePrecision precision) {
         String start = range.getStartDate() != null
                 ? (String) vr.toValue(new Date[] { range.getStartDate() }, tz, precision)
-                : "";
+                : Normal.EMPTY;
         String end = range.getEndDate() != null ? (String) vr.toValue(new Date[] { range.getEndDate() }, tz, precision)
-                : "";
+                : Normal.EMPTY;
         return toDateRangeString(start, end);
     }
 
@@ -3834,7 +3834,7 @@ public class Attributes implements Serializable {
      * @return result
      */
     private static String toDateRangeString(String start, String end) {
-        return start.equals(end) ? start : (start + '-' + end);
+        return start.equals(end) ? start : (start + Symbol.C_MINUS + end);
     }
 
     /**
@@ -4468,11 +4468,11 @@ public class Attributes implements Serializable {
     private void mergeOriginalAttributesSequence(Sequence src, Sequence dest) {
         Map<String, Attributes> sort = new TreeMap<>();
         for (Attributes destItem : dest) {
-            sort.put(destItem.getString(Tag.AttributeModificationDateTime, ""), destItem);
+            sort.put(destItem.getString(Tag.AttributeModificationDateTime, Normal.EMPTY), destItem);
         }
         dest.clear();
         for (Attributes srcItem : src) {
-            String dt = srcItem.getString(Tag.AttributeModificationDateTime, "");
+            String dt = srcItem.getString(Tag.AttributeModificationDateTime, Normal.EMPTY);
             Attributes destItem = sort.get(dt);
             Attributes destModified;
             if (destItem != null
@@ -4917,7 +4917,7 @@ public class Attributes implements Serializable {
      * @return string builder
      */
     public StringBuilder toStringBuilder(int limit, int maxWidth, StringBuilder sb) {
-        if (appendAttributes(limit, maxWidth, sb, "") > limit)
+        if (appendAttributes(limit, maxWidth, sb, Normal.EMPTY) > limit)
             sb.append("...\n");
         return sb;
     }
@@ -4974,7 +4974,7 @@ public class Attributes implements Serializable {
             Object value = values[i];
             appendAttribute(privateCreator, tag, vrs[i], value, sb.length() + maxWidth, sb, prefix);
             if (value instanceof Sequence)
-                lines += appendItems((Sequence) value, limit - lines, maxWidth, sb, prefix + '>');
+                lines += appendItems((Sequence) value, limit - lines, maxWidth, sb, prefix + Symbol.C_GT);
         }
         return lines;
     }
@@ -4995,7 +4995,7 @@ public class Attributes implements Serializable {
         for (Attributes item : sq) {
             if (++lines > limit)
                 break;
-            sb.append(prefix).append("Item #").append(++itemNo).append('\n');
+            sb.append(prefix).append("Item #").append(++itemNo).append(Symbol.C_LF);
             lines += item.appendAttributes(limit - lines, maxWidth, sb, prefix);
         }
         return lines;
@@ -5029,7 +5029,7 @@ public class Attributes implements Serializable {
             if (sb.length() > maxLength)
                 sb.setLength(maxLength);
         }
-        sb.append('\n');
+        sb.append(Symbol.C_LF);
         return sb;
     }
 
@@ -6112,7 +6112,7 @@ public class Attributes implements Serializable {
     private int creatorIndexOf(String privateCreator, int groupNumber) {
         if ((groupNumber & 1) == 0)
             throw new IllegalArgumentException(
-                    "(" + Tag.shortToHexString(groupNumber) + ",xxxx) is not a private Group");
+                    Symbol.PARENTHESE_LEFT + Tag.shortToHexString(groupNumber) + ",xxxx) is not a private Group");
         int group = groupNumber << 16;
         int creatorTag = group | 0x10;
         int index = indexOf(creatorTag);

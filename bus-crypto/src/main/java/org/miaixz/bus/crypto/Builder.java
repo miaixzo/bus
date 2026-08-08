@@ -71,7 +71,7 @@ import org.miaixz.bus.crypto.center.*;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Security-related utility class.
+ * Provides cryptographic and security operations.
  * <p>
  * This class provides various methods for cryptographic operations, categorized into three main types:
  * <ul>

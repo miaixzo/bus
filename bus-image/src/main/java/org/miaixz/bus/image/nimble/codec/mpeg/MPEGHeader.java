@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.image.nimble.codec.mpeg;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.VR;
@@ -34,17 +35,17 @@ public class MPEGHeader {
     /**
      * The aspect ratio 1 1 value.
      */
-    private static final String[] ASPECT_RATIO_1_1 = { "1", "1" };
+    private static final String[] ASPECT_RATIO_1_1 = { Symbol.ONE, Symbol.ONE };
 
     /**
      * The aspect ratio 4 3 value.
      */
-    private static final String[] ASPECT_RATIO_4_3 = { "4", "3" };
+    private static final String[] ASPECT_RATIO_4_3 = { Symbol.FOUR, Symbol.THREE };
 
     /**
      * The aspect ratio 16 9 value.
      */
-    private static final String[] ASPECT_RATIO_16_9 = { "16", "9" };
+    private static final String[] ASPECT_RATIO_16_9 = { "16", Symbol.NINE };
 
     /**
      * The aspect ratio 221 100 value.

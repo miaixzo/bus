@@ -22,6 +22,7 @@ package org.miaixz.bus.health.linux.hardware;
 import java.io.File;
 import java.util.Locale;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
@@ -101,7 +102,7 @@ final class LinuxGpuStats implements GpuStats {
         this.pciBusId = pciBusId;
         this.cardName = cardName;
         this.hwmonPath = resolveHwmonPath(drmDevicePath);
-        this.gt0Path = drmDevicePath.isEmpty() ? "" : drmDevicePath + "/../gt/gt0";
+        this.gt0Path = drmDevicePath.isEmpty() ? Normal.EMPTY : drmDevicePath + "/../gt/gt0";
     }
 
     /**
@@ -134,12 +135,12 @@ final class LinuxGpuStats implements GpuStats {
     }
 
     /**
-     * Returns the gpu utilization.
+     * Returns the GPU usage.
      *
-     * @return the get gpu utilization result
+     * @return the GPU usage percentage
      */
     @Override
-    public synchronized double getGpuUtilization() {
+    public synchronized double getGpuUsage() {
         checkOpen();
         if (drmDevicePath.isEmpty()) {
             return -1d;
@@ -150,7 +151,7 @@ final class LinuxGpuStats implements GpuStats {
             return pct >= 0 ? pct : -1d;
         }
         if ("i915".equals(driver) || "xe".equals(driver)) {
-            // Approximates utilization as actual_freq / max_freq; not a true busy-time percentage
+            // Approximates usage as actual_freq / max_freq; not a true busy-time percentage
             // but the best available metric without kernel tracepoints.
             long actual = Builder.getLongFromFile(gt0Path + "/rps_act_freq_mhz");
             long max = Builder.getLongFromFile(gt0Path + "/rps_max_freq_mhz");
@@ -359,7 +360,7 @@ final class LinuxGpuStats implements GpuStats {
             return nvmlDeviceId.isEmpty() ? null : nvmlDeviceId;
         }
         if (!NvmlKit.isAvailable()) {
-            nvmlDeviceId = "";
+            nvmlDeviceId = Normal.EMPTY;
             return null;
         }
         String id = null;
@@ -369,7 +370,7 @@ final class LinuxGpuStats implements GpuStats {
         if (id == null) {
             id = NvmlKit.findDeviceByName(cardName);
         }
-        nvmlDeviceId = id != null ? id : "";
+        nvmlDeviceId = id != null ? id : Normal.EMPTY;
         return id;
     }
 
@@ -381,14 +382,14 @@ final class LinuxGpuStats implements GpuStats {
      */
     private static String resolveHwmonPath(String drmDevicePath) {
         if (drmDevicePath.isEmpty()) {
-            return "";
+            return Normal.EMPTY;
         }
         File hwmonDir = new File(drmDevicePath + "/hwmon");
         File[] entries = hwmonDir.listFiles(f -> f.getName().startsWith("hwmon"));
         if (entries != null && entries.length > 0) {
             return entries[0].getAbsolutePath();
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     /**
@@ -402,7 +403,7 @@ final class LinuxGpuStats implements GpuStats {
             if (line.endsWith(Symbol.STAR)) {
                 int mhzIdx = line.toLowerCase(Locale.ROOT).indexOf("mhz");
                 if (mhzIdx > 0) {
-                    int start = line.lastIndexOf(' ', mhzIdx - 1);
+                    int start = line.lastIndexOf(Symbol.C_SPACE, mhzIdx - 1);
                     if (start >= 0) {
                         return Parsing.parseLongOrDefault(line.substring(start + 1, mhzIdx), -1L);
                     }

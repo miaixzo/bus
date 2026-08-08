@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.models.AbstractEpic.EpicState;
 import org.miaixz.bus.gitlab.models.Constants.EpicOrderBy;
 import org.miaixz.bus.gitlab.models.Constants.SortOrder;
 import org.miaixz.bus.gitlab.support.ISO8601;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * This class is used to filter Groups when getting lists of epics.
@@ -298,7 +298,7 @@ public class EpicFilter implements Serializable {
          */
         LABELS;
 
-        private static JacksonJsonEnumHelper<EpicField> enumHelper = new JacksonJsonEnumHelper<>(EpicField.class);
+        private static JacksonJsonEnumCodec<EpicField> enumCodec = new JacksonJsonEnumCodec<>(EpicField.class);
 
         /**
          * Returns the value.
@@ -309,7 +309,7 @@ public class EpicFilter implements Serializable {
 
         @JsonCreator
         public static EpicField forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -320,7 +320,7 @@ public class EpicFilter implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -331,7 +331,7 @@ public class EpicFilter implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

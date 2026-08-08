@@ -45,8 +45,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * URL construction utility class, supporting OAuth-related functionalities. Provides methods to build URLs with query
- * parameters, handle OAuth signatures, generate PKCE verification codes, and other authentication flow features.
+ * Builds OAuth URLs with query parameters, handle OAuth signatures, generate PKCE verification codes, and other
+ * authentication flow features.
  *
  * @author Kimi Liu
  * @since Java 21+

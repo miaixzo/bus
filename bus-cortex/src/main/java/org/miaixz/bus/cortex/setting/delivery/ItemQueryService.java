@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.setting.curator.ItemCuratorService;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemBindingProjection;
@@ -118,9 +119,9 @@ public class ItemQueryService {
             if (query == null) {
                 continue;
             }
-            String key = query.getGroup() + ":" + query.getData_id();
+            String key = query.getGroup() + Symbol.COLON + query.getData_id();
             if (query.getProfile_id() != null && !query.getProfile_id().isBlank()) {
-                key += ":" + query.getProfile_id();
+                key += Symbol.COLON + query.getProfile_id();
             }
             result.put(key, resolve(query));
         }

@@ -22,7 +22,7 @@ package org.miaixz.bus.gitlab.models;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * Project template categories supported by the GitLab project templates API.
@@ -58,9 +58,9 @@ public enum ProjectTemplateType {
     MERGE_REQUESTS;
 
     /**
-     * JSON enum conversion helper.
+     * Converts enum constants to and from JSON values.
      */
-    private static final JacksonJsonEnumHelper<ProjectTemplateType> enumHelper = new JacksonJsonEnumHelper<>(
+    private static final JacksonJsonEnumCodec<ProjectTemplateType> enumCodec = new JacksonJsonEnumCodec<>(
             ProjectTemplateType.class);
 
     /**
@@ -71,7 +71,7 @@ public enum ProjectTemplateType {
      */
     @JsonCreator
     public static ProjectTemplateType forValue(String value) {
-        return enumHelper.forValue(value);
+        return enumCodec.forValue(value);
     }
 
     /**
@@ -81,7 +81,7 @@ public enum ProjectTemplateType {
      */
     @JsonValue
     public String toValue() {
-        return (enumHelper.toString(this));
+        return (enumCodec.toString(this));
     }
 
     /**
@@ -91,7 +91,7 @@ public enum ProjectTemplateType {
      */
     @Override
     public String toString() {
-        return (enumHelper.toString(this));
+        return (enumCodec.toString(this));
     }
 
 }

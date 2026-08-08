@@ -31,7 +31,7 @@ import java.util.EnumSet;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * A file visitor utility to fix a specific type of DICOM file corruption where a data element with Value Representation
+ * A file visitor that fixes a specific type of DICOM file corruption where a data element with Value Representation
  * (VR) of Long String (LO) has its length incorrectly stored as a 16-bit value instead of a 32-bit value, which is
  * required for explicit VRs with a length that exceeds 65534 bytes.
  * <p>

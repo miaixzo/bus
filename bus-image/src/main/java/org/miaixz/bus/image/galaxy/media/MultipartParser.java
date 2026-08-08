@@ -23,6 +23,8 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Represents the MultipartParser type.
  *
@@ -60,10 +62,10 @@ public class MultipartParser {
             if ((ch1 | ch2) < 0)
                 throw new EOFException();
 
-            if (ch1 == '-' && ch2 == '-')
+            if (ch1 == Symbol.C_MINUS && ch2 == Symbol.C_MINUS)
                 break;
 
-            if (ch1 != '\r' || ch2 != '\n')
+            if (ch1 != Symbol.C_CR || ch2 != Symbol.C_LF)
                 throw new IOException("missing CR/LF after boundary");
 
             MultipartInputStream mis = new MultipartInputStream(in, "\r\n--" + boundary);

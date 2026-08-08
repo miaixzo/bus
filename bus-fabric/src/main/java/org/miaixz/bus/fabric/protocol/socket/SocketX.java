@@ -43,6 +43,7 @@ import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 import org.miaixz.bus.fabric.codec.frame.LineCodec;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.proxy.ProxyHeader;
+import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
 import org.miaixz.bus.fabric.network.tls.TlsPolicy;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Demuxer;
@@ -85,8 +86,8 @@ public final class SocketX {
         final TlsPolicy tlsPolicy = tlsPolicy(current);
         this.spec = new SocketSpec(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
                 builder.timeout, tlsPolicy.context(), tlsPolicy.settings(), builder.frameCodec, builder.handler(),
-                builder.guard, builder.filter, currentObserver, builder.proxyHeader, builder.socketOptions,
-                builder.listener, builder.pooled);
+                builder.guard, builder.filter, currentObserver, builder.proxy, builder.proxyHeader,
+                builder.socketOptions, builder.listener, builder.pooled);
         this.runner = new SocketRunner(spec);
         this.callback = builder.callback;
     }
@@ -386,6 +387,11 @@ public final class SocketX {
         private EventObserver observer;
 
         /**
+         * Outbound proxy policy, independent from inbound PROXY protocol metadata.
+         */
+        private ProxyPlan proxy;
+
+        /**
          * Parsed PROXY protocol metadata.
          */
         private ProxyHeader proxyHeader;
@@ -430,6 +436,7 @@ public final class SocketX {
             this.frameCodec = FrameCodec.line();
             this.handler = Demuxer.noop();
             this.observer = EventObserver.noop();
+            this.proxy = ProxyPlan.inherit();
             this.callback = null;
             this.listener = null;
             this.openHandler = session -> {
@@ -832,6 +839,64 @@ public final class SocketX {
         public Builder observe(final EventObserver observer) {
             this.observer = observer == null ? EventObserver.noop() : observer;
             return this;
+        }
+
+        /**
+         * Sets the outbound network proxy policy.
+         *
+         * @param proxy non-null inherited, system, direct, HTTP, or SOCKS policy
+         * @return this builder
+         */
+        public Builder proxy(final ProxyPlan proxy) {
+            this.proxy = require(proxy, "Proxy plan");
+            return this;
+        }
+
+        /**
+         * Inherits the context-level network proxy policy.
+         *
+         * @return this builder
+         */
+        public Builder inheritProxy() {
+            return proxy(ProxyPlan.inherit());
+        }
+
+        /**
+         * Forces selection through the system proxy selector.
+         *
+         * @return this builder
+         */
+        public Builder systemProxy() {
+            return proxy(ProxyPlan.system());
+        }
+
+        /**
+         * Forces a direct connection and bypasses every configured selector.
+         *
+         * @return this builder
+         */
+        public Builder directProxy() {
+            return proxy(ProxyPlan.direct());
+        }
+
+        /**
+         * Routes the stream through an HTTP CONNECT proxy.
+         *
+         * @param proxy plain HTTP proxy address used for TCP and TLS streams
+         * @return this builder
+         */
+        public Builder httpProxy(final Address proxy) {
+            return proxy(ProxyPlan.http(require(proxy, "HTTP proxy address")));
+        }
+
+        /**
+         * Routes the stream or datagram through a SOCKS5 proxy.
+         *
+         * @param proxy plain stream address of the SOCKS5 server
+         * @return this builder
+         */
+        public Builder socksProxy(final Address proxy) {
+            return proxy(ProxyPlan.socks(require(proxy, "SOCKS proxy address")));
         }
 
         /**

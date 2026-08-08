@@ -31,7 +31,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.miaixz.bus.core.xyz.FieldKit;
 
 /**
- * Utility class for {@link Sheet} related operations.
+ * Creates, reads, and modifies Excel sheets.
  *
  * @author Kimi Liu
  * @since Java 21+

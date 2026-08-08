@@ -241,7 +241,8 @@ public class BatchProvider extends BasicProvider {
                 .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
 
         // Build foreach values placeholder: #{item.col1}, #{item.col2}, ...
-        String valuesPlaceholder = entity.insertColumns().stream().map(col -> "#{item." + col.property() + "}")
+        String valuesPlaceholder = entity.insertColumns().stream()
+                .map(col -> "#{item." + col.property() + Symbol.BRACE_RIGHT)
                 .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
 
         // Build foreach SQL
@@ -426,8 +427,8 @@ public class BatchProvider extends BasicProvider {
      */
     private static String buildBatchMergeIntoKeySelective(TableMeta entity) {
         return "MERGE INTO " + entity.tableName() + Symbol.LF + buildDynamicColumnList(entity, "list", Symbol.ZERO)
-                + Symbol.LF + "KEY(" + keyColumnList(entity) + ")" + Symbol.LF + "VALUES" + Symbol.LF
-                + buildBatchDynamicRows(entity);
+                + Symbol.LF + "KEY(" + keyColumnList(entity) + Symbol.PARENTHESE_RIGHT + Symbol.LF + "VALUES"
+                + Symbol.LF + buildBatchDynamicRows(entity);
     }
 
     /**
@@ -437,7 +438,8 @@ public class BatchProvider extends BasicProvider {
      * @return the generated {@code <foreach>} block
      */
     private static String buildBatchRowValues(TableMeta entity) {
-        String valuesPlaceholder = entity.insertColumns().stream().map(col -> "#{item." + col.property() + "}")
+        String valuesPlaceholder = entity.insertColumns().stream()
+                .map(col -> "#{item." + col.property() + Symbol.BRACE_RIGHT)
                 .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
         return "  <foreach collection=\"list\" item=\"item\" separator=\",\">" + Symbol.LF + "    (" + valuesPlaceholder
                 + Symbol.PARENTHESE_RIGHT + Symbol.LF + "  </foreach>";

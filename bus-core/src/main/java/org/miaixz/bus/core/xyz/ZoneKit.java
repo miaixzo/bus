@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 import org.miaixz.bus.core.lang.Keys;
 
 /**
- * Utility class for {@link ZoneId} and {@link TimeZone}.
+ * Converts and resolves time zones.
  *
  * @author Kimi Liu
  * @since Java 21+

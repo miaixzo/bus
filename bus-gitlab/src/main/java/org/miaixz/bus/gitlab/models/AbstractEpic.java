@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 import tools.jackson.databind.annotation.JsonSerialize;
 
@@ -160,7 +160,7 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
          */
         ALL;
 
-        private static JacksonJsonEnumHelper<EpicState> enumHelper = new JacksonJsonEnumHelper<>(EpicState.class);
+        private static JacksonJsonEnumCodec<EpicState> enumCodec = new JacksonJsonEnumCodec<>(EpicState.class);
 
         /**
          * Resolves the epic state from the API value.
@@ -170,7 +170,7 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
          */
         @JsonCreator
         public static EpicState forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -180,7 +180,7 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
          */
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -191,7 +191,7 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

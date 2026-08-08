@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Utility class for encapsulating and manipulating {@link java.util.Calendar} objects.
+ * Wraps and modifies {@link java.util.Calendar} values.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -681,7 +681,7 @@ public class Calendar extends Calculate {
             // Minute
             final int minute = calendar.get(java.util.Calendar.MINUTE);
             result.append(ChineseNumberFormatter.of().setColloquialMode(true).format(minute));
-            result.append('分');
+            result.append(Symbol.C_CNY_FEN);
             // Second
             final int second = calendar.get(java.util.Calendar.SECOND);
             result.append(ChineseNumberFormatter.of().setColloquialMode(true).format(second));

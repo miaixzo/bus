@@ -60,9 +60,10 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
      * letters, and digits.
      */
     public static final char[] DEFAULT_ALPHABET = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-            'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3',
-            '4', '5', '6', '7', '8', '9', '0' };
+            'n', 'o', 'p', 'q', 'r', 's', 't', Symbol.C_U, 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
+            'H', 'I', 'J', 'K', Symbol.C_L, 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', Symbol.C_X, 'Y', 'Z',
+            Symbol.C_ONE, Symbol.C_TWO, Symbol.C_THREE, Symbol.C_FOUR, Symbol.C_FIVE, Symbol.C_SIX, Symbol.C_SEVEN,
+            Symbol.C_EIGHT, Symbol.C_NINE, Symbol.C_ZERO };
 
     /**
      * A modulus used in the lottery number calculation to determine the initial character.
@@ -94,8 +95,8 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
     /**
      * The default set of separator characters used to delimit encoded numbers within a hash.
      */
-    private static final char[] DEFAULT_SEPARATORS = { 'c', 'f', 'h', 'i', 's', 't', 'u', 'C', 'F', 'H', 'I', 'S', 'T',
-            'U' };
+    private static final char[] DEFAULT_SEPARATORS = { 'c', 'f', 'h', 'i', 's', 't', Symbol.C_U, 'C', 'F', 'H', 'I',
+            'S', 'T', 'U' };
 
     // algorithm properties
     /**
@@ -247,7 +248,7 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         LongStream values = LongStream.empty();
         final Matcher matcher = HEX_VALUES_PATTERN.matcher(hex);
         while (matcher.find()) {
-            final long value = new BigInteger("1" + matcher.group(), 16).longValue();
+            final long value = new BigInteger(Symbol.ONE + matcher.group(), 16).longValue();
             values = LongStream.concat(values, LongStream.of(value));
         }
 

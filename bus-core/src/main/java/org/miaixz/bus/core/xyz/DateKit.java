@@ -47,9 +47,9 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
 
 /**
- * Date and time utility class.
+ * Date and time class.
  *
- * @see Fields Utility class for common date formats.
+ * @see Fields Common date and time format constants.
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -1360,17 +1360,17 @@ public class DateKit extends Calendar {
         final int second = other % 60;
         final StringBuilder sb = new StringBuilder();
         if (hour < 10) {
-            sb.append("0");
+            sb.append(Symbol.ZERO);
         }
         sb.append(hour);
         sb.append(Symbol.COLON);
         if (minute < 10) {
-            sb.append("0");
+            sb.append(Symbol.ZERO);
         }
         sb.append(minute);
         sb.append(Symbol.COLON);
         if (second < 10) {
-            sb.append("0");
+            sb.append(Symbol.ZERO);
         }
         sb.append(second);
         return sb.toString();
@@ -1722,7 +1722,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * Utility class for `java.sql` date/time types.
+     * Converts Java SQL date and time values.
      *
      * @author Kimi Liu
      * @since Java 21+

@@ -20,7 +20,7 @@
 package org.miaixz.bus.pay.nimble.tenpay;
 
 /**
- * Utility class for Tenpay (QQ Wallet) payments.
+ * Builds and signs Tenpay (QQ Wallet) requests.
  *
  * @author Kimi Liu
  * @since Java 21+

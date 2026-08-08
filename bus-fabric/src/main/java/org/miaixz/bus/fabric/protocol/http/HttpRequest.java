@@ -430,7 +430,7 @@ public final class HttpRequest {
         /**
          * Candidate proxy plan.
          */
-        private ProxyPlan proxy = ProxyPlan.direct();
+        private ProxyPlan proxy = ProxyPlan.inherit();
 
         /**
          * Candidate timeout.

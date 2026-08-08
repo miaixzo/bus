@@ -35,7 +35,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
 
 /**
- * Utility to query TCP connections on Unix-based systems.
+ * Queries TCP connections on Unix-based systems.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -136,7 +136,7 @@ public final class NetStat {
         // 73.169.134.6.9599 to 73.169.134.6 port 9599
         // or
         // 2001:558:600a:a5.123 to 2001:558:600a:a5 port 123
-        int portPos = s.lastIndexOf('.');
+        int portPos = s.lastIndexOf(Symbol.C_DOT);
         if (portPos > 0 && s.length() > portPos) {
             int port = Parsing.parseIntOrDefault(s.substring(portPos + 1), 0);
             String ip = s.substring(0, portPos);
@@ -147,7 +147,7 @@ public final class NetStat {
                 try {
                     // Try again with trailing ::
                     if (ip.endsWith(Symbol.COLON) && ip.contains(Symbol.COLON + Symbol.COLON)) {
-                        ip = ip + "0";
+                        ip = ip + Symbol.ZERO;
                     } else if (ip.endsWith(Symbol.COLON) || ip.contains(Symbol.COLON + Symbol.COLON)) {
                         ip = ip + ":0";
                     } else {

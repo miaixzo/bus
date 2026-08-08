@@ -22,6 +22,7 @@ package org.miaixz.bus.health.linux;
 import java.io.File;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.health.Builder;
@@ -47,7 +48,7 @@ public final class SysPath {
     /**
      * The /sys filesystem location.
      */
-    public static final String SYS = querySysConfig() + "/";
+    public static final String SYS = querySysConfig() + Symbol.SLASH;
 
     /**
      * The CPU constant.
@@ -100,11 +101,11 @@ public final class SysPath {
      * @return the query sys config result
      */
     private static String querySysConfig() {
-        String sysPath = Builder.get(Builder._UTIL_SYS_PATH, "/sys");
+        String sysPath = Builder.get(Builder._SYS_PATH, "/sys");
         // Ensure prefix begins with path separator, but doesn't end with one
-        sysPath = '/' + sysPath.replaceAll("/$|^/", Normal.EMPTY);
+        sysPath = Symbol.C_SLASH + sysPath.replaceAll("/$|^/", Normal.EMPTY);
         if (!new File(sysPath).exists()) {
-            throw new NotFoundException("The path does not exist " + Builder._UTIL_SYS_PATH);
+            throw new NotFoundException("The path does not exist " + Builder._SYS_PATH);
         }
         return sysPath;
     }

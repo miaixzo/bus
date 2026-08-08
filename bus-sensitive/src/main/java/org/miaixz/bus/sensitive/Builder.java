@@ -25,8 +25,8 @@ import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.text.dfa.Sensitive;
 
 /**
- * A utility class for applying desensitization strategies. It provides static methods for common desensitization tasks,
- * primarily intended for processing individual objects or strings.
+ * Applies desensitization strategies. It provides static methods for common desensitization tasks, primarily intended
+ * for processing individual objects or strings.
  *
  * @author Kimi Liu
  * @since Java 21+

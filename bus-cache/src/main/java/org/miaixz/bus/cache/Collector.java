@@ -21,6 +21,8 @@ package org.miaixz.bus.cache;
 
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * An interface for collecting and tracking cache hit rate statistics.
  * <p>
@@ -186,7 +188,7 @@ public interface Collector {
          */
         public static Snapshot newInstance(long hit, long required) {
             double rate = (required == 0 ? 0.0 : hit * 100.0 / required);
-            String rateStr = String.format("%.1f%s", rate, "%");
+            String rateStr = String.format("%.1f%s", rate, Symbol.PERCENT);
             return new Snapshot(hit, required, rateStr);
         }
 

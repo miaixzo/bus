@@ -50,9 +50,8 @@ import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 
 /**
- * Utility class for converting between OpenCV Mat objects and Java BufferedImage objects. Provides comprehensive
- * conversion methods supporting various data types, color spaces, and image formats commonly used in medical imaging
- * applications.
+ * Converts between OpenCV Mat objects and Java BufferedImage objects. Provides comprehensive conversion methods for the
+ * data types, color spaces, and image formats commonly used in medical imaging applications.
  * <p>
  * Key features:
  * <ul>

@@ -31,7 +31,7 @@ import org.miaixz.bus.health.windows.PerfCounterQuery;
 import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 
 /**
- * Utility to query Processor performance counter
+ * Queries Processor performance counter
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -91,12 +91,12 @@ public final class ProcessorInformation {
      *
      * @return Performance Counters for processor capacity.
      */
-    public static Pair<List<String>, Map<ProcessorUtilityTickCountProperty, List<Long>>> queryProcessorCapacityCounters() {
+    public static Pair<List<String>, Map<ProcessorUsageTickCountProperty, List<Long>>> queryProcessorCapacityCounters() {
         if (PerfmonDisabled.PERF_OS_DISABLED) {
             return Pair.of(Collections.emptyList(), Collections.emptyMap());
         }
         return PerfCounterWildcardQuery.queryInstancesAndValues(
-                ProcessorUtilityTickCountProperty.class,
+                ProcessorUsageTickCountProperty.class,
                 PerfmonConsts.PROCESSOR_INFORMATION,
                 PerfmonConsts.WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL);
     }
@@ -353,12 +353,12 @@ public final class ProcessorInformation {
     }
 
     /**
-     * Processor performance counters including utility counters
+     * Processor performance counters, including usage and timing counters.
      *
      * @author Kimi Liu
      * @since Java 21+
      */
-    public enum ProcessorUtilityTickCountProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
+    public enum ProcessorUsageTickCountProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
         // First element defines WMI instance name field and PDH instance filter
         /**
@@ -389,17 +389,17 @@ public final class ProcessorInformation {
          */
         TIMESTAMP_SYS100NS("% Processor Time_Base"), //
         /**
-         * Executes the percentprivilegedutility operation.
+         * Reads privileged-mode processor usage.
          */
-        PERCENTPRIVILEGEDUTILITY("% Privileged Utility"), //
+        PERCENTPRIVILEGEDUSAGE("% Privileged Utility"), //
         /**
-         * Executes the percentprocessorutility operation.
+         * Reads total processor usage.
          */
-        PERCENTPROCESSORUTILITY("% Processor Utility"), //
+        PERCENTPROCESSORUSAGE("% Processor Utility"), //
         /**
-         * Executes the percentprocessorutility base operation.
+         * Reads the base value for the processor usage counter.
          */
-        PERCENTPROCESSORUTILITY_BASE("% Processor Utility_Base"), //
+        PERCENTPROCESSORUSAGE_BASE("% Processor Utility_Base"), //
         /**
          * Executes the percentusertime operation.
          */
@@ -411,11 +411,11 @@ public final class ProcessorInformation {
         private final String counter;
 
         /**
-         * Creates a new ProcessorUtilityTickCountProperty instance.
+         * Creates a new ProcessorUsageTickCountProperty instance.
          *
          * @param counter the counter
          */
-        ProcessorUtilityTickCountProperty(String counter) {
+        ProcessorUsageTickCountProperty(String counter) {
             this.counter = counter;
         }
 

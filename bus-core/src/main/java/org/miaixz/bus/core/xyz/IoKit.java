@@ -60,9 +60,8 @@ import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * IO utility class. This class provides helper methods for reading and writing streams, but does not handle stream
- * closing. This is because streams may be read and written multiple times, and closing them prematurely can lead to
- * issues.
+ * IO class. This class provides methods for reading and writing streams, but does not handle stream closing. This is
+ * because streams may be read and written multiple times, and closing them prematurely can lead to issues.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -364,7 +363,7 @@ public class IoKit {
             while (bufferSize > 0) {
                 int count = in.read(buffer, off, (int) Math.min(bufferSize, buffer.length - off));
                 if (count < 0)
-                    throw new InternalException("" + count);
+                    throw new InternalException(Normal.EMPTY + count);
                 bufferSize -= count;
                 count += off;
                 off = count % swapBytes;
@@ -1877,7 +1876,7 @@ public class IoKit {
     }
 
     /**
-     * Helper method for {@link #sneakyRethrow(Throwable)} to bypass checked exception compilation.
+     * Bypasses checked-exception compilation for {@link #sneakyRethrow(Throwable)}.
      *
      * @param t   The {@link Throwable} to rethrow.
      * @param <T> The type of the throwable.

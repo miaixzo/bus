@@ -321,7 +321,7 @@ public final class HttpDownload {
         if (offset <= 0L) {
             return request;
         }
-        Headers headers = request.headers().with(Http.Header.RANGE, "bytes=" + offset + "-");
+        Headers headers = request.headers().with(Http.Header.RANGE, "bytes=" + offset + Symbol.MINUS);
         if (validator != null) {
             headers = headers.with(Http.Header.IF_RANGE, validator);
         }

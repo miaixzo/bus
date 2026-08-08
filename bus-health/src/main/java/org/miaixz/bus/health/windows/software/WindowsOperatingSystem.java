@@ -145,7 +145,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
      */
     private static Map<Integer, Integer> getParentPidsFromSnapshot() {
         Map<Integer, Integer> parentPidMap = new HashMap<>();
-        // Get processes from ToolHelp API for parent PID
+        // Read processes from the Windows snapshot API to resolve parent PIDs
         try (ByRef.CloseablePROCESSENTRY32ByReference processEntry = new ByRef.CloseablePROCESSENTRY32ByReference()) {
             WinNT.HANDLE snapshot = Kernel32.INSTANCE
                     .CreateToolhelp32Snapshot(Tlhelp32.TH32CS_SNAPPROCESS, new DWORD(0));

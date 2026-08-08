@@ -26,6 +26,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.SqlScript;
@@ -60,14 +61,15 @@ public class ListProvider {
 
             @Override
             public String getSql(TableMeta entity) {
-                return "INSERT INTO " + entity.tableName() + "(" + entity.insertColumnList() + ")" + " VALUES "
+                return "INSERT INTO " + entity.tableName() + Symbol.PARENTHESE_LEFT + entity.insertColumnList()
+                        + Symbol.PARENTHESE_RIGHT + " VALUES "
                         + foreach(
                                 "list",
                                 "entity",
                                 Symbol.COMMA,
                                 () -> trimSuffixOverrides(
-                                        "(",
-                                        ")",
+                                        Symbol.PARENTHESE_LEFT,
+                                        Symbol.PARENTHESE_RIGHT,
                                         Symbol.COMMA,
                                         () -> entity.insertColumns().stream().map(column -> column.variables("entity."))
                                                 .collect(Collectors.joining(Symbol.COMMA))));
@@ -100,7 +102,7 @@ public class ListProvider {
                                                 column -> trimSuffixOverrides(
                                                         column.column() + " = CASE ",
                                                         "end, ",
-                                                        "",
+                                                        Normal.EMPTY,
                                                         () -> foreach(
                                                                 "list",
                                                                 "entity",
@@ -110,20 +112,20 @@ public class ListProvider {
                                                                         .collect(Collectors.joining(" AND "))
                                                                         + ") THEN " + column.variables("entity.")
 
-                                                        ))).collect(Collectors.joining("")))
+                                                        ))).collect(Collectors.joining(Normal.EMPTY)))
                         + where(
-                                () -> "(" + idColumns
+                                () -> Symbol.PARENTHESE_LEFT + idColumns
                                         .stream().map(ColumnMeta::column).collect(Collectors.joining(Symbol.COMMA))
                                         + ") in " + " ("
                                         + foreach(
                                                 "list",
                                                 "entity",
                                                 "),(",
-                                                "(",
-                                                ")",
+                                                Symbol.PARENTHESE_LEFT,
+                                                Symbol.PARENTHESE_RIGHT,
                                                 () -> idColumns.stream().map(id -> id.variables("entity."))
                                                         .collect(Collectors.joining(Symbol.COMMA)))
-                                        + ")");
+                                        + Symbol.PARENTHESE_RIGHT);
                 return sql;
             }
         });
@@ -152,7 +154,7 @@ public class ListProvider {
                                 column -> trimSuffixOverrides(
                                         column.column() + " = CASE ",
                                         "end, ",
-                                        "",
+                                        Normal.EMPTY,
                                         () -> foreach(
                                                 "list",
                                                 "entity",
@@ -173,21 +175,21 @@ public class ListProvider {
                                                                                                 Collectors.joining(
                                                                                                         " AND "))
                                                                                 + " ) THEN " + column.column())))))
-                                .collect(Collectors.joining("")))
+                                .collect(Collectors.joining(Normal.EMPTY)))
 
                         + where(
-                                () -> "(" + idColumns
+                                () -> Symbol.PARENTHESE_LEFT + idColumns
                                         .stream().map(ColumnMeta::column).collect(Collectors.joining(Symbol.COMMA))
                                         + ") in " + " ("
                                         + foreach(
                                                 "list",
                                                 "entity",
                                                 "),(",
-                                                "(",
-                                                ")",
+                                                Symbol.PARENTHESE_LEFT,
+                                                Symbol.PARENTHESE_RIGHT,
                                                 () -> idColumns.stream().map(id -> id.variables("entity."))
                                                         .collect(Collectors.joining(Symbol.COMMA)))
-                                        + ")"
+                                        + Symbol.PARENTHESE_RIGHT
 
                         );
                 return sql;

@@ -29,7 +29,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.linux.ProcPath;
 
 /**
- * Utility to read auxiliary vector from {@code /proc/self/auxv}
+ * Reads auxiliary vector from {@code /proc/self/auxv}
  *
  * @author Kimi Liu
  * @since Java 21+

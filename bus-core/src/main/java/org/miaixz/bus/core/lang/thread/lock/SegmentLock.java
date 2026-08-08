@@ -41,8 +41,7 @@ import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ListKit;
 
 /**
- * Utility class for segmenting locks, supporting segmented implementations of {@link Lock}, {@link Semaphore}, and
- * {@link ReadWriteLock}.
+ * Creates segmented implementations of {@link Lock}, {@link Semaphore}, and {@link ReadWriteLock}.
  * <p>
  * By dividing a resource into multiple segments, each protected by its own lock, different operations can concurrently
  * access different segments, thereby avoiding contention on a single lock. Equal keys are guaranteed to map to the same
@@ -226,7 +225,7 @@ public abstract class SegmentLock<L> {
     public abstract int size();
 
     /**
-     * Retrieves a list of lock segments corresponding to a batch of keys. The returned list is sorted by index to help
+     * Retrieves a list of lock segments corresponding to a batch of keys. The returned list is sorted by index to
      * prevent deadlocks when acquiring multiple locks.
      *
      * @param keys A non-empty collection of keys.

@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Thread-local StringBuilder pool for high-performance string building.
@@ -157,7 +158,7 @@ public final class StringBuilderPool {
      * @throws UnsupportedOperationException always
      */
     private StringBuilderPool() {
-        throw new UnsupportedOperationException("Utility class cannot be instantiated");
+        throw new UnsupportedOperationException("This class exposes static operations and cannot be instantiated");
     }
 
     /**
@@ -312,7 +313,7 @@ public final class StringBuilderPool {
      */
     public static String join(String... parts) {
         if (parts == null || parts.length == 0) {
-            return "";
+            return Normal.EMPTY;
         }
 
         // Calculate total length to select the correct pool tier

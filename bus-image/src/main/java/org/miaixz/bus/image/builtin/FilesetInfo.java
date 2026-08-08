@@ -98,6 +98,7 @@ public class FilesetInfo {
      * Sets the Unique Identifier (UID) of the fileset.
      *
      * @param uid The new fileset UID.
+     * @return This fileset information instance.
      */
     public final FilesetInfo setFilesetUID(String uid) {
         this.uid = uid;
@@ -117,6 +118,7 @@ public class FilesetInfo {
      * Sets the identifier of the fileset.
      *
      * @param id The new fileset ID.
+     * @return This fileset information instance.
      */
     public final FilesetInfo setFilesetID(String id) {
         this.id = id;
@@ -136,6 +138,7 @@ public class FilesetInfo {
      * Sets the descriptor file associated with the fileset.
      *
      * @param descriptorFile The new descriptor file.
+     * @return This fileset information instance.
      */
     public final FilesetInfo setDescriptorFile(Path descriptorFile) {
         this.descriptorFile = descriptorFile;
@@ -155,6 +158,7 @@ public class FilesetInfo {
      * Sets the character set used for the descriptor file.
      *
      * @param descriptorFileCharset the descriptor file character set.
+     * @return This fileset information instance.
      */
     public final FilesetInfo setDescriptorFileCharset(String descriptorFileCharset) {
         this.descriptorFileCharset = descriptorFileCharset;

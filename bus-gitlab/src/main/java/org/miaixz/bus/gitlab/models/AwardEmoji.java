@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The award emoji class.
@@ -224,8 +224,8 @@ public class AwardEmoji implements Serializable {
          */
         SNIPPET;
 
-        private static JacksonJsonEnumHelper<AwardableType> enumHelper = new JacksonJsonEnumHelper<>(
-                AwardableType.class, true);
+        private static JacksonJsonEnumCodec<AwardableType> enumCodec = new JacksonJsonEnumCodec<>(AwardableType.class,
+                true);
 
         /**
          * Executes the for value operation.
@@ -236,7 +236,7 @@ public class AwardEmoji implements Serializable {
 
         @JsonCreator
         public static AwardableType forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -247,7 +247,7 @@ public class AwardEmoji implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -258,7 +258,7 @@ public class AwardEmoji implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

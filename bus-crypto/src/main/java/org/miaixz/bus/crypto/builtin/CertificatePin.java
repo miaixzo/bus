@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.builtin.digest.DigesterFactory;
 
 /**
- * Certificate public-key pin helpers.
+ * Creates and verifies certificate public-key pins.
  *
  * @author Kimi Liu
  * @since Java 21+

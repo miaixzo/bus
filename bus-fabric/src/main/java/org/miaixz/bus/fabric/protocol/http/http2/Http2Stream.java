@@ -137,6 +137,12 @@ public final class Http2Stream implements AutoCloseable {
     private volatile RuntimeException failure;
 
     /**
+     * Per-read no-progress timeout for this stream's response body. This is stream-local and never configures the
+     * multiplexed connection's physical socket.
+     */
+    private volatile Duration readTimeout = Duration.ZERO;
+
+    /**
      * True after the peer sends END_STREAM.
      */
     private volatile boolean remoteEnd;
@@ -252,6 +258,20 @@ public final class Http2Stream implements AutoCloseable {
      */
     public int id() {
         return id;
+    }
+
+    /**
+     * Configures this stream's response-body no-progress timeout. Zero permits an indefinite wait for DATA while
+     * preserving cancellation and terminal wakeups.
+     *
+     * @param timeout non-negative stream-local read timeout
+     */
+    public void readTimeout(final Duration timeout) {
+        final Duration current = require(timeout, "HTTP/2 stream read timeout");
+        if (current.isNegative()) {
+            throw new ValidateException("HTTP/2 stream read timeout must not be negative");
+        }
+        this.readTimeout = current;
     }
 
     /**
@@ -927,7 +947,10 @@ public final class Http2Stream implements AutoCloseable {
             }
             final long consumed;
             try {
-                consumed = body.read(checked, byteCount);
+                consumed = body.read(checked, byteCount, readTimeout);
+            } catch (final TimeoutException e) {
+                closeSource();
+                throw e;
             } catch (final IOException e) {
                 throw new SocketException("Unable to read HTTP/2 stream body", e);
             }

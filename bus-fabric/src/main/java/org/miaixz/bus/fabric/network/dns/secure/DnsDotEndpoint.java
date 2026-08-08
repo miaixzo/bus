@@ -362,7 +362,7 @@ public final class DnsDotEndpoint implements AutoCloseable, Lifecycle {
             input.unread(first);
             return remoteAddress(rawChannel);
         }
-        if (prefix[0] != 'O' || prefix[1] != 'X' || prefix[2] != 'Y') {
+        if (prefix[0] != 'O' || prefix[1] != Symbol.C_X || prefix[2] != 'Y') {
             input.unread(prefix);
             input.unread(second);
             input.unread(first);
@@ -374,10 +374,10 @@ public final class DnsDotEndpoint implements AutoCloseable, Lifecycle {
             if (value == null) {
                 return remoteAddress(rawChannel);
             }
-            if (value == '\n') {
+            if (value == Symbol.C_LF) {
                 break;
             }
-            if (value != '\r') {
+            if (value != Symbol.C_CR) {
                 line.append((char) (value & 0xff));
             }
         }

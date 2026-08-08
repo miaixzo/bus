@@ -60,9 +60,10 @@ public final class DnsTsig {
     private static final int DEFAULT_FUDGE_SECONDS = 300;
 
     /**
-     * Prevents instantiation of this utility class.
+     * Restricts the class to static operations.
      */
     private DnsTsig() {
+        // No initialization required.
     }
 
     /**

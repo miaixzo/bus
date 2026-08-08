@@ -25,6 +25,7 @@ import java.util.List;
 import com.sun.jna.Memory;
 
 import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.net.Protocol;
@@ -126,11 +127,11 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
                 if (ini.insi_vflag == 1) {
                     laddr = Parsing.parseIntToIP(ini.insi_laddr[3]);
                     faddr = Parsing.parseIntToIP(ini.insi_faddr[3]);
-                    type += "4";
+                    type += Symbol.FOUR;
                 } else if (ini.insi_vflag == 2) {
                     laddr = Parsing.parseIntArrayToIP(ini.insi_laddr);
                     faddr = Parsing.parseIntArrayToIP(ini.insi_faddr);
-                    type += "6";
+                    type += Symbol.SIX;
                 } else if (ini.insi_vflag == 3) {
                     laddr = Parsing.parseIntToIP(ini.insi_laddr[3]);
                     faddr = Parsing.parseIntToIP(ini.insi_faddr[3]);

@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Ignore;
 import org.miaixz.bus.logger.Logger;
 
@@ -161,8 +162,8 @@ public class AuditBuilder {
 
         // Check if method or class has @Ignore annotation
         try {
-            String className = id.substring(0, id.lastIndexOf('.'));
-            String methodName = id.substring(id.lastIndexOf('.') + 1);
+            String className = id.substring(0, id.lastIndexOf(Symbol.C_DOT));
+            String methodName = id.substring(id.lastIndexOf(Symbol.C_DOT) + 1);
 
             Class<?> mapperClass = Class.forName(className);
 

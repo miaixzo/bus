@@ -29,7 +29,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.core.center.function.FunctionX;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The constants interface.
@@ -122,7 +123,7 @@ public interface Constants {
          */
         BASE64;
 
-        private static JacksonJsonEnumHelper<Encoding> enumHelper = new JacksonJsonEnumHelper<>(Encoding.class);
+        private static JacksonJsonEnumCodec<Encoding> enumCodec = new JacksonJsonEnumCodec<>(Encoding.class);
 
         /**
          * Returns the value.
@@ -133,7 +134,7 @@ public interface Constants {
 
         @JsonCreator
         public static Encoding forValue(String value) {
-            return enumHelper.forValue((value != null ? value.toLowerCase() : value));
+            return enumCodec.forValue((value != null ? value.toLowerCase() : value));
         }
 
         /**
@@ -144,7 +145,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -155,7 +156,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -177,7 +178,7 @@ public interface Constants {
          */
         DESC;
 
-        private static JacksonJsonEnumHelper<SortOrder> enumHelper = new JacksonJsonEnumHelper<>(SortOrder.class);
+        private static JacksonJsonEnumCodec<SortOrder> enumCodec = new JacksonJsonEnumCodec<>(SortOrder.class);
 
         /**
          * Returns the value.
@@ -188,7 +189,7 @@ public interface Constants {
 
         @JsonCreator
         public static SortOrder forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -199,7 +200,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -210,7 +211,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -232,7 +233,7 @@ public interface Constants {
          */
         UPDATED_AT;
 
-        private static JacksonJsonEnumHelper<EpicOrderBy> enumHelper = new JacksonJsonEnumHelper<>(EpicOrderBy.class);
+        private static JacksonJsonEnumCodec<EpicOrderBy> enumCodec = new JacksonJsonEnumCodec<>(EpicOrderBy.class);
 
         /**
          * Returns the value.
@@ -243,7 +244,7 @@ public interface Constants {
 
         @JsonCreator
         public static EpicOrderBy forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -254,7 +255,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -265,7 +266,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -287,7 +288,7 @@ public interface Constants {
          */
         UPDATED_AT;
 
-        private static JacksonJsonEnumHelper<IssueOrderBy> enumHelper = new JacksonJsonEnumHelper<>(IssueOrderBy.class);
+        private static JacksonJsonEnumCodec<IssueOrderBy> enumCodec = new JacksonJsonEnumCodec<>(IssueOrderBy.class);
 
         /**
          * Returns the value.
@@ -298,7 +299,7 @@ public interface Constants {
 
         @JsonCreator
         public static IssueOrderBy forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -309,7 +310,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -320,7 +321,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -354,7 +355,7 @@ public interface Constants {
          */
         PROJECT_PATH;
 
-        private static JacksonJsonEnumHelper<PackageOrderBy> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<PackageOrderBy> enumCodec = new JacksonJsonEnumCodec<>(
                 PackageOrderBy.class);
 
         /**
@@ -366,7 +367,7 @@ public interface Constants {
 
         @JsonCreator
         public static PackageOrderBy forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -377,7 +378,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -388,7 +389,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -414,8 +415,7 @@ public interface Constants {
          */
         PROCESSING;
 
-        private static JacksonJsonEnumHelper<PackageStatus> enumHelper = new JacksonJsonEnumHelper<>(
-                PackageStatus.class);
+        private static JacksonJsonEnumCodec<PackageStatus> enumCodec = new JacksonJsonEnumCodec<>(PackageStatus.class);
 
         /**
          * Returns the value.
@@ -426,7 +426,7 @@ public interface Constants {
 
         @JsonCreator
         public static PackageStatus forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -437,7 +437,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -448,7 +448,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -486,7 +486,7 @@ public interface Constants {
          */
         LAST_ACTIVITY_AT;
 
-        private static JacksonJsonEnumHelper<ProjectOrderBy> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<ProjectOrderBy> enumCodec = new JacksonJsonEnumCodec<>(
                 ProjectOrderBy.class);
 
         /**
@@ -498,7 +498,7 @@ public interface Constants {
 
         @JsonCreator
         public static ProjectOrderBy forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -509,7 +509,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -520,7 +520,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -554,7 +554,7 @@ public interface Constants {
          */
         USER_ID;
 
-        private static JacksonJsonEnumHelper<PipelineOrderBy> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<PipelineOrderBy> enumCodec = new JacksonJsonEnumCodec<>(
                 PipelineOrderBy.class);
 
         /**
@@ -566,7 +566,7 @@ public interface Constants {
 
         @JsonCreator
         public static PipelineOrderBy forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -577,7 +577,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -588,7 +588,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -610,7 +610,7 @@ public interface Constants {
          */
         UPDATED_AT;
 
-        private static JacksonJsonEnumHelper<MergeRequestOrderBy> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<MergeRequestOrderBy> enumCodec = new JacksonJsonEnumCodec<>(
                 MergeRequestOrderBy.class);
 
         /**
@@ -622,7 +622,7 @@ public interface Constants {
 
         @JsonCreator
         public static MergeRequestOrderBy forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -633,7 +633,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -644,7 +644,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -674,7 +674,7 @@ public interface Constants {
          */
         SIMILARITY;
 
-        private static JacksonJsonEnumHelper<GroupOrderBy> enumHelper = new JacksonJsonEnumHelper<>(GroupOrderBy.class);
+        private static JacksonJsonEnumCodec<GroupOrderBy> enumCodec = new JacksonJsonEnumCodec<>(GroupOrderBy.class);
 
         /**
          * Returns the value.
@@ -685,7 +685,7 @@ public interface Constants {
 
         @JsonCreator
         public static GroupOrderBy forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -696,7 +696,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -707,7 +707,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -729,7 +729,7 @@ public interface Constants {
          */
         UPDATED;
 
-        private static JacksonJsonEnumHelper<TagOrderBy> enumHelper = new JacksonJsonEnumHelper<>(TagOrderBy.class);
+        private static JacksonJsonEnumCodec<TagOrderBy> enumCodec = new JacksonJsonEnumCodec<>(TagOrderBy.class);
 
         /**
          * Returns the value.
@@ -740,7 +740,7 @@ public interface Constants {
 
         @JsonCreator
         public static TagOrderBy forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -751,7 +751,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -762,7 +762,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -796,7 +796,7 @@ public interface Constants {
          */
         REF;
 
-        private static JacksonJsonEnumHelper<DeploymentOrderBy> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<DeploymentOrderBy> enumCodec = new JacksonJsonEnumCodec<>(
                 DeploymentOrderBy.class);
 
         /**
@@ -808,7 +808,7 @@ public interface Constants {
 
         @JsonCreator
         public static DeploymentOrderBy forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -819,7 +819,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -830,7 +830,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -856,7 +856,7 @@ public interface Constants {
          */
         COMMITS;
 
-        private static JacksonJsonEnumHelper<ContributorOrderBy> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<ContributorOrderBy> enumCodec = new JacksonJsonEnumCodec<>(
                 ContributorOrderBy.class);
 
         /**
@@ -868,7 +868,7 @@ public interface Constants {
 
         @JsonCreator
         public static ContributorOrderBy forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -879,7 +879,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -890,7 +890,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -924,8 +924,7 @@ public interface Constants {
          */
         TAGS;
 
-        private static JacksonJsonEnumHelper<PipelineScope> enumHelper = new JacksonJsonEnumHelper<>(
-                PipelineScope.class);
+        private static JacksonJsonEnumCodec<PipelineScope> enumCodec = new JacksonJsonEnumCodec<>(PipelineScope.class);
 
         /**
          * Returns the value.
@@ -936,7 +935,7 @@ public interface Constants {
 
         @JsonCreator
         public static PipelineScope forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -947,7 +946,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -958,7 +957,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -1016,7 +1015,7 @@ public interface Constants {
          */
         EXTERNAL_PULL_REQUEST_EVENT;
 
-        private static JacksonJsonEnumHelper<PipelineSource> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<PipelineSource> enumCodec = new JacksonJsonEnumCodec<>(
                 PipelineSource.class);
 
         /**
@@ -1028,7 +1027,7 @@ public interface Constants {
 
         @JsonCreator
         public static PipelineSource forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -1039,7 +1038,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -1050,7 +1049,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -1100,7 +1099,7 @@ public interface Constants {
          */
         WAITING_FOR_RESOURCE;
 
-        private static JacksonJsonEnumHelper<JobScope> enumHelper = new JacksonJsonEnumHelper<>(JobScope.class);
+        private static JacksonJsonEnumCodec<JobScope> enumCodec = new JacksonJsonEnumCodec<>(JobScope.class);
 
         /**
          * Returns the value.
@@ -1111,7 +1110,7 @@ public interface Constants {
 
         @JsonCreator
         public static JobScope forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -1122,7 +1121,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -1133,7 +1132,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -1159,7 +1158,7 @@ public interface Constants {
          */
         ALL;
 
-        private static JacksonJsonEnumHelper<IssueScope> enumHelper = new JacksonJsonEnumHelper<>(IssueScope.class);
+        private static JacksonJsonEnumCodec<IssueScope> enumCodec = new JacksonJsonEnumCodec<>(IssueScope.class);
 
         /**
          * Returns the value.
@@ -1170,7 +1169,7 @@ public interface Constants {
 
         @JsonCreator
         public static IssueScope forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -1181,7 +1180,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -1192,7 +1191,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -1218,7 +1217,7 @@ public interface Constants {
          */
         ALL;
 
-        private static JacksonJsonEnumHelper<MergeRequestScope> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<MergeRequestScope> enumCodec = new JacksonJsonEnumCodec<>(
                 MergeRequestScope.class);
 
         /**
@@ -1230,7 +1229,7 @@ public interface Constants {
 
         @JsonCreator
         public static MergeRequestScope forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -1241,7 +1240,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -1252,7 +1251,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -1286,7 +1285,7 @@ public interface Constants {
          */
         ALL;
 
-        private static JacksonJsonEnumHelper<MergeRequestState> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<MergeRequestState> enumCodec = new JacksonJsonEnumCodec<>(
                 MergeRequestState.class);
 
         /**
@@ -1298,7 +1297,7 @@ public interface Constants {
 
         @JsonCreator
         public static MergeRequestState forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -1309,7 +1308,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -1320,7 +1319,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -1342,7 +1341,7 @@ public interface Constants {
          */
         DESCRIPTION;
 
-        private static JacksonJsonEnumHelper<MergeRequestSearchIn> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<MergeRequestSearchIn> enumCodec = new JacksonJsonEnumCodec<>(
                 MergeRequestSearchIn.class);
 
         /**
@@ -1354,7 +1353,7 @@ public interface Constants {
 
         @JsonCreator
         public static MergeRequestSearchIn forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -1365,7 +1364,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -1376,7 +1375,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -1398,7 +1397,7 @@ public interface Constants {
          */
         REOPEN;
 
-        private static JacksonJsonEnumHelper<StateEvent> enumHelper = new JacksonJsonEnumHelper<>(StateEvent.class);
+        private static JacksonJsonEnumCodec<StateEvent> enumCodec = new JacksonJsonEnumCodec<>(StateEvent.class);
 
         /**
          * Returns the value.
@@ -1409,7 +1408,7 @@ public interface Constants {
 
         @JsonCreator
         public static StateEvent forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -1420,7 +1419,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -1431,7 +1430,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -1457,7 +1456,7 @@ public interface Constants {
          */
         REOPENED;
 
-        private static JacksonJsonEnumHelper<IssueState> enumHelper = new JacksonJsonEnumHelper<>(IssueState.class);
+        private static JacksonJsonEnumCodec<IssueState> enumCodec = new JacksonJsonEnumCodec<>(IssueState.class);
 
         /**
          * Returns the value.
@@ -1468,7 +1467,7 @@ public interface Constants {
 
         @JsonCreator
         public static IssueState forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -1479,7 +1478,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -1490,7 +1489,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -1520,7 +1519,7 @@ public interface Constants {
          */
         CLOSE;
 
-        private static JacksonJsonEnumHelper<MilestoneState> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<MilestoneState> enumCodec = new JacksonJsonEnumCodec<>(
                 MilestoneState.class);
 
         /**
@@ -1532,7 +1531,7 @@ public interface Constants {
 
         @JsonCreator
         public static MilestoneState forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -1543,7 +1542,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -1554,7 +1553,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -1636,7 +1635,7 @@ public interface Constants {
          */
         IMPORTED;
 
-        private static JacksonJsonEnumHelper<ActionType> enumHelper = new JacksonJsonEnumHelper<>(ActionType.class);
+        private static JacksonJsonEnumCodec<ActionType> enumCodec = new JacksonJsonEnumCodec<>(ActionType.class);
 
         /**
          * Returns the value.
@@ -1647,7 +1646,7 @@ public interface Constants {
 
         @JsonCreator
         public static ActionType forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -1658,7 +1657,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -1669,7 +1668,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -1711,8 +1710,8 @@ public interface Constants {
          */
         USER;
 
-        private static JacksonJsonEnumHelper<TargetType> enumHelper = new JacksonJsonEnumHelper<>(TargetType.class,
-                true, false, true);
+        private static JacksonJsonEnumCodec<TargetType> enumCodec = new JacksonJsonEnumCodec<>(TargetType.class, true,
+                false, true);
 
         /**
          * Returns the value.
@@ -1723,7 +1722,7 @@ public interface Constants {
 
         @JsonCreator
         public static TargetType forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -1734,7 +1733,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -1745,7 +1744,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -1767,7 +1766,7 @@ public interface Constants {
          */
         NEW;
 
-        private static JacksonJsonEnumHelper<LineType> enumHelper = new JacksonJsonEnumHelper<>(LineType.class);
+        private static JacksonJsonEnumCodec<LineType> enumCodec = new JacksonJsonEnumCodec<>(LineType.class);
 
         /**
          * Returns the value.
@@ -1778,7 +1777,7 @@ public interface Constants {
 
         @JsonCreator
         public static LineType forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -1789,7 +1788,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -1800,7 +1799,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -1826,7 +1825,7 @@ public interface Constants {
          */
         INACTIVE;
 
-        private static JacksonJsonEnumHelper<ImpersonationState> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<ImpersonationState> enumCodec = new JacksonJsonEnumCodec<>(
                 ImpersonationState.class);
 
         /**
@@ -1838,7 +1837,7 @@ public interface Constants {
 
         @JsonCreator
         public static ImpersonationState forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -1849,7 +1848,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -1860,7 +1859,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -1909,7 +1908,7 @@ public interface Constants {
         private final String value;
 
         ArchiveFormat() {
-            this.value = name().toLowerCase().replace('_', '.');
+            this.value = name().toLowerCase().replace(Symbol.C_UNDERLINE, Symbol.C_DOT);
         }
 
         private static Map<String, ArchiveFormat> valuesMap = new HashMap<String, ArchiveFormat>(8);
@@ -1987,7 +1986,7 @@ public interface Constants {
          */
         SKIPPED;
 
-        private static JacksonJsonEnumHelper<CommitBuildState> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<CommitBuildState> enumCodec = new JacksonJsonEnumCodec<>(
                 CommitBuildState.class);
 
         /**
@@ -1999,7 +1998,7 @@ public interface Constants {
 
         @JsonCreator
         public static CommitBuildState forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -2010,7 +2009,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -2021,7 +2020,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -2123,7 +2122,7 @@ public interface Constants {
          */
         SELF_ROTATE;
 
-        private static JacksonJsonEnumHelper<ApplicationScope> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<ApplicationScope> enumCodec = new JacksonJsonEnumCodec<>(
                 ApplicationScope.class);
 
         /**
@@ -2135,7 +2134,7 @@ public interface Constants {
 
         @JsonCreator
         public static ApplicationScope forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -2146,7 +2145,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -2157,7 +2156,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -2179,7 +2178,7 @@ public interface Constants {
          */
         DONE;
 
-        private static JacksonJsonEnumHelper<TodoState> enumHelper = new JacksonJsonEnumHelper<>(TodoState.class);
+        private static JacksonJsonEnumCodec<TodoState> enumCodec = new JacksonJsonEnumCodec<>(TodoState.class);
 
         /**
          * Returns the value.
@@ -2190,7 +2189,7 @@ public interface Constants {
 
         @JsonCreator
         public static TodoState forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -2201,7 +2200,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -2212,7 +2211,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -2234,7 +2233,7 @@ public interface Constants {
          */
         MERGE_REQUEST;
 
-        private static JacksonJsonEnumHelper<TodoType> enumHelper = new JacksonJsonEnumHelper<>(TodoType.class, true,
+        private static JacksonJsonEnumCodec<TodoType> enumCodec = new JacksonJsonEnumCodec<>(TodoType.class, true,
                 true);
 
         /**
@@ -2246,7 +2245,7 @@ public interface Constants {
 
         @JsonCreator
         public static TodoType forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -2257,7 +2256,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -2268,7 +2267,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -2311,9 +2310,9 @@ public interface Constants {
         WRITE_PACKAGE_REGISTRY;
 
         /**
-         * JSON enum conversion helper.
+         * Converts enum constants to and from JSON values.
          */
-        private static JacksonJsonEnumHelper<DeployTokenScope> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<DeployTokenScope> enumCodec = new JacksonJsonEnumCodec<>(
                 DeployTokenScope.class);
 
         /**
@@ -2324,7 +2323,7 @@ public interface Constants {
          */
         @JsonCreator
         public static DeployTokenScope forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -2334,7 +2333,7 @@ public interface Constants {
          */
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -2344,7 +2343,7 @@ public interface Constants {
          */
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -2386,7 +2385,7 @@ public interface Constants {
          */
         DIRECTLY_ADDRESSED;
 
-        private static JacksonJsonEnumHelper<TodoAction> enumHelper = new JacksonJsonEnumHelper<>(TodoAction.class);
+        private static JacksonJsonEnumCodec<TodoAction> enumCodec = new JacksonJsonEnumCodec<>(TodoAction.class);
 
         /**
          * Returns the value.
@@ -2397,7 +2396,7 @@ public interface Constants {
 
         @JsonCreator
         public static TodoAction forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -2408,7 +2407,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -2419,7 +2418,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -2449,7 +2448,7 @@ public interface Constants {
          */
         DEFAULT_OFF;
 
-        private static JacksonJsonEnumHelper<SquashOption> enumHelper = new JacksonJsonEnumHelper<>(SquashOption.class);
+        private static JacksonJsonEnumCodec<SquashOption> enumCodec = new JacksonJsonEnumCodec<>(SquashOption.class);
 
         /**
          * Returns the value.
@@ -2460,7 +2459,7 @@ public interface Constants {
 
         @JsonCreator
         public static SquashOption forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -2471,7 +2470,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -2482,7 +2481,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -2512,7 +2511,7 @@ public interface Constants {
          */
         PUBLIC;
 
-        private static final JacksonJsonEnumHelper<ProjectFeatureVisibilityAccessLevel> enumHelper = new JacksonJsonEnumHelper<>(
+        private static final JacksonJsonEnumCodec<ProjectFeatureVisibilityAccessLevel> enumCodec = new JacksonJsonEnumCodec<>(
                 ProjectFeatureVisibilityAccessLevel.class);
 
         /**
@@ -2524,7 +2523,7 @@ public interface Constants {
 
         @JsonCreator
         public static ProjectFeatureVisibilityAccessLevel forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -2535,7 +2534,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -2546,7 +2545,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -2580,7 +2579,7 @@ public interface Constants {
          */
         CANCELED;
 
-        private static JacksonJsonEnumHelper<DeploymentStatus> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<DeploymentStatus> enumCodec = new JacksonJsonEnumCodec<>(
                 DeploymentStatus.class);
 
         /**
@@ -2592,7 +2591,7 @@ public interface Constants {
 
         @JsonCreator
         public static DeploymentStatus forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -2603,7 +2602,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -2614,7 +2613,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -2636,7 +2635,7 @@ public interface Constants {
          */
         ENABLED;
 
-        private static final JacksonJsonEnumHelper<AutoCancelPendingPipelines> enumHelper = new JacksonJsonEnumHelper<>(
+        private static final JacksonJsonEnumCodec<AutoCancelPendingPipelines> enumCodec = new JacksonJsonEnumCodec<>(
                 AutoCancelPendingPipelines.class);
 
         /**
@@ -2648,7 +2647,7 @@ public interface Constants {
 
         @JsonCreator
         public static AutoCancelPendingPipelines forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -2659,7 +2658,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -2670,7 +2669,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -2729,9 +2728,9 @@ public interface Constants {
         SELF_ROTATE;
 
         /**
-         * JSON enum conversion helper.
+         * Converts enum constants to and from JSON values.
          */
-        private static JacksonJsonEnumHelper<ProjectAccessTokenScope> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<ProjectAccessTokenScope> enumCodec = new JacksonJsonEnumCodec<>(
                 ProjectAccessTokenScope.class);
 
         /**
@@ -2742,7 +2741,7 @@ public interface Constants {
          */
         @JsonCreator
         public static ProjectAccessTokenScope forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -2752,7 +2751,7 @@ public interface Constants {
          */
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -2762,7 +2761,7 @@ public interface Constants {
          */
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -2904,7 +2903,7 @@ public interface Constants {
          */
         CLONE;
 
-        private static JacksonJsonEnumHelper<BuildGitStrategy> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<BuildGitStrategy> enumCodec = new JacksonJsonEnumCodec<>(
                 BuildGitStrategy.class);
 
         /**
@@ -2916,7 +2915,7 @@ public interface Constants {
 
         @JsonCreator
         public static BuildGitStrategy forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -2927,7 +2926,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -2938,7 +2937,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -2964,7 +2963,7 @@ public interface Constants {
          */
         TIMED_INCREMENTAL;
 
-        private static JacksonJsonEnumHelper<AutoDevopsDeployStrategy> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<AutoDevopsDeployStrategy> enumCodec = new JacksonJsonEnumCodec<>(
                 AutoDevopsDeployStrategy.class);
 
         /**
@@ -2976,7 +2975,7 @@ public interface Constants {
 
         @JsonCreator
         public static AutoDevopsDeployStrategy forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -2987,7 +2986,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -2998,7 +2997,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -3013,7 +3012,7 @@ public interface Constants {
 
         ALL;
 
-        private static JacksonJsonEnumHelper<EventScope> enumHelper = new JacksonJsonEnumHelper<>(EventScope.class);
+        private static JacksonJsonEnumCodec<EventScope> enumCodec = new JacksonJsonEnumCodec<>(EventScope.class);
 
         /**
          * Returns the value.
@@ -3024,7 +3023,7 @@ public interface Constants {
 
         @JsonCreator
         public static EventScope forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -3035,7 +3034,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -3046,7 +3045,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -3072,7 +3071,7 @@ public interface Constants {
          */
         MAINTAINER;
 
-        private static JacksonJsonEnumHelper<ProjectCreationLevel> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<ProjectCreationLevel> enumCodec = new JacksonJsonEnumCodec<>(
                 ProjectCreationLevel.class);
 
         /**
@@ -3084,7 +3083,7 @@ public interface Constants {
 
         @JsonCreator
         public static ProjectCreationLevel forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -3095,7 +3094,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -3106,7 +3105,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -3128,7 +3127,7 @@ public interface Constants {
          */
         MAINTAINER;
 
-        private static JacksonJsonEnumHelper<SubgroupCreationLevel> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<SubgroupCreationLevel> enumCodec = new JacksonJsonEnumCodec<>(
                 SubgroupCreationLevel.class);
 
         /**
@@ -3140,7 +3139,7 @@ public interface Constants {
 
         @JsonCreator
         public static SubgroupCreationLevel forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -3151,7 +3150,7 @@ public interface Constants {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -3162,7 +3161,7 @@ public interface Constants {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

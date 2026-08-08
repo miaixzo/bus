@@ -24,6 +24,7 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -63,7 +64,7 @@ public abstract class AbstractWeChatProvider extends AbstractProvider {
      * @return the user's gender
      */
     public static Gender getWechatRealGender(String originalGender) {
-        if (StringKit.isEmpty(originalGender) || "0".equals(originalGender)) {
+        if (StringKit.isEmpty(originalGender) || Symbol.ZERO.equals(originalGender)) {
             return Gender.UNKNOWN;
         }
         return Gender.of(originalGender);

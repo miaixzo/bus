@@ -32,7 +32,7 @@ import org.apache.ibatis.reflection.TypeParameterResolver;
 /**
  * Resolves actual mapper method return and parameter classes, including generic signatures.
  * <p>
- * This helper centralizes MyBatis generic type resolution for starter AOT hint registration. It does not depend on
+ * This resolver centralizes MyBatis generic type resolution for starter AOT hint registration. It does not depend on
  * Spring and can therefore be reused by any mapper runtime integration that already has a mapper interface and method.
  *
  * @author Kimi Liu

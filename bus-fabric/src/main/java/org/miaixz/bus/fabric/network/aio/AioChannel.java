@@ -364,6 +364,7 @@ public final class AioChannel implements Conduit {
             return operation.future();
         }
         try {
+            lease.buffer().limit(readCapacity(byteCount));
             channel.read(lease.buffer(), operation, new CompletionHandler<>() {
 
                 /**

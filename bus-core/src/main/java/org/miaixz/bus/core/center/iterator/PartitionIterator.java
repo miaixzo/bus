@@ -29,7 +29,7 @@ import java.util.Objects;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * A utility for iterating over data in batches (partitions). This is useful in scenarios such as:
+ * Iterates over data in batches (partitions). Typical scenarios include:
  * <ol>
  * <li>Calling external client APIs that have limitations on the number of input parameters, requiring batch
  * processing.</li>
