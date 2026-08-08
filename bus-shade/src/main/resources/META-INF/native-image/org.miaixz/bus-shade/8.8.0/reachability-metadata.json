@@ -1136,6 +1136,9 @@
     },
     {
       "type": "org.miaixz.bus.shade.safety.boot.BootClassLoader",
+      "condition": {
+        "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
+      },
       "fields": [
         {
           "name": "bootURLHandler"
@@ -1348,6 +1351,9 @@
     },
     {
       "type": "org.miaixz.bus.shade.safety.boot.BootClassLoader$XBootEnumeration",
+      "condition": {
+        "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
+      },
       "fields": [
         {
           "name": "enumeration"

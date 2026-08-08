@@ -72,6 +72,9 @@
         "proxy": [
           "io.temporal.common.converter.PayloadConverter"
         ]
+      },
+      "condition": {
+        "typeReached": "io.temporal.common.converter.PayloadConverter"
       }
     },
     {
@@ -1936,6 +1939,9 @@
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter",
+      "condition": {
+        "typeReached": "io.temporal.common.converter.PayloadConverter"
+      },
       "methods": [
         {
           "name": "<init>",
@@ -2024,6 +2030,9 @@
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$1",
+      "condition": {
+        "typeReached": "io.temporal.common.converter.PayloadConverter"
+      },
       "fields": [
         {
           "name": "val$provider"
@@ -2100,181 +2109,10 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$2",
-      "fields": [
-        {
-          "name": "val$constructType"
-        },
-        {
-          "name": "val$objectMapper"
-        },
-        {
-          "name": "val$readValue"
-        },
-        {
-          "name": "val$writeValueAsBytes"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.reflect.Method",
-            "java.lang.reflect.Method",
-            "java.lang.reflect.Method"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "fromBytes",
-          "parameterTypes": [
-            "byte[]",
-            "java.lang.Class",
-            "java.lang.reflect.Type"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "name",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toBytes",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$3",
-      "fields": [
-        {
-          "name": "val$fromJson"
-        },
-        {
-          "name": "val$gson"
-        },
-        {
-          "name": "val$toJson"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.reflect.Method",
-            "java.lang.reflect.Method"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "fromBytes",
-          "parameterTypes": [
-            "byte[]",
-            "java.lang.Class",
-            "java.lang.reflect.Type"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "name",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toBytes",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$DefaultPayloadAdapterHolder",
+      "condition": {
+        "typeReached": "io.temporal.common.converter.PayloadConverter"
+      },
       "fields": [
         {
           "name": "ADAPTER"
@@ -2332,6 +2170,9 @@
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.payload.PayloadConverter",
+      "condition": {
+        "typeReached": "io.temporal.common.converter.PayloadConverter"
+      },
       "methods": [
         {
           "name": "fromData",

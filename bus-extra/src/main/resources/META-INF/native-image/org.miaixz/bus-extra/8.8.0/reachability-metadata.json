@@ -3821,6 +3821,35 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.extra.json.JsonAnnotationFilter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.extra.json.JsonPropertyFilter"
+          ]
+        },
+        {
+          "name": "accept",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hasDelegateFilter",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "org.miaixz.bus.extra.json.JsonPropertyFilter"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.extra.json.JsonFactory",
       "methods": [
         {
@@ -3919,6 +3948,122 @@
             "java.util.Map",
             "java.lang.Class"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.json.JsonPropertyFilter",
+      "fields": [
+        {
+          "name": "ALWAYS"
+        }
+      ],
+      "methods": [
+        {
+          "name": "accept",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "always",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.json.JsonReadOptions",
+      "fields": [
+        {
+          "name": "typeFilter"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.extra.json.JsonTypeFilter"
+          ]
+        },
+        {
+          "name": "defaults",
+          "parameterTypes": []
+        },
+        {
+          "name": "typeFilter",
+          "parameterTypes": []
+        },
+        {
+          "name": "validate",
+          "parameterTypes": [
+            "java.lang.reflect.Type"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.json.JsonTypeFilter",
+      "fields": [
+        {
+          "name": "ALWAYS"
+        }
+      ],
+      "methods": [
+        {
+          "name": "accept",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "always",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.json.JsonWriteOptions",
+      "fields": [
+        {
+          "name": "dateFormat"
+        },
+        {
+          "name": "propertyFilter"
+        },
+        {
+          "name": "writeNulls"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean",
+            "org.miaixz.bus.extra.json.JsonPropertyFilter"
+          ]
+        },
+        {
+          "name": "dateFormat",
+          "parameterTypes": []
+        },
+        {
+          "name": "defaults",
+          "parameterTypes": []
+        },
+        {
+          "name": "hasPropertyFilter",
+          "parameterTypes": []
+        },
+        {
+          "name": "propertyFilter",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeNulls",
+          "parameterTypes": []
         }
       ]
     },
