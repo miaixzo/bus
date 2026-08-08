@@ -163,6 +163,9 @@ public class ClassKit {
      * @return The short class name.
      */
     public static String getShortClassName(final String className) {
+        if (StringKit.isBlank(className)) {
+            return className;
+        }
         final List<String> packages = CharsBacker.split(className, Symbol.DOT);
         if (null == packages || packages.size() < 2) {
             return className;
@@ -170,9 +173,14 @@ public class ClassKit {
 
         final int size = packages.size();
         final StringBuilder result = StringKit.builder();
-        result.append(packages.get(0).charAt(0));
+        if (StringKit.isNotBlank(packages.get(0))) {
+            result.append(packages.get(0).charAt(0));
+        }
         for (int i = 1; i < size - 1; i++) {
-            result.append(Symbol.C_DOT).append(packages.get(i).charAt(0));
+            result.append(Symbol.C_DOT);
+            if (StringKit.isNotBlank(packages.get(i))) {
+                result.append(packages.get(i).charAt(0));
+            }
         }
         result.append(Symbol.C_DOT).append(packages.get(size - 1));
         return result.toString();
