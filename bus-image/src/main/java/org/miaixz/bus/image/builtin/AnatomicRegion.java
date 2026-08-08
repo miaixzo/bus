@@ -20,10 +20,16 @@
 package org.miaixz.bus.image.builtin;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -45,6 +51,274 @@ public class AnatomicRegion {
      */
     public AnatomicRegion() {
         // No initialization required.
+    }
+
+    /**
+     * Provides metadata for an anatomic category.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    public interface CategoryBuilder {
+
+        /**
+         * Returns the DICOM context UID for the category.
+         *
+         * @return the DICOM context UID.
+         */
+        String getContextUID();
+
+        /**
+         * Returns the DICOM context identifier for the category.
+         *
+         * @return the DICOM context identifier.
+         */
+        String getIdentifier();
+
+        /**
+         * Returns the display title for the category.
+         *
+         * @return the display title.
+         */
+        String getTitle();
+
+    }
+
+    /**
+     * Represents a custom anatomic category.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    public static final class OtherCategory implements CategoryBuilder {
+
+        /**
+         * The context UID value.
+         */
+        private final String contextUID;
+
+        /**
+         * The context identifier value.
+         */
+        private final String identifier;
+
+        /**
+         * The title value.
+         */
+        private final String title;
+
+        /**
+         * Creates a new custom anatomic category.
+         *
+         * @param contextUID the context UID.
+         * @param identifier the context identifier.
+         * @param title      the display title.
+         */
+        public OtherCategory(String contextUID, String identifier, String title) {
+            this.contextUID = Objects.requireNonNull(contextUID, "contextUID must not be null");
+            this.identifier = Objects.requireNonNull(identifier, "identifier must not be null");
+            this.title = Objects.requireNonNull(title, "title must not be null");
+            validateIdentifier(identifier);
+        }
+
+        /**
+         * Returns the DICOM context UID for the category.
+         *
+         * @return the DICOM context UID.
+         */
+        @Override
+        public String getContextUID() {
+            return contextUID;
+        }
+
+        /**
+         * Returns the DICOM context identifier for the category.
+         *
+         * @return the DICOM context identifier.
+         */
+        @Override
+        public String getIdentifier() {
+            return identifier;
+        }
+
+        /**
+         * Returns the display title for the category.
+         *
+         * @return the display title.
+         */
+        @Override
+        public String getTitle() {
+            return title;
+        }
+
+        /**
+         * Returns the string representation.
+         *
+         * @return the string representation.
+         */
+        @Override
+        public String toString() {
+            return getTitle();
+        }
+
+        /**
+         * Compares this category with another object for equality.
+         *
+         * @param object the object.
+         * @return true if the categories have the same context UID.
+         */
+        @Override
+        public boolean equals(Object object) {
+            return object instanceof OtherCategory other && Objects.equals(contextUID, other.contextUID);
+        }
+
+        /**
+         * Returns the hash code.
+         *
+         * @return the hash code.
+         */
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(contextUID);
+        }
+
+    }
+
+    /**
+     * Defines standard DICOM anatomic categories.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    public enum Category implements CategoryBuilder {
+
+        /**
+         * Surface anatomical structures.
+         */
+        SURFACE("1.2.840.10008.6.1.1268", "CID 4029", "Surface anatomical structures"),
+
+        /**
+         * All anatomical regions.
+         */
+        ALL_REGIONS("1.2.840.10008.6.1.2", "CID 4", "All anatomical regions"),
+
+        /**
+         * Commonly used anatomical regions.
+         */
+        COMMON("1.2.840.10008.6.1.308", "CID 4031", "Common anatomical regions"),
+
+        /**
+         * Endoscopic anatomical regions.
+         */
+        ENDOSCOPY("1.2.840.10008.6.1.311", "CID 4040", "Endoscopic anatomical regions");
+
+        /**
+         * The context UID lookup value.
+         */
+        private static final Map<String, Category> UID_LOOKUP = createUidLookup();
+
+        /**
+         * The context UID value.
+         */
+        private final String contextUID;
+
+        /**
+         * The context identifier value.
+         */
+        private final String identifier;
+
+        /**
+         * The title value.
+         */
+        private final String title;
+
+        /**
+         * Creates a standard DICOM anatomic category.
+         *
+         * @param contextUID the context UID.
+         * @param identifier the context identifier.
+         * @param title      the display title.
+         */
+        Category(String contextUID, String identifier, String title) {
+            this.contextUID = Objects.requireNonNull(contextUID, "contextUID must not be null");
+            this.identifier = Objects.requireNonNull(identifier, "identifier must not be null");
+            this.title = Objects.requireNonNull(title, "title must not be null");
+            validateIdentifier(identifier);
+        }
+
+        /**
+         * Creates the context UID lookup.
+         *
+         * @return the context UID lookup.
+         */
+        private static Map<String, Category> createUidLookup() {
+            Map<String, Category> map = new LinkedHashMap<>();
+            for (Category category : values()) {
+                map.put(category.getContextUID(), category);
+            }
+            return Collections.unmodifiableMap(map);
+        }
+
+        /**
+         * Returns the DICOM context UID for the category.
+         *
+         * @return the DICOM context UID.
+         */
+        @Override
+        public String getContextUID() {
+            return contextUID;
+        }
+
+        /**
+         * Returns the DICOM context identifier for the category.
+         *
+         * @return the DICOM context identifier.
+         */
+        @Override
+        public String getIdentifier() {
+            return identifier;
+        }
+
+        /**
+         * Returns the display title for the category.
+         *
+         * @return the display title.
+         */
+        @Override
+        public String getTitle() {
+            return title;
+        }
+
+        /**
+         * Returns the display title for the requested locale.
+         *
+         * @param locale the requested locale.
+         * @return the display title.
+         */
+        public String getTitle(Locale locale) {
+            return title;
+        }
+
+        /**
+         * Returns the string representation.
+         *
+         * @return the string representation.
+         */
+        @Override
+        public String toString() {
+            return getTitle();
+        }
+
+        /**
+         * Finds a standard category by context UID.
+         *
+         * @param uid the context UID.
+         * @return the matching category.
+         */
+        public static Optional<Category> fromContextUID(String uid) {
+            return Optional.ofNullable(UID_LOOKUP.get(uid));
+        }
+
     }
 
     /**
@@ -1630,7 +1904,169 @@ public class AnatomicRegion {
     /**
      * The body part examined value.
      */
-    private static final Map<String, Code> BODY_PART_EXAMINED = new HashMap<>();
+    private static final Map<String, Code> BODY_PART_EXAMINED = new LinkedHashMap<>();
+
+    /**
+     * The DICOM code values for surface region entries currently present in this class.
+     */
+    private static final Set<String> SURFACE_REGION_CODES = Set.of("28726007", "18619003");
+
+    /**
+     * The DICOM code values for common region entries currently present in this class.
+     */
+    private static final Set<String> COMMON_REGION_CODES = Set.of(
+            "818981001",
+            "818982008",
+            "85856004",
+            "70258002",
+            "28273000",
+            "34707002",
+            "89837001",
+            "76752008",
+            "955009",
+            "80144004",
+            "122494005",
+            "1217257000",
+            "416775004",
+            "416550000",
+            "51299004",
+            "64688005",
+            "71854001",
+            "79741001",
+            "38848004",
+            "16953009",
+            "38266002",
+            "32849002",
+            "66019005",
+            "81745001",
+            "71341001",
+            "87342007",
+            "7569003",
+            "56459004",
+            "14975008",
+            "28231008",
+            "85562004",
+            "69536005",
+            "774007",
+            "80891009",
+            "24136001",
+            "85050009",
+            "34516001",
+            "22356005",
+            "361078006",
+            "661005",
+            "21306003",
+            "72696002",
+            "14742008",
+            "4596009",
+            "30021000",
+            "61685007",
+            "122496007",
+            "1217253001",
+            "91609006",
+            "59066005",
+            "70925003",
+            "72410000",
+            "45048000",
+            "416319003",
+            "416152001",
+            "417437006",
+            "55024004",
+            "363654007",
+            "15776009",
+            "69930009",
+            "110621006",
+            "45289007",
+            "64234005",
+            "816092008",
+            "1231522001",
+            "706342009",
+            "41216001",
+            "34402009",
+            "113197003",
+            "39723000",
+            "54735007",
+            "79601000",
+            "42575006",
+            "58742003",
+            "16982005",
+            "89546000",
+            "30315005",
+            "421060004",
+            "7844006",
+            "56873002",
+            "69695003",
+            "54019009",
+            "53620006",
+            "68367000",
+            "122495006",
+            "1217256009",
+            "76505004",
+            "29707007",
+            "44567001",
+            "40983000",
+            "431491007",
+            "87953007",
+            "13648007",
+            "74670003",
+            "13881006");
+
+    /**
+     * The DICOM code values for endoscopic region entries currently present in this class.
+     */
+    private static final Set<String> ENDOSCOPIC_REGION_CODES = Set.of(
+            "110612005",
+            "28273000",
+            "34707002",
+            "89837001",
+            "110837003",
+            "955009",
+            "71252005",
+            "79741001",
+            "84301002",
+            "28231008",
+            "26893007",
+            "39352004",
+            "64033007",
+            "72696002",
+            "14742008",
+            "4596009",
+            "91747007",
+            "72410000",
+            "360955006",
+            "69930009",
+            "110621006",
+            "54066008",
+            "312535008",
+            "34402009",
+            "16982005",
+            "60184004",
+            "421060004",
+            "43799004",
+            "110726009",
+            "431491007",
+            "87953007");
+
+    /**
+     * The VR.CS value pattern.
+     */
+    private static final String VR_CS_PATTERN = "[A-Z0-9 _]*";
+
+    /**
+     * The maximum context identifier length value.
+     */
+    private static final int MAX_IDENTIFIER_LENGTH = 16;
+
+    /**
+     * The standard category map value.
+     */
+    private static final Map<CategoryBuilder, List<Code>> STANDARD_CATEGORIES;
+
+    /**
+     * The extension category map value.
+     */
+    private static final AtomicReference<Map<CategoryBuilder, List<Code>>> EXTENSION_CATEGORIES = new AtomicReference<>(
+            Map.of());
 
     static {
         BODY_PART_EXAMINED.put("ABDOMEN", Abdomen);
@@ -1946,6 +2382,66 @@ public class AnatomicRegion {
         BODY_PART_EXAMINED.put("VULVA", Vulva);
         BODY_PART_EXAMINED.put("WRIST", WristJoint);
         BODY_PART_EXAMINED.put("ZYGOMA", Zygoma);
+
+        STANDARD_CATEGORIES = createCategoryMap();
+    }
+
+    /**
+     * Creates the standard category map.
+     *
+     * @return the standard category map.
+     */
+    private static Map<CategoryBuilder, List<Code>> createCategoryMap() {
+        Map<CategoryBuilder, List<Code>> map = new LinkedHashMap<>();
+        map.put(Category.SURFACE, filterByCodeValues(SURFACE_REGION_CODES));
+        map.put(Category.ALL_REGIONS, allRegionCodes());
+        map.put(Category.COMMON, filterByCodeValues(COMMON_REGION_CODES));
+        map.put(Category.ENDOSCOPY, filterByCodeValues(ENDOSCOPIC_REGION_CODES));
+        return Collections.unmodifiableMap(map);
+    }
+
+    /**
+     * Returns all region codes currently registered by legacy body part keys.
+     *
+     * @return all region codes.
+     */
+    private static List<Code> allRegionCodes() {
+        return BODY_PART_EXAMINED.values().stream().distinct().toList();
+    }
+
+    /**
+     * Filters region codes by DICOM code value.
+     *
+     * @param codeValues the code values.
+     * @return the matching region codes.
+     */
+    private static List<Code> filterByCodeValues(Set<String> codeValues) {
+        return allRegionCodes().stream().filter(code -> codeValues.contains(code.getCodeValue())).toList();
+    }
+
+    /**
+     * Validates a DICOM VR.CS context identifier.
+     *
+     * @param identifier the context identifier.
+     */
+    private static void validateIdentifier(String identifier) {
+        if (identifier.length() > MAX_IDENTIFIER_LENGTH || !identifier.matches(VR_CS_PATTERN)) {
+            throw new IllegalArgumentException("Identifier must be a valid DICOM VR.CS value");
+        }
+    }
+
+    /**
+     * Normalizes a body part examined value for legacy lookup.
+     *
+     * @param bodyPartExamined the body part examined value.
+     * @return the normalized body part examined value.
+     */
+    private static String normalizeBodyPartExamined(String bodyPartExamined) {
+        if (bodyPartExamined == null) {
+            return null;
+        }
+        String value = bodyPartExamined.trim();
+        return value.isEmpty() ? null : value.toUpperCase(Locale.ROOT);
     }
 
     /**
@@ -1955,8 +2451,8 @@ public class AnatomicRegion {
      * @return the operation result.
      */
     public static Code codeOf(String bodyPartExamined) {
-        return bodyPartExamined == null ? null
-                : BODY_PART_EXAMINED.get(bodyPartExamined.trim().toUpperCase(Locale.ROOT));
+        String normalized = normalizeBodyPartExamined(bodyPartExamined);
+        return normalized == null ? null : BODY_PART_EXAMINED.get(normalized);
     }
 
     /**
@@ -2038,6 +2534,114 @@ public class AnatomicRegion {
     }
 
     /**
+     * Returns the standard and registered anatomic categories.
+     *
+     * @return the category map.
+     */
+    public static Map<CategoryBuilder, List<Code>> getCategoryMap() {
+        Map<CategoryBuilder, List<Code>> extensions = EXTENSION_CATEGORIES.get();
+        if (extensions.isEmpty()) {
+            return STANDARD_CATEGORIES;
+        }
+        Map<CategoryBuilder, List<Code>> merged = new LinkedHashMap<>(STANDARD_CATEGORIES);
+        merged.putAll(extensions);
+        return Collections.unmodifiableMap(merged);
+    }
+
+    /**
+     * Returns the region codes for a category.
+     *
+     * @param category the category.
+     * @return the region codes.
+     */
+    public static List<Code> getCategoryItems(CategoryBuilder category) {
+        if (category == null) {
+            return List.of();
+        }
+        return getCategoryMap().entrySet().stream()
+                .filter(
+                        entry -> Objects.equals(entry.getKey(), category)
+                                || Objects.equals(entry.getKey().getContextUID(), category.getContextUID()))
+                .map(Map.Entry::getValue).findFirst().orElse(List.of());
+    }
+
+    /**
+     * Finds a category by context UID.
+     *
+     * @param contextUID the context UID.
+     * @return the matching category.
+     */
+    public static Optional<CategoryBuilder> getCategoryFromContextUID(String contextUID) {
+        if (contextUID == null) {
+            return Optional.empty();
+        }
+        Optional<Category> standard = Category.fromContextUID(contextUID);
+        if (standard.isPresent()) {
+            return Optional.of(standard.get());
+        }
+        return EXTENSION_CATEGORIES.get().keySet().stream()
+                .filter(category -> Objects.equals(category.getContextUID(), contextUID)).findFirst();
+    }
+
+    /**
+     * Registers a custom category and its region codes.
+     *
+     * @param category the category.
+     * @param items    the region codes.
+     */
+    public static void registerCategory(CategoryBuilder category, Collection<Code> items) {
+        Objects.requireNonNull(category, "category must not be null");
+        Objects.requireNonNull(items, "items must not be null");
+        String contextUID = category.getContextUID();
+        if (contextUID == null || contextUID.isBlank()) {
+            throw new IllegalArgumentException("Category context UID must not be blank");
+        }
+        if (Category.fromContextUID(contextUID).isPresent()) {
+            throw new IllegalArgumentException("Standard categories cannot be overridden: " + contextUID);
+        }
+        List<Code> copy = List.copyOf(items);
+        EXTENSION_CATEGORIES.updateAndGet(current -> {
+            Map<CategoryBuilder, List<Code>> updated = new LinkedHashMap<>(current);
+            updated.keySet().removeIf(existing -> Objects.equals(existing.getContextUID(), contextUID));
+            updated.put(category, copy);
+            return Collections.unmodifiableMap(updated);
+        });
+    }
+
+    /**
+     * Removes a registered custom category.
+     *
+     * @param category the category.
+     * @return true if a category was removed.
+     */
+    public static boolean unregisterCategory(CategoryBuilder category) {
+        return category != null && unregisterCategory(category.getContextUID());
+    }
+
+    /**
+     * Removes a registered custom category by context UID.
+     *
+     * @param contextUID the context UID.
+     * @return true if a category was removed.
+     */
+    public static boolean unregisterCategory(String contextUID) {
+        if (contextUID == null || contextUID.isBlank()) {
+            return false;
+        }
+        Map<CategoryBuilder, List<Code>> previous = EXTENSION_CATEGORIES.getAndUpdate(current -> {
+            boolean registered = current.keySet().stream()
+                    .anyMatch(existing -> Objects.equals(existing.getContextUID(), contextUID));
+            if (!registered) {
+                return current;
+            }
+            Map<CategoryBuilder, List<Code>> updated = new LinkedHashMap<>(current);
+            updated.keySet().removeIf(existing -> Objects.equals(existing.getContextUID(), contextUID));
+            return Collections.unmodifiableMap(updated);
+        });
+        return previous.keySet().stream().anyMatch(existing -> Objects.equals(existing.getContextUID(), contextUID));
+    }
+
+    /**
      * Adds the code.
      *
      * @param code             the code.
@@ -2045,7 +2649,8 @@ public class AnatomicRegion {
      * @return the operation result.
      */
     public static Code addCode(Code code, String bodyPartExamined) {
-        return BODY_PART_EXAMINED.put(bodyPartExamined, code);
+        String normalized = normalizeBodyPartExamined(bodyPartExamined);
+        return normalized == null ? null : BODY_PART_EXAMINED.put(normalized, code);
     }
 
     /**
@@ -2055,7 +2660,8 @@ public class AnatomicRegion {
      * @return the operation result.
      */
     public static Code removeCode(String bodyPartExamined) {
-        return BODY_PART_EXAMINED.remove(bodyPartExamined);
+        String normalized = normalizeBodyPartExamined(bodyPartExamined);
+        return normalized == null ? null : BODY_PART_EXAMINED.remove(normalized);
     }
 
 }

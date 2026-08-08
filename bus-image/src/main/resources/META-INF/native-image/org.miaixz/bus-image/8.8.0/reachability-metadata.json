@@ -1358,6 +1358,22 @@
           ]
         },
         {
+          "name": "getCategoryFromContextUID",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCategoryItems",
+          "parameterTypes": [
+            "org.miaixz.bus.image.builtin.AnatomicRegion$CategoryBuilder"
+          ]
+        },
+        {
+          "name": "getCategoryMap",
+          "parameterTypes": []
+        },
+        {
           "name": "readModifiers",
           "parameterTypes": [
             "org.miaixz.bus.image.galaxy.data.Attributes"
@@ -1367,6 +1383,25 @@
           "name": "readRegion",
           "parameterTypes": [
             "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        },
+        {
+          "name": "registerCategory",
+          "parameterTypes": [
+            "org.miaixz.bus.image.builtin.AnatomicRegion$CategoryBuilder",
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "unregisterCategory",
+          "parameterTypes": [
+            "org.miaixz.bus.image.builtin.AnatomicRegion$CategoryBuilder"
+          ]
+        },
+        {
+          "name": "unregisterCategory",
+          "parameterTypes": [
+            "java.lang.String"
           ]
         },
         {
@@ -1382,6 +1417,105 @@
             "org.miaixz.bus.image.galaxy.data.Code",
             "org.miaixz.bus.image.galaxy.data.Code[]"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.builtin.AnatomicRegion$Category",
+      "methods": [
+        {
+          "name": "fromContextUID",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getContextUID",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIdentifier",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTitle",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTitle",
+          "parameterTypes": [
+            "java.util.Locale"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.builtin.AnatomicRegion$CategoryBuilder",
+      "methods": [
+        {
+          "name": "getContextUID",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIdentifier",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTitle",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.builtin.AnatomicRegion$OtherCategory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getContextUID",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIdentifier",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTitle",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
         }
       ]
     },
