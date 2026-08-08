@@ -171,6 +171,14 @@ public class ImageOutputData {
             case UID.JPEG2000:
                 return type <= CvType.CV_16S ? dstTsuid : UID.ExplicitVRLittleEndian.uid;
 
+            case UID.JPEGXLLossless:
+                return type <= CvType.CV_32F ? dstTsuid : UID.ExplicitVRLittleEndian.uid;
+
+            case UID.JPEGXLJPEGRecompression:
+            case UID.JPEGXL:
+                return type <= CvType.CV_8S ? dstTsuid
+                        : type <= CvType.CV_32F ? UID.JPEGXLLossless.uid : UID.ExplicitVRLittleEndian.uid;
+
             default:
                 return dstTsuid;
         }
@@ -232,6 +240,9 @@ public class ImageOutputData {
             case UID.JPEGLSNearLossless:
             case UID.JPEG2000Lossless:
             case UID.JPEG2000:
+            case UID.JPEGXLLossless:
+            case UID.JPEGXLJPEGRecompression:
+            case UID.JPEGXL:
                 // case UID.JPEG2000Part2MultiComponentLosslessOnly:
                 // case UID.JPEG2000Part2MultiComponent:
                 return true;
@@ -281,10 +292,12 @@ public class ImageOutputData {
         MatOfInt dicomParams = null;
         try {
             dicomParams = new MatOfInt(params);
+            double uncompressedFrameSize = frameSizeInBytes(images.get(0).get());
             for (int i = 0; i < images.size(); i++) {
                 PlanarImage image = images.get(i).get();
                 boolean releaseSrc = image.isReleasedAfterProcessing();
-                PlanarImage writeImg = Builder.isJpeg2000(tsuid) ? image : RGBImageVoiLut.bgr2rgb(image);
+                PlanarImage writeImg = Builder.isJpeg2000(tsuid) || Builder.isJpegXL(tsuid) ? image
+                        : RGBImageVoiLut.bgr2rgb(image);
                 if (releaseSrc && !writeImg.equals(image)) {
                     image.release();
                 }
@@ -295,8 +308,7 @@ public class ImageOutputData {
                 }
                 int compressedLength = buf.width() * buf.height() * (int) buf.elemSize();
                 if (i == 0) {
-                    double uncompressed = writeImg.width() * writeImg.height() * (double) writeImg.elemSize();
-                    adaptCompressionRatio(dataSet, params, uncompressed / compressedLength);
+                    adaptCompressionRatio(dataSet, params, uncompressedFrameSize / compressedLength);
                     dos.writeDataset(null, dataSet);
                     dos.writeHeader(Tag.PixelData, VR.OB, -1);
                     dos.writeHeader(Tag.Item, null, 0);
@@ -320,6 +332,16 @@ public class ImageOutputData {
     }
 
     /**
+     * Gets the frame size in bytes.
+     *
+     * @param image the image.
+     * @return the frame size.
+     */
+    private static double frameSizeInBytes(PlanarImage image) {
+        return (double) image.width() * image.height() * image.elemSize();
+    }
+
+    /**
      * Executes the adapt compression ratio operation.
      *
      * @param dataSet the data set.
@@ -327,40 +349,98 @@ public class ImageOutputData {
      * @param ratio   the ratio.
      */
     private void adaptCompressionRatio(Attributes dataSet, int[] params, double ratio) {
-        int compressType = params[Imgcodecs.DICOM_PARAM_COMPRESSION];
-        int jpeglsNLE = params[Imgcodecs.DICOM_PARAM_JPEGLS_LOSSY_ERROR];
-        int jpeg2000CompRatio = params[Imgcodecs.DICOM_PARAM_J2K_COMPRESSION_FACTOR];
-        int jpegQuality = params[Imgcodecs.DICOM_PARAM_JPEG_QUALITY];
-        if ((compressType == Imgcodecs.DICOM_CP_JPG && jpegQuality > 0)
-                || (compressType == Imgcodecs.DICOM_CP_J2K && jpeg2000CompRatio > 0)
-                || (compressType == Imgcodecs.DICOM_CP_JPLS && jpeglsNLE > 0)) {
-            dataSet.setString(Tag.LossyImageCompression, VR.CS, "01");
-            String method = compressType == Imgcodecs.DICOM_CP_J2K ? "ISO_15444_1"
-                    : compressType == Imgcodecs.DICOM_CP_JPLS ? "ISO_14495_1" : "ISO_10918_1";
-            double[] old = dataSet.getDoubles(Tag.LossyImageCompressionRatio);
-            double[] destArray;
-            String[] methods;
-            if (old == null) {
-                destArray = new double[] { ratio };
-                methods = new String[] { method };
-            } else {
-                destArray = Arrays.copyOf(old, old.length + 1);
-                destArray[destArray.length - 1] = ratio;
-                String[] oldM = Builder.getStringArrayFromDicomElement(
-                        dataSet,
-                        Tag.LossyImageCompressionMethod,
-                        Normal.EMPTY_STRING_ARRAY);
-                methods = Arrays.copyOf(oldM, old.length + 1);
-                methods[methods.length - 1] = method;
-                for (int i = 0; i < methods.length; i++) {
-                    if (!StringKit.hasText(methods[i])) {
-                        methods[i] = "unknown";
-                    }
-                }
-            }
-            dataSet.setDouble(Tag.LossyImageCompressionRatio, VR.DS, destArray);
-            dataSet.setString(Tag.LossyImageCompressionMethod, VR.CS, methods);
+        if (TransferSyntaxType.isLossyCompression(tsuid)) {
+            setLossyCompressionTags(dataSet, params[Imgcodecs.DICOM_PARAM_COMPRESSION], ratio);
         }
+    }
+
+    /**
+     * Sets lossy compression tags.
+     *
+     * @param dataSet      the data set.
+     * @param compressType the compression type.
+     * @param ratio        the compression ratio.
+     */
+    private void setLossyCompressionTags(Attributes dataSet, int compressType, double ratio) {
+        dataSet.setString(Tag.LossyImageCompression, VR.CS, "01");
+
+        String method = getCompressionMethod(compressType);
+        dataSet.setString(Tag.LossyImageCompressionMethod, VR.CS, updateCompressionMethods(dataSet, method));
+        if (ratio > 0 && Double.isFinite(ratio)) {
+            dataSet.setDouble(Tag.LossyImageCompressionRatio, VR.DS, updateCompressionRatios(dataSet, ratio));
+        } else {
+            Logger.warn(false, "Image", "Cannot compute the lossy compression ratio of {}", method);
+        }
+    }
+
+    /**
+     * Gets the compression method.
+     *
+     * @param compressType the compression type.
+     * @return the compression method.
+     */
+    private String getCompressionMethod(int compressType) {
+        return switch (compressType) {
+            case Imgcodecs.DICOM_CP_J2K -> "ISO_15444_1";
+            case Imgcodecs.DICOM_CP_JPLS -> "ISO_14495_1";
+            case Imgcodecs.DICOM_CP_JXL -> "ISO_18181_1";
+            default -> "ISO_10918_1";
+        };
+    }
+
+    /**
+     * Updates compression ratios.
+     *
+     * @param dataSet the data set.
+     * @param ratio   the ratio.
+     * @return the updated ratios.
+     */
+    private double[] updateCompressionRatios(Attributes dataSet, double ratio) {
+        double[] existing = dataSet.getDoubles(Tag.LossyImageCompressionRatio);
+        return existing == null ? new double[] { ratio } : appendToArray(existing, ratio);
+    }
+
+    /**
+     * Appends a value to an array.
+     *
+     * @param array the array.
+     * @param value the value.
+     * @return the updated array.
+     */
+    private double[] appendToArray(double[] array, double value) {
+        double[] result = Arrays.copyOf(array, array.length + 1);
+        result[result.length - 1] = value;
+        return result;
+    }
+
+    /**
+     * Updates compression methods.
+     *
+     * @param dataSet the data set.
+     * @param method  the method.
+     * @return the updated methods.
+     */
+    private String[] updateCompressionMethods(Attributes dataSet, String method) {
+        String[] existing = Builder
+                .getStringArrayFromDicomElement(dataSet, Tag.LossyImageCompressionMethod, Normal.EMPTY_STRING_ARRAY);
+        String[] updated = Arrays.copyOf(existing, existing.length + 1);
+        updated[updated.length - 1] = method;
+        return sanitizeCompressionMethods(updated);
+    }
+
+    /**
+     * Sanitizes compression methods.
+     *
+     * @param methods the methods.
+     * @return the sanitized methods.
+     */
+    private String[] sanitizeCompressionMethods(String[] methods) {
+        for (int i = 0; i < methods.length; i++) {
+            if (!StringKit.hasText(methods[i])) {
+                methods[i] = "unknown";
+            }
+        }
+        return methods;
     }
 
     /**
@@ -469,6 +549,11 @@ public class ImageOutputData {
         int compressType = Imgcodecs.DICOM_CP_JPG;
         if (ts == TransferSyntaxType.JPEG_2000) {
             compressType = Imgcodecs.DICOM_CP_J2K;
+        } else if (ts == TransferSyntaxType.JPEG_XL) {
+            compressType = Imgcodecs.DICOM_CP_JXL;
+            if (UID.from(param.getTransferSyntaxUid()) != UID.JPEGXL || elemSize == 2) {
+                param.setCompressionQuality(100);
+            }
         } else if (ts == TransferSyntaxType.JPEG_LS) {
             compressType = Imgcodecs.DICOM_CP_JPLS;
             if (signed) {

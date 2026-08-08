@@ -69,6 +69,11 @@ public class ModalityLutModule {
     private Optional<LookupTableCV> lut;
 
     /**
+     * The reset state value.
+     */
+    private boolean reset;
+
+    /**
      * Modality LUT Module
      * <p>
      * Note: Either a Modality LUT Sequence containing a single Item or Rescale Slope and Intercept values shall be
@@ -85,7 +90,25 @@ public class ModalityLutModule {
         this.lutType = Optional.empty();
         this.lutExplanation = Optional.empty();
         this.lut = Optional.empty();
+        this.reset = false;
         init(Objects.requireNonNull(dcm));
+    }
+
+    /**
+     * Creates a reset instance with optional rescale parameters.
+     *
+     * @param rescaleSlope     the rescale slope.
+     * @param rescaleIntercept the rescale intercept.
+     * @param rescaleType      the rescale type.
+     */
+    private ModalityLutModule(Double rescaleSlope, Double rescaleIntercept, String rescaleType) {
+        this.rescaleSlope = rescaleSlope == null ? OptionalDouble.empty() : OptionalDouble.of(rescaleSlope);
+        this.rescaleIntercept = rescaleIntercept == null ? OptionalDouble.empty() : OptionalDouble.of(rescaleIntercept);
+        this.rescaleType = Optional.ofNullable(rescaleType);
+        this.lutType = Optional.empty();
+        this.lutExplanation = Optional.empty();
+        this.lut = Optional.empty();
+        this.reset = true;
     }
 
     /**
@@ -228,6 +251,15 @@ public class ModalityLutModule {
     }
 
     /**
+     * Determines whether this module is a reset identity instance.
+     *
+     * @return true if this module is reset; otherwise false.
+     */
+    public boolean isReset() {
+        return reset;
+    }
+
+    /**
      * Executes the adapt with overlay bit mask operation.
      *
      * @param shiftHighBit the shift high bit.
@@ -247,6 +279,27 @@ public class ModalityLutModule {
         // Divide pixel value by (2 ^ rightBit) => remove right bits
         rs /= 1 << shiftHighBit;
         this.rescaleSlope = OptionalDouble.of(rs);
+    }
+
+    /**
+     * Gets a reset identity instance.
+     *
+     * @return the reset instance.
+     */
+    public static ModalityLutModule getResetInstance() {
+        return getResetInstance(null, null, null);
+    }
+
+    /**
+     * Gets a reset identity instance that retains the original rescale parameters.
+     *
+     * @param rescaleSlope     the rescale slope.
+     * @param rescaleIntercept the rescale intercept.
+     * @param rescaleType      the rescale type.
+     * @return the reset instance.
+     */
+    public static ModalityLutModule getResetInstance(Double rescaleSlope, Double rescaleIntercept, String rescaleType) {
+        return new ModalityLutModule(rescaleSlope, rescaleIntercept, rescaleType);
     }
 
 }

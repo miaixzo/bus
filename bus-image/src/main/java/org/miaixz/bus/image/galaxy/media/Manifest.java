@@ -276,6 +276,33 @@ public class Manifest implements ManifestXml {
     }
 
     /**
+     * Executes the json manifest operation.
+     *
+     * @param version the version.
+     * @return the operation result.
+     */
+    public String jsonManifest(String version) {
+        try {
+            StringWriter writer = new StringWriter();
+            writeManifest(writer, version, ManifestFormat.JSON);
+            return writer.toString();
+        } catch (IOException exception) {
+            throw new IllegalStateException("Unable to write DICOM manifest", exception);
+        }
+    }
+
+    /**
+     * Executes the manifest operation.
+     *
+     * @param version the version.
+     * @param format  the format.
+     * @return the operation result.
+     */
+    public String manifest(String version, ManifestFormat format) {
+        return format == ManifestFormat.JSON ? jsonManifest(version) : xmlManifest(version);
+    }
+
+    /**
      * Writes the manifest.
      *
      * @param writer  the writer.
@@ -285,6 +312,22 @@ public class Manifest implements ManifestXml {
     public void writeManifest(Writer writer, String version) throws IOException {
         writer.append("<?xml version=\"1.0\" encoding=\"").append(getCharsetEncoding()).append("\"?>");
         toXml(writer, version);
+    }
+
+    /**
+     * Writes the manifest.
+     *
+     * @param writer  the writer.
+     * @param version the version.
+     * @param format  the format.
+     * @throws IOException if the operation cannot be completed.
+     */
+    public void writeManifest(Writer writer, String version, ManifestFormat format) throws IOException {
+        if (format == ManifestFormat.JSON) {
+            new JsonManifestSerializer(writer).write(this, version);
+        } else {
+            writeManifest(writer, version);
+        }
     }
 
     /**

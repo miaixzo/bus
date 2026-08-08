@@ -161,6 +161,11 @@ public class Decompressor {
     protected ImageDescriptor imageDescriptor;
 
     /**
+     * The frame start fragments value.
+     */
+    private int[] frameStartFragments;
+
+    /**
      * Creates a new instance.
      *
      * @param dataset the dataset.
@@ -199,7 +204,7 @@ public class Decompressor {
             this.pixeldataFragments = (Fragments) pixeldata;
 
             int numFragments = pixeldataFragments.size();
-            if (frames == 1 ? (numFragments < 2) : (numFragments != frames + 1))
+            if (numFragments < frames + 1)
                 throw new IllegalArgumentException(
                         "Number of Pixel Data Fragments: " + numFragments + " does not match " + frames);
 
@@ -451,8 +456,19 @@ public class Decompressor {
      * @throws IOException if the operation cannot be completed.
      */
     protected BufferedImage decompressFrame(ImageInputStream iis, int index) throws IOException {
-        SegmentedInputImageStream siis = new SegmentedInputImageStream(iis, pixeldataFragments, index);
+        SegmentedInputImageStream siis;
+        if (pixeldataFragments.size() - 1 == frames) {
+            siis = new SegmentedInputImageStream(iis, pixeldataFragments, index);
+        } else {
+            if (frameStartFragments == null) {
+                frameStartFragments = SegmentedInputImageStream.frameStartFragments(pixeldataFragments, frames, iis);
+            }
+            int first = frameStartFragments[index];
+            int last = index + 1 < frames ? frameStartFragments[index + 1] : pixeldataFragments.size();
+            siis = new SegmentedInputImageStream(iis, pixeldataFragments, first, last);
+        }
         siis.setImageDescriptor(imageDescriptor);
+        siis.setFile(file);
         decompressor.setInput(patchJpegLS != null ? new PatchJPEGLSInputStream(siis, patchJpegLS) : siis);
         readParam.setDestination(bi);
         long start = System.currentTimeMillis();

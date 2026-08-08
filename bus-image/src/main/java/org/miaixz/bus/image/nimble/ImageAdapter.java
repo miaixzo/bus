@@ -497,14 +497,17 @@ public class ImageAdapter {
      * @return Modality LUT.
      */
     public LookupTableCV getModalityLookup(WlPresentation wlp, boolean inverseLUTAction) {
+        ModalityLutModule modalityLut = desc.getModalityLutForFrame(frameIndex);
+        if (modalityLut.isReset()) {
+            return null;
+        }
         Integer paddingValue = desc.getPixelPaddingValue();
         boolean pixelPadding = wlp == null || wlp.isPixelPadding();
         PresentationLutObject pr = wlp != null && wlp.getPresentationState() instanceof PresentationLutObject
                 ? (PresentationLutObject) wlp.getPresentationState()
                 : null;
-        LookupTableCV prModLut = (pr != null ? pr.getModalityLutModule().getLut().orElse(null) : null);
-        final LookupTableCV mLUTSeq = prModLut == null ? desc.getModalityLutForFrame(frameIndex).getLut().orElse(null)
-                : prModLut;
+        LookupTableCV prModLut = pr != null ? pr.getModalityLutModule().getLut().orElse(null) : null;
+        final LookupTableCV mLUTSeq = prModLut == null ? modalityLut.getLut().orElse(null) : prModLut;
         if (mLUTSeq != null) {
             if (!pixelPadding || paddingValue == null) {
                 if (minMax.minVal >= mLUTSeq.getOffset()

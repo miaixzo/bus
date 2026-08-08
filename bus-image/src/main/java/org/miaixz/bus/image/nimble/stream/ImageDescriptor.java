@@ -602,4 +602,27 @@ public final class ImageDescriptor {
         modalityLutPerFrame.set(frame, modalityLut);
     }
 
+    /**
+     * Resets the modality LUT for the frame while retaining original rescale parameters.
+     *
+     * @param frame the frame.
+     */
+    public void resetModalityLutForFrame(int frame) {
+        if (frame < 0 || frame >= modalityLutPerFrame.size()) {
+            Logger.error(
+                    false,
+                    "Image",
+                    "Unable to reset ModalityLutModule for invalid frame index: frameIndex={}",
+                    frame);
+            return;
+        }
+        ModalityLutModule current = getModalityLutForFrame(frame);
+        Double slope = current.getRescaleSlope().isPresent() ? current.getRescaleSlope().getAsDouble() : null;
+        Double intercept = current.getRescaleIntercept().isPresent() ? current.getRescaleIntercept().getAsDouble()
+                : null;
+        modalityLutPerFrame.set(
+                frame,
+                ModalityLutModule.getResetInstance(slope, intercept, current.getRescaleType().orElse(null)));
+    }
+
 }

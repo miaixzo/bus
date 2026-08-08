@@ -19,8 +19,15 @@
 */
 package org.miaixz.bus.image.galaxy.media;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Manifest query result enriched with WADO retrieval parameters and viewer message metadata.
@@ -36,9 +43,9 @@ public class ManifestQueryResult extends Manifest {
     private final WadoParameters wadoParameters;
 
     /**
-     * The viewer message value.
+     * The viewer messages value.
      */
-    private ViewerMessage viewerMessage;
+    private final List<ViewerMessage> viewerMessages = new ArrayList<>();
 
     /**
      * Creates a new instance.
@@ -75,7 +82,27 @@ public class ManifestQueryResult extends Manifest {
      * @return the viewer message.
      */
     public ViewerMessage getViewerMessage() {
-        return viewerMessage;
+        return viewerMessages.isEmpty() ? null : viewerMessages.get(0);
+    }
+
+    /**
+     * Gets the viewer messages.
+     *
+     * @return the viewer messages.
+     */
+    public List<ViewerMessage> getViewerMessages() {
+        return Collections.unmodifiableList(viewerMessages);
+    }
+
+    /**
+     * Adds the viewer message.
+     *
+     * @param viewerMessage the viewer message.
+     */
+    public void addViewerMessage(ViewerMessage viewerMessage) {
+        if (viewerMessage != null) {
+            viewerMessages.add(viewerMessage);
+        }
     }
 
     /**
@@ -84,7 +111,105 @@ public class ManifestQueryResult extends Manifest {
      * @param viewerMessage the viewer message.
      */
     public void setViewerMessage(ViewerMessage viewerMessage) {
-        this.viewerMessage = viewerMessage;
+        viewerMessages.clear();
+        addViewerMessage(viewerMessage);
+    }
+
+    /**
+     * Executes the to xml operation.
+     *
+     * @param writer the writer.
+     * @throws IOException if the operation cannot be completed.
+     */
+    @Override
+    public void toXml(Writer writer) throws IOException {
+        toXml(writer, null);
+    }
+
+    /**
+     * Executes the to xml operation.
+     *
+     * @param writer  the writer.
+     * @param version the version.
+     * @throws IOException if the operation cannot be completed.
+     */
+    @Override
+    public void toXml(Writer writer, String version) throws IOException {
+        writer.append(Symbol.LF).append(Symbol.LT).append(TAG_DOCUMENT_ROOT).append(Symbol.SPACE);
+        ManifestXml.addXmlAttribute(VERSION, version, writer);
+        ManifestXml.addXmlAttribute(MANIFEST_UID, getUid(), writer);
+        writer.append(ArchiveParameters.SCHEMA).append(Symbol.GT);
+
+        writeArchiveQuery(writer);
+        writer.append("\n</").append(TAG_DOCUMENT_ROOT).append(Symbol.GT);
+    }
+
+    /**
+     * Writes the archive query.
+     *
+     * @param writer the writer.
+     * @throws IOException if the operation cannot be completed.
+     */
+    private void writeArchiveQuery(Writer writer) throws IOException {
+        writer.append(Symbol.LF).append(Symbol.LT).append(ArchiveParameters.TAG_ARC_QUERY).append(Symbol.SPACE);
+        ManifestXml.addXmlAttribute(ArchiveParameters.ARCHIVE_ID, wadoParameters.getArchiveID(), writer);
+        ManifestXml.addXmlAttribute(ArchiveParameters.BASE_URL, wadoParameters.getBaseURL(), writer);
+        if (wadoParameters.getQueryMode() != QueryMode.DEFAULT) {
+            ManifestXml.addXmlAttribute(ArchiveParameters.QUERY_MODE, wadoParameters.getQueryMode().name(), writer);
+        }
+        ManifestXml.addXmlAttribute(ArchiveParameters.WEB_LOGIN, wadoParameters.getWebLogin(), writer);
+        ManifestXml.addXmlAttribute(
+                WadoParameters.WADO_ONLY_SOP_UID,
+                wadoParameters.isRequireOnlySOPInstanceUID(),
+                writer);
+        ManifestXml.addXmlAttribute(
+                ArchiveParameters.ADDITIONAL_PARAMETERS,
+                wadoParameters.getAdditionalParameters(),
+                writer);
+        ManifestXml.addXmlAttribute(ArchiveParameters.OVERRIDE_TAGS, wadoParameters.getOverrideDicomTagsList(), writer);
+        writer.append(Symbol.GT);
+
+        for (HttpTag tag : wadoParameters.getHttpTaglist()) {
+            writeHttpTag(writer, tag);
+        }
+        for (ViewerMessage message : viewerMessages) {
+            writeViewerMessage(writer, message);
+        }
+        ArrayList<ManifestPatient> sortedPatients = new ArrayList<>(getPatients().values());
+        Collections.sort(sortedPatients);
+        for (ManifestPatient patient : sortedPatients) {
+            patient.toXml(writer);
+        }
+        writer.append("\n</").append(ArchiveParameters.TAG_ARC_QUERY).append(Symbol.GT);
+    }
+
+    /**
+     * Writes an HTTP tag.
+     *
+     * @param writer the writer.
+     * @param tag    the HTTP tag.
+     * @throws IOException if the operation cannot be completed.
+     */
+    private static void writeHttpTag(Writer writer, HttpTag tag) throws IOException {
+        writer.append(Symbol.LF).append(Symbol.LT).append(ArchiveParameters.TAG_HTTP_TAG).append(Symbol.SPACE);
+        ManifestXml.addXmlAttribute("key", tag.getKey(), writer);
+        ManifestXml.addXmlAttribute("value", tag.getValue(), writer);
+        writer.append("/>");
+    }
+
+    /**
+     * Writes a viewer message.
+     *
+     * @param writer  the writer.
+     * @param message the message.
+     * @throws IOException if the operation cannot be completed.
+     */
+    private static void writeViewerMessage(Writer writer, ViewerMessage message) throws IOException {
+        writer.append(Symbol.LF).append(Symbol.LT).append(ViewerMessage.TAG_DOCUMENT_MSG).append(Symbol.SPACE);
+        ManifestXml.addXmlAttribute(ViewerMessage.MSG_ATTRIBUTE_TITLE, message.title(), writer);
+        ManifestXml.addXmlAttribute(ViewerMessage.MSG_ATTRIBUTE_DESC, message.message(), writer);
+        ManifestXml.addXmlAttribute(ViewerMessage.MSG_ATTRIBUTE_LEVEL, message.level().name(), writer);
+        writer.append("/>");
     }
 
     /**
@@ -95,7 +220,7 @@ public class ManifestQueryResult extends Manifest {
     @Override
     public String toString() {
         return "ManifestQueryResult{" + "patientCount=" + getPatientCount() + ", wadoParameters=" + wadoParameters
-                + ", hasViewerMessage=" + (viewerMessage != null) + '}';
+                + ", viewerMessageCount=" + viewerMessages.size() + '}';
     }
 
 }

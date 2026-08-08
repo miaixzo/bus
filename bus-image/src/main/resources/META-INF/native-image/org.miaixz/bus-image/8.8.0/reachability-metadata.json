@@ -50059,30 +50059,21 @@
         {
           "name": "<init>",
           "parameterTypes": [
+            "java.io.File",
+            "long[]",
+            "long[]",
+            "org.miaixz.bus.image.nimble.codec.ImageDescriptor"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
             "org.miaixz.bus.image.nimble.opencv.SegmentedImageStream"
           ]
         },
         {
           "name": "getFilePath",
           "parameterTypes": []
-        },
-        {
-          "name": "getFilePath",
-          "parameterTypes": [
-            "java.io.RandomAccessFile"
-          ]
-        },
-        {
-          "name": "getRandomAccessFile",
-          "parameterTypes": [
-            "javax.imageio.stream.FileImageInputStream"
-          ]
-        },
-        {
-          "name": "getRandomAccessFile",
-          "parameterTypes": [
-            "javax.imageio.stream.FileImageOutputStream"
-          ]
         }
       ]
     },
@@ -52550,12 +52541,6 @@
           ]
         },
         {
-          "name": "getByteArrayInputStream",
-          "parameterTypes": [
-            "javax.imageio.stream.MemoryCacheImageInputStream"
-          ]
-        },
-        {
           "name": "getCache",
           "parameterTypes": []
         }
@@ -52567,6 +52552,275 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.AbstractNativeImageWriter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.imageio.spi.ImageWriterSpi"
+          ]
+        },
+        {
+          "name": "buildDicomParams",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.ImageCV",
+            "java.awt.image.RenderedImage",
+            "javax.imageio.ImageWriteParam",
+            "org.miaixz.bus.image.nimble.codec.ImageDescriptor"
+          ]
+        },
+        {
+          "name": "codecName",
+          "parameterTypes": []
+        },
+        {
+          "name": "convertImageMetadata",
+          "parameterTypes": [
+            "javax.imageio.metadata.IIOMetadata",
+            "javax.imageio.ImageTypeSpecifier",
+            "javax.imageio.ImageWriteParam"
+          ]
+        },
+        {
+          "name": "convertStreamMetadata",
+          "parameterTypes": [
+            "javax.imageio.metadata.IIOMetadata",
+            "javax.imageio.ImageWriteParam"
+          ]
+        },
+        {
+          "name": "getDefaultImageMetadata",
+          "parameterTypes": [
+            "javax.imageio.ImageTypeSpecifier",
+            "javax.imageio.ImageWriteParam"
+          ]
+        },
+        {
+          "name": "getDefaultStreamMetadata",
+          "parameterTypes": [
+            "javax.imageio.ImageWriteParam"
+          ]
+        },
+        {
+          "name": "monochromeOrRgb",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "rejectChromaSubsampledLossless",
+          "parameterTypes": [
+            "boolean",
+            "org.miaixz.bus.image.nimble.Photometric"
+          ]
+        },
+        {
+          "name": "requireImageDescriptor",
+          "parameterTypes": [
+            "javax.imageio.stream.ImageOutputStream"
+          ]
+        },
+        {
+          "name": "requireOutputStream",
+          "parameterTypes": []
+        },
+        {
+          "name": "toMat",
+          "parameterTypes": [
+            "java.awt.image.RenderedImage",
+            "javax.imageio.ImageWriteParam",
+            "org.miaixz.bus.image.nimble.codec.ImageDescriptor"
+          ]
+        },
+        {
+          "name": "validate",
+          "parameterTypes": [
+            "javax.imageio.ImageWriteParam",
+            "org.miaixz.bus.image.nimble.codec.ImageDescriptor"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "javax.imageio.metadata.IIOMetadata",
+            "javax.imageio.IIOImage",
+            "javax.imageio.ImageWriteParam"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.NativeJ2kImageWriter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.imageio.spi.ImageWriterSpi"
+          ]
+        },
+        {
+          "name": "buildDicomParams",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.ImageCV",
+            "java.awt.image.RenderedImage",
+            "javax.imageio.ImageWriteParam",
+            "org.miaixz.bus.image.nimble.codec.ImageDescriptor"
+          ]
+        },
+        {
+          "name": "codecName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDefaultWriteParam",
+          "parameterTypes": []
+        },
+        {
+          "name": "toMat",
+          "parameterTypes": [
+            "java.awt.image.RenderedImage",
+            "javax.imageio.ImageWriteParam",
+            "org.miaixz.bus.image.nimble.codec.ImageDescriptor"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.NativeJLSImageWriter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.imageio.spi.ImageWriterSpi"
+          ]
+        },
+        {
+          "name": "buildDicomParams",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.ImageCV",
+            "java.awt.image.RenderedImage",
+            "javax.imageio.ImageWriteParam",
+            "org.miaixz.bus.image.nimble.codec.ImageDescriptor"
+          ]
+        },
+        {
+          "name": "codecName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDefaultWriteParam",
+          "parameterTypes": []
+        },
+        {
+          "name": "toMat",
+          "parameterTypes": [
+            "java.awt.image.RenderedImage",
+            "javax.imageio.ImageWriteParam",
+            "org.miaixz.bus.image.nimble.codec.ImageDescriptor"
+          ]
+        },
+        {
+          "name": "validate",
+          "parameterTypes": [
+            "javax.imageio.ImageWriteParam",
+            "org.miaixz.bus.image.nimble.codec.ImageDescriptor"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.NativeJPEGImageWriter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.imageio.spi.ImageWriterSpi"
+          ]
+        },
+        {
+          "name": "buildDicomParams",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.ImageCV",
+            "java.awt.image.RenderedImage",
+            "javax.imageio.ImageWriteParam",
+            "org.miaixz.bus.image.nimble.codec.ImageDescriptor"
+          ]
+        },
+        {
+          "name": "codecName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCodecColorSpace",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.Photometric"
+          ]
+        },
+        {
+          "name": "getDefaultWriteParam",
+          "parameterTypes": []
+        },
+        {
+          "name": "toMat",
+          "parameterTypes": [
+            "java.awt.image.RenderedImage",
+            "javax.imageio.ImageWriteParam",
+            "org.miaixz.bus.image.nimble.codec.ImageDescriptor"
+          ]
+        },
+        {
+          "name": "validate",
+          "parameterTypes": [
+            "javax.imageio.ImageWriteParam",
+            "org.miaixz.bus.image.nimble.codec.ImageDescriptor"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.NativeJXLImageWriter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.imageio.spi.ImageWriterSpi"
+          ]
+        },
+        {
+          "name": "buildDicomParams",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.ImageCV",
+            "java.awt.image.RenderedImage",
+            "javax.imageio.ImageWriteParam",
+            "org.miaixz.bus.image.nimble.codec.ImageDescriptor"
+          ]
+        },
+        {
+          "name": "codecName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDefaultWriteParam",
+          "parameterTypes": []
+        },
+        {
+          "name": "toMat",
+          "parameterTypes": [
+            "java.awt.image.RenderedImage",
+            "javax.imageio.ImageWriteParam",
+            "org.miaixz.bus.image.nimble.codec.ImageDescriptor"
+          ]
+        },
+        {
+          "name": "validate",
+          "parameterTypes": [
+            "javax.imageio.ImageWriteParam",
+            "org.miaixz.bus.image.nimble.codec.ImageDescriptor"
+          ]
         }
       ]
     },
@@ -53485,12 +53739,6 @@
           ]
         },
         {
-          "name": "getByte",
-          "parameterTypes": [
-            "java.io.ByteArrayInputStream"
-          ]
-        },
-        {
           "name": "getFileStreamSegment",
           "parameterTypes": [
             "org.miaixz.bus.image.nimble.stream.SegmentedInputImageStream"
@@ -53519,6 +53767,13 @@
           "parameterTypes": [
             "javax.imageio.stream.ImageInputStream",
             "javax.imageio.ImageReadParam"
+          ]
+        },
+        {
+          "name": "readFrame",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.stream.SegmentedInputImageStream",
+            "long[]"
           ]
         },
         {

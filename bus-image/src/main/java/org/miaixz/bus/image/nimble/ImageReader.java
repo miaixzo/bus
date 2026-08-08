@@ -59,6 +59,7 @@ import org.miaixz.bus.image.nimble.opencv.ImageCV;
 import org.miaixz.bus.image.nimble.opencv.ImageConversion;
 import org.miaixz.bus.image.nimble.opencv.ImageTransformer;
 import org.miaixz.bus.image.nimble.opencv.PlanarImage;
+import org.miaixz.bus.image.nimble.opencv.lut.ModalityLutModule;
 import org.miaixz.bus.image.nimble.stream.*;
 import org.miaixz.bus.logger.Logger;
 
@@ -664,13 +665,19 @@ public class ImageReader extends javax.imageio.ImageReader {
      * @return Processed image.
      */
     static PlanarImage rangeOutsideLut(PlanarImage input, ImageDescriptor desc, int frameIndex, boolean forceFloat) {
-        OptionalDouble rescaleSlope = desc.getModalityLutForFrame(frameIndex).getRescaleSlope();
-        if (forceFloat || rescaleSlope.isPresent()) {
+        ModalityLutModule modalityLut = desc.getModalityLutForFrame(frameIndex);
+        boolean reset = modalityLut.isReset();
+        boolean forceToFloat = forceFloat || reset;
+        OptionalDouble rescaleSlope = modalityLut.getRescaleSlope();
+        if (forceToFloat || rescaleSlope.isPresent()) {
             double slope = rescaleSlope.orElse(1.0);
-            double intercept = desc.getModalityLutForFrame(frameIndex).getRescaleIntercept().orElse(0.0);
+            double intercept = modalityLut.getRescaleIntercept().orElse(0.0);
             Core.MinMaxLocResult minMax = ImageAdapter.getMinMaxValues(input, desc, frameIndex);
             Pair<Double, Double> rescale = getRescaleSlopeAndIntercept(slope, intercept, minMax);
-            if (forceFloat || slope < 0.5 || rangeOutsideLut(rescale, desc)) {
+            if (forceToFloat || slope < 0.5 || rangeOutsideLut(rescale, desc)) {
+                if (!reset) {
+                    desc.resetModalityLutForFrame(frameIndex);
+                }
                 ImageCV dstImg = new ImageCV();
                 boolean invertLUT = desc.getPhotometricInterpretation() == Photometric.MONOCHROME1;
                 double alpha = slope;
