@@ -43,8 +43,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Order;
+import org.miaixz.bus.mapper.feature.affix.AffixRuleConfig;
 import org.miaixz.bus.mapper.feature.paging.Sort;
-import org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
 import org.miaixz.bus.mapper.parsing.IndexMeta;
@@ -236,10 +236,10 @@ public final class IdentifierValidator {
     /**
      * Validates physical identifiers resolved from Mapper entity metadata.
      *
-     * @param dataSource        datasource used to load database rules
-     * @param datasourceKey     datasource namespace
-     * @param entityClasses     Mapper entity classes
-     * @param tablePrefixConfig effective table prefix configuration
+     * @param dataSource      datasource used to load database rules
+     * @param datasourceKey   datasource namespace
+     * @param entityClasses   Mapper entity classes
+     * @param affixRuleConfig effective physical table-name affix rules
      * @throws MapperException when JDBC metadata is unavailable or any resolved physical identifier violates the
      *                         effective database rules
      */
@@ -247,7 +247,7 @@ public final class IdentifierValidator {
             DataSource dataSource,
             String datasourceKey,
             Collection<Class<?>> entityClasses,
-            TablePrefixConfig tablePrefixConfig) {
+            AffixRuleConfig affixRuleConfig) {
         if (!isEnabled(datasourceKey)) {
             return;
         }
@@ -260,7 +260,7 @@ public final class IdentifierValidator {
             if (entityClasses != null) {
                 for (Class<?> entityClass : entityClasses) {
                     if (entityClass != null) {
-                        entries.addAll(entries(MapperFactory.of(entityClass), tablePrefixConfig));
+                        entries.addAll(entries(MapperFactory.of(entityClass), affixRuleConfig));
                     }
                 }
             }
@@ -426,12 +426,12 @@ public final class IdentifierValidator {
     /**
      * Converts one entity table into generic validation entries.
      */
-    private List<Entry> entries(TableMeta table, TablePrefixConfig prefixConfig) {
+    private List<Entry> entries(TableMeta table, AffixRuleConfig affixRuleConfig) {
         List<Entry> entries = new ArrayList<>();
         String entity = table.entityClass() == null ? null : table.entityClass().getName();
         addOptional(entries, "CATALOG", entity, table.table(), table.catalog(), "catalog", true);
         addOptional(entries, "SCHEMA", entity, table.table(), table.schema(), "schema", true);
-        String physicalTable = prefixed(table.table(), prefixConfig);
+        String physicalTable = affixed(table.table(), affixRuleConfig);
         entries.add(
                 new Entry("TABLE", entity, null, physicalTable, null, physicalTable, physicalTable, "record", true));
 
@@ -458,23 +458,17 @@ public final class IdentifierValidator {
         }
         for (ForeignKeyMeta foreignKey : table.foreignKeys()) {
             String columns = joined(foreignKey.columns());
+            String referencedTable = affixed(foreignKey.referencedTable(), affixRuleConfig);
             entries.add(
                     new Entry("FOREIGN_KEY", entity, properties(table, foreignKey.columns()), physicalTable, columns,
                             foreignKey.name(), physicalTable + Symbol.UNDERLINE + columns, "fk", false));
             addColumnReferences(entries, table, entity, physicalTable, foreignKey.columns());
-            addOptional(
-                    entries,
-                    "REFERENCED_TABLE",
-                    entity,
-                    physicalTable,
-                    foreignKey.referencedTable(),
-                    "record",
-                    true);
+            addOptional(entries, "REFERENCED_TABLE", entity, physicalTable, referencedTable, "record", true);
             if (foreignKey.referencedColumns() != null) {
                 for (String column : foreignKey.referencedColumns()) {
                     entries.add(
-                            new Entry("REFERENCED_COLUMN", entity, null, foreignKey.referencedTable(), column, column,
-                                    column, "value", false));
+                            new Entry("REFERENCED_COLUMN", entity, null, referencedTable, column, column, column,
+                                    "value", false));
                 }
             }
         }
@@ -543,25 +537,34 @@ public final class IdentifierValidator {
     }
 
     /**
-     * Applies the effective table prefix while retaining an explicit table quote.
+     * Applies effective affix rules while retaining an explicit table quote.
      */
-    private String prefixed(String table, TablePrefixConfig config) {
+    private String affixed(String table, AffixRuleConfig config) {
         if (table == null || config == null || config.getProvider() == null) {
             return table;
         }
         String prefix = config.getProvider().getPrefix();
+        String suffix = config.getProvider().getSuffix();
         String simple = plain(table);
-        List<String> ignored = config.getIgnore();
-        if (prefix == null || prefix.isBlank() || simple.startsWith(prefix)
-                || (ignored != null && ignored.stream().anyMatch(simple::equalsIgnoreCase))) {
+        List<String> prefixIgnore = config.getPrefixIgnore();
+        List<String> suffixIgnore = config.getSuffixIgnore();
+        boolean ignorePrefix = prefixIgnore != null && prefixIgnore.stream().anyMatch(simple::equalsIgnoreCase);
+        boolean ignoreSuffix = suffixIgnore != null && suffixIgnore.stream().anyMatch(simple::equalsIgnoreCase);
+        if ((prefix == null || prefix.isBlank() || ignorePrefix)
+                && (suffix == null || suffix.isBlank() || ignoreSuffix)) {
             return table;
         }
+        String physical = (prefix == null || prefix.isBlank() || ignorePrefix || simple.startsWith(prefix)
+                ? Normal.EMPTY
+                : prefix) + simple
+                + (suffix == null || suffix.isBlank() || ignoreSuffix || simple.endsWith(suffix) ? Normal.EMPTY
+                        : suffix);
         if (table.length() > 1 && ((table.startsWith(Symbol.DOUBLE_QUOTES) && table.endsWith(Symbol.DOUBLE_QUOTES))
                 || (table.startsWith(Symbol.BACKTICK) && table.endsWith(Symbol.BACKTICK))
                 || (table.startsWith(Symbol.BRACKET_LEFT) && table.endsWith(Symbol.BRACKET_RIGHT)))) {
-            return table.substring(0, 1) + prefix + table.substring(1);
+            return table.substring(0, 1) + physical + table.substring(table.length() - 1);
         }
-        return prefix + table;
+        return physical;
     }
 
     /**

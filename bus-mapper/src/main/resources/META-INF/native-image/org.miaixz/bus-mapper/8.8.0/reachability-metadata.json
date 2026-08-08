@@ -1630,10 +1630,20 @@
           ]
         },
         {
-          "name": "setPrefix",
+          "name": "setAffix",
           "parameterTypes": [
             "java.lang.String",
+            "java.lang.String",
             "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setAffix",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.List",
+            "java.lang.String",
+            "java.util.List"
           ]
         },
         {
@@ -1649,13 +1659,13 @@
       "type": "org.miaixz.bus.mapper.Context$MapperConfig",
       "fields": [
         {
+          "name": "affix"
+        },
+        {
           "name": "audit"
         },
         {
           "name": "populate"
-        },
-        {
-          "name": "prefix"
         },
         {
           "name": "tenant"
@@ -1674,15 +1684,15 @@
           "parameterTypes": []
         },
         {
+          "name": "getAffix",
+          "parameterTypes": []
+        },
+        {
           "name": "getAudit",
           "parameterTypes": []
         },
         {
           "name": "getPopulate",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPrefix",
           "parameterTypes": []
         },
         {
@@ -1694,6 +1704,12 @@
           "parameterTypes": []
         },
         {
+          "name": "setAffix",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig"
+          ]
+        },
+        {
           "name": "setAudit",
           "parameterTypes": [
             "org.miaixz.bus.mapper.feature.audit.AuditConfig"
@@ -1703,12 +1719,6 @@
           "name": "setPopulate",
           "parameterTypes": [
             "org.miaixz.bus.mapper.feature.populate.PopulateConfig"
-          ]
-        },
-        {
-          "name": "setPrefix",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig"
           ]
         },
         {
@@ -1733,6 +1743,12 @@
           "parameterTypes": []
         },
         {
+          "name": "affix",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig"
+          ]
+        },
+        {
           "name": "audit",
           "parameterTypes": [
             "org.miaixz.bus.mapper.feature.audit.AuditConfig"
@@ -1746,12 +1762,6 @@
           "name": "populate",
           "parameterTypes": [
             "org.miaixz.bus.mapper.feature.populate.PopulateConfig"
-          ]
-        },
-        {
-          "name": "prefix",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig"
           ]
         },
         {
@@ -4953,7 +4963,7 @@
             "javax.sql.DataSource",
             "java.lang.String",
             "java.util.Collection",
-            "org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig"
+            "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig"
           ]
         },
         {
@@ -5634,23 +5644,27 @@
       }
     },
     {
-      "type": "org.miaixz.bus.mapper.feature.prefix.TablePrefixBuilder",
+      "type": "org.miaixz.bus.mapper.feature.affix.AffixSqlRewriter",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
             "java.lang.String",
+            "java.lang.String",
             "java.util.List"
           ]
         },
         {
-          "name": "applyPrefix",
+          "name": "<init>",
           "parameterTypes": [
-            "java.lang.String"
+            "java.lang.String",
+            "java.util.List",
+            "java.lang.String",
+            "java.util.List"
           ]
         },
         {
-          "name": "shouldIgnore",
+          "name": "apply",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -5658,31 +5672,46 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig",
+      "type": "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig",
       "fields": [
         {
-          "name": "ignore"
+          "name": "prefixIgnore"
         },
         {
           "name": "provider"
+        },
+        {
+          "name": "suffixIgnore"
         }
       ],
       "methods": [
         {
-          "name": "$default$ignore",
+          "name": "$default$prefixIgnore",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$suffixIgnore",
           "parameterTypes": []
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig$TablePrefixConfigBuilder"
+            "org.miaixz.bus.mapper.feature.affix.AffixValueProvider",
+            "java.util.List"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.prefix.TablePrefixProvider",
+            "org.miaixz.bus.mapper.feature.affix.AffixValueProvider",
+            "java.util.List",
             "java.util.List"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig$AffixRuleConfigBuilder"
           ]
         },
         {
@@ -5690,7 +5719,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getIgnore",
+          "name": "getPrefixIgnore",
           "parameterTypes": []
         },
         {
@@ -5698,22 +5727,26 @@
           "parameterTypes": []
         },
         {
+          "name": "getSuffixIgnore",
+          "parameterTypes": []
+        },
+        {
           "name": "of",
           "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.prefix.TablePrefixProvider"
+            "org.miaixz.bus.mapper.feature.affix.AffixValueProvider"
           ]
         }
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig$TablePrefixConfigBuilder",
+      "type": "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig$AffixRuleConfigBuilder",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         },
         {
-          "name": "ignore",
+          "name": "prefixIgnore",
           "parameterTypes": [
             "java.util.List"
           ]
@@ -5721,28 +5754,22 @@
         {
           "name": "provider",
           "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.prefix.TablePrefixProvider"
+            "org.miaixz.bus.mapper.feature.affix.AffixValueProvider"
           ]
         },
         {
-          "name": "toString",
-          "parameterTypes": []
+          "name": "suffixIgnore",
+          "parameterTypes": [
+            "java.util.List"
+          ]
         }
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig$TablePrefixConfigBuilderImpl",
+      "type": "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig$AffixRuleConfigBuilderImpl",
       "methods": [
         {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
           "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "self",
           "parameterTypes": []
         }
       ]
@@ -5750,7 +5777,7 @@
     {
       "type": {
         "proxy": [
-          "org.miaixz.bus.mapper.feature.prefix.TablePrefixProvider"
+          "org.miaixz.bus.mapper.feature.affix.AffixValueProvider"
         ]
       }
     },
@@ -5894,7 +5921,7 @@
           "name": "ignored",
           "parameterTypes": [
             "java.lang.String",
-            "org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig"
+            "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig"
           ]
         },
         {
@@ -5911,19 +5938,20 @@
             "javax.sql.DataSource",
             "java.util.Collection",
             "org.miaixz.bus.mapper.feature.schema.SchemaConfig",
-            "org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig"
+            "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig"
           ]
         },
         {
-          "name": "prefixedTable",
+          "name": "affixedTable",
           "parameterTypes": [
             "org.miaixz.bus.mapper.parsing.TableMeta",
-            "org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig"
+            "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig"
           ]
         },
         {
-          "name": "prefixQualifiedTable",
+          "name": "affixQualifiedTable",
           "parameterTypes": [
+            "java.lang.String",
             "java.lang.String",
             "java.lang.String"
           ]
@@ -5939,12 +5967,6 @@
           "parameterTypes": [
             "org.miaixz.bus.mapper.behavior.SchemaBehavior",
             "org.miaixz.bus.mapper.feature.schema.SchemaDiff"
-          ]
-        },
-        {
-          "name": "tablePrefix",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig"
           ]
         },
         {
@@ -7098,7 +7120,10 @@
           "name": "provider"
         },
         {
-          "name": "tablePrefix"
+          "name": "affixPrefix"
+        },
+        {
+          "name": "affixSuffix"
         }
       ],
       "methods": [
@@ -7119,7 +7144,11 @@
           "parameterTypes": []
         },
         {
-          "name": "$default$tablePrefix",
+          "name": "$default$affixPrefix",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$affixSuffix",
           "parameterTypes": []
         },
         {
@@ -7153,7 +7182,11 @@
           "parameterTypes": []
         },
         {
-          "name": "getTablePrefix",
+          "name": "getAffixPrefix",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAffixSuffix",
           "parameterTypes": []
         },
         {
@@ -7179,7 +7212,7 @@
           ]
         },
         {
-          "name": "removeTablePrefix",
+          "name": "removeAffixes",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -7230,7 +7263,13 @@
           ]
         },
         {
-          "name": "tablePrefix",
+          "name": "affixPrefix",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "affixSuffix",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -10023,16 +10062,16 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.runtime.MapperOptions$PrefixOptions",
+      "type": "org.miaixz.bus.mapper.runtime.MapperOptions$AffixOptions",
       "fields": [
         {
           "name": "enabled"
         },
         {
-          "name": "ignore"
+          "name": "prefix"
         },
         {
-          "name": "prefix"
+          "name": "suffix"
         }
       ],
       "methods": [
@@ -10041,11 +10080,11 @@
           "parameterTypes": []
         },
         {
-          "name": "getIgnore",
+          "name": "getPrefix",
           "parameterTypes": []
         },
         {
-          "name": "getPrefix",
+          "name": "getSuffix",
           "parameterTypes": []
         },
         {
@@ -10059,13 +10098,50 @@
           ]
         },
         {
+          "name": "setPrefix",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.runtime.MapperOptions$AffixPartOptions"
+          ]
+        },
+        {
+          "name": "setSuffix",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.runtime.MapperOptions$AffixPartOptions"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.runtime.MapperOptions$AffixPartOptions",
+      "fields": [
+        {
+          "name": "ignore"
+        },
+        {
+          "name": "value"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIgnore",
+          "parameterTypes": []
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
           "name": "setIgnore",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "setPrefix",
+          "name": "setValue",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -10726,6 +10802,9 @@
       "type": "org.miaixz.bus.mapper.runtime.MapperPluginProviders",
       "fields": [
         {
+          "name": "affixProvider"
+        },
+        {
           "name": "auditProvider"
         },
         {
@@ -10733,9 +10812,6 @@
         },
         {
           "name": "populateProvider"
-        },
-        {
-          "name": "prefixProvider"
         },
         {
           "name": "schemaProvider"
@@ -10753,6 +10829,10 @@
           "parameterTypes": []
         },
         {
+          "name": "getAffixProvider",
+          "parameterTypes": []
+        },
+        {
           "name": "getAuditProvider",
           "parameterTypes": []
         },
@@ -10762,10 +10842,6 @@
         },
         {
           "name": "getPopulateProvider",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPrefixProvider",
           "parameterTypes": []
         },
         {
@@ -10779,6 +10855,12 @@
         {
           "name": "getVisibleProvider",
           "parameterTypes": []
+        },
+        {
+          "name": "setAffixProvider",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.affix.AffixValueProvider"
+          ]
         },
         {
           "name": "setAuditProvider",
@@ -10796,12 +10878,6 @@
           "name": "setPopulateProvider",
           "parameterTypes": [
             "org.miaixz.bus.mapper.feature.populate.PopulateProvider"
-          ]
-        },
-        {
-          "name": "setPrefixProvider",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.prefix.TablePrefixProvider"
           ]
         },
         {

@@ -236,7 +236,7 @@ final class MapperOptionsResolver {
         int pathDot = path.indexOf(Symbol.C_DOT);
         String scope = pathDot < 0 ? path : path.substring(0, pathDot);
         return switch (scope) {
-            case Args.OPERATION_KEY, Args.PAGE_KEY, Args.IDENTIFIER_KEY, Args.PREFIX_KEY, Args.TENANT_KEY, Args.POPULATE_KEY, Args.VISIBLE_KEY, Args.AUDIT_KEY, SCHEMA_SCOPE -> namespaceName;
+            case Args.OPERATION_KEY, Args.PAGE_KEY, Args.IDENTIFIER_KEY, Args.AFFIX_KEY, Args.TENANT_KEY, Args.POPULATE_KEY, Args.VISIBLE_KEY, Args.AUDIT_KEY, SCHEMA_SCOPE -> namespaceName;
             default -> null;
         };
     }

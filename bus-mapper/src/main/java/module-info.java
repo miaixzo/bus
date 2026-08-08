@@ -51,13 +51,13 @@ module bus.mapper {
     exports org.miaixz.bus.mapper.builder;
     exports org.miaixz.bus.mapper.criteria;
     exports org.miaixz.bus.mapper.dialect;
+    exports org.miaixz.bus.mapper.feature.affix;
     exports org.miaixz.bus.mapper.feature.audit;
     exports org.miaixz.bus.mapper.feature.identifier;
     exports org.miaixz.bus.mapper.feature.keygen;
     exports org.miaixz.bus.mapper.feature.operation;
     exports org.miaixz.bus.mapper.feature.paging;
     exports org.miaixz.bus.mapper.feature.populate;
-    exports org.miaixz.bus.mapper.feature.prefix;
     exports org.miaixz.bus.mapper.feature.schema;
     exports org.miaixz.bus.mapper.feature.tenant;
     exports org.miaixz.bus.mapper.feature.visible;

@@ -28,6 +28,9 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
+import org.miaixz.bus.mapper.feature.affix.AffixRewriteHandler;
+import org.miaixz.bus.mapper.feature.affix.AffixRuleConfig;
+import org.miaixz.bus.mapper.feature.affix.AffixValueProvider;
 import org.miaixz.bus.mapper.feature.audit.AuditConfig;
 import org.miaixz.bus.mapper.feature.audit.AuditHandler;
 import org.miaixz.bus.mapper.feature.audit.AuditProvider;
@@ -37,9 +40,6 @@ import org.miaixz.bus.mapper.feature.paging.PageHandler;
 import org.miaixz.bus.mapper.feature.populate.PopulateConfig;
 import org.miaixz.bus.mapper.feature.populate.PopulateHandler;
 import org.miaixz.bus.mapper.feature.populate.PopulateProvider;
-import org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig;
-import org.miaixz.bus.mapper.feature.prefix.TablePrefixHandler;
-import org.miaixz.bus.mapper.feature.prefix.TablePrefixProvider;
 import org.miaixz.bus.mapper.feature.tenant.TenantConfig;
 import org.miaixz.bus.mapper.feature.tenant.TenantHandler;
 import org.miaixz.bus.mapper.feature.tenant.TenantProvider;
@@ -121,10 +121,10 @@ public class MapperPluginFactory {
         if (options != null) {
             Properties resolved = effectiveProperties(options);
             // Handler execution order is critical. The order determines the SQL modification sequence.
-            // Execution order: Operation Check -> Table Prefix -> Tenant Vector -> Visible Vector -> Populate
+            // Execution order: Operation Check -> Affix Rewrite -> Tenant Vector -> Visible Vector -> Populate
             // -> Pagination -> Audit.
             configureOperation(options, resolved, handlers);
-            configurePrefix(options, providers, resolved, handlers);
+            configureAffix(options, providers, resolved, handlers);
             configureTenant(options, providers, resolved, handlers);
             configureVisible(options, providers, resolved, handlers);
             configurePopulate(options, providers, resolved, handlers);
@@ -208,7 +208,7 @@ public class MapperPluginFactory {
             Properties resolved,
             List<MapperHandler> handlers) {
         MapperOptions.TenantOptions tenantOptions = options.getTenant();
-        MapperOptions.PrefixOptions prefixOptions = options.getPrefix();
+        MapperOptions.AffixOptions affixOptions = options.getAffix();
         boolean hasSimplifiedConfig = tenantOptions != null;
         boolean hasConfigFile = hasConfiguration(resolved, Args.TENANT_KEY);
         boolean hasProvider = providers != null && providers.getTenantProvider() != null;
@@ -228,10 +228,22 @@ public class MapperPluginFactory {
                         DEFAULT_KEY + Symbol.DOT + Args.TENANT_KEY + Symbol.DOT + Args.PROP_IGNORE,
                         tenantOptions.getIgnore());
             }
-            if (prefixOptions != null && StringKit.isNotEmpty(prefixOptions.getPrefix())) {
+            String affixPrefix = affixOptions != null && affixOptions.getPrefix() != null
+                    ? affixOptions.getPrefix().getValue()
+                    : null;
+            String affixSuffix = affixOptions == null || affixOptions.getSuffix() == null ? null
+                    : affixOptions.getSuffix().getValue();
+            if (StringKit.isNotEmpty(affixPrefix)) {
                 props.setProperty(
-                        DEFAULT_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT + Args.TABLE_PREFIX,
-                        prefixOptions.getPrefix());
+                        DEFAULT_KEY + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT
+                                + Args.PROP_VALUE,
+                        affixPrefix);
+            }
+            if (StringKit.isNotEmpty(affixSuffix)) {
+                props.setProperty(
+                        DEFAULT_KEY + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT + Args.SUFFIX_KEY + Symbol.DOT
+                                + Args.PROP_VALUE,
+                        affixSuffix);
             }
         }
 
@@ -241,7 +253,7 @@ public class MapperPluginFactory {
             TenantConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
                 Logger.debug(false, "Mapper", "Using tenant config from Provider.getConfig()");
-                TenantHandler<?> handler = new TenantHandler<>(withTablePrefix(providerConfig, props, providers));
+                TenantHandler<?> handler = new TenantHandler<>(withAffixValues(providerConfig, props, providers));
                 handler.setActivationProperties(props);
                 handlers.add(handler);
                 return;
@@ -257,18 +269,19 @@ public class MapperPluginFactory {
     }
 
     /**
-     * Returns a tenant configuration that contains the table prefix supplied by mapper properties.
+     * Adds affix values from Mapper properties to a provider-supplied tenant configuration.
      *
      * @param config    the tenant configuration returned by a provider
      * @param props     the resolved mapper properties
      * @param providers runtime providers, including the read-only JDBC key provider
-     * @return the tenant configuration with a table prefix
+     * @return the tenant configuration containing the effective affix values
      */
-    private static TenantConfig withTablePrefix(
+    private static TenantConfig withAffixValues(
             TenantConfig config,
             Properties props,
             MapperPluginProviders providers) {
-        if (config == null || StringKit.isNotEmpty(config.getTablePrefix()) || props == null) {
+        if (config == null || props == null
+                || StringKit.isNotEmpty(config.getAffixPrefix()) && StringKit.isNotEmpty(config.getAffixSuffix())) {
             return config;
         }
         Supplier<String> keyProvider = providers == null ? null : providers.getDatasourceKeyProvider();
@@ -276,18 +289,35 @@ public class MapperPluginFactory {
         if (StringKit.isEmpty(defaultKey)) {
             defaultKey = DEFAULT_KEY;
         }
-        String tablePrefix = props.getProperty(
-                defaultKey + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT + Args.TABLE_PREFIX,
+        String affixPrefix = props.getProperty(
+                defaultKey + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
                 props.getProperty(
-                        DEFAULT_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT + Args.TABLE_PREFIX,
+                        DEFAULT_KEY + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT
+                                + Args.PROP_VALUE,
                         props.getProperty(
-                                Args.SHARED_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT + Args.TABLE_PREFIX)));
-        if (StringKit.isEmpty(tablePrefix)) {
+                                Args.SHARED_KEY + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT + Args.PREFIX_KEY
+                                        + Symbol.DOT + Args.PROP_VALUE)));
+        String affixSuffix = props.getProperty(
+                defaultKey + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
+                props.getProperty(
+                        DEFAULT_KEY + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT + Args.SUFFIX_KEY + Symbol.DOT
+                                + Args.PROP_VALUE,
+                        props.getProperty(
+                                Args.SHARED_KEY + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT + Args.SUFFIX_KEY
+                                        + Symbol.DOT + Args.PROP_VALUE)));
+        if (StringKit.isNotEmpty(config.getAffixPrefix())) {
+            affixPrefix = config.getAffixPrefix();
+        }
+        if (StringKit.isNotEmpty(config.getAffixSuffix())) {
+            affixSuffix = config.getAffixSuffix();
+        }
+        if (StringKit.isEmpty(affixPrefix) && StringKit.isEmpty(affixSuffix)) {
             return config;
         }
         return TenantConfig.builder().mode(config.getMode()).column(config.getColumn()).ignore(config.getIgnore())
-                .ignoreMappers(config.getIgnoreMappers()).tablePrefix(tablePrefix)
-                .enableSqlCache(config.isEnableSqlCache()).provider(config.getProvider()).build();
+                .ignoreMappers(config.getIgnoreMappers()).affixPrefix(affixPrefix).affixSuffix(affixSuffix)
+                .enableSqlCache(config.isEnableSqlCache()).required(config.isRequired()).provider(config.getProvider())
+                .build();
     }
 
     /**
@@ -424,13 +454,13 @@ public class MapperPluginFactory {
     }
 
     /**
-     * Configures table prefix support and adds the {@link TablePrefixHandler}.
+     * Configures physical table-name affix rewriting and adds the {@link AffixRewriteHandler}.
      * <p>
      * Configuration priority:
      * </p>
      * <ol>
      * <li>Provider.getConfig() - if provider exists and returns non-null</li>
-     * <li>Simplified YAML config ({@code bus.mapper.prefix.*})</li>
+     * <li>Simplified YAML config ({@code bus.mapper.affix.*})</li>
      * <li>Configuration properties - database-specific &gt; shared</li>
      * <li>Provider instance only - if provider exists but no provider config is returned</li>
      * <li>Default values inside the handler</li>
@@ -441,15 +471,15 @@ public class MapperPluginFactory {
      * @param resolved  flattened mapper configuration properties
      * @param handlers  handler list to update
      */
-    private static void configurePrefix(
+    private static void configureAffix(
             MapperOptions options,
             MapperPluginProviders providers,
             Properties resolved,
             List<MapperHandler> handlers) {
-        MapperOptions.PrefixOptions prefixOptions = options.getPrefix();
-        boolean hasSimplifiedConfig = prefixOptions != null;
-        boolean hasConfigFile = hasConfiguration(resolved, Args.PREFIX_KEY);
-        boolean hasProvider = providers != null && providers.getPrefixProvider() != null;
+        MapperOptions.AffixOptions affixOptions = options.getAffix();
+        boolean hasSimplifiedConfig = affixOptions != null;
+        boolean hasConfigFile = hasConfiguration(resolved, Args.AFFIX_KEY);
+        boolean hasProvider = providers != null && providers.getAffixProvider() != null;
         if (!hasSimplifiedConfig && !hasConfigFile && !hasProvider) {
             return;
         }
@@ -457,26 +487,46 @@ public class MapperPluginFactory {
         Properties props = new Properties();
         props.putAll(resolved);
         if (hasSimplifiedConfig) {
-            Logger.debug(false, "Mapper", "Loading prefix config from simplified YAML configuration");
-            if (StringKit.isNotEmpty(prefixOptions.getPrefix())) {
+            Logger.debug(false, "Mapper", "Loading affix rules from simplified YAML configuration");
+            MapperOptions.AffixPartOptions prefixPart = affixOptions == null ? null : affixOptions.getPrefix();
+            MapperOptions.AffixPartOptions suffixPart = affixOptions == null ? null : affixOptions.getSuffix();
+            String prefix = prefixPart == null ? null : prefixPart.getValue();
+            String suffix = suffixPart == null ? null : suffixPart.getValue();
+            String prefixIgnore = prefixPart == null ? null : prefixPart.getIgnore();
+            String suffixIgnore = suffixPart == null ? null : suffixPart.getIgnore();
+            if (StringKit.isNotEmpty(prefix)) {
                 props.setProperty(
-                        DEFAULT_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT + Args.TABLE_PREFIX,
-                        prefixOptions.getPrefix());
+                        DEFAULT_KEY + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT
+                                + Args.PROP_VALUE,
+                        prefix);
             }
-            if (StringKit.isNotEmpty(prefixOptions.getIgnore())) {
+            if (StringKit.isNotEmpty(suffix)) {
                 props.setProperty(
-                        DEFAULT_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_IGNORE,
-                        prefixOptions.getIgnore());
+                        DEFAULT_KEY + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT + Args.SUFFIX_KEY + Symbol.DOT
+                                + Args.PROP_VALUE,
+                        suffix);
+            }
+            if (StringKit.isNotEmpty(prefixIgnore)) {
+                props.setProperty(
+                        DEFAULT_KEY + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT
+                                + Args.PROP_IGNORE,
+                        prefixIgnore);
+            }
+            if (StringKit.isNotEmpty(suffixIgnore)) {
+                props.setProperty(
+                        DEFAULT_KEY + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT + Args.SUFFIX_KEY + Symbol.DOT
+                                + Args.PROP_IGNORE,
+                        suffixIgnore);
             }
         }
 
-        TablePrefixProvider provider = providers != null ? providers.getPrefixProvider() : null;
+        AffixValueProvider provider = providers != null ? providers.getAffixProvider() : null;
         if (provider != null) {
-            Logger.debug(false, "Mapper", "TablePrefixProvider instance found");
-            TablePrefixConfig providerConfig = provider.getConfig();
+            Logger.debug(false, "Mapper", "AffixValueProvider instance found");
+            AffixRuleConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
-                Logger.debug(false, "Mapper", "Using prefix config from Provider.getConfig()");
-                TablePrefixHandler handler = new TablePrefixHandler(providerConfig);
+                Logger.debug(false, "Mapper", "Using affix rules from AffixValueProvider.getConfig()");
+                AffixRewriteHandler handler = new AffixRewriteHandler(providerConfig);
                 handler.setActivationProperties(props);
                 handlers.add(handler);
                 return;
@@ -484,10 +534,10 @@ public class MapperPluginFactory {
             props.put(Args.PROVIDER_KEY, provider);
         }
 
-        TablePrefixHandler handler = new TablePrefixHandler();
+        AffixRewriteHandler handler = new AffixRewriteHandler();
         if (handler.setProperties(props)) {
             handlers.add(handler);
-            Logger.debug(false, "Mapper", "Prefix handler configured successfully");
+            Logger.debug(false, "Mapper", "Affix rewrite handler configured successfully");
         }
     }
 
@@ -596,11 +646,19 @@ public class MapperPluginFactory {
             shared(properties, Args.IDENTIFIER_KEY, Args.PROP_ENABLED, identifier.isEnabled());
         }
 
-        MapperOptions.PrefixOptions prefix = options.getPrefix();
-        if (prefix != null) {
-            shared(properties, Args.PREFIX_KEY, Args.PROP_ENABLED, prefix.isEnabled());
-            shared(properties, Args.PREFIX_KEY, Args.TABLE_PREFIX, prefix.getPrefix());
-            shared(properties, Args.PREFIX_KEY, Args.PROP_IGNORE, prefix.getIgnore());
+        MapperOptions.AffixOptions affix = options.getAffix();
+        if (affix != null) {
+            shared(properties, Args.AFFIX_KEY, Args.PROP_ENABLED, affix.isEnabled());
+            MapperOptions.AffixPartOptions prefix = affix.getPrefix();
+            MapperOptions.AffixPartOptions suffix = affix.getSuffix();
+            if (prefix != null) {
+                shared(properties, Args.AFFIX_KEY, Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE, prefix.getValue());
+                shared(properties, Args.AFFIX_KEY, Args.PREFIX_KEY + Symbol.DOT + Args.PROP_IGNORE, prefix.getIgnore());
+            }
+            if (suffix != null) {
+                shared(properties, Args.AFFIX_KEY, Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE, suffix.getValue());
+                shared(properties, Args.AFFIX_KEY, Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_IGNORE, suffix.getIgnore());
+            }
         }
         MapperOptions.TenantOptions tenant = options.getTenant();
         if (tenant != null) {

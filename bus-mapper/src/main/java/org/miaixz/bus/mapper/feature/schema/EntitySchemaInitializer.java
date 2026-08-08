@@ -42,7 +42,7 @@ import org.miaixz.bus.mapper.Charter.Schema;
 import org.miaixz.bus.mapper.behavior.SchemaBehavior;
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.dialect.DialectRegistry;
-import org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig;
+import org.miaixz.bus.mapper.feature.affix.AffixRuleConfig;
 import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
 import org.miaixz.bus.mapper.parsing.IndexMeta;
 import org.miaixz.bus.mapper.parsing.MapperFactory;
@@ -84,15 +84,15 @@ public class EntitySchemaInitializer {
     }
 
     /**
-     * Initializes schema structures for entity classes using an optional table prefix configuration.
+     * Initializes schema structures for entity classes using optional physical table-name affix rules.
      * <p>
-     * The table prefix configuration is owned by the prefix plugin and is applied only to schema-local table metadata.
-     * Runtime mapper metadata remains unchanged.
+     * The affix rules are owned by the affix feature and are applied only to schema-local table metadata. Runtime
+     * mapper metadata remains unchanged.
      *
-     * @param dataSource        the datasource used for metadata reads and DDL execution
-     * @param entityClasses     the entity classes to initialize
-     * @param config            the schema configuration
-     * @param tablePrefixConfig the table prefix configuration resolved from the prefix plugin
+     * @param dataSource      the datasource used for metadata reads and DDL execution
+     * @param entityClasses   the entity classes to initialize
+     * @param config          the schema configuration
+     * @param affixRuleConfig physical table-name affix rules resolved from the affix feature
      * @return the schema execution report
      * @throws SQLException when metadata reads or DDL execution fail
      * @throws IOException  when script output fails
@@ -101,7 +101,7 @@ public class EntitySchemaInitializer {
             DataSource dataSource,
             Collection<Class<?>> entityClasses,
             SchemaConfig config,
-            TablePrefixConfig tablePrefixConfig) throws SQLException, IOException {
+            AffixRuleConfig affixRuleConfig) throws SQLException, IOException {
         SchemaReport report = new SchemaReport();
         if (config == null || !config.enabled() || config.mode() == Schema.NONE) {
             return report;
@@ -123,7 +123,7 @@ public class EntitySchemaInitializer {
                         if (excluded(table, config)) {
                             continue;
                         }
-                        table = prefixedTable(table, tablePrefixConfig);
+                        table = affixedTable(table, affixRuleConfig);
                         locks.add(SchemaInitializationLock.acquire(dataSource, table));
                         locks.add(operations.acquireSchemaInitializationLock(connection, table));
                         TableSnapshot snapshot = operations.readTable(connection, table);
@@ -155,44 +155,37 @@ public class EntitySchemaInitializer {
     }
 
     /**
-     * Applies table prefix plugin configuration to schema-local table metadata.
+     * Applies physical table-name affix rules to schema-local table metadata.
      *
-     * @param source            cached runtime table metadata
-     * @param tablePrefixConfig resolved table prefix configuration
+     * @param source          cached runtime table metadata
+     * @param affixRuleConfig resolved physical table-name affix rules
      * @return table metadata used by schema initialization
      */
-    private TableMeta prefixedTable(TableMeta source, TablePrefixConfig tablePrefixConfig) {
-        String prefix = tablePrefix(tablePrefixConfig);
+    private TableMeta affixedTable(TableMeta source, AffixRuleConfig affixRuleConfig) {
+        String prefix = affixRuleConfig == null || affixRuleConfig.getProvider() == null ? null
+                : affixRuleConfig.getProvider().getPrefix();
+        String suffix = affixRuleConfig == null || affixRuleConfig.getProvider() == null ? null
+                : affixRuleConfig.getProvider().getSuffix();
         String tableName = source == null ? null : source.table();
         String simpleTableName = simpleTableName(tableName);
-        if (source == null || tableName == null || prefix == null || prefix.isBlank()
-                || ignored(simpleTableName, tablePrefixConfig) || simpleTableName.startsWith(prefix)) {
+        boolean ignorePrefix = affixRuleConfig != null && ignored(simpleTableName, affixRuleConfig.getPrefixIgnore());
+        boolean ignoreSuffix = affixRuleConfig != null && ignored(simpleTableName, affixRuleConfig.getSuffixIgnore());
+        if (source == null || tableName == null || (prefix == null || prefix.isBlank() || ignorePrefix)
+                && (suffix == null || suffix.isBlank() || ignoreSuffix)) {
             return source;
         }
         TableMeta copy = copyTable(source);
-        copy.table(prefixQualifiedTable(tableName, prefix));
+        copy.table(affixQualifiedTable(tableName, ignorePrefix ? null : prefix, ignoreSuffix ? null : suffix));
         for (ForeignKeyMeta foreignKey : copy.foreignKeys()) {
             String referencedTable = foreignKey.referencedTable();
-            if (referencedTable != null && !referencedTable.isBlank()
-                    && !ignored(simpleTableName(referencedTable), tablePrefixConfig)
-                    && !simpleTableName(referencedTable).startsWith(prefix)) {
-                foreignKey.referencedTable(prefixQualifiedTable(referencedTable, prefix));
+            if (referencedTable != null && !referencedTable.isBlank()) {
+                String referencedSimple = simpleTableName(referencedTable);
+                String referencedPrefix = ignored(referencedSimple, affixRuleConfig.getPrefixIgnore()) ? null : prefix;
+                String referencedSuffix = ignored(referencedSimple, affixRuleConfig.getSuffixIgnore()) ? null : suffix;
+                foreignKey.referencedTable(affixQualifiedTable(referencedTable, referencedPrefix, referencedSuffix));
             }
         }
         return copy;
-    }
-
-    /**
-     * Resolves the table prefix from the prefix plugin configuration.
-     *
-     * @param tablePrefixConfig table prefix configuration
-     * @return table prefix, or {@code null}
-     */
-    private String tablePrefix(TablePrefixConfig tablePrefixConfig) {
-        if (tablePrefixConfig == null || tablePrefixConfig.getProvider() == null) {
-            return null;
-        }
-        return tablePrefixConfig.getProvider().getPrefix();
     }
 
     /**
@@ -253,32 +246,34 @@ public class EntitySchemaInitializer {
     }
 
     /**
-     * Checks whether a logical table should ignore table prefixing.
+     * Checks whether a logical table occurs in one side's ignore list.
      *
-     * @param tableName         logical table name
-     * @param tablePrefixConfig table prefix configuration
-     * @return {@code true} when the table should not be prefixed
+     * @param tableName logical table name
+     * @param ignore    ignored logical table names
+     * @return {@code true} when the table should not be rewritten
      */
-    private boolean ignored(String tableName, TablePrefixConfig tablePrefixConfig) {
-        if (tableName == null || tablePrefixConfig == null || tablePrefixConfig.getIgnore() == null) {
+    private boolean ignored(String tableName, List<String> ignore) {
+        if (tableName == null || ignore == null) {
             return false;
         }
-        return tablePrefixConfig.getIgnore().stream().anyMatch(tableName::equalsIgnoreCase);
+        return ignore.stream().anyMatch(tableName::equalsIgnoreCase);
     }
 
     /**
-     * Applies a prefix to the simple table name while preserving an optional qualifier.
+     * Applies affixes to the simple table name while preserving an optional qualifier.
      *
      * @param tableName table name
      * @param prefix    table prefix
-     * @return prefixed table name
+     * @param suffix    table suffix
+     * @return affixed table name
      */
-    private String prefixQualifiedTable(String tableName, String prefix) {
+    private String affixQualifiedTable(String tableName, String prefix, String suffix) {
         int qualifierIndex = tableName.lastIndexOf(Symbol.C_DOT);
-        if (qualifierIndex < 0) {
-            return prefix + tableName;
-        }
-        return tableName.substring(0, qualifierIndex + 1) + prefix + tableName.substring(qualifierIndex + 1);
+        String qualifier = qualifierIndex < 0 ? Normal.EMPTY : tableName.substring(0, qualifierIndex + 1);
+        String simple = qualifierIndex < 0 ? tableName : tableName.substring(qualifierIndex + 1);
+        String actualPrefix = prefix == null || prefix.isBlank() || simple.startsWith(prefix) ? Normal.EMPTY : prefix;
+        String actualSuffix = suffix == null || suffix.isBlank() || simple.endsWith(suffix) ? Normal.EMPTY : suffix;
+        return qualifier + actualPrefix + simple + actualSuffix;
     }
 
     /**

@@ -65,9 +65,15 @@ public class Args {
     public static final String IDENTIFIER_KEY = "identifier";
 
     /**
-     * Table prefix configuration scope.
+     * Affix rule configuration scope.
      */
+    public static final String AFFIX_KEY = "affix";
+
+    /** Prefix rule key inside affix configuration. */
     public static final String PREFIX_KEY = "prefix";
+
+    /** Suffix rule key inside affix configuration. */
+    public static final String SUFFIX_KEY = "suffix";
 
     /**
      * Configuration key for tenant (multi-tenancy) settings.
@@ -135,9 +141,9 @@ public class Args {
     public static final String TENANT_ID = "tenant_id";
 
     /**
-     * Table property: prefix value.
+     * Nested configuration property: configured value.
      */
-    public static final String TABLE_PREFIX = "prefix";
+    public static final String PROP_VALUE = "value";
 
     /**
      * Populate property: enable created time field.

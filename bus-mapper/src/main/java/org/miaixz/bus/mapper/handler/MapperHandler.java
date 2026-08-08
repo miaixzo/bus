@@ -37,32 +37,16 @@ import org.miaixz.bus.mapper.Charter;
  * <p>
  * Handlers are executed in order based on their {@link #getOrder()} value. Lower values have higher priority.
  * </p>
- *
  * Predefined Order Values
  *
  * <ul>
  * <li><b>-1000</b> - OperationHandler (SQL safety check, highest priority)</li>
- * <li><b>100</b> - TablePrefixHandler (table prefix modification)</li>
+ * <li><b>100</b> - AffixRewriteHandler (table prefix and suffix modification)</li>
  * <li><b>200</b> - TenantHandler (multi-tenancy filtering)</li>
  * <li><b>300</b> - VisibleHandler (data permission control)</li>
  * <li><b>400</b> - PopulateHandler (field auto-population)</li>
  * <li><b>1000</b> - PageHandler (pagination, lowest priority)</li>
  * </ul>
- *
- * Custom Handler Order
- *
- * <pre>
- * {@code
- * public class MyCustomHandler implements MapperHandler {
- *
- * &#64;author Kimi Liu
- *     &#64;Override
- *     public int getOrder() {
- *         return 150; // Execute between TablePrefixHandler and TenantHandler
- *     }
- * }
- * }
- * </pre>
  *
  * @param <T> The type of the object being handled.
  * @author Kimi Liu

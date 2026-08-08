@@ -24,9 +24,9 @@ import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.miaixz.bus.mapper.feature.affix.AffixValueProvider;
 import org.miaixz.bus.mapper.feature.audit.AuditProvider;
 import org.miaixz.bus.mapper.feature.populate.PopulateProvider;
-import org.miaixz.bus.mapper.feature.prefix.TablePrefixProvider;
 import org.miaixz.bus.mapper.feature.schema.SchemaProvider;
 import org.miaixz.bus.mapper.feature.tenant.TenantProvider;
 import org.miaixz.bus.mapper.feature.visible.VisibleProvider;
@@ -58,9 +58,9 @@ public class MapperPluginProviders {
     private TenantProvider tenantProvider;
 
     /**
-     * Provider used to resolve dynamic table prefixes and optional table prefix handler configuration.
+     * Provider used to resolve dynamic table prefixes, suffixes, and optional affix configuration.
      */
-    private TablePrefixProvider prefixProvider;
+    private AffixValueProvider affixProvider;
 
     /**
      * Provider used to resolve data visibility conditions and optional visible handler configuration.
