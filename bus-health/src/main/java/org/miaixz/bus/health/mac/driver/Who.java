@@ -32,7 +32,7 @@ import org.miaixz.bus.health.mac.jna.SystemB;
 import org.miaixz.bus.health.unix.shared.jna.CLibrary;
 
 /**
- * Utility to query logged in users on macOS.
+ * Queries logged in users on macOS.
  *
  * @author Kimi Liu
  * @since Java 21+

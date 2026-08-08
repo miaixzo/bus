@@ -29,7 +29,7 @@ import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * Enum utility class.
+ * Inspects and converts enum constants.
  *
  * @author Kimi Liu
  * @since Java 21+

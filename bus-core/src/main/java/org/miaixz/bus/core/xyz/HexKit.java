@@ -31,9 +31,9 @@ import org.miaixz.bus.core.lang.Symbol;
  * Hexadecimal (abbreviated as hex or subscript 16) is a base-16 numeral system in mathematics, generally represented by
  * digits 0 to 9 and letters A to F (where A-F are 10-15). For example, the decimal number 57 is written as 111001 in
  * binary and 39 in hexadecimal. Languages like Java and C distinguish hexadecimal from decimal values by prefixing
- * hexadecimal numbers with 0x, for instance, 0x20 is decimal 32, not decimal 20. This utility class provides
- * hexadecimal related tools, including encoding and decoding inherited from {@link Hex}, as well as other conversion
- * and identification tools.
+ * hexadecimal numbers with 0x, for instance, 0x20 is decimal 32, not decimal 20. This class provides hexadecimal
+ * related tools, including encoding and decoding inherited from {@link Hex}, as well as other conversion and
+ * identification tools.
  *
  * @author Kimi Liu
  * @see Hex

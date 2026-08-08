@@ -31,8 +31,8 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Utility class for formatting strings with placeholders. This class provides methods to replace placeholders in a
- * string template with provided arguments, supporting both indexed and named placeholders.
+ * Formats strings with placeholders. This class provides methods to replace placeholders in a string template with
+ * provided arguments with indexed or named placeholders.
  *
  * @author Kimi Liu
  * @since Java 21+

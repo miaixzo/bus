@@ -28,8 +28,8 @@ import com.vdurmont.emoji.EmojiParser;
 import com.vdurmont.emoji.EmojiParser.FitzpatrickAction;
 
 /**
- * A utility class for handling emoji characters, based on the emoji-java library. For detailed documentation and a list
- * of aliases, please refer to the emoji-java project:
+ * Handles emoji characters, based on the emoji-java library. For detailed documentation and a list of aliases, please
+ * refer to the emoji-java project:
  * <a href="https://github.com/vdurmont/emoji-java">https://github.com/vdurmont/emoji-java</a>
  *
  * @author Kimi Liu

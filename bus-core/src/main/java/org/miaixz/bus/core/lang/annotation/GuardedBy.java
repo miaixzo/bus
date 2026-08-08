@@ -24,8 +24,8 @@ import java.lang.annotation.*;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * A documentation annotation used to indicate that a field or method is protected by a specific lock. This helps in
- * code maintenance, peer review, and automated analysis tools by making the concurrency policy explicit and helping to
+ * A documentation annotation used to indicate that a field or method is protected by a specific lock. This improves
+ * code maintenance, peer review, and automated analysis tools by making the concurrency policy explicit and which
  * identify potential thread-safety issues.
  * <p>
  * This annotation is conceptually similar to the {@code @GuardedBy} annotation found in various static analysis tools

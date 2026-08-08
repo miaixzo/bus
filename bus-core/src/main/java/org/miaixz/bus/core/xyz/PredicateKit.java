@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 import org.miaixz.bus.core.center.function.PredicateX;
 
 /**
- * Utility class for {@link PredicateX}.
+ * Creates and combines predicates.
  *
  * @author Kimi Liu
  * @since Java 21+

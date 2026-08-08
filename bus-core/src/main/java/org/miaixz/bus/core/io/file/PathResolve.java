@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.PredicateKit;
 
 /**
- * A utility class that encapsulates operations on NIO {@link Path} objects.
+ * A class that encapsulates operations on NIO {@link Path} objects.
  *
  * @author Kimi Liu
  * @since Java 21+

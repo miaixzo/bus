@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides internal data structures, constants, and helper classes for the caching framework.
+ * Defines the cache framework's internal data structures and constants.
  * <p>
  * This package contains various "magic" components that are fundamental to the operation of the caching annotations and
  * logic. These include holders for annotation and method metadata, data carriers for cache operation results, and

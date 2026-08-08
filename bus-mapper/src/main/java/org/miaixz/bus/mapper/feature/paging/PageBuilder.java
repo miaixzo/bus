@@ -249,7 +249,7 @@ public class PageBuilder {
     /**
      * Tests whether a character belongs to an unquoted SQL token for boundary detection.
      * <p>
-     * This parser helper is not an identifier compliance rule.
+     * This clause parser does not enforce identifier rules.
      * </p>
      *
      * @param value the character to test

@@ -28,8 +28,8 @@ import reactor.core.scheduler.Schedulers;
 /**
  * An implementation of {@link Provider} for serializing objects into JSON strings.
  * <p>
- * This class acts as a bridge between the gateway's format abstraction and the centralized {@link JsonKit} utility. It
- * ensures that all JSON serialization within the gateway is performed consistently and asynchronously.
+ * This class acts as a bridge between the gateway's format abstraction and the centralized {@link JsonKit} JSON codec.
+ * It ensures that all JSON serialization within the gateway is performed consistently and asynchronously.
  * <p>
  * Generic type parameters: {@code Provider<Object, String>}
  *

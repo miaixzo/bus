@@ -26,8 +26,9 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 /**
  * Canonical identity rules shared by cortex persistence, cache, and runtime sync.
  * <p>
- * The primary asset identity is {@code namespace + app_id + type + method + version}. Helpers that omit {@code app_id}
- * only describe partial route fragments for broad scans or compatibility paths and are not the preferred identity path.
+ * The primary asset identity is {@code namespace + app_id + type + method + version}. Overloads that omit
+ * {@code app_id} only describe partial route fragments for broad scans or compatibility paths and are not the preferred
+ * identity path.
  * </p>
  *
  * @author Kimi Liu

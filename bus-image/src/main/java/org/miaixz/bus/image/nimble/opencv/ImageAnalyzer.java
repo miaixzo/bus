@@ -277,7 +277,7 @@ public final class ImageAnalyzer {
         return buildMeanStdDev(source, finalMask);
     }
 
-    // Private helper methods
+    // Private methods
 
     /**
      * Represents the MaskData record.

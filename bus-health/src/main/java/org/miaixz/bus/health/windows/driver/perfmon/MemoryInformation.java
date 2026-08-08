@@ -26,7 +26,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.windows.PerfCounterQuery;
 
 /**
- * Utility to query Memory performance counter
+ * Queries Memory performance counter
  *
  * @author Kimi Liu
  * @since Java 21+

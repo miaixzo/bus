@@ -25,8 +25,7 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.xyz.CompareKit;
 
 /**
- * Utility class for performing operations on {@link BoundedRange} instances, such as union, intersection, and gap
- * calculations.
+ * Performs operations on {@link BoundedRange} instances, such as union, intersection, and gap calculations.
  *
  * @author Kimi Liu
  * @since Java 21+

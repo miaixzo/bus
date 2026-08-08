@@ -208,7 +208,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
      * maxPoolSize
      * }, a new thread is created;
      *    otherwise, the rejection policy is triggered.
-     * 3. {@link ArrayBlockingQueue}: A bounded queue that helps control queue size. When full, if active threads are less than
+     * 3. {@link ArrayBlockingQueue}: A bounded queue that limits queue growth. When full, if active threads are less than
      *    {@code
      * maxPoolSize
      * }, a new thread is created; otherwise, the rejection policy is triggered.
@@ -236,8 +236,8 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
 
     /**
      * Configures the builder to use an {@link ArrayBlockingQueue} as the waiting queue. This is a bounded queue, which
-     * helps in controlling the queue size. When the queue is full, if the number of active threads is less than
-     * {@code maxPoolSize}, a new thread will be created; otherwise, the rejection policy will be triggered.
+     * limits queue growth. When the queue is full, if the number of active threads is less than {@code maxPoolSize}, a
+     * new thread will be created; otherwise, the rejection policy will be triggered.
      *
      * @param capacity The capacity of the {@link ArrayBlockingQueue}.
      * @return This {@code ExecutorBuilder} instance for method chaining.

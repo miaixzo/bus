@@ -27,8 +27,8 @@ import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
 
 /**
- * Wrapper for {@code kotlin.reflect.jvm.internal.KClassImpl}. This class provides utility methods to interact with
- * Kotlin's internal KClass implementation for reflection purposes, specifically to retrieve constructors.
+ * Wrapper for {@code kotlin.reflect.jvm.internal.KClassImpl}. This class provides methods to interact with Kotlin's
+ * internal KClass implementation for reflection purposes, specifically to retrieve constructors.
  *
  * @author Kimi Liu
  * @since Java 21+

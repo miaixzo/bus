@@ -24,8 +24,8 @@ import org.miaixz.bus.core.lang.caller.Caller;
 import org.miaixz.bus.core.lang.caller.StackTraceCaller;
 
 /**
- * Caller utility. This class provides methods to get the caller class at different stack depths and to check if a
- * method was invoked by a specific class.
+ * Inspects caller classes at different stack depths. This class provides methods to get the caller class at different
+ * stack depths and to check if a method was invoked by a specific class.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -40,7 +40,7 @@ public class CallerKit {
     }
 
     /**
-     * Shared caller strategy used by this utility.
+     * Shared caller strategy used by this class.
      */
     private static final Caller INSTANCE;
 

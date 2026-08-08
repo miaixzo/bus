@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Utility class for fixing XXE vulnerabilities. See:
+ * Fixes XXE vulnerabilities. See:
  * <a href="https.blog.spoock.com/2018/10/23/java-xxe/">https://blog.spoock.com/2018/10/23/java-xxe/</a>
  *
  * @author Kimi Liu

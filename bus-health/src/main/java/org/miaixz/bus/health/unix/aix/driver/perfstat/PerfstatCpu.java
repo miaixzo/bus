@@ -27,7 +27,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_id_t;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
- * Utility to query performance stats for cpu
+ * Queries performance stats for cpu
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Utility class for Excel {@link Workbook}.
+ * Creates, reads, and modifies Excel workbooks.
  *
  * @author Kimi Liu
  * @since Java 21+

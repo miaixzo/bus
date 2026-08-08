@@ -28,8 +28,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * A utility class for reading data from an {@link InputStream}. This class provides various methods to read bytes,
- * convert to output streams, and deserialize objects, with options for closing the stream after reading.
+ * Reads data from an {@link InputStream}. This class provides various methods to read bytes, convert to output streams,
+ * and deserialize objects, with options for closing the stream after reading.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -158,7 +158,7 @@ public class StreamReader {
      * attacks!
      *
      * <p>
-     * This method uses a whitelist/blacklist approach via {@link ValidateObjectInputStream} to filter classes, helping
+     * This method uses a whitelist/blacklist approach via {@link ValidateObjectInputStream} to filter classes, thereby
      * to mitigate deserialization vulnerabilities. You can configure allowed or forbidden classes by constructing a
      * {@link ValidateObjectInputStream} and calling {@link ValidateObjectInputStream#accept(Class[])} or
      * {@link ValidateObjectInputStream#refuse(Class[])} methods.

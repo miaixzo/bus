@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * Shared archive models and low-level binary archive access helpers.
+ * Defines shared archive models and low-level binary archive access.
  *
  * @author Kimi Liu
  * @since Java 21+

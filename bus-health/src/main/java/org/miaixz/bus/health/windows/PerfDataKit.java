@@ -42,8 +42,7 @@ import org.miaixz.bus.health.builtin.jna.Struct.CloseablePdhRawCounter;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Helper class to centralize the boilerplate portions of PDH counter setup and allow applications to easily add, query,
- * and remove counters.
+ * Centralizes PDH counter setup so applications can add, query, and remove counters.
  *
  * @author Kimi Liu
  * @since Java 21+

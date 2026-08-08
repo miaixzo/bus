@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 
 /**
- * Utility to query logged in users.
+ * Queries logged in users.
  *
  * @author Kimi Liu
  * @since Java 21+

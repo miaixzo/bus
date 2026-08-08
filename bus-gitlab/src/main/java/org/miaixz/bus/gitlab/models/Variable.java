@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The variable class.
@@ -240,7 +240,7 @@ public class Variable implements Serializable {
          */
         FILE;
 
-        private static JacksonJsonEnumHelper<Type> enumHelper = new JacksonJsonEnumHelper<>(Type.class);
+        private static JacksonJsonEnumCodec<Type> enumCodec = new JacksonJsonEnumCodec<>(Type.class);
 
         /**
          * Returns the value.
@@ -251,7 +251,7 @@ public class Variable implements Serializable {
 
         @JsonCreator
         public static Type forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -262,7 +262,7 @@ public class Variable implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -273,7 +273,7 @@ public class Variable implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

@@ -30,7 +30,7 @@ import org.miaixz.bus.health.windows.WmiKit;
 import org.miaixz.bus.health.windows.WmiQueryHandler;
 
 /**
- * Utility to query LibreHardwareMonitor WMI sensor data for GPU metrics.
+ * Queries LibreHardwareMonitor WMI sensor data for GPU metrics.
  *
  * <p>
  * LHM publishes sensor data to {@code ROOT\LibreHardwareMonitor} when it is running. This class queries the

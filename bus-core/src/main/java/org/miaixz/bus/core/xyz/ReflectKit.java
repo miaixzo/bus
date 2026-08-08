@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.reflect.creator.DefaultObjectCreator;
 import org.miaixz.bus.core.text.StringTrimer;
 
 /**
- * Reflection utility class.
+ * Provides reflection operations.
  * <p>
  * This class has been refactored, and many of its methods have been moved to {@link FieldKit}, {@link MethodKit},
  * {@link ModifierKit}, etc.

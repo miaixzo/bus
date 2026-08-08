@@ -158,7 +158,7 @@ public final class StringBuilderPool {
      * @throws UnsupportedOperationException always
      */
     private StringBuilderPool() {
-        throw new UnsupportedOperationException("Utility class cannot be instantiated");
+        throw new UnsupportedOperationException("This class exposes static operations and cannot be instantiated");
     }
 
     /**

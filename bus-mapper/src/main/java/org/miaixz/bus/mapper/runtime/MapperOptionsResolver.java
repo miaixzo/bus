@@ -75,7 +75,7 @@ final class MapperOptionsResolver {
             + Symbol.BRACKET_RIGHT + Symbol.PLUS;
 
     /**
-     * Prevents instantiation of this mapper option normalization utility.
+     * Restricts the class to static mapper option normalization operations.
      */
     private MapperOptionsResolver() {
         // No initialization required.

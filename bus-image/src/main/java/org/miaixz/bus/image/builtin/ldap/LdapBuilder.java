@@ -38,8 +38,8 @@ import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.api.ConfigurationChanges;
 
 /**
- * Utility class for building and manipulating LDAP attributes and Distinguished Names (DNs) related to DICOM
- * configurations. It provides methods for storing attributes, comparing values, and handling LDAP-specific operations.
+ * Builds and modifies LDAP attributes and Distinguished Names (DNs) related to DICOM configurations. It provides
+ * methods for storing attributes, comparing values, and handling LDAP-specific operations.
  *
  * @author Kimi Liu
  * @since Java 21+

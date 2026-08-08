@@ -23,7 +23,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * A utility class for handling cache penetration prevention.
+ * Handles cache penetration prevention.
  * <p>
  * Cache penetration occurs when a non-existent key is frequently requested, causing each request to bypass the cache
  * and hit the underlying data source (e.g., a database). This class provides a special singleton object that can be

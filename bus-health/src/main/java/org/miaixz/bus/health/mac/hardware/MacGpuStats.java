@@ -44,12 +44,12 @@ import org.miaixz.bus.logger.Logger;
  * macOS {@link GpuStats} session.
  *
  * <p>
- * On Apple Silicon, GPU ticks, utilization, and power are sourced from an {@link IOReportClient} subscription.
- * Utilization falls back to IOAccelerator PerformanceStatistics when the IOReport subscription fails or returns -1.
- * Temperature is read from SMC first, then falls back to IOAccelerator {@code Temperature(C)}.
+ * On Apple Silicon, GPU ticks, usage, and power are sourced from an {@link IOReportClient} subscription. GPU usage
+ * falls back to IOAccelerator PerformanceStatistics when the IOReport subscription fails or returns -1. Temperature is
+ * read from SMC first, then falls back to IOAccelerator {@code Temperature(C)}.
  *
  * <p>
- * On Intel Mac, utilization and VRAM used are sourced from IOAccelerator PerformanceStatistics.
+ * On Intel Mac, GPU usage and occupied VRAM are sourced from IOAccelerator PerformanceStatistics.
  *
  * <p>
  * Clock speeds, fan speed, and shared memory are not available on any macOS path and always return -1.
@@ -71,14 +71,14 @@ final class MacGpuStats implements GpuStats {
     private static final String PERF_STATS_KEY = "PerformanceStatistics";
 
     /**
-     * The GPU_CORE_UTIL_KEY constant.
+     * The GPU_CORE_USAGE_KEY constant.
      */
-    private static final String GPU_CORE_UTIL_KEY = "GPU Core Utilization";
+    private static final String GPU_CORE_USAGE_KEY = "GPU Core Utilization";
 
     /**
-     * The DEVICE_UTIL_KEY constant.
+     * The DEVICE_USAGE_KEY constant.
      */
-    private static final String DEVICE_UTIL_KEY = "Device Utilization %";
+    private static final String DEVICE_USAGE_KEY = "Device Utilization %";
 
     /**
      * The VRAM_USED_KEY constant.
@@ -91,9 +91,9 @@ final class MacGpuStats implements GpuStats {
     private static final String VRAM_USED_KEY_AS = "In use system memory";
 
     /**
-     * The GPU_UTIL_DIVISOR constant.
+     * The GPU_USAGE_SCALE constant.
      */
-    private static final double GPU_UTIL_DIVISOR = 0xFFFFFFFFL;
+    private static final double GPU_USAGE_SCALE = 0xFFFFFFFFL;
 
     /**
      * The TRADEMARK_PATTERN constant.
@@ -143,7 +143,7 @@ final class MacGpuStats implements GpuStats {
                     false,
                     "Health",
                     "IOReport subscription failed for '{}'; GPU ticks and power will be unavailable."
-                            + " Utilization will fall back to IOAccelerator PerformanceStatistics.",
+                            + " GPU usage will fall back to IOAccelerator PerformanceStatistics.",
                     cardName);
         }
     }
@@ -184,17 +184,17 @@ final class MacGpuStats implements GpuStats {
     }
 
     /**
-     * Returns the gpu utilization.
+     * Returns the GPU usage.
      *
-     * @return the get gpu utilization result
+     * @return the GPU usage percentage
      */
     @Override
-    public synchronized double getGpuUtilization() {
+    public synchronized double getGpuUsage() {
         checkOpen();
         if (isAppleSilicon && ioReportClient != null) {
-            double util = ioReportClient.sampleGpuUtilization();
-            if (util >= 0) {
-                return util;
+            double usage = ioReportClient.sampleGpuUsage();
+            if (usage >= 0) {
+                return usage;
             }
         }
         CFMutableDictionaryRef perfStats = queryPerfStats();
@@ -202,15 +202,15 @@ final class MacGpuStats implements GpuStats {
             return -1d;
         }
         try {
-            CFStringRef coreUtilKey = CFStringRef.createCFString(GPU_CORE_UTIL_KEY);
-            Pointer result = perfStats.getValue(coreUtilKey);
-            coreUtilKey.release();
+            CFStringRef coreUsageKey = CFStringRef.createCFString(GPU_CORE_USAGE_KEY);
+            Pointer result = perfStats.getValue(coreUsageKey);
+            coreUsageKey.release();
             if (result != null) {
-                return new CFNumberRef(result).longValue() / GPU_UTIL_DIVISOR * 100.0;
+                return new CFNumberRef(result).longValue() / GPU_USAGE_SCALE * 100.0;
             }
-            CFStringRef devUtilKey = CFStringRef.createCFString(DEVICE_UTIL_KEY);
-            result = perfStats.getValue(devUtilKey);
-            devUtilKey.release();
+            CFStringRef deviceUsageKey = CFStringRef.createCFString(DEVICE_USAGE_KEY);
+            result = perfStats.getValue(deviceUsageKey);
+            deviceUsageKey.release();
             if (result != null) {
                 return new CFNumberRef(result).longValue();
             }

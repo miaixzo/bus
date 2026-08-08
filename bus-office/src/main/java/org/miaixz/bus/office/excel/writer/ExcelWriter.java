@@ -54,8 +54,7 @@ import org.miaixz.bus.office.excel.style.ShapeConfig;
 import org.miaixz.bus.office.excel.style.StyleSet;
 
 /**
- * Excel Writer. This utility is used to write data to Excel through POI. This object can accomplish the following two
- * functions:
+ * Writes data to Excel through POI. This object can accomplish the following two functions:
  *
  * <pre>
  * 1. Edit an existing Excel file, can write to the original Excel file, or write to another location (to file or to stream)
@@ -195,11 +194,11 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @param selectList dropdown list content.
      */
     public static void addSelect(final Sheet sheet, final CellRangeAddressList regions, final String... selectList) {
-        final DataValidationHelper validationHelper = sheet.getDataValidationHelper();
-        final DataValidationConstraint constraint = validationHelper.createExplicitListConstraint(selectList);
+        final DataValidationHelper validationFactory = sheet.getDataValidationHelper();
+        final DataValidationConstraint constraint = validationFactory.createExplicitListConstraint(selectList);
 
         // Set dropdown box data
-        final DataValidation dataValidation = validationHelper.createValidation(constraint, regions);
+        final DataValidation dataValidation = validationFactory.createValidation(constraint, regions);
 
         // Handle Excel compatibility issues
         if (dataValidation instanceof XSSFDataValidation) {

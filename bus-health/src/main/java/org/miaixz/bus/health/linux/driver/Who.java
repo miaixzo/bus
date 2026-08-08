@@ -50,7 +50,7 @@ import org.miaixz.bus.health.linux.jna.Systemd;
 import org.miaixz.bus.health.unix.shared.jna.CLibrary;
 
 /**
- * Utility to query logged in users.
+ * Queries logged in users.
  *
  * @author Kimi Liu
  * @since Java 21+

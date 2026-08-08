@@ -27,9 +27,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * A utility class for counting lines in an {@link InputStream}. This class provides functionality to count lines, with
- * options to handle line separators at the end of the stream. It implements {@link Closeable} to ensure proper resource
- * management.
+ * Counts lines in an {@link InputStream}. This class provides functionality to count lines, with options to handle line
+ * separators at the end of the stream. It implements {@link Closeable} to ensure proper resource management.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -226,11 +226,11 @@ public final class ProcPath {
      * @return the query proc config result
      */
     private static String queryProcConfig() {
-        String procPath = Builder.get(Builder._UTIL_PROC_PATH, "/proc");
+        String procPath = Builder.get(Builder._PROC_PATH, "/proc");
         // Ensure prefix begins with path separator, but doesn't end with one
         procPath = Symbol.C_SLASH + procPath.replaceAll("/$|^/", Normal.EMPTY);
         if (!new File(procPath).exists()) {
-            throw new NotFoundException("The path does not exist " + Builder._UTIL_PROC_PATH);
+            throw new NotFoundException("The path does not exist " + Builder._PROC_PATH);
         }
         return procPath;
     }

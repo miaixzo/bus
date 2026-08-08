@@ -20,8 +20,8 @@
 package org.miaixz.bus.extra.nlp;
 
 /**
- * Utility class for Natural Language Processing (NLP) word segmentation. This class provides a facade for accessing
- * various NLP segmentation engines, allowing for easy text parsing and word extraction.
+ * Segments text with the configured Natural Language Processing (NLP) provider. This class provides a facade for
+ * accessing various NLP segmentation engines, allowing for easy text parsing and word extraction.
  *
  * @author Kimi Liu
  * @since Java 21+

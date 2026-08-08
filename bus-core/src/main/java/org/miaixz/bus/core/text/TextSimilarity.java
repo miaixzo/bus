@@ -24,8 +24,8 @@ import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Utility class for calculating text similarity. This class provides methods to compute the similarity between two
- * strings primarily using variations of the Levenshtein distance and longest common subsequence algorithms.
+ * Calculates text similarity. This class provides methods to compute the similarity between two strings primarily using
+ * variations of the Levenshtein distance and longest common subsequence algorithms.
  *
  * @author Kimi Liu
  * @since Java 21+

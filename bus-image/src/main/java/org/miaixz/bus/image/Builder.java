@@ -61,9 +61,9 @@ import org.miaixz.bus.image.nimble.CIELab;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * A utility class providing a collection of static helper methods for common tasks within the DICOM toolkit. This
- * includes data conversion, string manipulation, DICOM attribute handling, date/time formatting, file I/O, and other
- * miscellaneous functions.
+ * A class providing a collection of static methods for common tasks within the DICOM toolkit. This includes data
+ * conversion, string manipulation, DICOM attribute handling, date/time formatting, file I/O, and other miscellaneous
+ * functions.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -278,7 +278,7 @@ public class Builder {
     }
 
     /**
-     * Alias for service-style callers that use the Weasis utility naming.
+     * Alias for service-style callers that use the Weasis API naming.
      *
      * @param executorService the executor service to shut down.
      */
@@ -1619,7 +1619,7 @@ public class Builder {
     }
 
     /**
-     * Helper method to cut a section out of a string.
+     * Method to cut a section out of a string.
      */
     private static String cut(String s, int begin, int end) {
         int l = s.length();

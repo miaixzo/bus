@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Utility class for character set operations.
+ * Resolves and converts character sets.
  *
  * @author Kimi Liu
  * @since Java 21+

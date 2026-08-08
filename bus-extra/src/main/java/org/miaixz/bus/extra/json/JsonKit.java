@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A utility class for JSON operations, which automatically identifies the underlying JSON provider via SPI. This class
- * acts as a facade, providing static methods for common JSON serialization and deserialization tasks.
+ * Serializes and deserializes JSON values, which automatically identifies the underlying JSON provider via SPI. This
+ * class acts as a facade, providing static methods for common JSON serialization and deserialization tasks.
  *
  * @author Kimi Liu
  * @since Java 21+

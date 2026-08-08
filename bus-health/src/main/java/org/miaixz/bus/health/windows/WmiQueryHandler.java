@@ -40,7 +40,7 @@ import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Utility to handle WMI Queries. Designed to be extended with user-customized behavior.
+ * Handles WMI Queries. Designed to be extended with user-customized behavior.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -68,7 +68,7 @@ public class WmiQueryHandler {
     /**
      * The globalTimeout constant.
      */
-    private static final int globalTimeout = Builder.get(Builder._UTIL_WMI_TIMEOUT, -1);
+    private static final int globalTimeout = Builder.get(Builder._WMI_TIMEOUT, -1);
     // Factory to create this or a subclass
     /**
      * The customClass value.
@@ -77,7 +77,7 @@ public class WmiQueryHandler {
 
     static {
         if (globalTimeout == 0 || globalTimeout < -1) {
-            throw new NotFoundException("The property does not exist " + Builder._UTIL_WMI_TIMEOUT);
+            throw new NotFoundException("The property does not exist " + Builder._WMI_TIMEOUT);
         }
     }
 

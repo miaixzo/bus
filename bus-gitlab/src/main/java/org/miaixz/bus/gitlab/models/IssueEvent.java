@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The issue event class.
@@ -49,7 +49,7 @@ public class IssueEvent implements Serializable {
 
         ISSUE;
 
-        private static JacksonJsonEnumHelper<ResourceType> enumHelper = new JacksonJsonEnumHelper<>(ResourceType.class,
+        private static JacksonJsonEnumCodec<ResourceType> enumCodec = new JacksonJsonEnumCodec<>(ResourceType.class,
                 true, true);
 
         /**
@@ -61,7 +61,7 @@ public class IssueEvent implements Serializable {
 
         @JsonCreator
         public static ResourceType forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -72,7 +72,7 @@ public class IssueEvent implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -83,7 +83,7 @@ public class IssueEvent implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

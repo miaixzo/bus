@@ -25,8 +25,8 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Metrics;
 
 /**
- * Helper for recording bus-tempus job execution metrics. Wrap {@code AbstractActivityHandler.execute()} calls to get
- * job SLA tracking.
+ * Records bus-tempus job execution metrics. Wrap {@code AbstractActivityHandler.execute()} calls to get job SLA
+ * tracking.
  *
  * @author Kimi Liu
  * @since Java 21+

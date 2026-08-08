@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.reflect.field.FieldInvoker;
 import org.miaixz.bus.core.lang.reflect.field.FieldReflect;
 
 /**
- * Utility class for reflection on {@link Field}s.
+ * Finds, reads, and writes reflected fields.
  *
  * @author Kimi Liu
  * @since Java 21+

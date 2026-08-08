@@ -20,9 +20,9 @@
 /**
  * Provides supporting classes and utilities for the caching framework.
  * <p>
- * This package contains various helper classes that are used internally by the cache processing logic. This includes
- * utilities for SpEL expression calculation, cache penetration prevention, annotation metadata containers, and
- * factories for creating data structures.
+ * This package contains the internal types used by cache processing logic. This includes utilities for SpEL expression
+ * calculation, cache penetration prevention, annotation metadata containers, and factories for creating data
+ * structures.
  * </p>
  *
  * @author Kimi Liu

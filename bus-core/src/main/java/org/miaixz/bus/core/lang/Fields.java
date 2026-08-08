@@ -20,8 +20,8 @@
 package org.miaixz.bus.core.lang;
 
 /**
- * Utility class for common date and time format patterns. Provides clear explanations for various formatting strings.
- * Common date format patterns:
+ * Defines common date and time format patterns. Provides clear explanations for various formatting strings. Common date
+ * format patterns:
  * <ul>
  * <li>yyyy-MM-dd Example: 2022-08-05</li>
  * <li>yyyy年MM月dd日 Example: 2022年08月05日 (Chinese format)</li>

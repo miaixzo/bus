@@ -39,7 +39,7 @@ import org.miaixz.bus.office.excel.cell.editors.CellEditor;
 import org.miaixz.bus.office.excel.style.StyleSet;
 
 /**
- * Utility class for {@link Row} operations in Excel.
+ * Reads and modifies rows in Excel sheets.
  *
  * @author Kimi Liu
  * @since Java 21+

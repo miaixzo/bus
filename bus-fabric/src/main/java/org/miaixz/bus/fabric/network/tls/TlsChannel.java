@@ -46,7 +46,6 @@ import org.miaixz.bus.crypto.builtin.TlsHandshake;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.network.Conduit;
-import org.miaixz.bus.fabric.network.NetworkTimeout;
 import org.miaixz.bus.fabric.observe.metrics.FabricMeter;
 import org.miaixz.bus.fabric.observe.metrics.FabricMeter.Counter;
 import org.miaixz.bus.fabric.runtime.Activity;
@@ -254,8 +253,8 @@ public final class TlsChannel implements Conduit, Lifecycle {
         this.timeout = timeout;
         this.readTimeout = new org.miaixz.bus.core.io.timout.Timeout();
         this.writeTimeout = new org.miaixz.bus.core.io.timout.Timeout();
-        NetworkTimeout.apply(this.readTimeout, timeout.read());
-        NetworkTimeout.apply(this.writeTimeout, timeout.write());
+        this.readTimeout.timeout(timeout.read());
+        this.writeTimeout.timeout(timeout.write());
         this.meter = meter;
         this.handshakeLock = new ReentrantLock();
         this.readLock = new ReentrantLock();
@@ -1154,9 +1153,9 @@ public final class TlsChannel implements Conduit, Lifecycle {
         final int read;
         try {
             if (duration == null) {
-                NetworkTimeout.apply(conduit.source().timeout(), readTimeout);
+                conduit.source().timeout().copyFrom(readTimeout);
             } else {
-                NetworkTimeout.apply(conduit.source().timeout(), duration);
+                conduit.source().timeout().timeout(duration);
             }
             read = conduit.readSynchronously(encryptedInput);
         } catch (final IOException e) {
@@ -1189,9 +1188,9 @@ public final class TlsChannel implements Conduit, Lifecycle {
         final int written;
         try {
             if (duration == null) {
-                NetworkTimeout.apply(conduit.sink().timeout(), writeTimeout);
+                conduit.sink().timeout().copyFrom(writeTimeout);
             } else {
-                NetworkTimeout.apply(conduit.sink().timeout(), duration);
+                conduit.sink().timeout().timeout(duration);
             }
             written = conduit.writeSynchronously(encryptedOutput);
         } catch (final IOException e) {

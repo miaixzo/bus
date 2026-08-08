@@ -34,7 +34,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSDesktopWindow;
 
 /**
- * Utility to query X11 windows.
+ * Queries X11 windows.
  *
  * @author Kimi Liu
  * @since Java 21+

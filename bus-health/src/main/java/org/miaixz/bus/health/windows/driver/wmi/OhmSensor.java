@@ -28,7 +28,7 @@ import org.miaixz.bus.health.windows.WmiKit;
 import org.miaixz.bus.health.windows.WmiQueryHandler;
 
 /**
- * Utility to query Open Hardware Monitor WMI data for Sensors
+ * Queries Open Hardware Monitor WMI data for Sensors
  *
  * @author Kimi Liu
  * @since Java 21+

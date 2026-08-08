@@ -23,7 +23,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Utility methods for converting string-based {@code setting.item.revision} numbers at storage boundaries.
+ * Converts string-based {@code setting.item.revision} numbers at storage boundaries.
  *
  * @author Kimi Liu
  * @since Java 21+

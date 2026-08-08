@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides DNSSEC signing, validation, chain validation, and negative-proof helpers.
+ * Provides DNSSEC signing, signature validation, chain validation, and negative-proof processing.
  *
  * <p>
  * The package validates DNSKEY, DS, RRSIG, NSEC, and NSEC3 material against immutable runtime data. It does not own

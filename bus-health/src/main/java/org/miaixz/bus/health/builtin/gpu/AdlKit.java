@@ -132,7 +132,7 @@ public final class AdlKit {
             Collections.emptyMap());
 
     // -------------------------------------------------------------------------
-    // Init/uninit helpers (COM pattern)
+    // ADL lifecycle management
     // -------------------------------------------------------------------------
 
     /**
@@ -303,12 +303,12 @@ public final class AdlKit {
     }
 
     /**
-     * Returns GPU core utilization percentage (0–100), or -1 if unavailable.
+     * Returns GPU core usage as a percentage from 0 to 100, or -1 if unavailable.
      *
      * @param adapterIndex ADL adapter index
-     * @return utilization percentage or -1
+     * @return GPU core usage percentage, or -1
      */
-    public static double getGpuUtilization(int adapterIndex) {
+    public static double getGpuUsage(int adapterIndex) {
         if (adapterIndex < 0) {
             return -1d;
         }

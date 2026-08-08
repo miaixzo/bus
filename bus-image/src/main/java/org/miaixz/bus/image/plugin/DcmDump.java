@@ -29,8 +29,8 @@ import org.miaixz.bus.image.galaxy.io.ImageInputHandler;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 
 /**
- * The {@code DcmDump} class provides a utility to print a textual representation of a DICOM file's structure and
- * content. It implements the {@link ImageInputHandler} interface to process the DICOM stream and format the output.
+ * The {@code DcmDump} class prints a textual representation of a DICOM file's structure and content. It implements the
+ * {@link ImageInputHandler} interface to process the DICOM stream and format the output.
  *
  * @author Kimi Liu
  * @since Java 21+

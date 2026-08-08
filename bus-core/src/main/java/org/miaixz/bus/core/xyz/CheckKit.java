@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Checksum utility.
+ * Calculates and verifies checksums.
  *
  * @author Kimi Liu
  * @since Java 21+

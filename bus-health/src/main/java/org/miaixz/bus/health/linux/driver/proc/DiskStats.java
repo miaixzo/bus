@@ -31,7 +31,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.linux.ProcPath;
 
 /**
- * Utility to read disk statistics from {@code /proc/diskstats}
+ * Reads disk statistics from {@code /proc/diskstats}
  *
  * @author Kimi Liu
  * @since Java 21+

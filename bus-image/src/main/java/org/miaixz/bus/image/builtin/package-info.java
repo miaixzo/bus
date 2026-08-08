@@ -18,8 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides built-in utilities and helper classes for DICOM image processing. This package contains various internal
- * processing methods and data structures used across the DICOM toolkit.
+ * Provides built-in DICOM image processing implementations. This package contains internal processing methods and data
+ * structures used across the DICOM toolkit.
  *
  * @author Kimi Liu
  * @since Java 21+

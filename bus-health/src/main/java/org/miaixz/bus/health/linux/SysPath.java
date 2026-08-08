@@ -101,11 +101,11 @@ public final class SysPath {
      * @return the query sys config result
      */
     private static String querySysConfig() {
-        String sysPath = Builder.get(Builder._UTIL_SYS_PATH, "/sys");
+        String sysPath = Builder.get(Builder._SYS_PATH, "/sys");
         // Ensure prefix begins with path separator, but doesn't end with one
         sysPath = Symbol.C_SLASH + sysPath.replaceAll("/$|^/", Normal.EMPTY);
         if (!new File(sysPath).exists()) {
-            throw new NotFoundException("The path does not exist " + Builder._UTIL_SYS_PATH);
+            throw new NotFoundException("The path does not exist " + Builder._SYS_PATH);
         }
         return sysPath;
     }

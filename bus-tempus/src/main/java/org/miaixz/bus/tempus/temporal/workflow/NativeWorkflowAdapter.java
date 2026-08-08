@@ -106,9 +106,9 @@ public final class NativeWorkflowAdapter {
     /**
      * Registers a single-argument workflow using Temporal dynamic workflow dispatch.
      * <p>
-     * Temporal 1.35 loads an internal utility class that hard-links Jackson 2 while scanning POJO workflow metadata.
-     * This path keeps the public workflow type unchanged and delegates execution to the original handler without
-     * loading the Jackson 2-bound metadata utility.
+     * Temporal 1.35 loads an internal class that hard-links Jackson 2 while scanning POJO workflow metadata. This path
+     * keeps the public workflow type unchanged and delegates execution to the original handler without loading the
+     * Jackson 2-bound metadata class.
      *
      * @param worker       Temporal worker
      * @param workflowType Temporal workflow type

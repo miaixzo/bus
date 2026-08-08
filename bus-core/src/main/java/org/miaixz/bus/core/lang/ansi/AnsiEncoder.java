@@ -22,8 +22,8 @@ package org.miaixz.bus.core.lang.ansi;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * Utility class for encoding ANSI escape sequences for text styling. This class provides methods to construct ANSI
- * strings by converting {@link AnsiElement} instances into their corresponding escape codes.
+ * Encodes ANSI escape sequences for text styling. This class provides methods to construct ANSI strings by converting
+ * {@link AnsiElement} instances into their corresponding escape codes.
  *
  * @author Kimi Liu
  * @since Java 21+

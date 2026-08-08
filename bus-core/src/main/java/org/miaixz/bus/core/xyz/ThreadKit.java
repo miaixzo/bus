@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.thread.*;
 
 /**
- * Thread pool utility class.
+ * Creates and manages thread pools.
  *
  * @author Kimi Liu
  * @since Java 21+

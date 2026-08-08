@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The commit ref class.
@@ -70,7 +70,7 @@ public class CommitRef implements Serializable {
          */
         ALL;
 
-        private static JacksonJsonEnumHelper<RefType> enumHelper = new JacksonJsonEnumHelper<>(RefType.class);
+        private static JacksonJsonEnumCodec<RefType> enumCodec = new JacksonJsonEnumCodec<>(RefType.class);
 
         /**
          * Returns the value.
@@ -81,7 +81,7 @@ public class CommitRef implements Serializable {
 
         @JsonCreator
         public static RefType forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -92,7 +92,7 @@ public class CommitRef implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -103,7 +103,7 @@ public class CommitRef implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

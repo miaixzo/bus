@@ -26,7 +26,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.linux.ProcPath;
 
 /**
- * Utility to read system uptime from {@code /proc/uptime}
+ * Reads system uptime from {@code /proc/uptime}
  *
  * @author Kimi Liu
  * @since Java 21+

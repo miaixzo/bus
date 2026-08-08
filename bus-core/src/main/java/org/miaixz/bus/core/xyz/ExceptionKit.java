@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Exception utility class.
+ * Creates, inspects, and converts exceptions.
  *
  * @author Kimi Liu
  * @since Java 21+

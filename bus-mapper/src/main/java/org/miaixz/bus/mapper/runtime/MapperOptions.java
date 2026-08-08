@@ -35,9 +35,9 @@ import org.miaixz.bus.mapper.Charter.Schema;
  * Runtime mapper configuration options.
  * <p>
  * This class provides the pure Java/MyBatis configuration model shared by the starter adapter and mapper runtime
- * assembly code. It exposes lightweight resolution helpers while delegating parsing details to package-private runtime
- * infrastructure. It deliberately avoids Spring resource resolution, bean lookup, classpath scanning, and application
- * context concerns so it can live inside {@code bus-mapper}.
+ * assembly code. It exposes lightweight resolution operations while delegating parsing details to package-private
+ * runtime infrastructure. It deliberately avoids Spring resource resolution, bean lookup, classpath scanning, and
+ * application context concerns so it can live inside {@code bus-mapper}.
  *
  * @author Kimi Liu
  * @since Java 21+

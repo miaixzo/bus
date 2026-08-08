@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.ZoneId;
 
 /**
- * This class provides utility methods for parsing and formatting ISO8601 formatted dates.
+ * This class provides methods for parsing and formatting ISO8601 formatted dates.
  *
  * @author Kimi Liu
  * @since Java 21+

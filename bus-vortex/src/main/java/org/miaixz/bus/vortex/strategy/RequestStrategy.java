@@ -52,7 +52,7 @@ import reactor.core.publisher.Mono;
 /**
  * Basic request strategy for routes without protocol-specific request parsing.
  * <p>
- * This class initializes request metadata and provides protected parsing helpers for protocol request strategies.
+ * This class initializes request metadata and provides protected parsing operations for protocol request strategies.
  * Protocol-specific classes decide whether to parse and cache the body or pass the request through untouched.
  *
  * @author Kimi Liu

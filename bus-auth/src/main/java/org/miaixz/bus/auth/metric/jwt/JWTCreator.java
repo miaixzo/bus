@@ -26,8 +26,8 @@ import org.miaixz.bus.auth.metric.jwt.signature.JWTSigner;
 import org.miaixz.bus.core.xyz.MapKit;
 
 /**
- * Utility class for creating JSON Web Tokens (JWT). This class provides convenient methods to construct JWTs with
- * various header and payload configurations, supporting different signing algorithms.
+ * Creates JSON Web Tokens (JWT). This class provides convenient methods to construct JWTs with various header and
+ * payload configurations and multiple signing algorithms.
  *
  * @author Kimi Liu
  * @since Java 21+

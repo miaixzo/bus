@@ -30,7 +30,7 @@ import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * A utility class for evaluating mathematical expressions using the Shunting Yard algorithm.
+ * Evaluates mathematical expressions using the Shunting Yard algorithm.
  * <p>
  * This calculator supports basic arithmetic operators (+, -, *, /, %), parentheses, and scientific notation. It handles
  * operator precedence and converts infix expressions to postfix (Reverse Polish Notation) for evaluation.

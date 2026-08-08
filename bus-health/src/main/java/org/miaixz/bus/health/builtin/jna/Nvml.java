@@ -119,13 +119,13 @@ public interface Nvml {
         int nvmlDeviceGetPciInfo_v3(Pointer device, NvmlPciInfo pci);
 
         /**
-         * Returns the nvml device get utilization rates result.
+         * Reads GPU and memory usage rates from an NVML device.
          *
-         * @param device      the device
-         * @param utilization the utilization
-         * @return the nvml device get utilization rates result
+         * @param device the device
+         * @param rates  receives the GPU and memory usage rates
+         * @return the NVML status code
          */
-        int nvmlDeviceGetUtilizationRates(Pointer device, NvmlUtilization utilization);
+        int nvmlDeviceGetUtilizationRates(Pointer device, NvmlUtilization rates);
 
         /**
          * Returns the nvml device get memory info result.

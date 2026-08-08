@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides a utility class for easily accessing cached {@code Setting} instances.
+ * Provides a class for easily accessing cached {@code Setting} instances.
  *
  * @author Kimi Liu
  * @since Java 21+

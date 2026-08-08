@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 public class Args {
 
     /**
-     * Initializes the mapper argument helper used to resolve and normalize statement parameters.
+     * Initializes the mapper argument resolver that normalizes and normalize statement parameters.
      */
     public Args() {
         // No initialization required.

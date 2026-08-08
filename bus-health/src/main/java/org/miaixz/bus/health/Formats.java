@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.ByteKit;
 
 /**
- * Utility class for formatting units or converting between numeric types.
+ * Formats units or converting between numeric types.
  *
  * @author Kimi Liu
  * @since Java 21+

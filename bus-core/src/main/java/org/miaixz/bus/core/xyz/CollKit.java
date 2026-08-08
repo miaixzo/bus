@@ -53,7 +53,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
 
 /**
- * A utility class for {@link Collection} and {@link Iterable} operations.
+ * Creates, transforms, and inspects collections and iterable values.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -88,7 +88,7 @@ public final class MapperPluginBuilder {
     private static final String PACKAGE_SPLIT_PATTERN = "[,;\\s]+";
 
     /**
-     * Prevents instantiation of this mapper plugin assembly utility.
+     * Restricts the class to static mapper plugin assembly operations.
      */
     private MapperPluginBuilder() {
         // No initialization required.

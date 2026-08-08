@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Shared helpers for User-Agent classifiers.
+ * Matches User-Agent values against shared platform classifiers.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 final class PlatformMatcher {
 
     /**
-     * Prevents instantiation of this static classifier helper.
+     * Restricts the class to static classification operations.
      */
     private PlatformMatcher() {
         // No initialization required.

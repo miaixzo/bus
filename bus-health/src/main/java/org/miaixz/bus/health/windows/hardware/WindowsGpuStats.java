@@ -45,8 +45,8 @@ import org.miaixz.bus.logger.Logger;
  * Metric source priority by method:
  * <ul>
  * <li>{@code getGpuTicks()}: PDH GPU Engine counters ({@code Running Time} / {@code Running Time_Base}).</li>
- * <li>{@code getGpuUtilization()}: LHM WMI {@code GPU Core} load sensor. Falls back to PDH tick-delta
- * ({@code getGpuTicks()} delta) when LHM is not running; returns -1 on the first call (priming).</li>
+ * <li>{@code getGpuUsage()}: LHM WMI {@code GPU Core} load sensor. Falls back to PDH tick-delta ({@code getGpuTicks()}
+ * delta) when LHM is not running; returns -1 on the first call (priming).</li>
  * <li>{@code getVramUsed()}: PDH GPU Adapter Memory {@code DedicatedUsage}, then LHM {@code GPU Memory Used}.</li>
  * <li>{@code getSharedMemoryUsed()}: PDH GPU Adapter Memory {@code SharedUsage}.</li>
  * <li>{@code getTemperature()}: NVML, then ADL, then LHM {@code GPU Core} temperature.</li>
@@ -111,11 +111,11 @@ final class WindowsGpuStats implements GpuStats {
      * The cachedAdlIndex value.
      */
     private int cachedAdlIndex = Integer.MIN_VALUE;
-    // Previous tick snapshot for PDH-based utilization fallback; null = not yet sampled
+    // Previous tick snapshot for the PDH-based usage fallback; null = not yet sampled
     /**
-     * The prevUtilTicks value.
+     * The previousUsageTicks value.
      */
-    private GpuTicks prevUtilTicks;
+    private GpuTicks previousUsageTicks;
 
     /**
      * Creates a new WindowsGpuStats instance.
@@ -200,12 +200,12 @@ final class WindowsGpuStats implements GpuStats {
     }
 
     /**
-     * Returns the gpu utilization.
+     * Returns the GPU usage.
      *
-     * @return the get gpu utilization result
+     * @return the GPU usage percentage
      */
     @Override
-    public synchronized double getGpuUtilization() {
+    public synchronized double getGpuUsage() {
         checkOpen();
         if (!lhmParent.isEmpty()) {
             try {
@@ -216,19 +216,19 @@ final class WindowsGpuStats implements GpuStats {
                     }
                 }
             } catch (Exception e) {
-                Logger.debug(false, "Health", "LHM GPU utilization query failed: {}", e.getClass().getSimpleName());
+                Logger.debug(false, "Health", "LHM GPU usage query failed: {}", e.getClass().getSimpleName());
             }
         }
-        // Fallback: derive utilization from PDH tick counters
+        // Fallback: derive usage from PDH tick counters
         GpuTicks curr = getGpuTicks();
-        if (prevUtilTicks != null) {
-            long dActive = curr.getActiveTicks() - prevUtilTicks.getActiveTicks();
-            long dIdle = curr.getIdleTicks() - prevUtilTicks.getIdleTicks();
+        if (previousUsageTicks != null) {
+            long dActive = curr.getActiveTicks() - previousUsageTicks.getActiveTicks();
+            long dIdle = curr.getIdleTicks() - previousUsageTicks.getIdleTicks();
             long dTotal = dActive + dIdle;
-            prevUtilTicks = curr;
+            previousUsageTicks = curr;
             return dTotal > 0 ? dActive * 100.0 / dTotal : -1d;
         }
-        prevUtilTicks = curr;
+        previousUsageTicks = curr;
         return -1d;
     }
 

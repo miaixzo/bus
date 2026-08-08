@@ -28,9 +28,9 @@ import org.miaixz.bus.core.lang.thread.SimpleScheduler;
 import org.miaixz.bus.core.xyz.RuntimeKit;
 
 /**
- * A memory-safe {@link LinkedBlockingQueue} that helps prevent `OutOfMemoryError`. It works by checking the available
- * free memory via `Runtime.getRuntime().freeMemory()`. When the free memory drops below a specified threshold, it stops
- * accepting new elements.
+ * A memory-safe {@link LinkedBlockingQueue} that reduces the risk of `OutOfMemoryError`. It works by checking the
+ * available free memory via `Runtime.getRuntime().freeMemory()`. When the free memory drops below a specified
+ * threshold, it stops accepting new elements.
  * <p>
  * This class is inspired by: <a href=
  * "https://github.com/apache/incubator-shenyu/blob/master/shenyu-common/src/main/java/org/apache/shenyu/common/concurrent/MemorySafeLinkedBlockingQueue.java">

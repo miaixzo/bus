@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.annotation.resolve.AnnotatedElements;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * Utility class for creating method matchers based on various predefined conditions.
+ * Creates method matchers based on various predefined conditions.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -608,7 +608,7 @@ public class MethodMatcher {
     }
 
     /**
-     * Internal helper method for creating most specific parameter type matchers.
+     * Creates most specific parameter type matchers.
      *
      * @param parameterTypes The array of parameter types to match against.
      * @param typeMatcher    A {@link BiPredicateX} to compare individual parameter types (e.g.,

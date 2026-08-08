@@ -20,7 +20,7 @@
 package org.miaixz.bus.core.xyz;
 
 /**
- * Utility for converting between Unicode-escaped strings and normal strings.
+ * Converts between Unicode-escaped strings and normal strings.
  *
  * @author Kimi Liu
  * @since Java 21+

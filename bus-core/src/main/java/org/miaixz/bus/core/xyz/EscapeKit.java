@@ -28,9 +28,9 @@ import org.miaixz.bus.core.text.escape.XmlEscape;
 import org.miaixz.bus.core.text.escape.XmlUnescape;
 
 /**
- * Utility class for escaping and unescaping strings. This is equivalent to JavaScript's `escape()` and `unescape()`
- * functions, which encode strings using the ISO Latin character set. All spaces, punctuation, special characters, and
- * other non-ASCII characters are converted to %xx format.
+ * Escapes and unescapes strings. This is equivalent to JavaScript's `escape()` and `unescape()` functions, which encode
+ * strings using the ISO Latin character set. All spaces, punctuation, special characters, and other non-ASCII
+ * characters are converted to %xx format.
  *
  * @author Kimi Liu
  * @since Java 21+

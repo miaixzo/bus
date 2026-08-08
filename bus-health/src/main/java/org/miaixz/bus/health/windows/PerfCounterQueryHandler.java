@@ -30,8 +30,8 @@ import org.miaixz.bus.health.windows.PerfDataKit.PerfCounter;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Utility to handle Performance Counter Queries This class is not thread safe. Each query handler instance should only
- * be used in a single thread, preferably in a try-with-resources block.
+ * Handles Performance Counter Queries This class is not thread safe. Each query handler instance should only be used in
+ * a single thread, preferably in a try-with-resources block.
  *
  * @author Kimi Liu
  * @since Java 21+

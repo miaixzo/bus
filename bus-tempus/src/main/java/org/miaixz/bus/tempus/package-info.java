@@ -30,7 +30,7 @@
  * times.</li>
  * </ul>
  * <p>
- * For convenience, the {@link org.miaixz.bus.tempus.Builder} utility class is provided to manage a global
+ * For convenience, the {@link org.miaixz.bus.tempus.Builder} class is provided to manage a global
  * {@link org.miaixz.bus.tempus.Scheduler} instance.
  *
  * @author Kimi Liu

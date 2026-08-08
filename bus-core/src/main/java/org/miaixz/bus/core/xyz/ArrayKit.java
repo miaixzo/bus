@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.text.StringJoiner;
 
 /**
- * Array utility class.
+ * Creates, converts, and inspects arrays.
  *
  * @author Kimi Liu
  * @since Java 21+

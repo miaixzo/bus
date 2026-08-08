@@ -35,7 +35,7 @@ import org.miaixz.bus.health.builtin.jna.ByRef.CloseableSizeTByReference;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Utility to query NetStat on macOS.
+ * Queries NetStat on macOS.
  *
  * @author Kimi Liu
  * @since Java 21+

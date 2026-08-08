@@ -18,10 +18,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides supporting utilities and helper classes for GitLab integration.
+ * Provides authentication, HTTP transport, and JSON conversion for GitLab integration.
  * <p>
- * This package contains utility classes for authentication, HTTP communication, JSON processing, and other common
- * operations used throughout the GitLab client.
+ * This package contains classes for authentication, HTTP communication, JSON processing, and other common operations
+ * used throughout the GitLab client.
  *
  * @author Kimi Liu
  * @since Java 21+

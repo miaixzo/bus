@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.reflect.method.MethodInvoker;
 import org.miaixz.bus.core.lang.reflect.method.MethodReflect;
 
 /**
- * Utility class for reflection on {@link Method}s, including method retrieval and invocation.
+ * Finds and invokes reflected methods, including method retrieval and invocation.
  *
  * @author Kimi Liu
  * @since Java 21+

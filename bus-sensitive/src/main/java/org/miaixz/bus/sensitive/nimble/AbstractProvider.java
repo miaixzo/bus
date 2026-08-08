@@ -23,7 +23,7 @@ import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * An abstract base class for desensitization strategy providers. It provides static helper methods for common masking
+ * An abstract base class for desensitization strategy providers. It provides static methods for common masking
  * patterns.
  *
  * @author Kimi Liu

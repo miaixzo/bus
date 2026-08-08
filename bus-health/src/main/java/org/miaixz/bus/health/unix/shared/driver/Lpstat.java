@@ -31,7 +31,7 @@ import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.hardware.Printer.PrinterStatus;
 
 /**
- * Utility to parse printer information from {@code lpstat} and {@code lpoptions} commands.
+ * Parses printer information from {@code lpstat} and {@code lpoptions} commands.
  *
  * @author Kimi Liu
  * @since Java 21+

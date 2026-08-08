@@ -32,8 +32,8 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Asynchronous utility class for {@link CompletableFuture}. {@link CompletableFuture} is an improvement over Future,
- * allowing callbacks to be registered and invoked upon task completion.
+ * Asynchronous class for {@link CompletableFuture}. {@link CompletableFuture} is an improvement over Future, allowing
+ * callbacks to be registered and invoked upon task completion.
  *
  * @author Kimi Liu
  * @since Java 21+

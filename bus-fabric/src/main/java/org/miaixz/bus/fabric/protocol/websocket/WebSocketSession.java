@@ -46,7 +46,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
-import org.miaixz.bus.fabric.network.NetworkTimeout;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
@@ -422,7 +421,7 @@ public final class WebSocketSession implements Session {
      */
     private static Source configureSource(final Source source, final Timeout timeout) {
         final Source current = require(source, "WebSocket source");
-        NetworkTimeout.apply(current.timeout(), require(timeout, "WebSocket timeout").read());
+        current.timeout().timeout(require(timeout, "WebSocket timeout").read());
         return current;
     }
 
@@ -435,7 +434,7 @@ public final class WebSocketSession implements Session {
      */
     private static Sink configureSink(final Sink sink, final Timeout timeout) {
         final Sink current = require(sink, "WebSocket sink");
-        NetworkTimeout.apply(current.timeout(), require(timeout, "WebSocket timeout").write());
+        current.timeout().timeout(require(timeout, "WebSocket timeout").write());
         return current;
     }
 
@@ -1073,7 +1072,7 @@ public final class WebSocketSession implements Session {
     }
 
     /**
-     * Waits for an entry using the shared thread helper.
+     * Waits for an entry using the shared thread coordinator.
      *
      * @param entry outbound entry whose completion is awaited
      */

@@ -1143,7 +1143,7 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * Life utility bill payment query
+     * Household bill payment query
      *
      * @param orderType       the Alipay order type
      * @param merchantOrderNo the business serial number
@@ -1157,7 +1157,7 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
     }
 
     /**
-     * Life utility bill payment query (certificate mode)
+     * Household bill payment query (certificate mode)
      *
      * @param orderType       the Alipay order type
      * @param merchantOrderNo the business serial number

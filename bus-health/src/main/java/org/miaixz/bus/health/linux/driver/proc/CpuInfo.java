@@ -33,7 +33,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.linux.ProcPath;
 
 /**
- * Utility to read CPU info from {@code /proc/cpuinfo}
+ * Reads CPU info from {@code /proc/cpuinfo}
  *
  * @author Kimi Liu
  * @since Java 21+

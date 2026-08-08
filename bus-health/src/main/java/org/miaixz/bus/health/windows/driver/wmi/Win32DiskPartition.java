@@ -26,7 +26,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.windows.WmiQueryHandler;
 
 /**
- * Utility to query WMI class {@code Win32_DiskPartition}
+ * Queries WMI class {@code Win32_DiskPartition}
  *
  * @author Kimi Liu
  * @since Java 21+

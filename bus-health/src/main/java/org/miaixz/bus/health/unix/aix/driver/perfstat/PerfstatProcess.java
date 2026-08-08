@@ -28,7 +28,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
- * Utility to query performance stats for processes
+ * Queries performance stats for processes
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -97,7 +97,7 @@ public abstract class AbstractUsbDevice implements UsbDevice {
     }
 
     /**
-     * Helper method for indenting chained USB devices
+     * Indents chained USB devices
      *
      * @param usbDevice A USB device to print
      * @param indent    number of spaces to indent

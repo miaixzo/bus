@@ -23,9 +23,9 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 
 /**
- * Utility class that defines constants for DICOM Tags and provides helper methods for tag manipulation. The constants
- * represent standard and some private DICOM tag identifiers. The integer values are constructed from the Group and
- * Element numbers as (Group &lt;&lt; 16) | Element.
+ * Defines DICOM tag constants and operations for inspecting and modifying tag values. The constants represent standard
+ * and some private DICOM tag identifiers. The integer values are constructed from the Group and Element numbers as
+ * (Group &lt;&lt; 16) | Element.
  *
  * @author Kimi Liu
  * @since Java 21+

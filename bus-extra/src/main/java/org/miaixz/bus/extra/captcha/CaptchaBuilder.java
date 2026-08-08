@@ -25,7 +25,7 @@ import org.miaixz.bus.extra.captcha.provider.LineProvider;
 import org.miaixz.bus.extra.captcha.provider.ShearProvider;
 
 /**
- * Utility class for graphic CAPTCHA generation.
+ * Generates graphic CAPTCHA images.
  *
  * @author Kimi Liu
  * @since Java 21+

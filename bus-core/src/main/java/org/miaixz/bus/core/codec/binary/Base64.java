@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * A utility class for Base64 encoding and decoding.
+ * Encodes and decodes Base64 values.
  * <p>
  * Base64 encoding uses a 64-character set to represent binary data. This means that a 3-byte binary array is encoded
  * into a 4-character ASCII string, increasing the length by a third. This class provides methods for both standard and

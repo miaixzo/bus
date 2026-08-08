@@ -40,7 +40,6 @@ import org.miaixz.bus.fabric.codec.frame.Frame;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.Ingress;
-import org.miaixz.bus.fabric.network.NetworkTimeout;
 import org.miaixz.bus.fabric.network.kcp.KcpNetwork;
 import org.miaixz.bus.fabric.network.kcp.KcpPacket;
 import org.miaixz.bus.fabric.network.udp.UdpSession;
@@ -590,8 +589,8 @@ public final class SocketSession implements Session {
         this.timeout = require(timeout, "Socket timeout");
         if (connection != null) {
             // Stream sessions own these policies; datagram and KCP sessions retain their future-level timers.
-            NetworkTimeout.apply(connection.source().timeout(), this.timeout.read());
-            NetworkTimeout.apply(connection.sink().timeout(), this.timeout.write());
+            connection.source().timeout().timeout(this.timeout.read());
+            connection.sink().timeout().timeout(this.timeout.write());
         }
         this.cancellation = require(cancellation, "Socket cancellation");
         this.ownsDispatcher = ownsDispatcher;

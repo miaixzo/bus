@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * Map related utility class.
+ * Map related class.
  *
  * @author Kimi Liu
  * @since Java 21+

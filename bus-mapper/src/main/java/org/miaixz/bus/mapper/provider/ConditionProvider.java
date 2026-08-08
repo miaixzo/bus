@@ -52,13 +52,13 @@ public class ConditionProvider extends BasicProvider {
     public static String deleteByCondition(ProviderContext context) {
         return SqlScript.caching(
                 context,
-                (entity, util) -> util.ifTest("startSql != null and startSql != ''", () -> "${startSql}")
-                        + "DELETE FROM " + entity.tableName() + util.parameterNotNull("Condition cannot be null")
+                (entity, script) -> script.ifTest("startSql != null and startSql != ''", () -> "${startSql}")
+                        + "DELETE FROM " + entity.tableName() + script.parameterNotNull("Condition cannot be null")
                         // Whether to allow empty conditions; defaults to true, allowing deletion without a WHERE
                         // clause.
                         + (entity.getBoolean("deleteByCondition.allowEmpty", true) ? Normal.EMPTY
-                                : util.variableIsFalse("_parameter.isEmpty()", "Condition Criteria cannot be empty"))
-                        + CONDITION_ROOT_WHERE + util.ifTest("endSql != null and endSql != ''", () -> "${endSql}"));
+                                : script.variableIsFalse("_parameter.isEmpty()", "Condition Criteria cannot be empty"))
+                        + CONDITION_ROOT_WHERE + script.ifTest("endSql != null and endSql != ''", () -> "${endSql}"));
     }
 
     /**

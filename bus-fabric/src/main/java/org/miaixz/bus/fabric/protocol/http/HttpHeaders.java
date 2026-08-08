@@ -36,7 +36,7 @@ import org.miaixz.bus.fabric.observe.tags.Tags;
 import org.miaixz.bus.fabric.platform.UserAgent;
 
 /**
- * HTTP-specific header helpers built on the shared immutable {@link Headers} value.
+ * Defines HTTP-specific header operations on the shared immutable {@link Headers} value.
  *
  * @author Kimi Liu
  * @since Java 21+

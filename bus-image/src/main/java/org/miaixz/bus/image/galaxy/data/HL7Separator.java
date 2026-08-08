@@ -23,7 +23,7 @@ import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Enumeration representing the standard separators and their escape sequences used in HL7 messages. This class provides
- * utility methods for escaping and unescaping strings according to HL7 rules.
+ * methods for escaping and unescaping strings according to HL7 rules.
  *
  * @author Kimi Liu
  * @since Java 21+

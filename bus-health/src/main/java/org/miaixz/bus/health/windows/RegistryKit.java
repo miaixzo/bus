@@ -31,7 +31,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Utility class for reading data from the Windows Registry.
+ * Reads data from the Windows Registry.
  * <p>
  * This class provides methods to retrieve Long and String values from the registry, handling various data types
  * (REG_DWORD, REG_SZ, REG_BINARY) and converting them to appropriate Java types. It also includes logic to interpret

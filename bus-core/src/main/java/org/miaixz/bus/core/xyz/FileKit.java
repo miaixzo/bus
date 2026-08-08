@@ -45,7 +45,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.text.CharsBacker;
 
 /**
- * File utility class.
+ * Performs file and path operations.
  *
  * @author Kimi Liu
  * @since Java 21+

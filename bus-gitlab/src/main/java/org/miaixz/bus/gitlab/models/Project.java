@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.gitlab.models.Constants.*;
 import org.miaixz.bus.gitlab.models.ImportStatus.Status;
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 import tools.jackson.databind.annotation.JsonSerialize;
 
@@ -3873,7 +3873,7 @@ public class Project implements Serializable {
          */
         FF;
 
-        private static JacksonJsonEnumHelper<MergeMethod> enumHelper = new JacksonJsonEnumHelper<>(MergeMethod.class);
+        private static JacksonJsonEnumCodec<MergeMethod> enumCodec = new JacksonJsonEnumCodec<>(MergeMethod.class);
 
         /**
          * Returns the value.
@@ -3884,7 +3884,7 @@ public class Project implements Serializable {
 
         @JsonCreator
         public static MergeMethod forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -3895,7 +3895,7 @@ public class Project implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -3906,7 +3906,7 @@ public class Project implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

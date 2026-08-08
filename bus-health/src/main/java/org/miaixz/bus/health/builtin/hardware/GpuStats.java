@@ -39,10 +39,10 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * <h2>One-shot vs. polling</h2>
  * <p>
  * Instantaneous metrics (temperature, VRAM used, clock speeds, fan speed) can be read from a freshly opened session
- * with a single call. For <em>delta-based</em> metrics — {@link #getGpuUtilization()} and {@link #getPowerDraw()} —
- * behaviour on the first call is implementation-dependent: some backends return an immediate reading, while others
- * record an initial baseline and return {@code -1} until a second sample is taken. Callers that need a guaranteed valid
- * value on the first polling iteration should prime these methods once before the loop begins.
+ * with a single call. For <em>delta-based</em> metrics — {@link #getGpuUsage()} and {@link #getPowerDraw()} — behaviour
+ * on the first call is implementation-dependent: some backends return an immediate reading, while others record an
+ * initial baseline and return {@code -1} until a second sample is taken. Callers that need a guaranteed valid value on
+ * the first polling iteration should prime these methods once before the loop begins.
  *
  * <h2>Recommended polling pattern</h2>
  * <p>
@@ -56,12 +56,12 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  *     // Prime delta-based metrics so the first real iteration has a valid baseline.
  *     GpuTicks prev = stats.getGpuTicks();
  *     stats.getPowerDraw(); // establishes power baseline; returns -1
- *     stats.getGpuUtilization(); // establishes utilization baseline; returns -1
+ *     stats.getGpuUsage(); // establishes usage baseline; returns -1
  *
  *     for (int i = 0; i < ITERATIONS; i++) {
  *         Thread.sleep(1_000L);
  *
- *         // Tick-derived utilization: dActive / (dActive + dIdle) * 100
+ *         // Tick-derived usage: dActive / (dActive + dIdle) * 100
  *         GpuTicks curr = stats.getGpuTicks();
  *         long dActive = curr.getActiveTicks() - prev.getActiveTicks();
  *         long dIdle = curr.getIdleTicks() - prev.getIdleTicks();
@@ -69,8 +69,8 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  *         double tickUtil = dTotal > 0 ? dActive * 100.0 / dTotal : -1d;
  *         prev = curr;
  *
- *         // API-reported utilization (delta computed internally by the session)
- *         double apiUtil = stats.getGpuUtilization();
+ *         // API-reported usage (delta computed internally by the session)
+ *         double apiUtil = stats.getGpuUsage();
  *
  *         // Instantaneous metrics
  *         double temp = stats.getTemperature();
@@ -113,19 +113,19 @@ public interface GpuStats extends AutoCloseable {
 
     /**
      * Returns a snapshot of cumulative GPU active and idle ticks in opaque, platform-native units. The counters are
-     * monotonically increasing; diff two snapshots to compute utilization:
+     * monotonically increasing; diff two snapshots to compute usage:
      *
      * <pre>{@code
      *
      * long dActive = curr.getActiveTicks() - prev.getActiveTicks();
      * long dIdle = curr.getIdleTicks() - prev.getIdleTicks();
      * long dTotal = dActive + dIdle;
-     * double utilPct = dTotal > 0 ? dActive * 100.0 / dTotal : -1d;
+     * double usagePercentage = dTotal > 0 ? dActive * 100.0 / dTotal : -1d;
      * }</pre>
      *
      * <p>
      * Both counters are {@code 0} on platforms where tick-level GPU metrics are not available (see {@link GpuTicks} for
-     * the sentinel semantics). Use {@link #getGpuUtilization()} as an alternative.
+     * the sentinel semantics). Use {@link #getGpuUsage()} as an alternative.
      *
      * @return a {@link GpuTicks} snapshot; never null
      * @throws IllegalStateException if the session has been closed
@@ -133,27 +133,27 @@ public interface GpuStats extends AutoCloseable {
     GpuTicks getGpuTicks();
 
     /**
-     * Returns the instantaneous GPU core utilization as a percentage, computed internally as a delta between the
-     * current sample and the previous one recorded by this session.
+     * Returns the instantaneous GPU core usage percentage, computed internally as a delta between the current sample
+     * and the previous one recorded by this session.
      *
      * <p>
-     * Behaviour on the first call is implementation-dependent. Backends that derive utilization from an energy or
-     * residency counter record an initial baseline on the first call and return {@code -1}; subsequent calls return the
-     * utilization computed over the elapsed interval. Backends that read an instantaneous hardware register may return
-     * a valid value immediately. To ensure the first polling iteration returns a valid value on delta-based backends,
-     * call this method once as a priming step before the polling loop begins:
+     * Behaviour on the first call is implementation-dependent. Backends that derive usage from an energy or residency
+     * counter record an initial baseline on the first call and return {@code -1}; subsequent calls return the usage
+     * computed over the elapsed interval. Backends that read an instantaneous hardware register may return a valid
+     * value immediately. To ensure the first polling iteration returns a valid value on delta-based backends, call this
+     * method once as a priming step before the polling loop begins:
      *
      * <pre>{@code
-     * stats.getGpuUtilization(); // prime — may return -1 on delta-based backends
+     * stats.getGpuUsage(); // prime — may return -1 on delta-based backends
      * Thread.sleep(intervalMs);
-     * double util = stats.getGpuUtilization(); // valid on all backends
+     * double usage = stats.getGpuUsage(); // valid on all backends
      * }</pre>
      *
-     * @return utilization in the range 0.0 to 100.0, or -1 if not available or not yet primed
+     * @return usage percentage in the range 0.0 to 100.0, or -1 if not available or not yet primed
      * @throws IllegalStateException if the session has been closed; obtain a new session via
      *                               {@link GraphicsCard#createStatsSession()}
      */
-    double getGpuUtilization();
+    double getGpuUsage();
 
     /**
      * Returns the amount of dedicated VRAM currently in use.

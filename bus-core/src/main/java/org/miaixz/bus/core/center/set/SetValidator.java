@@ -20,7 +20,7 @@
 package org.miaixz.bus.core.center.set;
 
 /**
- * Utility class for validating objects, providing checks for blank and empty states.
+ * Validates objects, providing checks for blank and empty states.
  * <ul>
  * <li>Empty definition: {@code null} or an empty string ({@code ""}).</li>
  * <li>Blank definition: {@code null} or an empty string ({@code ""}) or invisible characters like spaces, full-width

@@ -25,7 +25,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.ip.IPv4;
 
 /**
- * ID generator utility class. This class encapsulates several ID generation strategies:
+ * ID generator class. This class encapsulates several ID generation strategies:
  *
  * <pre>
  * 1. Unique ID generators: UUID, ObjectId (MongoDB), Snowflake

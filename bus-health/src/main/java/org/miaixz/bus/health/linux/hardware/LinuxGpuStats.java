@@ -135,12 +135,12 @@ final class LinuxGpuStats implements GpuStats {
     }
 
     /**
-     * Returns the gpu utilization.
+     * Returns the GPU usage.
      *
-     * @return the get gpu utilization result
+     * @return the GPU usage percentage
      */
     @Override
-    public synchronized double getGpuUtilization() {
+    public synchronized double getGpuUsage() {
         checkOpen();
         if (drmDevicePath.isEmpty()) {
             return -1d;
@@ -151,7 +151,7 @@ final class LinuxGpuStats implements GpuStats {
             return pct >= 0 ? pct : -1d;
         }
         if ("i915".equals(driver) || "xe".equals(driver)) {
-            // Approximates utilization as actual_freq / max_freq; not a true busy-time percentage
+            // Approximates usage as actual_freq / max_freq; not a true busy-time percentage
             // but the best available metric without kernel tracepoints.
             long actual = Builder.getLongFromFile(gt0Path + "/rps_act_freq_mhz");
             long max = Builder.getLongFromFile(gt0Path + "/rps_max_freq_mhz");

@@ -276,7 +276,7 @@ public class Complex {
     }
 
     /**
-     * Internal helper to determine if caching should be active based on multiple conditions.
+     * Determines if caching should be active based on multiple conditions.
      *
      * @param openStat  The global cache switch status.
      * @param expire    The expiration policy for the specific operation.

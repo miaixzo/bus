@@ -47,7 +47,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pay.nimble.wechat.WechatPayBuilder;
 
 /**
- * Utility class for JD Pay, providing methods for signing, encryption, decryption, and XML manipulation.
+ * Builds and signs JD Pay requests, providing methods for signing, encryption, decryption, and XML manipulation.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -117,7 +117,7 @@ public class JdPayBuilder {
     }
 
     /**
-     * Helper method to extract the value between XML tags.
+     * Extracts the value between XML tags.
      *
      * @param xml     The XML string.
      * @param tagName The name of the tag.

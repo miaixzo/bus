@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.windows.WmiQueryHandler;
 
 /**
- * Utility to query WMI class {@code MSAcpi_ThermalZoneTemperature}
+ * Queries WMI class {@code MSAcpi_ThermalZoneTemperature}
  *
  * @author Kimi Liu
  * @since Java 21+

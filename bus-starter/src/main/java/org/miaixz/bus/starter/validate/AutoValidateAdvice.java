@@ -159,8 +159,8 @@ public class AutoValidateAdvice {
     /**
      * Proceeds with the execution of the intercepted method.
      * <p>
-     * This helper method ensures that the AOP chain continues. It is designed to work with {@link ProceedingJoinPoint},
-     * which is available in {@code @Around} advice.
+     * Ensures that the AOP chain continues. It is designed to work with {@link ProceedingJoinPoint}, which is available
+     * in {@code @Around} advice.
      *
      * @param joinPoint The AOP join point.
      * @param arguments The method arguments.

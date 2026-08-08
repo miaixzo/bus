@@ -40,7 +40,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 final class HttpCacheKey {
 
     /**
-     * Hidden constructor for cache key helpers.
+     * Restricts the class to static cache-key operations.
      */
     private HttpCacheKey() {
         // No initialization required.

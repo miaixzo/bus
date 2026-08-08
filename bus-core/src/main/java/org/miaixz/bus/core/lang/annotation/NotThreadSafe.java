@@ -32,8 +32,8 @@ import java.lang.annotation.*;
  * <li>When applied to a <strong>method</strong>, it signifies that the specific method is not thread-safe.</li>
  * </ul>
  * <p>
- * Its primary purpose is for documentation and to be leveraged by static analysis tools to help prevent
- * concurrency-related bugs.
+ * Its primary purpose is for documentation and to be leveraged by static analysis tools to prevent concurrency-related
+ * bugs.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
- * A utility class for Base58 encoding and decoding.
+ * Encodes and decodes Base58 values.
  * <p>
  * Base58 is a binary-to-text encoding scheme used in Bitcoin and other cryptocurrencies. It is similar to Base64 but
  * avoids non-alphanumeric characters and letters that might look ambiguous when printed (0, O, I, l).

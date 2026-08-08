@@ -21,6 +21,7 @@ package org.miaixz.bus.core.io.timout;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -107,6 +108,40 @@ public class Timeout {
             throw new IllegalArgumentException("unit == null");
         this.timeoutNanos = unit.toNanos(timeout);
         return this;
+    }
+
+    /**
+     * Sets the operation timeout from a {@link Duration}. A zero duration clears the current timeout.
+     *
+     * @param duration The timeout duration; {@code null} leaves this policy unchanged.
+     * @return This {@code Timeout} instance for method chaining.
+     * @throws IllegalArgumentException If {@code duration} is negative.
+     */
+    public Timeout timeout(Duration duration) {
+        if (duration == null) {
+            return this;
+        }
+        if (duration.isNegative()) {
+            throw new IllegalArgumentException("timeout < 0: " + duration);
+        }
+        if (duration.isZero()) {
+            return clearTimeout();
+        }
+        return timeout(duration.toNanos(), TimeUnit.NANOSECONDS);
+    }
+
+    /**
+     * Copies the operation timeout duration from another policy. A source without a timeout clears this policy.
+     *
+     * @param source The source policy; {@code null} leaves this policy unchanged.
+     * @return This {@code Timeout} instance for method chaining.
+     */
+    public Timeout copyFrom(Timeout source) {
+        if (source == null) {
+            return this;
+        }
+        long nanos = source.timeoutNanos();
+        return nanos == 0L ? clearTimeout() : timeout(nanos, TimeUnit.NANOSECONDS);
     }
 
     /**

@@ -121,8 +121,8 @@ public abstract class AbstractHttpMessageConverter implements MessageConverterRe
     }
 
     /**
-     * A private helper method to check if a value is considered "empty" for serialization purposes. An empty value is
-     * defined as {@code null}, an empty string, or a string containing only whitespace.
+     * A private method to check if a value is considered "empty" for serialization purposes. An empty value is defined
+     * as {@code null}, an empty string, or a string containing only whitespace.
      *
      * @param value The value to check.
      * @return {@code true} if the value is null, empty, or blank; {@code false} otherwise.

@@ -21,7 +21,7 @@
  * Models STOMP subscription topics and broker receipts.
  *
  * <p>
- * Broker helper values identify subscribed destinations, receipt ids and acknowledgement state used by a
+ * Broker state values identify subscribed destinations, receipt ids, and acknowledgement state used by a
  * {@code StompSession}. They are local metadata objects and do not implement a broker or persist messages.
  * </p>
  *

@@ -29,7 +29,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Command-line (console) utility methods. This class primarily encapsulates {@link System#out} and {@link System#err}.
+ * Command-line (console) methods. This class primarily encapsulates {@link System#out} and {@link System#err}.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -342,7 +342,7 @@ public class Console {
     }
 
     /**
-     * Utility class for printing tables to the console.
+     * Prints tables to the console.
      *
      * @author Kimi Liu
      * @since Java 21+

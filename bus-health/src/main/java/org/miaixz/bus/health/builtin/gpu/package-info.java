@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Utility classes for optional vendor GPU library integration (NVML, ADL).
+ * Integrates optional vendor GPU libraries such as NVML and ADL.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -23,8 +23,8 @@ import java.util.concurrent.ExecutorService;
 
 /**
  * A specialized {@link DelegatedExecutorService} that ensures the underlying {@link ExecutorService} is properly shut
- * down when this object is garbage collected. This helps in preventing resource leaks by providing a finalization
- * mechanism for the executor service.
+ * down when this object is garbage collected. This prevents resource leaks by providing a finalization mechanism for
+ * the executor service.
  *
  * @author Kimi Liu
  * @since Java 21+

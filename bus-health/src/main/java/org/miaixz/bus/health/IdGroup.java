@@ -30,8 +30,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
- * Utility class for temporarily caching user ID and group mappings in *nix systems to resolve process ownership. The
- * cache expires after one minute.
+ * Caches user ID and group mappings temporarily on Unix systems to resolve process ownership. The cache expires after
+ * one minute.
  *
  * @author Kimi Liu
  * @since Java 21+

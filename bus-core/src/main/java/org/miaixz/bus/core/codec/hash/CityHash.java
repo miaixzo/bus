@@ -586,7 +586,7 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
     }
 
     /**
-     * A helper mixing function from Murmur3 for combining two 32-bit values.
+     * Mixes two 32-bit values with the Murmur3 algorithm.
      *
      * @param a The first value.
      * @param h The second value.

@@ -29,7 +29,7 @@ import org.miaixz.bus.fabric.cache.CacheStore;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 
 /**
- * Cache invalidation helpers for HTTP cache entries.
+ * Invalidates matching HTTP cache entries.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -37,7 +37,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 final class HttpCachePurge {
 
     /**
-     * Hidden constructor for cache invalidation helpers.
+     * Restricts the class to static cache invalidation operations.
      */
     private HttpCachePurge() {
         // No initialization required.

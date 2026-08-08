@@ -47,7 +47,7 @@ import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * Image processing utility class.
+ * Reads, transforms, and writes images.
  * <p>
  * Features include: scaling, cropping, rotating, converting image types, converting to grayscale, adding text
  * watermarks, adding image watermarks, etc. Reference: <a href=

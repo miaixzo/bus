@@ -44,7 +44,6 @@ import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.network.Connection;
-import org.miaixz.bus.fabric.network.NetworkTimeout;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
@@ -550,7 +549,7 @@ public final class Http1Codec implements HttpCodec {
      * @param duration      duration applied to every timeout phase
      */
     private static void configureTimeout(final Timeout timeoutPolicy, final Duration duration) {
-        NetworkTimeout.apply(timeoutPolicy, duration);
+        timeoutPolicy.timeout(duration);
     }
 
     /**

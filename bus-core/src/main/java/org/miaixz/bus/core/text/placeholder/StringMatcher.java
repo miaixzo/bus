@@ -29,8 +29,8 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * String pattern matching utility that uses {@code ${XXXXX}} as variables. This class provides functionality to match a
- * given text against a predefined pattern containing placeholders and extract the corresponding values. For example:
+ * Matches string patterns that use {@code ${XXXXX}} as variables. This class provides functionality to match a given
+ * text against a predefined pattern containing placeholders and extract the corresponding values. For example:
  *
  * <pre>
  *     pattern: ${name}-${age}-${gender}-${country}-${province}-${city}-${status}

@@ -66,7 +66,7 @@ public final class StreamProxyConnector {
     private static final byte SOCKS_VERSION = 0x05;
 
     /**
-     * Creates a stateless stream-proxy handshake helper.
+     * Creates a stateless stream-proxy handshake state.
      */
     public StreamProxyConnector() {
         // No initialization required.

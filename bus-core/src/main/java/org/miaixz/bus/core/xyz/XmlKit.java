@@ -43,8 +43,8 @@ import org.miaixz.bus.core.xml.XmlSaxReader;
 import org.miaixz.bus.core.xml.XmlWriter;
 
 /**
- * XML utility class. This utility uses the W3C DOM tools and does not require third-party libraries. It encapsulates
- * the creation, reading, writing, and some operations of XML documents.
+ * XML class. This class uses the W3C DOM APIs and does not require third-party libraries. It encapsulates the creation,
+ * reading, writing, and some operations of XML documents.
  *
  * @author Kimi Liu
  * @since Java 21+

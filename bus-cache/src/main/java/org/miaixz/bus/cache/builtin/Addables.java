@@ -27,7 +27,7 @@ import java.util.Map;
 import org.miaixz.bus.core.xyz.CollKit;
 
 /**
- * A factory and utility class for creating and manipulating collections, maps, and arrays.
+ * A factory and class for creating and manipulating collections, maps, and arrays.
  * <p>
  * This class provides a unified interface, {@link Addable}, for populating different kinds of data structures (Array,
  * Collection, Map) and retrieving the final result.

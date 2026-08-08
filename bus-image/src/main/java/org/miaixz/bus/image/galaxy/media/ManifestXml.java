@@ -30,7 +30,7 @@ import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 
 /**
- * XML helpers for DICOM manifest structures.
+ * XML operations for DICOM manifest structures.
  *
  * @author Kimi Liu
  * @since Java 21+

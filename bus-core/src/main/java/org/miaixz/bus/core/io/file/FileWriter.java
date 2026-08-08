@@ -32,8 +32,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * File writer. This class provides utility methods for writing content to files, supporting various data types,
- * character encodings, and append/overwrite modes.
+ * Writes multiple data types and character encodings, and append/overwrite modes.
  *
  * @author Kimi Liu
  * @since Java 21+

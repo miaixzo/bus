@@ -32,7 +32,7 @@ import org.miaixz.bus.core.text.CharsValidator;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * Object validation utility class, providing checks for object blankness and emptiness.
+ * Object validation class, providing checks for object blankness and emptiness.
  * <ul>
  * <li>Empty definition: {@code null} or empty string: {@code ""}</li>
  * <li>Blank definition: {@code null} or empty string: {@code ""} or invisible characters like spaces, full-width

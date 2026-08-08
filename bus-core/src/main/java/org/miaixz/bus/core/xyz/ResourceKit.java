@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Resource utility class.
+ * Loads and resolves resources.
  *
  * @author Kimi Liu
  * @since Java 21+

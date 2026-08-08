@@ -29,8 +29,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.center.MD5;
 
 /**
- * OpenSSL salt parser. This utility is used to derive key and IV from a password and salt, typically for compatibility
- * with OpenSSL's salted encryption format.
+ * OpenSSL salt parser. This parser derives key and IV from a password and salt, typically for compatibility with
+ * OpenSSL's salted encryption format.
  * <p>
  * References:
  * </p>

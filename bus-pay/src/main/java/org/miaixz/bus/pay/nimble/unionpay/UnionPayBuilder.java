@@ -22,7 +22,7 @@ package org.miaixz.bus.pay.nimble.unionpay;
 import org.miaixz.bus.pay.Registry;
 
 /**
- * UnionPay Cloud QuickPass utility class.
+ * UnionPay Cloud QuickPass class.
  *
  * @author Kimi Liu
  * @since Java 21+

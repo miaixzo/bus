@@ -78,7 +78,7 @@ public interface PropertySource {
      * @return The string with all placeholders resolved.
      */
     default String getPlaceholderProperty(String placeholder) {
-        return Binder.DEFAULT_HELPER.replacePlaceholders(placeholder, props());
+        return Binder.DEFAULT_BINDER.replacePlaceholders(placeholder, props());
     }
 
     /**

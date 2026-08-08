@@ -340,7 +340,7 @@ public class StrategyFactory {
     }
 
     /**
-     * Helper method to get a clean list of class names for logging.
+     * Returns a clean list of class names for logging.
      *
      * @param strategies The list of strategies.
      * @return A comma-separated string of simple class names.

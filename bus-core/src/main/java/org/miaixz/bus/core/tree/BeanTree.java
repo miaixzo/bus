@@ -35,8 +35,8 @@ import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ListKit;
 
 /**
- * A utility class for building tree structures from a list of beans using lambda expressions. The bean type must have
- * the following properties:
+ * Builds tree structures from a list of beans using lambda expressions. The bean type must have the following
+ * properties:
  * <ul>
  * <li>A non-null primary key (e.g., id).</li>
  * <li>A nullable foreign key to associate with a parent (e.g., parentId).</li>
@@ -258,7 +258,7 @@ public class BeanTree<T, R extends Comparable<R>> {
     }
 
     /**
-     * Private helper method to find and set the children for each node in the list.
+     * Finds and sets the children for each node in the list.
      *
      * @param list         The full list of nodes.
      * @param pIdValuesMap A map from parent ID to a list of its direct children.

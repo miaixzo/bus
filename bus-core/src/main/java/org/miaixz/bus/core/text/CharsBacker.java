@@ -49,7 +49,7 @@ import org.miaixz.bus.core.text.replacer.StringRangeReplacer;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * Utility class for {@link CharSequence} operations, including but not limited to:
+ * Inspects and transforms {@link CharSequence} values, including but not limited to:
  * <ul>
  * <li>Adding prefixes or suffixes to strings: {@code addXXX}</li>
  * <li>Padding strings to a specific length: {@code padXXX}</li>

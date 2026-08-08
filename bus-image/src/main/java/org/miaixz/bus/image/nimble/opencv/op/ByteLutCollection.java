@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.nimble.opencv.lut.ByteLut;
 
 /**
- * Utility methods for BGR byte lookup tables.
+ * Creates and transforms BGR byte lookup tables.
  *
  * @author Kimi Liu
  * @since Java 21+

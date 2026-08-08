@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * A container object which may or may not contain a non-null value. This class is a copy of {@code java.util.Optional}
- * from JDK 16, with some adjustments and additions, offering more utility functions than JDK 8's {@code Optional}.
+ * from JDK 16, with some adjustments and additions, offering more operations than JDK 8's {@code Optional}.
  *
  * @param <T> The type of the value held by this {@code Optional}.
  * @see java.util.Optional

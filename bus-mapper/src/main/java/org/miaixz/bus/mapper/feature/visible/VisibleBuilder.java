@@ -289,7 +289,7 @@ public class VisibleBuilder {
     /**
      * Tests whether a character may start an unquoted SQL token during condition parsing.
      * <p>
-     * This parser helper does not validate identifier compliance.
+     * This clause parser does not validate identifiers.
      * </p>
      *
      * @param value the character to test
@@ -446,7 +446,7 @@ public class VisibleBuilder {
     /**
      * Tests whether a structural SQL keyword starts at the specified index.
      * <p>
-     * This parser helper locates clauses and does not validate database identifiers or reserved words.
+     * This clause parser locates SQL clauses without validating identifiers or reserved words.
      * </p>
      *
      * @param sql     the SQL statement
@@ -482,7 +482,7 @@ public class VisibleBuilder {
     /**
      * Tests whether a character belongs to an unquoted SQL token for boundary detection.
      * <p>
-     * This parser helper is not an identifier compliance rule.
+     * This clause parser does not enforce identifier rules.
      * </p>
      *
      * @param value the character to test

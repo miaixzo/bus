@@ -663,7 +663,7 @@ public class AntPathMatcher {
     }
 
     /**
-     * A helper class for matching a string against a single Ant-style pattern.
+     * A class for matching a string against a single Ant-style pattern.
      *
      * @author Kimi Liu
      * @since Java 21+
@@ -896,7 +896,7 @@ public class AntPathMatcher {
         }
 
         /**
-         * A helper class to hold information about a pattern's specificity.
+         * A class to hold information about a pattern's specificity.
          *
          * @author Kimi Liu
          * @since Java 21+

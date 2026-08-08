@@ -102,8 +102,8 @@ public class LabColor {
     }
 
     /**
-     * Helper function for XYZ to LAB conversion. Applies a cubic root transformation for values above a certain
-     * threshold, and a linear transformation for values below it.
+     * Converts XYZ values to LAB values. Applies a cubic root transformation for values above a certain threshold, and
+     * a linear transformation for values below it.
      *
      * @param t The input value (X, Y, or Z component).
      * @return The transformed value.

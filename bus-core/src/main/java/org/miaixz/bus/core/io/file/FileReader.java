@@ -35,8 +35,7 @@ import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * File reader. This class provides utility methods for reading content from files, supporting various data types and
- * character encodings.
+ * Reads file content as multiple data types and character encodings.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -43,8 +43,7 @@ import org.miaixz.bus.core.lang.annotation.resolve.synthesize.SynthesizedAnnotat
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Annotation utility class, providing encapsulated functions for quickly obtaining annotation objects, annotation
- * values, etc.
+ * Annotation class, providing encapsulated functions for quickly obtaining annotation objects, annotation values, etc.
  *
  * @author Kimi Liu
  * @since Java 21+

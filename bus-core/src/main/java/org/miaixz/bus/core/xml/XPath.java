@@ -33,7 +33,7 @@ import org.xml.sax.InputSource;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Utility class for {@link javax.xml.xpath.XPath}.
+ * Creates and evaluates XPath expressions.
  *
  * @see <a href="https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">Introduction to the JAXP XPath API</a>
  * @author Kimi Liu

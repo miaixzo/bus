@@ -43,7 +43,7 @@ import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.text.CharsBacker;
 
 /**
- * Class utility.
+ * Inspects and loads Java classes.
  *
  * @author Kimi Liu
  * @since Java 21+

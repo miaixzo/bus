@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.ansi.*;
 import org.miaixz.bus.core.text.CharsBacker;
 
 /**
- * Color utility class.
+ * Converts and formats color values.
  *
  * @author Kimi Liu
  * @since Java 21+

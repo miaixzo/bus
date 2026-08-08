@@ -33,10 +33,10 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * A utility class for resolving generic types, based on the source code of MyBatis 3. It adds the
- * {@code resolveMapperTypes} method to support resolving generic types of interfaces. This class primarily handles the
- * runtime resolution of generic type arguments to their actual concrete types by traversing the type hierarchy.
- * Original source from https://github.com/mybatis/mybatis-3
+ * Resolves generic types, based on the source code of MyBatis 3. It adds the {@code resolveMapperTypes} method to
+ * support resolving generic types of interfaces. This class primarily handles the runtime resolution of generic type
+ * arguments to their actual concrete types by traversing the type hierarchy. Original source from
+ * https://github.com/mybatis/mybatis-3
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -416,7 +416,7 @@ public class GenericTypeResolver {
     }
 
     /**
-     * Helper method to recursively resolve all types in an array of bounds (used by {@code resolveWildcardType}).
+     * Recursively resolves all types in an array of bounds (used by {@code resolveWildcardType}).
      *
      * @param bounds         The array of bounds.
      * @param srcType        The source type context.

@@ -366,15 +366,15 @@ public interface CentralProcessor {
     enum TickType {
 
         /**
-         * CPU utilization that occurred while executing at the user level (application).
+         * CPU time that occurred while executing at the user level (application).
          */
         USER(0),
         /**
-         * CPU utilization that occurred while executing at the user level with nice priority.
+         * CPU time that occurred while executing at the user level with nice priority.
          */
         NICE(1),
         /**
-         * CPU utilization that occurred while executing at the system level (kernel).
+         * CPU time that occurred while executing at the system level (kernel).
          */
         SYSTEM(2),
         /**

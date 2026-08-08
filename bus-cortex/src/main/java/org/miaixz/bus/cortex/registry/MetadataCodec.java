@@ -30,7 +30,7 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Small JSON helper for metadata payloads.
+ * Encodes and decodes metadata payloads as JSON.
  * <p>
  * This class deliberately knows only JSON shapes, not subtype-specific metadata fields.
  * </p>

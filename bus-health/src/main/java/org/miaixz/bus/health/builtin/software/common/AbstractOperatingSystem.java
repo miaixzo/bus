@@ -70,8 +70,8 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     private final SupplierX<Integer> bitness = Memoizer.memoize(this::queryPlatformBitness);
 
     /**
-     * Utility method for subclasses to take a full process list as input and return the children or descendants of a
-     * particular process. The process itself is also returned to more efficiently extract its start time for filtering
+     * Filters a complete process list to return the children or descendants of a particular process. The process itself
+     * is also returned to more efficiently extract its start time for filtering
      *
      * @param allProcs       A collection of all processes
      * @param parentPid      The process ID whose children or descendants to return
@@ -88,8 +88,7 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     }
 
     /**
-     * Utility method for subclasses to take a map of pid to parent as input and return the children or descendants of a
-     * particular process.
+     * Filters a PID-to-parent map to return the children or descendants of a particular process.
      *
      * @param parentPidMap   a map of all processes with processID as key and parentProcessID as value
      * @param parentPid      The process ID whose children or descendants to return

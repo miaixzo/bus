@@ -23,8 +23,8 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * Provides utility methods for converting database naming conventions to Java-style camel case naming. This includes
- * converting table names to class names and field names to Java field names.
+ * Provides methods for converting database naming conventions to Java-style camel case naming. This includes converting
+ * table names to class names and field names to Java field names.
  *
  * @author Kimi Liu
  * @since Java 21+

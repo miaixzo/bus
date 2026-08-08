@@ -39,8 +39,8 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.WatchKit;
 
 /**
- * File content tailer, implementing functionality similar to the "tail -f" command in Linux. This utility continuously
- * monitors a file for new content and processes it line by line.
+ * Tails file content similarly to the Linux "tail -f" command. This class continuously monitors a file for new content
+ * and processes it line by line.
  *
  * @author Kimi Liu
  * @since Java 21+

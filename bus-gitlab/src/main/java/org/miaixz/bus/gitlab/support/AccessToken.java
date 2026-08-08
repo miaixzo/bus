@@ -99,7 +99,7 @@ public final class AccessToken {
          */
         WRITE_REPOSITORY;
 
-        private static JacksonJsonEnumHelper<Scope> enumHelper = new JacksonJsonEnumHelper<>(Scope.class);
+        private static JacksonJsonEnumCodec<Scope> enumCodec = new JacksonJsonEnumCodec<>(Scope.class);
 
         /**
          * Executes the for value operation.
@@ -110,7 +110,7 @@ public final class AccessToken {
 
         @JsonCreator
         public static Scope forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -121,7 +121,7 @@ public final class AccessToken {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -132,7 +132,7 @@ public final class AccessToken {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

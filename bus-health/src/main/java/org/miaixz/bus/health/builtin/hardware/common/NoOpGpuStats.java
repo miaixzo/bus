@@ -81,12 +81,12 @@ public final class NoOpGpuStats implements GpuStats {
     }
 
     /**
-     * Returns the gpu utilization.
+     * Returns the GPU usage.
      *
-     * @return the get gpu utilization result
+     * @return the GPU usage percentage
      */
     @Override
-    public double getGpuUtilization() {
+    public double getGpuUsage() {
         checkOpen();
         return -1d;
     }

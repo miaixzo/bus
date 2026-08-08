@@ -43,7 +43,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Compression utility class.
+ * Compresses and decompresses data.
  *
  * @see ZipWriter
  * @author Kimi Liu

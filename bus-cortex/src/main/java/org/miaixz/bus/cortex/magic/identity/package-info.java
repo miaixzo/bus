@@ -26,7 +26,7 @@
  * second constructor accepts any {@code Supplier<String>} to substitute an alternative strategy such as Snowflake, UUID
  * or NanoId at deployment time. {@code Sequence} is a named monotonic counter backed by CacheX: each call to
  * {@code next(key)} atomically increments the counter stored under {@code SEQUENCE_PREFIX + key} and returns the new
- * value. {@code Fingerprint} is a stateless utility that derives a stable 32-character lowercase hex identifier from a
+ * value. {@code Fingerprint} is a stateless class that derives a stable 32-character lowercase hex identifier from a
  * {@code host:port} string via SHA-256, used to uniquely identify a runtime service instance without exposing its
  * network coordinates directly.
  *

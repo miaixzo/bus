@@ -27,7 +27,8 @@ import java.util.Set;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * Type casting utility. Provides methods for up-casting and down-casting generic collections, maps, etc.
+ * Casts values and generic containers between compatible types. Provides methods for up-casting and down-casting
+ * generic collections, maps, etc.
  *
  * @author Kimi Liu
  * @since Java 21+

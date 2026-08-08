@@ -28,12 +28,12 @@
  * relationship is {@code namespace -> app -> item} plus {@code namespace -> profile}. App/profile bindings for one item
  * are stored in relationship tables and aggregated into runtime-only fields rather than being encoded in one scalar
  * column on the item itself. The item resource therefore owns current-state setting content, lookup scope, query
- * objects, cache keys, normalization policy, request context, gray-routing helpers, revision helpers, and the
+ * objects, cache keys, normalization policy, request context, gray-routing operations, revision operations, and the
  * lightweight watcher instead of continuing as scattered root-level setting models. ItemRevision history belongs to the
  * item resource as {@code setting.item.revision} rather than standing as one more top-level sibling resource. The
  * {@code curator} subpackage handles current-state persistence, revision history, source adapters, and effective-value
  * resolution. The {@code delivery} subpackage adds export and runtime overlay services, while {@code secret} contains
- * secret codecs and masking helpers.
+ * secret codecs and masking operations.
  *
  * @author Kimi Liu
  * @since Java 21+

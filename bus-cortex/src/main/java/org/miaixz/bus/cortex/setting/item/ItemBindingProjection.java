@@ -29,7 +29,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
- * Binding-focused helpers for item app/profile scope and extension payloads.
+ * Projects item application scope, profile scope, and extension payloads for binding.
  *
  * @author Kimi Liu
  * @since Java 21+

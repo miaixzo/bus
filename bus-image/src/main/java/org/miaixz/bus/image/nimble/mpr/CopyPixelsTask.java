@@ -24,7 +24,7 @@ import java.util.concurrent.RecursiveAction;
 import java.util.function.IntBinaryOperator;
 
 /**
- * Fork/join pixel copy helper used by MPR slice extraction.
+ * Fork/join pixel copy task used by MPR slice extraction.
  *
  * @author Kimi Liu
  * @since Java 21+

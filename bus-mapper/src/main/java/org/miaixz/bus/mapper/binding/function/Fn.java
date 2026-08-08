@@ -32,7 +32,7 @@ import org.miaixz.bus.mapper.parsing.MapperFactory;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * A utility interface for method references, used to obtain field and column information.
+ * A interface for method references, used to obtain field and column information.
  *
  * @param <T> The type of the entity class.
  * @param <R> The return type of the method reference.

@@ -29,9 +29,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.metric.hl7.HL7ContentHandler;
 
 /**
- * The {@code Xml2HL7} class provides a utility to convert an XML representation of an HL7 message back into the
- * traditional HL7 ER7 (pipe and hat) format. It uses a SAX parser and an {@link HL7ContentHandler} to perform the
- * transformation.
+ * The {@code Xml2HL7} class converts an XML representation of an HL7 message back into the traditional HL7 ER7 (pipe
+ * and hat) format. It uses a SAX parser and an {@link HL7ContentHandler} to perform the transformation.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -63,8 +62,8 @@ public class Xml2HL7 {
     }
 
     /**
-     * Parses command-line arguments to get the input filename and handle help/version options. This method is intended
-     * for a command-line interface and contains process-exiting calls.
+     * Parses command-line arguments to get the input filename and handle usage and version options. This method is
+     * intended for a command-line interface and contains process-exiting calls.
      *
      * @param args The command-line arguments.
      * @return The filename to process.

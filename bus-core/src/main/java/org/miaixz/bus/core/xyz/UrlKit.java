@@ -42,7 +42,7 @@ import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.net.url.UrlQuery;
 
 /**
- * URL (Uniform Resource Locator) related utility class.
+ * URL (Uniform Resource Locator) related class.
  *
  * <p>
  * A Uniform Resource Locator describes the specific location of a resource on a particular server. URL composition:

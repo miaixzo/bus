@@ -32,8 +32,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 
 /**
- * Utility class for sensitive word filtering based on the DFA (Deterministic Finite Automaton) algorithm. This class
- * provides methods to initialize a sensitive word dictionary and perform sensitive word detection and filtering.
+ * Filters sensitive words based on the DFA (Deterministic Finite Automaton) algorithm. This class provides methods to
+ * initialize a sensitive word dictionary and perform sensitive word detection and filtering.
  *
  * @author Kimi Liu
  * @since Java 21+

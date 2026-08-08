@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The artifact class.
@@ -160,7 +160,7 @@ public class Artifact implements Serializable {
          */
         JUNIT;
 
-        private static JacksonJsonEnumHelper<FileType> enumHelper = new JacksonJsonEnumHelper<>(FileType.class);
+        private static JacksonJsonEnumCodec<FileType> enumCodec = new JacksonJsonEnumCodec<>(FileType.class);
 
         /**
          * Executes the for value operation.
@@ -171,7 +171,7 @@ public class Artifact implements Serializable {
 
         @JsonCreator
         public static FileType forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -182,7 +182,7 @@ public class Artifact implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -193,7 +193,7 @@ public class Artifact implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

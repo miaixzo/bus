@@ -44,7 +44,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.nimble.props.Props;
 
 /**
- * General utility methods and global health configuration.
+ * Defines global health configuration and shared health operations.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -97,27 +97,27 @@ public final class Builder {
     /**
      * General configuration: process path.
      */
-    public static final String _UTIL_PROC_PATH = "bus.health.proc.path";
+    public static final String _PROC_PATH = "bus.health.proc.path";
 
     /**
      * General configuration: system path.
      */
-    public static final String _UTIL_SYS_PATH = "bus.health.sys.path";
+    public static final String _SYS_PATH = "bus.health.sys.path";
 
     /**
      * General configuration: device path.
      */
-    public static final String _UTIL_DEV_PATH = "bus.health.dev.path";
+    public static final String _DEV_PATH = "bus.health.dev.path";
 
     /**
      * General configuration: WMI timeout.
      */
-    public static final String _UTIL_WMI_TIMEOUT = "bus.health.wmi.timeout";
+    public static final String _WMI_TIMEOUT = "bus.health.wmi.timeout";
 
     /**
      * General configuration: memoizer expiration time.
      */
-    public static final String _UTIL_MEMOIZER_EXPIRATION = "bus.health.memoizer.expiration";
+    public static final String _MEMOIZER_EXPIRATION = "bus.health.memoizer.expiration";
 
     /**
      * General configuration: pseudo filesystem types.
@@ -340,9 +340,9 @@ public final class Builder {
     public static final String _WINDOWS_LOADAVERAGE = "bus.health.windows.loadaverage";
 
     /**
-     * Windows configuration: CPU utility settings.
+     * Windows configuration: CPU usage counter settings.
      */
-    public static final String _WINDOWS_CPU_UTILITY = "bus.health.windows.cpu.utility";
+    public static final String _WINDOWS_CPU_USAGE_COUNTERS = "bus.health.windows.cpu.utility";
 
     /**
      * Windows configuration: whether to disable performance disk counters.

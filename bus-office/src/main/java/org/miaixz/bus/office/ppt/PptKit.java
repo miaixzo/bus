@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 
 /**
- * Utility class for PowerPoint (PPTX) operations.
+ * Reads, creates, and modifies PowerPoint (PPTX) documents.
  *
  * @author Kimi Liu
  * @since Java 21+

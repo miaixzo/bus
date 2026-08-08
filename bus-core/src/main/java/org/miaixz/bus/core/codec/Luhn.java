@@ -83,8 +83,8 @@ public class Luhn {
     }
 
     /**
-     * Calculates the sum of digits according to the Luhn algorithm. This private helper method performs the core
-     * summation logic of the Luhn algorithm.
+     * Calculates the sum of digits according to the Luhn algorithm. This private method performs the core summation
+     * logic of the Luhn algorithm.
      *
      * @param text The number string for which to calculate the sum.
      * @return The sum of digits as per the Luhn algorithm.

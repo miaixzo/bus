@@ -43,7 +43,7 @@ import org.miaixz.bus.core.net.ip.IPv4;
 import org.miaixz.bus.core.text.CharsBacker;
 
 /**
- * Network related utility class.
+ * Network related class.
  *
  * @author Kimi Liu
  * @since Java 21+

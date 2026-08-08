@@ -31,7 +31,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
 
 /**
- * Utility to query iostat
+ * Queries iostat
  *
  * @author Kimi Liu
  * @since Java 21+

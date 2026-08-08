@@ -27,7 +27,7 @@ import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * A utility class for creating and working with dynamic proxies.
+ * Creates and working with dynamic proxies.
  *
  * @author Kimi Liu
  * @since Java 21+

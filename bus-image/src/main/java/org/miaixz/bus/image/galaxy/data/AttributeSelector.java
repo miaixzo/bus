@@ -187,7 +187,7 @@ public class AttributeSelector implements Serializable {
     }
 
     /**
-     * Helper method to extract a value associated with a key from a string.
+     * Extracts a value associated with a key from a string.
      *
      * @param key       The key to search for (e.g., "@tag=").
      * @param s         The string to parse.
@@ -316,8 +316,8 @@ public class AttributeSelector implements Serializable {
     }
 
     /**
-     * Appends the string representation of a DICOM tag and private creator to a {@link StringBuilder}. This is a helper
-     * method for {@link #toStringBuilder()}.
+     * Appends the string representation of a DICOM tag and private creator to a {@link StringBuilder}. This method is
+     * used method for {@link #toStringBuilder()}.
      *
      * @param tag            The DICOM tag.
      * @param privateCreator The private creator string.

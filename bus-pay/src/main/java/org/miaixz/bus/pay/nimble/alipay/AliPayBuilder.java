@@ -38,7 +38,7 @@ import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Alipay configuration and utility class.
+ * Alipay configuration and class.
  *
  * @author Kimi Liu
  * @since Java 21+

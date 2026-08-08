@@ -25,8 +25,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.SetKit;
 
 /**
- * Utility class for handling stop characters, such as punctuation and whitespace, which are typically ignored during
- * text processing, especially in DFA-based algorithms.
+ * Handles stop characters, such as punctuation and whitespace, which are typically ignored during text processing,
+ * especially in DFA-based algorithms.
  *
  * @author Kimi Liu
  * @since Java 21+

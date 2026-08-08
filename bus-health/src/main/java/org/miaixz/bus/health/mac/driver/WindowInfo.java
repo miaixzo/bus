@@ -34,7 +34,7 @@ import org.miaixz.bus.health.mac.CFKit;
 import org.miaixz.bus.health.mac.jna.CoreGraphics;
 
 /**
- * Utility to query desktop windows on macOS.
+ * Queries desktop windows on macOS.
  *
  * @author Kimi Liu
  * @since Java 21+

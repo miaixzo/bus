@@ -528,7 +528,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     }
 
     /**
-     * Helper method to parse version description line style
+     * Parses version description line style
      *
      * @param line      a String of the form "Distributor release x.x (Codename)"
      * @param splitLine A regex to split on, e.g. " release "

@@ -256,7 +256,7 @@ public final class ImageIOHandler {
         return createThumbnailFromSize(sourceMat, targetSize);
     }
 
-    // Private helper methods with minimal or no documentation
+    // Private methods with minimal or no documentation
 
     /**
      * Executes the handle image conversion operation.

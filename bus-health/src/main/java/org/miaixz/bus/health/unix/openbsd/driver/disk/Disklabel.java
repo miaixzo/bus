@@ -33,7 +33,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
 
 /**
- * Utility class parsing partition information from disklabel command
+ * Parses partition information from disklabel command
  *
  * @author Kimi Liu
  * @since Java 21+

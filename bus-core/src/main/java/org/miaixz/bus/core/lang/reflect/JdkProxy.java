@@ -27,8 +27,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ClassKit;
 
 /**
- * Utility class for JDK's {@link Proxy} related operations. This class provides methods for creating dynamic proxy
- * objects and checking if an object or class is a proxy.
+ * Creates and inspects JDK dynamic proxies. This class provides methods for creating dynamic proxy objects and checking
+ * if an object or class is a proxy.
  *
  * @author Kimi Liu
  * @since Java 21+

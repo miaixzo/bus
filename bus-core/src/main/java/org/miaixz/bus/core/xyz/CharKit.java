@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.ASCIIStrCache;
 
 /**
- * Character utility class. Some methods are inspired by Apache Commons Lang.
+ * Character class. Some methods are inspired by Apache Commons Lang.
  *
  * @author Kimi Liu
  * @since Java 21+

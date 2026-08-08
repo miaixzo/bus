@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Fingerprint utility for generating stable instance identifiers.
+ * Generates stable instance identifiers.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -98,8 +98,8 @@ public abstract class AbstractConverter implements Converter, Serializable {
     protected abstract Object convertInternal(Class<?> targetClass, Object value);
 
     /**
-     * Converts an object to its string representation. This is a utility method for converters that require an
-     * intermediate string form.
+     * Converts an object to its string representation. This is a method for converters that require an intermediate
+     * string form.
      * <ul>
      * <li>{@link CharSequence} objects are converted using {@code toString()}.</li>
      * <li>Arrays are converted to a comma-separated string.</li>

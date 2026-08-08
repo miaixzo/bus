@@ -25,7 +25,7 @@ import org.miaixz.bus.core.lang.ref.Ref;
 import org.miaixz.bus.core.lang.ref.ReferenceType;
 
 /**
- * Utility class for {@link java.lang.ref.Reference}. This class provides wrappers for:
+ * Creates and inspects Java reference objects. This class provides wrappers for:
  *
  * <pre>
  * 1. {@link SoftReference}: Collected by the GC when memory is low.

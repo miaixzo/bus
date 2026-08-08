@@ -29,7 +29,7 @@ import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 
 /**
- * Utility to query lshal
+ * Queries lshal
  *
  * @author Kimi Liu
  * @since Java 21+

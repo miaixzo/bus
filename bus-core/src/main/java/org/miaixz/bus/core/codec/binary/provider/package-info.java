@@ -18,8 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides utility classes and providers for binary encoding and decoding. This package contains helper classes that
- * support various binary-to-text and text-to-binary encoding schemes, such as Base16, Base32, Base58, and Base62.
+ * Provides binary encoding and decoding implementations. This package contains internal classes that support various
+ * binary-to-text and text-to-binary encoding schemes, such as Base16, Base32, Base58, and Base62.
  *
  * @author Kimi Liu
  * @since Java 21+

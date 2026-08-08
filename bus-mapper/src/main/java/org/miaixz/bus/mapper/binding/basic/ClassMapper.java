@@ -55,7 +55,7 @@ public interface ClassMapper<T> {
     }
 
     /**
-     * A utility class for caching entity class types.
+     * Caches entity class types.
      *
      * @author Kimi Liu
      * @since Java 21+

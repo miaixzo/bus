@@ -54,8 +54,8 @@ import org.miaixz.bus.image.galaxy.data.DatePrecision;
  * A formatter that creates strings by substituting placeholders with values from DICOM attributes. This class extends
  * {@link java.text.Format} and uses a {@link MessageFormat} engine underneath. It supports a custom pattern language
  * for accessing DICOM tags, applying formatting types (like dates, numbers, UID generation), and performing string
- * manipulations. Also provides a rich set of static utility methods for parsing and formatting DICOM date-time strings
- * (DA, TM, DT).
+ * manipulations. Also provides a rich set of static methods for parsing and formatting DICOM date-time strings (DA, TM,
+ * DT).
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -299,7 +299,7 @@ public class Format extends java.text.Format {
     }
 
     /**
-     * Private helper to format a Calendar into a TM string.
+     * Formats a Calendar into a TM string.
      */
     private static StringBuilder formatTM(Calendar cal, StringBuilder toAppendTo, int lastField) {
         appendXX(cal.get(Calendar.HOUR_OF_DAY), toAppendTo);
@@ -398,7 +398,7 @@ public class Format extends java.text.Format {
     }
 
     /**
-     * Private helper to format a Calendar into a DT string up to a specified precision.
+     * Formats a Calendar into a DT string up to a specified precision.
      */
     private static StringBuilder formatDT(Calendar cal, StringBuilder toAppendTo, int lastField) {
         appendXXXX(cal.get(Calendar.YEAR), toAppendTo);
@@ -599,7 +599,7 @@ public class Format extends java.text.Format {
     }
 
     /**
-     * Private helper to parse a TM string into a Calendar.
+     * Parses a TM string into a Calendar.
      */
     private static Date parseTM(Calendar cal, String s, boolean ceil, DatePrecision precision) {
         int length = s.length();
@@ -1121,7 +1121,7 @@ public class Format extends java.text.Format {
     }
 
     /**
-     * Private helper to truncate a string to a max length.
+     * Truncates a string to a max length.
      */
     private static String truncate(String value, int length, int maxLength, int fractionPos) {
         return value.substring(0, adjustMaxLength(Math.min(length, maxLength), fractionPos));

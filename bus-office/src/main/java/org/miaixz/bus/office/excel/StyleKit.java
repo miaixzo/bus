@@ -30,7 +30,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.style.CellBorderStyle;
 
 /**
- * Utility class for Excel cell styles.
+ * Creates and applies Excel cell styles.
  *
  * @author Kimi Liu
  * @since Java 21+

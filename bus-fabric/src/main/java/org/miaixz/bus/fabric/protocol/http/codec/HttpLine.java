@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 
 /**
- * HTTP/1 line formatting and validation helpers.
+ * Formats and validates HTTP/1 start lines and header lines.
  *
  * @author Kimi Liu
  * @since Java 21+

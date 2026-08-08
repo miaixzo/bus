@@ -145,7 +145,7 @@ public abstract class AbstractCollector implements Collector, AutoCloseable {
     }
 
     /**
-     * A utility method to create a HashMap from a series of key-value pairs.
+     * A method to create a HashMap from a series of key-value pairs.
      *
      * @param keyValues An array of alternating keys and values.
      * @return A new {@link HashMap} instance.

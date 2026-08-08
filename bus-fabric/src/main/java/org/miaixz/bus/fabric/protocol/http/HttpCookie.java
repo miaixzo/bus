@@ -33,7 +33,7 @@ import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.protocol.Cookie;
 
 /**
- * HTTP cookie helpers that reuse the shared immutable {@link Cookie} value.
+ * Parses and formats HTTP cookies with the shared immutable {@link Cookie} value.
  *
  * @author Kimi Liu
  * @since Java 21+

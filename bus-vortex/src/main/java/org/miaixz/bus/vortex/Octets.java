@@ -63,7 +63,7 @@ public final class Octets {
     private static final NettyDataBufferFactory WRITE_BUFFER_FACTORY = new NettyDataBufferFactory(Holder.allocator());
 
     /**
-     * Prevents instantiation of this static lifecycle utility.
+     * Restricts the class to static lifecycle operations.
      */
     private Octets() {
         throw new UnsupportedOperationException("Octets class cannot be instantiated");

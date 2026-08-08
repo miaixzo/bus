@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Utility class for encapsulating and manipulating {@link java.util.Calendar} objects.
+ * Wraps and modifies {@link java.util.Calendar} values.
  *
  * @author Kimi Liu
  * @since Java 21+

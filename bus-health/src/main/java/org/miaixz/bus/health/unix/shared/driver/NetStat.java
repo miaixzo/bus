@@ -35,7 +35,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
 
 /**
- * Utility to query TCP connections on Unix-based systems.
+ * Queries TCP connections on Unix-based systems.
  *
  * @author Kimi Liu
  * @since Java 21+

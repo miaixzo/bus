@@ -38,7 +38,7 @@ import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Date parsing utility.
+ * Parses date and time values.
  *
  * @author Kimi Liu
  * @since Java 21+

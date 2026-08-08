@@ -72,14 +72,12 @@ public class Crockford {
             'D', 'E', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', Symbol.C_X, 'Y', 'Z' };
 
     /**
-     * Convenience variable to help us determine when our buffer is going to run out of room and needs resizing.
-     * {@code decodeSize = BYTES_PER_ENCODED_BLOCK - 1;}
+     * Tracks the buffer threshold that triggers resizing. {@code decodeSize = BYTES_PER_ENCODED_BLOCK - 1;}
      */
     private final int decodeSize;
 
     /**
-     * Convenience variable to help us determine when our buffer is going to run out of room and needs resizing.
-     * {@code encodeSize = BYTES_PER_ENCODED_BLOCK;}
+     * Tracks the buffer threshold that triggers resizing. {@code encodeSize = BYTES_PER_ENCODED_BLOCK;}
      */
     private final int encodeSize;
 
@@ -106,7 +104,7 @@ public class Crockford {
 
     /**
      * Writes to the buffer only occur after every 5 reads when encoding, and every 8 reads when decoding. This variable
-     * helps track that.
+     * tracks that state.
      */
     protected int modulus;
 

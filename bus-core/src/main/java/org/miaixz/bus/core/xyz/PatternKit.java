@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.mutable.Mutable;
 import org.miaixz.bus.core.lang.mutable.MutableObject;
 
 /**
- * Regular expression utility class. For common regex patterns, see {@link Validator}.
+ * Regular expression class. For common regex patterns, see {@link Validator}.
  *
  * @author Kimi Liu
  * @since Java 21+

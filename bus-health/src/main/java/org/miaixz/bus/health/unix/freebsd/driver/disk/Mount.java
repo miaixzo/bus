@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 
 /**
- * Utility to query mount
+ * Queries mount
  *
  * @author Kimi Liu
  * @since Java 21+

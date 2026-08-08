@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The runner detail class.
@@ -54,8 +54,8 @@ public class RunnerDetail extends Runner {
      * Enumeration representing the access level for a GitLab CI/CD runner.
      * <p>
      * This enum defines the protection level for runners, determining which types of projects and branches the runner
-     * can execute jobs for. Access levels help control security and resource usage by restricting runner availability
-     * based on reference protection.
+     * can execute jobs for. Access levels control security and resource usage by restricting runner availability based
+     * on reference protection.
      * </p>
      *
      * @author Kimi Liu
@@ -72,7 +72,7 @@ public class RunnerDetail extends Runner {
          */
         REF_PROTECTED;
 
-        private static JacksonJsonEnumHelper<RunnerAccessLevel> enumHelper = new JacksonJsonEnumHelper<>(
+        private static JacksonJsonEnumCodec<RunnerAccessLevel> enumCodec = new JacksonJsonEnumCodec<>(
                 RunnerAccessLevel.class);
 
         /**
@@ -84,7 +84,7 @@ public class RunnerDetail extends Runner {
 
         @JsonCreator
         public static RunnerAccessLevel forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -95,7 +95,7 @@ public class RunnerDetail extends Runner {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -106,7 +106,7 @@ public class RunnerDetail extends Runner {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

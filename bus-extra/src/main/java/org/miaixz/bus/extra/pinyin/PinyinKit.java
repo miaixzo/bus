@@ -24,7 +24,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.PatternKit;
 
 /**
- * Pinyin utility class for quickly obtaining Pinyin.
+ * Pinyin class for quickly obtaining Pinyin.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -32,7 +32,7 @@ import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 
 /**
- * Utility to query geom part list
+ * Queries geom part list
  *
  * @author Kimi Liu
  * @since Java 21+

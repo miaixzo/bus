@@ -27,9 +27,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.reflect.JdkProxy;
 
 /**
- * Utility class for building and resolving information related to method calls and classes. This class provides methods
- * to extract the real user class from a potentially proxied class and to generate a unique string representation for a
- * given method.
+ * Builds and resolves information related to method calls and classes. This class provides methods to extract the real
+ * user class from a potentially proxied class and to generate a unique string representation for a given method.
  *
  * @author Kimi Liu
  * @since Java 21+

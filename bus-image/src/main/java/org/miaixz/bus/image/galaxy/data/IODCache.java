@@ -25,8 +25,8 @@ import java.util.HashMap;
 import org.miaixz.bus.image.IOD;
 
 /**
- * A cache for {@link IOD} (Information Object Definition) instances, mapped by their URI. This class helps to avoid
- * redundant loading of IODs by storing previously loaded instances.
+ * A cache for {@link IOD} (Information Object Definition) instances, mapped by their URI. This class avoids redundant
+ * loading of IODs by storing previously loaded instances.
  *
  * @author Kimi Liu
  * @since Java 21+

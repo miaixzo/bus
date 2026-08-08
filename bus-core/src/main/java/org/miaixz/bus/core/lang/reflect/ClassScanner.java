@@ -44,8 +44,8 @@ import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * Class scanner for scanning classes in packages, JARs, and classpaths. This utility provides methods to find classes
- * based on package name, annotations, or superclasses/interfaces.
+ * Scans classes in packages, JARs, and classpaths. This class provides methods to find classes based on package name,
+ * annotations, or superclasses/interfaces.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -242,7 +242,7 @@ public class ClassScanner implements Serializable {
      * Scans all class files in the specified package path and all loaded classes in the classpath that satisfy the
      * class filter conditions. If the package path is "com.abs" and a class is "com.abs.A.class", but the input is
      * "abs", it may cause a ClassNotFoundException because the className should be "com.abs.A" but becomes "abs.A".
-     * This utility handles such exceptions by ignoring them.
+     * This class handles such exceptions by ignoring them.
      *
      * @param packageName The package path (e.g., "com", "com.", "com.abs", "com.abs.").
      * @param classFilter The class filter predicate to filter out unwanted classes. Can be {@code null}.
@@ -255,7 +255,7 @@ public class ClassScanner implements Serializable {
     /**
      * Scans all class files in the specified package path that satisfy the class filter conditions. If the package path
      * is "com.abs" and a class is "com.abs.A.class", but the input is "abs", it may cause a ClassNotFoundException
-     * because the className should be "com.abs.A" but becomes "abs.A". This utility handles such exceptions by ignoring
+     * because the className should be "com.abs.A" but becomes "abs.A". This class handles such exceptions by ignoring
      * them.
      *
      * @param packageName The package path (e.g., "com", "com.", "com.abs", "com.abs.").

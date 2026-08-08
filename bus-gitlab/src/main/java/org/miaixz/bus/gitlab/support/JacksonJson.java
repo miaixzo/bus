@@ -44,7 +44,7 @@ import tools.jackson.databind.module.SimpleModule;
 import tools.jackson.databind.type.CollectionType;
 
 /**
- * Jackson JSON Configuration and utility class.
+ * Jackson JSON Configuration and class.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -106,7 +106,7 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * @return a String containing the JSON for the specified object
      */
     public static <T> String toJsonString(final T object) {
-        return (JacksonJsonSingletonHelper.JACKSON_JSON.marshal(object));
+        return (JacksonJsonInstanceHolder.JACKSON_JSON.marshal(object));
     }
 
     /**
@@ -117,7 +117,7 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * @throws IOException if any IO error occurs
      */
     public static JsonNode toJsonNode(String jsonString) throws IOException {
-        return (JacksonJsonSingletonHelper.JACKSON_JSON.objectMapper.readTree(jsonString));
+        return (JacksonJsonInstanceHolder.JACKSON_JSON.objectMapper.readTree(jsonString));
     }
 
     /**
@@ -462,12 +462,12 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
     }
 
     /**
-     * This class is used to create a thread-safe singleton instance of JacksonJson customized to be used by
+     * Holds the lazily initialized, thread-safe JacksonJson singleton.
      *
      * @author Kimi Liu
      * @since Java 21+
      */
-    private static class JacksonJsonSingletonHelper {
+    private static class JacksonJsonInstanceHolder {
 
         private static final JacksonJson JACKSON_JSON = new JacksonJson(PropertyNamingStrategies.LOWER_CAMEL_CASE,
                 Include.ALWAYS);

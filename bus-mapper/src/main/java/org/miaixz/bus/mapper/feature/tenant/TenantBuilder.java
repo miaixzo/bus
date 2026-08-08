@@ -581,7 +581,7 @@ public class TenantBuilder {
     /**
      * Tests whether a structural SQL keyword starts at the index with token boundaries.
      * <p>
-     * This parser helper locates clauses and does not validate database identifiers or reserved words.
+     * This clause parser locates SQL clauses without validating identifiers or reserved words.
      * </p>
      *
      * @param sql     the SQL fragment
@@ -602,7 +602,7 @@ public class TenantBuilder {
     /**
      * Tests whether a character belongs to an unquoted SQL token for boundary detection.
      * <p>
-     * This parser helper is not an identifier compliance rule.
+     * This clause parser does not enforce identifier rules.
      * </p>
      *
      * @param value the character to test

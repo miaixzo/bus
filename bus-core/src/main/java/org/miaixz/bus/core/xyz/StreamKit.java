@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.tree.HierarchyIterator;
 
 /**
- * Utility class for {@link Stream}.
+ * Creates and transforms streams.
  *
  * @author Kimi Liu
  * @since Java 21+

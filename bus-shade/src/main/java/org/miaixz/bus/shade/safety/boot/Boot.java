@@ -31,8 +31,8 @@ import org.miaixz.bus.shade.safety.provider.JdkDecryptorProvider;
 import org.miaixz.bus.shade.safety.provider.JdkEncryptorProvider;
 
 /**
- * Utility class for encrypting and decrypting Spring Boot JAR packages. By default, it encrypts all resources under
- * BOOT-INF/, including the project's own resources and dependency JARs.
+ * Encrypts and decrypts Spring Boot JAR packages. By default, it encrypts all resources under BOOT-INF/, including the
+ * project's own resources and dependency JARs.
  *
  * @author Kimi Liu
  * @since Java 21+

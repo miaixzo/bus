@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * A utility class for evaluating cache expressions used in key generation and conditional caching.
+ * Evaluates cache expressions used in key generation and conditional caching.
  * <p>
  * Provides a pure-Java implementation that handles the expression patterns used by cache annotations ({@code @Cached},
  * {@code @CachedGet}, {@code @CacheKey}). No external expression language dependency is required.

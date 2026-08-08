@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Utility class for coordinate system transformations. Mainstream coordinate systems include:
+ * Transforms coordinates between supported systems. Mainstream coordinate systems include:
  * <ul>
  * <li>WGS84 Coordinate System: The Earth coordinate system, used by Google Maps outside of China.</li>
  * <li>GCJ02 Coordinate System: The Mars coordinate system, used by Gaode, Tencent, Ali, etc.</li>

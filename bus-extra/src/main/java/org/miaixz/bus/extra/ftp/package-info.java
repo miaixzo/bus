@@ -18,9 +18,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides utility classes for FTP (File Transfer Protocol) operations, primarily based on Apache Commons Net. This
- * package offers functionalities for connecting to FTP servers, managing files and directories, and performing file
- * transfers (upload and download).
+ * Provides classes for FTP (File Transfer Protocol) operations, primarily based on Apache Commons Net. This package
+ * offers functionalities for connecting to FTP servers, managing files and directories, and performing file transfers
+ * (upload and download).
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Validator;
 import org.miaixz.bus.core.lang.reflect.creator.AdaptiveObjectCreator;
 
 /**
- * Utility class for `List`.
+ * Creates, partitions, and transforms lists.
  *
  * @author Kimi Liu
  * @since Java 21+

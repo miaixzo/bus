@@ -33,7 +33,7 @@ import org.miaixz.bus.core.tree.parser.DefaultNodeParser;
 import org.miaixz.bus.core.tree.parser.NodeParser;
 
 /**
- * Tree utility class.
+ * Builds and traverses tree structures.
  *
  * @author Kimi Liu
  * @since Java 21+

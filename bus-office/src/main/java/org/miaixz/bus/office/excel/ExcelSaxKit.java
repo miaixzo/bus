@@ -55,7 +55,7 @@ import org.miaixz.bus.office.excel.sax.ExcelSaxReader;
 import org.miaixz.bus.office.excel.sax.handler.RowHandler;
 
 /**
- * Utility class for SAX-based Excel reading.
+ * Reads Excel workbooks through SAX events.
  *
  * @author Kimi Liu
  * @since Java 21+

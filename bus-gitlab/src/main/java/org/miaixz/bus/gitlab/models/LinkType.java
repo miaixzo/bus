@@ -22,7 +22,7 @@ package org.miaixz.bus.gitlab.models;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * Enum to model the type of link between issues or epics
@@ -45,7 +45,7 @@ public enum LinkType {
      */
     IS_BLOCKED_BY;
 
-    private static JacksonJsonEnumHelper<LinkType> enumHelper = new JacksonJsonEnumHelper<>(LinkType.class);
+    private static JacksonJsonEnumCodec<LinkType> enumCodec = new JacksonJsonEnumCodec<>(LinkType.class);
 
     /**
      * Returns the value.
@@ -56,7 +56,7 @@ public enum LinkType {
 
     @JsonCreator
     public static LinkType forValue(String value) {
-        return enumHelper.forValue(value);
+        return enumCodec.forValue(value);
     }
 
     /**
@@ -67,7 +67,7 @@ public enum LinkType {
 
     @JsonValue
     public String toValue() {
-        return (enumHelper.toString(this));
+        return (enumCodec.toString(this));
     }
 
     /**
@@ -78,7 +78,7 @@ public enum LinkType {
 
     @Override
     public String toString() {
-        return (enumHelper.toString(this));
+        return (enumCodec.toString(this));
     }
 
 }

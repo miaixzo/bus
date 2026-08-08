@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The note class.
@@ -57,7 +57,7 @@ public class Note implements Serializable {
          */
         UPDATED_AT;
 
-        private static JacksonJsonEnumHelper<OrderBy> enumHelper = new JacksonJsonEnumHelper<>(OrderBy.class);
+        private static JacksonJsonEnumCodec<OrderBy> enumCodec = new JacksonJsonEnumCodec<>(OrderBy.class);
 
         /**
          * Returns the value.
@@ -68,7 +68,7 @@ public class Note implements Serializable {
 
         @JsonCreator
         public static OrderBy forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -79,7 +79,7 @@ public class Note implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -90,7 +90,7 @@ public class Note implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -127,7 +127,7 @@ public class Note implements Serializable {
          */
         SNIPPET;
 
-        private static JacksonJsonEnumHelper<NoteableType> enumHelper = new JacksonJsonEnumHelper<>(NoteableType.class,
+        private static JacksonJsonEnumCodec<NoteableType> enumCodec = new JacksonJsonEnumCodec<>(NoteableType.class,
                 true, true);
 
         /**
@@ -139,7 +139,7 @@ public class Note implements Serializable {
 
         @JsonCreator
         public static NoteableType forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -150,7 +150,7 @@ public class Note implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -161,7 +161,7 @@ public class Note implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }
@@ -183,7 +183,7 @@ public class Note implements Serializable {
          */
         DIFF_NOTE;
 
-        private static JacksonJsonEnumHelper<Type> enumHelper = new JacksonJsonEnumHelper<>(Type.class, true, true);
+        private static JacksonJsonEnumCodec<Type> enumCodec = new JacksonJsonEnumCodec<>(Type.class, true, true);
 
         /**
          * Returns the value.
@@ -194,7 +194,7 @@ public class Note implements Serializable {
 
         @JsonCreator
         public static Type forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -205,7 +205,7 @@ public class Note implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -216,7 +216,7 @@ public class Note implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

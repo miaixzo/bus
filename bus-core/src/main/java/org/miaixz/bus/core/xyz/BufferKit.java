@@ -28,8 +28,8 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * Utility class for {@link ByteBuffer} and {@link CharBuffer}. This tool collects relevant parts from the t-io project
- * and other projects. For more information on ByteBuffer, see: https://www.cnblogs.com/ruber/p/6857159.html
+ * Reads, writes, and converts byte and character buffers. The implementation incorporates relevant parts from the t-io
+ * project and other projects. For more information on ByteBuffer, see: https://www.cnblogs.com/ruber/p/6857159.html
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * DICOMweb protocol helpers.
+ * Encodes and decodes DICOMweb protocol values.
  *
  * @author Kimi Liu
  * @since Java 21+

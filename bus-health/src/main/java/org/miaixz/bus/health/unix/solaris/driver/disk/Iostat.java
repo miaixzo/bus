@@ -33,7 +33,7 @@ import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 
 /**
- * Utility to query iostat
+ * Queries iostat
  *
  * @author Kimi Liu
  * @since Java 21+

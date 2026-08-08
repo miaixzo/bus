@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.windows.WmiQueryHandler;
 
 /**
- * Utility to query WMI class {@code Win32_PhysicalMemory}
+ * Queries WMI class {@code Win32_PhysicalMemory}
  *
  * @author Kimi Liu
  * @since Java 21+

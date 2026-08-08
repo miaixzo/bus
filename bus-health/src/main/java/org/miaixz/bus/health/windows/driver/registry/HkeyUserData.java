@@ -36,7 +36,7 @@ import org.miaixz.bus.health.builtin.software.OSSession;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Utility to read session data from HKEY_USERS
+ * Reads session data from HKEY_USERS
  *
  * @author Kimi Liu
  * @since Java 21+

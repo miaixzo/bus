@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * System runtime utility class for executing system commands.
+ * Executes executing system commands.
  *
  * @author Kimi Liu
  * @since Java 21+

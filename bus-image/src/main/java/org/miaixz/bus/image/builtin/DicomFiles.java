@@ -39,8 +39,8 @@ import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * An abstract utility class for scanning DICOM files and XML representations of DICOM datasets. It provides methods to
- * iterate through files and apply a callback function for each DICOM file found.
+ * An abstract class that scans DICOM files and XML representations of DICOM datasets. It provides methods to iterate
+ * through files and apply a callback function for each DICOM file found.
  *
  * @author Kimi Liu
  * @since Java 21+

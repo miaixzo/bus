@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * A utility class for Base62 encoding and decoding.
+ * Encodes and decodes Base62 values.
  * <p>
  * Base62 is a binary-to-text encoding scheme that represents binary data in an ASCII string format by using a
  * 62-character set (typically {@code 0-9}, {@code a-z}, {@code A-Z}). It is commonly used in applications like URL

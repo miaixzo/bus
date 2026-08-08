@@ -22,7 +22,7 @@ package org.miaixz.bus.gitlab.models;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * Enum for the various Job status values.
@@ -65,7 +65,7 @@ public enum JobStatus {
      */
     MANUAL;
 
-    private static JacksonJsonEnumHelper<JobStatus> enumHelper = new JacksonJsonEnumHelper<>(JobStatus.class);
+    private static JacksonJsonEnumCodec<JobStatus> enumCodec = new JacksonJsonEnumCodec<>(JobStatus.class);
 
     /**
      * Returns the value.
@@ -76,7 +76,7 @@ public enum JobStatus {
 
     @JsonCreator
     public static JobStatus forValue(String value) {
-        return enumHelper.forValue(value);
+        return enumCodec.forValue(value);
     }
 
     /**
@@ -87,7 +87,7 @@ public enum JobStatus {
 
     @JsonValue
     public String toValue() {
-        return (enumHelper.toString(this));
+        return (enumCodec.toString(this));
     }
 
     /**
@@ -98,7 +98,7 @@ public enum JobStatus {
 
     @Override
     public String toString() {
-        return (enumHelper.toString(this));
+        return (enumCodec.toString(this));
     }
 
 }

@@ -36,7 +36,7 @@ import org.miaixz.bus.gitlab.models.Constants.IssueScope;
 import org.miaixz.bus.gitlab.models.Constants.IssueState;
 import org.miaixz.bus.gitlab.models.Constants.SortOrder;
 import org.miaixz.bus.gitlab.support.ISO8601;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * This class is used to filter issues when getting lists of them.
@@ -903,7 +903,7 @@ public class IssueFilter implements Serializable {
          */
         MILESTONE_ID;
 
-        private static JacksonJsonEnumHelper<IssueField> enumHelper = new JacksonJsonEnumHelper<>(IssueField.class);
+        private static JacksonJsonEnumCodec<IssueField> enumCodec = new JacksonJsonEnumCodec<>(IssueField.class);
 
         /**
          * Returns the value.
@@ -914,7 +914,7 @@ public class IssueFilter implements Serializable {
 
         @JsonCreator
         public static IssueField forValue(String value) {
-            return enumHelper.forValue(value);
+            return enumCodec.forValue(value);
         }
 
         /**
@@ -925,7 +925,7 @@ public class IssueFilter implements Serializable {
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
         /**
@@ -936,7 +936,7 @@ public class IssueFilter implements Serializable {
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return (enumCodec.toString(this));
         }
 
     }

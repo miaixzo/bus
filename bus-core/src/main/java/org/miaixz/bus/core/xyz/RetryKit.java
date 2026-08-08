@@ -26,7 +26,7 @@ import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.thread.RetryableTask;
 
 /**
- * Retry utility class. For more advanced custom functionality, please use the {@link RetryableTask} class.
+ * Retry class. For more advanced custom functionality, please use the {@link RetryableTask} class.
  *
  * @see RetryableTask
  * @author Kimi Liu

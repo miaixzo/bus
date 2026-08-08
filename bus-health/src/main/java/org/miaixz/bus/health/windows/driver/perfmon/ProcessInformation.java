@@ -29,7 +29,7 @@ import org.miaixz.bus.health.windows.PerfCounterQuery;
 import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 
 /**
- * Utility to query Process Information performance counter
+ * Queries Process Information performance counter
  *
  * @author Kimi Liu
  * @since Java 21+

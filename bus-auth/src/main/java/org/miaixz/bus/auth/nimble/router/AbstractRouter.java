@@ -40,8 +40,8 @@ import org.miaixz.bus.logger.Logger;
 /**
  * Abstract base class for OAuth2 routers.
  * <p>
- * Provides common OAuth2 protocol forwarding functionality and encapsulates frequently used utility methods. Subclasses
- * only need to implement platform-specific logic.
+ * Provides common OAuth2 protocol forwarding functionality and encapsulates frequently used methods. Subclasses only
+ * need to implement platform-specific logic.
  * </p>
  * <p>
  * This class integrates codec functionality (state/token encoding/decoding) and parameter extraction, eliminating the

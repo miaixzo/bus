@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.selector.WeightObject;
 import org.miaixz.bus.core.lang.selector.WeightRandomSelector;
 
 /**
- * Random utility class.
+ * Generates random values.
  *
  * @author Kimi Liu
  * @since Java 21+

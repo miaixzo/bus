@@ -28,8 +28,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Data Masking utility class for masking sensitive information (e.g., ID card number, mobile phone number, card number,
- * name, address, email, etc.).
+ * Data Masking class for masking sensitive information (e.g., ID card number, mobile phone number, card number, name,
+ * address, email, etc.).
  * <p>
  * Supports automatic masking for the following types of information:
  *

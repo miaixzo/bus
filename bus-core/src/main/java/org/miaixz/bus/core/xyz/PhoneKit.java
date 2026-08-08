@@ -24,7 +24,7 @@ import org.miaixz.bus.core.lang.Regex;
 import org.miaixz.bus.core.lang.Validator;
 
 /**
- * Utility class for phone numbers, including:
+ * Parses and validates phone numbers, including:
  * <ul>
  * <li>Mobile numbers</li>
  * <li>400/800 numbers</li>

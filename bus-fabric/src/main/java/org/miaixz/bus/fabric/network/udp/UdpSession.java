@@ -294,7 +294,7 @@ public final class UdpSession implements Session {
      * Creates a socket address.
      *
      * @param address logical address whose host and port are converted
-     * @return unresolved or resolved socket endpoint created by the network helper
+     * @return unresolved or resolved socket endpoint created by the network endpoint resolver
      */
     static InetSocketAddress socket(final Address address) {
         return NetKit.createAddress(address.host(), address.port());

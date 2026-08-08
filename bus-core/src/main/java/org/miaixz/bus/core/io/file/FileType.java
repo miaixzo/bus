@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * File type determination utility class.
+ * File type determination class.
  *
  * <p>
  * This tool attempts to guess the file type based on the first few bytes of the file. It may not be accurate for text

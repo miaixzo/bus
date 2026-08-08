@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.reflect.ClassMember;
 
 /**
- * Class modifier utility.
+ * Inspects Java class modifiers.
  *
  * @author Kimi Liu
  * @since Java 21+

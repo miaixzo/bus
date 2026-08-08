@@ -22,7 +22,7 @@ package org.miaixz.bus.gitlab.models;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * The health check status enum.
@@ -41,7 +41,7 @@ public enum HealthCheckStatus {
      */
     FAILED;
 
-    private static JacksonJsonEnumHelper<HealthCheckStatus> enumHelper = new JacksonJsonEnumHelper<>(
+    private static JacksonJsonEnumCodec<HealthCheckStatus> enumCodec = new JacksonJsonEnumCodec<>(
             HealthCheckStatus.class);
 
     /**
@@ -53,7 +53,7 @@ public enum HealthCheckStatus {
 
     @JsonCreator
     public static HealthCheckStatus forValue(String value) {
-        return enumHelper.forValue(value);
+        return enumCodec.forValue(value);
     }
 
     /**
@@ -64,7 +64,7 @@ public enum HealthCheckStatus {
 
     @JsonValue
     public String toValue() {
-        return enumHelper.toString(this);
+        return enumCodec.toString(this);
     }
 
     /**
@@ -75,7 +75,7 @@ public enum HealthCheckStatus {
 
     @Override
     public String toString() {
-        return enumHelper.toString(this);
+        return enumCodec.toString(this);
     }
 
 }

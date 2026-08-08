@@ -32,7 +32,7 @@ import org.miaixz.bus.health.unix.shared.jna.CLibrary;
 import org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc;
 
 /**
- * Utility to query logged in users.
+ * Queries logged in users.
  *
  * @author Kimi Liu
  * @since Java 21+

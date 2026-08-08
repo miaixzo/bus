@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.StreamKit;
 
 /**
- * Utility class for Excel pictures (shapes).
+ * Creates and positions pictures and shapes in Excel.
  *
  * @author Kimi Liu
  * @since Java 21+

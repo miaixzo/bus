@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
  * File wrapper, extending the {@link File} object. This class provides a convenient way to encapsulate a {@link File}
- * object along with its character encoding, offering additional utility methods related to file properties.
+ * object along with its character encoding, offering additional methods related to file properties.
  *
  * @author Kimi Liu
  * @since Java 21+

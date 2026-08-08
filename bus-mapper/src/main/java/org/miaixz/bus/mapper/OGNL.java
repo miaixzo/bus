@@ -63,8 +63,8 @@ import org.miaixz.bus.mapper.parsing.ClassColumn;
 import org.miaixz.bus.mapper.parsing.ClassField;
 
 /**
- * A utility class providing static methods for OGNL expressions, type registration, SPI instance retrieval, and
- * functional field name conversion.
+ * A class providing static methods for OGNL expressions, type registration, SPI instance retrieval, and functional
+ * field name conversion.
  *
  * <p>
  * It also includes utilities for generating MyBatis dynamic SQL tags and parameter mappings, as well as basic SQL
@@ -77,7 +77,7 @@ import org.miaixz.bus.mapper.parsing.ClassField;
 public class OGNL {
 
     /**
-     * Initializes the expression helper used to inspect mapper parameters and evaluate dynamic conditions.
+     * Initializes the expression evaluator used to inspect mapper parameters and evaluate dynamic conditions.
      */
     public OGNL() {
         // No initialization required.

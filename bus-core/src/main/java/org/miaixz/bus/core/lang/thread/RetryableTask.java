@@ -31,8 +31,8 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 
 /**
- * A utility class for executing tasks with retry logic. It allows specifying retry conditions based on exceptions or
- * custom predicates, along with maximum attempts and backoff between retries.
+ * Executes tasks with retry logic. It allows specifying retry conditions based on exceptions or custom predicates,
+ * along with maximum attempts and backoff between retries.
  *
  * @param <T> The type of the task result.
  * @author Kimi Liu

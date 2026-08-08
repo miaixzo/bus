@@ -25,7 +25,7 @@ import java.util.Set;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * Utility class for Boolean operations.
+ * Parses and combines Boolean values.
  *
  * @author Kimi Liu
  * @since Java 21+

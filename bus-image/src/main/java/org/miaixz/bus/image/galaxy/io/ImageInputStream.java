@@ -366,9 +366,9 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
 
     /**
      * Create a new DicomInputStream for the given input stream, Transfer Syntax UID and read limit. It ensures to never
-     * read more than the limit from the stream by wrapping it with a {@link LimitedInputStream}. The limit also helps
-     * to avoid OutOfMemory errors on parsing corrupt DICOM streams without the need to create temporary arrays when
-     * allocating large tag values. (See also {@link #setAllocateLimit}.)
+     * read more than the limit from the stream by wrapping it with a {@link LimitedInputStream}. The limit also
+     * prevents to avoid OutOfMemory errors on parsing corrupt DICOM streams without the need to create temporary arrays
+     * when allocating large tag values. (See also {@link #setAllocateLimit}.)
      *
      * @param in    input stream to read data from
      * @param tsuid Transfer Syntax UID
@@ -382,7 +382,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
 
     /**
      * Create a new DicomInputStream for the given input stream and read limit. It ensures to never read more than the
-     * limit from the stream by wrapping it with a {@link LimitedInputStream}. The limit also helps to avoid OutOfMemory
+     * limit from the stream by wrapping it with a {@link LimitedInputStream}. The limit also avoids out-of-memory
      * errors on parsing corrupt DICOM streams without the need to create temporary arrays when allocating large tag
      * values. (See also {@link #setAllocateLimit}.)
      *

@@ -36,7 +36,7 @@ import org.miaixz.bus.health.mac.jna.IOReport;
 
 /**
  * Manages a single IOReport subscription for GPU Stats and Energy Model channels, providing per-instance sampling of
- * GPU active ticks, utilization, and power draw.
+ * GPU active ticks, usage percentage, and power draw.
  *
  * <p>
  * Each instance holds its own subscription and previous-sample state, making it suitable for use inside a
@@ -96,11 +96,11 @@ public final class IOReportClient {
      */
     private final CFDictionaryRef subscribedChannels;
 
-    // Previous sample for utilization delta
+    // Previous sample for the usage delta
     /**
-     * The prevSampleUtil value.
+     * The previousUsageSample value.
      */
-    private CFDictionaryRef prevSampleUtil;
+    private CFDictionaryRef previousUsageSample;
 
     // Previous sample and timestamp for power delta
     /**
@@ -185,7 +185,7 @@ public final class IOReportClient {
 
     /**
      * Returns a {@link GpuTicks} snapshot of cumulative GPU active and idle ticks in raw IOReport residency units. The
-     * kernel residency counters are monotonically increasing; callers diff two snapshots to compute utilization:
+     * kernel residency counters are monotonically increasing; callers compare two snapshots to compute GPU usage:
      * {@code dActive / (dActive + dIdle)}.
      *
      * @return GpuTicks snapshot; never null
@@ -222,11 +222,11 @@ public final class IOReportClient {
     }
 
     /**
-     * Returns instantaneous GPU utilization as a percentage (0–100), or {@code -1.0} if unavailable or closed.
+     * Returns instantaneous GPU usage as a percentage (0–100), or {@code -1.0} if unavailable or closed.
      *
-     * @return GPU utilization percentage, or -1.0
+     * @return GPU usage percentage, or -1.0
      */
-    public synchronized double sampleGpuUtilization() {
+    public synchronized double sampleGpuUsage() {
         if (closed) {
             return -1d;
         }
@@ -236,14 +236,14 @@ public final class IOReportClient {
             if (sample == null) {
                 return -1d;
             }
-            if (prevSampleUtil == null) {
-                prevSampleUtil = sample;
+            if (previousUsageSample == null) {
+                previousUsageSample = sample;
                 sample = null;
                 return -1d;
             }
-            CFDictionaryRef delta = ioReport.IOReportCreateSamplesDelta(prevSampleUtil, sample, null);
-            prevSampleUtil.release();
-            prevSampleUtil = sample;
+            CFDictionaryRef delta = ioReport.IOReportCreateSamplesDelta(previousUsageSample, sample, null);
+            previousUsageSample.release();
+            previousUsageSample = sample;
             sample = null;
             if (delta == null) {
                 return -1d;
@@ -332,9 +332,9 @@ public final class IOReportClient {
             return;
         }
         closed = true;
-        if (prevSampleUtil != null) {
-            prevSampleUtil.release();
-            prevSampleUtil = null;
+        if (previousUsageSample != null) {
+            previousUsageSample.release();
+            previousUsageSample = null;
         }
         if (prevSamplePower != null) {
             prevSamplePower.release();

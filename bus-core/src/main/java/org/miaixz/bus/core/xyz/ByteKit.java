@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * Utility class for converting between numbers and bytes. Data type sizes are as follows:
+ * Converts between numbers and bytes. Data type sizes are as follows:
  * <ul>
  * <li>byte: 8 bits</li>
  * <li>char: 2 bytes, 16 bits</li>

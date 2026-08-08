@@ -798,7 +798,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
         }
 
         /**
-         * Private helper to match against string values.
+         * Matches string values.
          *
          * @param item The dataset.
          * @param ss   The array of strings to match.
@@ -816,7 +816,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
         }
 
         /**
-         * Private helper to match against Code values.
+         * Matches Code values.
          *
          * @param item  The dataset.
          * @param codes The array of codes to match.
@@ -841,7 +841,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
         }
 
         /**
-         * Private helper to match against integer values.
+         * Matches integer values.
          *
          * @param item The dataset.
          * @param is   The array of integers to match.

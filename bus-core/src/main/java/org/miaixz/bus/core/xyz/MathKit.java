@@ -35,10 +35,10 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.math.*;
 
 /**
- * Number utility class. For precise calculations, {@link BigDecimal} should be used. Note that in JDK7, the
- * `BigDecimal(double val)` constructor can have unpredictable results. For example, `new BigDecimal(0.1)` does not
- * represent 0.1, but a much more complex number. This is because 0.1 cannot be represented exactly as a double.
- * Therefore, it is recommended to use `new BigDecimal(String)`.
+ * Number class. For precise calculations, {@link BigDecimal} should be used. Note that in JDK7, the `BigDecimal(double
+ * val)` constructor can have unpredictable results. For example, `new BigDecimal(0.1)` does not represent 0.1, but a
+ * much more complex number. This is because 0.1 cannot be represented exactly as a double. Therefore, it is recommended
+ * to use `new BigDecimal(String)`.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -1570,7 +1570,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * Helper for permutation calculation.
+     * Calculates permutations.
      *
      * @param selectNum The number of items to select from.
      * @param minNum    The number of items to select.
@@ -1585,7 +1585,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * Helper for factorial calculation.
+     * Calculates factorials.
      *
      * @param selectNum The number to calculate factorial for.
      * @return The factorial result.

@@ -28,8 +28,7 @@ import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 
 /**
- * Utility to query GPU Engine and GPU Adapter Memory performance counters. Available on Windows 10 version 1709 and
- * later.
+ * Queries GPU Engine and GPU Adapter Memory performance counters. Available on Windows 10 version 1709 and later.
  *
  * @author Kimi Liu
  * @since Java 21+

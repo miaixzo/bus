@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 
 /**
- * Utility class for mutable reduction operations using {@link Collector}.
+ * Builds collectors for mutable reduction.
  *
  * @author Kimi Liu
  * @since Java 21+

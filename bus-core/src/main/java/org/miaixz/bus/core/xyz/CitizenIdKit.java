@@ -26,13 +26,12 @@ import org.miaixz.bus.core.data.CIN;
 import org.miaixz.bus.core.data.CIN10;
 
 /**
- * Utility class for Chinese Citizen ID numbers, referencing the GB 11643-1999 standard. Standard description can be
+ * Parses and validates Chinese Citizen ID numbers, referencing the GB 11643-1999 standard. Standard description can be
  * found at: <a href=
  * "http://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=080D6FBF2BB468F9007657F26D60013E">http://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=080D6FBF2BB468F9007657F26D60013E</a>
  *
  * <p>
- * This utility does not validate the administrative division codes. If needed, please refer to (as of Dec 2020):
- * <a href=
+ * This class does not validate the administrative division codes. If needed, please refer to (as of Dec 2020): <a href=
  * "http://www.mca.gov.cn/article/sj/xzqh/2020/20201201.html">http://www.mca.gov.cn/article/sj/xzqh/2020/20201201.html</a>
  *
  * @author Kimi Liu

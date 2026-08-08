@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.RandomKit;
 
 /**
- * A utility class for working with primitive type arrays.
+ * Performs operations with primitive type arrays.
  *
  * <ol>
  * <li>{@code int[]}</li>

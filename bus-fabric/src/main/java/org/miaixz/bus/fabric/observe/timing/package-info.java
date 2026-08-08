@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Contains timing helpers built on the fabric runtime clock.
+ * Measures elapsed time with the fabric runtime clock.
  *
  * <p>
  * Stopwatches measure elapsed time for protocol and runtime events using the configured clock source. They do not

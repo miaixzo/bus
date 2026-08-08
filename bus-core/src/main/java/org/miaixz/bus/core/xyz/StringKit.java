@@ -29,7 +29,7 @@ import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.text.TextSimilarity;
 
 /**
- * String utility class.
+ * Defines string operations.
  *
  * @author Kimi Liu
  * @since Java 21+

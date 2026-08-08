@@ -28,7 +28,7 @@ import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * A utility class providing static methods for reading and writing TOML data.
+ * A class providing static methods for reading and writing TOML data.
  *
  * @author Kimi Liu
  * @since Java 21+

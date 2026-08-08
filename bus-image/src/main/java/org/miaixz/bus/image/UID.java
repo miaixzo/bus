@@ -41,9 +41,8 @@ import org.miaixz.bus.image.galaxy.data.UIDVisitor;
  * Models, and more. Each enum constant holds a UID string and its corresponding description.
  * </p>
  * <p>
- * Additionally, this class provides utility methods for creating, validating, and transforming UIDs. This includes
- * methods for generating UIDs based on UUIDs and for remapping UIDs in DICOM attributes according to a specified
- * mapping.
+ * Additionally, this class provides methods for creating, validating, and transforming UIDs. This includes methods for
+ * generating UIDs based on UUIDs and for remapping UIDs in DICOM attributes according to a specified mapping.
  * </p>
  *
  * @author Kimi Liu

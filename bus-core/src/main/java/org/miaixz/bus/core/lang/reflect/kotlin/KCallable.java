@@ -27,8 +27,8 @@ import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.MethodKit;
 
 /**
- * Wrapper class for Kotlin's {@code kotlin.reflect.KCallable} methods. This class provides static utility methods to
- * interact with Kotlin callable entities (classes, methods, constructors) via reflection.
+ * Wrapper class for Kotlin's {@code kotlin.reflect.KCallable} methods. This class provides static methods to interact
+ * with Kotlin callable entities (classes, methods, constructors) via reflection.
  *
  * @author Kimi Liu
  * @since Java 21+

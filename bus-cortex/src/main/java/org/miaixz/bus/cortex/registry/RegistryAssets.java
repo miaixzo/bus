@@ -30,9 +30,9 @@ import org.miaixz.bus.cortex.registry.mcp.McpAssets;
 import org.miaixz.bus.cortex.registry.prompt.PromptAssets;
 
 /**
- * Asset subtype factory and shallow-copy helper.
+ * Creates asset subtypes and performs shallow copies of asset fields.
  * <p>
- * Subtype metadata is owned by each subtype's {@code Meta}; this helper copies only base asset fields.
+ * Subtype metadata is owned by each subtype's {@code Meta}; this class copies only base asset fields.
  * </p>
  *
  * @author Kimi Liu

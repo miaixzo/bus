@@ -29,7 +29,7 @@ import org.miaixz.bus.core.center.object.ObjectValidator;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Object utility class, including null checks, cloning, serialization, etc. For array-related operations, see:
+ * Object class, including null checks, cloning, serialization, etc. For array-related operations, see:
  * {@link ArrayKit}.
  *
  * @author Kimi Liu

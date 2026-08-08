@@ -241,7 +241,7 @@ public class SetKit {
     }
 
     /**
-     * Internal helper method to create a new {@link HashSet} or {@link LinkedHashSet}.
+     * Creates a new {@link HashSet} or {@link LinkedHashSet}.
      *
      * @param <T>      The type of elements in the set.
      * @param isLinked If {@code true}, a {@link LinkedHashSet} is created; otherwise, a {@link HashSet}.

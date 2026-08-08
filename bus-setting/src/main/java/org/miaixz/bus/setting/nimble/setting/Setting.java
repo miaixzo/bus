@@ -28,8 +28,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * A utility class that provides static methods for accessing {@link org.miaixz.bus.setting.Setting} configuration
- * files, with caching support.
+ * A class that provides static methods for accessing {@link org.miaixz.bus.setting.Setting} configuration files, with
+ * caching support.
  *
  * @author Kimi Liu
  * @since Java 21+

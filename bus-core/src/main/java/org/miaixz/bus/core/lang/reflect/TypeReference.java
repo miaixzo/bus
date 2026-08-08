@@ -24,8 +24,8 @@ import java.lang.reflect.Type;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * A utility class for obtaining generic type information at runtime. By creating an anonymous subclass of
- * {@code TypeReference}, the actual generic type arguments can be captured and retrieved.
+ * Obtains generic type information at runtime. By creating an anonymous subclass of {@code TypeReference}, the actual
+ * generic type arguments can be captured and retrieved.
  * <p>
  * Example usage:
  *

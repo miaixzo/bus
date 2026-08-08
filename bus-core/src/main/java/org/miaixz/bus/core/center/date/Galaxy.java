@@ -22,8 +22,8 @@ package org.miaixz.bus.core.center.date;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * A utility class for astronomical calculations based on the Shouxing calendar. This class contains highly specialized
- * methods and constants for orbital mechanics and time calculations.
+ * Performs astronomical calculations based on the Shouxing calendar. This class contains highly specialized methods and
+ * constants for orbital mechanics and time calculations.
  *
  * @author Kimi Liu
  * @since Java 21+

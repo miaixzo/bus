@@ -46,7 +46,7 @@ import reactor.core.publisher.Flux;
 public final class StreamingRelay {
 
     /**
-     * Prevents instantiation of this static relay utility.
+     * Restricts the class to static relay operations.
      */
     private StreamingRelay() {
         // No initialization required.

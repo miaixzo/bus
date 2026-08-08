@@ -25,7 +25,7 @@ import java.util.HashMap;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
  * This enum provides constants and value validation for the available GitLab application settings. See
@@ -342,21 +342,21 @@ public enum Setting {
      */
     HASHED_STORAGE_ENABLED(Boolean.class),
     /**
-     * The help page hide commercial content provides.
+     * Controls whether commercial content is hidden on the user guidance page.
      */
-    HELP_PAGE_HIDE_COMMERCIAL_CONTENT(Boolean.class),
+    GUIDANCE_PAGE_HIDE_COMMERCIAL_CONTENT(Boolean.class),
     /**
-     * The help page support url provides.
+     * Defines the support URL shown on the user guidance page.
      */
-    HELP_PAGE_SUPPORT_URL(String.class),
+    GUIDANCE_PAGE_SUPPORT_URL(String.class),
     /**
-     * The help page text provides.
+     * Defines the text shown on the user guidance page.
      */
-    HELP_PAGE_TEXT(String.class),
+    GUIDANCE_PAGE_TEXT(String.class),
     /**
-     * The help text provides.
+     * Defines the user guidance text.
      */
-    HELP_TEXT(String.class),
+    GUIDANCE_TEXT(String.class),
     /**
      * The hide third party offers provides.
      */
@@ -989,9 +989,9 @@ public enum Setting {
 
     /**
      * (If enabled, requires: throttle_authenticated_packages_api_period_in_seconds and
-     * throttle_authenticated_packages_api_requests_per_period) Enable authenticated API request rate limit. Helps
-     * reduce request volume (for example, from crawlers or abusive bots). View Package Registry rate limits for more
-     * details.
+     * throttle_authenticated_packages_api_requests_per_period) Enable authenticated API request rate limit. Allows this
+     * setting to reduce request volume (for example, from crawlers or abusive bots). View Package Registry rate limits
+     * for more details.
      */
     THROTTLE_AUTHENTICATED_PACKAGES_API_ENABLED(Boolean.class),
 
@@ -1007,8 +1007,8 @@ public enum Setting {
 
     /**
      * (If enabled, requires: throttle_unauthenticated_api_period_in_seconds and
-     * throttle_unauthenticated_api_requests_per_period) Enable unauthenticated API request rate limit. Helps reduce
-     * request volume (for example, from crawlers or abusive bots).
+     * throttle_unauthenticated_api_requests_per_period) Enable unauthenticated API request rate limit. Reduces request
+     * volume (for example, from crawlers or abusive bots).
      */
     THROTTLE_UNAUTHENTICATED_API_ENABLED(Boolean.class),
 
@@ -1024,9 +1024,9 @@ public enum Setting {
 
     /**
      * (If enabled, requires: throttle_unauthenticated_packages_api_period_in_seconds and
-     * throttle_unauthenticated_packages_api_requests_per_period) Enable authenticated API request rate limit. Helps
-     * reduce request volume (for example, from crawlers or abusive bots). View Package Registry rate limits for more
-     * details.
+     * throttle_unauthenticated_packages_api_requests_per_period) Enable authenticated API request rate limit. Allows
+     * this setting to reduce request volume (for example, from crawlers or abusive bots). View Package Registry rate
+     * limits for more details.
      */
     THROTTLE_UNAUTHENTICATED_PACKAGES_API_ENABLED(Boolean.class),
 
@@ -1404,8 +1404,8 @@ public enum Setting {
 
     /**
      * (If enabled, requires: throttle_unauthenticated_web_period_in_seconds and
-     * throttle_unauthenticated_web_requests_per_period) Enable unauthenticated web request rate limit. Helps reduce
-     * request volume (for example, from crawlers or abusive bots).
+     * throttle_unauthenticated_web_requests_per_period) Enable unauthenticated web request rate limit. Reduces request
+     * volume (for example, from crawlers or abusive bots).
      */
     THROTTLE_UNAUTHENTICATED_WEB_ENABLED(Boolean.class),
 
@@ -1570,9 +1570,10 @@ public enum Setting {
     ALLOW_POSSIBLE_SPAM(Boolean.class), DENY_ALL_REQUESTS_EXCEPT_ALLOWED(Boolean.class),
     DOMAIN_DENYLIST_RAW(String.class), DOMAIN_ALLOWLIST_RAW(String.class),
     OUTBOUND_LOCAL_REQUESTS_ALLOWLIST_RAW(String.class), ERROR_TRACKING_ENABLED(Boolean.class),
-    ERROR_TRACKING_API_URL(String.class), FLOC_ENABLED(Boolean.class), HELP_PAGE_DOCUMENTATION_BASE_URL(String.class),
-    MATH_RENDERING_LIMITS_ENABLED(Boolean.class), MAX_ARTIFACTS_CONTENT_INCLUDE_SIZE(Integer.class),
-    MAX_PAGES_CUSTOM_DOMAINS_PER_PROJECT(Integer.class), THROTTLE_AUTHENTICATED_GIT_LFS_ENABLED(Boolean.class),
+    ERROR_TRACKING_API_URL(String.class), FLOC_ENABLED(Boolean.class),
+    GUIDANCE_PAGE_DOCUMENTATION_BASE_URL(String.class), MATH_RENDERING_LIMITS_ENABLED(Boolean.class),
+    MAX_ARTIFACTS_CONTENT_INCLUDE_SIZE(Integer.class), MAX_PAGES_CUSTOM_DOMAINS_PER_PROJECT(Integer.class),
+    THROTTLE_AUTHENTICATED_GIT_LFS_ENABLED(Boolean.class),
     THROTTLE_AUTHENTICATED_GIT_LFS_PERIOD_IN_SECONDS(Integer.class),
     THROTTLE_AUTHENTICATED_GIT_LFS_REQUESTS_PER_PERIOD(Integer.class),
     THROTTLE_AUTHENTICATED_FILES_API_ENABLED(Boolean.class),
@@ -1630,7 +1631,15 @@ public enum Setting {
     CONTAINER_REGISTRY_PRE_IMPORT_TIMEOUT(Integer.class), CONTAINER_REGISTRY_IMPORT_TIMEOUT(Integer.class),
     CONTAINER_REGISTRY_IMPORT_TARGET_PLAN(String.class), CONTAINER_REGISTRY_IMPORT_CREATED_BEFORE(String.class),;
 
-    private static JacksonJsonEnumHelper<Setting> enumHelper = new JacksonJsonEnumHelper<>(Setting.class);
+    private static JacksonJsonEnumCodec<Setting> enumCodec = new JacksonJsonEnumCodec<>(Setting.class);
+
+    static {
+        enumCodec.addEnum(GUIDANCE_PAGE_HIDE_COMMERCIAL_CONTENT, "help_page_hide_commercial_content");
+        enumCodec.addEnum(GUIDANCE_PAGE_SUPPORT_URL, "help_page_support_url");
+        enumCodec.addEnum(GUIDANCE_PAGE_TEXT, "help_page_text");
+        enumCodec.addEnum(GUIDANCE_TEXT, "help_text");
+        enumCodec.addEnum(GUIDANCE_PAGE_DOCUMENTATION_BASE_URL, "help_page_documentation_base_url");
+    }
 
     /**
      * The type field.
@@ -1655,7 +1664,7 @@ public enum Setting {
 
     @JsonCreator
     public static Setting forValue(String value) {
-        return enumHelper.forValue(value);
+        return enumCodec.forValue(value);
     }
 
     /**
@@ -1666,7 +1675,7 @@ public enum Setting {
 
     @JsonValue
     public String toValue() {
-        return (enumHelper.toString(this));
+        return (enumCodec.toString(this));
     }
 
     /**
@@ -1677,7 +1686,7 @@ public enum Setting {
 
     @Override
     public String toString() {
-        return (enumHelper.toString(this));
+        return (enumCodec.toString(this));
     }
 
     /**

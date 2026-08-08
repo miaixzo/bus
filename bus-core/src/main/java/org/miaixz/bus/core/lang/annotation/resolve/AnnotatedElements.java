@@ -36,12 +36,12 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * A utility class for {@link AnnotatedElement} that provides support for accessing annotations and meta-annotations
- * within a hierarchical structure. It also offers special attribute mapping mechanisms, such as attribute aliasing via
- * {@link Alias} and attribute value overrides between parent and child annotations.
+ * Resolves annotations and meta-annotations from {@link AnnotatedElement} values within a hierarchical structure. It
+ * also offers special attribute mapping mechanisms, such as attribute aliasing via {@link Alias} and attribute value
+ * overrides between parent and child annotations.
  *
  * <p>
- * <b>Hierarchical Search:</b> Inspired by Spring's {@code AnnotatedElementUtils}, this utility provides two search
+ * <b>Hierarchical Search:</b> Inspired by Spring's {@code AnnotatedElementUtils}, this class provides two search
  * semantics:
  * <ul>
  * <li><em>get</em>: The search scope is limited to the specified {@link AnnotatedElement} itself.</li>
@@ -51,12 +51,12 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * </ul>
  *
  * <p>
- * <b>Meta-Annotation Search:</b> The utility supports searching for meta-annotations. Methods without the
- * {@code directly} keyword will search for meta-annotations, while those with it will not. Note: The effect of
- * {@link Inherited} is not considered by {@code directly} methods.
+ * <b>Meta-Annotation Search:</b> The resolver searches for meta-annotations. Methods without the {@code directly}
+ * keyword will search for meta-annotations, while those with it will not. Note: The effect of {@link Inherited} is not
+ * considered by {@code directly} methods.
  *
  * <p>
- * <b>Annotation Attribute Mapping:</b> The utility supports special mechanisms for mapping annotation attributes:
+ * <b>Annotation Attribute Mapping:</b> The resolver maps annotation attributes through these mechanisms:
  * <ul>
  * <li><b>Attribute Aliasing with {@link Alias}:</b> If attributes are linked via {@link Alias}, setting a value for one
  * is equivalent to setting it for all linked attributes.
@@ -79,7 +79,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * meta-annotation.
  *
  * <p>
- * <b>Caching:</b> To avoid excessive reflection, this utility caches {@link AnnotatedElement} and meta-annotation
+ * <b>Caching:</b> To avoid excessive reflection, this class caches {@link AnnotatedElement} and meta-annotation
  * information. The cache is backed by a {@link WeakConcurrentMap} and can be cleared manually by calling
  * {@link #clearCaches()}.
  *

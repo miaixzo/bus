@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * A utility class for mapping {@link ResultSet} data to Java objects.
+ * Maps {@link ResultSet} data to Java objects.
  *
  * @author Kimi Liu
  * @since Java 21+

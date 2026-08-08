@@ -26,7 +26,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pay.magic.Callback;
 
 /**
- * A utility class for PayPal operations, including retry logic for API calls.
+ * Builds and executes PayPal requests, including retry logic for API calls.
  *
  * @author Kimi Liu
  * @since Java 21+

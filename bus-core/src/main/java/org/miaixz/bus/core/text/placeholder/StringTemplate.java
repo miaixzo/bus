@@ -467,7 +467,7 @@ public abstract class StringTemplate {
     }
 
     /**
-     * A helper method to process a single matched key-value pair according to the configured features.
+     * Processes a single matched key-value pair according to the configured features.
      *
      * @param keyValueConsumer     The consumer for the final key-value pair.
      * @param key                  The placeholder variable.

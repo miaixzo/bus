@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.StringJoiner;
 
 /**
- * Utility class for {@link Iterable} and {@link Iterator}.
+ * Creates and traverses iterators and iterable values.
  *
  * @author Kimi Liu
  * @since Java 21+
