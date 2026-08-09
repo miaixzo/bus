@@ -1300,7 +1300,10 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "boolean"
+            "boolean",
+            "org.miaixz.bus.starter.wrapper.converter.MessageConverterProperties$TypePolicy",
+            "java.lang.String",
+            "java.util.List"
           ]
         }
       ]
