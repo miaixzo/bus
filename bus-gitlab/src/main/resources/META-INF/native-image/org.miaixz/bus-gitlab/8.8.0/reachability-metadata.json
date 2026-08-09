@@ -3699,7 +3699,7 @@
       "type": "org.miaixz.bus.gitlab.hooks.web.EventLabel$LabelType",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "GROUP_LABEL"
@@ -6700,7 +6700,7 @@
           "name": "COMMIT"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "ISSUE"
@@ -8239,7 +8239,7 @@
           "name": "CLOSED"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "OPENED"
@@ -9969,7 +9969,7 @@
           "name": "ARCHIVE"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "JUNIT"
@@ -10681,7 +10681,7 @@
       "type": "org.miaixz.bus.gitlab.models.AwardEmoji$AwardableType",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "ISSUE"
@@ -10840,7 +10840,7 @@
       "type": "org.miaixz.bus.gitlab.models.Badge$BadgeKind",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "GROUP"
@@ -11983,7 +11983,7 @@
           "name": "CREATED"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "FAILED"
@@ -12942,7 +12942,7 @@
           "name": "DELETE"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "MOVE"
@@ -13262,7 +13262,7 @@
           "name": "BRANCH"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "TAG"
@@ -13738,7 +13738,7 @@
           "name": "DESTROYED"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "EXPIRED"
@@ -13824,7 +13824,7 @@
           "name": "EMAIL"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "K8S_PROXY"
@@ -13983,7 +13983,7 @@
           "name": "ENABLED"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         }
       ],
       "methods": [
@@ -14027,7 +14027,7 @@
           "name": "CONTINUOUS"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "MANUAL"
@@ -14077,7 +14077,7 @@
           "name": "CLONE"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "FETCH"
@@ -14124,7 +14124,7 @@
           "name": "CANCELED"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "FAILED"
@@ -14186,7 +14186,7 @@
           "name": "EMAIL"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "NAME"
@@ -14277,7 +14277,7 @@
           "name": "CREATED_AT"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "ID"
@@ -14336,7 +14336,7 @@
           "name": "CREATED"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "FAILED"
@@ -14386,7 +14386,7 @@
       "type": "org.miaixz.bus.gitlab.models.Constants$DeployTokenScope",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "READ_PACKAGE_REGISTRY"
@@ -14451,7 +14451,7 @@
           "name": "BASE64"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "TEXT"
@@ -14498,7 +14498,7 @@
           "name": "CREATED_AT"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "UPDATED_AT"
@@ -14545,7 +14545,7 @@
           "name": "ALL"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         }
       ],
       "methods": [
@@ -14586,7 +14586,7 @@
       "type": "org.miaixz.bus.gitlab.models.Constants$GroupOrderBy",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "ID"
@@ -14684,7 +14684,7 @@
           "name": "ALL"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "INACTIVE"
@@ -14731,7 +14731,7 @@
           "name": "CREATED_AT"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "UPDATED_AT"
@@ -14784,7 +14784,7 @@
           "name": "CREATED_BY_ME"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         }
       ],
       "methods": [
@@ -14828,7 +14828,7 @@
           "name": "CLOSED"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "OPENED"
@@ -14881,7 +14881,7 @@
           "name": "CREATED"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "FAILED"
@@ -14943,7 +14943,7 @@
       "type": "org.miaixz.bus.gitlab.models.Constants$LineType",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "NEW"
@@ -14993,7 +14993,7 @@
           "name": "CREATED_AT"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "UPDATED_AT"
@@ -15046,7 +15046,7 @@
           "name": "CREATED_BY_ME"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         }
       ],
       "methods": [
@@ -15090,7 +15090,7 @@
           "name": "DESCRIPTION"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "TITLE"
@@ -15140,7 +15140,7 @@
           "name": "CLOSED"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "LOCKED"
@@ -15202,7 +15202,7 @@
           "name": "CLOSED"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         }
       ],
       "methods": [
@@ -15246,7 +15246,7 @@
           "name": "CREATED_AT"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "NAME"
@@ -15302,7 +15302,7 @@
           "name": "DEFAULT"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "HIDDEN"
@@ -15349,7 +15349,7 @@
       "type": "org.miaixz.bus.gitlab.models.Constants$PipelineOrderBy",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "ID"
@@ -15408,7 +15408,7 @@
           "name": "BRANCHES"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "FINISHED"
@@ -15467,7 +15467,7 @@
           "name": "CHAT"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "EXTERNAL"
@@ -15544,7 +15544,7 @@
           "name": "CREATE_RUNNER"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "K8S_PROXY"
@@ -15612,7 +15612,7 @@
           "name": "DEVELOPER"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "MAINTAINER"
@@ -15665,7 +15665,7 @@
           "name": "ENABLED"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "PRIVATE"
@@ -15715,7 +15715,7 @@
           "name": "CREATED_AT"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "ID"
@@ -15855,7 +15855,7 @@
           "name": "DESC"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         }
       ],
       "methods": [
@@ -15905,7 +15905,7 @@
           "name": "DEFAULT_ON"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "NEVER"
@@ -15952,7 +15952,7 @@
           "name": "CLOSE"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "REOPEN"
@@ -15996,7 +15996,7 @@
       "type": "org.miaixz.bus.gitlab.models.Constants$SubgroupCreationLevel",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "MAINTAINER"
@@ -16043,7 +16043,7 @@
       "type": "org.miaixz.bus.gitlab.models.Constants$TagOrderBy",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "NAME"
@@ -16090,7 +16090,7 @@
       "type": "org.miaixz.bus.gitlab.models.Constants$TargetType",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "ISSUE"
@@ -16164,7 +16164,7 @@
           "name": "DIRECTLY_ADDRESSED"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "MARKED"
@@ -16217,7 +16217,7 @@
           "name": "DONE"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "PENDING"
@@ -16261,7 +16261,7 @@
       "type": "org.miaixz.bus.gitlab.models.Constants$TodoType",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "ISSUE"
@@ -18171,7 +18171,7 @@
           "name": "AVAILABLE"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "STOPPED"
@@ -18416,7 +18416,7 @@
           "name": "AUTHOR_USERNAME"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "LABELS"
@@ -19285,7 +19285,7 @@
           "name": "AFTER_EXPORT_ACTION"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "FINISHED"
@@ -19629,7 +19629,7 @@
       "type": "org.miaixz.bus.gitlab.models.ExternalStatusCheckStatus$Status",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "FAILED"
@@ -21867,7 +21867,7 @@
       "type": "org.miaixz.bus.gitlab.models.HealthCheckStatus",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "FAILED"
@@ -22148,7 +22148,7 @@
           "name": "CREATE_RUNNER"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "K8S_PROXY"
@@ -22357,7 +22357,7 @@
       "type": "org.miaixz.bus.gitlab.models.ImportStatus$Status",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "FAILED"
@@ -22547,7 +22547,7 @@
       "type": "org.miaixz.bus.gitlab.models.IssueEvent$ResourceType",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "ISSUE"
@@ -23034,7 +23034,7 @@
           "name": "AUTHOR_USERNAME"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "IIDS"
@@ -23708,7 +23708,7 @@
           "name": "CADENCE_TITLE"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "TITLE"
@@ -23761,7 +23761,7 @@
           "name": "CURRENT"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "OPENED"
@@ -24386,7 +24386,7 @@
           "name": "CREATED"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "FAILED"
@@ -24832,7 +24832,7 @@
       "type": "org.miaixz.bus.gitlab.models.LabelEvent$ResourceType",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "EPIC"
@@ -25415,7 +25415,7 @@
           "name": "BLOCKS"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "IS_BLOCKED_BY"
@@ -25690,7 +25690,7 @@
       "type": "org.miaixz.bus.gitlab.models.MembershipSourceType",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "NAMESPACE"
@@ -27114,7 +27114,7 @@
           "name": "AUTHOR_USERNAME"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "LABELS"
@@ -28194,7 +28194,7 @@
           "name": "COMMIT"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "EPIC"
@@ -28250,7 +28250,7 @@
           "name": "CREATED_AT"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "UPDATED_AT"
@@ -28300,7 +28300,7 @@
           "name": "DISCUSSION_NOTE"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         }
       ],
       "methods": [
@@ -28572,7 +28572,7 @@
           "name": "DISABLED"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "GLOBAL"
@@ -28976,7 +28976,7 @@
           "name": "CONAN"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "GENERIC"
@@ -30237,7 +30237,7 @@
       "type": "org.miaixz.bus.gitlab.models.Position$PositionType",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "FILE"
@@ -32535,7 +32535,7 @@
       "type": "org.miaixz.bus.gitlab.models.Project$MergeMethod",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "FF"
@@ -34190,7 +34190,7 @@
           "name": "DOCKERFILES"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "GITIGNORES"
@@ -36614,7 +36614,7 @@
           "name": "ACTIVE"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "OFFLINE"
@@ -36664,7 +36664,7 @@
       "type": "org.miaixz.bus.gitlab.models.Runner$RunnerType",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "GROUP_TYPE"
@@ -36900,7 +36900,7 @@
       "type": "org.miaixz.bus.gitlab.models.RunnerDetail$RunnerAccessLevel",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "NOT_PROTECTED"
@@ -37539,7 +37539,7 @@
           "name": "ENFORCE_TERMS"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "ERROR_TRACKING_API_URL"
@@ -40875,7 +40875,7 @@
       "type": "org.miaixz.bus.gitlab.models.Variable$Type",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "ENV_VAR"
@@ -40963,7 +40963,7 @@
       "type": "org.miaixz.bus.gitlab.models.Visibility",
       "fields": [
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "INTERNAL"
@@ -43081,7 +43081,7 @@
           "name": "API"
         },
         {
-          "name": "enumHelper"
+          "name": "enumCodec"
         },
         {
           "name": "READ_REGISTRY"
@@ -43551,7 +43551,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.gitlab.support.JacksonJson$JacksonJsonSingletonHelper",
+      "type": "org.miaixz.bus.gitlab.support.JacksonJson$JacksonJsonInstanceHolder",
       "fields": [
         {
           "name": "JACKSON_JSON"
@@ -44266,7 +44266,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper",
+      "type": "org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec",
       "methods": [
         {
           "name": "<init>",

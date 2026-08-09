@@ -168,21 +168,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "boolean",
-            "java.lang.String[]",
-            "java.lang.Object",
-            "java.util.EnumSet",
-            "java.lang.String[]",
-            "java.lang.String",
-            "org.miaixz.bus.image.metric.pdu.IdentityRQ",
-            "org.miaixz.bus.image.metric.pdu.IdentityAC",
-            "int",
-            "org.miaixz.bus.image.Option",
-            "java.util.List",
-            "boolean",
-            "java.net.URL",
-            "java.net.URL",
-            "java.net.URL"
+            "org.miaixz.bus.image.Args$ArgsBuilder"
           ]
         },
         {
@@ -609,6 +595,23 @@
           "parameterTypes": [
             "java.lang.String[]"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.Args$ArgsBuilderImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
         }
       ]
     },
@@ -4604,18 +4607,6 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.image.Centre$CentreBuilder"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.image.Device",
-            "org.miaixz.bus.image.plugin.StoreSCP",
-            "org.miaixz.bus.image.Node",
-            "org.miaixz.bus.image.Args",
-            "org.miaixz.bus.image.Efforts",
-            "java.util.concurrent.ExecutorService",
-            "java.util.concurrent.ScheduledExecutorService"
           ]
         },
         {
@@ -58385,33 +58376,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "int",
-            "int",
-            "int",
-            "int",
-            "boolean",
-            "int",
-            "int",
-            "int",
-            "int",
-            "int",
-            "int",
-            "int",
-            "int",
-            "int",
-            "int",
-            "int",
-            "boolean",
-            "java.util.List",
-            "java.util.List",
-            "boolean",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
+            "org.miaixz.bus.image.Option$OptionBuilder"
           ]
         },
         {
@@ -58939,6 +58904,23 @@
           "parameterTypes": [
             "java.lang.String"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.Option$OptionBuilderImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
         }
       ]
     },

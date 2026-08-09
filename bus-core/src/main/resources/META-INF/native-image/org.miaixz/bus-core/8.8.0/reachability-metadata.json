@@ -84,16 +84,6 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.Integer",
-            "java.lang.String",
-            "java.lang.Long",
-            "java.lang.String",
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
             "org.miaixz.bus.core.basic.entity.Audit$AuditBuilder"
           ]
         },
@@ -305,27 +295,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
         },
         {
           "name": "<init>",
@@ -710,12 +679,6 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
             "org.miaixz.bus.core.basic.entity.Entity$EntityBuilder"
           ]
         },
@@ -838,14 +801,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.Object"
-          ]
         },
         {
           "name": "<init>",
@@ -987,12 +942,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
         },
         {
           "name": "<init>",
@@ -1505,16 +1454,6 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.Integer",
-            "java.lang.Integer",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
             "org.miaixz.bus.core.basic.entity.Query$QueryBuilder"
           ]
         },
@@ -1744,15 +1683,6 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "long",
-            "java.util.List",
-            "java.lang.Integer",
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
             "org.miaixz.bus.core.basic.entity.Result$ResultBuilder"
           ]
         },
@@ -1887,12 +1817,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
         },
         {
           "name": "<init>",
@@ -2410,21 +2334,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
         },
         {
           "name": "<init>",

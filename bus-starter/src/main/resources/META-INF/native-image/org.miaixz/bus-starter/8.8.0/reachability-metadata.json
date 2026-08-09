@@ -339,13 +339,31 @@
             "org.miaixz.bus.fabric.network.dns.server.DnsTransport",
             "java.lang.String",
             "java.lang.Integer",
+            "java.lang.Integer",
+            "java.lang.Boolean",
+            "java.util.List",
             "java.lang.Boolean",
             "java.lang.Integer",
             "java.time.Duration",
             "java.time.Duration",
             "java.time.Duration",
             "java.lang.Integer",
-            "java.lang.Integer"
+            "java.lang.Integer",
+            "java.lang.Boolean",
+            "java.util.List",
+            "java.lang.Boolean",
+            "java.lang.Boolean",
+            "java.lang.Boolean",
+            "java.lang.String",
+            "java.lang.Boolean",
+            "java.lang.Boolean",
+            "java.lang.Boolean",
+            "java.lang.Boolean",
+            "java.time.Duration",
+            "java.lang.Integer",
+            "java.lang.Integer",
+            "java.lang.Integer",
+            "java.time.Duration"
           ]
         }
       ]

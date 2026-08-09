@@ -3767,6 +3767,12 @@
           ]
         },
         {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.shade.screw.Config$ConfigBuilder"
+          ]
+        },
+        {
           "name": "builder",
           "parameterTypes": []
         },
@@ -3914,6 +3920,23 @@
           "parameterTypes": [
             "java.lang.String"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.shade.screw.Config$ConfigBuilderImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
         }
       ]
     },
@@ -8076,12 +8099,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "boolean",
-            "java.lang.String",
-            "org.miaixz.bus.shade.screw.engine.EngineFileType",
-            "org.miaixz.bus.shade.screw.engine.TemplateType",
-            "java.lang.String",
-            "java.lang.String"
+            "org.miaixz.bus.shade.screw.engine.EngineConfig$EngineConfigBuilder"
           ]
         },
         {
@@ -8199,6 +8217,23 @@
         },
         {
           "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.shade.screw.engine.EngineConfig$EngineConfigBuilderImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
           "parameterTypes": []
         }
       ]
@@ -8902,12 +8937,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.List",
-            "java.util.List",
-            "java.util.List",
-            "java.util.List",
-            "java.util.List",
-            "java.util.List"
+            "org.miaixz.bus.shade.screw.process.ProcessConfig$ProcessConfigBuilder"
           ]
         },
         {
@@ -9025,6 +9055,23 @@
         },
         {
           "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.shade.screw.process.ProcessConfig$ProcessConfigBuilderImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
           "parameterTypes": []
         }
       ]

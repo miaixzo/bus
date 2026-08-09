@@ -761,18 +761,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String",
-            "int",
-            "long",
-            "long",
-            "int",
-            "int",
-            "int",
-            "long",
-            "java.util.Map",
-            "java.util.List"
+            "org.miaixz.bus.office.Bundle$Paged$PagedBuilder"
           ]
         },
         {
@@ -991,6 +980,23 @@
           "parameterTypes": [
             "long"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.office.Bundle$Paged$PagedBuilderImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
         }
       ]
     },
