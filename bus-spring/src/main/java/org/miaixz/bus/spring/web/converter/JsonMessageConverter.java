@@ -36,6 +36,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.extra.json.JsonPropertyFilter;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonReadOptions;
+import org.miaixz.bus.extra.json.JsonTypeFilter;
 import org.miaixz.bus.extra.json.JsonWriteOptions;
 
 /**
@@ -59,7 +60,7 @@ public class JsonMessageConverter implements MessageConverterRegistrar {
     /**
      * Optional allow-list matcher used when the application configures safe deserialization package rules.
      */
-    private JsonTypeMatcher typeMatcher = JsonTypeMatcher.of(null);
+    private JsonTypeFilter typeFilter = JsonTypeMatcher.of(null)::matches;
 
     /**
      * Creates the Spring HTTP converter registration backed by the selected provider.
@@ -77,7 +78,7 @@ public class JsonMessageConverter implements MessageConverterRegistrar {
      */
     @Override
     public String name() {
-        return "BusJson(" + provider.name() + Symbol.PARENTHESE_RIGHT;
+        return "BusJson[" + provider.name() + Symbol.BRACKET_RIGHT;
     }
 
     /**
@@ -97,7 +98,7 @@ public class JsonMessageConverter implements MessageConverterRegistrar {
      */
     @Override
     public void register(List<org.springframework.http.converter.HttpMessageConverter<?>> converters) {
-        JsonReadOptions readOptions = new JsonReadOptions(typeMatcher::matches);
+        JsonReadOptions readOptions = new JsonReadOptions(typeFilter);
         JsonWriteOptions writeOptions = new JsonWriteOptions(null, false, JsonPropertyFilter.always());
         converters.add(new ProviderHttpMessageConverter(provider, readOptions, writeOptions));
     }
@@ -109,7 +110,19 @@ public class JsonMessageConverter implements MessageConverterRegistrar {
      */
     @Override
     public void autoType(String autoType) {
-        this.typeMatcher = JsonTypeMatcher.of(autoType);
+        JsonTypeMatcher matcher = JsonTypeMatcher.of(autoType);
+        this.typeFilter = matcher::matches;
+    }
+
+    /**
+     * Replaces the JSON deserialization target filter.
+     * <p>
+     * This method must be called before the converter is registered with Spring MVC.
+     *
+     * @param typeFilter filter applied to every concrete target class
+     */
+    public void typeFilter(JsonTypeFilter typeFilter) {
+        this.typeFilter = Objects.requireNonNull(typeFilter, "typeFilter");
     }
 
     /**

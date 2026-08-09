@@ -11,6 +11,10 @@
 **Bus Notify** 是基于 Spring Boot 的多渠道通知服务,支持不同渠道之间的负载均衡。它为通过短信、邮件、语音、推送通知等各种服务提供商发送通知提供统一的
 API。
 
+![](https://img.shields.io/maven-central/v/net.guerlab.sms/guerlab-sms-server-starter.svg)
+[![构建状态](https://travis-ci.org/guerlab-net/guerlab-sms.svg?branch=master)](https://travis-ci.org/guerlab-net/guerlab-sms)
+![](https://img.shields.io/badge/LICENSE-LGPL--3.0-brightgreen.svg)
+
 -----
 
 ## ✨ 核心特性

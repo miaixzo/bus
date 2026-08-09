@@ -137,7 +137,7 @@ bus:
 
 ### 集成步骤
 
-#### 1. 在 Spring Boot 主类上添加 @EnableVortex 注解
+#### 1. 在 Spring Boot 主类上添加 `@EnableVortex` 注解
 
 ```java
 @EnableVortex
@@ -166,7 +166,7 @@ public Keying<Keying.RegistrySpec> registryKeying() {
 }
 ```
 
-#### 4. 实现 AuthorizeProvider Bean 进行身份验证
+#### 4. 实现 `AuthorizeProvider` Bean 进行身份验证
 
 ```java
 @Component
@@ -175,11 +175,11 @@ public class AuthProviderImpl implements AuthorizeProvider {
 }
 ```
 
-#### 5. 在 application.yml 中配置
+#### 5. 在 `application.yml` 中配置
 
 ### 扩展性
 
-实现 WebFilter 来扩展网关功能,如限流、日志、黑名单、熔断 (尚未实现)等。
+实现 `WebFilter` 来扩展网关功能,如限流、日志、黑名单、熔断 (尚未实现)等。
 
 ```java
 @Component
@@ -376,7 +376,7 @@ context.putQueryParameter("lang", "en");
 
 ### 自定义过滤器
 
-实现 WebFilter 进行自定义请求/响应处理:
+实现 `WebFilter` 进行自定义请求/响应处理:
 
 ```java
 @Component
@@ -392,7 +392,7 @@ public class LoggingFilter implements WebFilter {
 
 ### 动态路由
 
-使用 Registry 实现动态注册和更新路由。
+使用 `Registry` 实现动态注册和更新路由。
 
 ### 负载均衡
 

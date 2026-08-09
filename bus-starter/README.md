@@ -390,6 +390,10 @@ bus:
       enabled: true
     message-converters:
       enabled: true
+      type-policy: application
+      allowed-types:
+        - com.example.shared.dto.**
+        - com.example.shared.dto1.**
     body-cache:
       enabled: false
     response-advice:
@@ -397,6 +401,16 @@ bus:
     route-prefix:
       enabled: false
 ```
+
+Message converter target-type policies are:
+
+- `framework`: allows Bus framework types, built-in scalar/container types, and explicit rules;
+- `application`: also discovers Spring Boot application packages and is the default;
+- `all`: allows every target type and must only be used in trusted environments.
+
+`allowed-types` accepts exact class names, `*` for one package segment, and `**` for any number of package segments.
+The compatibility property `auto-type` accepts comma-separated rules; `auto-type: "**"` also explicitly allows every
+target type. Prefer `allowed-types` for new applications.
 
 Request-object binding requires `@RequestObject`, excludes framework and simple scalar types, and does not allow request
 input to replace trusted tenant context. Body caching is bounded; multipart and response diagnostic caching remain

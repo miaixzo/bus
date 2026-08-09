@@ -510,6 +510,21 @@ strategy:
 TTL recommended: `healthCheck.intervalMs × 3` (default 90s). HealthProbeScheduler refreshes TTL for healthy instances;
 unhealthy instances expire naturally.
 
+### PreStop Hook
+
+A forced Pod termination such as OOMKill or SIGKILL does not invoke `@PreDestroy`. Configure a PreStop hook so normal
+rolling termination has time to deregister the instance:
+
+```yaml
+lifecycle:
+  preStop:
+    exec:
+      command: ["/bin/sh", "-c", "sleep 3"]
+terminationGracePeriodSeconds: 30
+```
+
+The three cleanup safeguards are the PreStop hook, TTL expiration, and active probing by HealthProbeScheduler.
+
 -----
 
 ## 🔄 Version Compatibility

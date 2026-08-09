@@ -260,7 +260,7 @@ Starter keeps body caching disabled by default even when aggregate wrapper suppo
 
 - `MessageResponseBodyAdvice` supplies reusable MVC response processing.
 - `RoutePrefixHandlerMapping` applies configured prefixes to selected controller routes.
-- `RoutePrefixProperties` represents route-prefix mechanics independent of Starter property activation.
+- `RoutePrefixOptions` represents route-prefix mechanics independent of Starter property activation.
 - `SentinelRequestHandler` provides reusable request interception integration.
 
 These packages do not decide whether the application enables response wrapping, route prefixes, or an optional
