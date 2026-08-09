@@ -57,6 +57,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = MergeRequestSystemHookEvent.class, name = MergeRequestSystemHookEvent.MERGE_REQUEST_EVENT) })
 public interface SystemHookEvent extends Serializable {
 
+    /**
+     * Returns the system hook event name.
+     *
+     * @return event name
+     */
     String getEventName();
 
     /**
@@ -118,6 +123,9 @@ public interface SystemHookEvent extends Serializable {
  */
 class CreateProjectSystemHookEvent extends ProjectSystemHookEvent {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852228078820L;
 

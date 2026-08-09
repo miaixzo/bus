@@ -44,6 +44,9 @@ public enum LinkType {
      */
     IS_BLOCKED_BY;
 
+    /**
+     * The enum codec value.
+     */
     private static JacksonJsonEnumCodec<LinkType> enumCodec = new JacksonJsonEnumCodec<>(LinkType.class);
 
     /**

@@ -25,6 +25,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferLimitException;
@@ -365,8 +366,7 @@ public class ErrorsHandler implements WebExceptionHandler {
      */
     @Getter
     @Setter
-    @Builder
-    @AllArgsConstructor
+    @SuperBuilder
     public static class Message {
 
         /**

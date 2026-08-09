@@ -29,6 +29,9 @@ import java.util.Arrays;
  */
 public class SecretString implements CharSequence, AutoCloseable {
 
+    /**
+     * The chars value.
+     */
     private final char[] chars;
 
     /**

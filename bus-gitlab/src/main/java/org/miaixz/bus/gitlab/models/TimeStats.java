@@ -31,12 +31,34 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class TimeStats implements Serializable {
 
+    /**
+     * Constructs a new {@code TimeStats} instance.
+     */
+    public TimeStats() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852281923917L;
 
+    /**
+     * The time estimate value.
+     */
     private Integer timeEstimate;
+    /**
+     * The total time spent value.
+     */
     private Integer totalTimeSpent;
+    /**
+     * The human time estimate value.
+     */
     private Duration humanTimeEstimate;
+    /**
+     * The human total time spent value.
+     */
     private Duration humanTotalTimeSpent;
 
     /**

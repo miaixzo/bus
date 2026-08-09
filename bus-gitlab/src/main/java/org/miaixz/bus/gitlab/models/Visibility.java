@@ -44,6 +44,9 @@ public enum Visibility {
      */
     INTERNAL;
 
+    /**
+     * The enum codec value.
+     */
     private static JacksonJsonEnumCodec<Visibility> enumCodec = new JacksonJsonEnumCodec<>(Visibility.class);
 
     /**

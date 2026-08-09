@@ -29,13 +29,38 @@ import java.io.Serializable;
  */
 public class OauthTokenResponse implements Serializable {
 
+    /**
+     * Constructs a new {@code OauthTokenResponse} instance.
+     */
+    public OauthTokenResponse() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852267905007L;
 
+    /**
+     * The access token value.
+     */
     private String accessToken;
+    /**
+     * The token type value.
+     */
     private String tokenType;
+    /**
+     * The refresh token value.
+     */
     private String refreshToken;
+    /**
+     * The scope value.
+     */
     private String scope;
+    /**
+     * The created at value.
+     */
     private Long createdAt;
 
     /**

@@ -32,11 +32,30 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class HealthCheckItem implements Serializable {
 
+    /**
+     * Constructs a new {@code HealthCheckItem} instance.
+     */
+    public HealthCheckItem() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852256751978L;
 
+    /**
+     * The status value.
+     */
     private HealthCheckStatus status;
+    /**
+     * The labels value.
+     */
     private Map<String, String> labels;
+    /**
+     * The message value.
+     */
     private String message;
 
     /**

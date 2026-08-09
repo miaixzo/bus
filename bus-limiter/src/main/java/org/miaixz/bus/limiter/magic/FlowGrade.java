@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.limiter.magic;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -29,7 +28,6 @@ import lombok.Getter;
  * @author Kimi Liu
  */
 @Getter
-@AllArgsConstructor
 public enum FlowGrade {
 
     /**
@@ -45,5 +43,14 @@ public enum FlowGrade {
      * The integer value representing the grade of flow control.
      */
     private int grade;
+
+    /**
+     * Constructs a flow-control grade.
+     *
+     * @param grade the grade value
+     */
+    FlowGrade(int grade) {
+        this.grade = grade;
+    }
 
 }

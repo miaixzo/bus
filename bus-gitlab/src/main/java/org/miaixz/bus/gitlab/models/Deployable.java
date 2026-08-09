@@ -34,26 +34,90 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Deployable implements Serializable {
 
+    /**
+     * Constructs a new {@code Deployable} instance.
+     */
+    public Deployable() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852251089511L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The status value.
+     */
     private DeploymentStatus status;
+    /**
+     * The stage value.
+     */
     private String stage;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The ref value.
+     */
     private String ref;
+    /**
+     * The tag value.
+     */
     private Boolean tag;
+    /**
+     * The coverage value.
+     */
     private Float coverage;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The started at value.
+     */
     private Date startedAt;
+    /**
+     * The finished at value.
+     */
     private Date finishedAt;
+    /**
+     * The duration value.
+     */
     private Double duration;
+    /**
+     * The user value.
+     */
     private User user;
+    /**
+     * The commit value.
+     */
     private Commit commit;
+    /**
+     * The pipeline value.
+     */
     private Pipeline pipeline;
+    /**
+     * The web url value.
+     */
     private String webUrl;
+    /**
+     * The artifacts value.
+     */
     private List<Artifact> artifacts;
+    /**
+     * The runner value.
+     */
     private Runner runner;
+    /**
+     * The artifacts expire at value.
+     */
     private Date artifactsExpireAt;
 
     /**

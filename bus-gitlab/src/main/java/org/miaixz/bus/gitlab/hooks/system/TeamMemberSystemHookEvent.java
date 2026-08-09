@@ -32,6 +32,16 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class TeamMemberSystemHookEvent extends AbstractSystemHookEvent {
 
+    /**
+     * Constructs a new {@code TeamMemberSystemHookEvent} instance.
+     */
+    public TeamMemberSystemHookEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852229806158L;
     /**
@@ -44,18 +54,57 @@ public class TeamMemberSystemHookEvent extends AbstractSystemHookEvent {
      */
     public static final String TEAM_MEMBER_REMOVED_EVENT = "user_remove_from_team";
 
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The event name value.
+     */
     private String eventName;
+    /**
+     * The access level value.
+     */
     private String accessLevel;
+    /**
+     * The project name value.
+     */
     private String projectName;
+    /**
+     * The project path value.
+     */
     private String projectPath;
+    /**
+     * The project id value.
+     */
     private Long projectId;
+    /**
+     * The project path with namespace value.
+     */
     private String projectPathWithNamespace;
+    /**
+     * The user email value.
+     */
     private String userEmail;
+    /**
+     * The user name value.
+     */
     private String userName;
+    /**
+     * The user username value.
+     */
     private String userUsername;
+    /**
+     * The user id value.
+     */
     private Long userId;
+    /**
+     * The project visibility value.
+     */
     private Visibility projectVisibility;
 
     /**

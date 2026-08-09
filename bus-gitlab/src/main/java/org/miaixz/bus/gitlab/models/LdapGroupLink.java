@@ -31,15 +31,37 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class LdapGroupLink implements Serializable {
 
+    /**
+     * Constructs a new {@code LdapGroupLink} instance.
+     */
+    public LdapGroupLink() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852260326318L;
 
+    /**
+     * The cn value.
+     */
     private String cn;
 
+    /**
+     * The group access value.
+     */
     private AccessLevel groupAccess;
 
+    /**
+     * The provider value.
+     */
     private String provider;
 
+    /**
+     * The filter value.
+     */
     private String filter;
 
     /**

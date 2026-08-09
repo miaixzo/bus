@@ -37,12 +37,27 @@ public abstract class AbstractEvent implements Event {
         // No initialization required.
     }
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852230011506L;
 
+    /**
+     * The event type value.
+     */
     private String eventType;
+    /**
+     * The request url value.
+     */
     private String requestUrl;
+    /**
+     * The request query string value.
+     */
     private String requestQueryString;
+    /**
+     * The secret token value.
+     */
     private String secretToken;
 
     /**

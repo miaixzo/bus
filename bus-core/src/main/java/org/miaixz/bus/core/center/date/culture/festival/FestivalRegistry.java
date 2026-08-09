@@ -32,6 +32,13 @@ import org.miaixz.bus.core.lang.Normal;
 public class FestivalRegistry {
 
     /**
+     * Constructs a new {@code FestivalRegistry} instance.
+     */
+    public FestivalRegistry() {
+        // No initialization required.
+    }
+
+    /**
      * Valid encoding characters.
      */
     public static final String CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTU_VWXYZabcdefghijklmnopqrstuvwxyz";

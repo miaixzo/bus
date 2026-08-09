@@ -31,6 +31,16 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class GroupMemberSystemHookEvent extends AbstractSystemHookEvent {
 
+    /**
+     * Constructs a new {@code GroupMemberSystemHookEvent} instance.
+     */
+    public GroupMemberSystemHookEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852292629796L;
     /**
@@ -43,16 +53,49 @@ public class GroupMemberSystemHookEvent extends AbstractSystemHookEvent {
      */
     public static final String GROUP_MEMBER_REMOVED_EVENT = "user_remove_from_group";
 
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The event name value.
+     */
     private String eventName;
+    /**
+     * The group access value.
+     */
     private String groupAccess;
+    /**
+     * The group name value.
+     */
     private String groupName;
+    /**
+     * The group path value.
+     */
     private String groupPath;
+    /**
+     * The group id value.
+     */
     private Long groupId;
+    /**
+     * The user email value.
+     */
     private String userEmail;
+    /**
+     * The user name value.
+     */
     private String userName;
+    /**
+     * The user username value.
+     */
     private String userUsername;
+    /**
+     * The user id value.
+     */
     private Long userId;
 
     /**

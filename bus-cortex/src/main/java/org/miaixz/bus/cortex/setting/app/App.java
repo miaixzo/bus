@@ -23,7 +23,6 @@ import java.util.List;
 
 import jakarta.persistence.Transient;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -39,7 +38,6 @@ import org.miaixz.bus.cortex.Type;
 @Getter
 @Setter
 @SuperBuilder
-@AllArgsConstructor
 public class App extends Setting {
 
     /**

@@ -32,20 +32,59 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Snippet implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852281375272L;
 
+    /**
+     * The author value.
+     */
     private Author author;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The expires at value.
+     */
     private Date expiresAt;
+    /**
+     * The file name value.
+     */
     private String fileName;
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The updated at value.
+     */
     private String updatedAt;
+    /**
+     * The web url value.
+     */
     private String webUrl;
+    /**
+     * The content value.
+     */
     private String content;
+    /**
+     * The raw url value.
+     */
     private String rawUrl;
+    /**
+     * The visibility value.
+     */
     private Visibility visibility;
+    /**
+     * The description value.
+     */
     private String description;
 
     /**

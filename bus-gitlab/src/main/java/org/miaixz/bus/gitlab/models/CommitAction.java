@@ -42,6 +42,16 @@ import org.miaixz.bus.logger.Logger;
  */
 public class CommitAction implements Serializable {
 
+    /**
+     * Constructs a new {@code CommitAction} instance.
+     */
+    public CommitAction() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852239693533L;
 
@@ -58,12 +68,33 @@ public class CommitAction implements Serializable {
         return (withFileContent(file, filePath, encoding));
     }
 
+    /**
+     * The action value.
+     */
     private Action action;
+    /**
+     * The file path value.
+     */
     private String filePath;
+    /**
+     * The previous path value.
+     */
     private String previousPath;
+    /**
+     * The content value.
+     */
     private String content;
+    /**
+     * The encoding value.
+     */
     private Encoding encoding;
+    /**
+     * The last commit id value.
+     */
     private String lastCommitId;
+    /**
+     * The execute filemode value.
+     */
     private Boolean executeFilemode;
 
     /**
@@ -373,6 +404,9 @@ public class CommitAction implements Serializable {
          */
         CHMOD;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<Action> enumCodec = new JacksonJsonEnumCodec<>(Action.class);
 
         /**

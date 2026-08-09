@@ -28,6 +28,16 @@ import java.io.Serial;
  */
 public class Owner extends AbstractUser<Owner> {
 
+    /**
+     * Constructs a new {@code Owner} instance.
+     */
+    public Owner() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852268017381L;
 

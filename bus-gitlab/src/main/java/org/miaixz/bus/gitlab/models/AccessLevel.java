@@ -69,6 +69,9 @@ public enum AccessLevel {
      */
     ADMIN(60);
 
+    /**
+     * The values map value.
+     */
     private static final Map<Integer, AccessLevel> valuesMap = new HashMap<>(9);
 
     /**

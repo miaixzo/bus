@@ -31,6 +31,16 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class TagPushEvent extends AbstractPushEvent implements Event {
 
+    /**
+     * Constructs a new {@code TagPushEvent} instance.
+     */
+    public TagPushEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852233179805L;
     /**

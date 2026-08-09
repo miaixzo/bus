@@ -33,24 +33,79 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Event implements Serializable {
 
+    /**
+     * Constructs a new {@code Event} instance.
+     */
+    public Event() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852253230058L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The action name value.
+     */
     private String actionName;
+    /**
+     * The author value.
+     */
     private Author author;
+    /**
+     * The author id value.
+     */
     private Long authorId;
+    /**
+     * The author username value.
+     */
     private String authorUsername;
+    /**
+     * The data value.
+     */
     private EventData data;
+    /**
+     * The project id value.
+     */
     private Long projectId;
+    /**
+     * The target id value.
+     */
     private Long targetId;
+    /**
+     * The target iid value.
+     */
     private Long targetIid;
+    /**
+     * The target title value.
+     */
     private String targetTitle;
+    /**
+     * The target type value.
+     */
     private TargetType targetType;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
 
+    /**
+     * The note value.
+     */
     private Note note;
+    /**
+     * The push data value.
+     */
     private PushData pushData;
 
     /**

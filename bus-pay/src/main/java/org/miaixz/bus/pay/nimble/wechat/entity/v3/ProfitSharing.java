@@ -21,9 +21,7 @@ package org.miaixz.bus.pay.nimble.wechat.entity.v3;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -39,9 +37,14 @@ import org.miaixz.bus.pay.nimble.wechat.entity.Receiver;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProfitSharing extends Voucher {
+
+    /**
+     * Constructs a new {@code ProfitSharing} instance.
+     */
+    public ProfitSharing() {
+        // No initialization required.
+    }
 
     /**
      * Service provider's merchant ID, assigned by WeChat Pay. Compatible with V2 API.

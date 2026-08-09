@@ -33,12 +33,34 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Metadata implements Serializable {
 
+    /**
+     * Constructs a new {@code Metadata} instance.
+     */
+    public Metadata() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852265316087L;
 
+    /**
+     * The version value.
+     */
     private String version;
+    /**
+     * The revision value.
+     */
     private String revision;
+    /**
+     * The kas value.
+     */
     private Kas kas;
+    /**
+     * The enterprise value.
+     */
     private Boolean enterprise;
 
     /**
@@ -139,11 +161,27 @@ public class Metadata implements Serializable {
      */
     public static class Kas {
 
+        /**
+         * Constructs a new {@code Kas} instance.
+         */
+        public Kas() {
+            // No initialization required.
+        }
+
+        /**
+         * The enabled value.
+         */
         private Boolean enabled;
 
+        /**
+         * The external url value.
+         */
         @JsonProperty("externalUrl")
         private String externalUrl;
 
+        /**
+         * The version value.
+         */
         private String version;
 
         /**

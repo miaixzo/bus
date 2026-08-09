@@ -120,6 +120,9 @@ public interface Constants {
          */
         BASE64;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<Encoding> enumCodec = new JacksonJsonEnumCodec<>(Encoding.class);
 
         /**
@@ -174,6 +177,9 @@ public interface Constants {
          */
         DESC;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<SortOrder> enumCodec = new JacksonJsonEnumCodec<>(SortOrder.class);
 
         /**
@@ -228,6 +234,9 @@ public interface Constants {
          */
         UPDATED_AT;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<EpicOrderBy> enumCodec = new JacksonJsonEnumCodec<>(EpicOrderBy.class);
 
         /**
@@ -282,6 +291,9 @@ public interface Constants {
          */
         UPDATED_AT;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<IssueOrderBy> enumCodec = new JacksonJsonEnumCodec<>(IssueOrderBy.class);
 
         /**
@@ -348,6 +360,9 @@ public interface Constants {
          */
         PROJECT_PATH;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<PackageOrderBy> enumCodec = new JacksonJsonEnumCodec<>(
                 PackageOrderBy.class);
 
@@ -407,6 +422,9 @@ public interface Constants {
          */
         PROCESSING;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<PackageStatus> enumCodec = new JacksonJsonEnumCodec<>(PackageStatus.class);
 
         /**
@@ -477,6 +495,9 @@ public interface Constants {
          */
         LAST_ACTIVITY_AT;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<ProjectOrderBy> enumCodec = new JacksonJsonEnumCodec<>(
                 ProjectOrderBy.class);
 
@@ -544,6 +565,9 @@ public interface Constants {
          */
         USER_ID;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<PipelineOrderBy> enumCodec = new JacksonJsonEnumCodec<>(
                 PipelineOrderBy.class);
 
@@ -599,6 +623,9 @@ public interface Constants {
          */
         UPDATED_AT;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<MergeRequestOrderBy> enumCodec = new JacksonJsonEnumCodec<>(
                 MergeRequestOrderBy.class);
 
@@ -662,6 +689,9 @@ public interface Constants {
          */
         SIMILARITY;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<GroupOrderBy> enumCodec = new JacksonJsonEnumCodec<>(GroupOrderBy.class);
 
         /**
@@ -716,6 +746,9 @@ public interface Constants {
          */
         UPDATED;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<TagOrderBy> enumCodec = new JacksonJsonEnumCodec<>(TagOrderBy.class);
 
         /**
@@ -782,6 +815,9 @@ public interface Constants {
          */
         REF;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<DeploymentOrderBy> enumCodec = new JacksonJsonEnumCodec<>(
                 DeploymentOrderBy.class);
 
@@ -841,6 +877,9 @@ public interface Constants {
          */
         COMMITS;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<ContributorOrderBy> enumCodec = new JacksonJsonEnumCodec<>(
                 ContributorOrderBy.class);
 
@@ -908,6 +947,9 @@ public interface Constants {
          */
         TAGS;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<PipelineScope> enumCodec = new JacksonJsonEnumCodec<>(PipelineScope.class);
 
         /**
@@ -998,6 +1040,9 @@ public interface Constants {
          */
         EXTERNAL_PULL_REQUEST_EVENT;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<PipelineSource> enumCodec = new JacksonJsonEnumCodec<>(
                 PipelineSource.class);
 
@@ -1081,6 +1126,9 @@ public interface Constants {
          */
         WAITING_FOR_RESOURCE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<JobScope> enumCodec = new JacksonJsonEnumCodec<>(JobScope.class);
 
         /**
@@ -1139,6 +1187,9 @@ public interface Constants {
          */
         ALL;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<IssueScope> enumCodec = new JacksonJsonEnumCodec<>(IssueScope.class);
 
         /**
@@ -1197,6 +1248,9 @@ public interface Constants {
          */
         ALL;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<MergeRequestScope> enumCodec = new JacksonJsonEnumCodec<>(
                 MergeRequestScope.class);
 
@@ -1264,6 +1318,9 @@ public interface Constants {
          */
         ALL;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<MergeRequestState> enumCodec = new JacksonJsonEnumCodec<>(
                 MergeRequestState.class);
 
@@ -1319,6 +1376,9 @@ public interface Constants {
          */
         DESCRIPTION;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<MergeRequestSearchIn> enumCodec = new JacksonJsonEnumCodec<>(
                 MergeRequestSearchIn.class);
 
@@ -1374,6 +1434,9 @@ public interface Constants {
          */
         REOPEN;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<StateEvent> enumCodec = new JacksonJsonEnumCodec<>(StateEvent.class);
 
         /**
@@ -1432,6 +1495,9 @@ public interface Constants {
          */
         REOPENED;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<IssueState> enumCodec = new JacksonJsonEnumCodec<>(IssueState.class);
 
         /**
@@ -1494,6 +1560,9 @@ public interface Constants {
          */
         CLOSE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<MilestoneState> enumCodec = new JacksonJsonEnumCodec<>(
                 MilestoneState.class);
 
@@ -1609,6 +1678,9 @@ public interface Constants {
          */
         IMPORTED;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<ActionType> enumCodec = new JacksonJsonEnumCodec<>(ActionType.class);
 
         /**
@@ -1683,6 +1755,9 @@ public interface Constants {
          */
         USER;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<TargetType> enumCodec = new JacksonJsonEnumCodec<>(TargetType.class, true,
                 false, true);
 
@@ -1738,6 +1813,9 @@ public interface Constants {
          */
         NEW;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<LineType> enumCodec = new JacksonJsonEnumCodec<>(LineType.class);
 
         /**
@@ -1796,6 +1874,9 @@ public interface Constants {
          */
         INACTIVE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<ImpersonationState> enumCodec = new JacksonJsonEnumCodec<>(
                 ImpersonationState.class);
 
@@ -1875,12 +1956,18 @@ public interface Constants {
          */
         ZIP;
 
+        /**
+         * The value value.
+         */
         private final String value;
 
         ArchiveFormat() {
             this.value = name().toLowerCase().replace(Symbol.C_UNDERLINE, Symbol.C_DOT);
         }
 
+        /**
+         * The values map value.
+         */
         private static Map<String, ArchiveFormat> valuesMap = new HashMap<String, ArchiveFormat>(8);
 
         static {
@@ -1955,6 +2042,9 @@ public interface Constants {
          */
         SKIPPED;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<CommitBuildState> enumCodec = new JacksonJsonEnumCodec<>(
                 CommitBuildState.class);
 
@@ -2090,6 +2180,9 @@ public interface Constants {
          */
         SELF_ROTATE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<ApplicationScope> enumCodec = new JacksonJsonEnumCodec<>(
                 ApplicationScope.class);
 
@@ -2145,6 +2238,9 @@ public interface Constants {
          */
         DONE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<TodoState> enumCodec = new JacksonJsonEnumCodec<>(TodoState.class);
 
         /**
@@ -2199,6 +2295,9 @@ public interface Constants {
          */
         MERGE_REQUEST;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<TodoType> enumCodec = new JacksonJsonEnumCodec<>(TodoType.class, true,
                 true);
 
@@ -2349,6 +2448,9 @@ public interface Constants {
          */
         DIRECTLY_ADDRESSED;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<TodoAction> enumCodec = new JacksonJsonEnumCodec<>(TodoAction.class);
 
         /**
@@ -2411,6 +2513,9 @@ public interface Constants {
          */
         DEFAULT_OFF;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<SquashOption> enumCodec = new JacksonJsonEnumCodec<>(SquashOption.class);
 
         /**
@@ -2473,6 +2578,9 @@ public interface Constants {
          */
         PUBLIC;
 
+        /**
+         * The enum codec value.
+         */
         private static final JacksonJsonEnumCodec<ProjectFeatureVisibilityAccessLevel> enumCodec = new JacksonJsonEnumCodec<>(
                 ProjectFeatureVisibilityAccessLevel.class);
 
@@ -2540,6 +2648,9 @@ public interface Constants {
          */
         CANCELED;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<DeploymentStatus> enumCodec = new JacksonJsonEnumCodec<>(
                 DeploymentStatus.class);
 
@@ -2595,6 +2706,9 @@ public interface Constants {
          */
         ENABLED;
 
+        /**
+         * The enum codec value.
+         */
         private static final JacksonJsonEnumCodec<AutoCancelPendingPipelines> enumCodec = new JacksonJsonEnumCodec<>(
                 AutoCancelPendingPipelines.class);
 
@@ -2774,12 +2888,21 @@ public interface Constants {
          * Search scope for wiki blobs.
          */
         public static final SearchScope<SearchBlob> WIKI_BLOBS = new SearchScope<>("wiki_blobs", SearchBlob.class);
+        /**
+         * The json lookup value.
+         */
         private static final Map jsonLookup = Arrays
                 .stream(
                         new SearchScope[] { PROJECTS, ISSUES, MERGE_REQUESTS, MILESTONES, SNIPPET_TITLES, SNIPPET_BLOBS,
                                 USERS, BLOBS, COMMITS, WIKI_BLOBS })
                 .collect(Collectors.toMap(searchScope -> searchScope.jsonName, FunctionX.identity()));
+        /**
+         * The json name value.
+         */
         private final String jsonName;
+        /**
+         * The result type value.
+         */
         private final Class<T> resultType;
 
         private SearchScope(String jsonName, Class<T> resultType) {
@@ -2860,6 +2983,9 @@ public interface Constants {
          */
         CLONE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<BuildGitStrategy> enumCodec = new JacksonJsonEnumCodec<>(
                 BuildGitStrategy.class);
 
@@ -2919,6 +3045,9 @@ public interface Constants {
          */
         TIMED_INCREMENTAL;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<AutoDevopsDeployStrategy> enumCodec = new JacksonJsonEnumCodec<>(
                 AutoDevopsDeployStrategy.class);
 
@@ -2965,8 +3094,14 @@ public interface Constants {
      */
     public enum EventScope {
 
+        /**
+         * Includes events from all scopes.
+         */
         ALL;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<EventScope> enumCodec = new JacksonJsonEnumCodec<>(EventScope.class);
 
         /**
@@ -3025,6 +3160,9 @@ public interface Constants {
          */
         MAINTAINER;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<ProjectCreationLevel> enumCodec = new JacksonJsonEnumCodec<>(
                 ProjectCreationLevel.class);
 
@@ -3080,6 +3218,9 @@ public interface Constants {
          */
         MAINTAINER;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<SubgroupCreationLevel> enumCodec = new JacksonJsonEnumCodec<>(
                 SubgroupCreationLevel.class);
 

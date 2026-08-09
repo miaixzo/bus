@@ -31,13 +31,38 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class BranchAccessLevel implements Serializable {
 
+    /**
+     * Constructs a new {@code BranchAccessLevel} instance.
+     */
+    public BranchAccessLevel() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852238639719L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The access level value.
+     */
     private AccessLevel accessLevel;
+    /**
+     * The access level description value.
+     */
     private String accessLevelDescription;
+    /**
+     * The user id value.
+     */
     private Long userId;
+    /**
+     * The group id value.
+     */
     private Long groupId;
 
     /**

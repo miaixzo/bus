@@ -32,38 +32,138 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class User extends AbstractUser<User> {
 
+    /**
+     * Constructs a new {@code User} instance.
+     */
+    public User() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852282972009L;
 
+    /**
+     * The bio value.
+     */
     private String bio;
+    /**
+     * The bot value.
+     */
     private Boolean bot;
+    /**
+     * The can create group value.
+     */
     private Boolean canCreateGroup;
+    /**
+     * The can create project value.
+     */
     private Boolean canCreateProject;
+    /**
+     * The color scheme id value.
+     */
     private Integer colorSchemeId;
+    /**
+     * The confirmed at value.
+     */
     private Date confirmedAt;
+    /**
+     * The current sign in at value.
+     */
     private Date currentSignInAt;
+    /**
+     * The custom attributes value.
+     */
     private List<CustomAttribute> customAttributes;
+    /**
+     * The external value.
+     */
     private Boolean external;
+    /**
+     * The extern uid value.
+     */
     private String externUid;
+    /**
+     * The extra shared runners minutes limit value.
+     */
     private Integer extraSharedRunnersMinutesLimit;
+    /**
+     * The identities value.
+     */
     private List<Identity> identities;
+    /**
+     * The is admin value.
+     */
     private Boolean isAdmin;
+    /**
+     * The last activity on value.
+     */
     private Date lastActivityOn;
+    /**
+     * The last sign in at value.
+     */
     private Date lastSignInAt;
+    /**
+     * The linkedin value.
+     */
     private String linkedin;
+    /**
+     * The location value.
+     */
     private String location;
+    /**
+     * The namespace id value.
+     */
     private Long namespaceId;
+    /**
+     * The organization value.
+     */
     private String organization;
+    /**
+     * The private profile value.
+     */
     private Boolean privateProfile;
+    /**
+     * The projects limit value.
+     */
     private Integer projectsLimit;
+    /**
+     * The provider value.
+     */
     private String provider;
+    /**
+     * The public email value.
+     */
     private String publicEmail;
+    /**
+     * The shared runners minutes limit value.
+     */
     private Integer sharedRunnersMinutesLimit;
+    /**
+     * The skype value.
+     */
     private String skype;
+    /**
+     * The theme id value.
+     */
     private Integer themeId;
+    /**
+     * The twitter value.
+     */
     private String twitter;
+    /**
+     * The two factor enabled value.
+     */
     private Boolean twoFactorEnabled;
+    /**
+     * The website url value.
+     */
     private String websiteUrl;
+    /**
+     * The skip confirmation value.
+     */
     private Boolean skipConfirmation;
 
     /**

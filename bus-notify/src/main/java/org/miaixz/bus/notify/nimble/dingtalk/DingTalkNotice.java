@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.notify.nimble.dingtalk;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -35,9 +33,14 @@ import org.miaixz.bus.notify.magic.Notice;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class DingTalkNotice extends Notice {
+
+    /**
+     * Constructs a new {@code DingTalkNotice} instance.
+     */
+    public DingTalkNotice() {
+        // No initialization required.
+    }
 
     /**
      * The agent ID of the application.

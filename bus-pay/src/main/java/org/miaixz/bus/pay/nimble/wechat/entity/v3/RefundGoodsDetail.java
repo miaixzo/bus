@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.pay.nimble.wechat.entity.v3;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -33,9 +31,14 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class RefundGoodsDetail {
+
+    /**
+     * Constructs a new {@code RefundGoodsDetail} instance.
+     */
+    public RefundGoodsDetail() {
+        // No initialization required.
+    }
 
     /**
      * The merchant's internal goods ID.

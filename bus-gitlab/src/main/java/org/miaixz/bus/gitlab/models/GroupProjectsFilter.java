@@ -33,21 +33,70 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class GroupProjectsFilter implements Serializable {
 
+    /**
+     * Constructs a new {@code GroupProjectsFilter} instance.
+     */
+    public GroupProjectsFilter() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852256397389L;
 
+    /**
+     * The archived value.
+     */
     private Boolean archived;
+    /**
+     * The visibility value.
+     */
     private Visibility visibility;
+    /**
+     * The order by value.
+     */
     private ProjectOrderBy orderBy;
+    /**
+     * The sort value.
+     */
     private SortOrder sort;
+    /**
+     * The search value.
+     */
     private String search;
+    /**
+     * The simple value.
+     */
     private Boolean simple;
+    /**
+     * The owned value.
+     */
     private Boolean owned;
+    /**
+     * The starred value.
+     */
     private Boolean starred;
+    /**
+     * The with custom attributes value.
+     */
     private Boolean withCustomAttributes;
+    /**
+     * The with issues enabled value.
+     */
     private Boolean withIssuesEnabled;
+    /**
+     * The with merge requests enabled value.
+     */
     private Boolean withMergeRequestsEnabled;
+    /**
+     * The with shared value.
+     */
     private Boolean withShared;
+    /**
+     * The include sub groups value.
+     */
     private Boolean includeSubGroups;
 
     /**

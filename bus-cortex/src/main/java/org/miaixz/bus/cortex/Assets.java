@@ -44,9 +44,14 @@ import org.miaixz.bus.cortex.builtin.LabelMapper;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Assets extends Nature {
+
+    /**
+     * Constructs a new {@code Assets} instance.
+     */
+    public Assets() {
+        // No initialization required.
+    }
 
     /**
      * Human-readable name of the asset. Used for display in dashboards and logs.

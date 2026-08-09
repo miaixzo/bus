@@ -36,7 +36,13 @@ import org.miaixz.bus.core.lang.Symbol;
  */
 public class Oauth2LoginStreamingOutput implements StreamingOutput, AutoCloseable {
 
+    /**
+     * The username value.
+     */
     private final String username;
+    /**
+     * The password value.
+     */
     private final SecretString password;
 
     /**

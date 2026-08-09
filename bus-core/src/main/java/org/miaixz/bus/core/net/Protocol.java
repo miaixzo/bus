@@ -21,7 +21,6 @@ package org.miaixz.bus.core.net;
 
 import java.io.IOException;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -38,7 +37,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  */
 @Getter
-@AllArgsConstructor
 public enum Protocol {
 
     /**
@@ -307,6 +305,15 @@ public enum Protocol {
      * The name of the protocol, used to identify the protocol type.
      */
     public final String name;
+
+    /**
+     * Constructs a protocol value.
+     *
+     * @param name the protocol name
+     */
+    Protocol(String name) {
+        this.name = name;
+    }
 
     /**
      * Gets the corresponding protocol enum instance from the protocol name.

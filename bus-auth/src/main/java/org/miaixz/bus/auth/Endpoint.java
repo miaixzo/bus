@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.auth;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -29,7 +28,6 @@ import lombok.Getter;
  * @author Kimi Liu
  */
 @Getter
-@AllArgsConstructor
 public enum Endpoint {
 
     /**

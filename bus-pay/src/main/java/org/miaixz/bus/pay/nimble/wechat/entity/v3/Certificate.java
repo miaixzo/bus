@@ -23,9 +23,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -37,9 +35,14 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Certificate implements Serializable {
+
+    /**
+     * Constructs a new {@code Certificate} instance.
+     */
+    public Certificate() {
+        // No initialization required.
+    }
 
     @Serial
     private static final long serialVersionUID = 2852258093511L;

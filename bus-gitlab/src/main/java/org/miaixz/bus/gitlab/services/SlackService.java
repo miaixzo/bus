@@ -32,9 +32,22 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  */
 public class SlackService extends NotificationService {
 
+    /**
+     * Constructs a new {@code SlackService} instance.
+     */
+    public SlackService() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852285372238L;
 
+    /**
+     * The default channel value.
+     */
     private String defaultChannel;
 
     /**

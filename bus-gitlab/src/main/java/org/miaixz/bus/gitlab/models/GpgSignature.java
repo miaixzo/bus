@@ -31,14 +31,42 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class GpgSignature implements Serializable {
 
+    /**
+     * Constructs a new {@code GpgSignature} instance.
+     */
+    public GpgSignature() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852255356008L;
 
+    /**
+     * The gpg key id value.
+     */
     private Long gpgKeyId;
+    /**
+     * The gpg key primary keyid value.
+     */
     private String gpgKeyPrimaryKeyid;
+    /**
+     * The gpg key user name value.
+     */
     private String gpgKeyUserName;
+    /**
+     * The gpg key user email value.
+     */
     private String gpgKeyUserEmail;
+    /**
+     * The verification status value.
+     */
     private String verificationStatus;
+    /**
+     * The gpg key subkey id value.
+     */
     private String gpgKeySubkeyId;
 
     /**

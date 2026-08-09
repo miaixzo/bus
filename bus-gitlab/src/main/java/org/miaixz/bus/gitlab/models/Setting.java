@@ -1542,94 +1542,510 @@ public enum Setting {
     /*
      * Undocumented settings as of GitLab 12.4 These are reported but not documented.
      */
-    CUSTOM_HTTP_CLONE_URL_ROOT(String.class), PROTECTED_PATHS_RAW(String.class),
-    THROTTLE_PROTECTED_PATHS_ENABLED(Boolean.class), THROTTLE_PROTECTED_PATHS_PERIOD_IN_SECONDS(Integer.class),
+    /**
+     * Represents the {@code custom_http_clone_url_root} setting.
+     */
+    CUSTOM_HTTP_CLONE_URL_ROOT(String.class),
+    /**
+     * Represents the {@code protected_paths_raw} setting.
+     */
+    PROTECTED_PATHS_RAW(String.class),
+    /**
+     * Represents the {@code throttle_protected_paths_enabled} setting.
+     */
+    THROTTLE_PROTECTED_PATHS_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code throttle_protected_paths_period_in_seconds} setting.
+     */
+    THROTTLE_PROTECTED_PATHS_PERIOD_IN_SECONDS(Integer.class),
+    /**
+     * Represents the {@code throttle_protected_paths_requests_per_period} setting.
+     */
     THROTTLE_PROTECTED_PATHS_REQUESTS_PER_PERIOD(Integer.class),
 
     /*
      * Undocumented settings as of GitLab 12.8 These are reported but not documented.
      */
-    FORCE_PAGES_ACCESS_CONTROL(Boolean.class), MINIMUM_PASSWORD_LENGTH(Integer.class),
+    /**
+     * Represents the {@code force_pages_access_control} setting.
+     */
+    FORCE_PAGES_ACCESS_CONTROL(Boolean.class),
+    /**
+     * Represents the {@code minimum_password_length} setting.
+     */
+    MINIMUM_PASSWORD_LENGTH(Integer.class),
+    /**
+     * Represents the {@code snippet_size_limit} setting.
+     */
     SNIPPET_SIZE_LIMIT(Integer.class),
 
     /*
      * Undocumented settings as of GitLab 12.9 These are reported but not documented.
      */
-    EMAIL_RESTRICTIONS_ENABLED(Boolean.class), EMAIL_RESTRICTIONS(String.class),
+    /**
+     * Represents the {@code email_restrictions_enabled} setting.
+     */
+    EMAIL_RESTRICTIONS_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code email_restrictions} setting.
+     */
+    EMAIL_RESTRICTIONS(String.class),
 
     /*
      * Undocumented settings as of GitLab 13.0 These are reported but not documented.
      */
-    CONTAINER_EXPIRATION_POLICIES_ENABLE_HISTORIC_ENTRIES(Boolean.class), ISSUES_CREATE_LIMIT(Integer.class),
+    /**
+     * Represents the {@code container_expiration_policies_enable_historic_entries} setting.
+     */
+    CONTAINER_EXPIRATION_POLICIES_ENABLE_HISTORIC_ENTRIES(Boolean.class),
+    /**
+     * Represents the {@code issues_create_limit} setting.
+     */
+    ISSUES_CREATE_LIMIT(Integer.class),
+    /**
+     * Represents the {@code raw_blob_request_limit} setting.
+     */
     RAW_BLOB_REQUEST_LIMIT(Integer.class),
 
     /*
      * Undocumented settings as of GitLab 17.3 These are reported but not documented.
      */
-    ALLOW_POSSIBLE_SPAM(Boolean.class), DENY_ALL_REQUESTS_EXCEPT_ALLOWED(Boolean.class),
-    DOMAIN_DENYLIST_RAW(String.class), DOMAIN_ALLOWLIST_RAW(String.class),
-    OUTBOUND_LOCAL_REQUESTS_ALLOWLIST_RAW(String.class), ERROR_TRACKING_ENABLED(Boolean.class),
-    ERROR_TRACKING_API_URL(String.class), FLOC_ENABLED(Boolean.class),
-    GUIDANCE_PAGE_DOCUMENTATION_BASE_URL(String.class), MATH_RENDERING_LIMITS_ENABLED(Boolean.class),
-    MAX_ARTIFACTS_CONTENT_INCLUDE_SIZE(Integer.class), MAX_PAGES_CUSTOM_DOMAINS_PER_PROJECT(Integer.class),
+    /**
+     * Represents the {@code allow_possible_spam} setting.
+     */
+    ALLOW_POSSIBLE_SPAM(Boolean.class),
+    /**
+     * Represents the {@code deny_all_requests_except_allowed} setting.
+     */
+    DENY_ALL_REQUESTS_EXCEPT_ALLOWED(Boolean.class),
+    /**
+     * Represents the {@code domain_denylist_raw} setting.
+     */
+    DOMAIN_DENYLIST_RAW(String.class),
+    /**
+     * Represents the {@code domain_allowlist_raw} setting.
+     */
+    DOMAIN_ALLOWLIST_RAW(String.class),
+    /**
+     * Represents the {@code outbound_local_requests_allowlist_raw} setting.
+     */
+    OUTBOUND_LOCAL_REQUESTS_ALLOWLIST_RAW(String.class),
+    /**
+     * Represents the {@code error_tracking_enabled} setting.
+     */
+    ERROR_TRACKING_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code error_tracking_api_url} setting.
+     */
+    ERROR_TRACKING_API_URL(String.class),
+    /**
+     * Represents the {@code floc_enabled} setting.
+     */
+    FLOC_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code guidance_page_documentation_base_url} setting.
+     */
+    GUIDANCE_PAGE_DOCUMENTATION_BASE_URL(String.class),
+    /**
+     * Represents the {@code math_rendering_limits_enabled} setting.
+     */
+    MATH_RENDERING_LIMITS_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code max_artifacts_content_include_size} setting.
+     */
+    MAX_ARTIFACTS_CONTENT_INCLUDE_SIZE(Integer.class),
+    /**
+     * Represents the {@code max_pages_custom_domains_per_project} setting.
+     */
+    MAX_PAGES_CUSTOM_DOMAINS_PER_PROJECT(Integer.class),
+    /**
+     * Represents the {@code throttle_authenticated_git_lfs_enabled} setting.
+     */
     THROTTLE_AUTHENTICATED_GIT_LFS_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code throttle_authenticated_git_lfs_period_in_seconds} setting.
+     */
     THROTTLE_AUTHENTICATED_GIT_LFS_PERIOD_IN_SECONDS(Integer.class),
+    /**
+     * Represents the {@code throttle_authenticated_git_lfs_requests_per_period} setting.
+     */
     THROTTLE_AUTHENTICATED_GIT_LFS_REQUESTS_PER_PERIOD(Integer.class),
+    /**
+     * Represents the {@code throttle_authenticated_files_api_enabled} setting.
+     */
     THROTTLE_AUTHENTICATED_FILES_API_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code throttle_authenticated_files_api_period_in_seconds} setting.
+     */
     THROTTLE_AUTHENTICATED_FILES_API_PERIOD_IN_SECONDS(Integer.class),
+    /**
+     * Represents the {@code throttle_authenticated_files_api_requests_per_period} setting.
+     */
     THROTTLE_AUTHENTICATED_FILES_API_REQUESTS_PER_PERIOD(Integer.class),
+    /**
+     * Represents the {@code throttle_authenticated_deprecated_api_enabled} setting.
+     */
     THROTTLE_AUTHENTICATED_DEPRECATED_API_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code throttle_authenticated_deprecated_api_period_in_seconds} setting.
+     */
     THROTTLE_AUTHENTICATED_DEPRECATED_API_PERIOD_IN_SECONDS(Integer.class),
+    /**
+     * Represents the {@code throttle_authenticated_deprecated_api_requests_per_period} setting.
+     */
     THROTTLE_AUTHENTICATED_DEPRECATED_API_REQUESTS_PER_PERIOD(Integer.class),
+    /**
+     * Represents the {@code throttle_unauthenticated_files_api_enabled} setting.
+     */
     THROTTLE_UNAUTHENTICATED_FILES_API_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code throttle_unauthenticated_files_api_period_in_seconds} setting.
+     */
     THROTTLE_UNAUTHENTICATED_FILES_API_PERIOD_IN_SECONDS(Integer.class),
+    /**
+     * Represents the {@code throttle_unauthenticated_files_api_requests_per_period} setting.
+     */
     THROTTLE_UNAUTHENTICATED_FILES_API_REQUESTS_PER_PERIOD(Integer.class),
+    /**
+     * Represents the {@code throttle_unauthenticated_git_http_enabled} setting.
+     */
     THROTTLE_UNAUTHENTICATED_GIT_HTTP_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code throttle_unauthenticated_git_http_period_in_seconds} setting.
+     */
     THROTTLE_UNAUTHENTICATED_GIT_HTTP_PERIOD_IN_SECONDS(Integer.class),
+    /**
+     * Represents the {@code throttle_unauthenticated_git_http_requests_per_period} setting.
+     */
     THROTTLE_UNAUTHENTICATED_GIT_HTTP_REQUESTS_PER_PERIOD(Integer.class),
+    /**
+     * Represents the {@code throttle_unauthenticated_deprecated_api_enabled} setting.
+     */
     THROTTLE_UNAUTHENTICATED_DEPRECATED_API_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code throttle_unauthenticated_deprecated_api_period_in_seconds} setting.
+     */
     THROTTLE_UNAUTHENTICATED_DEPRECATED_API_PERIOD_IN_SECONDS(Integer.class),
+    /**
+     * Represents the {@code throttle_unauthenticated_deprecated_api_requests_per_period} setting.
+     */
     THROTTLE_UNAUTHENTICATED_DEPRECATED_API_REQUESTS_PER_PERIOD(Integer.class),
-    PROTECTED_PATHS_FOR_GET_REQUEST_RAW(String.class), USAGE_PING_FEATURES_ENABLED(Boolean.class),
-    NOTES_CREATE_LIMIT(Integer.class), NOTES_CREATE_LIMIT_ALLOWLIST_RAW(String.class),
-    MEMBERS_DELETE_LIMIT(Integer.class), PROJECT_IMPORT_LIMIT(Integer.class), PROJECT_EXPORT_LIMIT(Integer.class),
-    PROJECT_DOWNLOAD_EXPORT_LIMIT(Integer.class), GROUP_IMPORT_LIMIT(Integer.class), GROUP_EXPORT_LIMIT(Integer.class),
-    GROUP_DOWNLOAD_EXPORT_LIMIT(Integer.class), WIKI_ASCIIDOC_ALLOW_URI_INCLUDES(Boolean.class),
-    SENTRY_ENABLED(Boolean.class), SENTRY_DSN(String.class), SENTRY_CLIENTSIDE_DSN(String.class),
-    SENTRY_ENVIRONMENT(String.class), SENTRY_CLIENTSIDE_TRACES_SAMPLE_RATE(Float.class),
-    SEARCH_RATE_LIMIT_ALLOWLIST_RAW(String.class), USERS_GET_BY_ID_LIMIT(Integer.class),
-    USERS_GET_BY_ID_LIMIT_ALLOWLIST_RAW(String.class), INVITATION_FLOW_ENFORCEMENT(Boolean.class),
-    DEACTIVATION_EMAIL_ADDITIONAL_TEXT(String.class), GROUP_API_LIMIT(Integer.class),
-    GROUP_INVITED_GROUPS_API_LIMIT(Integer.class), GROUP_SHARED_GROUPS_API_LIMIT(Integer.class),
-    GROUP_PROJECTS_API_LIMIT(Integer.class), GROUPS_API_LIMIT(Integer.class), PROJECT_API_LIMIT(Integer.class),
-    PROJECTS_API_LIMIT(Integer.class), USER_CONTRIBUTED_PROJECTS_API_LIMIT(Integer.class),
-    USER_PROJECTS_API_LIMIT(Integer.class), USER_STARRED_PROJECTS_API_LIMIT(Integer.class),
-    NAMESPACE_AGGREGATION_SCHEDULE_LEASE_DURATION_IN_SECONDS(Integer.class), AI_ACTION_API_RATE_LIMIT(Integer.class),
-    CODE_SUGGESTIONS_API_RATE_LIMIT(Integer.class), ELASTICSEARCH_CLIENT_REQUEST_TIMEOUT(Integer.class),
-    ELASTICSEARCH_PAUSE_INDEXING(Boolean.class), ELASTICSEARCH_REPLICAS(Integer.class),
-    ELASTICSEARCH_SHARDS(Integer.class), ELASTICSEARCH_ANALYZERS_SMARTCN_ENABLED(Boolean.class),
-    ELASTICSEARCH_ANALYZERS_SMARTCN_SEARCH(Boolean.class), ELASTICSEARCH_ANALYZERS_KUROMOJI_ENABLED(Boolean.class),
-    ELASTICSEARCH_ANALYZERS_KUROMOJI_SEARCH(Boolean.class), INSTANCE_LEVEL_AI_BETA_FEATURES_ENABLED(Boolean.class),
-    LOCK_MEMBERSHIPS_TO_LDAP(Boolean.class), LOCK_MEMBERSHIPS_TO_SAML(Boolean.class),
-    SEARCH_MAX_SHARD_SIZE_GB(Integer.class), SEARCH_MAX_DOCS_DENOMINATOR(Integer.class),
-    SEARCH_MIN_DOCS_BEFORE_ROLLOVER(Integer.class), SECRET_DETECTION_TOKEN_REVOCATION_ENABLED(Boolean.class),
-    SECRET_DETECTION_TOKEN_REVOCATION_URL(String.class), SECRET_DETECTION_TOKEN_REVOCATION_TOKEN(String.class),
+    /**
+     * Represents the {@code protected_paths_for_get_request_raw} setting.
+     */
+    PROTECTED_PATHS_FOR_GET_REQUEST_RAW(String.class),
+    /**
+     * Represents the {@code usage_ping_features_enabled} setting.
+     */
+    USAGE_PING_FEATURES_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code notes_create_limit} setting.
+     */
+    NOTES_CREATE_LIMIT(Integer.class),
+    /**
+     * Represents the {@code notes_create_limit_allowlist_raw} setting.
+     */
+    NOTES_CREATE_LIMIT_ALLOWLIST_RAW(String.class),
+    /**
+     * Represents the {@code members_delete_limit} setting.
+     */
+    MEMBERS_DELETE_LIMIT(Integer.class),
+    /**
+     * Represents the {@code project_import_limit} setting.
+     */
+    PROJECT_IMPORT_LIMIT(Integer.class),
+    /**
+     * Represents the {@code project_export_limit} setting.
+     */
+    PROJECT_EXPORT_LIMIT(Integer.class),
+    /**
+     * Represents the {@code project_download_export_limit} setting.
+     */
+    PROJECT_DOWNLOAD_EXPORT_LIMIT(Integer.class),
+    /**
+     * Represents the {@code group_import_limit} setting.
+     */
+    GROUP_IMPORT_LIMIT(Integer.class),
+    /**
+     * Represents the {@code group_export_limit} setting.
+     */
+    GROUP_EXPORT_LIMIT(Integer.class),
+    /**
+     * Represents the {@code group_download_export_limit} setting.
+     */
+    GROUP_DOWNLOAD_EXPORT_LIMIT(Integer.class),
+    /**
+     * Represents the {@code wiki_asciidoc_allow_uri_includes} setting.
+     */
+    WIKI_ASCIIDOC_ALLOW_URI_INCLUDES(Boolean.class),
+    /**
+     * Represents the {@code sentry_enabled} setting.
+     */
+    SENTRY_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code sentry_dsn} setting.
+     */
+    SENTRY_DSN(String.class),
+    /**
+     * Represents the {@code sentry_clientside_dsn} setting.
+     */
+    SENTRY_CLIENTSIDE_DSN(String.class),
+    /**
+     * Represents the {@code sentry_environment} setting.
+     */
+    SENTRY_ENVIRONMENT(String.class),
+    /**
+     * Represents the {@code sentry_clientside_traces_sample_rate} setting.
+     */
+    SENTRY_CLIENTSIDE_TRACES_SAMPLE_RATE(Float.class),
+    /**
+     * Represents the {@code search_rate_limit_allowlist_raw} setting.
+     */
+    SEARCH_RATE_LIMIT_ALLOWLIST_RAW(String.class),
+    /**
+     * Represents the {@code users_get_by_id_limit} setting.
+     */
+    USERS_GET_BY_ID_LIMIT(Integer.class),
+    /**
+     * Represents the {@code users_get_by_id_limit_allowlist_raw} setting.
+     */
+    USERS_GET_BY_ID_LIMIT_ALLOWLIST_RAW(String.class),
+    /**
+     * Represents the {@code invitation_flow_enforcement} setting.
+     */
+    INVITATION_FLOW_ENFORCEMENT(Boolean.class),
+    /**
+     * Represents the {@code deactivation_email_additional_text} setting.
+     */
+    DEACTIVATION_EMAIL_ADDITIONAL_TEXT(String.class),
+    /**
+     * Represents the {@code group_api_limit} setting.
+     */
+    GROUP_API_LIMIT(Integer.class),
+    /**
+     * Represents the {@code group_invited_groups_api_limit} setting.
+     */
+    GROUP_INVITED_GROUPS_API_LIMIT(Integer.class),
+    /**
+     * Represents the {@code group_shared_groups_api_limit} setting.
+     */
+    GROUP_SHARED_GROUPS_API_LIMIT(Integer.class),
+    /**
+     * Represents the {@code group_projects_api_limit} setting.
+     */
+    GROUP_PROJECTS_API_LIMIT(Integer.class),
+    /**
+     * Represents the {@code groups_api_limit} setting.
+     */
+    GROUPS_API_LIMIT(Integer.class),
+    /**
+     * Represents the {@code project_api_limit} setting.
+     */
+    PROJECT_API_LIMIT(Integer.class),
+    /**
+     * Represents the {@code projects_api_limit} setting.
+     */
+    PROJECTS_API_LIMIT(Integer.class),
+    /**
+     * Represents the {@code user_contributed_projects_api_limit} setting.
+     */
+    USER_CONTRIBUTED_PROJECTS_API_LIMIT(Integer.class),
+    /**
+     * Represents the {@code user_projects_api_limit} setting.
+     */
+    USER_PROJECTS_API_LIMIT(Integer.class),
+    /**
+     * Represents the {@code user_starred_projects_api_limit} setting.
+     */
+    USER_STARRED_PROJECTS_API_LIMIT(Integer.class),
+    /**
+     * Represents the {@code namespace_aggregation_schedule_lease_duration_in_seconds} setting.
+     */
+    NAMESPACE_AGGREGATION_SCHEDULE_LEASE_DURATION_IN_SECONDS(Integer.class),
+    /**
+     * Represents the {@code ai_action_api_rate_limit} setting.
+     */
+    AI_ACTION_API_RATE_LIMIT(Integer.class),
+    /**
+     * Represents the {@code code_suggestions_api_rate_limit} setting.
+     */
+    CODE_SUGGESTIONS_API_RATE_LIMIT(Integer.class),
+    /**
+     * Represents the {@code elasticsearch_client_request_timeout} setting.
+     */
+    ELASTICSEARCH_CLIENT_REQUEST_TIMEOUT(Integer.class),
+    /**
+     * Represents the {@code elasticsearch_pause_indexing} setting.
+     */
+    ELASTICSEARCH_PAUSE_INDEXING(Boolean.class),
+    /**
+     * Represents the {@code elasticsearch_replicas} setting.
+     */
+    ELASTICSEARCH_REPLICAS(Integer.class),
+    /**
+     * Represents the {@code elasticsearch_shards} setting.
+     */
+    ELASTICSEARCH_SHARDS(Integer.class),
+    /**
+     * Represents the {@code elasticsearch_analyzers_smartcn_enabled} setting.
+     */
+    ELASTICSEARCH_ANALYZERS_SMARTCN_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code elasticsearch_analyzers_smartcn_search} setting.
+     */
+    ELASTICSEARCH_ANALYZERS_SMARTCN_SEARCH(Boolean.class),
+    /**
+     * Represents the {@code elasticsearch_analyzers_kuromoji_enabled} setting.
+     */
+    ELASTICSEARCH_ANALYZERS_KUROMOJI_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code elasticsearch_analyzers_kuromoji_search} setting.
+     */
+    ELASTICSEARCH_ANALYZERS_KUROMOJI_SEARCH(Boolean.class),
+    /**
+     * Represents the {@code instance_level_ai_beta_features_enabled} setting.
+     */
+    INSTANCE_LEVEL_AI_BETA_FEATURES_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code lock_memberships_to_ldap} setting.
+     */
+    LOCK_MEMBERSHIPS_TO_LDAP(Boolean.class),
+    /**
+     * Represents the {@code lock_memberships_to_saml} setting.
+     */
+    LOCK_MEMBERSHIPS_TO_SAML(Boolean.class),
+    /**
+     * Represents the {@code search_max_shard_size_gb} setting.
+     */
+    SEARCH_MAX_SHARD_SIZE_GB(Integer.class),
+    /**
+     * Represents the {@code search_max_docs_denominator} setting.
+     */
+    SEARCH_MAX_DOCS_DENOMINATOR(Integer.class),
+    /**
+     * Represents the {@code search_min_docs_before_rollover} setting.
+     */
+    SEARCH_MIN_DOCS_BEFORE_ROLLOVER(Integer.class),
+    /**
+     * Represents the {@code secret_detection_token_revocation_enabled} setting.
+     */
+    SECRET_DETECTION_TOKEN_REVOCATION_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code secret_detection_token_revocation_url} setting.
+     */
+    SECRET_DETECTION_TOKEN_REVOCATION_URL(String.class),
+    /**
+     * Represents the {@code secret_detection_token_revocation_token} setting.
+     */
+    SECRET_DETECTION_TOKEN_REVOCATION_TOKEN(String.class),
+    /**
+     * Represents the {@code secret_detection_revocation_token_types_url} setting.
+     */
     SECRET_DETECTION_REVOCATION_TOKEN_TYPES_URL(String.class),
+    /**
+     * Represents the {@code security_policy_scheduled_scans_max_concurrency} setting.
+     */
     SECURITY_POLICY_SCHEDULED_SCANS_MAX_CONCURRENCY(Integer.class),
+    /**
+     * Represents the {@code throttle_incident_management_notification_enabled} setting.
+     */
     THROTTLE_INCIDENT_MANAGEMENT_NOTIFICATION_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code throttle_incident_management_notification_per_period} setting.
+     */
     THROTTLE_INCIDENT_MANAGEMENT_NOTIFICATION_PER_PERIOD(Integer.class),
+    /**
+     * Represents the {@code throttle_incident_management_notification_period_in_seconds} setting.
+     */
     THROTTLE_INCIDENT_MANAGEMENT_NOTIFICATION_PERIOD_IN_SECONDS(Integer.class),
-    PRODUCT_ANALYTICS_ENABLED(Boolean.class), PRODUCT_ANALYTICS_DATA_COLLECTOR_HOST(String.class),
-    PRODUCT_ANALYTICS_CONFIGURATOR_CONNECTION_STRING(String.class), CUBE_API_BASE_URL(String.class),
-    CUBE_API_KEY(String.class), DUO_AVAILABILITY(String.class), ZOEKT_AUTO_INDEX_ROOT_NAMESPACE(Boolean.class),
-    ZOEKT_INDEXING_ENABLED(Boolean.class), ZOEKT_INDEXING_PAUSED(Boolean.class), ZOEKT_SEARCH_ENABLED(Boolean.class),
-    DUO_WORKFLOW_OAUTH_APPLICATION_ID(String.class), ALLOW_DEPLOY_TOKENS_AND_KEYS_WITH_EXTERNAL_AUTHN(Boolean.class),
-    CONTAINER_REGISTRY_IMPORT_MAX_TAGS_COUNT(Integer.class), CONTAINER_REGISTRY_IMPORT_MAX_RETRIES(Integer.class),
+    /**
+     * Represents the {@code product_analytics_enabled} setting.
+     */
+    PRODUCT_ANALYTICS_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code product_analytics_data_collector_host} setting.
+     */
+    PRODUCT_ANALYTICS_DATA_COLLECTOR_HOST(String.class),
+    /**
+     * Represents the {@code product_analytics_configurator_connection_string} setting.
+     */
+    PRODUCT_ANALYTICS_CONFIGURATOR_CONNECTION_STRING(String.class),
+    /**
+     * Represents the {@code cube_api_base_url} setting.
+     */
+    CUBE_API_BASE_URL(String.class),
+    /**
+     * Represents the {@code cube_api_key} setting.
+     */
+    CUBE_API_KEY(String.class),
+    /**
+     * Represents the {@code duo_availability} setting.
+     */
+    DUO_AVAILABILITY(String.class),
+    /**
+     * Represents the {@code zoekt_auto_index_root_namespace} setting.
+     */
+    ZOEKT_AUTO_INDEX_ROOT_NAMESPACE(Boolean.class),
+    /**
+     * Represents the {@code zoekt_indexing_enabled} setting.
+     */
+    ZOEKT_INDEXING_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code zoekt_indexing_paused} setting.
+     */
+    ZOEKT_INDEXING_PAUSED(Boolean.class),
+    /**
+     * Represents the {@code zoekt_search_enabled} setting.
+     */
+    ZOEKT_SEARCH_ENABLED(Boolean.class),
+    /**
+     * Represents the {@code duo_workflow_oauth_application_id} setting.
+     */
+    DUO_WORKFLOW_OAUTH_APPLICATION_ID(String.class),
+    /**
+     * Represents the {@code allow_deploy_tokens_and_keys_with_external_authn} setting.
+     */
+    ALLOW_DEPLOY_TOKENS_AND_KEYS_WITH_EXTERNAL_AUTHN(Boolean.class),
+    /**
+     * Represents the {@code container_registry_import_max_tags_count} setting.
+     */
+    CONTAINER_REGISTRY_IMPORT_MAX_TAGS_COUNT(Integer.class),
+    /**
+     * Represents the {@code container_registry_import_max_retries} setting.
+     */
+    CONTAINER_REGISTRY_IMPORT_MAX_RETRIES(Integer.class),
+    /**
+     * Represents the {@code container_registry_import_start_max_retries} setting.
+     */
     CONTAINER_REGISTRY_IMPORT_START_MAX_RETRIES(Integer.class),
-    CONTAINER_REGISTRY_IMPORT_MAX_STEP_DURATION(Integer.class), CONTAINER_REGISTRY_PRE_IMPORT_TAGS_RATE(Integer.class),
-    CONTAINER_REGISTRY_PRE_IMPORT_TIMEOUT(Integer.class), CONTAINER_REGISTRY_IMPORT_TIMEOUT(Integer.class),
-    CONTAINER_REGISTRY_IMPORT_TARGET_PLAN(String.class), CONTAINER_REGISTRY_IMPORT_CREATED_BEFORE(String.class),;
+    /**
+     * Represents the {@code container_registry_import_max_step_duration} setting.
+     */
+    CONTAINER_REGISTRY_IMPORT_MAX_STEP_DURATION(Integer.class),
+    /**
+     * Represents the {@code container_registry_pre_import_tags_rate} setting.
+     */
+    CONTAINER_REGISTRY_PRE_IMPORT_TAGS_RATE(Integer.class),
+    /**
+     * Represents the {@code container_registry_pre_import_timeout} setting.
+     */
+    CONTAINER_REGISTRY_PRE_IMPORT_TIMEOUT(Integer.class),
+    /**
+     * Represents the {@code container_registry_import_timeout} setting.
+     */
+    CONTAINER_REGISTRY_IMPORT_TIMEOUT(Integer.class),
+    /**
+     * Represents the {@code container_registry_import_target_plan} setting.
+     */
+    CONTAINER_REGISTRY_IMPORT_TARGET_PLAN(String.class),
+    /**
+     * Represents the {@code container_registry_import_created_before} setting.
+     */
+    CONTAINER_REGISTRY_IMPORT_CREATED_BEFORE(String.class);
 
+    /**
+     * The enum codec value.
+     */
     private static JacksonJsonEnumCodec<Setting> enumCodec = new JacksonJsonEnumCodec<>(Setting.class);
 
     static {
@@ -1644,6 +2060,9 @@ public enum Setting {
      * The type field.
      */
     private Class<?> type;
+    /**
+     * The types value.
+     */
     private Class<?>[] types;
 
     private Setting(Class<?> type) {

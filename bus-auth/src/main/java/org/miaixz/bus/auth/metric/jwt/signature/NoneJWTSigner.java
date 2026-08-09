@@ -35,6 +35,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class NoneJWTSigner implements JWTSigner {
 
     /**
+     * Constructs a new {@code NoneJWTSigner} instance.
+     */
+    public NoneJWTSigner() {
+        // No initialization required.
+    }
+
+    /**
      * Algorithm identifier for no signature, with a value of "none".
      */
     public static final String ID_NONE = Normal.NONE;

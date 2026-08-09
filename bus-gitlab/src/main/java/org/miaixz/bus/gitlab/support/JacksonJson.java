@@ -51,6 +51,9 @@ import tools.jackson.databind.type.CollectionType;
 @Produces(MediaType.APPLICATION_JSON)
 public class JacksonJson implements ContextResolver<ObjectMapper> {
 
+    /**
+     * The iso8601 utc format value.
+     */
     private static final SimpleDateFormat iso8601UtcFormat;
 
     static {
@@ -59,6 +62,9 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
         iso8601UtcFormat.setTimeZone(TimeZone.getTimeZone(ZoneId.UTC.name()));
     }
 
+    /**
+     * The object mapper value.
+     */
     private final ObjectMapper objectMapper;
 
     /**
@@ -289,6 +295,13 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
     public static class DateOnlySerializer extends ValueSerializer<Date> {
 
         /**
+         * Constructs a new {@code DateOnlySerializer} instance.
+         */
+        public DateOnlySerializer() {
+            // No initialization required.
+        }
+
+        /**
          * Executes the serialize operation.
          *
          * @param date    the date value
@@ -313,6 +326,13 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
     public static class JsonDateSerializer extends ValueSerializer<Date> {
 
         /**
+         * Constructs a new {@code JsonDateSerializer} instance.
+         */
+        public JsonDateSerializer() {
+            // No initialization required.
+        }
+
+        /**
          * Executes the serialize operation.
          *
          * @param date    the date value
@@ -335,6 +355,13 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * @author Kimi Liu
      */
     public static class JsonDateDeserializer extends ValueDeserializer<Date> {
+
+        /**
+         * Constructs a new {@code JsonDateDeserializer} instance.
+         */
+        public JsonDateDeserializer() {
+            // No initialization required.
+        }
 
         /**
          * Executes the deserialize operation.
@@ -372,6 +399,13 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
     public static class UserListSerializer extends ValueSerializer<List<User>> {
 
         /**
+         * Constructs a new {@code UserListSerializer} instance.
+         */
+        public UserListSerializer() {
+            // No initialization required.
+        }
+
+        /**
          * Executes the serialize operation.
          *
          * @param value   the value value
@@ -402,6 +436,13 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * @author Kimi Liu
      */
     public static class UserListDeserializer extends ValueDeserializer<List<User>> {
+
+        /**
+         * Constructs a new {@code UserListDeserializer} instance.
+         */
+        public UserListDeserializer() {
+            // No initialization required.
+        }
 
         /**
          * Executes the deserialize operation.
@@ -462,6 +503,9 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      */
     private static class JacksonJsonInstanceHolder {
 
+        /**
+         * The jackson json value.
+         */
         private static final JacksonJson JACKSON_JSON = new JacksonJson(PropertyNamingStrategies.LOWER_CAMEL_CASE,
                 Include.ALWAYS);
 

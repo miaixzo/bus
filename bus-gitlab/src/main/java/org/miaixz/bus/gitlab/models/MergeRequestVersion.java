@@ -32,16 +32,50 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class MergeRequestVersion implements Serializable {
 
+    /**
+     * Constructs a new {@code MergeRequestVersion} instance.
+     */
+    public MergeRequestVersion() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852265139183L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The head commit sha value.
+     */
     private String headCommitSha;
+    /**
+     * The base commit sha value.
+     */
     private String baseCommitSha;
+    /**
+     * The start commit sha value.
+     */
     private String startCommitSha;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The merge request id value.
+     */
     private Long mergeRequestId;
+    /**
+     * The state value.
+     */
     private String state;
+    /**
+     * The real size value.
+     */
     private String realSize;
 
     /**

@@ -37,6 +37,16 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class IterationFilter implements Serializable {
 
+    /**
+     * Constructs a new {@code IterationFilter} instance.
+     */
+    public IterationFilter() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852259338991L;
 
@@ -317,6 +327,9 @@ public class IterationFilter implements Serializable {
          */
         ALL;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<IterationFilterState> enumCodec = new JacksonJsonEnumCodec<>(
                 IterationFilterState.class, false, true);
 
@@ -372,6 +385,9 @@ public class IterationFilter implements Serializable {
          */
         CADENCE_TITLE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<IterationFilterIn> enumCodec = new JacksonJsonEnumCodec<>(
                 IterationFilterIn.class, false, false, true);
 

@@ -38,14 +38,35 @@ public class Application implements Serializable {
         // No initialization required.
     }
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852235903898L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The application id value.
+     */
     private String applicationId;
+    /**
+     * The application name value.
+     */
     private String applicationName;
+    /**
+     * The callback url value.
+     */
     private String callbackUrl;
+    /**
+     * The confidential value.
+     */
     private Boolean confidential;
+    /**
+     * The secret value.
+     */
     private String secret;
 
     /**

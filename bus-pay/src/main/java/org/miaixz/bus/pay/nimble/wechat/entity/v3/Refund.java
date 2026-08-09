@@ -21,9 +21,7 @@ package org.miaixz.bus.pay.nimble.wechat.entity.v3;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -35,9 +33,14 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Refund {
+
+    /**
+     * Constructs a new {@code Refund} instance.
+     */
+    public Refund() {
+        // No initialization required.
+    }
 
     /**
      * Sub-merchant ID (for service providers).

@@ -28,8 +28,24 @@ import java.util.Date;
  */
 public class GpgKey {
 
+    /**
+     * Constructs a new {@code GpgKey} instance.
+     */
+    public GpgKey() {
+        // No initialization required.
+    }
+
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The key value.
+     */
     private String key;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
 
     /**

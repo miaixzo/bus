@@ -37,11 +37,23 @@ public abstract class AbstractSystemHookEvent implements SystemHookEvent {
         // No initialization required.
     }
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852292516603L;
 
+    /**
+     * The request url value.
+     */
     private String requestUrl;
+    /**
+     * The request query string value.
+     */
     private String requestQueryString;
+    /**
+     * The request secret token value.
+     */
     private String requestSecretToken;
 
     /**

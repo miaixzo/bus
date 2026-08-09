@@ -28,6 +28,16 @@ import java.io.Serial;
  */
 public class ProjectGroup extends AbstractGroup<ProjectGroup> {
 
+    /**
+     * Constructs a new {@code ProjectGroup} instance.
+     */
+    public ProjectGroup() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852273190535L;
 

@@ -32,6 +32,16 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  */
 public class HipChatService extends NotificationService {
 
+    /**
+     * Constructs a new {@code HipChatService} instance.
+     */
+    public HipChatService() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852285062156L;
     /**

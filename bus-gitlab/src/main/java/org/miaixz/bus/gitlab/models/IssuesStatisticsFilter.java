@@ -37,22 +37,74 @@ import org.miaixz.bus.gitlab.support.ISO8601;
  */
 public class IssuesStatisticsFilter implements Serializable {
 
+    /**
+     * Constructs a new {@code IssuesStatisticsFilter} instance.
+     */
+    public IssuesStatisticsFilter() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852258815223L;
 
+    /**
+     * The labels value.
+     */
     private List<String> labels;
+    /**
+     * The milestone value.
+     */
     private String milestone;
+    /**
+     * The scope value.
+     */
     private IssueScope scope;
+    /**
+     * The author id value.
+     */
     private Long authorId;
+    /**
+     * The assignee id value.
+     */
     private Long assigneeId;
+    /**
+     * The my reaction emoji value.
+     */
     private String myReactionEmoji;
+    /**
+     * The iids value.
+     */
     private List<Long> iids;
+    /**
+     * The search value.
+     */
     private String search;
+    /**
+     * The in value.
+     */
     private String in;
+    /**
+     * The created after value.
+     */
     private Date createdAfter;
+    /**
+     * The created before value.
+     */
     private Date createdBefore;
+    /**
+     * The updated after value.
+     */
     private Date updatedAfter;
+    /**
+     * The updated before value.
+     */
     private Date updatedBefore;
+    /**
+     * The confidential value.
+     */
     private Boolean confidential;
 
     /**

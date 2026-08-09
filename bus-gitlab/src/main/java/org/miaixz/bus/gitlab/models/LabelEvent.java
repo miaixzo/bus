@@ -35,6 +35,16 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class LabelEvent implements Serializable {
 
+    /**
+     * Constructs a new {@code LabelEvent} instance.
+     */
+    public LabelEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852260316959L;
 
@@ -58,6 +68,9 @@ public class LabelEvent implements Serializable {
          */
         MERGE_REQUEST;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<ResourceType> enumCodec = new JacksonJsonEnumCodec<>(ResourceType.class,
                 true, true);
 
@@ -97,12 +110,33 @@ public class LabelEvent implements Serializable {
 
     }
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The user value.
+     */
     private User user;
+    /**
+     * The created at value.
+     */
     private String createdAt;
+    /**
+     * The resource type value.
+     */
     private ResourceType resourceType;
+    /**
+     * The resource id value.
+     */
     private Long resourceId;
+    /**
+     * The label value.
+     */
     private Label label;
+    /**
+     * The action value.
+     */
     private String action;
 
     /**

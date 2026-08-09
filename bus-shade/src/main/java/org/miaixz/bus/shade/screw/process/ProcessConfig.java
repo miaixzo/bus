@@ -23,11 +23,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Configuration for data processing, specifically for filtering tables.
@@ -36,10 +34,15 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@SuperBuilder
 public class ProcessConfig implements Serializable {
+
+    /**
+     * Constructs a new {@code ProcessConfig} instance.
+     */
+    public ProcessConfig() {
+        // No initialization required.
+    }
 
     @Serial
     private static final long serialVersionUID = -1L;

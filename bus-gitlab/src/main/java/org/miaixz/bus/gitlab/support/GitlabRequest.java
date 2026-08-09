@@ -39,6 +39,13 @@ import org.miaixz.bus.logger.Logger;
 public class GitlabRequest {
 
     /**
+     * Constructs a new {@code GitlabRequest} instance.
+     */
+    public GitlabRequest() {
+        // No initialization required.
+    }
+
+    /**
      * Build a String containing a very short multi-line dump of an HTTP request.
      *
      * @param fromMethod the method that this method was called from

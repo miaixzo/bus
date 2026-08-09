@@ -32,18 +32,58 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class RemoteMirror implements Serializable {
 
+    /**
+     * Constructs a new {@code RemoteMirror} instance.
+     */
+    public RemoteMirror() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852279737972L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The enabled value.
+     */
     private Boolean enabled;
+    /**
+     * The last error value.
+     */
     private String lastError;
+    /**
+     * The last successful update at value.
+     */
     private Date lastSuccessfulUpdateAt;
+    /**
+     * The last update at value.
+     */
     private Date lastUpdateAt;
+    /**
+     * The last update started at value.
+     */
     private Date lastUpdateStartedAt;
+    /**
+     * The only protected branches value.
+     */
     private Boolean onlyProtectedBranches;
+    /**
+     * The keep divergent refs value.
+     */
     private Boolean keepDivergentRefs;
+    /**
+     * The update status value.
+     */
     private String updateStatus;
+    /**
+     * The url value.
+     */
     private String url;
 
     /**

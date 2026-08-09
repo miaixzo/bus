@@ -39,21 +39,67 @@ import tools.jackson.databind.annotation.JsonSerialize;
  */
 public class ImpersonationToken implements Serializable {
 
+    /**
+     * Constructs a new {@code ImpersonationToken} instance.
+     */
+    public ImpersonationToken() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852257073750L;
 
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The active value.
+     */
     private Boolean active;
+    /**
+     * The token value.
+     */
     private String token;
+    /**
+     * The scopes value.
+     */
     private List<Scope> scopes;
+    /**
+     * The user id value.
+     */
     private Long userId;
+    /**
+     * The revoked value.
+     */
     private Boolean revoked;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The expires at value.
+     */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date expiresAt;
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The last used at value.
+     */
     private Date lastUsedAt;
+    /**
+     * The impersonation value.
+     */
     private Boolean impersonation;
 
     /**

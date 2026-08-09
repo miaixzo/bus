@@ -21,9 +21,7 @@ package org.miaixz.bus.notify.nimble.generic;
 
 import java.io.File;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -41,9 +39,14 @@ import org.miaixz.bus.notify.magic.Notice;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class GenericNotice extends Notice {
+
+    /**
+     * Constructs a new {@code GenericNotice} instance.
+     */
+    public GenericNotice() {
+        // No initialization required.
+    }
 
     /**
      * SMTP host property key.

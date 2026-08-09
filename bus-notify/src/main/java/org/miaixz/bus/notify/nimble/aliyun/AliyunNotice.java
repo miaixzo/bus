@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.notify.nimble.aliyun;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -36,9 +34,14 @@ import org.miaixz.bus.notify.magic.Notice;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class AliyunNotice extends Notice {
+
+    /**
+     * Constructs a new {@code AliyunNotice} instance.
+     */
+    public AliyunNotice() {
+        // No initialization required.
+    }
 
     /**
      * The number of times to play the voice message.

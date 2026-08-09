@@ -42,7 +42,6 @@ import org.miaixz.bus.vortex.provider.MetricsProvider;
 @Getter
 @Setter
 @SuperBuilder
-@AllArgsConstructor
 public class Metrics {
 
     /**

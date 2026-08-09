@@ -35,6 +35,16 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class IssueEvent implements Serializable {
 
+    /**
+     * Constructs a new {@code IssueEvent} instance.
+     */
+    public IssueEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852257573191L;
 
@@ -45,8 +55,14 @@ public class IssueEvent implements Serializable {
      */
     public enum ResourceType {
 
+        /**
+         * Issue resource type.
+         */
         ISSUE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<ResourceType> enumCodec = new JacksonJsonEnumCodec<>(ResourceType.class,
                 true, true);
 
@@ -86,11 +102,29 @@ public class IssueEvent implements Serializable {
 
     }
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The user value.
+     */
     private User user;
+    /**
+     * The created at value.
+     */
     private String createdAt;
+    /**
+     * The resource type value.
+     */
     private ResourceType resourceType;
+    /**
+     * The resource id value.
+     */
     private Long resourceId;
+    /**
+     * The state value.
+     */
     private String state;
 
     /**

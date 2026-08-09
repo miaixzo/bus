@@ -33,19 +33,62 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class SystemHook implements Serializable {
 
+    /**
+     * Constructs a new {@code SystemHook} instance.
+     */
+    public SystemHook() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852281631008L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The url value.
+     */
     private String url;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The push events value.
+     */
     private Boolean pushEvents;
+    /**
+     * The tag push events value.
+     */
     private Boolean tagPushEvents;
+    /**
+     * The enable ssl verification value.
+     */
     private Boolean enableSslVerification;
+    /**
+     * The repository update events value.
+     */
     private Boolean repositoryUpdateEvents;
+    /**
+     * The merge requests events value.
+     */
     private Boolean mergeRequestsEvents;
+    /**
+     * The url variables value.
+     */
     private List<SystemHook.UrlVariable> urlVariables;
 
     /**
@@ -406,9 +449,22 @@ public class SystemHook implements Serializable {
      */
     public static class UrlVariable implements Serializable {
 
+        /**
+         * Constructs a new {@code UrlVariable} instance.
+         */
+        public UrlVariable() {
+            // No initialization required.
+        }
+
+        /**
+         * The serial version uid value.
+         */
         @Serial
         private static final long serialVersionUID = 2852281710398L;
 
+        /**
+         * The key value.
+         */
         private String key;
 
         /**

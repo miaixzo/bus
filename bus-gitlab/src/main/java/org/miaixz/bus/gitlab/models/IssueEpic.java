@@ -30,6 +30,16 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class IssueEpic extends AbstractMinimalEpic<IssueEpic> {
 
+    /**
+     * Constructs a new {@code IssueEpic} instance.
+     */
+    public IssueEpic() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852257290207L;
 

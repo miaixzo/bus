@@ -31,11 +31,30 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Member extends AbstractUser<Member> {
 
+    /**
+     * Constructs a new {@code Member} instance.
+     */
+    public Member() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852261708829L;
 
+    /**
+     * The access level value.
+     */
     private AccessLevel accessLevel;
+    /**
+     * The expires at value.
+     */
     private Date expiresAt;
+    /**
+     * The group saml identity value.
+     */
     private Identity groupSamlIdentity;
 
     /**

@@ -31,11 +31,30 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Identity implements Serializable {
 
+    /**
+     * Constructs a new {@code Identity} instance.
+     */
+    public Identity() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852256910511L;
 
+    /**
+     * The provider value.
+     */
     private String provider;
+    /**
+     * The extern uid value.
+     */
     private String externUid;
+    /**
+     * The saml provider id value.
+     */
     private Integer samlProviderId;
 
     /**

@@ -36,6 +36,16 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class PipelineEvent extends AbstractEvent {
 
+    /**
+     * Constructs a new {@code PipelineEvent} instance.
+     */
+    public PipelineEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852232997522L;
     /**
@@ -48,12 +58,33 @@ public class PipelineEvent extends AbstractEvent {
      */
     public static final String OBJECT_KIND = "pipeline";
 
+    /**
+     * The object attributes value.
+     */
     private ObjectAttributes objectAttributes;
+    /**
+     * The merge request value.
+     */
     private EventMergeRequest mergeRequest;
+    /**
+     * The user value.
+     */
     private EventUser user;
+    /**
+     * The project value.
+     */
     private EventProject project;
+    /**
+     * The commit value.
+     */
     private EventCommit commit;
+    /**
+     * The jobs value.
+     */
     private List<Job> jobs;
+    /**
+     * The builds value.
+     */
     private List<Build> builds;
 
     /**
@@ -236,22 +267,80 @@ public class PipelineEvent extends AbstractEvent {
      */
     public static class ObjectAttributes {
 
+        /**
+         * Constructs a new {@code ObjectAttributes} instance.
+         */
+        public ObjectAttributes() {
+            // No initialization required.
+        }
+
+        /**
+         * The id value.
+         */
         private Long id;
+        /**
+         * The iid value.
+         */
         private Long iid;
+        /**
+         * The name value.
+         */
         private String name;
+        /**
+         * The ref value.
+         */
         private String ref;
+        /**
+         * The tag value.
+         */
         private Boolean tag;
+        /**
+         * The sha value.
+         */
         private String sha;
+        /**
+         * The before sha value.
+         */
         private String beforeSha;
+        /**
+         * The source value.
+         */
         private String source;
+        /**
+         * The status value.
+         */
         private String status;
+        /**
+         * The detailed status value.
+         */
         private String detailedStatus;
+        /**
+         * The stages value.
+         */
         private List<String> stages;
+        /**
+         * The created at value.
+         */
         private Date createdAt;
+        /**
+         * The finished at value.
+         */
         private Date finishedAt;
+        /**
+         * The duration value.
+         */
         private Integer duration;
+        /**
+         * The queued duration value.
+         */
         private Float queuedDuration;
+        /**
+         * The variables value.
+         */
         private List<Variable> variables;
+        /**
+         * The url value.
+         */
         private String url;
 
         /**

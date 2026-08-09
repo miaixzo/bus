@@ -22,11 +22,9 @@ package org.miaixz.bus.shade.screw.engine;
 import java.io.Serial;
 import java.io.Serializable;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Configuration for the documentation generation engine.
@@ -35,10 +33,15 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@SuperBuilder
 public class EngineConfig implements Serializable {
+
+    /**
+     * Constructs a new {@code EngineConfig} instance.
+     */
+    public EngineConfig() {
+        // No initialization required.
+    }
 
     @Serial
     private static final long serialVersionUID = -1L;

@@ -36,10 +36,19 @@ public class AccessRequest extends AbstractUser<AccessRequest> {
         // No initialization required.
     }
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852235619209L;
 
+    /**
+     * The requested at value.
+     */
     private Date requestedAt;
+    /**
+     * The access level value.
+     */
     private AccessLevel accessLevel;
 
     /**

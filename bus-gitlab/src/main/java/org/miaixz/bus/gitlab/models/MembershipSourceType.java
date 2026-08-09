@@ -40,6 +40,9 @@ public enum MembershipSourceType {
      */
     NAMESPACE;
 
+    /**
+     * The enum codec value.
+     */
     private static JacksonJsonEnumCodec<MembershipSourceType> enumCodec = new JacksonJsonEnumCodec<>(
             MembershipSourceType.class, true);
 

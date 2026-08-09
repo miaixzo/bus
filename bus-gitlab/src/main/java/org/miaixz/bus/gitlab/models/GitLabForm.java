@@ -31,6 +31,9 @@ import java.util.Map;
  */
 public class GitLabForm {
 
+    /**
+     * The form values value.
+     */
     private Map<String, GitLabFormValue> formValues = new LinkedHashMap<>();
 
     /**

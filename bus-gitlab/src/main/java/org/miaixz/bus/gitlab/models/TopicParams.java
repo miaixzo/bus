@@ -33,11 +33,30 @@ import java.io.Serializable;
  */
 public class TopicParams implements Serializable {
 
+    /**
+     * Constructs a new {@code TopicParams} instance.
+     */
+    public TopicParams() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852282251187L;
 
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The description value.
+     */
     private String description;
 
     /**

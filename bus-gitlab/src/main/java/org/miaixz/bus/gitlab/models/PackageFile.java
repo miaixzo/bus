@@ -32,16 +32,50 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class PackageFile implements Serializable {
 
+    /**
+     * Constructs a new {@code PackageFile} instance.
+     */
+    public PackageFile() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852268389591L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The package id value.
+     */
     private Long packageId;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The file name value.
+     */
     private String fileName;
+    /**
+     * The size value.
+     */
     private Long size;
+    /**
+     * The file md5 value.
+     */
     private String fileMd5;
+    /**
+     * The file sha1 value.
+     */
     private String fileSha1;
+    /**
+     * The file sha256 value.
+     */
     private String fileSha256;
 
     /**

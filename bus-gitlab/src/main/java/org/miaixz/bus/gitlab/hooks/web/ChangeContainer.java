@@ -34,7 +34,20 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 @Setter
 public class ChangeContainer<T> {
 
+    /**
+     * Constructs a new {@code ChangeContainer} instance.
+     */
+    public ChangeContainer() {
+        // No initialization required.
+    }
+
+    /**
+     * The previous value.
+     */
     private T previous;
+    /**
+     * The current value.
+     */
     private T current;
 
     /**

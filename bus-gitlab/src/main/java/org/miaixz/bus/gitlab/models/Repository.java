@@ -31,12 +31,34 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Repository implements Serializable {
 
+    /**
+     * Constructs a new {@code Repository} instance.
+     */
+    public Repository() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852279891721L;
 
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The homepage value.
+     */
     private String homepage;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The url value.
+     */
     private String url;
 
     /**

@@ -33,9 +33,14 @@ import org.miaixz.bus.notify.magic.Notice;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class UniNotice extends Notice {
+
+    /**
+     * Constructs a new {@code UniNotice} instance.
+     */
+    public UniNotice() {
+        // No initialization required.
+    }
 
     /**
      * Indicates whether to use simple mode. Defaults to true.

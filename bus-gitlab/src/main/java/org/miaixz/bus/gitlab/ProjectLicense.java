@@ -28,10 +28,32 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class ProjectLicense {
 
+    /**
+     * Constructs a new {@code ProjectLicense} instance.
+     */
+    public ProjectLicense() {
+        // No initialization required.
+    }
+
+    /**
+     * The key value.
+     */
     private String key;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The nickname value.
+     */
     private String nickname;
+    /**
+     * The html url value.
+     */
     private String htmlUrl;
+    /**
+     * The source url value.
+     */
     private String sourceUrl;
 
     /**

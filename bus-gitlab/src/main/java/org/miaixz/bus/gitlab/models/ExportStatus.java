@@ -39,6 +39,16 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class ExportStatus implements Serializable {
 
+    /**
+     * Constructs a new {@code ExportStatus} instance.
+     */
+    public ExportStatus() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852253553600L;
 
@@ -66,6 +76,9 @@ public class ExportStatus implements Serializable {
          */
         AFTER_EXPORT_ACTION;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<Status> enumCodec = new JacksonJsonEnumCodec<>(Status.class);
 
         /**
@@ -104,15 +117,42 @@ public class ExportStatus implements Serializable {
 
     }
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The name with namespace value.
+     */
     private String nameWithNamespace;
+    /**
+     * The path value.
+     */
     private String path;
+    /**
+     * The path with namespace value.
+     */
     private String pathWithNamespace;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The export status value.
+     */
     private Status exportStatus;
 
+    /**
+     * The links value.
+     */
     @JsonProperty("_links")
     private Map<String, String> links;
 

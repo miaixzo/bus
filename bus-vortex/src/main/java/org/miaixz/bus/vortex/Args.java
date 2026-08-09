@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.vortex;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -326,7 +325,6 @@ public class Args {
     @Getter
     @Setter
     @SuperBuilder
-    @AllArgsConstructor
     public static class Limit {
 
         /**

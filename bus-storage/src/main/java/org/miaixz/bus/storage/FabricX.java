@@ -47,6 +47,13 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 public abstract class FabricX {
 
     /**
+     * Constructs a new {@code FabricX} instance.
+     */
+    public FabricX() {
+        // No initialization required.
+    }
+
+    /**
      * Shared Fabric contexts keyed by the public storage timeout policy to preserve connection pooling.
      */
     private static final ConcurrentHashMap<Timeout, org.miaixz.bus.fabric.Context> FABRIC_CONTEXTS = new ConcurrentHashMap<>();

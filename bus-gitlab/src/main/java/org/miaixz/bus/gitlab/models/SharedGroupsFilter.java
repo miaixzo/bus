@@ -35,6 +35,13 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class SharedGroupsFilter implements Serializable {
 
     /**
+     * Constructs a new {@code SharedGroupsFilter} instance.
+     */
+    public SharedGroupsFilter() {
+        // No initialization required.
+    }
+
+    /**
      * Serialization version identifier.
      */
     @Serial

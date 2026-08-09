@@ -32,6 +32,16 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class RepositorySystemHookEvent extends AbstractSystemHookEvent {
 
+    /**
+     * Constructs a new {@code RepositorySystemHookEvent} instance.
+     */
+    public RepositorySystemHookEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852227880877L;
     /**
@@ -40,16 +50,43 @@ public class RepositorySystemHookEvent extends AbstractSystemHookEvent {
 
     public static final String REPOSITORY_UPDATE_EVENT = "repository_update";
 
+    /**
+     * The event name value.
+     */
     private String eventName;
+    /**
+     * The user id value.
+     */
     private Long userId;
+    /**
+     * The user name value.
+     */
     private String userName;
+    /**
+     * The user email value.
+     */
     private String userEmail;
+    /**
+     * The user avatar value.
+     */
     private String userAvatar;
 
+    /**
+     * The project id value.
+     */
     private Long projectId;
+    /**
+     * The project value.
+     */
     private EventProject project;
 
+    /**
+     * The changes value.
+     */
     private List<RepositoryChange> changes;
+    /**
+     * The refs value.
+     */
     private List<String> refs;
 
     /**

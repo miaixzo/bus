@@ -49,6 +49,7 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /search?scope=:scope&amp;search=:search-query</code>
      * </pre>
      *
+     * @param <T>    result type
      * @param scope  search the expression within the specified scope. Currently these scopes are supported: projects,
      *               issues, merge_requests, milestones, snippet_titles, snippet_blobs, users
      * @param search the search query
@@ -66,6 +67,7 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /search?scope=:scope&amp;search=:search-query</code>
      * </pre>
      *
+     * @param <T>    result type
      * @param scope  search the expression within the specified scope. Currently these scopes are supported: projects,
      *               issues, merge_requests, milestones, snippet_titles, snippet_blobs, users
      * @param search the search query
@@ -83,6 +85,7 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /search?scope=:scope&amp;search=:search-query</code>
      * </pre>
      *
+     * @param <T>          result type
      * @param scope        search the expression within the specified scope. Currently these scopes are supported:
      *                     projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs, users
      * @param search       the search query
@@ -105,6 +108,7 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /groups/:groupId/search?scope=:scope&amp;search=:search-query</code>
      * </pre>
      *
+     * @param <T>           result type
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
      * @param scope         search the expression within the specified scope. Currently these scopes are supported:
      *                      projects, issues, merge_requests, milestones, users
@@ -125,6 +129,7 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /groups/:groupId/search?scope=:scope&amp;search=:search-query</code>
      * </pre>
      *
+     * @param <T>           result type
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
      * @param scope         search the expression within the specified scope. Currently these scopes are supported:
      *                      projects, issues, merge_requests, milestones, users
@@ -145,6 +150,7 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /groups/:groupId/search?scope=:scope&amp;search=:search-query</code>
      * </pre>
      *
+     * @param <T>           result type
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
      * @param scope         search the expression within the specified scope. Currently these scopes are supported:
      *                      projects, issues, merge_requests, milestones, users
@@ -170,6 +176,7 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /projects/:projectId/search?scope=:scope&amp;search=:search-query</code>
      * </pre>
      *
+     * @param <T>             result type
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param scope           search the expression within the specified scope. Currently these scopes are supported:
      *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
@@ -190,6 +197,7 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /projects/:projectId/search?scope=:scope&amp;search=:search-query&amp;ref=ref</code>
      * </pre>
      *
+     * @param <T>             result type
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param scope           search the expression within the specified scope. Currently these scopes are supported:
      *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
@@ -212,6 +220,7 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /projects/:projectId/search?scope=:scope&amp;search=:search-query</code>
      * </pre>
      *
+     * @param <T>             result type
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param scope           search the expression within the specified scope. Currently these scopes are supported:
      *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
@@ -232,6 +241,7 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /projects/:projectId/search?scope=:scope&amp;search=:search-query&amp;ref=ref</code>
      * </pre>
      *
+     * @param <T>             result type
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param scope           search the expression within the specified scope. Currently these scopes are supported:
      *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
@@ -257,6 +267,7 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /project/:projectId/search?scope=:scope&amp;search=:search-query</code>
      * </pre>
      *
+     * @param <T>             result type
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param scope           search the expression within the specified scope. Currently these scopes are supported:
      *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
@@ -281,6 +292,7 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /project/:projectId/search?scope=:scope&amp;search=:search-query&amp;ref=ref</code>
      * </pre>
      *
+     * @param <T>             result type
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param scope           search the expression within the specified scope. Currently these scopes are supported:
      *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users

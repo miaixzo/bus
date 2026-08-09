@@ -33,35 +33,126 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Job implements Serializable {
 
+    /**
+     * Constructs a new {@code Job} instance.
+     */
+    public Job() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852259736306L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The commit value.
+     */
     private Commit commit;
+    /**
+     * The coverage value.
+     */
     private String coverage;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The finished at value.
+     */
     private Date finishedAt;
+    /**
+     * The erased at value.
+     */
     private Date erasedAt;
+    /**
+     * The artifacts expire at value.
+     */
     private Date artifactsExpireAt;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The pipeline value.
+     */
     private Pipeline pipeline;
+    /**
+     * The ref value.
+     */
     private String ref;
+    /**
+     * The runner value.
+     */
     private Runner runner;
+    /**
+     * The user value.
+     */
     private User user;
+    /**
+     * The started at value.
+     */
     private Date startedAt;
+    /**
+     * The artifacts file value.
+     */
     private ArtifactsFile artifactsFile;
+    /**
+     * The artifacts value.
+     */
     private List<Artifact> artifacts;
+    /**
+     * The tag value.
+     */
     private Boolean tag;
+    /**
+     * The tag list value.
+     */
     private List<String> tagList;
+    /**
+     * The web url value.
+     */
     private String webUrl;
+    /**
+     * The stage value.
+     */
     private String stage;
+    /**
+     * The status value.
+     */
     private JobStatus status;
+    /**
+     * The failure reason value.
+     */
     private String failureReason;
+    /**
+     * The when value.
+     */
     private String when;
+    /**
+     * The manual value.
+     */
     private Boolean manual;
+    /**
+     * The allow failure value.
+     */
     private Boolean allowFailure;
+    /**
+     * The duration value.
+     */
     private Float duration;
+    /**
+     * The queued duration value.
+     */
     private Float queuedDuration;
+    /**
+     * The project value.
+     */
     private Project project;
 
     /**

@@ -32,8 +32,14 @@ import java.util.function.Consumer;
  */
 class PagerSpliterator<T> implements Spliterator<T> {
 
+    /**
+     * The pager value.
+     */
     private Pager<T> pager;
 
+    /**
+     * The elements value.
+     */
     private Iterator<T> elements;
 
     PagerSpliterator(Pager<T> pager) {

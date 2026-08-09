@@ -35,6 +35,16 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class Position implements Serializable {
 
+    /**
+     * Constructs a new {@code Position} instance.
+     */
+    public Position() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852270036770L;
 
@@ -58,6 +68,9 @@ public class Position implements Serializable {
          */
         FILE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<PositionType> enumCodec = new JacksonJsonEnumCodec<>(PositionType.class,
                 false, false);
 
@@ -97,19 +110,55 @@ public class Position implements Serializable {
 
     }
 
+    /**
+     * The base sha value.
+     */
     private String baseSha;
+    /**
+     * The start sha value.
+     */
     private String startSha;
+    /**
+     * The head sha value.
+     */
     private String headSha;
+    /**
+     * The old path value.
+     */
     private String oldPath;
+    /**
+     * The new path value.
+     */
     private String newPath;
+    /**
+     * The position type value.
+     */
     private PositionType positionType;
 
+    /**
+     * The old line value.
+     */
     private Integer oldLine;
+    /**
+     * The new line value.
+     */
     private Integer newLine;
 
+    /**
+     * The width value.
+     */
     private Integer width;
+    /**
+     * The height value.
+     */
     private Integer height;
+    /**
+     * The x value.
+     */
     private Double x;
+    /**
+     * The y value.
+     */
     private Double y;
 
     /**

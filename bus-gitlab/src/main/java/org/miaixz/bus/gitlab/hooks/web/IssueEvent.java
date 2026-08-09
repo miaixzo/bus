@@ -33,6 +33,16 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class IssueEvent extends AbstractEvent {
 
+    /**
+     * Constructs a new {@code IssueEvent} instance.
+     */
+    public IssueEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852232562630L;
     /**
@@ -45,13 +55,37 @@ public class IssueEvent extends AbstractEvent {
      */
     public static final String OBJECT_KIND = "issue";
 
+    /**
+     * The user value.
+     */
     private EventUser user;
+    /**
+     * The project value.
+     */
     private EventProject project;
+    /**
+     * The repository value.
+     */
     private EventRepository repository;
+    /**
+     * The object attributes value.
+     */
     private ObjectAttributes objectAttributes;
+    /**
+     * The assignees value.
+     */
     private List<Assignee> assignees;
+    /**
+     * The assignee value.
+     */
     private Assignee assignee;
+    /**
+     * The labels value.
+     */
     private List<EventLabel> labels;
+    /**
+     * The changes value.
+     */
     private IssueChanges changes;
 
     /**
@@ -242,6 +276,13 @@ public class IssueEvent extends AbstractEvent {
      * @author Kimi Liu
      */
     public static class ObjectAttributes extends EventIssue {
+
+        /**
+         * Constructs a new {@code ObjectAttributes} instance.
+         */
+        public ObjectAttributes() {
+            // No initialization required.
+        }
 
     }
 

@@ -33,6 +33,16 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  */
 public class JiraService extends NotificationService {
 
+    /**
+     * Constructs a new {@code JiraService} instance.
+     */
+    public JiraService() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852285168011L;
     /**
@@ -61,6 +71,9 @@ public class JiraService extends NotificationService {
      */
     public static final String COMMENT_ON_EVENT_ENABLED = "comment_on_event_enabled";
 
+    /**
+     * The password value.
+     */
     private CharSequence password;
 
     /**

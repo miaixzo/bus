@@ -32,33 +32,109 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class ProjectHook implements Serializable {
 
+    /**
+     * Constructs a new {@code ProjectHook} instance.
+     */
+    public ProjectHook() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852273671982L;
 
+    /**
+     * The build events value.
+     */
     private Boolean buildEvents;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The enable ssl verification value.
+     */
     private Boolean enableSslVerification;
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The issues events value.
+     */
     private Boolean issuesEvents;
+    /**
+     * The merge requests events value.
+     */
     private Boolean mergeRequestsEvents;
+    /**
+     * The note events value.
+     */
     private Boolean noteEvents;
+    /**
+     * The job events value.
+     */
     private Boolean jobEvents;
+    /**
+     * The pipeline events value.
+     */
     private Boolean pipelineEvents;
+    /**
+     * The project id value.
+     */
     private Long projectId;
+    /**
+     * The push events value.
+     */
     private Boolean pushEvents;
+    /**
+     * The tag push events value.
+     */
     private Boolean tagPushEvents;
+    /**
+     * The url value.
+     */
     private String url;
+    /**
+     * The wiki page events value.
+     */
     private Boolean wikiPageEvents;
+    /**
+     * The token value.
+     */
     private String token;
 
+    /**
+     * The repository update events value.
+     */
     private Boolean repositoryUpdateEvents;
+    /**
+     * The confidential issues events value.
+     */
     private Boolean confidentialIssuesEvents;
+    /**
+     * The confidential note events value.
+     */
     private Boolean confidentialNoteEvents;
+    /**
+     * The push events branch filter value.
+     */
     private String pushEventsBranchFilter;
 
+    /**
+     * The deployment events value.
+     */
     private Boolean deploymentEvents;
+    /**
+     * The releases events value.
+     */
     private Boolean releasesEvents;
 
+    /**
+     * The description value.
+     */
     private String description;
 
     /**

@@ -34,6 +34,16 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class MergeRequestEvent extends AbstractEvent {
 
+    /**
+     * Constructs a new {@code MergeRequestEvent} instance.
+     */
+    public MergeRequestEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852232811512L;
     /**
@@ -46,13 +56,37 @@ public class MergeRequestEvent extends AbstractEvent {
      */
     public static final String OBJECT_KIND = "merge_request";
 
+    /**
+     * The user value.
+     */
     private EventUser user;
+    /**
+     * The project value.
+     */
     private EventProject project;
+    /**
+     * The repository value.
+     */
     private EventRepository repository;
+    /**
+     * The object attributes value.
+     */
     private ObjectAttributes objectAttributes;
+    /**
+     * The labels value.
+     */
     private List<EventLabel> labels;
+    /**
+     * The changes value.
+     */
     private MergeRequestChanges changes;
+    /**
+     * The assignees value.
+     */
     private List<Assignee> assignees;
+    /**
+     * The reviewers value.
+     */
     private List<Reviewer> reviewers;
 
     /**
@@ -243,6 +277,13 @@ public class MergeRequestEvent extends AbstractEvent {
      * @author Kimi Liu
      */
     public static class ObjectAttributes extends EventMergeRequest {
+
+        /**
+         * Constructs a new {@code ObjectAttributes} instance.
+         */
+        public ObjectAttributes() {
+            // No initialization required.
+        }
 
     }
 

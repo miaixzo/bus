@@ -68,6 +68,9 @@ public enum PackageType {
      */
     GENERIC;
 
+    /**
+     * The enum codec value.
+     */
     private static JacksonJsonEnumCodec<PackageType> enumCodec = new JacksonJsonEnumCodec<>(PackageType.class);
 
     /**

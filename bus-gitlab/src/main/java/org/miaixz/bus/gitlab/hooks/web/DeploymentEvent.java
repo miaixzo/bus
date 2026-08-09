@@ -31,6 +31,16 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class DeploymentEvent extends AbstractEvent {
 
+    /**
+     * Constructs a new {@code DeploymentEvent} instance.
+     */
+    public DeploymentEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852230222355L;
     /**
@@ -43,17 +53,53 @@ public class DeploymentEvent extends AbstractEvent {
      */
     public static final String OBJECT_KIND = "deployment";
 
+    /**
+     * The status value.
+     */
     private String status;
+    /**
+     * The status changed at value.
+     */
     private String statusChangedAt;
+    /**
+     * The deployable id value.
+     */
     private Long deployableId;
+    /**
+     * The deployment id value.
+     */
     private Long deploymentId;
+    /**
+     * The deployable url value.
+     */
     private String deployableUrl;
+    /**
+     * The environment value.
+     */
     private String environment;
+    /**
+     * The project value.
+     */
     private EventProject project;
+    /**
+     * The short sha value.
+     */
     private String shortSha;
+    /**
+     * The user value.
+     */
     private EventUser user;
+    /**
+     * The user url value.
+     */
     private String userUrl;
+    /**
+     * The commit url value.
+     */
     private String commitUrl;
+    /**
+     * The commit title value.
+     */
     private String commitTitle;
 
     /**

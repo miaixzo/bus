@@ -46,12 +46,27 @@ public class ApplicationSettings implements Serializable {
         // No initialization required.
     }
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852235962768L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The settings value.
+     */
     private Map<String, Object> settings = new HashMap<>();
 
     /**

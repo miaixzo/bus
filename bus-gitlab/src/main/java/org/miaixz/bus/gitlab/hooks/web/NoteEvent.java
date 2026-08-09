@@ -37,6 +37,16 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class NoteEvent extends AbstractEvent {
 
+    /**
+     * Constructs a new {@code NoteEvent} instance.
+     */
+    public NoteEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852232895012L;
     /**
@@ -49,14 +59,41 @@ public class NoteEvent extends AbstractEvent {
      */
     public static final String OBJECT_KIND = "note";
 
+    /**
+     * The user value.
+     */
     private EventUser user;
+    /**
+     * The project id value.
+     */
     private Long projectId;
+    /**
+     * The project value.
+     */
     private EventProject project;
+    /**
+     * The repository value.
+     */
     private EventRepository repository;
+    /**
+     * The object attributes value.
+     */
     private ObjectAttributes objectAttributes;
+    /**
+     * The commit value.
+     */
     private EventCommit commit;
+    /**
+     * The issue value.
+     */
     private EventIssue issue;
+    /**
+     * The merge request value.
+     */
     private EventMergeRequest mergeRequest;
+    /**
+     * The snippet value.
+     */
     private EventSnippet snippet;
 
     /**
@@ -286,6 +323,9 @@ public class NoteEvent extends AbstractEvent {
          */
         COMMIT;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<NoteableType> enumCodec = new JacksonJsonEnumCodec<>(NoteableType.class,
                 true, true);
 
@@ -332,25 +372,77 @@ public class NoteEvent extends AbstractEvent {
      */
     public static class ObjectAttributes {
 
+        /**
+         * Constructs a new {@code ObjectAttributes} instance.
+         */
+        public ObjectAttributes() {
+            // No initialization required.
+        }
+
+        /**
+         * The id value.
+         */
         private Long id;
+        /**
+         * The note value.
+         */
         private String note;
+        /**
+         * The discussion id value.
+         */
         private String discussionId;
 
         /**
          * The type field.
          */
         private String type;
+        /**
+         * The noteable type value.
+         */
         private NoteableType noteableType;
+        /**
+         * The author id value.
+         */
         private Long authorId;
+        /**
+         * The created at value.
+         */
         private Date createdAt;
+        /**
+         * The updated at value.
+         */
         private Date updatedAt;
+        /**
+         * The project id value.
+         */
         private Long projectId;
+        /**
+         * The attachment value.
+         */
         private String attachment;
+        /**
+         * The line code value.
+         */
         private String lineCode;
+        /**
+         * The commit id value.
+         */
         private String commitId;
+        /**
+         * The noteable id value.
+         */
         private Long noteableId;
+        /**
+         * The system value.
+         */
         private Boolean system;
+        /**
+         * The st diff value.
+         */
         private Diff stDiff;
+        /**
+         * The url value.
+         */
         private String url;
 
         /**

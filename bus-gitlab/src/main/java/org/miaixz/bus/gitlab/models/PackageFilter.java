@@ -33,16 +33,50 @@ import org.miaixz.bus.gitlab.models.Constants.SortOrder;
  */
 public class PackageFilter implements Serializable {
 
+    /**
+     * Constructs a new {@code PackageFilter} instance.
+     */
+    public PackageFilter() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852268635108L;
 
+    /**
+     * The exclude subgroups value.
+     */
     private Boolean excludeSubgroups;
+    /**
+     * The order by value.
+     */
     private PackageOrderBy orderBy;
+    /**
+     * The sort value.
+     */
     private SortOrder sort;
+    /**
+     * The package type value.
+     */
     private PackageType packageType;
+    /**
+     * The package name value.
+     */
     private String packageName;
+    /**
+     * The include versionless value.
+     */
     private Boolean includeVersionless;
+    /**
+     * The status value.
+     */
     private PackageStatus status;
+    /**
+     * The package version value.
+     */
     private String packageVersion;
 
     /**
@@ -92,7 +126,7 @@ public class PackageFilter implements Serializable {
     /**
      * Filter the project packages with a fuzzy search by name
      *
-     * @param packageName
+     * @param packageName package name to search for
      * @return the reference to this ProjectFilter instance
      */
     public PackageFilter withPackageName(String packageName) {

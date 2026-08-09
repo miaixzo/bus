@@ -32,9 +32,22 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  */
 public class MattermostService extends NotificationService {
 
+    /**
+     * Constructs a new {@code MattermostService} instance.
+     */
+    public MattermostService() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852285227357L;
 
+    /**
+     * The default channel value.
+     */
     private String defaultChannel;
 
     /**

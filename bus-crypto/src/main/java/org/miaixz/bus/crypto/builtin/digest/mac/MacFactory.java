@@ -36,6 +36,13 @@ import org.miaixz.bus.crypto.Builder;
 public class MacFactory {
 
     /**
+     * Constructs a new {@code MacFactory} instance.
+     */
+    public MacFactory() {
+        // No initialization required.
+    }
+
+    /**
      * Creates a {@link Mac} instance for the given algorithm and key.
      *
      * @param algorithm The MAC algorithm, see {@link Algorithm}.

@@ -21,9 +21,7 @@ package org.miaixz.bus.cortex;
 
 import java.io.Serial;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -41,9 +39,14 @@ import org.miaixz.bus.core.basic.entity.Namespace;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Nature extends Namespace {
+
+    /**
+     * Constructs a new {@code Nature} instance.
+     */
+    public Nature() {
+        // No initialization required.
+    }
 
     /**
      * Serialization identifier for the shared runtime base model.

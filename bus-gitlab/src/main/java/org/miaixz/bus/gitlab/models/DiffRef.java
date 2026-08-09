@@ -31,11 +31,23 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class DiffRef implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852251659905L;
 
+    /**
+     * The base sha value.
+     */
     private String baseSha;
+    /**
+     * The head sha value.
+     */
     private String headSha;
+    /**
+     * The start sha value.
+     */
     private String startSha;
 
     /**

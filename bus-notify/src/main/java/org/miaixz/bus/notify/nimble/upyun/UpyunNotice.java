@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.notify.nimble.upyun;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -37,9 +35,14 @@ import org.miaixz.bus.notify.magic.Notice;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class UpyunNotice extends Notice {
+
+    /**
+     * Constructs a new {@code UpyunNotice} instance.
+     */
+    public UpyunNotice() {
+        // No initialization required.
+    }
 
     /**
      * The authentication token for Upyun API.

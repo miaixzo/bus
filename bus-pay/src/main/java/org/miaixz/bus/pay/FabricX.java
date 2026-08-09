@@ -63,6 +63,13 @@ import org.miaixz.bus.fabric.protocol.http.body.MultipartBody;
 public abstract class FabricX {
 
     /**
+     * Constructs a new {@code FabricX} instance.
+     */
+    public FabricX() {
+        // No initialization required.
+    }
+
+    /**
      * Shared Fabric context for non-certificate payment HTTP calls.
      */
     private static final Context CONTEXT = Context.create();

@@ -29,10 +29,26 @@ import java.io.Serializable;
  */
 public class Email implements Serializable {
 
+    /**
+     * Constructs a new {@code Email} instance.
+     */
+    public Email() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852252307991L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The email value.
+     */
     private String email;
 
     /**

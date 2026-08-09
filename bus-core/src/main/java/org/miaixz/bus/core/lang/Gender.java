@@ -21,7 +21,6 @@ package org.miaixz.bus.core.lang;
 
 import java.util.Arrays;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -30,7 +29,6 @@ import lombok.Getter;
  * @author Kimi Liu
  */
 @Getter
-@AllArgsConstructor
 public enum Gender {
 
     /**
@@ -62,6 +60,19 @@ public enum Gender {
      * The descriptive name of the gender in Chinese.
      */
     private final String desc;
+
+    /**
+     * Constructs a gender value.
+     *
+     * @param key  the integer key
+     * @param code the string code
+     * @param desc the descriptive name
+     */
+    Gender(int key, String code, String desc) {
+        this.key = key;
+        this.code = code;
+        this.desc = desc;
+    }
 
     /**
      * Returns the {@code Gender} enum constant corresponding to the given code. This method supports various

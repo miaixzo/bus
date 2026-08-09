@@ -97,6 +97,9 @@ public final class AccessToken {
          */
         WRITE_REPOSITORY;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<Scope> enumCodec = new JacksonJsonEnumCodec<>(Scope.class);
 
         /**

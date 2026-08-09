@@ -33,12 +33,34 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Assets implements Serializable {
 
+    /**
+     * Constructs a new {@code Assets} instance.
+     */
+    public Assets() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852237093233L;
 
+    /**
+     * The count value.
+     */
     private Integer count;
+    /**
+     * The sources value.
+     */
     private List<Source> sources;
+    /**
+     * The links value.
+     */
     private List<Link> links;
+    /**
+     * The evidence file path value.
+     */
     private String evidenceFilePath;
 
     /**
@@ -139,10 +161,26 @@ public class Assets implements Serializable {
      */
     public static class Source implements Serializable {
 
+        /**
+         * Constructs a new {@code Source} instance.
+         */
+        public Source() {
+            // No initialization required.
+        }
+
+        /**
+         * The serial version uid value.
+         */
         @Serial
         private static final long serialVersionUID = 2852237123112L;
 
+        /**
+         * The format value.
+         */
         private ArchiveFormat format;
+        /**
+         * The url value.
+         */
         private String url;
 
         /**
@@ -205,12 +243,31 @@ public class Assets implements Serializable {
      */
     public static class Link implements Serializable {
 
+        /**
+         * Constructs a new {@code Link} instance.
+         */
+        public Link() {
+            // No initialization required.
+        }
+
         @Serial
         private static final long serialVersionUID = 2852237162837L;
 
+        /**
+         * The id value.
+         */
         private Long id;
+        /**
+         * The name value.
+         */
         private String name;
+        /**
+         * The url value.
+         */
         private String url;
+        /**
+         * The external value.
+         */
         private Boolean external;
 
         /**

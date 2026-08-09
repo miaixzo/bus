@@ -32,30 +32,106 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Pipeline implements Serializable {
 
+    /**
+     * Constructs a new {@code Pipeline} instance.
+     */
+    public Pipeline() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852269321958L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The iid value.
+     */
     private Long iid;
+    /**
+     * The project id value.
+     */
     private Long projectId;
+    /**
+     * The status value.
+     */
     private PipelineStatus status;
+    /**
+     * The source value.
+     */
     private String source;
+    /**
+     * The ref value.
+     */
     private String ref;
+    /**
+     * The sha value.
+     */
     private String sha;
+    /**
+     * The before sha value.
+     */
     private String beforeSha;
+    /**
+     * The tag value.
+     */
     private Boolean tag;
+    /**
+     * The yaml errors value.
+     */
     private String yamlErrors;
+    /**
+     * The user value.
+     */
     private User user;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The started at value.
+     */
     private Date startedAt;
+    /**
+     * The finished at value.
+     */
     private Date finishedAt;
+    /**
+     * The committed at value.
+     */
     private Date committedAt;
+    /**
+     * The coverage value.
+     */
     private String coverage;
+    /**
+     * The duration value.
+     */
     private Integer duration;
+    /**
+     * The queued duration value.
+     */
     private Float queuedDuration;
+    /**
+     * The web url value.
+     */
     private String webUrl;
+    /**
+     * The detailed status value.
+     */
     private DetailedStatus detailedStatus;
+    /**
+     * The name value.
+     */
     private String name;
 
     /**

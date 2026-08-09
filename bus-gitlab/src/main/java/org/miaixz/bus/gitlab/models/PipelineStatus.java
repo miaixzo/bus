@@ -81,6 +81,9 @@ public enum PipelineStatus {
      */
     SCHEDULED;
 
+    /**
+     * The values map value.
+     */
     private static Map<String, PipelineStatus> valuesMap = new HashMap<>(11);
 
     static {

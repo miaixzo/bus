@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.auth.nimble.douyin;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
@@ -30,7 +29,6 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
  * @author Kimi Liu
  */
 @Getter
-@AllArgsConstructor
 public enum DouyinScope implements AuthorizeScope {
 
     /**
@@ -167,4 +165,16 @@ public enum DouyinScope implements AuthorizeScope {
      */
     private final boolean isDefault;
 
+    /**
+     * Constructs an authorization scope.
+     *
+     * @param scope       the scope value
+     * @param description the scope description
+     * @param isDefault   whether the scope is enabled by default
+     */
+    DouyinScope(String scope, String description, boolean isDefault) {
+        this.scope = scope;
+        this.description = description;
+        this.isDefault = isDefault;
+    }
 }

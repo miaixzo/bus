@@ -36,14 +36,26 @@ import org.miaixz.bus.core.Lifecycle;
 @Getter
 @Setter
 @SuperBuilder
-@AllArgsConstructor
 public class Transmit {
 
     /**
-     * Creates an empty service transmission snapshot.
+     * Constructs an empty service transmission snapshot.
      */
     public Transmit() {
         // No initialization required.
+    }
+
+    /**
+     * Constructs a service transmission snapshot.
+     *
+     * @param name      the service name
+     * @param metrics   the service metrics
+     * @param lifecycle the lifecycle state
+     */
+    public Transmit(String name, Metrics metrics, Lifecycle.State lifecycle) {
+        this.name = name;
+        this.metrics = metrics;
+        this.lifecycle = lifecycle;
     }
 
     /**

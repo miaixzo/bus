@@ -36,70 +36,257 @@ import tools.jackson.databind.annotation.JsonSerialize;
  */
 public class MergeRequest implements Serializable {
 
+    /**
+     * Constructs a new {@code MergeRequest} instance.
+     */
+    public MergeRequest() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852262182510L;
 
+    /**
+     * The allow collaboration value.
+     */
     private Boolean allowCollaboration;
+    /**
+     * The allow maintainer to push value.
+     */
     private Boolean allowMaintainerToPush;
+    /**
+     * The approvals before merge value.
+     */
     private Integer approvalsBeforeMerge;
+    /**
+     * The assignee value.
+     */
     private Assignee assignee;
+    /**
+     * The assignees value.
+     */
     private List<Assignee> assignees;
+    /**
+     * The reviewers value.
+     */
     private List<Reviewer> reviewers;
+    /**
+     * The author value.
+     */
     private Author author;
+    /**
+     * The blocking discussions resolved value.
+     */
     private Boolean blockingDiscussionsResolved;
+    /**
+     * The changes value.
+     */
     private List<Diff> changes;
+    /**
+     * The changes count value.
+     */
     private String changesCount;
+    /**
+     * The closed at value.
+     */
     private Date closedAt;
+    /**
+     * The closed by value.
+     */
     private Participant closedBy;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The discussion locked value.
+     */
     private Boolean discussionLocked;
+    /**
+     * The diverged commits count value.
+     */
     private Integer divergedCommitsCount;
+    /**
+     * The downvotes value.
+     */
     private Integer downvotes;
+    /**
+     * The draft value.
+     */
     private Boolean draft;
+    /**
+     * The force remove source branch value.
+     */
     private Boolean forceRemoveSourceBranch;
+    /**
+     * The has conflicts value.
+     */
     private Boolean hasConflicts;
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The iid value.
+     */
     private Long iid;
+    /**
+     * The labels value.
+     */
     private List<String> labels;
+    /**
+     * The latest build finished at value.
+     */
     private Date latestBuildFinishedAt;
+    /**
+     * The latest build started at value.
+     */
     private Date latestBuildStartedAt;
+    /**
+     * The merge commit sha value.
+     */
     private String mergeCommitSha;
+    /**
+     * The squash commit sha value.
+     */
     private String squashCommitSha;
+    /**
+     * The detailed merge status value.
+     */
     private String detailedMergeStatus;
+    /**
+     * The merged at value.
+     */
     private Date mergedAt;
+    /**
+     * The merge user value.
+     */
     private Participant mergeUser;
+    /**
+     * The merge when pipeline succeeds value.
+     */
     private Boolean mergeWhenPipelineSucceeds;
+    /**
+     * The merge error value.
+     */
     private String mergeError;
+    /**
+     * The milestone value.
+     */
     private Milestone milestone;
+    /**
+     * The pipeline value.
+     */
     private Pipeline pipeline;
+    /**
+     * The head pipeline value.
+     */
     private Pipeline headPipeline;
+    /**
+     * The project id value.
+     */
     private Long projectId;
+    /**
+     * The sha value.
+     */
     private String sha;
+    /**
+     * The should remove source branch value.
+     */
     private Boolean shouldRemoveSourceBranch;
+    /**
+     * The source branch value.
+     */
     private String sourceBranch;
+    /**
+     * The source project id value.
+     */
     private Long sourceProjectId;
+    /**
+     * The squash value.
+     */
     private Boolean squash;
+    /**
+     * The state value.
+     */
     private String state;
+    /**
+     * The subscribed value.
+     */
     private Boolean subscribed;
+    /**
+     * The target branch value.
+     */
     private String targetBranch;
+    /**
+     * The target project id value.
+     */
     private Long targetProjectId;
+    /**
+     * The task completion status value.
+     */
     private TaskCompletionStatus taskCompletionStatus;
+    /**
+     * The references value.
+     */
     private References references;
+    /**
+     * The time stats value.
+     */
     private TimeStats timeStats;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The upvotes value.
+     */
     private Integer upvotes;
+    /**
+     * The user notes count value.
+     */
     private Integer userNotesCount;
+    /**
+     * The web url value.
+     */
     private String webUrl;
+    /**
+     * The work in progress value.
+     */
     private Boolean workInProgress;
+    /**
+     * The diff refs value.
+     */
     private DiffRef diffRefs;
+    /**
+     * The rebase in progress value.
+     */
     private Boolean rebaseInProgress;
 
     // The approval fields will only be available when listing approvals, approving or unapproving a merge reuest.
+    /**
+     * The approvals required value.
+     */
     private Integer approvalsRequired;
+    /**
+     * The approvals left value.
+     */
     private Integer approvalsLeft;
 
+    /**
+     * The approved by value.
+     */
     @JsonSerialize(using = JacksonJson.UserListSerializer.class)
     @JsonDeserialize(using = JacksonJson.UserListDeserializer.class)
     private List<User> approvedBy;

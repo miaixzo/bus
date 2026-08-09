@@ -34,6 +34,13 @@ import org.miaixz.bus.image.Builder;
 public class SAXTransformerFactoryHolder {
 
     /**
+     * Constructs a new {@code SAXTransformerFactoryHolder} instance.
+     */
+    public SAXTransformerFactoryHolder() {
+        // No initialization required.
+    }
+
+    /**
      * The factory value.
      */
     public static final SAXTransformerFactory factory;

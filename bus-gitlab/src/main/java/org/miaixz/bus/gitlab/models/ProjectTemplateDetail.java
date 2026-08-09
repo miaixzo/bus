@@ -31,6 +31,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ProjectTemplateDetail extends ProjectTemplate {
 
     /**
+     * Constructs a new {@code ProjectTemplateDetail} instance.
+     */
+    public ProjectTemplateDetail() {
+        // No initialization required.
+    }
+
+    /**
      * Short display name for the template.
      */
     private String nickname;

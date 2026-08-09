@@ -34,9 +34,14 @@ import org.miaixz.bus.core.lang.Normal;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Context {
+
+    /**
+     * Constructs a new {@code Context} instance.
+     */
+    public Context() {
+        // No initialization required.
+    }
 
     /**
      * Default duration for hotspot caching in seconds.

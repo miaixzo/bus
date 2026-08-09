@@ -29,6 +29,13 @@ import org.miaixz.bus.core.lang.Symbol;
 public class FestivalBuilder {
 
     /**
+     * Constructs a new {@code FestivalBuilder} instance.
+     */
+    public FestivalBuilder() {
+        // No initialization required.
+    }
+
+    /**
      * Festival name.
      */
     protected String name;

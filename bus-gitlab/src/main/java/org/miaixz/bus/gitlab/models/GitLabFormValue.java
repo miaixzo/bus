@@ -26,12 +26,18 @@ package org.miaixz.bus.gitlab.models;
  */
 public class GitLabFormValue {
 
+    /**
+     * The value value.
+     */
     private Object value;
 
     /**
      * The type field.
      */
     private GitLabFormValueType type;
+    /**
+     * The required value.
+     */
     private boolean required;
 
     /**

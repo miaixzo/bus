@@ -49,6 +49,13 @@ import org.miaixz.bus.core.xyz.PatternKit;
 public class JWTSignerBuilder {
 
     /**
+     * Constructs a new {@code JWTSignerBuilder} instance.
+     */
+    public JWTSignerBuilder() {
+        // No initialization required.
+    }
+
+    /**
      * Regular expression pattern to match ECDSA algorithm identifiers (e.g., ES256, ES384, ES512).
      */
     private static final Pattern ES_ALGORITHM_PATTERN = Pattern.compile("es\\d{3}", Pattern.CASE_INSENSITIVE);

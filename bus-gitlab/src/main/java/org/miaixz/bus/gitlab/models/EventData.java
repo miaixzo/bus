@@ -32,16 +32,50 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class EventData implements Serializable {
 
+    /**
+     * Constructs a new {@code EventData} instance.
+     */
+    public EventData() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852253272657L;
 
+    /**
+     * The after value.
+     */
     private String after;
+    /**
+     * The before value.
+     */
     private String before;
+    /**
+     * The commits value.
+     */
     private List<Commit> commits;
+    /**
+     * The ref value.
+     */
     private String ref;
+    /**
+     * The repository value.
+     */
     private Repository repository;
+    /**
+     * The total commits count value.
+     */
     private Integer totalCommitsCount;
+    /**
+     * The user id value.
+     */
     private Long userId;
+    /**
+     * The user name value.
+     */
     private String userName;
 
     /**

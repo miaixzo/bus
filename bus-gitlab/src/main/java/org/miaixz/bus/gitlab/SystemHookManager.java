@@ -45,11 +45,20 @@ public class SystemHookManager implements HookManager {
      */
 
     public static final String SYSTEM_HOOK_EVENT = "System Hook";
+    /**
+     * The jackson json value.
+     */
     private final JacksonJson jacksonJson = new JacksonJson();
 
     // Collection of objects listening for System Hook events.
+    /**
+     * The system hook listeners value.
+     */
     private final List<SystemHookListener> systemHookListeners = new CopyOnWriteArrayList<SystemHookListener>();
 
+    /**
+     * The secret token value.
+     */
     private String secretToken;
 
     /**

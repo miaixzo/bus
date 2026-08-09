@@ -2813,15 +2813,17 @@ public class ProjectApi extends AbstractApi implements Constants {
         return (response.readEntity(Snippet.class));
     }
 
-    /*
+    /**
      * Deletes an existing project snippet. This is an idempotent function and deleting a non-existent snippet does not
      * cause an error.
      *
-     * <pre><code>GitLab Endpoint: DELETE /projects/:id/snippets/:snippet_id</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: DELETE /projects/:id/snippets/:snippet_id</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      *
-     * @param snippetId the ID of the project's snippet
+     * @param snippetId       the ID of the project's snippet
      *
      * @throws RelevantException if any exception occurs
      */

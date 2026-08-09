@@ -29,12 +29,40 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class EventRepository {
 
+    /**
+     * Constructs a new {@code EventRepository} instance.
+     */
+    public EventRepository() {
+        // No initialization required.
+    }
+
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The url value.
+     */
     private String url;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The homepage value.
+     */
     private String homepage;
+    /**
+     * The git http url value.
+     */
     private String git_http_url;
+    /**
+     * The git ssh url value.
+     */
     private String git_ssh_url;
+    /**
+     * The visibility level value.
+     */
     private AccessLevel visibility_level;
 
     /**

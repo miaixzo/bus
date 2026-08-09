@@ -31,6 +31,16 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class WikiAttachment implements Serializable {
 
+    /**
+     * Constructs a new {@code WikiAttachment} instance.
+     */
+    public WikiAttachment() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852283267221L;
 
@@ -41,10 +51,26 @@ public class WikiAttachment implements Serializable {
      */
     public static class Link implements Serializable {
 
+        /**
+         * Constructs a new {@code Link} instance.
+         */
+        public Link() {
+            // No initialization required.
+        }
+
+        /**
+         * The serial version uid value.
+         */
         @Serial
         private static final long serialVersionUID = 2852283337059L;
 
+        /**
+         * The url value.
+         */
         private String url;
+        /**
+         * The markdown value.
+         */
         private String markdown;
 
         /**
@@ -100,9 +126,21 @@ public class WikiAttachment implements Serializable {
 
     }
 
+    /**
+     * The file name value.
+     */
     private String fileName;
+    /**
+     * The file path value.
+     */
     private String filePath;
+    /**
+     * The branch value.
+     */
     private String branch;
+    /**
+     * The link value.
+     */
     private Link link;
 
     /**

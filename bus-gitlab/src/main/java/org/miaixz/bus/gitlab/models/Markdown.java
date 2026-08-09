@@ -31,9 +31,22 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Markdown implements Serializable {
 
+    /**
+     * Constructs a new {@code Markdown} instance.
+     */
+    public Markdown() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852260951898L;
 
+    /**
+     * The html value.
+     */
     private String html;
 
     /**

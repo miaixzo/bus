@@ -31,39 +31,133 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class EventWorkItem {
 
+    /**
+     * Constructs a new {@code EventWorkItem} instance.
+     */
+    public EventWorkItem() {
+        // No initialization required.
+    }
+
+    /**
+     * The author id value.
+     */
     private Long authorId;
+    /**
+     * The closed at value.
+     */
     private Date closedAt;
+    /**
+     * The confidential value.
+     */
     private Boolean confidential;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The due date value.
+     */
     private Date dueDate;
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The iid value.
+     */
     private Long iid;
+    /**
+     * The last edited at value.
+     */
     private Date lastEditedAt;
+    /**
+     * The last edited by id value.
+     */
     private Long lastEditedById;
+    /**
+     * The milestone id value.
+     */
     private Long milestoneId;
+    /**
+     * The project id value.
+     */
     private Long projectId;
+    /**
+     * The relative position value.
+     */
     private Long relativePosition;
+    /**
+     * The state id value.
+     */
     private Long stateId;
+    /**
+     * The time estimate value.
+     */
     private Integer timeEstimate;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The updated by id value.
+     */
     private Long updatedById;
+    /**
+     * The weight value.
+     */
     private Integer weight;
+    /**
+     * The health status value.
+     */
     private String healthStatus;
 
     /**
      * The type field.
      */
     private String type;
+    /**
+     * The url value.
+     */
     private String url;
+    /**
+     * The total time spent value.
+     */
     private Integer totalTimeSpent;
+    /**
+     * The time change value.
+     */
     private Integer timeChange;
+    /**
+     * The assignee ids value.
+     */
     private List<Long> assigneeIds;
+    /**
+     * The assignee id value.
+     */
     private Long assigneeId;
+    /**
+     * The labels value.
+     */
     private List<EventLabel> labels;
+    /**
+     * The state value.
+     */
     private String state;
+    /**
+     * The severity value.
+     */
     private String severity;
+    /**
+     * The action value.
+     */
     private String action;
 
     /**

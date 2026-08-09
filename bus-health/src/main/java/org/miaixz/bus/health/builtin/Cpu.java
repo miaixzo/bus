@@ -19,11 +19,9 @@
 */
 package org.miaixz.bus.health.builtin;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * CPU Information
@@ -32,10 +30,15 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@SuperBuilder
 public class Cpu {
+
+    /**
+     * Constructs a new {@code Cpu} instance.
+     */
+    public Cpu() {
+        // No initialization required.
+    }
 
     /**
      * Number of physical cores

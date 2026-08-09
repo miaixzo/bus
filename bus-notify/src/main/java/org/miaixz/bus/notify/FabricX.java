@@ -40,6 +40,13 @@ import org.miaixz.bus.fabric.Payload;
 public abstract class FabricX {
 
     /**
+     * Constructs a new {@code FabricX} instance.
+     */
+    public FabricX() {
+        // No initialization required.
+    }
+
+    /**
      * Shared Fabric context for notification HTTP calls.
      */
     private static final org.miaixz.bus.fabric.Context CONTEXT = org.miaixz.bus.fabric.Context.create();

@@ -48,17 +48,47 @@ public abstract class AbstractUser<U extends AbstractUser<U>> implements Seriali
         // No initialization required.
     }
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852235350570L;
 
+    /**
+     * The avatar url value.
+     */
     private String avatarUrl;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The email value.
+     */
     private String email;
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The state value.
+     */
     private String state;
+    /**
+     * The locked value.
+     */
     private Boolean locked;
+    /**
+     * The username value.
+     */
     private String username;
+    /**
+     * The web url value.
+     */
     private String webUrl;
 
     /**

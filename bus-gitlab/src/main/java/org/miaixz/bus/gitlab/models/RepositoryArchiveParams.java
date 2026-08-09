@@ -26,7 +26,20 @@ package org.miaixz.bus.gitlab.models;
  */
 public class RepositoryArchiveParams {
 
+    /**
+     * Constructs a new {@code RepositoryArchiveParams} instance.
+     */
+    public RepositoryArchiveParams() {
+        // No initialization required.
+    }
+
+    /**
+     * The sha value.
+     */
     private String sha;
+    /**
+     * The path value.
+     */
     private String path;
 
     /**

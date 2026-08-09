@@ -33,9 +33,14 @@ import org.miaixz.bus.notify.magic.Notice;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class CtyunNotice extends Notice {
+
+    /**
+     * Constructs a new {@code CtyunNotice} instance.
+     */
+    public CtyunNotice() {
+        // No initialization required.
+    }
 
     /**
      * The name of the template variable.

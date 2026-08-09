@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.pay.nimble.wechat.entity.v2;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -36,9 +34,14 @@ import org.miaixz.bus.pay.magic.Voucher;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class OrderQuery extends Voucher {
+
+    /**
+     * Constructs a new {@code OrderQuery} instance.
+     */
+    public OrderQuery() {
+        // No initialization required.
+    }
 
     /**
      * Sub-merchant App ID.

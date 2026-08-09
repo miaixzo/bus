@@ -35,26 +35,90 @@ import org.miaixz.bus.gitlab.models.Constants.StateEvent;
  */
 public class MergeRequestParams implements Serializable {
 
+    /**
+     * Constructs a new {@code MergeRequestParams} instance.
+     */
+    public MergeRequestParams() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852263591065L;
 
+    /**
+     * The source branch value.
+     */
     private String sourceBranch;
+    /**
+     * The target branch value.
+     */
     private String targetBranch;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The assignee id value.
+     */
     private Long assigneeId;
+    /**
+     * The assignee ids value.
+     */
     private List<Long> assigneeIds;
+    /**
+     * The reviewer ids value.
+     */
     private List<Long> reviewerIds;
+    /**
+     * The milestone id value.
+     */
     private Long milestoneId;
+    /**
+     * The labels value.
+     */
     private List<String> labels;
+    /**
+     * The add labels value.
+     */
     private List<String> addLabels;
+    /**
+     * The remove labels value.
+     */
     private List<String> removeLabels;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The target project id value.
+     */
     private Long targetProjectId;
+    /**
+     * The state event value.
+     */
     private StateEvent stateEvent;
+    /**
+     * The remove source branch value.
+     */
     private Boolean removeSourceBranch;
+    /**
+     * The squash value.
+     */
     private Boolean squash;
+    /**
+     * The discussion locked value.
+     */
     private Boolean discussionLocked;
+    /**
+     * The allow collaboration value.
+     */
     private Boolean allowCollaboration;
+    /**
+     * The approvals before merge value.
+     */
     private Integer approvalsBeforeMerge;
 
     /**

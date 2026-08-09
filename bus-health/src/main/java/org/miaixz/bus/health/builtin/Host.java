@@ -19,11 +19,9 @@
 */
 package org.miaixz.bus.health.builtin;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Host Information
@@ -32,10 +30,15 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@SuperBuilder
 public class Host {
+
+    /**
+     * Constructs a new {@code Host} instance.
+     */
+    public Host() {
+        // No initialization required.
+    }
 
     /**
      * System name

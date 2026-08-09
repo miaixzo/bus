@@ -31,10 +31,26 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Permissions implements Serializable {
 
+    /**
+     * Constructs a new {@code Permissions} instance.
+     */
+    public Permissions() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852269138567L;
 
+    /**
+     * The project access value.
+     */
     private ProjectAccess projectAccess;
+    /**
+     * The group access value.
+     */
     private ProjectAccess groupAccess;
 
     /**

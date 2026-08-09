@@ -35,10 +35,29 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class NotificationSettings implements Serializable {
 
+    /**
+     * Constructs a new {@code NotificationSettings} instance.
+     */
+    public NotificationSettings() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852266179825L;
+    /**
+     * The level value.
+     */
     private Level level;
+    /**
+     * The email value.
+     */
     private String email;
+    /**
+     * The events value.
+     */
     private Events events;
 
     /**
@@ -144,6 +163,9 @@ public class NotificationSettings implements Serializable {
          */
         CUSTOM;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<Level> enumCodec = new JacksonJsonEnumCodec<>(Level.class);
 
         /**
@@ -189,20 +211,66 @@ public class NotificationSettings implements Serializable {
      */
     public static class Events implements Serializable {
 
+        /**
+         * Constructs a new {@code Events} instance.
+         */
+        public Events() {
+            // No initialization required.
+        }
+
+        /**
+         * The serial version uid value.
+         */
         @Serial
         private static final long serialVersionUID = 2852266282729L;
 
+        /**
+         * The new note value.
+         */
         private Boolean newNote;
+        /**
+         * The new issue value.
+         */
         private Boolean newIssue;
+        /**
+         * The reopen issue value.
+         */
         private Boolean reopenIssue;
+        /**
+         * The close issue value.
+         */
         private Boolean closeIssue;
+        /**
+         * The reassign issue value.
+         */
         private Boolean reassignIssue;
+        /**
+         * The new merge request value.
+         */
         private Boolean newMergeRequest;
+        /**
+         * The reopen merge request value.
+         */
         private Boolean reopenMergeRequest;
+        /**
+         * The close merge request value.
+         */
         private Boolean closeMergeRequest;
+        /**
+         * The reassign merge request value.
+         */
         private Boolean reassignMergeRequest;
+        /**
+         * The merge merge request value.
+         */
         private Boolean mergeMergeRequest;
+        /**
+         * The failed pipeline value.
+         */
         private Boolean failedPipeline;
+        /**
+         * The success pipeline value.
+         */
         private Boolean successPipeline;
 
         /**

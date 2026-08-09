@@ -32,11 +32,23 @@ import java.io.Serializable;
  */
 public class AllowedTo implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852235756710L;
 
+    /**
+     * The access level value.
+     */
     private AccessLevel accessLevel;
+    /**
+     * The user id value.
+     */
     private Long userId;
+    /**
+     * The group id value.
+     */
     private Long groupId;
 
     /**

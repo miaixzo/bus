@@ -22,11 +22,9 @@ package org.miaixz.bus.office;
 import java.util.List;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Shared bundle models used to describe segment input, codecs, and paged output.
@@ -89,10 +87,15 @@ public final class Bundle {
      */
     @Getter
     @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @SuperBuilder
     public static class Paged<T> {
+
+        /**
+         * Constructs a new {@code Paged} instance.
+         */
+        public Paged() {
+            // No initialization required.
+        }
 
         /**
          * Bundle handle identifier.

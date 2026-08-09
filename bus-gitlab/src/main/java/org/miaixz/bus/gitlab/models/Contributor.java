@@ -29,11 +29,30 @@ import java.io.Serial;
  */
 public class Contributor extends AbstractUser<Contributor> {
 
+    /**
+     * Constructs a new {@code Contributor} instance.
+     */
+    public Contributor() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852250837816L;
 
+    /**
+     * The commits value.
+     */
     private Integer commits;
+    /**
+     * The additions value.
+     */
     private Integer additions;
+    /**
+     * The deletions value.
+     */
     private Integer deletions;
 
     /**

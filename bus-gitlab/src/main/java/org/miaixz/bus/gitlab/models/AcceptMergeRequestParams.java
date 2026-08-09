@@ -38,14 +38,35 @@ public class AcceptMergeRequestParams implements Serializable {
         // No initialization required.
     }
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852235380976L;
 
+    /**
+     * The merge commit message value.
+     */
     private String mergeCommitMessage;
+    /**
+     * The merge when pipeline succeeds value.
+     */
     private Boolean mergeWhenPipelineSucceeds;
+    /**
+     * The sha value.
+     */
     private String sha;
+    /**
+     * The should remove source branch value.
+     */
     private Boolean shouldRemoveSourceBranch;
+    /**
+     * The squash value.
+     */
     private Boolean squash;
+    /**
+     * The squash commit message value.
+     */
     private String squashCommitMessage;
 
     /**

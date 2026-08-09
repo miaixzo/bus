@@ -39,6 +39,16 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public abstract class NotificationService implements Serializable {
 
+    /**
+     * Constructs a new {@code NotificationService} instance.
+     */
+    public NotificationService() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852285332559L;
     /**
@@ -123,25 +133,79 @@ public abstract class NotificationService implements Serializable {
      */
     public static final String PUSH_EVENTS_PROP = "push_events";
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The slug value.
+     */
     private String slug;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The active value.
+     */
     private Boolean active;
 
+    /**
+     * The commit events value.
+     */
     private Boolean commitEvents;
+    /**
+     * The push events value.
+     */
     private Boolean pushEvents;
+    /**
+     * The issues events value.
+     */
     private Boolean issuesEvents;
+    /**
+     * The confidential issues events value.
+     */
     private Boolean confidentialIssuesEvents;
+    /**
+     * The merge requests events value.
+     */
     private Boolean mergeRequestsEvents;
+    /**
+     * The tag push events value.
+     */
     private Boolean tagPushEvents;
+    /**
+     * The note events value.
+     */
     private Boolean noteEvents;
+    /**
+     * The confidential note events value.
+     */
     private Boolean confidentialNoteEvents;
+    /**
+     * The pipeline events value.
+     */
     private Boolean pipelineEvents;
+    /**
+     * The wiki page events value.
+     */
     private Boolean wikiPageEvents;
+    /**
+     * The job events value.
+     */
     private Boolean jobEvents;
 
+    /**
+     * The properties value.
+     */
     private Map<String, Object> properties;
 
     /**

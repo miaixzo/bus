@@ -33,15 +33,37 @@ import tools.jackson.databind.annotation.JsonSerialize;
  */
 public class Epic extends AbstractEpic<Epic> {
 
+    /**
+     * Constructs a new {@code Epic} instance.
+     */
+    public Epic() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852252677578L;
 
+    /**
+     * The start date is fixed value.
+     */
     private Boolean startDateIsFixed;
+    /**
+     * The due date is fixed value.
+     */
     private Boolean dueDateIsFixed;
 
+    /**
+     * The due date from inherited source value.
+     */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date dueDateFromInheritedSource;
 
+    /**
+     * The subscribed value.
+     */
     private Boolean subscribed;
 
     /**

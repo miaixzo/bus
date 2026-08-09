@@ -40,6 +40,9 @@ public enum HealthCheckStatus {
      */
     FAILED;
 
+    /**
+     * The enum codec value.
+     */
     private static JacksonJsonEnumCodec<HealthCheckStatus> enumCodec = new JacksonJsonEnumCodec<>(
             HealthCheckStatus.class);
 

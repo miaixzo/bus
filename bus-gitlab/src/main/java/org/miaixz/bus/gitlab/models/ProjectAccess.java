@@ -31,10 +31,26 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class ProjectAccess implements Serializable {
 
+    /**
+     * Constructs a new {@code ProjectAccess} instance.
+     */
+    public ProjectAccess() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852270701671L;
 
+    /**
+     * The access level value.
+     */
     private AccessLevel accessLevel;
+    /**
+     * The notification level value.
+     */
     private int notificationLevel;
 
     /**

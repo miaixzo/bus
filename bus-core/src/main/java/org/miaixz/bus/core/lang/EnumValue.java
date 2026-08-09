@@ -23,7 +23,6 @@ import java.awt.*;
 import java.util.Map;
 import java.util.Set;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import org.miaixz.bus.core.center.map.BiMap;
@@ -44,7 +43,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * @author Kimi Liu
      */
     @Getter
-    @AllArgsConstructor
     enum Action {
 
         /**
@@ -92,7 +90,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * @author Kimi Liu
      */
     @Getter
-    @AllArgsConstructor
     enum Align {
         /**
          * Left alignment.
@@ -134,7 +131,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * @author Kimi Liu
      */
     @Getter
-    @AllArgsConstructor
     enum Balance {
         /**
          * Round-robin strategy.
@@ -157,7 +153,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * @author Kimi Liu
      */
     @Getter
-    @AllArgsConstructor
     enum Compare {
 
         /**
@@ -195,6 +190,15 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          */
         String code;
 
+        /**
+         * Constructs a comparison operator.
+         *
+         * @param code the operator code
+         */
+        Compare(String code) {
+            this.code = code;
+        }
+
     }
 
     /**
@@ -220,7 +224,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * @author Kimi Liu
      */
     @Getter
-    @AllArgsConstructor
     enum Gradient {
         /**
          * Gradient from top to bottom.
@@ -247,7 +250,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * @author Kimi Liu
      */
     @Getter
-    @AllArgsConstructor
     enum Masking {
         /**
          * Full masking. Replaces the entire string with masking characters.
@@ -355,7 +357,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * @author Kimi Liu
      */
     @Getter
-    @AllArgsConstructor
     enum Mode {
         /**
          * Masks the beginning of the string.
@@ -378,7 +379,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * @author Kimi Liu
      */
     @Getter
-    @AllArgsConstructor
     enum Modifier {
 
         /**
@@ -440,6 +440,15 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
         private final int code;
 
         /**
+         * Constructs a reflection modifier.
+         *
+         * @param code the modifier code
+         */
+        Modifier(int code) {
+            this.code = code;
+        }
+
+        /**
          * Performs a bitwise OR operation on multiple modifier types to combine them.
          *
          * @param modifierTypes An array of {@code Modifier} enums. Must not be empty.
@@ -481,7 +490,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * @author Kimi Liu
      */
     @Getter
-    @AllArgsConstructor
     enum Naming {
 
         /**
@@ -563,6 +571,17 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          * The display name of the text style.
          */
         private final String name;
+
+        /**
+         * Constructs a naming style.
+         *
+         * @param code the style code
+         * @param name the display name
+         */
+        Naming(long code, String name) {
+            this.code = code;
+            this.name = name;
+        }
 
         /**
          * Gets the text style by its associated code.
@@ -661,7 +680,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * @author Kimi Liu
      */
     @Getter
-    @AllArgsConstructor
     enum Povider {
 
         /**
@@ -726,6 +744,15 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          */
         String code;
 
+        /**
+         * Constructs a provider value.
+         *
+         * @param code the provider code
+         */
+        Povider(String code) {
+            this.code = code;
+        }
+
     }
 
     /**
@@ -734,7 +761,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * @author Kimi Liu
      */
     @Getter
-    @AllArgsConstructor
     enum Probe {
 
         /**
@@ -759,6 +785,15 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          */
         private final String value;
 
+        /**
+         * Constructs a probe status.
+         *
+         * @param value the status value
+         */
+        Probe(String value) {
+            this.value = value;
+        }
+
     }
 
     /**
@@ -767,7 +802,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * @author Kimi Liu
      */
     @Getter
-    @AllArgsConstructor
     enum Sort {
 
         /**
@@ -783,6 +817,15 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          * The code value representing the sort order.
          */
         String code;
+
+        /**
+         * Constructs a sort order.
+         *
+         * @param code the order code
+         */
+        Sort(String code) {
+            this.code = code;
+        }
 
         /**
          * Checks if this sort order is ascending.
@@ -844,7 +887,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * @author Kimi Liu
      */
     @Getter
-    @AllArgsConstructor
     enum Thumb {
 
         /**
@@ -872,6 +914,15 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          * The integer code represented by this enum constant.
          */
         private final int code;
+
+        /**
+         * Constructs a thumbnail scaling method.
+         *
+         * @param code the scaling code
+         */
+        Thumb(int code) {
+            this.code = code;
+        }
 
     }
 
@@ -1033,7 +1084,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * @author Kimi Liu
      */
     @Getter
-    @AllArgsConstructor
     enum Zoom {
         /**
          * Original ratio, no scaling.

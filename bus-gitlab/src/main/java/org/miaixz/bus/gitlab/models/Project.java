@@ -45,143 +45,555 @@ import tools.jackson.databind.annotation.JsonSerialize;
  */
 public class Project implements Serializable {
 
+    /**
+     * Constructs a new {@code Project} instance.
+     */
+    public Project() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852270183312L;
 
+    /**
+     * The shared with groups value.
+     */
     private List<SharedGroup> sharedWithGroups;
+    /**
+     * The approvals before merge value.
+     */
     private Integer approvalsBeforeMerge;
+    /**
+     * The archived value.
+     */
     private Boolean archived;
+    /**
+     * The avatar url value.
+     */
     private String avatarUrl;
+    /**
+     * The container registry enabled value.
+     */
     private Boolean containerRegistryEnabled;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The creator id value.
+     */
     private Long creatorId;
+    /**
+     * The default branch value.
+     */
     private String defaultBranch;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The forks count value.
+     */
     private Integer forksCount;
+    /**
+     * The forked from project value.
+     */
     private Project forkedFromProject;
+    /**
+     * The http url to repo value.
+     */
     private String httpUrlToRepo;
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The is public value.
+     */
     private Boolean isPublic;
+    /**
+     * The issues enabled value.
+     */
     private Boolean issuesEnabled;
+    /**
+     * The jobs enabled value.
+     */
     private Boolean jobsEnabled;
+    /**
+     * The last activity at value.
+     */
     private Date lastActivityAt;
+    /**
+     * The lfs enabled value.
+     */
     private Boolean lfsEnabled;
+    /**
+     * The merge method value.
+     */
     private MergeMethod mergeMethod;
+    /**
+     * The merge requests enabled value.
+     */
     private Boolean mergeRequestsEnabled;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The namespace value.
+     */
     private Namespace namespace;
+    /**
+     * The name with namespace value.
+     */
     private String nameWithNamespace;
+    /**
+     * The only allow merge if pipeline succeeds value.
+     */
     private Boolean onlyAllowMergeIfPipelineSucceeds;
+    /**
+     * The allow merge on skipped pipeline value.
+     */
     private Boolean allowMergeOnSkippedPipeline;
+    /**
+     * The only allow merge if all discussions are resolved value.
+     */
     private Boolean onlyAllowMergeIfAllDiscussionsAreResolved;
+    /**
+     * The open issues count value.
+     */
     private Integer openIssuesCount;
+    /**
+     * The owner value.
+     */
     private Owner owner;
+    /**
+     * The path value.
+     */
     private String path;
+    /**
+     * The path with namespace value.
+     */
     private String pathWithNamespace;
+    /**
+     * The permissions value.
+     */
     private Permissions permissions;
+    /**
+     * The public jobs value.
+     */
     private Boolean publicJobs;
+    /**
+     * The repository storage value.
+     */
     private String repositoryStorage;
+    /**
+     * The request access enabled value.
+     */
     private Boolean requestAccessEnabled;
+    /**
+     * The runners token value.
+     */
     private String runnersToken;
+    /**
+     * The shared runners enabled value.
+     */
     private Boolean sharedRunnersEnabled;
+    /**
+     * The build git strategy value.
+     */
     private BuildGitStrategy buildGitStrategy;
+    /**
+     * The snippets enabled value.
+     */
     private Boolean snippetsEnabled;
+    /**
+     * The ssh url to repo value.
+     */
     private String sshUrlToRepo;
+    /**
+     * The star count value.
+     */
     private Integer starCount;
 
+    /**
+     * The tag list value.
+     */
     private List<String> tagList;
+    /**
+     * The topics value.
+     */
     private List<String> topics;
+    /**
+     * The visibility level value.
+     */
     private Integer visibilityLevel;
+    /**
+     * The visibility value.
+     */
     private Visibility visibility;
+    /**
+     * The wall enabled value.
+     */
     private Boolean wallEnabled;
+    /**
+     * The web url value.
+     */
     private String webUrl;
+    /**
+     * The wiki enabled value.
+     */
     private Boolean wikiEnabled;
+    /**
+     * The printing merge request link enabled value.
+     */
     private Boolean printingMergeRequestLinkEnabled;
+    /**
+     * The resolve outdated diff discussions value.
+     */
     private Boolean resolveOutdatedDiffDiscussions;
+    /**
+     * The statistics value.
+     */
     private ProjectStatistics statistics;
+    /**
+     * The initialize with readme value.
+     */
     private Boolean initializeWithReadme;
+    /**
+     * The packages enabled value.
+     */
     private Boolean packagesEnabled;
+    /**
+     * The empty repo value.
+     */
     private Boolean emptyRepo;
+    /**
+     * The license url value.
+     */
     private String licenseUrl;
+    /**
+     * The license value.
+     */
     private ProjectLicense license;
+    /**
+     * The custom attributes value.
+     */
     private List<CustomAttribute> customAttributes;
+    /**
+     * The build coverage regex value.
+     */
     private String buildCoverageRegex;
+    /**
+     * The import status value.
+     */
     private Status importStatus;
+    /**
+     * The readme url value.
+     */
     private String readmeUrl;
+    /**
+     * The can create merge request in value.
+     */
     private Boolean canCreateMergeRequestIn;
+    /**
+     * The auto devops deploy strategy value.
+     */
     private AutoDevopsDeployStrategy autoDevopsDeployStrategy;
+    /**
+     * The ci default git depth value.
+     */
     private Integer ciDefaultGitDepth;
+    /**
+     * The ci forward deployment enabled value.
+     */
     private Boolean ciForwardDeploymentEnabled;
+    /**
+     * The ci config path value.
+     */
     private String ciConfigPath;
+    /**
+     * The remove source branch after merge value.
+     */
     private Boolean removeSourceBranchAfterMerge;
+    /**
+     * The auto devops enabled value.
+     */
     private Boolean autoDevopsEnabled;
+    /**
+     * The squash option value.
+     */
     private SquashOption squashOption;
+    /**
+     * The autoclose referenced issues value.
+     */
     private Boolean autocloseReferencedIssues;
+    /**
+     * The emails disabled value.
+     */
     private Boolean emailsDisabled;
+    /**
+     * The suggestion commit message value.
+     */
     private String suggestionCommitMessage;
+    /**
+     * The merge requests template value.
+     */
     private String mergeRequestsTemplate;
+    /**
+     * The merge commit template value.
+     */
     private String mergeCommitTemplate;
+    /**
+     * The squash commit template value.
+     */
     private String squashCommitTemplate;
+    /**
+     * The issue branch template value.
+     */
     private String issueBranchTemplate;
+    /**
+     * The use custom template value.
+     */
     private Boolean useCustomTemplate;
+    /**
+     * The issues template value.
+     */
     private String issuesTemplate;
+    /**
+     * The external authorization classification label value.
+     */
     private String externalAuthorizationClassificationLabel;
+    /**
+     * The group runners enabled value.
+     */
     private Boolean groupRunnersEnabled;
+    /**
+     * The show default award emojis value.
+     */
     private Boolean showDefaultAwardEmojis;
+    /**
+     * The warn about potentially unwanted characters value.
+     */
     private Boolean warnAboutPotentiallyUnwantedCharacters;
+    /**
+     * The mirror trigger builds value.
+     */
     private Boolean mirrorTriggerBuilds;
+    /**
+     * The auto cancel pending pipelines value.
+     */
     private AutoCancelPendingPipelines autoCancelPendingPipelines;
+    /**
+     * The repository object format value.
+     */
     private String repositoryObjectFormat;
+    /**
+     * The only allow merge if all status checks passed value.
+     */
     private Boolean onlyAllowMergeIfAllStatusChecksPassed;
+    /**
+     * The group with project templates id value.
+     */
     private Integer groupWithProjectTemplatesId;
+    /**
+     * The public builds value.
+     */
     private Boolean publicBuilds;
+    /**
+     * The build timeout value.
+     */
     private Integer buildTimeout;
+    /**
+     * The template name value.
+     */
     private String templateName;
+    /**
+     * The emails enabled value.
+     */
     private Boolean emailsEnabled;
+    /**
+     * The mirror value.
+     */
     private Boolean mirror;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The description html value.
+     */
     private String descriptionHtml;
+    /**
+     * The container registry image prefix value.
+     */
     private String containerRegistryImagePrefix;
+    /**
+     * The container expiration policy value.
+     */
     private ContainerExpirationPolicy containerExpirationPolicy;
+    /**
+     * The service desk enabled value.
+     */
     private Boolean serviceDeskEnabled;
+    /**
+     * The import url value.
+     */
     private String importUrl;
+    /**
+     * The import type value.
+     */
     private String importType;
+    /**
+     * The import error value.
+     */
     private String importError;
+    /**
+     * The ci forward deployment rollback allowed value.
+     */
     private Boolean ciForwardDeploymentRollbackAllowed;
+    /**
+     * The ci allow fork pipelines to run in parent project value.
+     */
     private Boolean ciAllowForkPipelinesToRunInParentProject;
+    /**
+     * The ci id token sub claim components value.
+     */
     private List<String> ciIdTokenSubClaimComponents;
+    /**
+     * The ci job token scope enabled value.
+     */
     private Boolean ciJobTokenScopeEnabled;
+    /**
+     * The ci separated caches value.
+     */
     private Boolean ciSeparatedCaches;
+    /**
+     * The ci restrict pipeline cancellation role value.
+     */
     private String ciRestrictPipelineCancellationRole;
+    /**
+     * The ci pipeline variables minimum override role value.
+     */
     private String ciPipelineVariablesMinimumOverrideRole;
+    /**
+     * The ci push repository for job token allowed value.
+     */
     private Boolean ciPushRepositoryForJobTokenAllowed;
+    /**
+     * The allow pipeline trigger approve deployment value.
+     */
     private Boolean allowPipelineTriggerApproveDeployment;
+    /**
+     * The restrict user defined variables value.
+     */
     private Boolean restrictUserDefinedVariables;
+    /**
+     * The enforce auth checks on uploads value.
+     */
     private Boolean enforceAuthChecksOnUploads;
+    /**
+     * The keep latest artifact value.
+     */
     private Boolean keepLatestArtifact;
+    /**
+     * The runner token expiration interval value.
+     */
     private Integer runnerTokenExpirationInterval;
+    /**
+     * The requirements enabled value.
+     */
     private Boolean requirementsEnabled;
+    /**
+     * The security and compliance enabled value.
+     */
     private Boolean securityAndComplianceEnabled;
+    /**
+     * The secret push protection enabled value.
+     */
     private Boolean secretPushProtectionEnabled;
+    /**
+     * The compliance frameworks value.
+     */
     private List<String> complianceFrameworks;
+    /**
+     * The analytics access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel analyticsAccessLevel;
+    /**
+     * The builds access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel buildsAccessLevel;
+    /**
+     * The container registry access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel containerRegistryAccessLevel;
+    /**
+     * The environments access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel environmentsAccessLevel;
+    /**
+     * The feature flags access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel featureFlagsAccessLevel;
+    /**
+     * The forking access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel forkingAccessLevel;
+    /**
+     * The infrastructure access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel infrastructureAccessLevel;
+    /**
+     * The issues access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel issuesAccessLevel;
+    /**
+     * The merge requests access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel mergeRequestsAccessLevel;
+    /**
+     * The model experiments access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel modelExperimentsAccessLevel;
+    /**
+     * The model registry access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel modelRegistryAccessLevel;
+    /**
+     * The monitor access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel monitorAccessLevel;
+    /**
+     * The pages access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel pagesAccessLevel;
+    /**
+     * The releases access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel releasesAccessLevel;
+    /**
+     * The repository access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel repositoryAccessLevel;
+    /**
+     * The requirements access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel requirementsAccessLevel;
+    /**
+     * The security and compliance access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel securityAndComplianceAccessLevel;
+    /**
+     * The snippets access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel snippetsAccessLevel;
+    /**
+     * The wiki access level value.
+     */
     private ProjectFeatureVisibilityAccessLevel wikiAccessLevel;
 
     /**
@@ -195,9 +607,15 @@ public class Project implements Serializable {
         return (project != null && project.getId() != null);
     }
 
+    /**
+     * The links value.
+     */
     @JsonProperty("_links")
     private Map<String, String> links;
 
+    /**
+     * The marked for deletion on value.
+     */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date markedForDeletionOn;
 
@@ -3871,6 +4289,9 @@ public class Project implements Serializable {
          */
         FF;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<MergeMethod> enumCodec = new JacksonJsonEnumCodec<>(MergeMethod.class);
 
         /**

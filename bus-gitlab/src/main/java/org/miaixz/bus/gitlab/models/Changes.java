@@ -34,22 +34,56 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Changes implements Serializable {
 
+    /**
+     * Constructs a new {@code Changes} instance.
+     */
+    public Changes() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852238919699L;
 
+    /**
+     * The a mode value.
+     */
     @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonProperty("a_mode")
     private String a_mode;
 
+    /**
+     * The b mode value.
+     */
     @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonProperty("b_mode")
     private String b_mode;
 
+    /**
+     * The deleted file value.
+     */
     private Boolean deletedFile;
+    /**
+     * The diff value.
+     */
     private String diff;
+    /**
+     * The new file value.
+     */
     private Boolean newFile;
+    /**
+     * The new path value.
+     */
     private String newPath;
+    /**
+     * The old path value.
+     */
     private String oldPath;
+    /**
+     * The renamed file value.
+     */
     private Boolean renamedFile;
 
     /**

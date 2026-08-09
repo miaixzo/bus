@@ -64,6 +64,9 @@ public enum JobStatus {
      */
     MANUAL;
 
+    /**
+     * The enum codec value.
+     */
     private static JacksonJsonEnumCodec<JobStatus> enumCodec = new JacksonJsonEnumCodec<>(JobStatus.class);
 
     /**

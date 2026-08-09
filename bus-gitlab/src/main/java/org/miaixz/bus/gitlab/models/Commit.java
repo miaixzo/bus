@@ -33,28 +33,98 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Commit implements Serializable {
 
+    /**
+     * Constructs a new {@code Commit} instance.
+     */
+    public Commit() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852239586962L;
 
+    /**
+     * The author value.
+     */
     private Author author;
+    /**
+     * The authored date value.
+     */
     private Date authoredDate;
+    /**
+     * The author email value.
+     */
     private String authorEmail;
+    /**
+     * The author name value.
+     */
     private String authorName;
+    /**
+     * The committed date value.
+     */
     private Date committedDate;
+    /**
+     * The committer email value.
+     */
     private String committerEmail;
+    /**
+     * The committer name value.
+     */
     private String committerName;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The id value.
+     */
     private String id;
+    /**
+     * The message value.
+     */
     private String message;
+    /**
+     * The parent ids value.
+     */
     private List<String> parentIds;
+    /**
+     * The short id value.
+     */
     private String shortId;
+    /**
+     * The stats value.
+     */
     private CommitStats stats;
+    /**
+     * The status value.
+     */
     private String status;
+    /**
+     * The timestamp value.
+     */
     private Date timestamp;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The url value.
+     */
     private String url;
+    /**
+     * The web url value.
+     */
     private String webUrl;
+    /**
+     * The project id value.
+     */
     private Long projectId;
+    /**
+     * The last pipeline value.
+     */
     private Pipeline lastPipeline;
 
     /**

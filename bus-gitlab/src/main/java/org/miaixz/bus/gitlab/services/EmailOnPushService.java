@@ -32,6 +32,16 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  */
 public class EmailOnPushService extends NotificationService {
 
+    /**
+     * Constructs a new {@code EmailOnPushService} instance.
+     */
+    public EmailOnPushService() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852283959961L;
     /**

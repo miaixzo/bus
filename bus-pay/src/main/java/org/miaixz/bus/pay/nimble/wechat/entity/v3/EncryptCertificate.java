@@ -22,9 +22,7 @@ package org.miaixz.bus.pay.nimble.wechat.entity.v3;
 import java.io.Serial;
 import java.io.Serializable;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -36,9 +34,14 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class EncryptCertificate implements Serializable {
+
+    /**
+     * Constructs a new {@code EncryptCertificate} instance.
+     */
+    public EncryptCertificate() {
+        // No initialization required.
+    }
 
     @Serial
     private static final long serialVersionUID = 2852258636168L;

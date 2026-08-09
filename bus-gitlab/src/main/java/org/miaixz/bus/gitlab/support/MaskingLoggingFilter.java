@@ -443,7 +443,13 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      */
     protected class LoggingStream extends FilterOutputStream {
 
+        /**
+         * The sb value.
+         */
         private final StringBuilder sb;
+        /**
+         * The output stream value.
+         */
         private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         LoggingStream(StringBuilder sb, OutputStream out) {

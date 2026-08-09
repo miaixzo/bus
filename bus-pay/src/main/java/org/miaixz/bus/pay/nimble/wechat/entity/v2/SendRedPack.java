@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.pay.nimble.wechat.entity.v2;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -35,9 +33,14 @@ import org.miaixz.bus.pay.magic.Voucher;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class SendRedPack extends Voucher {
+
+    /**
+     * Constructs a new {@code SendRedPack} instance.
+     */
+    public SendRedPack() {
+        // No initialization required.
+    }
 
     /**
      * Random string.

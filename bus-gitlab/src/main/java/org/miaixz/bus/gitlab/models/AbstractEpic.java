@@ -55,21 +55,54 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
         // No initialization required.
     }
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852233623053L;
 
+    /**
+     * The start date value.
+     */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date startDate;
 
+    /**
+     * The parent iid value.
+     */
     private Long parentIid;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The state value.
+     */
     private EpicState state;
+    /**
+     * The web url value.
+     */
     private String webUrl;
+    /**
+     * The references value.
+     */
     private References references;
+    /**
+     * The author value.
+     */
     private Author author;
+    /**
+     * The labels value.
+     */
     private List<String> labels;
+    /**
+     * The due date value.
+     */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date dueDate;
+    /**
+     * The end date value.
+     */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date endDate;
 
@@ -84,13 +117,34 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
         return (E) (this);
     }
 
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The closed at value.
+     */
     private Date closedAt;
+    /**
+     * The downvotes value.
+     */
     private Integer downvotes;
+    /**
+     * The upvotes value.
+     */
     private Integer upvotes;
+    /**
+     * The color value.
+     */
     private String color;
 
+    /**
+     * The links value.
+     */
     @JsonProperty("_links")
     private Map<String, String> links;
 
@@ -158,6 +212,9 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
          */
         ALL;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<EpicState> enumCodec = new JacksonJsonEnumCodec<>(EpicState.class);
 
         /**

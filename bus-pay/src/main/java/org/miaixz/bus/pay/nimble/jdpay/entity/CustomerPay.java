@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.pay.nimble.jdpay.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -35,9 +33,14 @@ import org.miaixz.bus.pay.magic.Voucher;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class CustomerPay extends Voucher {
+
+    /**
+     * Constructs a new {@code CustomerPay} instance.
+     */
+    public CustomerPay() {
+        // No initialization required.
+    }
 
     /**
      * Version number.

@@ -32,27 +32,94 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Bridge implements Serializable {
 
+    /**
+     * Constructs a new {@code Bridge} instance.
+     */
+    public Bridge() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852238667902L;
 
+    /**
+     * The commit value.
+     */
     private Commit commit;
+    /**
+     * The allow failure value.
+     */
     private boolean allowFailure;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The started at value.
+     */
     private Date startedAt;
+    /**
+     * The finished at value.
+     */
     private Date finishedAt;
+    /**
+     * The erased at value.
+     */
     private Date erasedAt;
+    /**
+     * The duration value.
+     */
     private Double duration;
+    /**
+     * The queued duration value.
+     */
     private Double queuedDuration;
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The coverage value.
+     */
     private String coverage;
+    /**
+     * The pipeline value.
+     */
     private Pipeline pipeline;
+    /**
+     * The ref value.
+     */
     private String ref;
+    /**
+     * The stage value.
+     */
     private String stage;
+    /**
+     * The status value.
+     */
     private String status;
+    /**
+     * The tag value.
+     */
     private boolean tag;
+    /**
+     * The web url value.
+     */
     private String webUrl;
+    /**
+     * The user value.
+     */
     private User user;
+    /**
+     * The downstream pipeline value.
+     */
     private DownstreamPipeline downstreamPipeline;
 
     /**

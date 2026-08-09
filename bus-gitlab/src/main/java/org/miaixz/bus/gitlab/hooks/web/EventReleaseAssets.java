@@ -30,8 +30,24 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class EventReleaseAssets {
 
+    /**
+     * Constructs a new {@code EventReleaseAssets} instance.
+     */
+    public EventReleaseAssets() {
+        // No initialization required.
+    }
+
+    /**
+     * The count value.
+     */
     private Integer count;
+    /**
+     * The links value.
+     */
     private List<EventReleaseLink> links;
+    /**
+     * The sources value.
+     */
     private List<EventReleaseSource> sources;
 
     /**

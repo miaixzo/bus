@@ -33,9 +33,22 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class IssuesStatistics implements Serializable {
 
+    /**
+     * Constructs a new {@code IssuesStatistics} instance.
+     */
+    public IssuesStatistics() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852258156052L;
 
+    /**
+     * The statistics value.
+     */
     private Statistics statistics;
 
     /**
@@ -87,9 +100,22 @@ public class IssuesStatistics implements Serializable {
      */
     public static class Statistics implements Serializable {
 
+        /**
+         * Constructs a new {@code Statistics} instance.
+         */
+        public Statistics() {
+            // No initialization required.
+        }
+
+        /**
+         * The serial version uid value.
+         */
         @Serial
         private static final long serialVersionUID = 2852258198568L;
 
+        /**
+         * The counts value.
+         */
         private Counts counts;
 
         /**
@@ -121,11 +147,27 @@ public class IssuesStatistics implements Serializable {
      */
     public static class Counts implements Serializable {
 
+        /**
+         * Constructs a new {@code Counts} instance.
+         */
+        public Counts() {
+            // No initialization required.
+        }
+
         @Serial
         private static final long serialVersionUID = 2852258280077L;
 
+        /**
+         * The all value.
+         */
         private Integer all;
+        /**
+         * The closed value.
+         */
         private Integer closed;
+        /**
+         * The opened value.
+         */
         private Integer opened;
 
         /**

@@ -31,20 +31,57 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class EventSnippet {
 
+    /**
+     * Constructs a new {@code EventSnippet} instance.
+     */
+    public EventSnippet() {
+        // No initialization required.
+    }
+
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The content value.
+     */
     private String content;
+    /**
+     * The author id value.
+     */
     private Long authorId;
+    /**
+     * The project id value.
+     */
     private Long projectId;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The file name value.
+     */
     private String fileName;
+    /**
+     * The expires at value.
+     */
     private Date expiresAt;
 
     /**
      * The type field.
      */
     private String type;
+    /**
+     * The visibility level value.
+     */
     private AccessLevel visibilityLevel;
 
     /**

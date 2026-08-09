@@ -22,7 +22,6 @@ package org.miaixz.bus.base.entity;
 import java.io.Serial;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -37,8 +36,14 @@ import org.miaixz.bus.core.basic.entity.Tracer;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 public class BaseEntity extends Tracer {
+
+    /**
+     * Constructs a new {@code BaseEntity} instance.
+     */
+    public BaseEntity() {
+        // No initialization required.
+    }
 
     /**
      * Serial version UID.

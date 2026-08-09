@@ -28,8 +28,24 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class EventEnvironment {
 
+    /**
+     * Constructs a new {@code EventEnvironment} instance.
+     */
+    public EventEnvironment() {
+        // No initialization required.
+    }
+
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The action value.
+     */
     private String action;
+    /**
+     * The deployment tier value.
+     */
     private String deploymentTier;
 
     /**

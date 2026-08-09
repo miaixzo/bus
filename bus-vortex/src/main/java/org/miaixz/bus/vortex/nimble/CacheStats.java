@@ -20,6 +20,7 @@
 package org.miaixz.bus.vortex.nimble;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.vortex.Monitor;
 
@@ -61,8 +62,7 @@ import org.miaixz.bus.vortex.Monitor;
  */
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
+@SuperBuilder
 public class CacheStats {
 
     /**

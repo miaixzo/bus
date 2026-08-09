@@ -44,6 +44,13 @@ import org.miaixz.bus.core.lang.ZoneId;
 public class ISO8601 {
 
     /**
+     * Constructs a new {@code ISO8601} instance.
+     */
+    public ISO8601() {
+        // No initialization required.
+    }
+
+    /**
      * The pattern value.
      */
 
@@ -81,8 +88,14 @@ public class ISO8601 {
      */
     public static final String DATE_ONLY_PATTERN = Fields.NORM_DATE;
 
+    /**
+     * The odt with msec parser value.
+     */
     private static final DateTimeFormatter ODT_WITH_MSEC_PARSER = new DateTimeFormatterBuilder()
             .appendPattern("yyyy-MM-dd[['T'][ ]HH:mm:ss.SSS[ ][XXXXX][XXXX]]").toFormatter();
+    /**
+     * The odt parser value.
+     */
     private static final DateTimeFormatter ODT_PARSER = new DateTimeFormatterBuilder()
             .appendPattern("yyyy-MM-dd[['T'][ ]HH:mm:ss[.SSS][ ][XXX][X]]").parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
             .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0).parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
@@ -219,6 +232,9 @@ public class ISO8601 {
      */
     private static final class SafeDateFormatter {
 
+        /**
+         * The safe formats value.
+         */
         private static final ThreadLocal<Map<String, SimpleDateFormat>> safeFormats = ThreadLocal
                 .withInitial(() -> (new ConcurrentHashMap<>()));
 

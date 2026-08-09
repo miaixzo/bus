@@ -35,12 +35,34 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  */
 public class ExternalStatusCheckStatus implements Serializable {
 
+    /**
+     * Constructs a new {@code ExternalStatusCheckStatus} instance.
+     */
+    public ExternalStatusCheckStatus() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852253997632L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The external url value.
+     */
     private String externalUrl;
+    /**
+     * The status value.
+     */
     private Status status;
 
     /**
@@ -63,6 +85,9 @@ public class ExternalStatusCheckStatus implements Serializable {
          */
         PENDING;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<Status> enumCodec = new JacksonJsonEnumCodec<>(Status.class);
 
         /**

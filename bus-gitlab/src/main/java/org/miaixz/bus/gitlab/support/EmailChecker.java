@@ -29,6 +29,13 @@ import java.util.regex.Pattern;
 public class EmailChecker {
 
     /**
+     * Constructs a new {@code EmailChecker} instance.
+     */
+    public EmailChecker() {
+        // No initialization required.
+    }
+
+    /**
      * Java regular expression for validating an email address.
      */
 

@@ -33,15 +33,46 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class ReleaseParams implements Serializable {
 
+    /**
+     * Constructs a new {@code ReleaseParams} instance.
+     */
+    public ReleaseParams() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852279596256L;
 
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The tag name value.
+     */
     private String tagName;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The ref value.
+     */
     private String ref;
+    /**
+     * The milestones value.
+     */
     private List<String> milestones;
+    /**
+     * The assets value.
+     */
     private Assets assets;
+    /**
+     * The released at value.
+     */
     private Date releasedAt;
 
     /**
