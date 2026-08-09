@@ -33,7 +33,6 @@ import org.miaixz.bus.core.center.function.PredicateX;
  *
  * @param <E> the type of elements
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CheckedLinkedBlockingQueue<E> extends LinkedBlockingQueue<E> {
 

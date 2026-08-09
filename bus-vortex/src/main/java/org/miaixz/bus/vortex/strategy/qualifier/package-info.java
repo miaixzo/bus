@@ -25,6 +25,5 @@
  * differences isolated while sharing the common qualifier contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.vortex.strategy.qualifier;

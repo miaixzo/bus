@@ -29,7 +29,6 @@ import org.miaixz.bus.shade.safety.complex.AntComplex;
  * class extends {@link AntComplex} and provides a way to apply Ant patterns to the names of JAR archive entries.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JarAntComplex extends AntComplex<JarArchiveEntry> implements Complex<JarArchiveEntry> {
 

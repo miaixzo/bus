@@ -29,7 +29,6 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
  * characters visible and masks the rest.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CnapsProvider extends AbstractProvider {
 

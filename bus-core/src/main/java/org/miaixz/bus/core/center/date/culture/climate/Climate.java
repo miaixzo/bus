@@ -28,7 +28,6 @@ import org.miaixz.bus.core.center.date.culture.Samsara;
  * natural phenomena. This class extends {@link Samsara} to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Climate extends Samsara {
 

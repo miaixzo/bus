@@ -28,15 +28,33 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The file upload class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FileUpload implements Serializable {
 
+    /**
+     * Constructs a new {@code FileUpload} instance.
+     */
+    public FileUpload() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852255128975L;
 
+    /**
+     * The alt value.
+     */
     private String alt;
+    /**
+     * The url value.
+     */
     private String url;
+    /**
+     * The markdown value.
+     */
     private String markdown;
 
     /**

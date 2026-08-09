@@ -51,7 +51,6 @@ import org.miaixz.bus.fabric.protocol.sse.retry.SseRetryPolicy;
  * @param handler         application event handler
  * @param listener        session lifecycle listener
  * @author Kimi Liu
- * @since Java 21+
  */
 record SseSpec(Context context, URI uri, Address address, Headers headers, Timeout timeout, SseRetryPolicy retryPolicy,
         ProxyPlan proxy, String lastEventId, boolean autoReconnect, BiConsumer<Integer, Headers> responseHandler,

@@ -37,7 +37,6 @@ import org.miaixz.bus.fabric.cache.CacheWriter;
  * One-shot payload that writes consumed network bytes into a cache writer.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class HttpCacheWriter implements Payload, AutoCloseable {
 

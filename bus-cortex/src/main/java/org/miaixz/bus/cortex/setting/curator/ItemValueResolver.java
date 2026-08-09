@@ -37,7 +37,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Resolves effective setting values using source adapters, rules and secret handling.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ItemValueResolver {
 

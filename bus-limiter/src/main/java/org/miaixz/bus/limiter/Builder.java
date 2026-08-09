@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.reflect.JdkProxy;
  * user class from a potentially proxied class and to generate a unique string representation for a given method.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Builder {
 

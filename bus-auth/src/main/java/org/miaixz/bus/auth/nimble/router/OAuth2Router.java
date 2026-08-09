@@ -37,7 +37,6 @@ import org.miaixz.bus.auth.magic.Claims;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface OAuth2Router {
 

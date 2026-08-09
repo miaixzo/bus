@@ -34,7 +34,6 @@ import org.miaixz.bus.logger.Logger;
  * @param groupOffset the group offset.
  * @param bitPosition the bit position.
  * @author Kimi Liu
- * @since Java 21+
  */
 public record EmbeddedOverlay(int groupOffset, int bitPosition) {
 

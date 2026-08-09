@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.Regex;
  * <a href="https://any86.github.io/any-rule/">https://any86.github.io/any-rule/</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Pattern {
 

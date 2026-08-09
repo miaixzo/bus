@@ -58,7 +58,6 @@ import org.opencv.imgproc.Imgproc;
  * OpenCV Mat objects and Java RenderedImage interfaces.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ImageAnalyzer {
 
@@ -285,7 +284,6 @@ public final class ImageAnalyzer {
      * @param srcImg the src img.
      * @param mask   the mask.
      * @author Kimi Liu
-     * @since Java 21+
      */
     private record MaskData(Mat srcImg, Mat mask) {
 
@@ -449,7 +447,6 @@ public final class ImageAnalyzer {
      * @param mean   the mean.
      * @param stdDev the std dev.
      * @author Kimi Liu
-     * @since Java 21+
      */
     private record Statistics(MatOfDouble mean, MatOfDouble stdDev) {
 
@@ -527,7 +524,6 @@ public final class ImageAnalyzer {
      * @param min the min.
      * @param max the max.
      * @author Kimi Liu
-     * @since Java 21+
      */
     private record Range(int min, int max) {
 

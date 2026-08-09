@@ -41,7 +41,6 @@ import org.miaixz.bus.logger.Logger;
  * DingTalk QR code login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DingTalkProvider extends AbstractDingtalkProvider {
 

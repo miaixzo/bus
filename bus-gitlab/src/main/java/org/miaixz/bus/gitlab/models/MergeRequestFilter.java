@@ -42,26 +42,77 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * This class is used to filter merge requests when getting lists of them.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MergeRequestFilter implements Serializable {
 
+    /**
+     * Constructs a new {@code MergeRequestFilter} instance.
+     */
+    public MergeRequestFilter() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852263228021L;
 
+    /**
+     * The project id value.
+     */
     private Long projectId;
+    /**
+     * The group id value.
+     */
     private Long groupId;
+    /**
+     * The iids value.
+     */
     private List<Long> iids;
+    /**
+     * The state value.
+     */
     private MergeRequestState state;
+    /**
+     * The order by value.
+     */
     private MergeRequestOrderBy orderBy;
+    /**
+     * The sort value.
+     */
     private SortOrder sort;
+    /**
+     * The milestone value.
+     */
     private String milestone;
+    /**
+     * The simple view value.
+     */
     private Boolean simpleView;
+    /**
+     * The labels value.
+     */
     private List<String> labels;
+    /**
+     * The created after value.
+     */
     private Date createdAfter;
+    /**
+     * The created before value.
+     */
     private Date createdBefore;
+    /**
+     * The updated after value.
+     */
     private Date updatedAfter;
+    /**
+     * The updated before value.
+     */
     private Date updatedBefore;
+    /**
+     * The scope value.
+     */
     private MergeRequestScope scope;
 
     /**
@@ -69,14 +120,41 @@ public class MergeRequestFilter implements Serializable {
      */
     private Long authorId;
 
+    /**
+     * The assignee id value.
+     */
     private Long assigneeId;
+    /**
+     * The reviewer id value.
+     */
     private Long reviewerId;
+    /**
+     * The my reaction emoji value.
+     */
     private String myReactionEmoji;
+    /**
+     * The source branch value.
+     */
     private String sourceBranch;
+    /**
+     * The target branch value.
+     */
     private String targetBranch;
+    /**
+     * The search value.
+     */
     private String search;
+    /**
+     * The in value.
+     */
     private MergeRequestSearchIn in;
+    /**
+     * The wip value.
+     */
     private Boolean wip;
+    /**
+     * The not value.
+     */
     private Map<MergeRequestField, Object> not;
 
     /**
@@ -973,7 +1051,6 @@ public class MergeRequestFilter implements Serializable {
      * The merge request field enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum MergeRequestField {
 
@@ -1014,6 +1091,9 @@ public class MergeRequestFilter implements Serializable {
          */
         MY_REACTION_EMOJI;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<MergeRequestField> enumCodec = new JacksonJsonEnumCodec<>(
                 MergeRequestField.class);
 

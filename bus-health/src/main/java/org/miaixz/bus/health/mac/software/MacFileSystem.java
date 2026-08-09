@@ -57,7 +57,6 @@ import org.miaixz.bus.logger.Logger;
  * system or other implementation specific means of file storage. In macOS, these are found in the /Volumes directory.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class MacFileSystem extends AbstractFileSystem {

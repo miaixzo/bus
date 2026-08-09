@@ -31,6 +31,5 @@
  * {@code InstanceStateHistory} records that capture observed state transitions with timestamps and diagnostic metadata.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.magic;

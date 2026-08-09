@@ -22,9 +22,7 @@ package org.miaixz.bus.storage.magic;
 import java.io.InputStream;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -33,14 +31,18 @@ import lombok.experimental.SuperBuilder;
  * file storage operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Blob {
+
+    /**
+     * Constructs a new {@code Blob} instance.
+     */
+    public Blob() {
+        // No initialization required.
+    }
 
     /**
      * Unique identifier for the blob.

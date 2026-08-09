@@ -42,7 +42,6 @@ import org.miaixz.bus.core.lang.annotation.resolve.processor.SynthesizedAnnotati
  * attributes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CachingAnnotationAttributeProcessor implements SynthesizedAnnotationAttributeProcessor {
 

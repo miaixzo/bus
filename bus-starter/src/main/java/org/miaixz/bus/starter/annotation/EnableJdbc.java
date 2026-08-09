@@ -33,7 +33,6 @@ import org.miaixz.bus.starter.jdbc.JdbcConfiguration;
  * {@link org.miaixz.bus.spring.jdbc.DataSource} annotation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

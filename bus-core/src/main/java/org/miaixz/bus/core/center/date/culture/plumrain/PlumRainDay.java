@@ -26,7 +26,6 @@ import org.miaixz.bus.core.center.date.culture.Replenish;
  * specific day index with a {@link PlumRain} instance.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PlumRainDay extends Replenish {
 

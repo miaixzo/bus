@@ -40,7 +40,6 @@ import org.miaixz.bus.core.text.StringJoiner;
  * Creates, converts, and inspects arrays.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ArrayKit extends PrimitiveArray {
 

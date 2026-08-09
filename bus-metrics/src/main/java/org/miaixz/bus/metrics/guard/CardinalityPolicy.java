@@ -31,7 +31,6 @@ import java.util.concurrent.atomic.AtomicLong;
  * Inspired by Netflix Spectator's {@code CardinalityLimiters}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public sealed interface CardinalityPolicy
         permits CardinalityPolicy.FirstN, CardinalityPolicy.TopN, CardinalityPolicy.Deny {
@@ -82,7 +81,6 @@ public sealed interface CardinalityPolicy
      * Accept the first N distinct values; replace subsequent novel values with "__overflow__".
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     final class FirstN implements CardinalityPolicy {
 
@@ -130,7 +128,6 @@ public sealed interface CardinalityPolicy
      * "__other__".
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     final class TopN implements CardinalityPolicy {
 
@@ -199,7 +196,6 @@ public sealed interface CardinalityPolicy
      * Deny this tag key entirely; it is stripped from all metrics.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     final class Deny implements CardinalityPolicy {
 

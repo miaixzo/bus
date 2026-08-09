@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Encodes a byte array into a Base62 byte array.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Base62Encoder implements Encoder<byte[], byte[]> {
 

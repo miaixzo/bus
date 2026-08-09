@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.Normal;
  *
  * @param <E> The type of elements in this set.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ConcurrentLinkedHashSet<E> extends SetFromMap<E> {
 

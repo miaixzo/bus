@@ -29,7 +29,6 @@ import org.miaixz.bus.validate.nimble.FalseMatcher;
  * Validates that the annotated boolean value is {@code false}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

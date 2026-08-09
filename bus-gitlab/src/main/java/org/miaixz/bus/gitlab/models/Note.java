@@ -33,10 +33,19 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The note class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Note implements Serializable {
 
+    /**
+     * Constructs a new {@code Note} instance.
+     */
+    public Note() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852265960807L;
 
@@ -44,7 +53,6 @@ public class Note implements Serializable {
      * Enum to use for ordering the results.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static enum OrderBy {
 
@@ -57,6 +65,9 @@ public class Note implements Serializable {
          */
         UPDATED_AT;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<OrderBy> enumCodec = new JacksonJsonEnumCodec<>(OrderBy.class);
 
         /**
@@ -102,7 +113,6 @@ public class Note implements Serializable {
      * The noteable type enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static enum NoteableType {
 
@@ -127,6 +137,9 @@ public class Note implements Serializable {
          */
         SNIPPET;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<NoteableType> enumCodec = new JacksonJsonEnumCodec<>(NoteableType.class,
                 true, true);
 
@@ -170,7 +183,6 @@ public class Note implements Serializable {
      * The type enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static enum Type {
 
@@ -183,6 +195,9 @@ public class Note implements Serializable {
          */
         DIFF_NOTE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<Type> enumCodec = new JacksonJsonEnumCodec<>(Type.class, true, true);
 
         /**
@@ -221,28 +236,88 @@ public class Note implements Serializable {
 
     }
 
+    /**
+     * The attachment value.
+     */
     private String attachment;
+    /**
+     * The author value.
+     */
     private Author author;
+    /**
+     * The body value.
+     */
     private String body;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The downvote value.
+     */
     private Boolean downvote;
+    /**
+     * The expires at value.
+     */
     private Date expiresAt;
+    /**
+     * The file name value.
+     */
     private String fileName;
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The noteable id value.
+     */
     private Long noteableId;
 
     // Use String for noteableType until the constant is fixed in the GitLab API
+    /**
+     * The noteable type value.
+     */
     private String noteableType;
 
+    /**
+     * The noteable iid value.
+     */
     private Long noteableIid;
+    /**
+     * The system value.
+     */
     private Boolean system;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The upvote value.
+     */
     private Boolean upvote;
+    /**
+     * The resolved value.
+     */
     private Boolean resolved;
+    /**
+     * The resolvable value.
+     */
     private Boolean resolvable;
+    /**
+     * The resolved by value.
+     */
     private Participant resolvedBy;
+    /**
+     * The resolved at value.
+     */
     private Date resolvedAt;
+    /**
+     * The internal value.
+     */
     private Boolean internal;
 
     /**
@@ -250,6 +325,9 @@ public class Note implements Serializable {
      */
     private Type type;
 
+    /**
+     * The position value.
+     */
     private Position position;
 
     /**

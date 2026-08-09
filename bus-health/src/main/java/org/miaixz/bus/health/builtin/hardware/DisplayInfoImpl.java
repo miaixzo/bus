@@ -32,7 +32,6 @@ import org.miaixz.bus.health.Parsing;
  * Default {@link DisplayInfo} implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class DisplayInfoImpl implements DisplayInfo {

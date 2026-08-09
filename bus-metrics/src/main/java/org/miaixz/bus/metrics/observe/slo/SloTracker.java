@@ -30,7 +30,6 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  * Exposes {@code compliance()} and {@code errorBudgetRemaining()} for direct application use.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface SloTracker {
 

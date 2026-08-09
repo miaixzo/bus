@@ -60,7 +60,6 @@ import org.miaixz.bus.logger.Logger;
  * Open STOMP session.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class StompSession implements Session {
 

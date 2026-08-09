@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.models.NotificationSettings.Events;
  * The notification settings API class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NotificationSettingsApi extends AbstractApi {
 

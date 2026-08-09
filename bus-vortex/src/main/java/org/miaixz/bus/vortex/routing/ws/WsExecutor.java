@@ -58,7 +58,6 @@ import reactor.core.publisher.Mono;
  * Generic type parameters: {@code Executor<Object, ServerResponse>}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WsExecutor extends Coordinator<Object, ServerResponse> {
 
@@ -319,7 +318,6 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
      * Metadata for a WebSocket session.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class SessionMetadata {
 

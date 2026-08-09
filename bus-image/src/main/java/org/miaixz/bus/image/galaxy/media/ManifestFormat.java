@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.media;
  * Manifest output format.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum ManifestFormat {
 

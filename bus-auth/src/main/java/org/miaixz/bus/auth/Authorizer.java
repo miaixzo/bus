@@ -35,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
  * authentication provider instances.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Authorizer {
 
@@ -153,7 +152,7 @@ public class Authorizer {
                     "OAuth provider build rejected: source={}, reason={}",
                     this.source,
                     "missingSourceOrContext");
-            throw new AuthorizedException(ErrorCode._110001);
+            throw new AuthorizedException(ErrorCode._110000);
         }
 
         // Merge default Registry and custom Complex configurations
@@ -162,7 +161,7 @@ public class Authorizer {
         // Filter for the Complex that matches the source
         Complex complex = Arrays.stream(complexes).distinct()
                 .filter(authSource -> authSource.getName().equalsIgnoreCase(this.source)).findAny()
-                .orElseThrow(() -> new AuthorizedException(ErrorCode._110001));
+                .orElseThrow(() -> new AuthorizedException(ErrorCode._110000));
 
         // Get the provider class
         Class<? extends AbstractProvider> targetClass = complex.getTargetClass();
@@ -173,7 +172,7 @@ public class Authorizer {
                     "OAuth provider build rejected: source={}, reason={}",
                     complex.getName(),
                     "missingTargetClass");
-            throw new AuthorizedException(ErrorCode._110001);
+            throw new AuthorizedException(ErrorCode._110000);
         }
 
         // Dynamically create the provider instance
@@ -202,7 +201,7 @@ public class Authorizer {
                     complex.getName(),
                     targetClass.getName(),
                     e.getClass().getSimpleName());
-            throw new AuthorizedException(ErrorCode._110001);
+            throw new AuthorizedException(ErrorCode._110000);
         }
     }
 

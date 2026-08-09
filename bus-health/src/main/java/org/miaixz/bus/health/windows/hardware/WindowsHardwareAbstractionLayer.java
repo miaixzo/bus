@@ -29,7 +29,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstraction
  * WindowsHardwareAbstractionLayer class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class WindowsHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {

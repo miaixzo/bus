@@ -41,7 +41,6 @@ import org.miaixz.bus.core.center.date.culture.star.twelve.TwelveStar;
  * Represents a specific two-hour block (shichen) in the Lunar calendar.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LunarHour extends SecondParts {
 

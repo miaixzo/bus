@@ -40,7 +40,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @RequiredArgsConstructor
 public class Binder {

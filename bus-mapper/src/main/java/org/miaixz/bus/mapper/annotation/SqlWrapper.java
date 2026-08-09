@@ -31,7 +31,6 @@ import org.miaixz.bus.mapper.builder.SchemaSqlBuilder;
  * other annotations. The search for this annotation is limited to a single level.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER })

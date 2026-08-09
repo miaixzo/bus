@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.FileKit;
  * Reads, creates, and modifies PowerPoint (PPTX) documents.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PptKit {
 

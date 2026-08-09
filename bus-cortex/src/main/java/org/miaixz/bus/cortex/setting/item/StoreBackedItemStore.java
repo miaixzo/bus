@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  * inside this coordinator instead of being exposed as another store abstraction.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StoreBackedItemStore {
 

@@ -34,7 +34,6 @@ import org.miaixz.bus.fabric.Builder;
  * @param origin UTF-8 origin field, empty only for stream-scoped ALTSVC frames
  * @param value  UTF-8 Alt-Svc field content
  * @author Kimi Liu
- * @since Java 21+
  */
 public record Http2AlternateService(String origin, String value) {
 

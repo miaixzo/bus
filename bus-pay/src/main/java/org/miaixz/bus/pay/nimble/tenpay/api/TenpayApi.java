@@ -25,7 +25,6 @@ import org.miaixz.bus.pay.Matcher;
  * QQ Wallet Payment APIs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum TenpayApi implements Matcher {
 

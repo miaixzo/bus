@@ -28,7 +28,6 @@ import lombok.Setter;
  * Diagnostics snapshot for one runtime component.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

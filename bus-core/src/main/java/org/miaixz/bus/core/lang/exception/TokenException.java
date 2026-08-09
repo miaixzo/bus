@@ -27,7 +27,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Represents an exception that occurs due to issues with tokens, such as expiration or invalidity.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TokenException extends UncheckedException {
 

@@ -30,7 +30,6 @@ import lombok.experimental.SuperBuilder;
  * Runtime API instance information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

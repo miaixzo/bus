@@ -33,7 +33,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * Stateful frame codec contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface FrameCodec extends Decoder<Buffer, List<Frame>> {
 

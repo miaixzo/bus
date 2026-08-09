@@ -29,7 +29,6 @@ import org.miaixz.bus.validate.magic.ErrorCode;
  * Annotation for validating by comparing the values of two parameters.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

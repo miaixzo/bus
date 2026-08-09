@@ -34,7 +34,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
  * Stateless HTTP/1 message-framing decisions and request-smuggling validation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class Http1Framing {
 

@@ -29,7 +29,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Enum for the various Pipeline status values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum PipelineStatus {
 
@@ -82,6 +81,9 @@ public enum PipelineStatus {
      */
     SCHEDULED;
 
+    /**
+     * The values map value.
+     */
     private static Map<String, PipelineStatus> valuesMap = new HashMap<>(11);
 
     static {

@@ -34,7 +34,6 @@ import org.miaixz.bus.logger.magic.AbstractProvider;
  * A logger provider that prints messages to the console using {@code System.out.println}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NormalLoggingProvider extends AbstractProvider {
 

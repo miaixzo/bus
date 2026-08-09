@@ -39,7 +39,6 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
  * OSS using an S3-compatible client.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AliYunOssProvider extends GenericS3Provider {
 

@@ -33,7 +33,6 @@ import org.miaixz.bus.fabric.Policy;
  * Immutable KCP wire, flow-control, retransmission, and reassembly policy.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class KcpPolicy implements Policy {
 
@@ -385,7 +384,6 @@ public final class KcpPolicy implements Policy {
      * Builder for immutable KCP policies.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

@@ -36,7 +36,6 @@ import org.miaixz.bus.proxy.invoker.ProxyChain;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractReader {
 
@@ -138,7 +137,6 @@ public abstract class AbstractReader {
      *
      * @param <T> The type of the result.
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FunctionalInterface
     protected interface ThrowableSupplier<T> {

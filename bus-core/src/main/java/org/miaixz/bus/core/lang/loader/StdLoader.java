@@ -42,7 +42,6 @@ import org.miaixz.bus.core.net.url.UrlEncoder;
  * from the classpath, including JAR files and directories.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StdLoader extends ResourceLoader implements Loader {
 
@@ -95,7 +94,6 @@ public class StdLoader extends ResourceLoader implements Loader {
      * An {@link Enumeration} implementation for iterating over resources found by a {@link StdLoader}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class Enumerator extends ResourceEnumerator implements Enumeration<Resource> {
 

@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.Normal;
  * will be bound from the configuration property {@code server.port}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

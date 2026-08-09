@@ -30,7 +30,6 @@ import org.miaixz.bus.fabric.Policy;
  *
  * @param maxMultiplexStreams positive maximum logical streams retained by one destination
  * @author Kimi Liu
- * @since Java 21+
  */
 public record Http2Policy(int maxMultiplexStreams) implements Policy {
 

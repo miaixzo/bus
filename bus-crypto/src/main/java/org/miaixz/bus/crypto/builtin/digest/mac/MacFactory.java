@@ -32,9 +32,15 @@ import org.miaixz.bus.crypto.Builder;
  * the specified algorithm and key.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MacFactory {
+
+    /**
+     * Constructs a new {@code MacFactory} instance.
+     */
+    public MacFactory() {
+        // No initialization required.
+    }
 
     /**
      * Creates a {@link Mac} instance for the given algorithm and key.

@@ -49,7 +49,6 @@ import org.miaixz.bus.core.xyz.CollKit;
  *
  * @param <T> the type of the object to select
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SmoothWeightSelector<T> implements Selector<T> {
 

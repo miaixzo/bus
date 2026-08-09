@@ -40,7 +40,6 @@ import org.miaixz.bus.starter.annotation.EnableDubbo;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(value = { DubboProperties.class })
 @Configuration(proxyBeanMethods = false)

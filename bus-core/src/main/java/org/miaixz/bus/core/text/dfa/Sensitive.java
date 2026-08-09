@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.ThreadKit;
  * initialize a sensitive word dictionary and perform sensitive word detection and filtering.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Sensitive {
 

@@ -29,7 +29,6 @@ import java.util.Objects;
  * used to monitor the progress or size of data being written.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CountingOutputStream extends FilterOutputStream {
 

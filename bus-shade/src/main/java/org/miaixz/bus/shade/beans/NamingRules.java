@@ -27,7 +27,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * table names to class names and field names to Java field names.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NamingRules {
 

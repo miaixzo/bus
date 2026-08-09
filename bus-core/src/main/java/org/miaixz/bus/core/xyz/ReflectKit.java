@@ -38,7 +38,7 @@ import org.miaixz.bus.core.text.StringTrimer;
  * <p>
  * This class has been refactored, and many of its methods have been moved to {@link FieldKit}, {@link MethodKit},
  * {@link ModifierKit}, etc.
- *
+ * <p>
  * JVM type descriptors:
  * <ul>
  * <li>byte = B</li>
@@ -53,7 +53,6 @@ import org.miaixz.bus.core.text.StringTrimer;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ReflectKit {
 

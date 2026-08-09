@@ -32,7 +32,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Immutable Apache Dubbo starter properties. Bean creation belongs exclusively to {@link DubboConfiguration}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

@@ -37,7 +37,6 @@ import org.miaixz.bus.fabric.network.dns.message.DnsQuestion;
  * Immutable DNS response-cache key.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsCacheKey {
 

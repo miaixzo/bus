@@ -34,7 +34,6 @@ import org.miaixz.bus.health.Parsing;
  * into the JNA project.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface SolarisLibc extends CLibrary {
 
@@ -107,7 +106,6 @@ public interface SolarisLibc extends CLibrary {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "ut_user", "ut_id", "ut_line", "ut_pid", "ut_type", "ut_exit", "ut_tv", "ut_session", "pad",
             "ut_syslen", "ut_host" })
@@ -174,7 +172,6 @@ public interface SolarisLibc extends CLibrary {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "e_termination", "e_exit" })
     class Exit_status extends Structure {
@@ -205,7 +202,6 @@ public interface SolarisLibc extends CLibrary {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Timeval extends Structure {
@@ -232,7 +228,6 @@ public interface SolarisLibc extends CLibrary {
      * Structure for psinfo file
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class SolarisPsInfo {
 
@@ -439,7 +434,6 @@ public interface SolarisLibc extends CLibrary {
      * Nested Structure for psinfo file
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class SolarisLwpsInfo {
 
@@ -582,7 +576,6 @@ public interface SolarisLibc extends CLibrary {
      * Structure for usage file
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class SolarisPrUsage {
 
@@ -755,7 +748,6 @@ public interface SolarisLibc extends CLibrary {
      * 32/64-bit timestruc required for psinfo and lwpsinfo structures
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class Timestruc {
 

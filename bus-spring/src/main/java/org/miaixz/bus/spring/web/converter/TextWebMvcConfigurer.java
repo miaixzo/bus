@@ -30,7 +30,6 @@ import org.miaixz.bus.core.lang.Charset;
  * Configures Spring MVC plain-text conversion with UTF-8 encoding.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TextWebMvcConfigurer implements MessageConverterRegistrar {
 

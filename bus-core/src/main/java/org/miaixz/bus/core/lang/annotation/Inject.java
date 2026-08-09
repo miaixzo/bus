@@ -27,7 +27,6 @@ import java.lang.annotation.*;
  * It is conceptually similar to {@code jakarta.inject.Inject}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

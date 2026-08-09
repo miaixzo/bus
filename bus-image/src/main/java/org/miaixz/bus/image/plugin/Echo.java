@@ -33,7 +33,6 @@ import org.miaixz.bus.logger.Logger;
  * execution of the echo process.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Echo {
 

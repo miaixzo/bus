@@ -42,7 +42,6 @@ import org.miaixz.bus.health.unix.freebsd.BsdSysctlKit;
  * file system or other implementation specific means of file storage.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class FreeBsdFileSystem extends AbstractFileSystem {

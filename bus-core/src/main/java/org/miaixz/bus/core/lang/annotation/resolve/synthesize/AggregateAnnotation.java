@@ -25,7 +25,6 @@ import java.lang.annotation.Annotation;
  * Represents a group of annotation objects aggregated together.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface AggregateAnnotation extends Annotation {
 

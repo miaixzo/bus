@@ -26,7 +26,6 @@ import java.util.Map;
  * Provides template methods for quick template merging and rendering.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TemplateKit {
 

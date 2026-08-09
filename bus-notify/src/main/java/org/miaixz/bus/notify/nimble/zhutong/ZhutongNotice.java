@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.notify.nimble.zhutong;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -32,14 +30,18 @@ import org.miaixz.bus.notify.magic.Notice;
  * Notice for Zhutong SMS service.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class ZhutongNotice extends Notice {
+
+    /**
+     * Constructs a new {@code ZhutongNotice} instance.
+     */
+    public ZhutongNotice() {
+        // No initialization required.
+    }
 
     /**
      * The name of the template variable. View address: https://mix2.zthysms.com/index.html#/TemplateManagement. Can be

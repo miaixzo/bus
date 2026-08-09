@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.exception.RelevantException;
  * Applies optional hard-bounded request and response body caching.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CachedBodyFilter implements Filter, Ordered {
 

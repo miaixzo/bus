@@ -31,7 +31,6 @@ import org.miaixz.bus.fabric.network.dns.server.DnsTransport;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsQuicRuntime {
 

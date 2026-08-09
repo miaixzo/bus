@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.reflect.TypeReference;
  * and type conversion.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MapGets extends MapValidator {
 

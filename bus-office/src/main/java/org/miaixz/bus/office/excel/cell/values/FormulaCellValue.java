@@ -33,7 +33,6 @@ import org.miaixz.bus.office.excel.cell.setters.CellSetter;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FormulaCellValue implements CellValue<String>, CellSetter {
 

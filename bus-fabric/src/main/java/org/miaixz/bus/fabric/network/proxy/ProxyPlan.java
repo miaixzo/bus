@@ -38,7 +38,6 @@ import org.miaixz.bus.fabric.observe.tags.Tags;
  * Immutable proxy plan used before opening a network route.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ProxyPlan {
 

@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Calendar" GB/T 33661-2017).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LunarFestival extends AbstractFestival {
 

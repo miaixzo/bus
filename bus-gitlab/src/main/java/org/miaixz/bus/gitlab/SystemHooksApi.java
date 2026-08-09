@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.models.SystemHook;
  * This class implements the client side API for the GitLab System Hooks Keys API calls.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SystemHooksApi extends AbstractApi {
 

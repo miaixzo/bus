@@ -21,6 +21,5 @@
  * Provides shared Unix support used by multiple operating systems.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.health.unix.shared;

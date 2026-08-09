@@ -35,7 +35,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * provided arguments with indexed or named placeholders.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StringFormatter {
 

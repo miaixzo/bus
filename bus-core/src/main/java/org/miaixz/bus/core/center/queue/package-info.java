@@ -21,6 +21,5 @@
  * Queue-related wrappers around {@link java.util.Queue}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.center.queue;

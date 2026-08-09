@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AnyKeyManager {
 

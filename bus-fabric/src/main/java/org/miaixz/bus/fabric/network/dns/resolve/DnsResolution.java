@@ -29,7 +29,6 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecord;
  * Internal DNS resolution result before response encoding.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsResolution {
 

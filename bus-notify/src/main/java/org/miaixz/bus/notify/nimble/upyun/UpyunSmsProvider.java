@@ -42,7 +42,6 @@ import org.miaixz.bus.notify.nimble.AbstractProvider;
  * Upyun SMS service provider implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UpyunSmsProvider extends AbstractProvider<UpyunNotice, Context> {
 

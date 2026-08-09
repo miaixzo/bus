@@ -36,7 +36,6 @@ import org.miaixz.bus.image.galaxy.data.VR;
  * adjustments, as well as special handling for various DICOM image types.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LookupTableFactory {
 

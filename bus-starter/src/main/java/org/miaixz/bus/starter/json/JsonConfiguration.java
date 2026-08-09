@@ -34,7 +34,6 @@ import org.miaixz.bus.starter.annotation.EnableJson;
  * Creates and binds the application JSON provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(JsonProperties.class)
 @Configuration(proxyBeanMethods = false)

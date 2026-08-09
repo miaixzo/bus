@@ -21,6 +21,5 @@
  * UID Dictionary from SMIL_PB79
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SMIL_PB79;

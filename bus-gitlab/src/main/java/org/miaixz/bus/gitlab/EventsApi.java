@@ -33,7 +33,6 @@ import org.miaixz.bus.gitlab.models.Event;
  * This class implements the client side API for the GitLab events calls.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EventsApi extends AbstractApi {
 

@@ -55,7 +55,6 @@ import org.miaixz.bus.logger.Logger;
  * Clock speeds, fan speed, and shared memory are not available on any macOS path and always return -1.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class MacGpuStats implements GpuStats {

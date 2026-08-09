@@ -23,9 +23,7 @@ import java.io.Serial;
 
 import jakarta.persistence.Column;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -35,14 +33,18 @@ import org.miaixz.bus.core.lang.annotation.Logical;
  * Base entity carrying logical status and audit metadata.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Audit extends Entity {
+
+    /**
+     * Constructs a new {@code Audit} instance.
+     */
+    public Audit() {
+        // No initialization required.
+    }
 
     @Serial
     private static final long serialVersionUID = 2852290719630L;

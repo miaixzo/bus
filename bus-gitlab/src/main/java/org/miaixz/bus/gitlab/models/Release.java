@@ -34,27 +34,78 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The release class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Release implements Serializable {
 
+    /**
+     * Constructs a new {@code Release} instance.
+     */
+    public Release() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852279301328L;
 
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The tag name value.
+     */
     private String tagName;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The description html value.
+     */
     private String descriptionHtml;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The released at value.
+     */
     private Date releasedAt;
+    /**
+     * The author value.
+     */
     private Author author;
+    /**
+     * The commit value.
+     */
     private Commit commit;
+    /**
+     * The milestones value.
+     */
     private List<Milestone> milestones;
+    /**
+     * The commit path value.
+     */
     private String commitPath;
+    /**
+     * The tag path value.
+     */
     private String tagPath;
+    /**
+     * The evidence sha value.
+     */
     private String evidenceSha;
+    /**
+     * The assets value.
+     */
     private Assets assets;
 
+    /**
+     * The links value.
+     */
     @JsonProperty("_links")
     private Map<String, String> links;
 

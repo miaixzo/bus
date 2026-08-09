@@ -21,6 +21,5 @@
  * Integrates optional vendor GPU libraries such as NVML and ADL.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.health.builtin.gpu;

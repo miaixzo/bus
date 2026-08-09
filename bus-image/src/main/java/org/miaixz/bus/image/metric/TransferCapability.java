@@ -38,7 +38,6 @@ import org.miaixz.bus.image.metric.net.ApplicationEntity;
  * transfer syntaxes for a given SOP Class, and any extra information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TransferCapability implements Serializable {
 
@@ -370,7 +369,6 @@ public class TransferCapability implements Serializable {
      * Defines the Role values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Role {
         /**

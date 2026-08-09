@@ -31,7 +31,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the ReconnectDirContext type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class ReconnectDirContext implements Closeable {
 

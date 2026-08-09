@@ -41,7 +41,6 @@ import org.miaixz.bus.logger.Logger;
  * Memory obtained from WMI
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class WindowsVirtualMemory extends AbstractVirtualMemory {

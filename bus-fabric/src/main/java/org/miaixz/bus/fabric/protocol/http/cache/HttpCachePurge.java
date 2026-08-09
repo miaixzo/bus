@@ -32,7 +32,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
  * Invalidates matching HTTP cache entries.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class HttpCachePurge {
 

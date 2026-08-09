@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy;
  * Defines the ProgressListener contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ProgressListener {
 

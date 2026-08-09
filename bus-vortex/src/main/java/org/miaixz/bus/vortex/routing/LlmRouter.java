@@ -44,7 +44,6 @@ import reactor.core.publisher.Mono;
  * underlying LLM service.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LlmRouter implements Router<ServerRequest, ServerResponse> {
 

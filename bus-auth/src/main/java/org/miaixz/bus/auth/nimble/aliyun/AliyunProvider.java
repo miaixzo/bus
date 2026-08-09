@@ -37,7 +37,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Aliyun login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AliyunProvider extends AbstractProvider {
 

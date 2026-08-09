@@ -28,10 +28,19 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The tag push system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TagPushSystemHookEvent extends AbstractPushEvent implements SystemHookEvent {
 
+    /**
+     * Constructs a new {@code TagPushSystemHookEvent} instance.
+     */
+    public TagPushSystemHookEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852229727686L;
     /**

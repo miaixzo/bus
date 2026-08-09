@@ -80,7 +80,6 @@ import org.miaixz.bus.starter.annotation.EnableMapper;
  * the Mapper integration never owns JDBC routing state.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(value = { MapperProperties.class })
 @org.springframework.context.annotation.Configuration(proxyBeanMethods = false)
@@ -391,7 +390,6 @@ public class MapperConfiguration implements InitializingBean {
      * This class remains in the starter because it relies on Spring's resource pattern resolver.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class SpringBootVFS extends VFS {
 

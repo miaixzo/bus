@@ -25,7 +25,6 @@ import lombok.Getter;
  * Standard decision result returned by guard strategies.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 public class GuardDecision {

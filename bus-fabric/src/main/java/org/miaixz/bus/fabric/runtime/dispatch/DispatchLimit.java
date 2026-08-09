@@ -30,7 +30,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @param max    global maximum running tasks
  * @param perKey per-key maximum running tasks
  * @author Kimi Liu
- * @since Java 21+
  */
 public record DispatchLimit(int max, int perKey) {
 

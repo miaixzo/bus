@@ -28,7 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Allocates {@link SlabBuffer} instances with round-robin slab selection.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class SlabBufferAllocator {
 

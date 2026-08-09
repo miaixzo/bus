@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.MapKit;
  * @param <C> The type of the column keys.
  * @param <V> The type of the values.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
 
@@ -204,7 +203,6 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
      * A view of the table as a map from column keys to maps of row keys to values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private class ColumnMap extends AbstractMap<C, Map<R, V>> {
 
@@ -222,7 +220,6 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
      * The entry set for the {@link ColumnMap} view.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private class ColumnMapEntrySet extends AbstractSet<Map.Entry<C, Map<R, V>>> {
 
@@ -248,7 +245,6 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
      * A view of the set of unique column keys.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private class ColumnKeySet extends AbstractSet<C> {
 
@@ -274,7 +270,6 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
      * An iterator that traverses all unique column keys in the table.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private class ColumnKeyIterator extends ComputeIterator<C> {
 
@@ -319,7 +314,6 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
      * A view of a single column as a map from row keys to values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private class Column extends AbstractMap<R, V> {
 
@@ -349,7 +343,6 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
          * A view of the entry set for a single column.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         private class EntrySet extends AbstractSet<Map.Entry<R, V>> {
 
@@ -381,7 +374,6 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
          * An iterator that traverses all entries in a single column.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         private class EntrySetIterator extends ComputeIterator<Entry<R, V>> {
 

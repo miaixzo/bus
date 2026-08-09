@@ -31,7 +31,6 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  * Records framework-neutral application startup metrics through a Bus metrics provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StartupMetrics {
 

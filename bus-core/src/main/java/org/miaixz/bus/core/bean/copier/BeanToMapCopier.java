@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.TypeKit;
  * A copier that copies properties from a Bean to a Map.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BeanToMapCopier extends AbstractCopier<Object, Map> {
 

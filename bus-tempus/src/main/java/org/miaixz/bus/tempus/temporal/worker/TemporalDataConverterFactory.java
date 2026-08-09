@@ -36,7 +36,6 @@ import io.temporal.common.converter.ProtobufPayloadConverter;
  * Creates Temporal's package-private payload converter container without initializing its Jackson 2 default.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class TemporalDataConverterFactory {
 

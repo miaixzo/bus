@@ -38,7 +38,6 @@ import org.miaixz.bus.core.xyz.MapKit;
  * Creates and modifies Word tables.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WordTable {
 

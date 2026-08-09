@@ -53,7 +53,6 @@ import org.miaixz.bus.logger.Logger;
  * OSProcess implementation
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class LinuxOSProcess extends AbstractOSProcess {
@@ -892,7 +891,6 @@ public class LinuxOSProcess extends AbstractOSProcess {
      * /proc/pid/stat per the man file.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum ProcPidStat {
 

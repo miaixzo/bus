@@ -31,7 +31,6 @@ import org.miaixz.bus.cortex.Type;
  * Version-domain release record independent from registry assets.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

@@ -29,7 +29,6 @@ import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycleHour;
  * for the late Zi hour (晚子时) to be the same day.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LunarSect2EightCharProvider implements EightCharProvider {
 

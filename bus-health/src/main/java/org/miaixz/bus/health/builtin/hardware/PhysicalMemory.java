@@ -27,7 +27,6 @@ import org.miaixz.bus.health.Formats;
  * operating system.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public class PhysicalMemory {

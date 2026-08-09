@@ -42,7 +42,6 @@ import org.miaixz.bus.logger.Logger;
  * Sensors from WMI or Open Hardware Monitor
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class WindowsSensors extends AbstractSensors {

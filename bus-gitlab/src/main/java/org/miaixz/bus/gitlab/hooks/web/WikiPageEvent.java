@@ -28,10 +28,19 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The wiki page event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WikiPageEvent extends AbstractEvent {
 
+    /**
+     * Constructs a new {@code WikiPageEvent} instance.
+     */
+    public WikiPageEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852233220608L;
     /**
@@ -44,9 +53,21 @@ public class WikiPageEvent extends AbstractEvent {
      */
     public static final String OBJECT_KIND = "wiki_page";
 
+    /**
+     * The user value.
+     */
     private EventUser user;
+    /**
+     * The project value.
+     */
     private EventProject project;
+    /**
+     * The wiki value.
+     */
     private Wiki wiki;
+    /**
+     * The object attributes value.
+     */
     private ObjectAttributes objectAttributes;
 
     /**
@@ -155,14 +176,35 @@ public class WikiPageEvent extends AbstractEvent {
      * The wiki class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Wiki {
 
+        /**
+         * Constructs a new {@code Wiki} instance.
+         */
+        public Wiki() {
+            // No initialization required.
+        }
+
+        /**
+         * The web url value.
+         */
         private String webUrl;
+        /**
+         * The git http url value.
+         */
         private String git_http_url;
+        /**
+         * The git ssh url value.
+         */
         private String git_ssh_url;
+        /**
+         * The path with namespace value.
+         */
         private String pathWithNamespace;
+        /**
+         * The default branch value.
+         */
         private String defaultBranch;
 
         /**
@@ -282,18 +324,51 @@ public class WikiPageEvent extends AbstractEvent {
      * The object attributes class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class ObjectAttributes {
 
+        /**
+         * Constructs a new {@code ObjectAttributes} instance.
+         */
+        public ObjectAttributes() {
+            // No initialization required.
+        }
+
+        /**
+         * The title value.
+         */
         private String title;
+        /**
+         * The content value.
+         */
         private String content;
+        /**
+         * The format value.
+         */
         private String format;
+        /**
+         * The message value.
+         */
         private String message;
+        /**
+         * The slug value.
+         */
         private String slug;
+        /**
+         * The url value.
+         */
         private String url;
+        /**
+         * The action value.
+         */
         private String action;
+        /**
+         * The diff url value.
+         */
         private String diffUrl;
+        /**
+         * The version id value.
+         */
         private String versionId;
 
         /**

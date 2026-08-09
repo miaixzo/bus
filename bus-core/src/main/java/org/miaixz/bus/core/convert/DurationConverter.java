@@ -27,7 +27,6 @@ import java.time.temporal.TemporalAmount;
  * Converter for {@link Duration} objects
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DurationConverter extends AbstractConverter {
 

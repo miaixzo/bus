@@ -33,7 +33,6 @@ import org.miaixz.bus.image.metric.hl7.HL7Exception;
  * Represents the HL7ServiceRegistry type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HL7ServiceRegistry extends DefaultHL7MessageListener {
 

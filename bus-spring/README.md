@@ -36,26 +36,26 @@ Spring APIs are required and activation will be provided by the application.
 
 ## Package structure
 
-| Package | Responsibility |
-|---|---|
-| `org.miaixz.bus.spring` | Runtime context APIs and the `SpringBuilder` facade. |
-| `annotation` | Merged annotation handling, placeholder binding, wrapper annotations, and `@RequestObject`. |
-| `aop` | Reusable auto-proxy infrastructure with Bean-name exclusions. |
-| `bean` | Focused Bean lookup, registration, metadata, environment, context, and provider services. |
-| `jdbc` | Reusable datasource resolution, pool creation, dynamic routing, route scope, annotation, and advice. |
-| `web` | Root Servlet request access and context-binding filter. |
-| `web.advice` | Reusable MVC response advice base implementation. |
-| `web.converter` | JSON/text converters, type matching, registration, and MVC configurers. |
-| `web.interceptor` | Request interception helpers. |
-| `web.resolver` | Explicit request-object argument binding and binding options. |
-| `web.routing` | Controller route-prefix mapping. |
-| `web.wrapper` | Bounded request/response body caching wrappers and filter. |
-| `boot` | Spring Boot run listener and smart lifecycle base class. |
-| `boot.banner` | Text, image, and version banner selection and rendering. |
-| `boot.condition` | Reusable annotation-first Spring Boot activation condition. |
-| `boot.environment` | Early Spring Boot and logging environment processors. |
-| `boot.listener` | Spring Boot configuration listeners. |
-| `boot.startup` | Startup stages, metrics, reporters, and Bean post-processing. |
+| Package                 | Responsibility                                                                                       |
+|-------------------------|------------------------------------------------------------------------------------------------------|
+| `org.miaixz.bus.spring` | Runtime context APIs and the `SpringBuilder` facade.                                                 |
+| `annotation`            | Merged annotation handling, placeholder binding, wrapper annotations, and `@RequestObject`.          |
+| `aop`                   | Reusable auto-proxy infrastructure with Bean-name exclusions.                                        |
+| `bean`                  | Focused Bean lookup, registration, metadata, environment, context, and provider services.            |
+| `jdbc`                  | Reusable datasource resolution, pool creation, dynamic routing, route scope, annotation, and advice. |
+| `web`                   | Root Servlet request access and context-binding filter.                                              |
+| `web.advice`            | Reusable MVC response advice base implementation.                                                    |
+| `web.converter`         | JSON/text converters, type matching, registration, and MVC configurers.                              |
+| `web.interceptor`       | Request interception helpers.                                                                        |
+| `web.resolver`          | Explicit request-object argument binding and binding options.                                        |
+| `web.routing`           | Controller route-prefix mapping.                                                                     |
+| `web.wrapper`           | Bounded request/response body caching wrappers and filter.                                           |
+| `boot`                  | Spring Boot run listener and smart lifecycle base class.                                             |
+| `boot.banner`           | Text, image, and version banner selection and rendering.                                             |
+| `boot.condition`        | Reusable annotation-first Spring Boot activation condition.                                          |
+| `boot.environment`      | Early Spring Boot and logging environment processors.                                                |
+| `boot.listener`         | Spring Boot configuration listeners.                                                                 |
+| `boot.startup`          | Startup stages, metrics, reporters, and Bean post-processing.                                        |
 
 The root package intentionally remains populated. `ContextBuilder`, `ContextManager`, `ContextProvider`, `ContextState`,
 `ContextScope`, `ContextDecorator`, and `SpringBuilder` are stable public capabilities rather than an empty namespace.
@@ -70,8 +70,8 @@ condition can guard either a configuration type or an individual Bean method.
 `org.miaixz.bus.spring.jdbc.DataSource` is the public Spring contract for selecting a datasource at a service boundary.
 Its value must identify a resolved datasource route. `DataSourceResolver`, `DataSourceDefinition`, and
 `DataSourceMapping` resolve an ordered list of compatible property prefixes into one validated mapping;
-`DataSourceFactory` creates the configured pools; `DynamicDataSource` performs routing; each application context owns
-an independent `DataSourceHolder` for exact nested route scopes; and `DataSourceListener` reports successful initial,
+`DataSourceFactory` creates the configured pools; `DynamicDataSource` performs routing; each application context owns an
+independent `DataSourceHolder` for exact nested route scopes; and `DataSourceListener` reports successful initial,
 added, replaced, and removed routes. `AspectjJdbcProxy`
 interprets the annotation before transaction advice obtains a connection. These types are independent of Mapper and
 Starter assembly. `bus-starter` supplies only the supported prefix order, default pool type, and Spring Beans.
@@ -81,14 +81,14 @@ Starter assembly. `bus-starter` supplies only the supported prefix order, defaul
 Runtime state is owned by one `ContextManager` per Spring application context. It is not stored in a global static
 application-context registry.
 
-| Type | Responsibility |
-|---|---|
-| `ContextManager` | Owns the current thread state and performs capture, install, restore, and clear operations. |
-| `ContextState` | Immutable detached snapshot containing request ID, a defensive authorization copy, and resolved credential metadata. |
-| `ContextBuilder` | Public facade for request IDs, authorization, tenant, credential, token, and API key access. |
-| `ContextScope` | `AutoCloseable` guard that restores the previous state exactly once. |
-| `ContextDecorator` | Spring `TaskDecorator` that propagates captured state to executor tasks. |
-| `ContextProvider` | Ordered extension point that can supply authorization state. |
+| Type               | Responsibility                                                                                                       |
+|--------------------|----------------------------------------------------------------------------------------------------------------------|
+| `ContextManager`   | Owns the current thread state and performs capture, install, restore, and clear operations.                          |
+| `ContextState`     | Immutable detached snapshot containing request ID, a defensive authorization copy, and resolved credential metadata. |
+| `ContextBuilder`   | Public facade for request IDs, authorization, tenant, credential, token, and API key access.                         |
+| `ContextScope`     | `AutoCloseable` guard that restores the previous state exactly once.                                                 |
+| `ContextDecorator` | Spring `TaskDecorator` that propagates captured state to executor tasks.                                             |
+| `ContextProvider`  | Ordered extension point that can supply authorization state.                                                         |
 
 `ContextState` never retains `HttpServletRequest`, cached bodies, multipart data, or a thread-local container. Token and
 API-key credentials are resolved once at the Servlet boundary and retained only as immutable credential values with
@@ -138,14 +138,14 @@ token, and API-key state owned by the current thread.
 
 `SpringBuilder` is a convenience facade over six focused services:
 
-| Service | Responsibility |
-|---|---|
-| `SpringContext` | Holds the owning `ApplicationContext` and publishes events. |
-| `BeanProvider` | Reads Beans by name, class, or `TypeReference`. |
-| `BeanRegistry` | Registers and removes Bean definitions and singletons. |
-| `BeanMetadata` | Resolves Bean types and configuration-source origin without instantiation side effects. |
-| `EnvironmentResolver` | Resolves properties, profiles, application name, modes, and placeholders. |
-| `ProviderRegistry` | Discovers ordered Bus providers and caches them within the owning context. |
+| Service               | Responsibility                                                                          |
+|-----------------------|-----------------------------------------------------------------------------------------|
+| `SpringContext`       | Holds the owning `ApplicationContext` and publishes events.                             |
+| `BeanProvider`        | Reads Beans by name, class, or `TypeReference`.                                         |
+| `BeanRegistry`        | Registers and removes Bean definitions and singletons.                                  |
+| `BeanMetadata`        | Resolves Bean types and configuration-source origin without instantiation side effects. |
+| `EnvironmentResolver` | Resolves properties, profiles, application name, modes, and placeholders.               |
+| `ProviderRegistry`    | Discovers ordered Bus providers and caches them within the owning context.              |
 
 ### Lookup
 
@@ -215,13 +215,13 @@ The filter is reusable infrastructure; feature-specific request advice remains i
 
 The resolver package contains:
 
-| Type | Responsibility |
-|---|---|
+| Type                            | Responsibility                                                         |
+|---------------------------------|------------------------------------------------------------------------|
 | `RequestObjectArgumentResolver` | Builds an explicitly selected controller argument from request values. |
-| `AutoBindingTypeMatcher` | Determines which types may participate in binding. |
-| `RequestBindingOptions` | Immutable binding behavior and limits. |
-| `BindingDefaults` | Shared safe defaults. |
-| `RequestWebMvcConfigurer` | Installs the resolver into MVC. |
+| `AutoBindingTypeMatcher`        | Determines which types may participate in binding.                     |
+| `RequestBindingOptions`         | Immutable binding behavior and limits.                                 |
+| `BindingDefaults`               | Shared safe defaults.                                                  |
+| `RequestWebMvcConfigurer`       | Installs the resolver into MVC.                                        |
 
 Framework types and simple scalar arguments are excluded. Tenant identity must come from authenticated runtime context
 and must not be overwritten by request input.
@@ -303,10 +303,10 @@ bus:
       name: app.log
 ```
 
-`bus.logging.pattern.defaults` defaults to `true`. When enabled, Bus contributes low-priority built-in console and
-file logging patterns. Set it to `false` to leave the patterns to Spring Boot. Explicit
-`bus.logging.pattern.console`, `bus.logging.pattern.file`, or corresponding `logging.pattern.*` properties always
-take precedence.
+`bus.logging.pattern.defaults` defaults to `true`. When enabled, Bus contributes low-priority built-in console and file
+logging patterns. Set it to `false` to leave the patterns to Spring Boot. Explicit
+`bus.logging.pattern.console`, `bus.logging.pattern.file`, or corresponding `logging.pattern.*` properties always take
+precedence.
 
 is exposed during startup as:
 
@@ -321,11 +321,11 @@ logging.pattern.console=%d %-5level %logger - %msg%n
 
 The reusable infrastructure is assembled by three Starter configurations:
 
-| Configuration | Default | Disable switch |
-|---|---|---|
-| `GeniusStarter` | enabled | none |
-| `TaskConfiguration` | enabled when task classes exist | `bus.context.task.enabled=false` |
-| `WebConfiguration` | enabled for Servlet applications | `bus.context.web.enabled=false` disables binding only |
+| Configuration       | Default                          | Disable switch                                        |
+|---------------------|----------------------------------|-------------------------------------------------------|
+| `GeniusStarter`     | enabled                          | none                                                  |
+| `TaskConfiguration` | enabled when task classes exist  | `bus.context.task.enabled=false`                      |
+| `WebConfiguration`  | enabled for Servlet applications | `bus.context.web.enabled=false` disables binding only |
 
 Product features such as cache, mapper, sensitive, storage, or Vortex are separate and remain controlled by their own
 `bus.<feature>.enabled` properties.
@@ -350,5 +350,5 @@ and `allPublic*` reflection grants are prohibited.
 
 ## Verification boundary
 
-Bus contains and runs no tests. Context, Bean service, Web, module-path, lifecycle, metadata, AOT, and Native Image tests
-are maintained in the sibling Abarth repository. Bus builds must skip tests explicitly.
+Bus contains and runs no tests. Context, Bean service, Web, module-path, lifecycle, metadata, AOT, and Native Image
+tests are maintained in the sibling Abarth repository. Bus builds must skip tests explicitly.

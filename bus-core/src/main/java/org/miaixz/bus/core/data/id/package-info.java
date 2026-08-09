@@ -21,6 +21,5 @@
  * This package provides various unique ID generators, such as Snowflake, UUID, ObjectId, etc.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.data.id;

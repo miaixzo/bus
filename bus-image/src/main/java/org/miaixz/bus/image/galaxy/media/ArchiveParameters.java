@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Archive access parameters for DICOM manifest and web retrieval workflows.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ArchiveParameters {
 

@@ -21,6 +21,5 @@
  * Provides classes for string template processing.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.text.placeholder.template;

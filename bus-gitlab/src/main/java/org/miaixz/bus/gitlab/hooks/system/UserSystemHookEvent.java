@@ -28,10 +28,19 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The user system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UserSystemHookEvent extends AbstractSystemHookEvent {
 
+    /**
+     * Constructs a new {@code UserSystemHookEvent} instance.
+     */
+    public UserSystemHookEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852229925117L;
     /**
@@ -52,14 +61,41 @@ public class UserSystemHookEvent extends AbstractSystemHookEvent {
      */
     public static final String USER_FAILED_LOGIN_EVENT = "user_failed_login";
 
+    /**
+     * The event name value.
+     */
     private String eventName;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The email value.
+     */
     private String email;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The username value.
+     */
     private String username;
+    /**
+     * The user id value.
+     */
     private Long userId;
+    /**
+     * The old username value.
+     */
     private String oldUsername;
+    /**
+     * The state value.
+     */
     private String state;
 
     /**

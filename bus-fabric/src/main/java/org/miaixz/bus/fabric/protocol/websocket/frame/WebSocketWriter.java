@@ -36,7 +36,6 @@ import org.miaixz.bus.fabric.Builder;
  * Encodes and completely writes one WebSocket frame.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class WebSocketWriter {
 

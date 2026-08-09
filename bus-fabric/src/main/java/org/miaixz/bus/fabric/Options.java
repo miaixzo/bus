@@ -33,7 +33,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * Immutable option snapshot with copy-on-write update methods.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Options {
 

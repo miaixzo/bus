@@ -26,7 +26,6 @@ import lombok.Setter;
  * Artifact attached to one release version.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

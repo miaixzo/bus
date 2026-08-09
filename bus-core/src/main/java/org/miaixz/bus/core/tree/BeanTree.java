@@ -73,7 +73,6 @@ import org.miaixz.bus.core.xyz.ListKit;
  * @param <T> The type of the bean.
  * @param <R> The type of the primary key and foreign key.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BeanTree<T, R extends Comparable<R>> {
 

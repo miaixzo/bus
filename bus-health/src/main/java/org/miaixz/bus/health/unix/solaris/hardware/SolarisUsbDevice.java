@@ -32,7 +32,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
  * Solaris Usb Device
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public class SolarisUsbDevice extends AbstractUsbDevice {

@@ -57,15 +57,6 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "int",
-            "boolean",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
             "org.miaixz.bus.limiter.Context$ContextBuilder"
           ]
         },

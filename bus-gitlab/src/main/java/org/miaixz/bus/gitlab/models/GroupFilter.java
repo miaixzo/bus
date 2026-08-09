@@ -32,23 +32,65 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * This class is used to filter Groups when getting lists of groups.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GroupFilter implements Serializable {
 
+    /**
+     * Constructs a new {@code GroupFilter} instance.
+     */
+    public GroupFilter() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852256129063L;
 
+    /**
+     * The skip groups value.
+     */
     private List<Long> skipGroups;
+    /**
+     * The all available value.
+     */
     private Boolean allAvailable;
+    /**
+     * The search value.
+     */
     private String search;
+    /**
+     * The order by value.
+     */
     private GroupOrderBy orderBy;
+    /**
+     * The sort value.
+     */
     private SortOrder sort;
+    /**
+     * The statistics value.
+     */
     private Boolean statistics;
+    /**
+     * The with custom attributes value.
+     */
     private Boolean withCustomAttributes;
+    /**
+     * The owned value.
+     */
     private Boolean owned;
+    /**
+     * The access level value.
+     */
     private AccessLevel accessLevel;
+    /**
+     * The top level only value.
+     */
     private Boolean topLevelOnly;
+    /**
+     * The custom attributes filter value.
+     */
     private List<CustomAttribute> customAttributesFilter = new ArrayList<>();
 
     /**

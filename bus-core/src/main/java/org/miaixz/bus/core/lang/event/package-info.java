@@ -24,6 +24,5 @@
  * receive and process these messages.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.lang.event;

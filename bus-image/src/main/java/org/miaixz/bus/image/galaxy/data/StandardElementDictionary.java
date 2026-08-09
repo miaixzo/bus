@@ -25,7 +25,6 @@ import org.miaixz.bus.image.Tag;
  * Represents the StandardElementDictionary type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StandardElementDictionary extends ElementDictionary {
 

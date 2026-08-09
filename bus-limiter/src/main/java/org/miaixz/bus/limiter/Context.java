@@ -30,14 +30,18 @@ import org.miaixz.bus.core.lang.Normal;
  * limiting functionality, such as hotspot cache duration, logging enablement, and user identifier provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Context {
+
+    /**
+     * Constructs a new {@code Context} instance.
+     */
+    public Context() {
+        // No initialization required.
+    }
 
     /**
      * Default duration for hotspot caching in seconds.

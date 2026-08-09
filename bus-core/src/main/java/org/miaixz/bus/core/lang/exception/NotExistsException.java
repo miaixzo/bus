@@ -27,7 +27,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Represents an exception indicating that an entity or resource does not exist.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NotExistsException extends UncheckedException {
 

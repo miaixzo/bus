@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
@@ -32,10 +31,8 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
  * Google authorization scopes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
-@AllArgsConstructor
 public enum GoogleScope implements AuthorizeScope {
 
     /**
@@ -1306,6 +1303,19 @@ public enum GoogleScope implements AuthorizeScope {
     private final String scope;
     private final String description;
     private final boolean isDefault;
+
+    /**
+     * Constructs an authorization scope.
+     *
+     * @param scope       the scope value
+     * @param description the scope description
+     * @param isDefault   whether the scope is enabled by default
+     */
+    GoogleScope(String scope, String description, boolean isDefault) {
+        this.scope = scope;
+        this.description = description;
+        this.isDefault = isDefault;
+    }
 
     /**
      * Returns Google Admin Directory authorization scopes.

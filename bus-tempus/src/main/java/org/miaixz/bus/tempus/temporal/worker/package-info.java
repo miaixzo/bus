@@ -24,6 +24,5 @@
  * connector implementations shared by publishers and subscribers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.tempus.temporal.worker;

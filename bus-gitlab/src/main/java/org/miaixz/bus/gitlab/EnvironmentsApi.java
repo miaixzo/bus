@@ -33,7 +33,6 @@ import org.miaixz.bus.gitlab.models.Environment;
  *
  * @see <a href="https://docs.gitlab.com/ce/api/environments.html">Environments API</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EnvironmentsApi extends AbstractApi {
 

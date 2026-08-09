@@ -25,7 +25,6 @@ import java.util.Collection;
  * Creates and combines {@link Filter} instances.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class Filters {
 

@@ -31,17 +31,35 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The epic issue class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EpicIssue extends AbstractIssue {
 
+    /**
+     * Constructs a new {@code EpicIssue} instance.
+     */
+    public EpicIssue() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852253051692L;
 
+    /**
+     * The links value.
+     */
     @JsonProperty("_links")
     private Map<String, String> links;
 
+    /**
+     * The epic issue id value.
+     */
     private Long epicIssueId;
+    /**
+     * The relative position value.
+     */
     private Integer relativePosition;
 
     /**

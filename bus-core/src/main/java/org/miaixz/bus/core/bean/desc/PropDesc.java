@@ -41,7 +41,6 @@ import org.miaixz.bus.core.xyz.ModifierKit;
  * invocation details.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PropDesc {
 

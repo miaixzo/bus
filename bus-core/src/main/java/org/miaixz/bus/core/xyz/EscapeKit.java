@@ -33,7 +33,6 @@ import org.miaixz.bus.core.text.escape.XmlUnescape;
  * characters are converted to %xx format.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EscapeKit {
 

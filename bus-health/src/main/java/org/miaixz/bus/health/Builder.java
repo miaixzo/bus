@@ -47,7 +47,6 @@ import org.miaixz.bus.setting.nimble.props.Props;
  * Defines global health configuration and shared health operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Builder {

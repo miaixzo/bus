@@ -42,7 +42,6 @@ import org.miaixz.bus.logger.Logger;
  * CUPS-based printer implementation for Unix-like systems.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public final class CupsPrinter extends AbstractPrinter {
@@ -283,7 +282,6 @@ public final class CupsPrinter extends AbstractPrinter {
      * Factory interface for creating concrete printer instances.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FunctionalInterface
     protected interface PrinterFactory {

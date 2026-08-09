@@ -23,7 +23,6 @@ package org.miaixz.bus.pay;
  * Represents the mode of the payment platform.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Mode {
 

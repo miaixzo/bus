@@ -28,7 +28,6 @@ import org.miaixz.bus.image.galaxy.data.AttributesCoercion;
  * further processing.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DeIdentificationCoercion implements AttributesCoercion {
 

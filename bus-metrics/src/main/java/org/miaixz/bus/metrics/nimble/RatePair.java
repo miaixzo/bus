@@ -24,7 +24,6 @@ package org.miaixz.bus.metrics.nimble;
  * circuit-breaker decisions without external PromQL.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface RatePair {
 

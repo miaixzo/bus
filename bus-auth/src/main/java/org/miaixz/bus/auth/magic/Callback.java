@@ -21,9 +21,7 @@ package org.miaixz.bus.auth.magic;
 
 import java.io.Serializable;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -34,14 +32,18 @@ import org.miaixz.bus.core.xyz.StringKit;
  * phase of an authentication flow.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Callback implements Serializable {
+
+    /**
+     * Constructs a new {@code Callback} instance.
+     */
+    public Callback() {
+        // No initialization required.
+    }
 
     /**
      * The 'code' parameter returned after accessing the AuthorizeUrl.

@@ -21,9 +21,7 @@ package org.miaixz.bus.notify.magic;
 
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -31,14 +29,18 @@ import lombok.experimental.SuperBuilder;
  * Represents the notice or content of a message template.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Notice {
+
+    /**
+     * Constructs a new {@code Notice} instance.
+     */
+    public Notice() {
+        // No initialization required.
+    }
 
     /**
      * The URL associated with the notice, if any.
@@ -99,7 +101,6 @@ public class Notice {
      * Enumerates the types of content that can be sent.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Type {
         /**
@@ -129,7 +130,6 @@ public class Notice {
      * Enumerates the sending modes for messages.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Mode {
         /**

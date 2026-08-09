@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.dict.acuson_1_2_840_113680_1_0_0910;
  * Represents the PrivateTag type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PrivateTag {
 

@@ -24,7 +24,6 @@ package org.miaixz.bus.fabric.bridge;
  *
  * @param <T> translated target type
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Translator<T> {
 

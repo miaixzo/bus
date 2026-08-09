@@ -33,7 +33,6 @@ import org.miaixz.bus.starter.wrapper.WrapperConfiguration;
  * the default wrapper message converter requires the application-wide provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

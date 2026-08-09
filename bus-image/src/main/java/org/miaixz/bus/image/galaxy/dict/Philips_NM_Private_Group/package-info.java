@@ -21,6 +21,5 @@
  * UID Dictionary from Philips_NM_Private_Group
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.Philips_NM_Private_Group;

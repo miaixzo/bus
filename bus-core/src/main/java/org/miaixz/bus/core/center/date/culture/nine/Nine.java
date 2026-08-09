@@ -26,7 +26,6 @@ import org.miaixz.bus.core.center.date.culture.Samsara;
  * Solstice. This class extends {@link Samsara} to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Nine extends Samsara {
 

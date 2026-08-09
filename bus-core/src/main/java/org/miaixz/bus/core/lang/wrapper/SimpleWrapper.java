@@ -27,7 +27,6 @@ import org.miaixz.bus.core.lang.Wrapper;
  *
  * @param <T> the type of the wrapped object
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SimpleWrapper<T> implements Wrapper<T> {
 

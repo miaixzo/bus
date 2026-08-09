@@ -61,7 +61,6 @@ import org.miaixz.bus.logger.Logger;
  * present. ADL requires an AMD GPU with the ADL library present. LHM requires LibreHardwareMonitor to be running.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class WindowsGpuStats implements GpuStats {

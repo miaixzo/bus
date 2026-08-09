@@ -29,7 +29,6 @@ import org.miaixz.bus.fabric.Policy;
  *
  * @param resolver resolver source whose cache is shared by its runtime-bound view
  * @author Kimi Liu
- * @since Java 21+
  */
 public record DnsPolicy(DnsResolver resolver) implements Policy {
 

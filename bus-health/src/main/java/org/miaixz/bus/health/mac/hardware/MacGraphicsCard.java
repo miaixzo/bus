@@ -38,7 +38,6 @@ import org.miaixz.bus.health.mac.SysctlKit;
  * Graphics card information obtained by system_profiler SPDisplaysDataType.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class MacGraphicsCard extends AbstractGraphicsCard {

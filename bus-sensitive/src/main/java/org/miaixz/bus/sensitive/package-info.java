@@ -21,6 +21,5 @@
  * Provides data desensitization, encryption/decryption, and structured log sanitization algorithms.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.sensitive;

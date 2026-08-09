@@ -30,7 +30,6 @@ import org.miaixz.bus.core.convert.Convert;
  * the dynamic property access capabilities of {@code DynaBean}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DynaBeanValueProvider implements ValueProvider<String> {
 

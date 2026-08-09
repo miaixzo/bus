@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  * look for new segments in the DICOM original data once the first part is read past.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SegmentedInputImageStream extends ImageInputStreamImpl {
 
@@ -97,11 +96,8 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
      * entire object/value.
      *
      * @param stream             the stream value
-     *
      * @param pixeldataFragments the pixeldata fragments value
-     *
      * @param frameIndex         the frame index value
-     *
      * @throws IOException if the operation fails
      */
     public SegmentedInputImageStream(ImageInputStream stream, Fragments pixeldataFragments, int frameIndex)
@@ -217,7 +213,6 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
      * byte array.
      *
      * @param data the data value
-     *
      * @throws IOException if the operation fails
      */
     public SegmentedInputImageStream(byte[] data) throws IOException {

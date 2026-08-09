@@ -32,7 +32,6 @@ import org.miaixz.bus.starter.tracer.TracerConfiguration;
  * distributed tracing system. It will enable the setup of tracers, reporters, and context propagation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

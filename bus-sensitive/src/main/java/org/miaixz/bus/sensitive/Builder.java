@@ -29,7 +29,6 @@ import org.miaixz.bus.core.text.dfa.Sensitive;
  * for processing individual objects or strings.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Builder extends Sensitive {
 

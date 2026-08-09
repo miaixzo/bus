@@ -34,7 +34,6 @@ import org.miaixz.bus.core.xyz.DateKit;
  * rules.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FormatManager {
 
@@ -174,7 +173,6 @@ public class FormatManager {
      * Singleton holder class, implementing lazy loading.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class SingletonHolder {
 

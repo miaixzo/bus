@@ -24,6 +24,5 @@
  * implementations used to consume and execute workflows and activities from Temporal task queues.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.tempus.temporal.workflow.subscriber;

@@ -33,7 +33,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Switches for response envelope advice.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

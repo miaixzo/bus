@@ -27,7 +27,6 @@ import java.util.EventObject;
  * {@link Event} marker interface, providing a basic event structure that carries a source object.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SourceEvent extends EventObject implements Event {
 

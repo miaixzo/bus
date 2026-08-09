@@ -21,6 +21,5 @@
  * Provides exception handling and advice mechanisms.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.base.advice;

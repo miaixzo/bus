@@ -39,7 +39,6 @@ import org.miaixz.bus.image.metric.hl7.MLLPRelease;
  * message over an MLLP connection and waits for a response.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HL7Pdq extends Device {
 

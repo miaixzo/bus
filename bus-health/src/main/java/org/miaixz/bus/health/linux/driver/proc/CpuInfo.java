@@ -36,7 +36,6 @@ import org.miaixz.bus.health.linux.ProcPath;
  * Reads CPU info from {@code /proc/cpuinfo}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class CpuInfo {

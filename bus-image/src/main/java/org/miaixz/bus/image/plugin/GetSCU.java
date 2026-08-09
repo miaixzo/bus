@@ -54,7 +54,6 @@ import org.miaixz.bus.logger.Logger;
  * locally.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GetSCU implements AutoCloseable {
 
@@ -557,7 +556,6 @@ public class GetSCU implements AutoCloseable {
      * Enumeration of the supported DICOM Information Models for C-GET.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum InformationModel {
 

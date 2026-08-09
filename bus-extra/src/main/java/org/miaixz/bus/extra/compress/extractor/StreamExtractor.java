@@ -42,7 +42,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Data decompressor, used to extract data from an archive package.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StreamExtractor implements Extractor {
 

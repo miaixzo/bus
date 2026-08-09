@@ -43,7 +43,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Wraps and modifies {@link java.util.Calendar} values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Calendar extends Calculate {
 

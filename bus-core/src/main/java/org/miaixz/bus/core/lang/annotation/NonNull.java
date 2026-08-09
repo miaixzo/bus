@@ -31,7 +31,6 @@ import java.lang.annotation.*;
  * or those found in tools like FindBugs and IntelliJ IDEA.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

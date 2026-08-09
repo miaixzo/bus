@@ -22,6 +22,5 @@
  * engine, please refer to: https://www.thymeleaf.org/
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.extra.template.provider.thymeleaf;

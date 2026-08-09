@@ -49,7 +49,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the LdapHL7Configuration type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LdapHL7Configuration extends LdapDicomConfigurationExtension implements HL7Configuration {
 

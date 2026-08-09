@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.dict.GE_____From_Adantage_Review_CS;
  * Represents the PrivateTag type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PrivateTag {
 

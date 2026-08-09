@@ -35,7 +35,6 @@ import org.miaixz.bus.health.windows.driver.wmi.Win32Printer;
  * Printer data obtained from WMI
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class WindowsPrinter extends AbstractPrinter {
@@ -113,10 +112,10 @@ final class WindowsPrinter extends AbstractPrinter {
     /**
      * Parses Win32_Printer PrinterStatus and DetectedErrorState codes.
      * https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-printer
-     *
+     * <p>
      * DetectedErrorState values: 0=Unknown, 1=Other, 2=No Error, 3=Low Paper, 4=No Paper, 5=Low Toner, 6=No Toner,
      * 7=Door Open, 8=Jammed, 9=Offline, 10=Service Requested, 11=Output Bin Full.
-     *
+     * <p>
      * We treat values >= 4 as ERROR (hard failures preventing printing). Low consumable warnings (3=Low Paper, 5=Low
      * Toner) pass through to PrinterStatus check since the printer can still function. Callers can check
      * getStatusReason() for details.

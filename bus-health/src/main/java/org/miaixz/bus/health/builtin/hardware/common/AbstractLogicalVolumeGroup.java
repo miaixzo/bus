@@ -30,7 +30,6 @@ import org.miaixz.bus.health.builtin.hardware.LogicalVolumeGroup;
  * The abstract logical volume group class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AbstractLogicalVolumeGroup implements LogicalVolumeGroup {
 

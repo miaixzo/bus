@@ -21,6 +21,5 @@
  * Provides functions to query properties in WMI classes
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.health.windows.driver.wmi;

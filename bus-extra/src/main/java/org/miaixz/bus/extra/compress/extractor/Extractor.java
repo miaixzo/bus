@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Archive data unpacking wrapper, used to unpack packages such as zip, tar, etc., into files.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Extractor extends Closeable {
 

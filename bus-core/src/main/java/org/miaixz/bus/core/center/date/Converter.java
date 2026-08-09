@@ -38,7 +38,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * Converts date and time values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Converter extends Formatter {
 

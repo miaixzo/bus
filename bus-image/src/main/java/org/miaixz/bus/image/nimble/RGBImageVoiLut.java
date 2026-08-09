@@ -45,7 +45,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the RGBImageVoiLut type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RGBImageVoiLut {
 
@@ -1113,7 +1112,6 @@ public class RGBImageVoiLut {
      * Represents the InflateSegmentedLut type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class InflateSegmentedLut {
 

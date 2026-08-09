@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.core.basic.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -29,14 +27,18 @@ import lombok.experimental.SuperBuilder;
  * Represents namespace information used to isolate resources, configuration, or data within the current context.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Namespace extends Tracer {
+
+    /**
+     * Constructs a new {@code Namespace} instance.
+     */
+    public Namespace() {
+        // No initialization required.
+    }
 
     /**
      * The unique identifier of the namespace to which the current entity belongs.

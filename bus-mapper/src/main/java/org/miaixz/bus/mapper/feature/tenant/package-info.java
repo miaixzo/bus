@@ -26,6 +26,5 @@
  * ensuring data access is strictly scoped to the current tenant without requiring manual query modifications.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.mapper.feature.tenant;

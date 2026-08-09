@@ -26,7 +26,6 @@ import org.miaixz.bus.fabric.network.dns.provider.DnsUpdateCommand;
  * Decoded single-question DNS query.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsQuery {
 

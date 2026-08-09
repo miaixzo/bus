@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.vortex.magic;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -37,12 +36,10 @@ import org.miaixz.bus.core.basic.normal.Consts;
  *
  * @see org.miaixz.bus.vortex.provider.AuthorizeProvider
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@AllArgsConstructor
 public class Delegate {
 
     /**

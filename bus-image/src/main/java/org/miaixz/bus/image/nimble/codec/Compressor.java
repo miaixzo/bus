@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the Compressor type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Compressor extends Decompressor implements Closeable {
 
@@ -532,7 +531,6 @@ public class Compressor extends Decompressor implements Closeable {
      * Represents the CacheOutputStream type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class CacheOutputStream extends FilterOutputStream {
 
@@ -558,7 +556,6 @@ public class Compressor extends Decompressor implements Closeable {
      * Represents the FlushlessMemoryCacheImageOutputStream type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class FlushlessMemoryCacheImageOutputStream extends MemoryCacheImageOutputStream
             implements BytesWithImageImageDescriptor {
@@ -624,7 +621,6 @@ public class Compressor extends Decompressor implements Closeable {
      * Represents the CompressedFrame type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private class CompressedFrame implements Value {
 

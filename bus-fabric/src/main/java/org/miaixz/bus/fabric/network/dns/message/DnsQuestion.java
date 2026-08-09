@@ -26,7 +26,6 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
  * Immutable DNS question section entry.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsQuestion {
 

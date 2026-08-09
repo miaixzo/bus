@@ -33,7 +33,6 @@ import org.miaixz.bus.logger.Logger;
  * interface for rendering templates.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BeetlTemplate implements Template, Serializable {
 
@@ -67,7 +66,7 @@ public class BeetlTemplate implements Template, Serializable {
     /**
      * Renders the template with the given data model to a writer. This method is designed to be overridden by
      * subclasses for custom rendering logic.
-     *
+     * <p>
      * Subclasses may override to add custom binding or rendering logic.
      *
      * @param bindingMap The data model to bind to the template.
@@ -95,7 +94,7 @@ public class BeetlTemplate implements Template, Serializable {
     /**
      * Renders the template with the given data model to an output stream. This method is designed to be overridden by
      * subclasses for custom rendering logic.
-     *
+     * <p>
      * Subclasses may override to add custom binding or rendering logic.
      *
      * @param bindingMap The data model to bind to the template.

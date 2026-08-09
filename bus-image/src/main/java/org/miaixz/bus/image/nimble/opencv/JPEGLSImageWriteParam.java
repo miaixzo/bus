@@ -27,7 +27,6 @@ import javax.imageio.ImageWriteParam;
  * Represents the JPEGLSImageWriteParam type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JPEGLSImageWriteParam extends ImageWriteParam {
 

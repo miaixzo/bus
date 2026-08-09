@@ -35,7 +35,6 @@ import org.miaixz.bus.cortex.registry.prompt.PromptRegistry;
  * Cache-maintenance service for registry projections.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RegistryRefreshService {
 

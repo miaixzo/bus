@@ -143,6 +143,7 @@ public class FaceDetectionExample {
 
 ```java
 public class ImageFilterExample {
+    
     public void applyFilters(String inputPath) {
         Mat image = Imgcodecs.imread(inputPath);
 
@@ -154,6 +155,7 @@ public class ImageFilterExample {
         // Display or save results
         // ...
     }
+    
 }
 ```
 
@@ -202,7 +204,7 @@ public class VideoExample {
 
 ```java
 public class ObjectDetectionExample {
-    
+
     public void detectObjects(String imagePath) {
         Mat image = Imgcodecs.imread(imagePath);
 
@@ -218,7 +220,7 @@ public class ObjectDetectionExample {
                 + " at " + obj.getBoundingBox());
         }
     }
-    
+
 }
 ```
 

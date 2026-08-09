@@ -21,6 +21,5 @@
  * Provides encapsulated operations for Word documents using POI.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.office.word;

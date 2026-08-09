@@ -28,7 +28,6 @@ import org.miaixz.bus.image.galaxy.data.ElementDictionary;
  * (Group &lt;&lt; 16) | Element.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Tag {
 
@@ -26418,7 +26417,6 @@ public class Tag {
      * Defines the Type values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Type {
 

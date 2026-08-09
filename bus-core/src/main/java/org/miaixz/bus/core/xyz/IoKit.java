@@ -64,7 +64,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * because streams may be read and written multiple times, and closing them prematurely can lead to issues.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IoKit {
 

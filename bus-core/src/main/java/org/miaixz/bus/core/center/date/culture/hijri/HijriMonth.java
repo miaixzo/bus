@@ -28,7 +28,6 @@ import org.miaixz.bus.core.center.date.culture.parts.MonthParts;
  * Represents a month in the tabular Hijri calendar.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HijriMonth extends MonthParts {
 

@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @see Workbook#PICTURE_TYPE_PNG
  * @see Workbook#PICTURE_TYPE_DIB
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum ExcelPictureType {
 

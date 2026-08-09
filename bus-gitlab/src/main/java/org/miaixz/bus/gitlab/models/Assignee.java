@@ -27,10 +27,19 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The assignee class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Assignee extends AbstractUser<Assignee> {
 
+    /**
+     * Constructs a new {@code Assignee} instance.
+     */
+    public Assignee() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852237318105L;
 

@@ -32,7 +32,6 @@ import org.miaixz.bus.starter.image.ImageConfiguration;
  * including a Store SCP (Service Class Provider) if configured.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

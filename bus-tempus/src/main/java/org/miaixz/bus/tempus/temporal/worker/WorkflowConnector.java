@@ -30,7 +30,6 @@ import io.temporal.client.WorkflowClient;
  * Temporal clusters.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface WorkflowConnector {
 

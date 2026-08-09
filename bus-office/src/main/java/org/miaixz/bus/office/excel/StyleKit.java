@@ -33,7 +33,6 @@ import org.miaixz.bus.office.excel.style.CellBorderStyle;
  * Creates and applies Excel cell styles.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StyleKit {
 

@@ -39,7 +39,6 @@ import org.miaixz.bus.fabric.runtime.resource.ResourceScope;
  * Shared reactor for dispatch, directory, observation, and resources.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Reactor implements AutoCloseable {
 
@@ -253,7 +252,6 @@ public final class Reactor implements AutoCloseable {
      * Builder for reactors.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder implements org.miaixz.bus.core.Builder<Reactor> {
 

@@ -30,7 +30,6 @@ import org.miaixz.bus.health.builtin.software.ApplicationInfo;
  * The linux installed apps class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class LinuxInstalledApps {
 

@@ -36,7 +36,6 @@ import org.miaixz.bus.logger.Logger;
  * thread and close it when finished.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @NotThreadSafe
 public final class ProcAddressSpaceReader implements AutoCloseable {

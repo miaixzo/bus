@@ -36,7 +36,6 @@ import org.miaixz.bus.logger.Logger;
  * metadata about the project, author, database connection, table structure, and naming conventions.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

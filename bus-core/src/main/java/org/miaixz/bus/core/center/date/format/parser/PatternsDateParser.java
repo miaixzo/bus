@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.exception.DateException;
  * returning a {@link DateTime} object. If all attempts fail, a {@link DateException} is thrown.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PatternsDateParser implements DateParser, Serializable {
 

@@ -61,7 +61,6 @@ import org.miaixz.bus.pay.nimble.wechat.WechatPayBuilder;
  * Payment-related support class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Builder {
 

@@ -40,7 +40,6 @@ import org.miaixz.bus.notify.nimble.generic.GenericNotice;
  * Alibaba Cloud Email service provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AliyunEmailProvider extends AliyunProvider<AliyunNotice, Context> {
 

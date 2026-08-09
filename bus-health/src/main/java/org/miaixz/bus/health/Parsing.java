@@ -63,7 +63,6 @@ import org.miaixz.bus.logger.Logger;
  * String parsing support.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Parsing {
@@ -357,7 +356,6 @@ public final class Parsing {
      * Decodes REG_BINARY to String. Supports UTF-16LE and Windows-1252 C-strings, otherwise returns a hex.
      *
      * @param bytes the bytes value
-     *
      * @return the result
      */
     public static String decodeBinaryToString(byte[] bytes) {

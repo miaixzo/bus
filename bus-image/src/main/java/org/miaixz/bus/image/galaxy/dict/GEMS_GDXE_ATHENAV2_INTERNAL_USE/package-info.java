@@ -21,6 +21,5 @@
  * UID Dictionary from GEMS_GDXE_ATHENAV2_INTERNAL_USE
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.GEMS_GDXE_ATHENAV2_INTERNAL_USE;

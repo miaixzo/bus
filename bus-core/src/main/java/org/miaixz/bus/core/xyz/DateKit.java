@@ -51,7 +51,6 @@ import org.miaixz.bus.core.text.CharsBacker;
  *
  * @see Fields Common date and time format constants.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DateKit extends Calendar {
 
@@ -1725,7 +1724,6 @@ public class DateKit extends Calendar {
      * Converts Java SQL date and time values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class SQL {
 

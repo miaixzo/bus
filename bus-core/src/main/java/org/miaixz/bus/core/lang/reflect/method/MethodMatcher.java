@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.*;
  * Creates method matchers based on various predefined conditions.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MethodMatcher {
 

@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Represents the MultipartParser type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MultipartParser {
 
@@ -78,7 +77,6 @@ public class MultipartParser {
      * Defines the Handler contract.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface Handler {
 

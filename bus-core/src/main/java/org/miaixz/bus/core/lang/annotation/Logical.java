@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.Normal;
  * annotation allows frameworks to automatically handle filtering for active or inactive records.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Collector {
 
@@ -139,7 +138,6 @@ public interface Collector {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class Snapshot {
 

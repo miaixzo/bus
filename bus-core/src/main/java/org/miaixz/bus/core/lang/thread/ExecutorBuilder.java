@@ -45,7 +45,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * </ol>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
 

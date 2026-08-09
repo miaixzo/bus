@@ -37,7 +37,6 @@ import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
  * Dispatcher-owned address-candidate race using one shared monotonic deadline.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class HappyEyeballsConnector {
 

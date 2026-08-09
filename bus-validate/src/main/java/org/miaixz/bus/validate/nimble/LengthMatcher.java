@@ -31,7 +31,6 @@ import org.miaixz.bus.validate.magic.annotation.Length;
  * Validator for the {@link Length} annotation, which checks the length or size of various data types.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LengthMatcher implements Matcher<Object, Length> {
 

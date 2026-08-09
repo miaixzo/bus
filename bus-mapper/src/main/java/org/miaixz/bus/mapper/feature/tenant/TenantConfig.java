@@ -80,7 +80,6 @@ import org.miaixz.bus.mapper.Charter.Isolation;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

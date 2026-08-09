@@ -29,7 +29,6 @@ import org.miaixz.bus.extra.nlp.NLPWord;
  * access segmented word information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WordWord implements NLPWord {
 

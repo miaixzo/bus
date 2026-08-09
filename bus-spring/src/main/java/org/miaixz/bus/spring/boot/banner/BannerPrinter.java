@@ -28,7 +28,6 @@ import org.springframework.boot.SpringApplication;
  * Explicitly applies a caller-selected banner and leaves rendering to Spring Boot.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BannerPrinter {
 

@@ -40,7 +40,6 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  * Encodes and decodes HTTP cache metadata.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class HttpCacheCodec {
 

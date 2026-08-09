@@ -35,7 +35,6 @@ import org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc;
  * Queries logged in users.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Who {

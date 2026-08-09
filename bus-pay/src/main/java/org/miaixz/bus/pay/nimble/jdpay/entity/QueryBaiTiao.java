@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.pay.nimble.jdpay.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -31,14 +29,18 @@ import org.miaixz.bus.pay.magic.Voucher;
  * Baitiao installment plan query interface model.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class QueryBaiTiao extends Voucher {
+
+    /**
+     * Constructs a new {@code QueryBaiTiao} instance.
+     */
+    public QueryBaiTiao() {
+        // No initialization required.
+    }
 
     /**
      * Version number.

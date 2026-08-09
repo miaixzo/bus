@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * registering, and managing error codes in a unified manner.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Errors {
 
@@ -147,7 +146,6 @@ public interface Errors {
      * the {@link Errors} interface.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class Entry implements Errors {
 

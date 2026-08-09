@@ -29,7 +29,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * The event interface.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, visible = true, property = "object_kind")
 @JsonSubTypes({ @JsonSubTypes.Type(value = BuildEvent.class, name = BuildEvent.OBJECT_KIND),

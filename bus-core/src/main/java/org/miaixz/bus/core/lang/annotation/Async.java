@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * waiting for the method to complete.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
@@ -45,7 +44,6 @@ public @interface Async {
      * for that new method.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class MethodNameTransformer {
 

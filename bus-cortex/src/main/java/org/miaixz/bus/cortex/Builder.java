@@ -28,7 +28,6 @@ import org.miaixz.bus.cortex.registry.HealthProbeScheduler;
  * Shared constants for bus-cortex.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Builder {
 

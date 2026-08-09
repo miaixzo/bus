@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.Assert;
  * "https://github.com/zhaorenjie110/SymmetricEncryptionAndDecryption">https://github.com/zhaorenjie110/SymmetricEncryptionAndDecryption</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Caesar {
 

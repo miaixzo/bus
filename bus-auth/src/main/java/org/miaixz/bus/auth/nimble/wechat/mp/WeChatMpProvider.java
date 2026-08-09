@@ -44,7 +44,6 @@ import org.miaixz.bus.logger.Logger;
  * WeChat Official Account (MP) login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WeChatMpProvider extends AbstractWeChatProvider {
 

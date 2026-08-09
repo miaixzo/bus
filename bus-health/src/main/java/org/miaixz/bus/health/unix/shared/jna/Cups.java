@@ -31,7 +31,6 @@ import com.sun.jna.ptr.PointerByReference;
  * code is incorporated into the JNA project.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Cups extends Library {
 
@@ -66,7 +65,6 @@ public interface Cups extends Library {
      * CUPS destination (printer) structure.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "name", "instance", "is_default", "num_options", "options" })
     class CupsDest extends Structure {

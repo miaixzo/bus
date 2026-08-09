@@ -39,7 +39,6 @@ import org.miaixz.bus.fabric.network.aio.AioNetwork;
  * TCP network entry point backed by the AIO network.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class TcpNetwork implements Connector {
 

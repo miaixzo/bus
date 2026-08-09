@@ -32,7 +32,6 @@ package org.miaixz.bus.tempus.temporal.workflow;
  * @param <R> workflow request type
  * @param <C> workflow result type
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface WorkflowCallable<R, C> {
 

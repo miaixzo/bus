@@ -30,7 +30,6 @@ import org.miaixz.bus.health.Parsing;
  * Reads info from {@code lshw}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Lshw {

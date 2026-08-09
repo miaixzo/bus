@@ -38,7 +38,6 @@ import org.miaixz.bus.logger.Logger;
  * Sound card data obtained via /proc/asound directory
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class LinuxSoundCard extends AbstractSoundCard {

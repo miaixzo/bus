@@ -31,7 +31,6 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  * Represents the SAXTransformer type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class SAXTransformer {
 
@@ -194,7 +193,6 @@ public abstract class SAXTransformer {
      * Defines the SetupTransformer contract.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface SetupTransformer {
 

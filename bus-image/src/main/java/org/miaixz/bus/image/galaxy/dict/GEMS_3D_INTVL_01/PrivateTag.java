@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.dict.GEMS_3D_INTVL_01;
  * Represents the PrivateTag type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PrivateTag {
 

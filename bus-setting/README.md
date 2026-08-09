@@ -8,9 +8,11 @@
 
 ## 📖 Project Introduction
 
-**Bus Setting** provides a unified and powerful framework for managing application configurations. It supports both Java Properties and INI file formats, offering flexible APIs for reading, writing, and manipulating configuration files.
+**Bus Setting** provides a unified and powerful framework for managing application configurations. It supports both Java
+Properties and INI file formats, offering flexible APIs for reading, writing, and manipulating configuration files.
 
 The module provides:
+
 * **Properties Enhancement**: Enhanced Properties class with additional convenience methods
 * **INI File Support**: Full support for INI format with sections, comments, and properties
 * **Builder Pattern**: Fluent API for creating and modifying INI files
@@ -544,11 +546,13 @@ public class ConfigValidator {
 ### Q1: What's the difference between Properties and Ini?
 
 **Properties**:
+
 * Simple key-value pairs
 * No hierarchy or sections
 * Standard Java format
 
 **INI**:
+
 * Supports sections and hierarchy
 * Supports comments
 * More human-readable
@@ -609,10 +613,10 @@ props.load(new InputStreamReader(
 
 ## 🔄 Version Compatibility
 
-| Bus Setting Version | JDK Version | Status |
-| :--- | :--- | :--- |
-| **8.x** | 17+ | Current |
-| 7.x | 11+ | Maintenance |
+| Bus Setting Version | JDK Version | Status      |
+|:--------------------|:------------|:------------|
+| **8.x**             | 17+         | Current     |
+| 7.x                 | 11+         | Maintenance |
 
 -----
 

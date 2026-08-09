@@ -29,7 +29,6 @@ import org.miaixz.bus.shade.safety.Launcher;
  * encrypted Spring Boot applications configured via properties.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BootPropertiesLauncher extends PropertiesLauncher {
 

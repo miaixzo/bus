@@ -26,7 +26,6 @@ import org.miaixz.bus.health.builtin.hardware.Baseboard;
  * Baseboard data
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public abstract class AbstractBaseboard implements Baseboard {

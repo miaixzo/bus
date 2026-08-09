@@ -49,7 +49,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the Transcoder type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Transcoder implements Closeable {
 
@@ -1629,7 +1628,6 @@ public class Transcoder implements Closeable {
      * Defines the Handler contract.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface Handler {
 

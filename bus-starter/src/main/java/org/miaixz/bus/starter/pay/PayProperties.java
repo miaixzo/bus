@@ -40,7 +40,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * setter methods (e.g., from a database).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

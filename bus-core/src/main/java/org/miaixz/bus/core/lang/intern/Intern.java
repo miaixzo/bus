@@ -26,7 +26,6 @@ package org.miaixz.bus.core.lang.intern;
  *
  * @param <T> The type of the object to be interned.
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Intern<T> {
 

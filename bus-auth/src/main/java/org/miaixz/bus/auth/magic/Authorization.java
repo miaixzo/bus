@@ -21,9 +21,7 @@ package org.miaixz.bus.auth.magic;
 
 import java.io.Serializable;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -32,14 +30,18 @@ import lombok.experimental.SuperBuilder;
  * during the authentication process.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Authorization implements Serializable {
+
+    /**
+     * Constructs a new {@code Authorization} instance.
+     */
+    public Authorization() {
+        // No initialization required.
+    }
 
     /**
      * The access token issued by the authorization server.

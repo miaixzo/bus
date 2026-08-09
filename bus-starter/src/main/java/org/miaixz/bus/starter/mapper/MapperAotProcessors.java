@@ -69,7 +69,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * the same bean registration points.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class MapperAotProcessors {
 
@@ -84,7 +83,6 @@ public final class MapperAotProcessors {
      * AOT processor that discovers {@link MapperFactoryBean} beans and registers runtime hints for native compilation.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class MyBatisBeanFactoryInitializationAotProcessor
             implements BeanFactoryInitializationAotProcessor, BeanRegistrationExcludeFilter {
@@ -337,7 +335,6 @@ public final class MapperAotProcessors {
      * This adapter is necessary because AOT-generated bean definitions can store {@code mapperInterface} as a string.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class MapperInterfaceStringToClassConverter
             implements org.springframework.beans.factory.config.BeanFactoryPostProcessor {

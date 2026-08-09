@@ -41,7 +41,6 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
  * Validator for DNSSEC NSEC negative proofs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsNsecProofValidator {
 
@@ -515,7 +514,6 @@ public final class DnsNsecProofValidator {
      * @param next  next owner name
      * @param types present type codes
      * @author Kimi Liu
-     * @since Java 21+
      */
     private record NsecData(String owner, String next, Set<Integer> types) {
 

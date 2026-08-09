@@ -40,7 +40,6 @@ import lombok.Getter;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 public class AuditRecord {

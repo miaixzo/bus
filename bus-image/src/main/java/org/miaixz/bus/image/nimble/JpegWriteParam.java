@@ -28,7 +28,6 @@ import org.miaixz.bus.image.nimble.codec.TransferSyntaxType;
  * Represents the JpegWriteParam type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JpegWriteParam {
 

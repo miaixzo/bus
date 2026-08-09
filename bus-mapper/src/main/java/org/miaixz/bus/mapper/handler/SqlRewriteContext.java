@@ -33,7 +33,6 @@ import java.util.Map;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class SqlRewriteContext {
 

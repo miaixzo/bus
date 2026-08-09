@@ -25,7 +25,6 @@ import org.miaixz.bus.core.lang.Charset;
  * Extracts multipart boundary values from Content-Type headers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class BoundaryExtractor {
 

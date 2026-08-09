@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.FileKit;
  * lines.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LineWatcher extends SimpleWatcher implements Runnable {
 

@@ -40,7 +40,6 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsRecursionPlanner {
 
@@ -150,7 +149,6 @@ public final class DnsRecursionPlanner {
      * Immutable recursion plan for one original client question and one active target.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class DnsRecursionPlan {
 
@@ -348,7 +346,6 @@ public final class DnsRecursionPlanner {
      * Immutable QNAME-minimized delegation-discovery step.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class DnsRecursionStep {
 
@@ -449,7 +446,6 @@ public final class DnsRecursionPlanner {
      * Immutable alias transition followed while retaining the original client question.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class DnsAliasStep {
 

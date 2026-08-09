@@ -44,7 +44,6 @@ import org.miaixz.bus.core.xyz.SetKit;
  * case-insensitive keys.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Dictionary extends CustomKeyMap<String, Object> implements TypeGetter<String> {
 

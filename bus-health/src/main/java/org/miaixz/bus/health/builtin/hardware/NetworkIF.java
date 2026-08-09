@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * time stamp, and should externally synchronize such usage to ensure consistent calculations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public interface NetworkIF {
@@ -269,7 +268,6 @@ public interface NetworkIF {
      * The current operational state of a network interface. As described in RFC 2863.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum IfOperStatus {
 

@@ -53,7 +53,6 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @param listener      session lifecycle listener
  * @param pooled        whether the exchange may use pooled transport resources
  * @author Kimi Liu
- * @since Java 21+
  */
 record SocketSpec(Context context, URI uri, Address address, Headers headers, Timeout timeout, TlsContext tlsContext,
         TlsSettings tlsSettings, FrameCodec frameCodec, Handler handler, GuardRule guard, Filter filter,

@@ -47,7 +47,6 @@ import org.miaixz.bus.logger.Logger;
  * Microsoft China accounts to third-party websites.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractMicrosoftProvider extends AbstractProvider {
 

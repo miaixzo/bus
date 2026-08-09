@@ -27,7 +27,6 @@ import org.miaixz.bus.cortex.setting.item.Item;
  * Strategy interface used to resolve setting values from different sources.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ItemSourceAdapter {
 

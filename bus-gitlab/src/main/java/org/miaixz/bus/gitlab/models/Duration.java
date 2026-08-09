@@ -33,23 +33,40 @@ import org.miaixz.bus.logger.Logger;
  * This class represents a duration in time.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Duration implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852252100196L;
 
+    /**
+     * The time units value.
+     */
     private static final String[] TIME_UNITS = { "mo", "w", "d", "h", "m", "s" };
+    /**
+     * The time unit multipliers value.
+     */
     private static final int[] TIME_UNIT_MULTIPLIERS = { 60 * 60 * 8 * 5 * 4, // 4 weeks = 1 month
             60 * 60 * 8 * 5, // 5 days = 1 week
             60 * 60 * 8, // 8 hours = 1 day
             60 * 60, // 60 minutes = 1 hours
             60, // 60 seconds = 1 minute
             1 };
+    /**
+     * The duration pattern value.
+     */
     private static Pattern durationPattern = Pattern.compile("(\\s*(\\d+)(mo|[wdhms]))");
 
+    /**
+     * The seconds value.
+     */
     private int seconds;
+    /**
+     * The duration string value.
+     */
     private String durationString;
 
     /**

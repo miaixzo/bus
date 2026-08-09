@@ -30,7 +30,6 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
  * visible and masks the middle digits. For example: {@code "18012341120"} becomes {@code "180****1120"}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PhoneProvider extends AbstractProvider {
 

@@ -28,14 +28,29 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The artifacts file class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ArtifactsFile implements Serializable {
 
+    /**
+     * Constructs a new {@code ArtifactsFile} instance.
+     */
+    public ArtifactsFile() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852237018613L;
 
+    /**
+     * The filename value.
+     */
     private String filename;
+    /**
+     * The size value.
+     */
     private Long size;
 
     /**

@@ -31,18 +31,42 @@ import tools.jackson.databind.annotation.JsonSerialize;
  * The shared group class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SharedGroup implements Serializable {
 
+    /**
+     * Constructs a new {@code SharedGroup} instance.
+     */
+    public SharedGroup() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852281256893L;
 
+    /**
+     * The group id value.
+     */
     private Long groupId;
+    /**
+     * The group name value.
+     */
     private String groupName;
+    /**
+     * The group full path value.
+     */
     private String groupFullPath;
+    /**
+     * The group access level value.
+     */
     private AccessLevel groupAccessLevel;
 
+    /**
+     * The expires at value.
+     */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date expiresAt;
 

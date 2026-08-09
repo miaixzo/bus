@@ -27,7 +27,6 @@ package org.miaixz.bus.cache;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Serializer {
 

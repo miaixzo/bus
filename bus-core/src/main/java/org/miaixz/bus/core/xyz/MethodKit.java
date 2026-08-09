@@ -43,7 +43,6 @@ import org.miaixz.bus.core.lang.reflect.method.MethodReflect;
  * Finds and invokes reflected methods, including method retrieval and invocation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MethodKit {
 

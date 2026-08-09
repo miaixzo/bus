@@ -28,9 +28,15 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * Basic project template metadata returned by the project templates API.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProjectTemplate implements Serializable {
+
+    /**
+     * Constructs a new {@code ProjectTemplate} instance.
+     */
+    public ProjectTemplate() {
+        // No initialization required.
+    }
 
     /**
      * Serialization version identifier.

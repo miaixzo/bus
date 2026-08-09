@@ -28,7 +28,6 @@ import org.miaixz.bus.core.io.buffer.Buffer;
  * and marks an internal error state, preventing further exceptions from being thrown for subsequent operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FaultHideSink extends AssignSink {
 

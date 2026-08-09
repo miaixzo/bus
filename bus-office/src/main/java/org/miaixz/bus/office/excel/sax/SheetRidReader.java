@@ -53,7 +53,6 @@ import org.miaixz.bus.office.excel.ExcelSaxKit;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SheetRidReader extends DefaultHandler {
 

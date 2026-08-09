@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  * Reads process data from HKEY_PERFORMANCE_DATA information with backup from Performance Counters or WMI
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class ProcessWtsData {
@@ -159,7 +158,6 @@ public final class ProcessWtsData {
      * Class to encapsulate data from WTS Process Info
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Immutable
     public static class WtsInfo {

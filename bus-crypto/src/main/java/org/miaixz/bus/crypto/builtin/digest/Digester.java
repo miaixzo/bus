@@ -42,7 +42,6 @@ import org.miaixz.bus.logger.Logger;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Digester extends SimpleWrapper<MessageDigest> implements Serializable {
 
@@ -129,7 +128,7 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
      * <pre>
      * data: 0123456
      * </pre>
-     *
+     * <p>
      * If {@code saltPosition = 2}, the salt is inserted between '1' and '2', resulting in:
      *
      * <pre>

@@ -26,7 +26,6 @@ import java.io.Serializable;
  * CSV read configuration options.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializable {
 

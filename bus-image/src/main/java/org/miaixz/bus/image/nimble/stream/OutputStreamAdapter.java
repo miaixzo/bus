@@ -28,7 +28,6 @@ import javax.imageio.stream.ImageOutputStreamImpl;
  * Represents the OutputStreamAdapter type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class OutputStreamAdapter extends ImageOutputStreamImpl {
 

@@ -38,7 +38,6 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
  * information to locate specific data segments within a file.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BulkData implements Value, Serializable {
 
@@ -460,7 +459,6 @@ public class BulkData implements Value, Serializable {
      * Functional interface for creating {@code BulkData} objects.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FunctionalInterface
     public interface Creator {

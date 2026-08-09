@@ -48,7 +48,6 @@ import org.miaixz.bus.notify.nimble.AbstractProvider;
  * (sendSmsTp).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ZhutongSmsProvider extends AbstractProvider<ZhutongNotice, Context> {
 

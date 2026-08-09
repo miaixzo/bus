@@ -23,7 +23,6 @@ package org.miaixz.bus.fabric.network.dns.record;
  * DNS resource record type codes used by the server-side resolver.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum DnsRecordType {
 

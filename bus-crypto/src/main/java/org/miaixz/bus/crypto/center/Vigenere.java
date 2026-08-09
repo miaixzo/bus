@@ -26,7 +26,6 @@ import org.miaixz.bus.core.lang.Assert;
  * Caesar cipher. Algorithm implementation from: https://github.com/zhaorenjie110/SymmetricEncryptionAndDecryption
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Vigenere {
 

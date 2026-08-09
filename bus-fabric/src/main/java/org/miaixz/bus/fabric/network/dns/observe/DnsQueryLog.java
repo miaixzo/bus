@@ -33,7 +33,6 @@ import org.miaixz.bus.logger.Logger;
  * Optional DNS query logger for DNS Server requests.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsQueryLog {
 

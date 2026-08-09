@@ -25,7 +25,6 @@ import org.miaixz.bus.metrics.magic.TimerSnapshot;
  * A histogram (distribution summary) for recording arbitrary numeric values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Histogram {
 

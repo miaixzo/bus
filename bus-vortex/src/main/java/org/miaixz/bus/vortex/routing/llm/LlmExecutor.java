@@ -52,7 +52,6 @@ import reactor.core.publisher.Mono;
  * in Assets metadata.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LlmExecutor extends Coordinator {
 
@@ -329,7 +328,6 @@ public class LlmExecutor extends Coordinator {
      * </pre>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     static class ProviderConfig {
 

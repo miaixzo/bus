@@ -21,6 +21,5 @@
  * Encodes and decodes DICOMweb protocol values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.metric.web;

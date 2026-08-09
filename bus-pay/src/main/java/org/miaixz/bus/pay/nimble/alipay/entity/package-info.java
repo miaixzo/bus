@@ -21,6 +21,5 @@
  * This package contains the entity models for Alipay.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.pay.nimble.alipay.entity;

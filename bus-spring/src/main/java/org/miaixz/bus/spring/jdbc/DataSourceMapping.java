@@ -30,7 +30,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Contains the complete datasource-definition mapping and its primary routing name.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DataSourceMapping {
 

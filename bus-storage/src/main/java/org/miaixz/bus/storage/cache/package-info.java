@@ -21,6 +21,5 @@
  * Provides caching mechanisms for OSS (Object Storage Service) storage operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.storage.cache;

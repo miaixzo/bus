@@ -42,7 +42,6 @@ import org.miaixz.bus.fabric.network.aio.AioGroup;
  * UDP network entry point backed by datagram channels.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class UdpNetwork implements AutoCloseable {
 

@@ -25,7 +25,6 @@ package org.miaixz.bus.core.text.placeholder.segment;
  * For example: {@literal "???" -> "???", "{}" -> "{}", "{name}" -> "name"}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractSegment implements StringSegment {
 

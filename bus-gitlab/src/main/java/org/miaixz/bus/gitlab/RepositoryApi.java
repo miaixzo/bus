@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  * <a href="https://docs.gitlab.com/ce/api/branches.html">Branches API</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RepositoryApi extends AbstractApi {
 

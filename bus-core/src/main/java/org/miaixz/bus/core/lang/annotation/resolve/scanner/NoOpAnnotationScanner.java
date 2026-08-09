@@ -32,7 +32,6 @@ import org.miaixz.bus.core.center.function.PredicateX;
  * {@link AnnotationScanner}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NoOpAnnotationScanner implements AnnotationScanner {
 

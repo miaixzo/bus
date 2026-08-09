@@ -25,11 +25,23 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The event release source class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EventReleaseSource {
 
+    /**
+     * Constructs a new {@code EventReleaseSource} instance.
+     */
+    public EventReleaseSource() {
+        // No initialization required.
+    }
+
+    /**
+     * The format value.
+     */
     private String format;
+    /**
+     * The url value.
+     */
     private String url;
 
     /**

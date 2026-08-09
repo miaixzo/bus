@@ -42,7 +42,6 @@ import org.miaixz.bus.validate.Context;
  * executed. It is intended to be used with an {@code @Around} advice.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AutoValidateAdvice {
 

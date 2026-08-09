@@ -33,7 +33,6 @@ import org.miaixz.bus.cortex.registry.StoreBackedRegistry;
  * Registry for prompt template definitions.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PromptRegistry extends StoreBackedRegistry<PromptAssets> {
 

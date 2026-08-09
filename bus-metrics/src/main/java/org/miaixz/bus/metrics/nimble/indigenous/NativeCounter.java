@@ -27,7 +27,6 @@ import org.miaixz.bus.metrics.nimble.Counter;
  * Lock-free counter backed by {@link LongAdder}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NativeCounter implements Counter {
 

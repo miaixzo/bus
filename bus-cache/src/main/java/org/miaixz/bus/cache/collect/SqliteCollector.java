@@ -34,7 +34,6 @@ import org.miaixz.bus.core.center.function.SupplierX;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SqliteCollector extends AbstractCollector {
 

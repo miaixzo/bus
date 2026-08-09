@@ -71,7 +71,6 @@ import org.miaixz.bus.core.lang.Normal;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class StringBuilderPool {
 
@@ -454,7 +453,6 @@ public final class StringBuilderPool {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class PoolConfig implements Serializable {
 
@@ -564,7 +562,6 @@ public final class StringBuilderPool {
          * Configuration builder for the fluent API.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         public static class Builder {
 
@@ -662,7 +659,6 @@ public final class StringBuilderPool {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class PoolStats implements Serializable {
 
@@ -847,7 +843,6 @@ public final class StringBuilderPool {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface PoolEventListener {
 

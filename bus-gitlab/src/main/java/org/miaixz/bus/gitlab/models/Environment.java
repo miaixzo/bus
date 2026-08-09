@@ -33,20 +33,53 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The environment class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Environment implements Serializable {
 
+    /**
+     * Constructs a new {@code Environment} instance.
+     */
+    public Environment() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852252558305L;
+    /**
+     * The tier value.
+     */
     private String tier;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The slug value.
+     */
     private String slug;
+    /**
+     * The external url value.
+     */
     private String externalUrl;
+    /**
+     * The auto stop at value.
+     */
     private Date autoStopAt;
+    /**
+     * The state value.
+     */
     private EnvironmentState state;
+    /**
+     * The last deployment value.
+     */
     private Deployment lastDeployment;
 
     /**
@@ -213,7 +246,6 @@ public class Environment implements Serializable {
      * The environment state enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum EnvironmentState {
 
@@ -226,6 +258,9 @@ public class Environment implements Serializable {
          */
         STOPPED;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<EnvironmentState> enumCodec = new JacksonJsonEnumCodec<>(
                 EnvironmentState.class);
 

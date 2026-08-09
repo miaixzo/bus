@@ -34,7 +34,6 @@ import org.miaixz.bus.image.metric.hl7.net.HL7Application;
  * Represents the LdapHL7ConfigurationExtension type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LdapHL7ConfigurationExtension {
 

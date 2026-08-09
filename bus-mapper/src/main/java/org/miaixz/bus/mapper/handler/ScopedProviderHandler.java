@@ -35,7 +35,6 @@ import org.miaixz.bus.mapper.Args;
  * @param <C> the plugin configuration type
  * @param <P> the plugin provider type
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class ScopedProviderHandler<T, C, P> extends ConditionHandler<T, C> {
 

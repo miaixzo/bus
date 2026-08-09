@@ -72,7 +72,6 @@ import org.miaixz.bus.mapper.parsing.ClassField;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class OGNL {
 
@@ -878,7 +877,6 @@ public class OGNL {
      * Cache statistics class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     public static class CacheStats {

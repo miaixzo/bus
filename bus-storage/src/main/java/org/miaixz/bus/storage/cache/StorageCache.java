@@ -30,7 +30,6 @@ import org.miaixz.bus.cache.nimble.MemoryCache;
  * {@link MemoryCache} internally.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum StorageCache implements CacheX<String, Object> {
 

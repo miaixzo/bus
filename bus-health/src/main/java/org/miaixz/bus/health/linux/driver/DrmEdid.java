@@ -34,7 +34,6 @@ import org.miaixz.bus.health.linux.SysPath;
  * Wayland is in use.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class DrmEdid {

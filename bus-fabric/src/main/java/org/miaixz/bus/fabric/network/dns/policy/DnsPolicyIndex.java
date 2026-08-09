@@ -35,7 +35,6 @@ import org.miaixz.bus.fabric.network.dns.policy.DnsPolicyRule.Action;
  * Immutable compiled DNS policy index.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsPolicyIndex {
 
@@ -284,7 +283,6 @@ public final class DnsPolicyIndex {
      * Compiled suffix trie.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class SuffixTrie {
 
@@ -381,7 +379,6 @@ public final class DnsPolicyIndex {
      * Suffix trie node.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class SuffixNode {
 

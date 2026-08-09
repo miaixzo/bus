@@ -57,7 +57,6 @@ import org.miaixz.bus.mapper.Order;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PageBuilder {
 
@@ -292,7 +291,6 @@ public class PageBuilder {
      * Result object containing pagination SQL and related information.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     public static class PaginationResult {

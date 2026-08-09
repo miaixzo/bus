@@ -29,7 +29,6 @@ import org.miaixz.bus.image.metric.hl7.HL7Message;
  * Represents the DefaultHL7MessageListener type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DefaultHL7MessageListener implements HL7MessageListener {
 

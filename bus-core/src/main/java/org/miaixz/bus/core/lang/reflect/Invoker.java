@@ -27,7 +27,6 @@ import java.lang.reflect.Type;
  * {@code org.apache.ibatis.reflection.invoker.Invoker}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Invoker {
 
@@ -36,8 +35,8 @@ public interface Invoker {
      *
      * @param target The target object on which the method is to be invoked.
      * @param args   The array of arguments to be passed to the method.
+     * @param <T>    The expected return type of the method.
      * @return The return value of the method invocation. The return type can be any type.
-     * @param <T> The expected return type of the method.
      */
     <T> T invoke(Object target, Object... args);
 

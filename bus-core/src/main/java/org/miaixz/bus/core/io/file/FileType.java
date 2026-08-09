@@ -44,7 +44,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * versions use the OpenXML format, which essentially packages XML files into a ZIP archive.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FileType {
 

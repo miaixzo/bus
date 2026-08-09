@@ -35,7 +35,6 @@ import org.miaixz.bus.fabric.Payload;
  * Immutable external ingestion metadata used before protocol adaptation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Ingestion {
 
@@ -229,7 +228,6 @@ public final class Ingestion {
      * Builder for bridge ingestions.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

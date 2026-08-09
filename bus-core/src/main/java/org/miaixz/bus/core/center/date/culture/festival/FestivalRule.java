@@ -23,7 +23,6 @@ package org.miaixz.bus.core.center.date.culture.festival;
  * Defines the supported festival rule types.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum FestivalRule {
 

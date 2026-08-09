@@ -29,7 +29,6 @@ import org.miaixz.bus.core.center.function.PredicateX;
  * Data archiving wrapper, which archives several files or directories into a compressed package.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Archiver extends Closeable {
 

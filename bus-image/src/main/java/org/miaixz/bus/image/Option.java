@@ -23,6 +23,7 @@ import java.util.List;
 
 import lombok.*;
 import lombok.Builder;
+import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.image.metric.Connection;
 
@@ -30,14 +31,18 @@ import org.miaixz.bus.image.metric.Connection;
  * Represents configurable options for a DICOM connection or request.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@SuperBuilder
 public class Option {
+
+    /**
+     * Constructs a new {@code Option} instance.
+     */
+    public Option() {
+        // No initialization required.
+    }
 
     /**
      * Default TLS cipher suites kept for legacy DICOM peer compatibility.

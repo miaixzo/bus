@@ -57,7 +57,6 @@ import org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberMana
  * implementations. The subscriber worker starts when the Tempus feature is active.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(TempusProperties.class)
 @Configuration(proxyBeanMethods = false)

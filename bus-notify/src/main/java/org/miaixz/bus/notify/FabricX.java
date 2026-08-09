@@ -36,9 +36,15 @@ import org.miaixz.bus.fabric.Payload;
  * Fabric-backed HTTP support for notification providers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class FabricX {
+
+    /**
+     * Constructs a new {@code FabricX} instance.
+     */
+    public FabricX() {
+        // No initialization required.
+    }
 
     /**
      * Shared Fabric context for notification HTTP calls.

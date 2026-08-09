@@ -35,7 +35,6 @@ import org.miaixz.bus.health.unix.solaris.driver.PsInfo;
  * OSThread implementation
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class SolarisOSThread extends AbstractOSThread {

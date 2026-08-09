@@ -27,7 +27,6 @@ import org.miaixz.bus.image.Tag;
  * Series-level reference containing referenced SOP instances.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SeriesInstanceReference extends DicomModule {
 

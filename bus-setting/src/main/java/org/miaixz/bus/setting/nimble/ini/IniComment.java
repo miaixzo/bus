@@ -23,7 +23,6 @@ package org.miaixz.bus.setting.nimble.ini;
  * Ini file's comment.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface IniComment extends IniElement {
 

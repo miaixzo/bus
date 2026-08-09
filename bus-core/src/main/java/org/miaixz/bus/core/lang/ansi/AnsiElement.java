@@ -23,7 +23,6 @@ package org.miaixz.bus.core.lang.ansi;
  * Interface for ANSI escapable elements, such as ANSI colors.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface AnsiElement {
 

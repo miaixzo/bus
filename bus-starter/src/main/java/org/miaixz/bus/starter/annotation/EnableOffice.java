@@ -32,7 +32,6 @@ import org.miaixz.bus.starter.office.OfficeConfiguration;
  * such as providers for local (e.g., LibreOffice) and online conversions.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

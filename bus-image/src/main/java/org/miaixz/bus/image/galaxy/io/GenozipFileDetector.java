@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.StreamKit;
  * number (0x27 0x05 0x20 0x12) at the beginning of the file.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GenozipFileDetector extends FileTypeDetector {
 

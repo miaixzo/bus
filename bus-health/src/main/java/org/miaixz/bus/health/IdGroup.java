@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * one minute.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class IdGroup {

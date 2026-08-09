@@ -34,7 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  *
  * @param <G> the concrete group model type
  * @author Kimi Liu
- * @since Java 21+
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
@@ -48,14 +47,35 @@ public abstract class AbstractGroup<G extends AbstractGroup<G>> implements Seria
         // No initialization required.
     }
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852233810677L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The avatar url value.
+     */
     private String avatarUrl;
+    /**
+     * The web url value.
+     */
     private String webUrl;
+    /**
+     * The full name value.
+     */
     private String fullName;
+    /**
+     * The full path value.
+     */
     private String fullPath;
 
     /**

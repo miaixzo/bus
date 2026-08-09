@@ -24,7 +24,6 @@ package org.miaixz.bus.core.text.finder;
  * by calling {@link #end(int)}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Finder {
 

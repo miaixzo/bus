@@ -32,7 +32,6 @@ import org.miaixz.bus.health.Executor;
  * Reads info from {@code dmidecode}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Dmidecode {

@@ -29,10 +29,19 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  * The email on push service class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EmailOnPushService extends NotificationService {
 
+    /**
+     * Constructs a new {@code EmailOnPushService} instance.
+     */
+    public EmailOnPushService() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852283959961L;
     /**

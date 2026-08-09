@@ -38,7 +38,6 @@ import org.miaixz.bus.logger.Logger;
  * Prompt template definition.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @SuperBuilder
 public class PromptAssets extends Assets {
@@ -163,7 +162,6 @@ public class PromptAssets extends Assets {
      * Prompt-specific metadata payload stored directly in the raw asset metadata JSON payload.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter

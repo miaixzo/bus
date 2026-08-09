@@ -40,7 +40,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Http {
 
@@ -1675,7 +1674,6 @@ public final class Http {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Method {
 

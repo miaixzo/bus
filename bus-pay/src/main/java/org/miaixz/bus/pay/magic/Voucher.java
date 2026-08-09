@@ -24,9 +24,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -36,14 +34,18 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Common methods for entities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Voucher {
+
+    /**
+     * Constructs a new {@code Voucher} instance.
+     */
+    public Voucher() {
+        // No initialization required.
+    }
 
     /**
      * The appid of the merchant account application or the appid bound to the merchant account. The enterprise number

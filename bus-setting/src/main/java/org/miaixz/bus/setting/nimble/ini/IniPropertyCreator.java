@@ -23,7 +23,6 @@ package org.miaixz.bus.setting.nimble.ini;
  * property create function
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface IniPropertyCreator {

@@ -37,7 +37,6 @@ import org.miaixz.bus.image.galaxy.io.RAFInputStreamAdapter;
  * Represents the ImageDirReader type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageDirReader implements Closeable {
 

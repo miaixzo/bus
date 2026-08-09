@@ -30,7 +30,6 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
  * cyclical list of these entities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Phase extends Samsara {
 
@@ -166,7 +165,6 @@ public class Phase extends Samsara {
      * Represents a specific day within a moon phase.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class PhaseDay extends Replenish {
 

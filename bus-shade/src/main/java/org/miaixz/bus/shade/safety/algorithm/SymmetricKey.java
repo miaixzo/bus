@@ -24,7 +24,6 @@ package org.miaixz.bus.shade.safety.algorithm;
  * access to the secret key material used in symmetric cryptography.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface SymmetricKey extends Key {
 

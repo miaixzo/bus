@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.PredicateKit;
  * Scans annotations on {@link Field} elements.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FieldAnnotationScanner implements AnnotationScanner {
 

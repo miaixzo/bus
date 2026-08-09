@@ -29,7 +29,6 @@ import org.miaixz.bus.image.nimble.geometry.Vector3;
  * DICOM Multi-Planar Reconstruction Geometry Module.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MprGeometryModule extends DicomModule {
 
@@ -37,7 +36,6 @@ public class MprGeometryModule extends DicomModule {
      * Defines the MprThicknessType values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum MprThicknessType {
         /**

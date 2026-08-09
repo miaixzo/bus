@@ -25,10 +25,19 @@ import java.io.Serial;
  * The reviewer class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Reviewer extends AbstractUser<Reviewer> {
 
+    /**
+     * Constructs a new {@code Reviewer} instance.
+     */
+    public Reviewer() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852280533625L;
 

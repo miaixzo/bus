@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.MapKit;
  *
  * @param <T> the type of the current instance
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractAnnotationSynthesizer<T> implements AnnotationSynthesizer {
 

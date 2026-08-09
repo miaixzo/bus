@@ -23,7 +23,6 @@ package org.miaixz.bus.pay.magic;
  * Interface for checking callback results.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Callback {
 

@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
  * This class defines constants for MyBatis mapper configuration and SQL fragments.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Args {
 
@@ -69,10 +68,14 @@ public class Args {
      */
     public static final String AFFIX_KEY = "affix";
 
-    /** Prefix rule key inside affix configuration. */
+    /**
+     * Prefix rule key inside affix configuration.
+     */
     public static final String PREFIX_KEY = "prefix";
 
-    /** Suffix rule key inside affix configuration. */
+    /**
+     * Suffix rule key inside affix configuration.
+     */
     public static final String SUFFIX_KEY = "suffix";
 
     /**

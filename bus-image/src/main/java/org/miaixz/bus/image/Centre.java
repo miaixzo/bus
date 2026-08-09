@@ -27,9 +27,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -48,14 +46,18 @@ import org.miaixz.bus.logger.Logger;
  * It handles the initialization of executor services and the binding of network connections.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Centre {
+
+    /**
+     * Constructs a new {@code Centre} instance.
+     */
+    public Centre() {
+        // No initialization required.
+    }
 
     /**
      * The main DICOM device configuration, which encapsulates all network and application settings.

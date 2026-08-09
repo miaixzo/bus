@@ -38,7 +38,6 @@ import org.miaixz.bus.core.text.StringJoiner;
  * Creates and traverses iterators and iterable values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IteratorKit extends IteratorValidator {
 

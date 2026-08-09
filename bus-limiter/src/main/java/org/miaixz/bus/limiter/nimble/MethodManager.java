@@ -33,7 +33,6 @@ import org.miaixz.bus.logger.Logger;
  * their configured strategy and annotation details.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MethodManager {
 

@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  * through files and apply a callback function for each DICOM file found.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class DicomFiles {
 
@@ -187,7 +186,6 @@ public abstract class DicomFiles {
      * Callback interface for processing each DICOM file found during a scan operation.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface Callback {
 

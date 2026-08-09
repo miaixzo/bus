@@ -44,7 +44,6 @@ import org.miaixz.bus.image.galaxy.io.SAXParserFactoryHolder;
  * definition file.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IOD extends ArrayList<IOD.DataElement> {
 
@@ -196,7 +195,6 @@ public class IOD extends ArrayList<IOD.DataElement> {
      * Defines the DICOM data element types, which specify the requirement level for an attribute in an IOD.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum DataElementType {
         /**
@@ -223,7 +221,6 @@ public class IOD extends ArrayList<IOD.DataElement> {
      * and any conditions for its inclusion.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class DataElement implements Serializable {
 
@@ -422,7 +419,6 @@ public class IOD extends ArrayList<IOD.DataElement> {
      * used to model conditional DICOM types like 1C and 2C.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public abstract static class Condition {
 
@@ -515,7 +511,6 @@ public class IOD extends ArrayList<IOD.DataElement> {
      * Abstract base class for conditions that are composed of multiple child conditions (e.g., AND, OR).
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     abstract static class CompositeCondition extends Condition {
 
@@ -571,7 +566,6 @@ public class IOD extends ArrayList<IOD.DataElement> {
      * A composite condition that is met if all its child conditions are met (logical AND).
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class And extends CompositeCondition {
 
@@ -602,7 +596,6 @@ public class IOD extends ArrayList<IOD.DataElement> {
      * A composite condition that is met if at least one of its child conditions is met (logical OR).
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Or extends CompositeCondition {
 
@@ -633,7 +626,6 @@ public class IOD extends ArrayList<IOD.DataElement> {
      * A condition that checks for the presence of a specific DICOM tag.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Present extends Condition {
 
@@ -687,7 +679,6 @@ public class IOD extends ArrayList<IOD.DataElement> {
      * A condition that checks if the value of an attribute is a member of a specified set of values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class MemberOf extends Present {
 
@@ -866,7 +857,6 @@ public class IOD extends ArrayList<IOD.DataElement> {
      * and {@code <MemberOf>}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class SAXHandler extends DefaultHandler {
 

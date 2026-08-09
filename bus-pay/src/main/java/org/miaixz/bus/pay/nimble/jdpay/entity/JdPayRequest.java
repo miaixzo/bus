@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.pay.nimble.jdpay.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -31,14 +29,18 @@ import org.miaixz.bus.pay.magic.Voucher;
  * Represents the request parameters for JD Pay.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class JdPayRequest extends Voucher {
+
+    /**
+     * Constructs a new {@code JdPayRequest} instance.
+     */
+    public JdPayRequest() {
+        // No initialization required.
+    }
 
     /**
      * The version number of the interface.

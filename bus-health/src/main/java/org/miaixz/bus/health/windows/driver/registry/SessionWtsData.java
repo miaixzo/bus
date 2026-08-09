@@ -40,7 +40,6 @@ import org.miaixz.bus.health.builtin.software.OSSession;
  * Reads process data from HKEY_PERFORMANCE_DATA information with backup from Performance Counters or WMI
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class SessionWtsData {

@@ -29,7 +29,6 @@ import org.miaixz.bus.core.xyz.MathKit;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NameNode implements Node {
 

@@ -25,7 +25,6 @@ package org.miaixz.bus.office.excel.cell.values;
  *
  * @param <T> The type of the value.
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface CellValue<T> {
 

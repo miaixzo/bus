@@ -24,7 +24,6 @@ package org.miaixz.bus.extra.mq;
  * initializing the MQ system and providing access to message producers and consumers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface MQProvider {
 

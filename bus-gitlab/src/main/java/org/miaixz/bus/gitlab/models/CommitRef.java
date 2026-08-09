@@ -32,10 +32,19 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The commit ref class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CommitRef implements Serializable {
 
+    /**
+     * Constructs a new {@code CommitRef} instance.
+     */
+    public CommitRef() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852239992782L;
 
@@ -43,6 +52,9 @@ public class CommitRef implements Serializable {
      * The type field.
      */
     private RefType type;
+    /**
+     * The name value.
+     */
     private String name;
 
     /**
@@ -53,7 +65,6 @@ public class CommitRef implements Serializable {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum RefType {
 
@@ -70,6 +81,9 @@ public class CommitRef implements Serializable {
          */
         ALL;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<RefType> enumCodec = new JacksonJsonEnumCodec<>(RefType.class);
 
         /**

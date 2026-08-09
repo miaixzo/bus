@@ -47,7 +47,6 @@ import org.miaixz.bus.extra.compress.extractor.StreamExtractor;
  * Compresses and decompresses data. A wrapper for compression and decompression based on commons-compress.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CompressBuilder {
 

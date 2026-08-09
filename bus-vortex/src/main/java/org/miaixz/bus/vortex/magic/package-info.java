@@ -24,6 +24,5 @@
  * metrics, and process status snapshots between strategies, providers, registries, and handlers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.vortex.magic;

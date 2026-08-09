@@ -23,7 +23,6 @@ package org.miaixz.bus.fabric.registry.connection;
  * Pure physical-connection admission rules for {@link ConnectionPool}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class PoolAdmission {
 

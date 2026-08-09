@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The visibility enum.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Visibility {
 
@@ -45,6 +44,9 @@ public enum Visibility {
      */
     INTERNAL;
 
+    /**
+     * The enum codec value.
+     */
     private static JacksonJsonEnumCodec<Visibility> enumCodec = new JacksonJsonEnumCodec<>(Visibility.class);
 
     /**

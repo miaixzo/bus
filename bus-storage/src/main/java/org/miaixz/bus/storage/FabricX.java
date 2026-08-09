@@ -43,9 +43,15 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  * Fabric-backed HTTP support for storage providers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class FabricX {
+
+    /**
+     * Constructs a new {@code FabricX} instance.
+     */
+    public FabricX() {
+        // No initialization required.
+    }
 
     /**
      * Shared Fabric contexts keyed by the public storage timeout policy to preserve connection pooling.
@@ -374,7 +380,6 @@ public abstract class FabricX {
      * Storage response facade that keeps Fabric HTTP details inside {@link FabricX}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     protected static final class Response implements AutoCloseable {
 

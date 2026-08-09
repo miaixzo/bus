@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.Assert;
  * {@link BouncyCastleProvider} interface to create and provide instances of the Bouncy Castle security provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BouncyCastleServiceProvider implements BouncyCastleProvider {
 

@@ -31,7 +31,6 @@ import org.miaixz.bus.health.unix.shared.hardware.UnixDisplay;
  * SolarisHardwareAbstractionLayer class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class SolarisHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {

@@ -29,7 +29,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * GitLab access levels.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum AccessLevel {
 
@@ -70,6 +69,9 @@ public enum AccessLevel {
      */
     ADMIN(60);
 
+    /**
+     * The values map value.
+     */
     private static final Map<Integer, AccessLevel> valuesMap = new HashMap<>(9);
 
     /**

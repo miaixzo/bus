@@ -28,55 +28,169 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The event issue class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EventIssue {
 
+    /**
+     * Constructs a new {@code EventIssue} instance.
+     */
+    public EventIssue() {
+        // No initialization required.
+    }
+
+    /**
+     * The assignee id value.
+     */
     private Long assigneeId;
+    /**
+     * The author id value.
+     */
     private Long authorId;
+    /**
+     * The branch name value.
+     */
     private String branchName;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The iid value.
+     */
     private Long iid;
 
+    /**
+     * The milestone id value.
+     */
     private String milestoneId;
+    /**
+     * The position value.
+     */
     private Integer position;
+    /**
+     * The project id value.
+     */
     private Long projectId;
 
+    /**
+     * The state value.
+     */
     private String state;
 
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
 
+    /**
+     * The url value.
+     */
     private String url;
+    /**
+     * The action value.
+     */
     private String action;
 
+    /**
+     * The assignee ids value.
+     */
     private List<Long> assigneeIds;
+    /**
+     * The updated by id value.
+     */
     private Long updatedById;
+    /**
+     * The last edited at value.
+     */
     private Date lastEditedAt;
+    /**
+     * The last edited by id value.
+     */
     private Long lastEditedById;
+    /**
+     * The relative position value.
+     */
     private Long relativePosition;
+    /**
+     * The state id value.
+     */
     private Long stateId;
+    /**
+     * The confidential value.
+     */
     private Boolean confidential;
+    /**
+     * The discussion locked value.
+     */
     private Boolean discussionLocked;
+    /**
+     * The due date value.
+     */
     private Date dueDate;
+    /**
+     * The moved to id value.
+     */
     private Long movedToId;
+    /**
+     * The duplicated to id value.
+     */
     private Long duplicatedToId;
+    /**
+     * The time estimate value.
+     */
     private Long timeEstimate;
+    /**
+     * The total time spent value.
+     */
     private Long totalTimeSpent;
+    /**
+     * The time change value.
+     */
     private Long timeChange;
+    /**
+     * The human time estimate value.
+     */
     private String humanTimeEstimate;
+    /**
+     * The human total time spent value.
+     */
     private String humanTotalTimeSpent;
+    /**
+     * The human time change value.
+     */
     private String humanTimeChange;
+    /**
+     * The weight value.
+     */
     private Long weight;
+    /**
+     * The health status value.
+     */
     private String healthStatus;
 
     /**
      * The type field.
      */
     private String type;
+    /**
+     * The severity value.
+     */
     private String severity;
+    /**
+     * The labels value.
+     */
     private List<EventLabel> labels;
 
     /**

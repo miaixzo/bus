@@ -54,7 +54,6 @@ import org.miaixz.bus.logger.Logger;
  * Resumable HTTP download task with Range, progress, pause and cancel support.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpDownload {
 

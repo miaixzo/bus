@@ -30,24 +30,69 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The license class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class License implements Serializable {
 
+    /**
+     * Constructs a new {@code License} instance.
+     */
+    public License() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852260513290L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The plan value.
+     */
     private String plan;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The starts at value.
+     */
     private Date startsAt;
+    /**
+     * The expires at value.
+     */
     private Date expiresAt;
+    /**
+     * The historical max value.
+     */
     private Integer historicalMax;
+    /**
+     * The expired value.
+     */
     private Boolean expired;
+    /**
+     * The overage value.
+     */
     private Integer overage;
+    /**
+     * The user limit value.
+     */
     private Integer userLimit;
+    /**
+     * The active users value.
+     */
     private Integer activeUsers;
+    /**
+     * The licensee value.
+     */
     private Map<String, String> licensee;
+    /**
+     * The add ons value.
+     */
     private Map<String, Integer> addOns;
 
     /**

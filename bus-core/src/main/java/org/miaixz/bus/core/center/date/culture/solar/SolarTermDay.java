@@ -25,7 +25,6 @@ import org.miaixz.bus.core.center.date.culture.Replenish;
  * Represents a day within a solar term.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SolarTermDay extends Replenish {
 

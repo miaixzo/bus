@@ -23,6 +23,5 @@
  * functionality similar to {@link String#intern()}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.lang.intern;

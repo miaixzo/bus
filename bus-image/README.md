@@ -8,11 +8,16 @@
 
 ## Project Introduction
 
-**Bus Image** is an enterprise-level medical imaging and DICOM (Digital Imaging and Communications in Medicine) processing framework designed for healthcare applications. It provides comprehensive support for medical image data manipulation, DICOM protocol operations, image transcoding, and healthcare data management.
+**Bus Image** is an enterprise-level medical imaging and DICOM (Digital Imaging and Communications in Medicine)
+processing framework designed for healthcare applications. It provides comprehensive support for medical image data
+manipulation, DICOM protocol operations, image transcoding, and healthcare data management.
 
-Built with performance and reliability in mind, Bus Image handles the complex requirements of medical imaging workflows including DICOM data parsing, image format conversions, protocol operations (C-STORE, C-MOVE, C-FIND, etc.), and compliance with healthcare imaging standards.
+Built with performance and reliability in mind, Bus Image handles the complex requirements of medical imaging workflows
+including DICOM data parsing, image format conversions, protocol operations (C-STORE, C-MOVE, C-FIND, etc.), and
+compliance with healthcare imaging standards.
 
 **Key Capabilities:**
+
 - Full DICOM standard implementation (DICOM PS3.10 compliance)
 - Medical image reading, writing, and transcoding
 - Support for multiple modalities (CT, MR, US, XA, etc.)
@@ -28,6 +33,7 @@ Built with performance and reliability in mind, Bus Image handles the complex re
 ### DICOM Data Processing
 
 **Data Structure & Parsing**
+
 - Complete DICOM data model implementation (Attributes, Tags, VRs)
 - Support for all standard DICOM value representations
 - Efficient binary data encoding/decoding
@@ -35,12 +41,14 @@ Built with performance and reliability in mind, Bus Image handles the complex re
 - Private tag and creator support
 
 **Image Format Support**
+
 - **Native Formats**: Explicit VR Little Endian, Implicit VR Little Endian, Explicit VR Big Endian
 - **Compressed Formats**: JPEG (baseline, extended, lossless), JPEG 2000, JPEG-LS, RLE
 - **Video Formats**: MPEG2, MPEG4, H.265 (HEVC)
 - **Special Formats**: Encapsulated PDF, STL, OBJ, MTL models
 
 **Metadata Management**
+
 - 3000+ standard DICOM tags dictionary
 - Private tag resolution and handling
 - DICOM IOD (Information Object Definition) validation
@@ -50,6 +58,7 @@ Built with performance and reliability in mind, Bus Image handles the complex re
 ### Medical Image Processing
 
 **Image Reading & Writing**
+
 ```java
 // Read DICOM image
 ImageReader reader = new ImageReader();
@@ -62,6 +71,7 @@ writer.write(file, attrs, image);
 ```
 
 **Image Transcoding**
+
 - Transfer syntax conversion
 - Compression/decompression
 - Color space transformations (RGB, YCbCr, CIELAB)
@@ -69,6 +79,7 @@ writer.write(file, attrs, image);
 - Multi-frame image handling
 
 **Image Enhancement**
+
 - Window level/width adjustment (VOI LUT)
 - Color lookup table application
 - Pixel padding and overlay handling
@@ -76,6 +87,7 @@ writer.write(file, attrs, image);
 - Pixel aspect ratio correction
 
 **Advanced Rendering**
+
 - Presentation LUT (Grayscale, Color)
 - ICC color profile management
 - Overlay rendering (graphics, ROI)
@@ -85,6 +97,7 @@ writer.write(file, attrs, image);
 ### DICOM Network Protocol
 
 **DIMSE Operations**
+
 ```java
 // C-STORE SCU - Store DICOM images
 StoreSCU storeSCU = new StoreSCU();
@@ -103,6 +116,7 @@ moveSCU.move(keys);
 ```
 
 **Association Management**
+
 - Application Entity (AE) title negotiation
 - Presentation context selection
 - Extended negotiation support
@@ -110,6 +124,7 @@ moveSCU.move(keys);
 - Timeout and retry handling
 
 **Data Conversion**
+
 - DICOM to JSON
 - DICOM to XML
 - HL7 integration
@@ -120,26 +135,26 @@ moveSCU.move(keys);
 
 Supports **18+** medical imaging modalities:
 
-| Modality | Description |
-| :--- | :--- |
-| **CT** | Computed Tomography |
-| **MR** | Magnetic Resonance |
-| **US** | Ultrasound |
-| **XA** | X-Ray Angiography |
-| **RF** | Radiofluoroscopy |
-| **DX** | Digital Radiography |
-| **MG** | Mammography |
-| **PT** | Positron Emission Tomography |
-| **NM** | Nuclear Medicine |
-| **SC** | Secondary Capture |
-| **CR** | Computed Radiography |
-| **IO** | Intra-oral Radiography |
-| **ECG** | Electrocardiography |
-| **EPS** | Cardiac Electrophysiology |
-| **HD** | Hemodynamic Waveform |
-| **OP** | Ophthalmic Photography |
-| **XC** | External-camera Photography |
-| **GM** | General Microscopy |
+| Modality | Description                  |
+|:---------|:-----------------------------|
+| **CT**   | Computed Tomography          |
+| **MR**   | Magnetic Resonance           |
+| **US**   | Ultrasound                   |
+| **XA**   | X-Ray Angiography            |
+| **RF**   | Radiofluoroscopy             |
+| **DX**   | Digital Radiography          |
+| **MG**   | Mammography                  |
+| **PT**   | Positron Emission Tomography |
+| **NM**   | Nuclear Medicine             |
+| **SC**   | Secondary Capture            |
+| **CR**   | Computed Radiography         |
+| **IO**   | Intra-oral Radiography       |
+| **ECG**  | Electrocardiography          |
+| **EPS**  | Cardiac Electrophysiology    |
+| **HD**   | Hemodynamic Waveform         |
+| **OP**   | Ophthalmic Photography       |
+| **XC**   | External-camera Photography  |
+| **GM**   | General Microscopy           |
 
 -----
 
@@ -425,6 +440,7 @@ List<String> ids = hl7Pix.query("PATIENT_ID_123");
 ### Core Classes
 
 #### Builder
+
 Utility class providing static helper methods for common operations.
 
 ```java
@@ -443,6 +459,7 @@ Builder.prepareToWriteFile(file);
 ```
 
 #### Format
+
 Formatter for creating strings from DICOM attributes with pattern substitution.
 
 ```java
@@ -460,6 +477,7 @@ String result = format.format(attrs);
 ```
 
 #### Tag
+
 DICOM tag constants and utilities (3000+ predefined tags).
 
 ```java
@@ -477,6 +495,7 @@ int[] tags = Tag.toTags(pathString);
 ```
 
 #### UID
+
 DICOM UID (Unique Identifier) constants and generation.
 
 ```java
@@ -495,6 +514,7 @@ String seriesUID = UID.createSeriesUID();
 ### Data Structures
 
 #### Attributes
+
 Primary DICOM dataset container.
 
 ```java
@@ -520,6 +540,7 @@ seq.add(item);
 ```
 
 #### VR (Value Representation)
+
 DICOM VR types.
 
 ```java
@@ -548,6 +569,7 @@ VR.UT  // Unlimited Text
 ### Image Processing
 
 #### ImageReader
+
 Reads medical images from DICOM files.
 
 ```java
@@ -563,6 +585,7 @@ BufferedImage image = reader.readImage(file, param);
 ```
 
 #### ImageWriter
+
 Writes medical images to DICOM files.
 
 ```java
@@ -578,6 +601,7 @@ writer.write(file, attrs, image, param);
 ```
 
 #### RGBImageVoiLUT
+
 VOI LUT (Value of Interest) processor for window level adjustment.
 
 ```java
@@ -592,6 +616,7 @@ BufferedImage result = voiLut.lookup(image);
 ### Network Protocol
 
 #### Device
+
 DICOM network device configuration.
 
 ```java
@@ -614,6 +639,7 @@ device.addApplicationEntity(ae);
 ```
 
 #### Association
+
 DICOM association management.
 
 ```java
@@ -634,6 +660,7 @@ as.release();
 ### Utility Classes
 
 #### Editors
+
 Functional interface for modifying DICOM attributes.
 
 ```java
@@ -646,6 +673,7 @@ editor.apply(attrs, context);
 ```
 
 #### Dimse
+
 DICOM Message Service Element constants.
 
 ```java
@@ -657,6 +685,7 @@ Dimse.C_ECHO_RQ
 ```
 
 #### Status
+
 DICOM status codes.
 
 ```java
@@ -854,33 +883,36 @@ String charset = attrs.getSpecificCharacterSet();
 
 ## Version Compatibility
 
-| Bus Image Version | JDK Version | DICOM Standard |
-| :--- | :--- | :--- |
-| 8.x | 17+ | DICOM PS3.10 2024a |
-| 7.x | 11+ | DICOM PS3.10 2023b |
+| Bus Image Version | JDK Version | DICOM Standard     |
+|:------------------|:------------|:-------------------|
+| 8.x               | 17+         | DICOM PS3.10 2024a |
+| 7.x               | 11+         | DICOM PS3.10 2023b |
 
 -----
 
 ## Performance Considerations
 
 ### Memory Usage
+
 - Large DICOM files (>100MB) require adequate heap space
 - Recommended: `-Xmx2g` for typical workloads
 - Multi-frame images may require additional memory
 
 ### I/O Performance
+
 - Use buffered streams for file operations
 - Consider SSD storage for high-throughput scenarios
 - Network operations benefit from connection pooling
 
 ### Compression Performance
-| Format | Compression Ratio | Speed | Quality |
-| :--- | :--- | :--- | :--- |
-| RLE | 2:1 | Very Fast | Lossless |
-| JPEG Lossless | 3:1 | Fast | Lossless |
-| JPEG 2000 Lossless | 3:1 | Medium | Lossless |
-| JPEG Baseline | 10:1 | Fast | Lossy |
-| JPEG 2000 | 20:1 | Medium | Lossy |
+
+| Format             | Compression Ratio | Speed     | Quality  |
+|:-------------------|:------------------|:----------|:---------|
+| RLE                | 2:1               | Very Fast | Lossless |
+| JPEG Lossless      | 3:1               | Fast      | Lossless |
+| JPEG 2000 Lossless | 3:1               | Medium    | Lossless |
+| JPEG Baseline      | 10:1              | Fast      | Lossy    |
+| JPEG 2000          | 20:1              | Medium    | Lossy    |
 
 -----
 
@@ -903,5 +935,6 @@ String charset = attrs.getSpecificCharacterSet();
 ## Support
 
 For questions, bug reports, or feature requests:
+
 - GitHub Issues: https://github.com/818000/bus/issues
-**Bus Image** - Empowering Healthcare Imaging Applications
+  **Bus Image** - Empowering Healthcare Imaging Applications

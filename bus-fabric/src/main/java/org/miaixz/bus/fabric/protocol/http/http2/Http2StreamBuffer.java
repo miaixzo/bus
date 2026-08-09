@@ -44,7 +44,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class Http2StreamBuffer {
 

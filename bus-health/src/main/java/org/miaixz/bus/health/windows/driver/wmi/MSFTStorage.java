@@ -29,7 +29,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * Queries WMI classes in Storage namespace assocaited with Storage Pools
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class MSFTStorage {
@@ -119,7 +118,6 @@ public final class MSFTStorage {
      * Properties to identify the storage pool. The Object ID uniquely defines the pool.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum StoragePoolProperty {
         /**
@@ -137,7 +135,6 @@ public final class MSFTStorage {
      * the object IDs.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum StoragePoolToPhysicalDiskProperty {
         /**
@@ -154,7 +151,6 @@ public final class MSFTStorage {
      * Properties for a physical disk. The Object ID uniquely defines the disk.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PhysicalDiskProperty {
         /**
@@ -175,7 +171,6 @@ public final class MSFTStorage {
      * Properties for a virtual disk. The Object ID uniquely defines the disk.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum VirtualDiskProperty {
         /**

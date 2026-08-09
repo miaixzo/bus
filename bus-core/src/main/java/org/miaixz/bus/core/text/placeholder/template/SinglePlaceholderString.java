@@ -40,7 +40,6 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  * For example, "?", "{}", "$$$"
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SinglePlaceholderString extends StringTemplate {
 
@@ -221,7 +220,6 @@ public class SinglePlaceholderString extends StringTemplate {
      * Builder for {@link SinglePlaceholderString}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Builder extends AbstractBuilder<Builder, SinglePlaceholderString> {
 

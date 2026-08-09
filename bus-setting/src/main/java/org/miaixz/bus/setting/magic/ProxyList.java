@@ -30,7 +30,6 @@ import java.util.ListIterator;
  *
  * @param <E> the type of elements in this list
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ProxyList<E> extends List<E> {
 

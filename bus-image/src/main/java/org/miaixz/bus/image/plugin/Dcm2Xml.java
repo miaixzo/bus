@@ -43,7 +43,6 @@ import org.miaixz.bus.image.galaxy.io.SAXWriter;
  * DICOM Part 19 standard. It uses a {@link SAXWriter} to handle the conversion logic.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Dcm2Xml {
 

@@ -29,17 +29,41 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The registry repository class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RegistryRepository implements Serializable {
 
+    /**
+     * Constructs a new {@code RegistryRepository} instance.
+     */
+    public RegistryRepository() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852277202989L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The path value.
+     */
     private String path;
+    /**
+     * The location value.
+     */
     private String location;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
 
     /**

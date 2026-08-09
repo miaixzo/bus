@@ -28,17 +28,38 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The link class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Link implements Serializable {
 
+    /**
+     * Constructs a new {@code Link} instance.
+     */
+    public Link() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852260700263L;
 
+    /**
+     * The id value.
+     */
     private Integer id;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The url value.
+     */
     private String url;
 
+    /**
+     * The link type value.
+     */
     private String linkType;
 
     /**

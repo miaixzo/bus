@@ -36,7 +36,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Immutable Elasticsearch client properties.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

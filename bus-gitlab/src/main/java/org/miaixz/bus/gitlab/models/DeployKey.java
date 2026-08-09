@@ -29,17 +29,41 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The deploy key class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DeployKey implements Serializable {
 
+    /**
+     * Constructs a new {@code DeployKey} instance.
+     */
+    public DeployKey() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852250986982L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The key value.
+     */
     private String key;
+    /**
+     * The can push value.
+     */
     private Boolean canPush;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
 
     /**

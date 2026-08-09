@@ -24,9 +24,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -35,14 +33,18 @@ import lombok.experimental.SuperBuilder;
  *
  * @param <T> The type of data in the result list.
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Result<T> implements Serializable {
+
+    /**
+     * Constructs a new {@code Result} instance.
+     */
+    public Result() {
+        // No initialization required.
+    }
 
     @Serial
     private static final long serialVersionUID = 2852291039338L;

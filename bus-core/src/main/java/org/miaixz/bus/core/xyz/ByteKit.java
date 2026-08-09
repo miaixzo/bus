@@ -49,7 +49,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ByteKit {
 
@@ -1497,7 +1496,7 @@ public class ByteKit {
 
     /**
      * Swaps the last byte of the first array with the first byte of the second array.
-     *
+     * <p>
      * < * @param b1 The first byte array.
      *
      * @param b2 The second byte array.

@@ -51,7 +51,6 @@ import org.miaixz.bus.logger.Logger;
  * @see <a href="https://docs.gitlab.com/ce/api/custom_attributes.html">Custom Attributes API</a>
  * @see <a href="https://docs.gitlab.com/ce/api/remote_mirrors.html">Project remote mirrors API</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProjectApi extends AbstractApi implements Constants {
 
@@ -2814,15 +2813,17 @@ public class ProjectApi extends AbstractApi implements Constants {
         return (response.readEntity(Snippet.class));
     }
 
-    /*
+    /**
      * Deletes an existing project snippet. This is an idempotent function and deleting a non-existent snippet does not
      * cause an error.
      *
-     * <pre><code>GitLab Endpoint: DELETE /projects/:id/snippets/:snippet_id</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: DELETE /projects/:id/snippets/:snippet_id</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      *
-     * @param snippetId the ID of the project's snippet
+     * @param snippetId       the ID of the project's snippet
      *
      * @throws RelevantException if any exception occurs
      */
@@ -3312,7 +3313,6 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @return a Map instance with the language as the key and the percentage as the value
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.8
      */
     public Map<String, Float> getProjectLanguages(Object projectIdOrPath) throws RelevantException {
         Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "languages");

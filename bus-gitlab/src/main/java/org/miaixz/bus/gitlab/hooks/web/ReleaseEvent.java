@@ -28,10 +28,19 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The release event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ReleaseEvent extends AbstractEvent {
 
+    /**
+     * Constructs a new {@code ReleaseEvent} instance.
+     */
+    public ReleaseEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852233091729L;
     /**
@@ -44,16 +53,49 @@ public class ReleaseEvent extends AbstractEvent {
      */
     public static final String OBJECT_KIND = "release";
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The created at value.
+     */
     private String createdAt;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The released at value.
+     */
     private String releasedAt;
+    /**
+     * The tag value.
+     */
     private String tag;
+    /**
+     * The project value.
+     */
     private EventProject project;
+    /**
+     * The url value.
+     */
     private String url;
+    /**
+     * The action value.
+     */
     private String action;
+    /**
+     * The assets value.
+     */
     private EventReleaseAssets assets;
+    /**
+     * The commit value.
+     */
     private EventCommit commit;
 
     /**

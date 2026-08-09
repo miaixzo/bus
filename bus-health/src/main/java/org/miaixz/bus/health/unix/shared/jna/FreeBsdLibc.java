@@ -31,7 +31,6 @@ import com.sun.jna.ptr.NativeLongByReference;
  * into the JNA project.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface FreeBsdLibc extends CLibrary {
 
@@ -133,7 +132,6 @@ public interface FreeBsdLibc extends CLibrary {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "ut_type", "ut_tv", "ut_id", "ut_pid", "ut_user", "ut_line", "ut_host", "ut_spare" })
     class FreeBsdUtmpx extends Structure {
@@ -195,7 +193,6 @@ public interface FreeBsdLibc extends CLibrary {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Timeval extends Structure {
@@ -226,7 +223,6 @@ public interface FreeBsdLibc extends CLibrary {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "cpu_ticks" })
     class CpTime extends Structure implements AutoCloseable {

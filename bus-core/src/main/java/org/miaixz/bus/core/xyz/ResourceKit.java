@@ -40,7 +40,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * Loads and resolves resources.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ResourceKit {
 

@@ -45,7 +45,6 @@ import org.miaixz.bus.logger.Logger;
  * Figma login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FigmaProvider extends AbstractProvider {
 

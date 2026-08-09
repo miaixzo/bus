@@ -26,7 +26,6 @@ import org.miaixz.bus.image.metric.net.ApplicationEntity;
  * Defines the IApplicationEntityCache contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface IApplicationEntityCache {
 

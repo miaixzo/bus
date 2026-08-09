@@ -36,7 +36,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * Payload abstraction that keeps byte-array payloads repeatable and stream payloads one-shot.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Payload {
 

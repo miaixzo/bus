@@ -26,7 +26,6 @@ import org.miaixz.bus.image.metric.WebApplication;
  * Defines the IWebApplicationCache contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface IWebApplicationCache {
 

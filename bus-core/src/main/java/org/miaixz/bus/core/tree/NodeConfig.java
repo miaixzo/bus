@@ -27,7 +27,6 @@ import java.io.Serializable;
  * weight, name, and children in a tree structure.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NodeConfig implements Serializable {
 

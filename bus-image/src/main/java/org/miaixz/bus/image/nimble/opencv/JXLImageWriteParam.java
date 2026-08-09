@@ -27,7 +27,6 @@ import javax.imageio.ImageWriteParam;
  * JPEG XL image write parameters for the native OpenCV writer.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JXLImageWriteParam extends ImageWriteParam {
 

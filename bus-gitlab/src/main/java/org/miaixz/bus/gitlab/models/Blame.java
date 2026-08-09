@@ -29,14 +29,29 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The blame class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Blame implements Serializable {
 
+    /**
+     * Constructs a new {@code Blame} instance.
+     */
+    public Blame() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852238185017L;
 
+    /**
+     * The commit value.
+     */
     private Commit commit;
+    /**
+     * The lines value.
+     */
     private List<String> lines;
 
     /**

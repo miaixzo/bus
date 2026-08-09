@@ -23,6 +23,5 @@
  * For advanced features and support, please refer to the {@code bus-cache} module.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.cache;

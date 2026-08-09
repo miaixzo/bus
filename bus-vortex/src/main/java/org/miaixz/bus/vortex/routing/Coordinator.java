@@ -60,7 +60,6 @@ import reactor.core.publisher.Mono;
  * @see org.miaixz.bus.vortex.routing.mq.MqExecutor
  * @see org.miaixz.bus.vortex.routing.mcp.McpExecutor
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class Coordinator<I, O> implements Executor<I, O> {
 

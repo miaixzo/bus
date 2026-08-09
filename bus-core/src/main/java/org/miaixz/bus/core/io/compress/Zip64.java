@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.Charset;
  * Excel compatible Zip64 implementation. Based on: https://github.com/rzymek/opczip
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class Zip64 {
 
@@ -249,7 +248,6 @@ class Zip64 {
      * Represents an entry within the ZIP archive.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     static class Entry {
 

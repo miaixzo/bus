@@ -28,10 +28,19 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The key system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class KeySystemHookEvent extends AbstractSystemHookEvent {
 
+    /**
+     * Constructs a new {@code KeySystemHookEvent} instance.
+     */
+    public KeySystemHookEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852292810115L;
     /**
@@ -44,11 +53,29 @@ public class KeySystemHookEvent extends AbstractSystemHookEvent {
      */
     public static final String KEY_DESTROY_EVENT = "key_destroy";
 
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The event name value.
+     */
     private String eventName;
+    /**
+     * The username value.
+     */
     private String username;
+    /**
+     * The key value.
+     */
     private String key;
+    /**
+     * The id value.
+     */
     private Long id;
 
     /**

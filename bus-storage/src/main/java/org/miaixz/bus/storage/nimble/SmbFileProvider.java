@@ -59,7 +59,6 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * shares for file storage operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SmbFileProvider extends AbstractProvider {
 
@@ -177,11 +176,11 @@ public class SmbFileProvider extends AbstractProvider {
     public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
                         .build();
             }
             if (!share.fileExists(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
 
@@ -211,7 +210,7 @@ public class SmbFileProvider extends AbstractProvider {
                                     .extend(extend).build())
                     .build();
         } catch (Exception e) {
-            Errors error = e instanceof IllegalArgumentException ? ErrorCode._113008 : ErrorCode._113012;
+            Errors error = e instanceof IllegalArgumentException ? ErrorCode._113006 : ErrorCode._113010;
             Logger.error(
                     false,
                     "Storage",
@@ -261,11 +260,11 @@ public class SmbFileProvider extends AbstractProvider {
         com.hierynomus.smbj.share.File smbFile = null;
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
                         .build();
             }
             if (!share.fileExists(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
 
@@ -306,7 +305,7 @@ public class SmbFileProvider extends AbstractProvider {
                                     .extend(extend).build())
                     .build();
         } catch (Exception e) {
-            Errors error = e instanceof IllegalArgumentException ? ErrorCode._113008 : ErrorCode._113012;
+            Errors error = e instanceof IllegalArgumentException ? ErrorCode._113006 : ErrorCode._113010;
             Logger.error(
                     false,
                     "Storage",

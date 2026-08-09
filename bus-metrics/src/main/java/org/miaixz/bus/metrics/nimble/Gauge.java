@@ -23,7 +23,6 @@ package org.miaixz.bus.metrics.nimble;
  * A gauge that reads its current value from a state object via a function.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Gauge {
 

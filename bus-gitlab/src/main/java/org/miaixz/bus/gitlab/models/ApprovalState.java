@@ -29,14 +29,29 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The approval state class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ApprovalState implements Serializable {
 
+    /**
+     * Constructs a new {@code ApprovalState} instance.
+     */
+    public ApprovalState() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852236560169L;
 
+    /**
+     * The approval rules overwritten value.
+     */
     private Boolean approvalRulesOverwritten;
+    /**
+     * The rules value.
+     */
     private List<ApprovalRule> rules;
 
     /**

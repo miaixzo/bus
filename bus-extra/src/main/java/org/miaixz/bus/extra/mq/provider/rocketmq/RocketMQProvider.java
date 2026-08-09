@@ -38,7 +38,6 @@ import org.miaixz.bus.logger.Logger;
  * client details and provides a simplified interface for message operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RocketMQProvider implements MQProvider {
 

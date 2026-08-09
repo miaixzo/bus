@@ -33,7 +33,6 @@ import org.miaixz.bus.cortex.Trait;
  * coordinates this store with {@code CacheX} for hot reads and cache rebuilds.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ItemStore {
 

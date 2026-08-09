@@ -8,15 +8,20 @@
 
 ## 📖 Project Introduction
 
-**Bus Metrics** is the metrics module for the bus framework. It goes beyond simple counter/timer collection to provide cardinality explosion prevention, in-process EWMA rate calculation, SLA violation callbacks, SLO error budget tracking, and AI/LLM-native observability — capabilities that Micrometer and Dropwizard Metrics do not offer.
+**Bus Metrics** is the metrics module for the bus framework. It goes beyond simple counter/timer collection to provide
+cardinality explosion prevention, in-process EWMA rate calculation, SLA violation callbacks, SLO error budget tracking,
+and AI/LLM-native observability — capabilities that Micrometer and Dropwizard Metrics do not offer.
 
-- **Cardinality Guard**: Prevents OOM caused by high-cardinality tags (userId, traceId, URI) — the most common Micrometer production incident
+- **Cardinality Guard**: Prevents OOM caused by high-cardinality tags (userId, traceId, URI) — the most common
+  Micrometer production incident
 - **In-Process Rates**: `Meter` provides 1m/5m/15m EWMA rates (req/s) directly in the application — no PromQL needed
 - **SLA Violation Callbacks**: `Timer.onViolation()` — the only Java metrics library with this API
 - **SLO Tracking**: Compliance rate, error budget remaining, burn rate — all computable in-process
 - **LLM Observability**: TTFT / ITL / token usage / cost — following OTel GenAI SIG 2025 conventions
-- **Zero-Dependency Native**: `NativeProvider` with self-implemented T-Digest (P99 error < 1%), no third-party dependencies
-- **bus Ecosystem Integration**: Pushes to bus-cortex for cluster aggregation; feeds bus-vortex for traffic-aware routing weights
+- **Zero-Dependency Native**: `NativeProvider` with self-implemented T-Digest (P99 error < 1%), no third-party
+  dependencies
+- **bus Ecosystem Integration**: Pushes to bus-cortex for cluster aggregation; feeds bus-vortex for traffic-aware
+  routing weights
 
 -----
 
@@ -24,15 +29,16 @@
 
 ### 🛡️ CardinalityGuard — OOM Prevention
 
-The most common Micrometer production incident: userId/traceId/URI misused as tags causes `ConcurrentHashMap` unbounded growth and OOM. `CardinalityGuard` intercepts all tag arrays before they reach the registry.
+The most common Micrometer production incident: userId/traceId/URI misused as tags causes `ConcurrentHashMap` unbounded
+growth and OOM. `CardinalityGuard` intercepts all tag arrays before they reach the registry.
 
 Three policies via sealed interface `CardinalityPolicy`:
 
-| Policy | Behavior |
-|:---|:---|
-| `firstN(n)` | Accept the first N distinct values; overflow replaced with `__overflow__` |
-| `topN(n)` | Keep the top-N most frequent values (Count-Min Sketch); low-frequency replaced with `__other__` |
-| `deny()` | Completely strip this tag key |
+| Policy      | Behavior                                                                                        |
+|:------------|:------------------------------------------------------------------------------------------------|
+| `firstN(n)` | Accept the first N distinct values; overflow replaced with `__overflow__`                       |
+| `topN(n)`   | Keep the top-N most frequent values (Count-Min Sketch); low-frequency replaced with `__other__` |
+| `deny()`    | Completely strip this tag key                                                                   |
 
 YAML-driven, zero code changes:
 
@@ -51,11 +57,14 @@ bus:
           max: 30
 ```
 
-Self-monitoring: violations increment `cardinality.violations` counter and emit a throttled WARN log (at most once per key per 60 seconds).
+Self-monitoring: violations increment `cardinality.violations` counter and emit a throttled WARN log (at most once per
+key per 60 seconds).
 
 ### ⚡ Meter — In-Process EWMA Rates
 
-Micrometer only exposes cumulative count/sum; req/s must be computed externally via PromQL. `Meter` embeds EWMA rate calculation (same algorithm as Linux kernel load average and Dropwizard Metrics), enabling in-process adaptive rate limiting and circuit breaking.
+Micrometer only exposes cumulative count/sum; req/s must be computed externally via PromQL. `Meter` embeds EWMA rate
+calculation (same algorithm as Linux kernel load average and Dropwizard Metrics), enabling in-process adaptive rate
+limiting and circuit breaking.
 
 ```java
 Meter qps = Metrics.meter("http.requests", "method", "GET");
@@ -76,15 +85,16 @@ if (rp.errorRate() > 0.05) {
 
 EWMA parameters (5-second tick interval):
 
-| Window | Alpha |
-|:---|:---|
-| 1 minute | `exp(-5/60)` = 0.9200 |
-| 5 minutes | `exp(-5/300)` = 0.9835 |
+| Window     | Alpha                  |
+|:-----------|:-----------------------|
+| 1 minute   | `exp(-5/60)` = 0.9200  |
+| 5 minutes  | `exp(-5/300)` = 0.9835 |
 | 15 minutes | `exp(-5/900)` = 0.9945 |
 
 ### 🔔 Timer.onViolation — SLA Violation Callbacks
 
-The only Java metrics library with this API. Micrometer's `.sla(Duration...)` only records bucket counts with no callback mechanism; alerting requires external Alertmanager.
+The only Java metrics library with this API. Micrometer's `.sla(Duration...)` only records bucket counts with no
+callback mechanism; alerting requires external Alertmanager.
 
 ```java
 Metrics.timer("checkout.api")
@@ -148,26 +158,26 @@ stream.onError(s::error);
 
 One `stop()` call automatically records 6 metrics:
 
-| Metric | Type | Tags | Description |
-|:---|:---|:---|:---|
-| `llm.call.duration` | Timer | model, provider, operation, finish_reason | End-to-end latency |
-| `llm.call.ttft` | Timer | model, provider | Time to first token |
-| `llm.call.itl` | Timer | model, provider | Inter-token latency |
-| `llm.tokens` | Counter | model, provider, type=input\|output | Token usage |
-| `llm.cost` | Counter | model, provider | Estimated cost (USD) |
-| `llm.errors` | Counter | model, provider, error_type | Error count |
+| Metric              | Type    | Tags                                      | Description          |
+|:--------------------|:--------|:------------------------------------------|:---------------------|
+| `llm.call.duration` | Timer   | model, provider, operation, finish_reason | End-to-end latency   |
+| `llm.call.ttft`     | Timer   | model, provider                           | Time to first token  |
+| `llm.call.itl`      | Timer   | model, provider                           | Inter-token latency  |
+| `llm.tokens`        | Counter | model, provider, type=input\|output       | Token usage          |
+| `llm.cost`          | Counter | model, provider                           | Estimated cost (USD) |
+| `llm.errors`        | Counter | model, provider, error_type               | Error count          |
 
 ### 🎯 T-Digest Accurate Tail Percentiles
 
 `NativeProvider` self-implements T-Digest (~200 lines, zero dependencies):
 
-| | Fixed 12 Buckets | T-Digest |
-|:---|:---|:---|
-| P99 error | ~20% | < 1% |
-| P99.9 error | > 50% | < 0.5% |
-| Memory | 96 bytes | ~300 bytes |
-| Cross-instance merge | Not supported | Supported |
-| Dependencies | None | None (self-implemented) |
+|                      | Fixed 12 Buckets | T-Digest                |
+|:---------------------|:-----------------|:------------------------|
+| P99 error            | ~20%             | < 1%                    |
+| P99.9 error          | > 50%            | < 0.5%                  |
+| Memory               | 96 bytes         | ~300 bytes              |
+| Cross-instance merge | Not supported    | Supported               |
+| Dependencies         | None             | None (self-implemented) |
 
 -----
 
@@ -195,7 +205,8 @@ public class Application {
 }
 ```
 
-On startup: JVM metrics, system metrics, and HTTP request metrics are auto-registered. The `/metricz` endpoint is available immediately.
+On startup: JVM metrics, system metrics, and HTTP request metrics are auto-registered. The `/metricz` endpoint is
+available immediately.
 
 ### Step 3: Use
 
@@ -232,30 +243,31 @@ LlmSample s = Metrics.llmTimer("ai.chat")
 
 #### JVM Metrics (`JvmMetrics`)
 
-| Metric | Type | Tags |
-|:---|:---|:---|
-| `jvm.memory.used` | Gauge | area=heap\|nonheap |
-| `jvm.memory.max` | Gauge | area=heap\|nonheap |
-| `jvm.gc.pause` | Timer | gc=gcName |
-| `jvm.threads.live` | Gauge | — |
-| `jvm.threads.peak` | Gauge | — |
+| Metric             | Type  | Tags               |
+|:-------------------|:------|:-------------------|
+| `jvm.memory.used`  | Gauge | area=heap\|nonheap |
+| `jvm.memory.max`   | Gauge | area=heap\|nonheap |
+| `jvm.gc.pause`     | Timer | gc=gcName          |
+| `jvm.threads.live` | Gauge | —                  |
+| `jvm.threads.peak` | Gauge | —                  |
 
 #### System Metrics (`SystemMetrics`)
 
-| Metric | Type |
-|:---|:---|
-| `system.cpu.load` | Gauge |
+| Metric             | Type  |
+|:-------------------|:------|
+| `system.cpu.load`  | Gauge |
 | `process.cpu.load` | Gauge |
-| `process.uptime` | Gauge |
+| `process.uptime`   | Gauge |
 
 #### HTTP Metrics (`HttpMetrics`)
 
-Servlet Filter that auto-instruments all HTTP requests. URI template normalization (`/user/123` → `/user/{id}`) is available via `HttpMetricsInterceptor` in bus-starter (Spring MVC).
+Servlet Filter that auto-instruments all HTTP requests. URI template normalization (`/user/123` → `/user/{id}`) is
+available via `HttpMetricsInterceptor` in bus-starter (Spring MVC).
 
-| Metric | Type | Tags |
-|:---|:---|:---|
-| `http.server.requests` | Timer | method, uri, status, exception |
-| `http.server.requests.rate` | Meter | method, uri, status |
+| Metric                      | Type  | Tags                           |
+|:----------------------------|:------|:-------------------------------|
+| `http.server.requests`      | Timer | method, uri, status, exception |
+| `http.server.requests.rate` | Meter | method, uri, status            |
 
 #### Cache Metrics (`CacheMetrics`)
 
@@ -276,17 +288,18 @@ StartupMetrics.record(1250, List.of(
         new StartupStage("components", 930)));
 ```
 
-| Metric | Type | Tags |
-|:---|:---|:---|
-| `application.startup.count` | Counter | — |
-| `application.startup.duration` | Timer | — |
-| `application.startup.stage.duration` | Timer | stage |
+| Metric                               | Type    | Tags  |
+|:-------------------------------------|:--------|:------|
+| `application.startup.count`          | Counter | —     |
+| `application.startup.duration`       | Timer   | —     |
+| `application.startup.stage.duration` | Timer   | stage |
 
 Framework integrations only collect lifecycle timings and adapt them to this common model.
 
 ### Prometheus Export
 
-`PrometheusExporter` renders Prometheus text format 0.0.4. The `/metricz` endpoint (via `MetricsEndpoint` in bus-starter) serves the scrape payload directly.
+`PrometheusExporter` renders Prometheus text format 0.0.4. The `/metricz` endpoint (via `MetricsEndpoint` in
+bus-starter) serves the scrape payload directly.
 
 ```
 # TYPE http_server_requests_seconds histogram
@@ -308,7 +321,8 @@ slo_compliance_ratio{slo="checkout.latency",target="0.999"} 0.9987
 
 ### bus-cortex Integration (CortexExporter)
 
-Periodically pushes local metric snapshots to bus-cortex via CacheX. Key pattern: `metrics:{namespace}:{serviceId}:{metricName}`. Cortex aggregates across instances for cluster-level `/metricz`.
+Periodically pushes local metric snapshots to bus-cortex via CacheX. Key pattern:
+`metrics:{namespace}:{serviceId}:{metricName}`. Cortex aggregates across instances for cluster-level `/metricz`.
 
 ```yaml
 bus:
@@ -394,20 +408,20 @@ bus:
 
 ### Configuration Properties
 
-| Property | Type | Default | Description |
-|:---|:---|:---|:---|
-| `bus.metrics.enabled` | boolean | `false` | Enable metrics integration |
-| `bus.metrics.provider` | String | `native` | Backend: `native` or `micrometer` |
-| `bus.metrics.jvm` | boolean | `true` | Enable JVM metrics |
-| `bus.metrics.system` | boolean | `true` | Enable system metrics |
-| `bus.metrics.http` | boolean | `true` | Enable HTTP metrics |
-| `bus.metrics.endpoint` | boolean | `true` | Enable `/metricz` endpoint |
-| `bus.metrics.path` | String | `/metricz` | Endpoint path |
-| `bus.metrics.startup.enabled` | boolean | `false` | Collect and publish Spring Boot startup metrics |
-| `bus.metrics.cardinality.default-max` | int | `100` | Default cardinality limit |
-| `bus.metrics.cardinality.deny-list` | List | — | Always-denied tag keys |
-| `bus.metrics.cortex.enabled` | boolean | `false` | Enable CortexExporter |
-| `bus.metrics.cortex.interval-seconds` | int | `15` | Push interval |
+| Property                              | Type    | Default    | Description                                     |
+|:--------------------------------------|:--------|:-----------|:------------------------------------------------|
+| `bus.metrics.enabled`                 | boolean | `false`    | Enable metrics integration                      |
+| `bus.metrics.provider`                | String  | `native`   | Backend: `native` or `micrometer`               |
+| `bus.metrics.jvm`                     | boolean | `true`     | Enable JVM metrics                              |
+| `bus.metrics.system`                  | boolean | `true`     | Enable system metrics                           |
+| `bus.metrics.http`                    | boolean | `true`     | Enable HTTP metrics                             |
+| `bus.metrics.endpoint`                | boolean | `true`     | Enable `/metricz` endpoint                      |
+| `bus.metrics.path`                    | String  | `/metricz` | Endpoint path                                   |
+| `bus.metrics.startup.enabled`         | boolean | `false`    | Collect and publish Spring Boot startup metrics |
+| `bus.metrics.cardinality.default-max` | int     | `100`      | Default cardinality limit                       |
+| `bus.metrics.cardinality.deny-list`   | List    | —          | Always-denied tag keys                          |
+| `bus.metrics.cortex.enabled`          | boolean | `false`    | Enable CortexExporter                           |
+| `bus.metrics.cortex.interval-seconds` | int     | `15`       | Push interval                                   |
 
 -----
 
@@ -444,26 +458,26 @@ PrometheusExporter  CortexExporter  OpenTelemetryProvider
 
 ## 🆚 Comparison with Alternatives
 
-| Capability | Micrometer | Dropwizard | bus-metrics |
-|:---|:---|:---|:---|
-| Multi-backend export | ✅ 30+ | ✅ | ✅ Prometheus/OTLP/Cortex |
-| Cardinality guard (OOM prevention) | ❌ | ❌ | ✅ |
-| In-process rates (req/s) | ❌ | ✅ Meter | ✅ |
-| SLA violation callbacks | ❌ | ❌ | ✅ |
-| SLO tracking + error budget | ❌ | ❌ | ✅ |
-| T-Digest accurate percentiles | ✅ HDR Histogram | ✅ external dep | ✅ zero-dep self-impl |
-| Cross-instance percentile merge | ❌ client percentile | ❌ | ✅ histogram buckets |
-| LLM/AI native metrics | ❌ | ❌ | ✅ TTFT/ITL/Token/Cost |
-| bus ecosystem integration | ❌ | ❌ | ✅ cortex/vortex/tempus |
-| Zero-dependency runtime | ❌ needs registry impl | ❌ | ✅ NativeProvider |
+| Capability                         | Micrometer             | Dropwizard      | bus-metrics               |
+|:-----------------------------------|:-----------------------|:----------------|:--------------------------|
+| Multi-backend export               | ✅ 30+                 | ✅              | ✅ Prometheus/OTLP/Cortex |
+| Cardinality guard (OOM prevention) | ❌                     | ❌              | ✅                        |
+| In-process rates (req/s)           | ❌                     | ✅ Meter        | ✅                        |
+| SLA violation callbacks            | ❌                     | ❌              | ✅                        |
+| SLO tracking + error budget        | ❌                     | ❌              | ✅                        |
+| T-Digest accurate percentiles      | ✅ HDR Histogram       | ✅ external dep | ✅ zero-dep self-impl     |
+| Cross-instance percentile merge    | ❌ client percentile   | ❌              | ✅ histogram buckets      |
+| LLM/AI native metrics              | ❌                     | ❌              | ✅ TTFT/ITL/Token/Cost    |
+| bus ecosystem integration          | ❌                     | ❌              | ✅ cortex/vortex/tempus   |
+| Zero-dependency runtime            | ❌ needs registry impl | ❌              | ✅ NativeProvider         |
 
 -----
 
 ## 🔄 Version Compatibility
 
 | Bus Metrics Version | Spring Boot Version | JDK Version |
-|:---|:---|:---|
-| 8.x | 3.x+ | 17+ |
+|:--------------------|:--------------------|:------------|
+| 8.x                 | 3.x+                | 17+         |
 
 -----
 
@@ -474,7 +488,8 @@ PrometheusExporter  CortexExporter  OpenTelemetryProvider
 - **SLO Engineering**: Define SLOs in YAML, get compliance/error-budget/burn-rate in-process and in Prometheus
 - **AI Application Monitoring**: Full LLM call observability — TTFT, ITL, token cost — following OTel GenAI SIG 2025
 - **Cluster Metrics Aggregation**: CortexExporter pushes snapshots to bus-cortex for multi-instance aggregation
-- **Traffic-Aware Routing**: VortexMetricsFeed feeds real-time P95/error-rate to bus-vortex for dynamic weight adjustment
+- **Traffic-Aware Routing**: VortexMetricsFeed feeds real-time P95/error-rate to bus-vortex for dynamic weight
+  adjustment
 
 -----
 

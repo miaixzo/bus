@@ -33,7 +33,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Cache-backed version store used when no dedicated release store is configured.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CacheVersionStore implements VersionStore {
 

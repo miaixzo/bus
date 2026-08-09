@@ -25,14 +25,35 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The event user class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EventUser {
 
+    /**
+     * Constructs a new {@code EventUser} instance.
+     */
+    public EventUser() {
+        // No initialization required.
+    }
+
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The username value.
+     */
     private String username;
+    /**
+     * The avatar url value.
+     */
     private String avatarUrl;
+    /**
+     * The email value.
+     */
     private String email;
 
     /**

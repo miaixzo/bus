@@ -49,7 +49,6 @@ import org.miaixz.bus.starter.annotation.EnableLimiter;
  * and the annotation scanner.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(value = { LimiterProperties.class })
 @Configuration(proxyBeanMethods = false)

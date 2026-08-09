@@ -32,7 +32,6 @@ import org.miaixz.bus.core.text.TextSimilarity;
  * Defines string operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StringKit extends CharsBacker {
 

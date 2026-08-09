@@ -28,7 +28,6 @@ import java.util.Collection;
  * filters are present, it is considered to satisfy all conditions (returns {@code true}).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AllFilter extends MixFilter implements Filter {
 

@@ -41,7 +41,6 @@ import org.miaixz.bus.core.xyz.*;
  * </ol>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StrictBeanDesc extends AbstractBeanDesc {
 

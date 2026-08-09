@@ -51,7 +51,6 @@ import org.miaixz.bus.logger.Logger;
  * Control-plane service for registry content management.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RegistryControlService {
 
@@ -1182,7 +1181,6 @@ public class RegistryControlService {
      * Control-service backed operations exposed to registry batch executors.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private class ControlRegistryBatchOperations implements RegistryBatchOperations {
 

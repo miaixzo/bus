@@ -48,7 +48,6 @@ import org.miaixz.bus.core.text.CharsBacker;
  * Performs file and path operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FileKit extends PathResolve {
 

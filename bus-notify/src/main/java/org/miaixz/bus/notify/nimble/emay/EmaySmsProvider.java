@@ -45,7 +45,6 @@ import org.miaixz.bus.notify.nimble.AbstractProvider;
  * Emay SMS Provider implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EmaySmsProvider extends AbstractProvider<EmayNotice, Context> {
 

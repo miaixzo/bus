@@ -26,15 +26,26 @@ import java.io.Serializable;
  * The markdown request class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MarkdownRequest implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852261307076L;
 
+    /**
+     * The text value.
+     */
     private String text;
+    /**
+     * The gfm value.
+     */
     private boolean gfm;
+    /**
+     * The project value.
+     */
     private String project;
 
     /**

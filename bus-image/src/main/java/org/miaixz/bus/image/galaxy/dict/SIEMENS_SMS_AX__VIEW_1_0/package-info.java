@@ -21,6 +21,5 @@
  * UID Dictionary from SIEMENS_SMS_AX__VIEW_1_0
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SMS_AX__VIEW_1_0;

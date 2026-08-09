@@ -37,7 +37,6 @@ import org.miaixz.bus.limiter.nimble.StrategyManager;
  * framework's components, such as proxies and strategy providers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LimiterService implements InitializingBean, AutoCloseable {
 

@@ -33,7 +33,6 @@ import java.util.LinkedHashSet;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class YearValueMatcher implements PartMatcher {
 

@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  * marketed by Apple Inc. since 2001. It is the primary operating system for Apple's Mac computers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public abstract class MacOperatingSystem extends AbstractOperatingSystem {

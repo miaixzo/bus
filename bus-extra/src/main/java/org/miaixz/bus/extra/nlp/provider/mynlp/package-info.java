@@ -23,6 +23,5 @@
  * homepage: <a href="https://github.com/mayabot/mynlp/">https://github.com/mayabot/mynlp/</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.extra.nlp.provider.mynlp;

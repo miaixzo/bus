@@ -42,7 +42,6 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  * @param charsetName The character set name defined by the BOM.
  * @param bytes       The BOM bytes.
  * @author Kimi Liu
- * @since Java 21+
  */
 public record ByteOrderMark(String charsetName, byte... bytes)
         implements PredicateX<byte[]>, Comparable<ByteOrderMark>, Serializable {

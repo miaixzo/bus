@@ -28,7 +28,6 @@ import org.springframework.core.ResolvableType;
  * Read-only Bean lookup operations bound to one Spring context.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BeanProvider {
 

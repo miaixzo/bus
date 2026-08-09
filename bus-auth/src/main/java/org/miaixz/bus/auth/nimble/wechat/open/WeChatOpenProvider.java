@@ -40,7 +40,6 @@ import org.miaixz.bus.logger.Logger;
  * WeChat Open Platform login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WeChatOpenProvider extends AbstractWeChatProvider {
 

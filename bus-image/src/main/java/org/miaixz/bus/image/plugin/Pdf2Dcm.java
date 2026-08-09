@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  * Part 10 file as an Encapsulated Document. It can process individual files or entire directories.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Pdf2Dcm {
 
@@ -231,7 +230,6 @@ public class Pdf2Dcm {
      * An enumeration of supported file content types for encapsulation, each associated with a sample metadata file.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum FileContentType {
 
@@ -311,7 +309,6 @@ public class Pdf2Dcm {
      * A file visitor to recursively find and convert files in a directory.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class Pdf2DcmFileVisitor extends SimpleFileVisitor<Path> {
 

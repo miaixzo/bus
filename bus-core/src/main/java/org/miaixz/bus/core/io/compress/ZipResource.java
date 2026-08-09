@@ -29,7 +29,6 @@ import org.miaixz.bus.core.center.function.ConsumerX;
  * Represents a Zip resource, such as a Zip stream resource or a Zip file resource.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ZipResource extends Closeable {
 

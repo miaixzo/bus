@@ -27,7 +27,6 @@ import org.miaixz.bus.core.lang.annotation.RelationType;
  * {@link RelationType#MIRROR_FOR} are applied.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MirroredAnnotationAttribute extends AbstractWrappedAnnotationAttribute {
 

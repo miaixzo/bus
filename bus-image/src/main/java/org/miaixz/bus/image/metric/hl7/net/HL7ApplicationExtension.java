@@ -26,7 +26,6 @@ import java.io.Serializable;
  * Represents the HL7ApplicationExtension type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HL7ApplicationExtension implements Serializable {
 

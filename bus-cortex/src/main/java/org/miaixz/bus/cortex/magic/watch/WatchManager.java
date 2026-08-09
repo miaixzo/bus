@@ -54,7 +54,6 @@ import org.miaixz.bus.logger.Logger;
  * Manages watch subscriptions and notifies listeners on changes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagnostics {
 
@@ -112,7 +111,6 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      * Backpressure policy applied when one watch subscription is slower than the emitted event rate.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum OverflowStrategy {
         /**

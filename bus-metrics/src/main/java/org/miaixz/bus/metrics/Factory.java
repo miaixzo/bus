@@ -29,7 +29,6 @@ import org.miaixz.bus.logger.Logger;
  * bus-extra.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Factory {
 

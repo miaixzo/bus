@@ -37,7 +37,6 @@ import org.miaixz.bus.notify.Context;
  * Alibaba Cloud Voice Messaging Service (VMS) provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AliyunVmsProvider extends AliyunProvider<AliyunNotice, Context> {
 

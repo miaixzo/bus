@@ -39,7 +39,6 @@ import org.miaixz.bus.metrics.nimble.prometheus.PrometheusExporter;
  * class-level {@code @RequestMapping} in addition to {@code @Controller}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @RequestMapping
 public class MetricsEndpoint {

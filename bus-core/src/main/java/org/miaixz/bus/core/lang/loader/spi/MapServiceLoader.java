@@ -38,13 +38,12 @@ import org.miaixz.bus.core.xyz.*;
  *     service1 = com.example.Service1
  *     service2 = com.example.Service2
  * </pre>
- *
+ * <p>
  * The corresponding service can be obtained by calling the {@link #getService(String)} method with the name before the
  * equals sign.
  *
  * @param <S> The type of the service.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
 

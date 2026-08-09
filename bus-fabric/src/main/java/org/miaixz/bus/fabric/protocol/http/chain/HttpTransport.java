@@ -47,7 +47,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * HTTP chain stage that transfers a request and response over the selected connection.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpTransport implements HttpStage {
 

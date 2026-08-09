@@ -41,7 +41,6 @@ import org.miaixz.bus.gitlab.support.ISO8601;
  * <a href="https://docs.gitlab.com/ce/api/commits.html">Commits API at GitLab</a> for more information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CommitsApi extends AbstractApi {
 
@@ -395,7 +394,6 @@ public class CommitsApi extends AbstractApi {
      * @param sha             a commit hash or name of a branch or tag
      * @return a List of all references (from branches or tags) a commit is pushed to
      * @throws RelevantException RelevantException if any exception occurs during execution
-     * @since Gitlab 10.6
      */
     public List<CommitRef> getCommitRefs(Object projectIdOrPath, String sha) throws RelevantException {
         return (getCommitRefs(projectIdOrPath, sha, RefType.ALL, getDefaultPerPage()).all());
@@ -413,7 +411,6 @@ public class CommitsApi extends AbstractApi {
      * @param itemsPerPage    the number of Commit instances that will be fetched per page
      * @return a Pager of references (from branches or tags) a commit is pushed to
      * @throws RelevantException RelevantException if any exception occurs during execution
-     * @since Gitlab 10.6
      */
     public Pager<CommitRef> getCommitRefs(Object projectIdOrPath, String sha, int itemsPerPage)
             throws RelevantException {
@@ -431,7 +428,6 @@ public class CommitsApi extends AbstractApi {
      * @param sha             a commit hash or name of a branch or tag
      * @return a Stream of all references (from branches or tags) a commit is pushed to
      * @throws RelevantException RelevantException if any exception occurs during execution
-     * @since Gitlab 10.6
      */
     public Stream<CommitRef> getCommitRefsStream(Object projectIdOrPath, String sha) throws RelevantException {
         return (getCommitRefs(projectIdOrPath, sha, RefType.ALL, getDefaultPerPage()).stream());
@@ -449,7 +445,6 @@ public class CommitsApi extends AbstractApi {
      * @param refType         the scope of commits. Possible values branch, tag, all. Default is all.
      * @return a List of all references (from branches or tags) a commit is pushed to
      * @throws RelevantException RelevantException if any exception occurs during execution
-     * @since Gitlab 10.6
      */
     public List<CommitRef> getCommitRefs(Object projectIdOrPath, String sha, RefType refType) throws RelevantException {
         return (getCommitRefs(projectIdOrPath, sha, refType, getDefaultPerPage()).all());
@@ -468,7 +463,6 @@ public class CommitsApi extends AbstractApi {
      * @param itemsPerPage    the number of Commit instances that will be fetched per page
      * @return a Pager of references (from branches or tags) a commit is pushed to
      * @throws RelevantException RelevantException if any exception occurs during execution
-     * @since Gitlab 10.6
      */
     public Pager<CommitRef> getCommitRefs(
             Object projectIdOrPath,
@@ -492,7 +486,6 @@ public class CommitsApi extends AbstractApi {
      * @param refType         the scope of commits. Possible values branch, tag, all. Default is all.
      * @return a Stream of all references (from branches or tags) a commit is pushed to
      * @throws RelevantException RelevantException if any exception occurs during execution
-     * @since Gitlab 10.6
      */
     public Stream<CommitRef> getCommitRefsStream(Object projectIdOrPath, String sha, RefType refType)
             throws RelevantException {
@@ -967,7 +960,6 @@ public class CommitsApi extends AbstractApi {
      * @param branch          the target branch to revert the commit on
      * @return a Commit instance holding the reverted commit
      * @throws RelevantException RelevantException if any exception occurs during execution
-     * @since GitLab 11.5
      */
     public Commit revertCommit(Object projectIdOrPath, String sha, String branch) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("branch", branch, true);
@@ -995,7 +987,6 @@ public class CommitsApi extends AbstractApi {
      * @param branch          the target branch to cherry pick the commit on
      * @return a Commit instance holding the cherry picked commit
      * @throws RelevantException RelevantException if any exception occurs during execution
-     * @since GitLab 8.15
      */
     public Commit cherryPickCommit(Object projectIdOrPath, String sha, String branch) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("branch", branch, true);

@@ -40,7 +40,6 @@ import org.miaixz.bus.core.xyz.ZipKit;
  * Zip file or stream reader, generally used for decompressing Zip files.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ZipReader implements Closeable {
 

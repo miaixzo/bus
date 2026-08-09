@@ -32,7 +32,6 @@ import org.miaixz.bus.shade.safety.complex.RegexComplex;
  * entries.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ZipRegexComplex extends RegexComplex<ZipArchiveEntry> implements Complex<ZipArchiveEntry> {
 

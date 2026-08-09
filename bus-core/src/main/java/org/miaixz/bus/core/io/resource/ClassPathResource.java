@@ -35,7 +35,6 @@ import org.miaixz.bus.core.xyz.*;
  * to by the input path must exist, otherwise an error will be reported.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ClassPathResource extends UrlResource {
 

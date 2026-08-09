@@ -8,7 +8,9 @@
 
 ## 📖 Project Introduction
 
-**Bus Vortex** is a distributed, fully asynchronous, high-performance, scalable, and lightweight API gateway built on Spring WebFlux. Inspired by Taobao's Open Platform, it stands on the shoulders of the Spring ecosystem to provide enterprise-grade API routing and management capabilities.
+**Bus Vortex** is a distributed, fully asynchronous, high-performance, scalable, and lightweight API gateway built on
+Spring WebFlux. Inspired by Taobao's Open Platform, it stands on the shoulders of the Spring ecosystem to provide
+enterprise-grade API routing and management capabilities.
 
 -----
 
@@ -73,34 +75,35 @@ public class Assets {
 
 ### Request Parameters
 
-| Parameter | Description |
-|:---|:---|
-| method | API method name (e.g., xxx.xxx.xxx) |
-| v | API version number, used with method (e.g., 1.1, 1.2) |
-| namespace | Optional namespace route scope |
-| app_id | Optional application-specific route scope |
-| type | Optional registry type scope. Accepts numeric `Type.key()` and legacy type names |
-| format | Return format (supports json, xml) |
-| sign | If decrypt is enabled in config and request contains sign field, decrypt request |
+| Parameter | Description                                                                      |
+|:----------|:---------------------------------------------------------------------------------|
+| method    | API method name (e.g., xxx.xxx.xxx)                                              |
+| v         | API version number, used with method (e.g., 1.1, 1.2)                            |
+| namespace | Optional namespace route scope                                                   |
+| app_id    | Optional application-specific route scope                                        |
+| type      | Optional registry type scope. Accepts numeric `Type.key()` and legacy type names |
+| format    | Return format (supports json, xml)                                               |
+| sign      | If decrypt is enabled in config and request contains sign field, decrypt request |
 
 ### Public Route Resolution
 
 - Runtime candidate chain:
-  - `namespace:type:app_id:method:version:verb`
-  - `namespace:type:method:version:verb`
-  - `namespace:app_id:method:version:verb`
-  - `namespace:method:version:verb`
-  - `type:app_id:method:version:verb`
-  - `type:method:version:verb`
-  - `app_id:method:version:verb`
-  - `method:version:verb`
+    - `namespace:type:app_id:method:version:verb`
+    - `namespace:type:method:version:verb`
+    - `namespace:app_id:method:version:verb`
+    - `namespace:method:version:verb`
+    - `type:app_id:method:version:verb`
+    - `type:method:version:verb`
+    - `app_id:method:version:verb`
+    - `method:version:verb`
 - `method`, `version`, and `verb` are required runtime dimensions
 - `namespace`, `type`, and `app_id` are optional route scopes; when absent the corresponding levels are skipped
 - `type` always uses numeric `Type.key()` inside route keys
 - `verb` always uses the numeric verb code rather than `GET` / `POST` text
 - `ApiAssets.key` remains the lightweight public alias `method:version:verbCode`
 - Registration and lookup share the same candidate chain
-- Lookup stops at the first level that has candidates; if that level resolves to multiple assets, the gateway returns `null`
+- Lookup stops at the first level that has candidates; if that level resolves to multiple assets, the gateway returns
+  `null`
 
 `verbCode` mapping:
 
@@ -114,8 +117,8 @@ public class Assets {
 - `8 -> TRACE`
 - `9 -> CONNECT`
 
-You can override the built-in route-key strategy by providing a Spring `Keying<Keying.RegistrySpec>` bean. The
-default implementation is `RegistryGenerator`, and both bus-cortex and bus-vortex now consume the same
+You can override the built-in route-key strategy by providing a Spring `Keying<Keying.RegistrySpec>` bean. The default
+implementation is `RegistryGenerator`, and both bus-cortex and bus-vortex now consume the same
 `Keying<Keying.RegistrySpec>` rules.
 
 ### Configuration File
@@ -180,7 +183,8 @@ public class AuthProviderImpl implements AuthorizeProvider {
 
 ### Extensibility
 
-Implement `WebFilter` to extend gateway functionality, such as rate limiting, logging, blacklisting, circuit breaking (not yet implemented), etc.
+Implement `WebFilter` to extend gateway functionality, such as rate limiting, logging, blacklisting, circuit breaking
+(not yet implemented), etc.
 
 ```java
 @Component
@@ -196,11 +200,13 @@ public class CustomFilter implements WebFilter {
 
 ### @ApiVersion
 
-Automatically merges a version-prefixed path to RequestMappingInfo. **Recommendation**: Configure major versions at class level, minor versions can be configured at method level (will override class-level major version).
+Automatically merges a version-prefixed path to RequestMappingInfo. **Recommendation**: Configure major versions at
+class level, minor versions can be configured at method level (will override class-level major version).
 
 ### @ClientVersion
 
-Routes to different handler methods based on `cv` and `terminal` parameters in request headers (extends `getCustomCondition` method in `RequestMappingHandlerMapping`).
+Routes to different handler methods based on `cv` and `terminal` parameters in request headers (extends
+`getCustomCondition` method in `RequestMappingHandlerMapping`).
 
 ### @VersionMapping
 
@@ -208,12 +214,15 @@ Combines `RequestMapping` functionality with configurations for both `@ApiVersio
 
 ### Business Scenarios
 
-- **ApiVersion**: Replaces version-defined paths that require redefining classes or writing conditional logic in code for API upgrades
-- **ClientVersion**: Elegantly avoids writing extensive version logic when dealing with interfaces already in use by clients
+- **ApiVersion**: Replaces version-defined paths that require redefining classes or writing conditional logic in code
+  for API upgrades
+- **ClientVersion**: Elegantly avoids writing extensive version logic when dealing with interfaces already in use by
+  clients
 
 ### Example Usage
 
 ```java
+
 @RequestMapping("/t")
 @RestController
 @ApiVersion("5")
@@ -258,6 +267,7 @@ public class TController {
 ### Using @VersionMapping
 
 ```java
+
 @RestController
 @VersionMapping(value = "/t", apiVersion = "5")
 public class TController {
@@ -340,25 +350,25 @@ context.putQueryParameter("lang", "en");
 
 ### Core Configuration
 
-| Property | Type | Default | Description |
-|:---|:---|:---|:---|
-| bus.vortex.port | int | 8765 | Gateway server port |
-| bus.vortex.path | String | /router/rest | Gateway routing path |
-| bus.vortex.condition | boolean | false | Enable custom Spring MVC condition bridge |
-| bus.vortex.limit.enabled | boolean | false | Enable rate limiting |
-| bus.vortex.performance.max-connections | int | 5000 | Maximum outbound HTTP connection pool size |
-| bus.vortex.performance.pending-acquire-timeout-seconds | int | 45 | Maximum time to wait for a pooled outbound connection |
-| bus.vortex.performance.pending-acquire-max-count | int | 0 | Maximum pending outbound connection acquisitions; `0` derives `max-connections * 2` |
-| bus.vortex.performance.sanitize-null-like-parameters | boolean | true | Remove `null` / `"null"` / `"undefined"` parameters before routing |
+| Property                                               | Type    | Default      | Description                                                                         |
+|:-------------------------------------------------------|:--------|:-------------|:------------------------------------------------------------------------------------|
+| bus.vortex.port                                        | int     | 8765         | Gateway server port                                                                 |
+| bus.vortex.path                                        | String  | /router/rest | Gateway routing path                                                                |
+| bus.vortex.condition                                   | boolean | false        | Enable custom Spring MVC condition bridge                                           |
+| bus.vortex.limit.enabled                               | boolean | false        | Enable rate limiting                                                                |
+| bus.vortex.performance.max-connections                 | int     | 5000         | Maximum outbound HTTP connection pool size                                          |
+| bus.vortex.performance.pending-acquire-timeout-seconds | int     | 45           | Maximum time to wait for a pooled outbound connection                               |
+| bus.vortex.performance.pending-acquire-max-count       | int     | 0            | Maximum pending outbound connection acquisitions; `0` derives `max-connections * 2` |
+| bus.vortex.performance.sanitize-null-like-parameters   | boolean | true         | Remove `null` / `"null"` / `"undefined"` parameters before routing                  |
 
 -----
 
 ## 🔄 Version Compatibility
 
 | Bus Vortex Version | Spring Boot Version | JDK Version |
-|:---|:---|:---|
-| 8.x | 3.x+ | 17+ |
-| 7.x | 2.x+ | 11+ |
+|:-------------------|:--------------------|:------------|
+| 8.x                | 3.x+                | 17+         |
+| 7.x                | 2.x+                | 11+         |
 
 -----
 

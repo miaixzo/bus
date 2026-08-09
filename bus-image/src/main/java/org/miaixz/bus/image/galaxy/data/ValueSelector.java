@@ -27,7 +27,6 @@ import java.util.Objects;
  * Represents the ValueSelector type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ValueSelector implements Serializable {
 

@@ -19,14 +19,10 @@
 */
 package org.miaixz.bus.pay.magic;
 
-import org.miaixz.bus.core.basic.normal.ErrorRegistry;
-import org.miaixz.bus.core.basic.normal.Errors;
-
 /**
  * Payment error codes: 112xxx
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
@@ -36,11 +32,5 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
     public ErrorCode() {
         // No initialization required.
     }
-
-    /**
-     * Incomplete notification parameters.
-     */
-    public static final Errors _PARAMETER_INCOMPLETE = ErrorRegistry.builder().key("112001")
-            .value("Incomplete parameters").build();
 
 }

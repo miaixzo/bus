@@ -31,7 +31,6 @@ import org.miaixz.bus.logger.Provider;
  * Abstract base class for logger providers, implementing common functionality.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractProvider implements Provider, Serializable {
 

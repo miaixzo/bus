@@ -26,6 +26,5 @@
  * per-entry failures for any entries that could not be processed.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.builtin.batch;

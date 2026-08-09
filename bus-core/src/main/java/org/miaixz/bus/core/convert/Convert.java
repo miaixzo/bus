@@ -39,7 +39,6 @@ import org.miaixz.bus.core.xyz.*;
  * Converts values between supported types.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Convert {
 

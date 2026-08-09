@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  * Memory obtained by Performance Info.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class WindowsGlobalMemory extends AbstractGlobalMemory {

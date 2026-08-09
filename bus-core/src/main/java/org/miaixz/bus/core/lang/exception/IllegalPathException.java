@@ -27,7 +27,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Represents an exception indicating an illegal or invalid path.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IllegalPathException extends UncheckedException {
 

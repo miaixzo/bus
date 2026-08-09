@@ -31,7 +31,6 @@ import lombok.experimental.Accessors;
  * Foreign key metadata shared by entity parsing, schema snapshots, and dialect DDL generation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

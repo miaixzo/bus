@@ -28,7 +28,6 @@ import java.security.KeyPair;
  *
  * @param <T> The type of the concrete subclass extending {@code AbstractCrypto}.
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractCrypto<T extends AbstractCrypto<T>> extends Asymmetric<T>
         implements Encryptor, Decryptor {

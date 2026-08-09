@@ -55,7 +55,6 @@ import org.miaixz.bus.logger.Logger;
  * decryption, which requires the decrypting party to know the key in advance.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Crypto implements Encryptor, Decryptor, Serializable {
 

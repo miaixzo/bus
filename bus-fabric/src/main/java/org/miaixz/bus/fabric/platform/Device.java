@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * Device classifier parsed from a User-Agent value.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Device {
 

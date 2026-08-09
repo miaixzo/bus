@@ -23,6 +23,5 @@
  * xyz: All necessary preparations are made and ready for action.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.xyz;

@@ -57,7 +57,6 @@ import io.temporal.workflow.Workflow;
  * dynamic dispatch and lightweight proxy code that does not require Jackson 2 on the runtime classpath.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class NativeWorkflowAdapter {
 

@@ -36,7 +36,6 @@ import reactor.core.publisher.Mono;
  * Parses public slug forwarding requests.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.FIRST)
 public class SlugRequestStrategy extends RequestStrategy {

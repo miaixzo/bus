@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.Assert;
  *
  * @param <E> The type of the elements.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FilterIterator<E> implements Iterator<E> {
 

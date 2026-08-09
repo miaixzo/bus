@@ -44,7 +44,6 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
  * Lightweight UDP session bound to one remote address.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class UdpSession implements Session {
 

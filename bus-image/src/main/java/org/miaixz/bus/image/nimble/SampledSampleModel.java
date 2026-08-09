@@ -27,7 +27,6 @@ import java.awt.image.SampleModel;
  * Represents the SampledSampleModel type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SampledSampleModel extends SampleModel {
 

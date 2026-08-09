@@ -28,7 +28,6 @@ import org.miaixz.bus.image.nimble.codec.ImageWriterFactory;
  * Represents the ImageWriterExtension type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageWriterExtension extends DeviceExtension {
 

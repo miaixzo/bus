@@ -37,7 +37,6 @@ import org.miaixz.bus.core.xyz.ZoneKit;
  * setter method returns a new {@code DateBuilder} instance.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DateBuilder {
 
@@ -609,13 +608,13 @@ public final class DateBuilder {
                     java.time.ZoneId.of(org.miaixz.bus.core.lang.ZoneId.UTC.name()));
         }
         final LocalDateTime dateTime = LocalDateTime.of(year, month, day, hour, minute, second, nanosecond); // Create
-                                                                                                             // LocalDateTime
-                                                                                                             // object
+        // LocalDateTime
+        // object
 
         // Check if time zone offset is set
         if (flag) {
             final ZoneOffset offset = ZoneOffset.ofHoursMinutes(zoneOffset / 60, zoneOffset % 60); // Create ZoneOffset
-                                                                                                   // based on offset
+            // based on offset
             return dateTime.atOffset(offset); // Construct OffsetDateTime using time zone offset
         }
 

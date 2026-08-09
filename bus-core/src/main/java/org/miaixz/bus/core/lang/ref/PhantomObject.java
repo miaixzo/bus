@@ -30,7 +30,6 @@ import java.util.Objects;
  *
  * @param <T> The type of the object held by this phantom reference.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PhantomObject<T> extends PhantomReference<T> implements Ref<T> {
 

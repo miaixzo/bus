@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.SetKit;
  * Provides a collection of common constants and methods.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Normal {
 

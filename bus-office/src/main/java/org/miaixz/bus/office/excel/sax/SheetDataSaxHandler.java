@@ -50,7 +50,6 @@ import org.miaixz.bus.office.excel.sax.handler.RowHandler;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SheetDataSaxHandler extends DefaultHandler {
 

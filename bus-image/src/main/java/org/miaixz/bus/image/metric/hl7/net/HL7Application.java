@@ -41,7 +41,6 @@ import org.miaixz.bus.image.metric.hl7.MLLPConnection;
  * handling.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HL7Application implements Serializable {
 

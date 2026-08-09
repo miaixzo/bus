@@ -63,7 +63,6 @@ import org.miaixz.bus.logger.Logger;
  * Open socket session.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class SocketSession implements Session {
 

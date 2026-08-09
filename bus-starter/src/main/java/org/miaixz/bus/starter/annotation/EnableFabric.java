@@ -33,7 +33,6 @@ import org.miaixz.bus.starter.fabric.FabricConfiguration;
  * {@link org.miaixz.bus.starter.fabric.WebSocketQuickService}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

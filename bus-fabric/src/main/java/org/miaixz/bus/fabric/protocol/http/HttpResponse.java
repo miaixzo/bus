@@ -60,7 +60,6 @@ import org.miaixz.bus.fabric.protocol.http.cache.HttpCacheControl;
  * Immutable HTTP response snapshot with closeable body.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpResponse implements AutoCloseable {
 
@@ -933,7 +932,6 @@ public final class HttpResponse implements AutoCloseable {
      * Builder for responses.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

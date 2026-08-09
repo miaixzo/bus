@@ -22,6 +22,5 @@
  * Resolves affix rules and rewrites physical table names with dynamic prefixes and suffixes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.mapper.feature.affix;

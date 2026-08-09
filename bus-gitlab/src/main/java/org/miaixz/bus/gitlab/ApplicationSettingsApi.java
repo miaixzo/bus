@@ -37,7 +37,6 @@ import tools.jackson.databind.JsonNode;
  * <a href="https://docs.gitlab.com/ee/api/settings.html">Application Settings API at GitLab</a> for more information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ApplicationSettingsApi extends AbstractApi {
 

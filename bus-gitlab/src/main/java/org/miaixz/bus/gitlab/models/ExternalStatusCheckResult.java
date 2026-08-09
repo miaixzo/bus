@@ -28,15 +28,33 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The external status check result class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ExternalStatusCheckResult implements Serializable {
 
+    /**
+     * Constructs a new {@code ExternalStatusCheckResult} instance.
+     */
+    public ExternalStatusCheckResult() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852253955988L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The merge request value.
+     */
     private MergeRequest mergeRequest;
+    /**
+     * The external status check value.
+     */
     private ExternalStatusCheck externalStatusCheck;
 
     /**

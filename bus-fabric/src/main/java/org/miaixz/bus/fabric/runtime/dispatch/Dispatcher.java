@@ -31,7 +31,6 @@ import org.miaixz.bus.fabric.runtime.Activity;
  * Dispatcher contract for short, delayed, and long-running background activities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Dispatcher extends AutoCloseable {
 

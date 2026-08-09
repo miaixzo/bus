@@ -31,7 +31,6 @@ import java.lang.annotation.*;
  * no effect.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Target(ElementType.FIELD)

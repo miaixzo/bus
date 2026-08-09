@@ -34,7 +34,6 @@ import org.miaixz.bus.core.xyz.*;
  * Zip file writer encapsulation. This class provides methods to create and write to Zip archives.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ZipWriter implements Closeable {
 

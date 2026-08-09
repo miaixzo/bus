@@ -25,7 +25,6 @@ package org.miaixz.bus.core.lang.annotation;
  *
  * @param <T> The type of the object that can be copied.
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface Copyable<T> {

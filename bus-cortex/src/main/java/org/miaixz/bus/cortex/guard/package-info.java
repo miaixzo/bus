@@ -25,6 +25,5 @@
  * express policy intent, evaluate request context, and carry token-related settings.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.guard;

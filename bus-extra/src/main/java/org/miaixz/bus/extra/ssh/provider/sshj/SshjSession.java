@@ -47,7 +47,6 @@ import org.miaixz.bus.extra.ssh.SshjKit;
  * <a href="https://github.com/hierynomus/sshj">https://github.com/hierynomus/sshj</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SshjSession implements Session {
 

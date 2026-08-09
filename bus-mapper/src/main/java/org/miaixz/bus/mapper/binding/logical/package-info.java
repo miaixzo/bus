@@ -21,6 +21,5 @@
  * Provides interfaces and providers for implementing logical (soft) delete functionality.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.mapper.binding.logical;

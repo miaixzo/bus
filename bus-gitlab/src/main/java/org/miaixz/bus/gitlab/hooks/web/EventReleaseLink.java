@@ -25,14 +25,35 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The event release link class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EventReleaseLink {
 
+    /**
+     * Constructs a new {@code EventReleaseLink} instance.
+     */
+    public EventReleaseLink() {
+        // No initialization required.
+    }
+
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The external value.
+     */
     private Boolean external;
+    /**
+     * The link type value.
+     */
     private String linkType;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The url value.
+     */
     private String url;
 
     /**

@@ -40,7 +40,6 @@ import org.miaixz.bus.crypto.center.Sign;
  *
  * @see JWTSigner
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RSAJWTSigner implements JWTSigner {
 

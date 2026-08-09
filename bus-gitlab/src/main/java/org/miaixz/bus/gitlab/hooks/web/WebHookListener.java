@@ -24,7 +24,6 @@ package org.miaixz.bus.gitlab.hooks.web;
  * GitLab server.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface WebHookListener extends java.util.EventListener {
 

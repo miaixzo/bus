@@ -28,9 +28,15 @@ import org.miaixz.bus.core.lang.Normal;
  * In-memory festival registry for storing and retrieving festival data.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FestivalRegistry {
+
+    /**
+     * Constructs a new {@code FestivalRegistry} instance.
+     */
+    public FestivalRegistry() {
+        // No initialization required.
+    }
 
     /**
      * Valid encoding characters.

@@ -31,7 +31,6 @@ import org.miaixz.bus.core.center.date.culture.Loops;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class YearParts extends Loops {
 

@@ -34,7 +34,6 @@ import org.miaixz.bus.health.unix.solaris.driver.kstat.SystemPages;
  * Memory obtained by kstat
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class SolarisGlobalMemory extends AbstractGlobalMemory {

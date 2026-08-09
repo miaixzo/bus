@@ -22,6 +22,5 @@
  * encrypts all resources under {@code BOOT-INF/}, including project-specific resources and dependent JARs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.shade.safety.boot;

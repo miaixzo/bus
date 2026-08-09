@@ -36,7 +36,6 @@ import org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingFactory;
  * logger factory instance. It automatically detects the appropriate logging framework from the classpath.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Holder {
 
@@ -144,7 +143,6 @@ public class Holder {
      * created only when it is first needed.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class InstanceHolder {
 

@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  *
  * @param <T> The subtype, for supporting fluent-style chaining.
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

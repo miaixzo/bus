@@ -32,7 +32,6 @@ import org.miaixz.bus.validate.magic.annotation.Multiple;
  * Validator for the {@link Multiple} annotation, allowing multiple validation rules to be applied sequentially.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MultipleMatcher implements Matcher<Object, Multiple> {
 

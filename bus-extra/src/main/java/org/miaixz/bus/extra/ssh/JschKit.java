@@ -33,7 +33,6 @@ import org.miaixz.bus.logger.Logger;
  * SSH servers for operations like port forwarding, X11 forwarding, file transfers, and remote command execution.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JschKit {
 

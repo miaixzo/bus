@@ -40,7 +40,6 @@ import org.miaixz.bus.fabric.network.Connection;
  * Stateless HTTP/2 network-byte to frame parser.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Http2Reader implements AutoCloseable {
 

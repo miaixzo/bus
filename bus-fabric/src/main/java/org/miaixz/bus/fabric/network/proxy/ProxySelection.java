@@ -38,7 +38,6 @@ import org.miaixz.bus.fabric.Address;
  * @param candidates non-empty ordered physical route candidates
  * @param selector   system selector used to create candidates, or {@code null} for fixed policies
  * @author Kimi Liu
- * @since Java 21+
  */
 public record ProxySelection(ProxyPlan requested, ProxyPlan effective, Source source, Address target,
         List<ProxyPlan> candidates, ProxySelector selector) {

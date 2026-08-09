@@ -42,7 +42,6 @@ import org.miaixz.bus.fabric.observe.tags.Tags;
  * Immutable protocol cookie with HTTP-style host, domain, path, secure, and expiry matching.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Cookie {
 
@@ -527,7 +526,6 @@ public final class Cookie {
      * Cookie builder.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

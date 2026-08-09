@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * "https://blog.csdn.net/a19881029/article/details/18262671">https://blog.csdn.net/a19881029/article/details/18262671</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PunyCode {
 

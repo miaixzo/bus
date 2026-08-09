@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.CollKit;
  * the root element have higher priority during processing.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface SynthesizedAnnotation extends Annotation, Hierarchical, AnnotationAttributeValueProvider {
 

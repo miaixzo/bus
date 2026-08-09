@@ -41,7 +41,6 @@ import org.miaixz.bus.starter.annotation.EnablePay;
  * on the provided properties.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(value = { PayProperties.class })
 @Configuration(proxyBeanMethods = false)

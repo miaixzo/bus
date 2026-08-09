@@ -23,7 +23,6 @@ import java.awt.*;
 import java.util.Map;
 import java.util.Set;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import org.miaixz.bus.core.center.map.BiMap;
@@ -35,7 +34,6 @@ import org.miaixz.bus.core.center.map.BiMap;
  *
  * @param <E> The type of the enum implementing this interface.
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface EnumValue<E extends EnumValue<E>> extends Enumers {
 
@@ -43,10 +41,8 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for action types.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
-    @AllArgsConstructor
     enum Action {
 
         /**
@@ -92,10 +88,8 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for text alignment options.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
-    @AllArgsConstructor
     enum Align {
         /**
          * Left alignment.
@@ -116,7 +110,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for append modes.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum Append {
 
@@ -136,10 +129,8 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for load balancing strategies.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
-    @AllArgsConstructor
     enum Balance {
         /**
          * Round-robin strategy.
@@ -160,10 +151,8 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for comparison operators.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
-    @AllArgsConstructor
     enum Compare {
 
         /**
@@ -201,13 +190,21 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          */
         String code;
 
+        /**
+         * Constructs a comparison operator.
+         *
+         * @param code the operator code
+         */
+        Compare(String code) {
+            this.code = code;
+        }
+
     }
 
     /**
      * Enumeration for request credential types.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum Credential {
         /**
@@ -225,10 +222,8 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for gradient directions.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
-    @AllArgsConstructor
     enum Gradient {
         /**
          * Gradient from top to bottom.
@@ -253,10 +248,8 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration of desensitization types.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
-    @AllArgsConstructor
     enum Masking {
         /**
          * Full masking. Replaces the entire string with masking characters.
@@ -362,10 +355,8 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Defines the masking mode for desensitization.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
-    @AllArgsConstructor
     enum Mode {
         /**
          * Masks the beginning of the string.
@@ -386,10 +377,8 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for Java reflection modifiers.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
-    @AllArgsConstructor
     enum Modifier {
 
         /**
@@ -451,6 +440,15 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
         private final int code;
 
         /**
+         * Constructs a reflection modifier.
+         *
+         * @param code the modifier code
+         */
+        Modifier(int code) {
+            this.code = code;
+        }
+
+        /**
          * Performs a bitwise OR operation on multiple modifier types to combine them.
          *
          * @param modifierTypes An array of {@code Modifier} enums. Must not be empty.
@@ -490,10 +488,8 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
-    @AllArgsConstructor
     enum Naming {
 
         /**
@@ -577,6 +573,17 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
         private final String name;
 
         /**
+         * Constructs a naming style.
+         *
+         * @param code the style code
+         * @param name the display name
+         */
+        Naming(long code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
+        /**
          * Gets the text style by its associated code.
          *
          * @param code the code value
@@ -629,7 +636,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for parameter sources in a request.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum Params {
         /**
@@ -672,10 +678,8 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for strategy patterns.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
-    @AllArgsConstructor
     enum Povider {
 
         /**
@@ -740,16 +744,23 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          */
         String code;
 
+        /**
+         * Constructs a provider value.
+         *
+         * @param code the provider code
+         */
+        Povider(String code) {
+            this.code = code;
+        }
+
     }
 
     /**
      * Enumeration for probe statuses, often used in health checks or traffic management.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
-    @AllArgsConstructor
     enum Probe {
 
         /**
@@ -774,16 +785,23 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          */
         private final String value;
 
+        /**
+         * Constructs a probe status.
+         *
+         * @param value the status value
+         */
+        Probe(String value) {
+            this.value = value;
+        }
+
     }
 
     /**
      * Enumeration for sorting orders.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
-    @AllArgsConstructor
     enum Sort {
 
         /**
@@ -799,6 +817,15 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          * The code value representing the sort order.
          */
         String code;
+
+        /**
+         * Constructs a sort order.
+         *
+         * @param code the order code
+         */
+        Sort(String code) {
+            this.code = code;
+        }
 
         /**
          * Checks if this sort order is ascending.
@@ -840,7 +867,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for switch states.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum Switch {
         /**
@@ -859,10 +885,8 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for image thumbnail scaling methods.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
-    @AllArgsConstructor
     enum Thumb {
 
         /**
@@ -891,13 +915,21 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          */
         private final int code;
 
+        /**
+         * Constructs a thumbnail scaling method.
+         *
+         * @param code the scaling code
+         */
+        Thumb(int code) {
+            this.code = code;
+        }
+
     }
 
     /**
      * Enum of basic variable types. Basic type enums include primitive types and wrapper types.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum Type {
 
@@ -1050,10 +1082,8 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for image zooming/scaling modes.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
-    @AllArgsConstructor
     enum Zoom {
         /**
          * Original ratio, no scaling.

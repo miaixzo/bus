@@ -40,7 +40,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * Streaming SSE line reader.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class SseReader implements AutoCloseable {
 

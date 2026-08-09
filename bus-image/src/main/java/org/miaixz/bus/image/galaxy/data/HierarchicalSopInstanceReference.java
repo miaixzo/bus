@@ -27,7 +27,6 @@ import org.miaixz.bus.image.Tag;
  * Study-level hierarchical reference to series and SOP instances.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HierarchicalSopInstanceReference extends DicomModule {
 

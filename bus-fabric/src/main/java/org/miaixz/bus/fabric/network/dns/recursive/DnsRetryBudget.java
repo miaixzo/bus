@@ -33,7 +33,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsRetryBudget {
 
@@ -294,7 +293,6 @@ public final class DnsRetryBudget {
      * Immutable reserved upstream request attempt.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Attempt {
 

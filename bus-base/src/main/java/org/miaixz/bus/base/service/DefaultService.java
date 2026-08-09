@@ -31,7 +31,6 @@ import org.miaixz.bus.base.mapper.BaseMapper;
  * @param <T> the entity type
  * @param <M> the mapper type, which must extend {@link BaseMapper} with String as the primary key type
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class DefaultService<T, M extends BaseMapper<T>> extends AbstractService<T, String, M> {
 

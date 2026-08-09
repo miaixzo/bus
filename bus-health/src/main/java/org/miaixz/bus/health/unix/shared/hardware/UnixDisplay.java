@@ -31,7 +31,6 @@ import org.miaixz.bus.health.unix.shared.driver.Xrandr;
  * Represents a display on a Unix-like system.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class UnixDisplay extends AbstractDisplay {

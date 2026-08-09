@@ -29,7 +29,6 @@ import java.lang.annotation.Target;
  * Marks a controller method parameter for explicit Bus request-object binding.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Target(ElementType.PARAMETER)

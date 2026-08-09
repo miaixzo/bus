@@ -36,7 +36,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  * application-data delivery bypass candidate switching and propagate to the caller unchanged.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpProxyRouting implements HttpStage {
 

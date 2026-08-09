@@ -76,7 +76,6 @@ import org.miaixz.bus.mapper.dialect.DialectRegistry;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 public class SqlSource implements org.apache.ibatis.mapping.SqlSource {
@@ -240,7 +239,6 @@ public class SqlSource implements org.apache.ibatis.mapping.SqlSource {
      * Cache key for parsed dynamic MyBatis SQL sources.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class DynamicSqlSourceKey {
 

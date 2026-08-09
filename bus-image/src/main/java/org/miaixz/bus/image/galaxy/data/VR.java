@@ -52,7 +52,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum VR {
 
@@ -678,7 +677,6 @@ public enum VR {
      * Represents the Holder type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Holder {
 

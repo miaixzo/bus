@@ -25,7 +25,6 @@ import java.util.Arrays;
  * Hanging Protocol filter operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum HangingProtocolFilter {
 

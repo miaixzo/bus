@@ -22,6 +22,5 @@
  * structures used across the DICOM toolkit.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.builtin;

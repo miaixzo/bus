@@ -30,7 +30,6 @@ import org.miaixz.bus.fabric.Builder;
  * Compact HTTP/2 settings storage.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Http2Settings {
 

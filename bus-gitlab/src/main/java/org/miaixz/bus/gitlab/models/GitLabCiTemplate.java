@@ -28,14 +28,29 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The Git lab ci template class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GitLabCiTemplate implements Serializable {
 
+    /**
+     * Constructs a new {@code GitLabCiTemplate} instance.
+     */
+    public GitLabCiTemplate() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852255181137L;
 
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The content value.
+     */
     private String content;
 
     /**

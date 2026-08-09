@@ -52,7 +52,6 @@ import org.miaixz.bus.core.net.url.UrlQuery;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UrlKit {
 

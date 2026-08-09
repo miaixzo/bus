@@ -27,7 +27,6 @@ import org.miaixz.bus.image.Tag;
  * Referenced request sequence item for procedure traceability.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ReferencedRequest extends DicomModule {
 

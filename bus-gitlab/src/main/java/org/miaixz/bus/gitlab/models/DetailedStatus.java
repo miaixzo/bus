@@ -28,21 +28,57 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * This class is part of the Pipeline message.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DetailedStatus implements Serializable {
 
+    /**
+     * Constructs a new {@code DetailedStatus} instance.
+     */
+    public DetailedStatus() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852251323553L;
 
+    /**
+     * The icon value.
+     */
     private String icon;
+    /**
+     * The text value.
+     */
     private String text;
+    /**
+     * The label value.
+     */
     private String label;
+    /**
+     * The group value.
+     */
     private String group;
+    /**
+     * The tooltip value.
+     */
     private String tooltip;
+    /**
+     * The has details value.
+     */
     private Boolean hasDetails;
+    /**
+     * The details path value.
+     */
     private String detailsPath;
+    /**
+     * The illustration value.
+     */
     private String illustration;
+    /**
+     * The favicon value.
+     */
     private String favicon;
 
     /**

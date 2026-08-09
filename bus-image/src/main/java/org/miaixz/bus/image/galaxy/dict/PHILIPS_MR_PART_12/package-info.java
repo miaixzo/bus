@@ -21,6 +21,5 @@
  * UID Dictionary from PHILIPS_MR_PART_12
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.PHILIPS_MR_PART_12;

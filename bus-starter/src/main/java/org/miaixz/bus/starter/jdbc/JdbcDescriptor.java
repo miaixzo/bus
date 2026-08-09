@@ -29,7 +29,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Describes the Starter parameters supplied to reusable Spring JDBC infrastructure.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JdbcDescriptor {
 

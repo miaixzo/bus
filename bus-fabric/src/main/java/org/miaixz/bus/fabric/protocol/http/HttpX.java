@@ -65,7 +65,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * Immutable HTTP exchange.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpX {
 
@@ -275,7 +274,6 @@ public final class HttpX {
      * HTTP exchange builder.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

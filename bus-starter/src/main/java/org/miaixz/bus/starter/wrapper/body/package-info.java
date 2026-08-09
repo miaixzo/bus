@@ -21,6 +21,5 @@
  * Starter activation and bounded properties for request and response body caching.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.starter.wrapper.body;

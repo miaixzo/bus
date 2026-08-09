@@ -34,7 +34,6 @@ import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
  * Represents the NativeJ2kImageWriter type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NativeJ2kImageWriter extends AbstractNativeImageWriter {
 

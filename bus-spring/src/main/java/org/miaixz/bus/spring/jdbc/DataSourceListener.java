@@ -27,7 +27,6 @@ import org.springframework.core.Ordered;
  * Observes successful changes to datasource routes owned by one dynamic datasource.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface DataSourceListener extends Ordered {
 

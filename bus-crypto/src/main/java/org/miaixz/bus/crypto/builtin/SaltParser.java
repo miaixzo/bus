@@ -43,7 +43,6 @@ import org.miaixz.bus.crypto.center.MD5;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SaltParser {
 

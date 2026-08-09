@@ -51,7 +51,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the Transcoder type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Transcoder {
 
@@ -123,8 +122,8 @@ public class Transcoder {
      * @param dstPath the path of the destination image or the path of a directory in which the source image filename
      *                will be used
      * @param params  the DICOM conversion parameters
-     * @throws IOException if an I/O error occurs
      * @return the result
+     * @throws IOException if an I/O error occurs
      */
     public static Path dcm2dcm(Path srcPath, Path dstPath, TranscodeParam params) throws IOException {
         Path outPath = adaptFileExtension(getOutputPath(srcPath, dstPath), ".dcm", ".dcm");
@@ -354,7 +353,6 @@ public class Transcoder {
      * Defines the Format values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Format {
 

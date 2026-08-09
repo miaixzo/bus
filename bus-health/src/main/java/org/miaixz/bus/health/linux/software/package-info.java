@@ -21,6 +21,5 @@
  * Provides information about Software and OS on Linux
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.health.linux.software;

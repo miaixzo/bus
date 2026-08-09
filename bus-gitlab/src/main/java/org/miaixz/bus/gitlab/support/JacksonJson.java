@@ -47,11 +47,13 @@ import tools.jackson.databind.type.CollectionType;
  * Jackson JSON Configuration and class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Produces(MediaType.APPLICATION_JSON)
 public class JacksonJson implements ContextResolver<ObjectMapper> {
 
+    /**
+     * The iso8601 utc format value.
+     */
     private static final SimpleDateFormat iso8601UtcFormat;
 
     static {
@@ -60,6 +62,9 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
         iso8601UtcFormat.setTimeZone(TimeZone.getTimeZone(ZoneId.UTC.name()));
     }
 
+    /**
+     * The object mapper value.
+     */
     private final ObjectMapper objectMapper;
 
     /**
@@ -286,9 +291,15 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * JsonSerializer for serializing dates s yyyy-mm-dd in UTC timezone.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class DateOnlySerializer extends ValueSerializer<Date> {
+
+        /**
+         * Constructs a new {@code DateOnlySerializer} instance.
+         */
+        public DateOnlySerializer() {
+            // No initialization required.
+        }
 
         /**
          * Executes the serialize operation.
@@ -311,9 +322,15 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * JsonSerializer for serializing ISO8601 formatted dates.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class JsonDateSerializer extends ValueSerializer<Date> {
+
+        /**
+         * Constructs a new {@code JsonDateSerializer} instance.
+         */
+        public JsonDateSerializer() {
+            // No initialization required.
+        }
 
         /**
          * Executes the serialize operation.
@@ -336,9 +353,15 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * JsonDeserializer for deserializing ISO8601 formatted dates.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class JsonDateDeserializer extends ValueDeserializer<Date> {
+
+        /**
+         * Constructs a new {@code JsonDateDeserializer} instance.
+         */
+        public JsonDateDeserializer() {
+            // No initialization required.
+        }
 
         /**
          * Executes the deserialize operation.
@@ -372,9 +395,15 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * Serializer for the odd User instances in the "approved_by" array in the merge_request JSON.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class UserListSerializer extends ValueSerializer<List<User>> {
+
+        /**
+         * Constructs a new {@code UserListSerializer} instance.
+         */
+        public UserListSerializer() {
+            // No initialization required.
+        }
 
         /**
          * Executes the serialize operation.
@@ -405,9 +434,15 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * Deserializer for the odd User instances in the "approved_by" array in the merge_request JSON.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class UserListDeserializer extends ValueDeserializer<List<User>> {
+
+        /**
+         * Constructs a new {@code UserListDeserializer} instance.
+         */
+        public UserListDeserializer() {
+            // No initialization required.
+        }
 
         /**
          * Executes the deserialize operation.
@@ -465,10 +500,12 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * Holds the lazily initialized, thread-safe JacksonJson singleton.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class JacksonJsonInstanceHolder {
 
+        /**
+         * The jackson json value.
+         */
         private static final JacksonJson JACKSON_JSON = new JacksonJson(PropertyNamingStrategies.LOWER_CAMEL_CASE,
                 Include.ALWAYS);
 

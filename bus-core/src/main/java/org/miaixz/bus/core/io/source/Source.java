@@ -31,7 +31,6 @@ import org.miaixz.bus.core.io.timout.Timeout;
  * remove protocol framing.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Source extends Closeable {
 

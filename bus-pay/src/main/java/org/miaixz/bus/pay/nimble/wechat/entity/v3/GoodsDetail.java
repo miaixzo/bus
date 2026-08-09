@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.pay.nimble.wechat.entity.v3;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -29,14 +27,18 @@ import lombok.experimental.SuperBuilder;
  * Model for the Goods Detail object in the V3 Unified Order API.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class GoodsDetail {
+
+    /**
+     * Constructs a new {@code GoodsDetail} instance.
+     */
+    public GoodsDetail() {
+        // No initialization required.
+    }
 
     /**
      * The merchant's internal goods ID.

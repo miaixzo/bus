@@ -30,7 +30,6 @@ import org.miaixz.bus.validate.nimble.DateMatcher;
  * Validates that the annotated string is a valid date according to the specified format.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

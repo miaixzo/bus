@@ -16,7 +16,9 @@
 
 ## What is Bus?
 
-**Bus** is a comprehensive, modular enterprise Java framework providing production-ready components for building modern applications. It covers everything from core utilities and cryptography to HTTP clients, distributed tracing, payment integration, and cloud storage — all with unified configuration and a consistent API style.
+**Bus** is a comprehensive, modular enterprise Java framework providing production-ready components for building modern
+applications. It covers everything from core utilities and cryptography to HTTP clients, distributed tracing, payment
+integration, and cloud storage — all with unified configuration and a consistent API style.
 
 Every module is independently usable and integrates seamlessly into Spring Boot applications via `bus-starter`.
 
@@ -24,39 +26,39 @@ Every module is independently usable and integrates seamlessly into Spring Boot 
 
 ## Module Overview
 
-| Module | Description |
-| :--- | :--- |
-| **bus-all** | Meta-module that pulls in all Bus modules as a single dependency |
-| **bus-auth** | Enterprise authentication & authorization (OAuth2, JWT, RBAC) |
-| **bus-base** | Shared base types, constants, and exception hierarchy |
-| **bus-bom** | Bill of Materials — import versions without using Bus as a parent |
-| **bus-cache** | Multi-level caching abstraction (Redis, Caffeine, EhCache, …) |
-| **bus-core** | Core utilities: reflection, annotation synthesis, type conversion, I/O, and more |
-| **bus-cortex** | Unified registry & configuration center for distributed services |
-| **bus-crypto** | Cryptographic framework: AES, RSA, SM2/SM3/SM4, digests, encoding |
-| **bus-extra** | Additional utilities and integrations beyond the core |
-| **bus-gitlab** | GitLab API client and CI/CD integration helpers |
-| **bus-health** | Health check endpoints and system health monitoring |
-| **bus-fabric** | Unified HTTP client plus non-blocking socket and WebSocket abstractions |
-| **bus-image** | Professional image processing and DICOM medical imaging support |
-| **bus-limiter** | Hotspot detection, rate limiting, and degradation |
-| **bus-logger** | Universal logging abstraction that bridges all major log frameworks |
-| **bus-mapper** | MyBatis enhancement: type handlers, generic CRUD, and query DSL |
-| **bus-metrics** | Production-grade metrics collection and reporting |
-| **bus-notify** | Multi-channel notification service (email, SMS, DingTalk, WeChat, …) |
-| **bus-office** | Office document processing: Excel, Word, PDF |
-| **bus-opencv** | OpenCV integration for computer vision tasks |
-| **bus-pay** | Universal payment integration (Alipay, WeChat Pay, UnionPay, …) |
-| **bus-proxy** | Dynamic proxy and AOP utilities |
-| **bus-sensitive** | Data masking and sensitive-field protection |
-| **bus-setting** | Unified configuration file reading (properties, YAML, TOML, …) |
-| **bus-shade** | Shaded dependency management and relocation |
-| **bus-starter** | Spring Boot auto-configuration starter for the entire Bus ecosystem |
-| **bus-storage** | Unified cloud storage abstraction (S3, OSS, COS, MinIO, …) |
-| **bus-tempus** | Time and scheduling utilities: cron expressions, calendar operations |
-| **bus-tracer** | Distributed tracing integration (OpenTelemetry, SkyWalking, …) |
-| **bus-validate** | Declarative validation framework with annotation support |
-| **bus-vortex** | High-performance API gateway and traffic management |
+| Module            | Description                                                                      |
+|:------------------|:---------------------------------------------------------------------------------|
+| **bus-all**       | Meta-module that pulls in all Bus modules as a single dependency                 |
+| **bus-auth**      | Enterprise authentication & authorization (OAuth2, JWT, RBAC)                    |
+| **bus-base**      | Shared base types, constants, and exception hierarchy                            |
+| **bus-bom**       | Bill of Materials — import versions without using Bus as a parent                |
+| **bus-cache**     | Multi-level caching abstraction (Redis, Caffeine, EhCache, …)                    |
+| **bus-core**      | Core utilities: reflection, annotation synthesis, type conversion, I/O, and more |
+| **bus-cortex**    | Unified registry & configuration center for distributed services                 |
+| **bus-crypto**    | Cryptographic framework: AES, RSA, SM2/SM3/SM4, digests, encoding                |
+| **bus-extra**     | Additional utilities and integrations beyond the core                            |
+| **bus-gitlab**    | GitLab API client and CI/CD integration helpers                                  |
+| **bus-health**    | Health check endpoints and system health monitoring                              |
+| **bus-fabric**    | Unified HTTP client plus non-blocking socket and WebSocket abstractions          |
+| **bus-image**     | Professional image processing and DICOM medical imaging support                  |
+| **bus-limiter**   | Hotspot detection, rate limiting, and degradation                                |
+| **bus-logger**    | Universal logging abstraction that bridges all major log frameworks              |
+| **bus-mapper**    | MyBatis enhancement: type handlers, generic CRUD, and query DSL                  |
+| **bus-metrics**   | Production-grade metrics collection and reporting                                |
+| **bus-notify**    | Multi-channel notification service (email, SMS, DingTalk, WeChat, …)             |
+| **bus-office**    | Office document processing: Excel, Word, PDF                                     |
+| **bus-opencv**    | OpenCV integration for computer vision tasks                                     |
+| **bus-pay**       | Universal payment integration (Alipay, WeChat Pay, UnionPay, …)                  |
+| **bus-proxy**     | Dynamic proxy and AOP utilities                                                  |
+| **bus-sensitive** | Data masking and sensitive-field protection                                      |
+| **bus-setting**   | Unified configuration file reading (properties, YAML, TOML, …)                   |
+| **bus-shade**     | Shaded dependency management and relocation                                      |
+| **bus-starter**   | Spring Boot auto-configuration starter for the entire Bus ecosystem              |
+| **bus-storage**   | Unified cloud storage abstraction (S3, OSS, COS, MinIO, …)                       |
+| **bus-tempus**    | Time and scheduling utilities: cron expressions, calendar operations             |
+| **bus-tracer**    | Distributed tracing integration (OpenTelemetry, SkyWalking, …)                   |
+| **bus-validate**  | Declarative validation framework with annotation support                         |
+| **bus-vortex**    | High-performance API gateway and traffic management                              |
 
 ---
 
@@ -172,7 +174,6 @@ Then declare only the modules you need — no version tags required:
             <groupId>org.miaixz</groupId>
             <artifactId>bus-storage</artifactId>
         </dependency>
-
     </dependencies>
 </project>
 ```
@@ -248,32 +249,32 @@ Then declare only the modules you need — no version tags required:
 
 ### Key Managed Versions
 
-| Component | Version |
-| :--- |:--------|
-| Java baseline | 25+     |
-| Spring Boot | 4.1.0   |
-| MyBatis | 3.5.19  |
+| Component      | Version |
+|:---------------|:--------|
+| Java baseline  | 25+     |
+| Spring Boot    | 4.1.0   |
+| MyBatis        | 3.5.19  |
 | MyBatis-Spring | 3.0.5   |
 
 ### Managed and Preconfigured Plugins
 
-| Plugin | Purpose |
-| :--- | :--- |
-| `maven-compiler-plugin` | Java compilation with parameter metadata and Lombok annotation processing; compiler release is supplied by the active Maven settings/profile |
-| `maven-resources-plugin` | UTF-8 resource filtering with the Bus resource delimiter |
-| `maven-jar-plugin` | Standard JAR manifest entries without embedding `META-INF/maven` descriptors |
-| `maven-war-plugin` | Standard WAR manifest entries without embedding `META-INF/maven` descriptors |
-| `maven-surefire-plugin` | Unit test runner with module-path disabled for test compatibility |
-| `maven-failsafe-plugin` | Integration test runner bound to `integration-test` and `verify` |
-| `maven-source-plugin` | Source JAR for release |
-| `maven-javadoc-plugin` | Javadoc JAR for release |
-| `spotless-maven-plugin` | Source, XML, Markdown, YAML, JSON, properties, SVG, service, and POM formatting |
-| `groom-maven-plugin` | Published POM normalization for Bus modules and parent POMs |
-| `maven-gpg-plugin` | GPG signing for Maven Central |
-| `central-publishing-maven-plugin` | Maven Central publishing through the Central Portal |
-| `git-commit-id-maven-plugin` | Build-time `git.properties` generation |
-| `spring-boot-maven-plugin` | Spring Boot executable archive repackaging |
-| `native-maven-plugin` | GraalVM reachability metadata and native image build integration |
+| Plugin                            | Purpose                                                                                                                                      |
+|:----------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------|
+| `maven-compiler-plugin`           | Java compilation with parameter metadata and Lombok annotation processing; compiler release is supplied by the active Maven settings/profile |
+| `maven-resources-plugin`          | UTF-8 resource filtering with the Bus resource delimiter                                                                                     |
+| `maven-jar-plugin`                | Standard JAR manifest entries without embedding `META-INF/maven` descriptors                                                                 |
+| `maven-war-plugin`                | Standard WAR manifest entries without embedding `META-INF/maven` descriptors                                                                 |
+| `maven-surefire-plugin`           | Unit test runner with module-path disabled for test compatibility                                                                            |
+| `maven-failsafe-plugin`           | Integration test runner bound to `integration-test` and `verify`                                                                             |
+| `maven-source-plugin`             | Source JAR for release                                                                                                                       |
+| `maven-javadoc-plugin`            | Javadoc JAR for release                                                                                                                      |
+| `spotless-maven-plugin`           | Source, XML, Markdown, YAML, JSON, properties, SVG, service, and POM formatting                                                              |
+| `groom-maven-plugin`              | Published POM normalization for Bus modules and parent POMs                                                                                  |
+| `maven-gpg-plugin`                | GPG signing for Maven Central                                                                                                                |
+| `central-publishing-maven-plugin` | Maven Central publishing through the Central Portal                                                                                          |
+| `git-commit-id-maven-plugin`      | Build-time `git.properties` generation                                                                                                       |
+| `spring-boot-maven-plugin`        | Spring Boot executable archive repackaging                                                                                                   |
+| `native-maven-plugin`             | GraalVM reachability metadata and native image build integration                                                                             |
 
 ---
 
@@ -329,7 +330,8 @@ Then declare only the modules you need — no version tags required:
 
 **Q: Can I use Bus with my own Spring Boot parent?**
 
-Yes. Instead of inheriting `bus-parent`, import `bus-bom` inside `<dependencyManagement>` — this gives you all version management without replacing your parent.
+Yes. Instead of inheriting `bus-parent`, import `bus-bom` inside `<dependencyManagement>` — this gives you all version
+management without replacing your parent.
 
 **Q: How do I see every managed version?**
 
@@ -356,11 +358,11 @@ one aggregated native-image configuration during packaging.
 
 ## Version Compatibility
 
-| Bus Version   | Java | Spring Boot | Status |
-|:--------------| :--- | :--- | :--- |
-| **8.8.x**     | 25+ | 3.5.x | **Active** |
-| 8.0.x - 8.6.x | 25+ | 3.x | Maintenance |
-| 7.x           | 11+ | 2.x | End of Life |
+| Bus Version   | Java | Spring Boot | Status      |
+|:--------------|:-----|:------------|:------------|
+| **8.8.x**     | 25+  | 3.5.x       | **Active**  |
+| 8.0.x - 8.6.x | 25+  | 3.x         | Maintenance |
+| 7.x           | 11+  | 2.x         | End of Life |
 
 ---
 

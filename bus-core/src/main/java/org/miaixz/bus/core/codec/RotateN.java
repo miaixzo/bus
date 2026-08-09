@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Code adapted from: <a href="https://github.com/orclight/jencrypt">https://github.com/orclight/jencrypt</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RotateN {
 

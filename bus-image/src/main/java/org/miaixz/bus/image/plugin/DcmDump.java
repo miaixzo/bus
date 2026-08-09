@@ -33,7 +33,6 @@ import org.miaixz.bus.image.galaxy.io.ImageInputStream;
  * {@link ImageInputHandler} interface to process the DICOM stream and format the output.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DcmDump implements ImageInputHandler {
 

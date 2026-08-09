@@ -42,10 +42,19 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * This class is used to filter issues when getting lists of them.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IssueFilter implements Serializable {
 
+    /**
+     * Constructs a new {@code IssueFilter} instance.
+     */
+    public IssueFilter() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852257636989L;
 
@@ -139,6 +148,9 @@ public class IssueFilter implements Serializable {
 
     /*
      * Return issues without these parameters
+     */
+    /**
+     * The not value.
      */
     private Map<IssueField, Object> not;
 
@@ -743,7 +755,7 @@ public class IssueFilter implements Serializable {
         return withNot(IssueField.LABELS, String.join(Symbol.COMMA, labels));
     }
 
-    /*
+    /**
      * Add iids to the 'not' filter entry.
      *
      * @param iids the iids to add to the filter
@@ -858,7 +870,6 @@ public class IssueFilter implements Serializable {
      * The issue field enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum IssueField {
 
@@ -903,6 +914,9 @@ public class IssueFilter implements Serializable {
          */
         MILESTONE_ID;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<IssueField> enumCodec = new JacksonJsonEnumCodec<>(IssueField.class);
 
         /**

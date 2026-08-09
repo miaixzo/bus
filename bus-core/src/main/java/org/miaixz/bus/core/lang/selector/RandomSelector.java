@@ -29,7 +29,6 @@ import org.miaixz.bus.core.xyz.RandomKit;
  *
  * @param <T> the type of the elements
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RandomSelector<T> extends ArrayList<T> implements Selector<T> {
 

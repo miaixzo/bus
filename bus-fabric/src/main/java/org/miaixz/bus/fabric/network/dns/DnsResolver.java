@@ -44,7 +44,6 @@ import org.miaixz.bus.logger.Logger;
  * DNS resolver with observer events and system fallback.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsResolver {
 

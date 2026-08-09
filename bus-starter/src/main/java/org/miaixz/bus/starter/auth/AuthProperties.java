@@ -40,7 +40,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @ConfigurationProperties(prefix = GeniusBuilder.AUTH)

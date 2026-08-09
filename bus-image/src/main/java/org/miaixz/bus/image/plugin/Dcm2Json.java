@@ -39,7 +39,6 @@ import org.miaixz.bus.image.metric.json.JSONWriter;
  * the DICOM Part 18.F standard. It uses a {@link JSONWriter} to handle the conversion logic.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Dcm2Json {
 

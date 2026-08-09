@@ -29,7 +29,6 @@ import org.miaixz.bus.extra.nlp.NLPWord;
  * Wrapper for a word in Ansj segmentation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AnsjWord implements NLPWord {
 

@@ -31,7 +31,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * Represents the ResourceManager type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class ResourceManager {
 

@@ -45,7 +45,6 @@ import org.miaixz.bus.core.xyz.TypeKit;
  * </ol>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CompositeConverter implements Converter, Serializable {
 
@@ -211,7 +210,6 @@ public class CompositeConverter implements Converter, Serializable {
      * A static inner class that holds the singleton instance, ensuring lazy initialization and thread safety.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class SingletonHolder {
 
@@ -219,6 +217,7 @@ public class CompositeConverter implements Converter, Serializable {
          * The singleton instance, initialized on first access.
          */
         private static final CompositeConverter INSTANCE;
+
         static {
             INSTANCE = new CompositeConverter();
             INSTANCE.registerConverter = new RegisterConverter(INSTANCE);

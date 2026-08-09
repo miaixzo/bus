@@ -59,7 +59,6 @@ import org.miaixz.bus.core.xyz.*;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Validator {
 
@@ -1220,7 +1219,7 @@ public class Validator {
      * Wrong example: 李                   reason: less than 2 characters
      * ----------
      * </pre>
-     *
+     * <p>
      * Summary of Chinese names: 2-60 characters, only Chinese characters and ·
      *
      * @param value the Chinese name

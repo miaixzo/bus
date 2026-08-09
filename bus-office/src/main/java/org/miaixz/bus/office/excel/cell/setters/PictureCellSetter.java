@@ -33,7 +33,6 @@ import org.miaixz.bus.office.excel.writer.ExcelDrawing;
  * {@link CellSetter} for picture values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PictureCellSetter implements CellSetter {
 

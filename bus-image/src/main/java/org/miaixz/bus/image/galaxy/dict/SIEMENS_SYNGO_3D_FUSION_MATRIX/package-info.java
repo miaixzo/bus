@@ -21,6 +21,5 @@
  * UID Dictionary from SIEMENS_SYNGO_3D_FUSION_MATRIX
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_3D_FUSION_MATRIX;

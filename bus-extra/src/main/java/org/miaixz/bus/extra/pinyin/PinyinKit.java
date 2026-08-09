@@ -27,7 +27,6 @@ import org.miaixz.bus.core.xyz.PatternKit;
  * Pinyin class for quickly obtaining Pinyin.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PinyinKit {
 

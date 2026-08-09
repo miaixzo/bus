@@ -42,7 +42,6 @@ import org.miaixz.bus.shade.safety.streams.AlwaysOutputStream;
  * JARs and applies decryption based on a provided filter and key.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JarDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry> implements DecryptorProvider {
 

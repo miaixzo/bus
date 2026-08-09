@@ -34,7 +34,6 @@ import org.miaixz.bus.gitlab.models.GitLabCiTemplateElement;
  *
  * @see <a href="https://docs.gitlab.com/ee/api/templates/gitlab_ci_ymls.html">GitLab CI YAML API</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GitLabCiYamlApi extends AbstractApi {
 

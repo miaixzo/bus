@@ -29,7 +29,6 @@ import org.miaixz.bus.core.center.date.culture.parts.WeekParts;
  * Represents a week in the Lunar calendar.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LunarWeek extends WeekParts {
 

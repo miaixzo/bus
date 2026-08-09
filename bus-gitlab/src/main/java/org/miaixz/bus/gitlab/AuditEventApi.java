@@ -35,7 +35,6 @@ import org.miaixz.bus.gitlab.support.ISO8601;
  * <a href="https://docs.gitlab.com/ee/api/audit_events.html">Audit Event API at GitLab</a> for more information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AuditEventApi extends AbstractApi {
 

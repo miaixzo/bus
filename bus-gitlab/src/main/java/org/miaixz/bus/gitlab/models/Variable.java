@@ -36,10 +36,12 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The variable class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Variable implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852283021997L;
 
@@ -60,16 +62,34 @@ public class Variable implements Serializable {
         return varList;
     }
 
+    /**
+     * The key value.
+     */
     private String key;
+    /**
+     * The value value.
+     */
     private String value;
+    /**
+     * The variable type value.
+     */
     private Type variableType;
 
+    /**
+     * The is protected value.
+     */
     @JsonProperty("protected")
     private Boolean isProtected;
 
+    /**
+     * The is masked value.
+     */
     @JsonProperty("masked")
     private Boolean isMasked;
 
+    /**
+     * The environment scope value.
+     */
     private String environmentScope;
 
     /**
@@ -227,7 +247,6 @@ public class Variable implements Serializable {
      * Enum for the various Commit build status values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Type {
 
@@ -240,6 +259,9 @@ public class Variable implements Serializable {
          */
         FILE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<Type> enumCodec = new JacksonJsonEnumCodec<>(Type.class);
 
         /**

@@ -23,7 +23,6 @@ package org.miaixz.bus.core.lang;
  * Defines common punctuation and special character constants.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Symbol {
 

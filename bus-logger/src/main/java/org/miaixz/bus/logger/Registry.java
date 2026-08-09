@@ -23,7 +23,6 @@ package org.miaixz.bus.logger;
  * A simple logger factory that provides cached logger instances.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class Registry {
 

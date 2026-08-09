@@ -37,7 +37,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractFirmware;
  * Firmware data obtained from ioreg.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class MacFirmware extends AbstractFirmware {

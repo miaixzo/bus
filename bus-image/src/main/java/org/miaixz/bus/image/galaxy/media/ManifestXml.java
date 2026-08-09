@@ -33,7 +33,6 @@ import org.miaixz.bus.image.galaxy.data.ElementDictionary;
  * XML operations for DICOM manifest structures.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ManifestXml {
 
@@ -41,7 +40,6 @@ public interface ManifestXml {
      * DICOM manifest hierarchy levels.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum Level {
 

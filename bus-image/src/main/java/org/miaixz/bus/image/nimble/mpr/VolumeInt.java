@@ -25,7 +25,6 @@ import java.util.Arrays;
  * Integer-backed MPR volume.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class VolumeInt extends Volume<Integer> {
 

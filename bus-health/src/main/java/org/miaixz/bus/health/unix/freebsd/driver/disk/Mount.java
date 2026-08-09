@@ -31,7 +31,6 @@ import org.miaixz.bus.health.Executor;
  * Queries mount
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Mount {

@@ -25,7 +25,6 @@ package org.miaixz.bus.core.center.regex;
  * reused.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RegexWithFlag {
 

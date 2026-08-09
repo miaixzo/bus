@@ -45,7 +45,6 @@ import org.miaixz.bus.health.unix.shared.jna.OpenBsdLibc;
  * OpenBSD Central Processor implementation
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class OpenBsdCentralProcessor extends AbstractCentralProcessor {

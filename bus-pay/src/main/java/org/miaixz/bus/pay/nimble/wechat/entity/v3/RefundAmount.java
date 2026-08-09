@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.pay.nimble.wechat.entity.v3;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -29,14 +27,18 @@ import lombok.experimental.SuperBuilder;
  * V3 WeChat Refund Application - Amount Information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class RefundAmount {
+
+    /**
+     * Constructs a new {@code RefundAmount} instance.
+     */
+    public RefundAmount() {
+        // No initialization required.
+    }
 
     /**
      * Total amount.

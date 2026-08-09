@@ -52,7 +52,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the LdapDicomConfiguration type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class LdapDicomConfiguration implements DicomConfiguration {
 

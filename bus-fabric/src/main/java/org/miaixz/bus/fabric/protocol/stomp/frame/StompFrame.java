@@ -35,7 +35,6 @@ import org.miaixz.bus.fabric.Payload;
  * Immutable STOMP frame value.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class StompFrame {
 

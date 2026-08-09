@@ -30,7 +30,6 @@ import org.miaixz.bus.shade.safety.algorithm.Key;
  * Defines the contract for an encryptor, which provides methods for encrypting files and streams.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface EncryptorProvider {
 

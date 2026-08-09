@@ -25,7 +25,6 @@ import java.util.*;
  * BFS-based downstream impact analysis over a dependency graph.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImpactAnalysis {
 

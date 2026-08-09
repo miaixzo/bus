@@ -1,6 +1,7 @@
 # 🚀 GitLab API: GitLab REST API 的 Java 库
 
-GitLab API (bus-gitlab) 提供了一个功能齐全且易于使用的 Java 库，用于通过 GitLab REST API 处理 GitLab 仓库。此外，还完全支持处理 GitLab webhook 和系统 hook。
+GitLab API (bus-gitlab) 提供了一个功能齐全且易于使用的 Java 库，用于通过 GitLab REST API 处理 GitLab 仓库。此外，还完全支持处理
+GitLab webhook 和系统 hook。
 
 ---
 
@@ -29,13 +30,16 @@ GitLab API (bus-gitlab) 提供了一个功能齐全且易于使用的 Java 库�
 
 ## GitLab 服务器版本支持
 
-GitLab-API 支持 GitLab 社区版 [(gitlab-ce)](https://gitlab.com/gitlab-org/gitlab-ce/) 和 GitLab 企业版 [(gitlab-ee)](https://gitlab.com/gitlab-org/gitlab-ee/) 的 11.0+ 版本。
+GitLab-API 支持 GitLab 社区版 [(gitlab-ce)](https://gitlab.com/gitlab-org/gitlab-ce/) 和 GitLab
+企业版 [(gitlab-ee)](https://gitlab.com/gitlab-org/gitlab-ee/) 的 11.0+ 版本。
 
-GitLab 于 2018 年 6 月发布了 GitLab 11.0 版本，其中包含许多重大更改。如果您使用的是 11.0 之前的 GitLab 服务器，强烈建议您更新 GitLab 安装或使用与您使用的 GitLab 版本同期发布的此库版本。
+GitLab 于 2018 年 6 月发布了 GitLab 11.0 版本，其中包含许多重大更改。如果您使用的是 11.0 之前的 GitLab 服务器，强烈建议您更新
+GitLab 安装或使用与您使用的 GitLab 版本同期发布的此库版本。
 
 **注意**:
 从 GitLab 11.0 开始，GitLab 服务器已移除对 GitLab API v3 的支持
-(参见 https://about.gitlab.com/2018/06/01/api-v3-removal-impending/)。对 GitLab API v3 的支持将在 2019 年的某个时候从本库中移除。如果您正在使用 v3 支持，请更新代码以使用 GitLab API v4。
+(参见 https://about.gitlab.com/2018/06/01/api-v3-removal-impending/)。对 GitLab API v3 的支持将在 2019
+年的某个时候从本库中移除。如果您正在使用 v3 支持，请更新代码以使用 GitLab API v4。
 
 ---
 
@@ -70,7 +74,8 @@ dependencies {
 
 ### **使用示例**
 
-GitLab-API 非常简单易用，您只需要 GitLab 服务器的 URL 和 GitLab 账户设置页面中的个人访问令牌。一旦您拥有这些信息，使用起来就这么简单:
+GitLab-API 非常简单易用，您只需要 GitLab 服务器的 URL 和 GitLab
+账户设置页面中的个人访问令牌。一旦您拥有这些信息，使用起来就这么简单:
 
 ```
 // 创建一个 GitLabApi 实例来与您的 GitLab 服务器通信
@@ -135,14 +140,14 @@ Map<String, Object> ntlmProxyConfig = ProxyClientConfig.createNtlmProxyClientCon
 GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.com", "YOUR_PERSONAL_ACCESS_TOKEN", null, ntlmProxyConfig);
 ```
 
-有关接受代理配置的方法的完整列表，请参阅 GitLabApi 类上的 Javadoc
-(clientConfiguration 参数)
+有关接受代理配置的方法的完整列表，请参阅 GitLabApi 类上的 Javadoc (clientConfiguration 参数)
 
 ---
 
 ### **GitLab API V3 和 V4 支持**
 
-从 GitLab-API 4.2.0 开始，已添加对 GitLab API V4 的支持。如果您的应用程序需要 GitLab API V3，您仍可按如下方式创建 GitLabApi 实例来使用 GitLab-API:
+从 GitLab-API 4.2.0 开始，已添加对 GitLab API V4 的支持。如果您的应用程序需要 GitLab API V3，您仍可按如下方式创建 GitLabApi
+实例来使用 GitLab-API:
 
 ```
 // 创建一个 GitLabApi 实例来使用 GitLab API V3 与您的 GitLab 服务器通信
@@ -151,13 +156,15 @@ GitLabApi gitLabApi = new GitLabApi(ApiVersion.V3, "http://your.gitlab.server.co
 
 **注意**:
 从 GitLab 11.0 开始，GitLab 服务器已移除对 GitLab API v3 的支持
-(参见 https://about.gitlab.com/2018/06/01/api-v3-removal-impending/)。对 GitLab API v3 的支持将在 2019 年的某个时候从本库中移除。如果您正在使用 v3 支持，请更新代码以使用 GitLab API v4。
+(参见 https://about.gitlab.com/2018/06/01/api-v3-removal-impending/)。对 GitLab API v3 的支持将在 2019
+年的某个时候从本库中移除。如果您正在使用 v3 支持，请更新代码以使用 GitLab API v4。
 
 ---
 
 ### **API 请求和响应的日志记录**
 
-从 GitLab-API 4.8.39 开始，已添加日志记录功能以记录对 GitLab API 的请求和响应。使用 GitLabApi 实例上的以下方法之一启用日志记录:
+从 GitLab-API 4.8.39 开始，已添加日志记录功能以记录对 GitLab API 的请求和响应。使用 GitLabApi
+实例上的以下方法之一启用日志记录:
 
 ```
 GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.server.com", "YOUR_PERSONAL_ACCESS_TOKEN");
@@ -208,12 +215,16 @@ List<Project> allProjects = projectPager.all();
 
 ### **Java 8 Stream 支持**
 
-从 GitLab-API 4.9.2 开始，所有返回 List 结果的 GitLabJ-API 方法都有一个类似命名的返回 Java 8 Stream 的方法。返回 Stream 的方法使用以下命名约定:```getXxxxxStream()```。
+从 GitLab-API 4.9.2 开始，所有返回 List 结果的 GitLabJ-API 方法都有一个类似命名的返回 Java 8 Stream 的方法。返回 Stream
+的方法使用以下命名约定:```getXxxxxStream()```。
 
 **重要**
-内置的返回 Stream 的方法使用___急切求值___，意味着所有项目都从 GitLab 服务器预先获取，然后返回一个 Stream 来流式传输这些项目。**急切求值不支持从服务器的并行读取，但它确实支持获取数据后的 Stream 并行处理。**
+内置的返回 Stream 的方法使用___急切求值___，意味着所有项目都从 GitLab 服务器预先获取，然后返回一个 Stream 来流式传输这些项目。
+**急切求值不支持从服务器的并行读取，但它确实支持获取数据后的 Stream 并行处理。**
 
-要使用___惰性求值___进行流式传输，请使用返回```Pager```实例的 GitLab-API 方法，然后在```Pager```实例上调用```lazyStream()```方法来创建惰性求值 Stream。Stream 使用```Pager```实例来分页浏览可用项目。**惰性 Stream 不支持并行操作或跳过。**
+要使用___惰性求值___进行流式传输，请使用返回```Pager```实例的 GitLab-API 方法，然后在```Pager```实例上调用
+```lazyStream()```方法来创建惰性求值 Stream。Stream 使用```Pager```实例来分页浏览可用项目。 **惰性 Stream
+不支持并行操作或跳过。**
 
 #### **急切求值条件用法:**
 
@@ -244,7 +255,8 @@ projectPager.lazyStream().limit(5).map(Project::getName).forEach(name -> System.
 
 ### **Java 8 Optional 支持**
 
-GitLab-API 支持返回单个项目的 API 调用使用 Java 8 Optional&lt;T&gt;。以下是关于如何使用 Java 8 Optional&lt;T&gt; API 调用的条件:
+GitLab-API 支持返回单个项目的 API 调用使用 Java 8 Optional&lt;T&gt;。以下是关于如何使用 Java 8 Optional&lt;T&gt; API
+调用的条件:
 
 ```
 Optional<Group> optionalGroup =  gitlabApi.getGroupApi().getOptionalGroup("my-group-path");
@@ -272,7 +284,8 @@ GitLab issues 允许时间跟踪。目前可用以下时间单位:
 
 ## 进行 API 调用
 
-API 已被分解为子 API 类，以便更容易使用和分离关注点。GitLab 子 API 类通常与 [GitLab API](https://docs.gitlab.com/ce/api/) 上的 API 文档具有一对一的关系。以下是 GitLab 子 API 类映射到 GitLab API 文档的示例:
+API 已被分解为子 API 类，以便更容易使用和分离关注点。GitLab 子 API 类通常与 [GitLab API](https://docs.gitlab.com/ce/api/)
+上的 API 文档具有一对一的关系。以下是 GitLab 子 API 类映射到 GitLab API 文档的示例:
 
 ```GroupApi``` -> https://docs.gitlab.com/ce/api/groups.html<br/>
 ```MergeRequestApi``` -> https://docs.gitlab.com/ce/api/merge_requests.html<br/>
@@ -281,7 +294,8 @@ API 已被分解为子 API 类，以便更容易使用和分离关注点。GitLa
 
 ### **可用的子 API**
 
-以下是可用的子 API 列表以及每个 API 的使用示例。有关每个子 API 的可用方法的完整列表，请参阅 <a href="https://javadoc.io/doc/org.gitlab4j/gitlab4j-api" target="_top">Javadocs</a>。
+以下是可用的子 API 列表以及每个 API 的使用示例。有关每个子 API
+的可用方法的完整列表，请参阅 <a href="https://javadoc.io/doc/org.gitlab4j/gitlab4j-api" target="_top">Javadocs</a>。
 
 ---
 &nbsp;&nbsp;[ApplicationsApi](#applicationsapi)<br/>

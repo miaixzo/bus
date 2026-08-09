@@ -23,7 +23,6 @@ package org.miaixz.bus.core.center.date.culture;
  * Represents the types of Hidden Stems (藏干类型) within Earth Branches in Chinese metaphysics.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum HiddenStems {
 

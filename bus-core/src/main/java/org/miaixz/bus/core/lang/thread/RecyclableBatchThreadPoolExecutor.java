@@ -47,7 +47,6 @@ import org.miaixz.bus.core.center.function.SupplierX;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RecyclableBatchThreadPoolExecutor {
 
@@ -299,7 +298,6 @@ public class RecyclableBatchThreadPoolExecutor {
      *
      * @param <R> The type of the result returned by the task.
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class IdempotentTask<R> implements Callable<TaskResult<R>> {
 
@@ -352,7 +350,6 @@ public class RecyclableBatchThreadPoolExecutor {
      *
      * @param <R> The type of the result.
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class TaskResult<R> {
 
@@ -386,7 +383,6 @@ public class RecyclableBatchThreadPoolExecutor {
      *
      * @param <R> The type of the result produced by the encapsulated logic.
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Warp<R> {
 

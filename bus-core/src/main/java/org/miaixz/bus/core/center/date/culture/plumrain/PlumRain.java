@@ -26,7 +26,6 @@ import org.miaixz.bus.core.center.date.culture.Samsara;
  * to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PlumRain extends Samsara {
 

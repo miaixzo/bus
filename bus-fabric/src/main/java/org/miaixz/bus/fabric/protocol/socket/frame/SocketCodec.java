@@ -34,7 +34,6 @@ import org.miaixz.bus.fabric.codec.frame.FrameCodec;
  * Socket frame codec adapter over the shared fabric frame codec.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class SocketCodec {
 

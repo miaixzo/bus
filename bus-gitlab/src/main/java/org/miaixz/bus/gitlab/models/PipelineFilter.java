@@ -35,10 +35,19 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * This class is used to filter Pipelines when getting lists of them.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PipelineFilter implements Serializable {
 
+    /**
+     * Constructs a new {@code PipelineFilter} instance.
+     */
+    public PipelineFilter() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852269565389L;
 

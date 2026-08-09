@@ -27,11 +27,23 @@ import org.miaixz.bus.gitlab.models.Reviewer;
  * The merge request changes class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MergeRequestChanges extends EventChanges {
 
+    /**
+     * Constructs a new {@code MergeRequestChanges} instance.
+     */
+    public MergeRequestChanges() {
+        // No initialization required.
+    }
+
+    /**
+     * The merge status value.
+     */
     private ChangeContainer<String> mergeStatus;
+    /**
+     * The reviewers value.
+     */
     private ChangeContainer<List<Reviewer>> reviewers;
 
     /**

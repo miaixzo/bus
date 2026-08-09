@@ -27,7 +27,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * The abstract push event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractPushEvent {
 
@@ -38,29 +37,86 @@ public abstract class AbstractPushEvent {
         // No initialization required.
     }
 
+    /**
+     * The refs heads value.
+     */
     private static final String REFS_HEADS = "refs/heads/";
 
+    /**
+     * The event name value.
+     */
     private String eventName;
 
+    /**
+     * The after value.
+     */
     private String after;
+    /**
+     * The before value.
+     */
     private String before;
+    /**
+     * The ref value.
+     */
     private String ref;
+    /**
+     * The checkout sha value.
+     */
     private String checkoutSha;
 
+    /**
+     * The user id value.
+     */
     private Long userId;
+    /**
+     * The user name value.
+     */
     private String userName;
+    /**
+     * The user username value.
+     */
     private String userUsername;
+    /**
+     * The user email value.
+     */
     private String userEmail;
+    /**
+     * The user avatar value.
+     */
     private String userAvatar;
 
+    /**
+     * The project id value.
+     */
     private Long projectId;
+    /**
+     * The project value.
+     */
     private EventProject project;
+    /**
+     * The repository value.
+     */
     private EventRepository repository;
+    /**
+     * The commits value.
+     */
     private List<EventCommit> commits;
+    /**
+     * The total commits count value.
+     */
     private Integer totalCommitsCount;
 
+    /**
+     * The request url value.
+     */
     private String requestUrl;
+    /**
+     * The request query string value.
+     */
     private String requestQueryString;
+    /**
+     * The request secret token value.
+     */
     private String requestSecretToken;
 
     /**
@@ -135,6 +191,9 @@ public abstract class AbstractPushEvent {
         this.ref = ref;
     }
 
+    /**
+     * The ref protected value.
+     */
     private Boolean refProtected;
 
     /**

@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.Assert;
  * @see #Q3
  * @see #Q4
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Quarter {
 

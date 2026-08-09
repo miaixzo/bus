@@ -28,7 +28,6 @@ import org.miaixz.bus.core.center.function.PredicateX;
  * properties.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 public class ClassField implements PredicateX<ColumnMeta> {

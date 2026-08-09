@@ -29,7 +29,6 @@ import org.miaixz.bus.cortex.Vector;
  * Converters between the public {@link Vector} compatibility model and registry-specific internal scopes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class RegistryScopeMapping {
 

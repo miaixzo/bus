@@ -92,7 +92,6 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * All methods are safe for concurrent use from multiple threads.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public interface GpuStats extends AutoCloseable {

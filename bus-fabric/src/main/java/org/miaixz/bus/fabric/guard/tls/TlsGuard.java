@@ -37,7 +37,6 @@ import org.miaixz.bus.fabric.network.tls.TlsSettings;
  * Guard that rejects plaintext routes and weak TLS settings.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class TlsGuard {
 

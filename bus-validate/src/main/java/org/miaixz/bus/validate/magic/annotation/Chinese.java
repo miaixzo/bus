@@ -29,7 +29,6 @@ import org.miaixz.bus.validate.nimble.ChineseMatcher;
  * Validates that the annotated string consists of Chinese characters.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

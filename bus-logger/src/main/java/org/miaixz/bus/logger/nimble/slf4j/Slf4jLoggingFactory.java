@@ -34,7 +34,6 @@ import org.miaixz.bus.logger.magic.AbstractFactory;
  * creates loggers accordingly.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Slf4jLoggingFactory extends AbstractFactory {
 

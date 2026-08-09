@@ -39,7 +39,6 @@ import org.miaixz.bus.fabric.registry.route.Route;
  * Scheme and proxy consistency guard for routes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class RouteGuard {
 

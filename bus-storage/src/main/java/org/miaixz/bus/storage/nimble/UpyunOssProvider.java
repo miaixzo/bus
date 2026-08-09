@@ -47,7 +47,6 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UpyunOssProvider extends AbstractProvider {
 
@@ -123,7 +122,7 @@ public class UpyunOssProvider extends AbstractProvider {
     public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
                         .build();
             }
 
@@ -162,10 +161,10 @@ public class UpyunOssProvider extends AbstractProvider {
                     this.getClass().getSimpleName(),
                     bucket,
                     objectKey,
-                    ErrorCode._113012.getKey(),
+                    ErrorCode._113010.getKey(),
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue())
+            return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
                     .build();
         }
     }
@@ -205,7 +204,7 @@ public class UpyunOssProvider extends AbstractProvider {
     public Message<Blob> streamKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
                         .build();
             }
 
@@ -243,10 +242,10 @@ public class UpyunOssProvider extends AbstractProvider {
                     this.getClass().getSimpleName(),
                     bucket,
                     objectKey,
-                    ErrorCode._113012.getKey(),
+                    ErrorCode._113010.getKey(),
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue())
+            return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
                     .build();
         }
     }
@@ -767,12 +766,12 @@ public class UpyunOssProvider extends AbstractProvider {
      */
     private Errors toError(int code) {
         if (code == 401 || code == 403) {
-            return ErrorCode._113009;
+            return ErrorCode._113007;
         }
         if (code == 404) {
-            return ErrorCode._113010;
+            return ErrorCode._113008;
         }
-        return ErrorCode._113012;
+        return ErrorCode._113010;
     }
 
     /**

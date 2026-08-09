@@ -50,7 +50,6 @@ import reactor.core.publisher.Mono;
  * @param <I> The input type expected by this executor
  * @param <O> The output type produced by this executor
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Executor<I, O> {
 

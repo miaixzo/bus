@@ -27,7 +27,6 @@ import org.miaixz.bus.image.Tag;
  * DICOM SOP instance reference backed by {@link Attributes}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SopInstanceReference extends DicomModule {
 

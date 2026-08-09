@@ -30,7 +30,6 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
  * and masks the characters in between. For example: {@code "110101199001011234"} becomes {@code "110101**********34"}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CitizenIdProvider extends AbstractProvider {
 

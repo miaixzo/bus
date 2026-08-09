@@ -22,6 +22,5 @@
  * bus-starter.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.spring.boot.environment;

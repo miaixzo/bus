@@ -26,7 +26,6 @@ package org.miaixz.bus.image.nimble.opencv.lut;
  * including windowing values, LUT behavior, and display options.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface WlParams extends WlPresentation {
 

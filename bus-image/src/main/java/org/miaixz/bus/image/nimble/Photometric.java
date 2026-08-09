@@ -32,7 +32,6 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  * Defines the Photometric values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Photometric {
 

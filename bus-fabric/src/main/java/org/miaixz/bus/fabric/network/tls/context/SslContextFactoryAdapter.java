@@ -34,7 +34,6 @@ import org.miaixz.bus.fabric.network.tls.cert.CertificatePolicy;
  * Adapter from SSLContext factories to current TLS context and settings APIs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface SslContextFactoryAdapter {

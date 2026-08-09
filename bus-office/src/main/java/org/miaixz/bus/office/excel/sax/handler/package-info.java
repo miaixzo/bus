@@ -21,6 +21,5 @@
  * Defines and implements row handlers for SAX-based Excel reading.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.office.excel.sax.handler;

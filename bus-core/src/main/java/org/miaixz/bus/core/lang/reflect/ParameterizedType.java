@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * generic types.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ParameterizedType implements java.lang.reflect.ParameterizedType, Serializable {
 

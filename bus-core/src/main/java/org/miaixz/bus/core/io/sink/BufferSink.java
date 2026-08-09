@@ -34,7 +34,6 @@ import org.miaixz.bus.core.io.source.Source;
  * methods for writing various data types.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface BufferSink extends Sink, WritableByteChannel {
 

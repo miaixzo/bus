@@ -29,7 +29,6 @@ import org.miaixz.bus.image.Tag;
  * DICOM digital signature sequence item.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DigitalSignature extends DicomModule {
 

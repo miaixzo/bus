@@ -30,7 +30,6 @@ import java.util.Set;
  * their corresponding values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LookupReplacer extends StringReplacer {
 

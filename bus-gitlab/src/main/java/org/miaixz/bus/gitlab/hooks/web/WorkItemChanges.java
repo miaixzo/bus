@@ -25,11 +25,23 @@ import java.util.Date;
  * The work item changes class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WorkItemChanges extends EventChanges {
 
+    /**
+     * Constructs a new {@code WorkItemChanges} instance.
+     */
+    public WorkItemChanges() {
+        // No initialization required.
+    }
+
+    /**
+     * The heath status value.
+     */
     private ChangeContainer<String> heathStatus;
+    /**
+     * The last edited at value.
+     */
     private ChangeContainer<Date> lastEditedAt;
 
     /**

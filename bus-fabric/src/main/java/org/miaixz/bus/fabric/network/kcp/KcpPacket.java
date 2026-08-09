@@ -42,7 +42,6 @@ import org.miaixz.bus.fabric.Builder;
  * @param fragmentCount   V2 fragment count
  * @param payloadBytes    payload bytes
  * @author Kimi Liu
- * @since Java 21+
  */
 public record KcpPacket(int version, Type type, long sequence, long acknowledgement, int window, long timestamp,
         long messageId, int fragmentIndex, int fragmentCount, ByteString payloadBytes) {

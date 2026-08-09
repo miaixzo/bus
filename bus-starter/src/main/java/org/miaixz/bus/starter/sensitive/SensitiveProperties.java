@@ -31,7 +31,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Immutable sensitive-data crypto properties using an explicit algorithm allowlist.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

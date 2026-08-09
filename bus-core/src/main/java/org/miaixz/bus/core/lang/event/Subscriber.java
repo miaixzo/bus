@@ -28,7 +28,6 @@ import org.miaixz.bus.core.xyz.CompareKit;
  * Subscribers are comparable based on their {@link #order()} for determining execution sequence.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Subscriber extends EventListener, Comparable<Subscriber> {
 

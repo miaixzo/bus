@@ -23,11 +23,23 @@ package org.miaixz.bus.gitlab.models;
  * Params for getting file archive of the repository.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RepositoryArchiveParams {
 
+    /**
+     * Constructs a new {@code RepositoryArchiveParams} instance.
+     */
+    public RepositoryArchiveParams() {
+        // No initialization required.
+    }
+
+    /**
+     * The sha value.
+     */
     private String sha;
+    /**
+     * The path value.
+     */
     private String path;
 
     /**

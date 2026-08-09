@@ -31,7 +31,6 @@ import org.miaixz.bus.image.Tag;
  * Represents the ValidationResult type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ValidationResult {
 
@@ -458,7 +457,6 @@ public class ValidationResult {
      * Defines the Invalid values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Invalid {
         /**
@@ -492,7 +490,6 @@ public class ValidationResult {
      * Represents the InvalidAttributeValue type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public class InvalidAttributeValue {
 

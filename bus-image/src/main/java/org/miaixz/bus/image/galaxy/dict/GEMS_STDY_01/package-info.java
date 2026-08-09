@@ -21,6 +21,5 @@
  * UID Dictionary from GEMS_STDY_01
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.GEMS_STDY_01;

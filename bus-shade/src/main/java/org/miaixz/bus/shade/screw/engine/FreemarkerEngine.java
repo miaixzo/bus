@@ -42,7 +42,6 @@ import freemarker.template.TemplateException;
  * processing data models with Freemarker templates to generate documentation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FreemarkerEngine extends AbstractEngine {
 

@@ -45,7 +45,6 @@ import org.miaixz.bus.core.lang.exception.DateException;
  * {@link #getDateTimeInstance(int, int, TimeZone, Locale)}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FormatBuilder extends Format implements PositionDateParser, FormatPrinter {
 

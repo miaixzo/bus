@@ -39,7 +39,6 @@ import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
  * @see LookupTableCV
  * @see LutShape
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface PresentationStateLut {
 

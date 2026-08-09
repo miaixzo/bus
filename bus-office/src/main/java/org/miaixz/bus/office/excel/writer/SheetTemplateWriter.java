@@ -27,7 +27,6 @@ import org.apache.poi.ss.usermodel.Sheet;
  * Template Excel writer. Parses existing templates and fills template variables with data.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SheetTemplateWriter {
 

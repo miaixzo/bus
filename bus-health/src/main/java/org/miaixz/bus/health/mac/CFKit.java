@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * CF String retrieving
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class CFKit {

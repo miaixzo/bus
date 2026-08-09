@@ -33,7 +33,6 @@ import org.miaixz.bus.logger.Logger;
  * Tests whether performance counters are disabled
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class PerfmonDisabled {

@@ -61,7 +61,6 @@ import org.miaixz.bus.fabric.protocol.socket.SocketOptions;
  * DNS-over-TLS endpoint backed by the shared AIO listener and Fabric TLS channel.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsDotEndpoint implements AutoCloseable, Lifecycle {
 
@@ -584,7 +583,6 @@ public final class DnsDotEndpoint implements AutoCloseable, Lifecycle {
     /**
      * DNS-over-TLS request handler.
      *
-     * @since Java 21+
      */
     @FunctionalInterface
     public interface QueryHandler {
@@ -604,7 +602,6 @@ public final class DnsDotEndpoint implements AutoCloseable, Lifecycle {
      * TLS-backed input with a small unread buffer for PROXY protocol probing.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private final class PrefetchedInput {
 

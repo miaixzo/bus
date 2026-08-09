@@ -37,7 +37,6 @@ import freemarker.template.Template;
  * generate various components of a typical web application, such as entities, mappers, services, and controllers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Builder {
 

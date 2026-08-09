@@ -41,7 +41,6 @@ import org.miaixz.bus.core.net.MediaType;
  * Builder for multipart/related HTTP request bodies.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class MultipartBody {
 
@@ -214,7 +213,6 @@ public final class MultipartBody {
      * Represents the MultipartStreamEnumeration type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private final class MultipartStreamEnumeration implements Enumeration<InputStream> {
 

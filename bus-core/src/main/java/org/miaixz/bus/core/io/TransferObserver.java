@@ -25,7 +25,6 @@ package org.miaixz.bus.core.io;
  * {@code -1} or {@link Long#MAX_VALUE} as an unavailable total length.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface TransferObserver {
 

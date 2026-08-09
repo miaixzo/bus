@@ -90,7 +90,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * @see MetaAnnotatedElement
  * @see RepeatableAnnotationCollector
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AnnotatedElements {
 
@@ -675,7 +674,6 @@ public class AnnotatedElements {
      * An {@link AnnotatedElement} implementation backed by a constant array of annotations.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class ConstantElement implements AnnotatedElement {
 
@@ -721,7 +719,6 @@ public class AnnotatedElements {
      * An {@link AnnotatedElement} implementation that contains no annotations.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class EmptyElement implements AnnotatedElement {
 

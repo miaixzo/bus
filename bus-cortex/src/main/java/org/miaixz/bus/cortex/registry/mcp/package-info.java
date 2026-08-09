@@ -27,6 +27,5 @@
  * when callers invoke {@code stop(id)}, and reports liveness through {@code isAlive(id)}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.registry.mcp;

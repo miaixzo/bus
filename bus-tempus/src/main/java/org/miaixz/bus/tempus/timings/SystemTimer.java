@@ -32,7 +32,6 @@ import org.miaixz.bus.tempus.crontab.TimerCrontab;
  * retrieve expired task lists (buckets) from the timing wheel.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SystemTimer {
 

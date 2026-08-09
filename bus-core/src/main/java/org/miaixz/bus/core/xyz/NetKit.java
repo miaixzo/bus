@@ -46,7 +46,6 @@ import org.miaixz.bus.core.text.CharsBacker;
  * Network related class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NetKit {
 
@@ -197,7 +196,7 @@ public class NetKit {
      * B class: 172.16.0.0 - 172.31.255.255
      * C class: 192.168.0.0 - 192.168.255.255
      * </pre>
-     *
+     * <p>
      * Also, the 127.x.x.x range is a loopback address.
      *
      * @param ipAddress The IP address to check.
@@ -609,7 +608,7 @@ public class NetKit {
     public static boolean ping(final String ip, final int timeout) {
         try {
             return InetAddress.getByName(ip).isReachable(timeout); // If the return value is true, the host is
-                                                                   // available; otherwise, it is not.
+            // available; otherwise, it is not.
         } catch (final Exception ex) {
             return false;
         }

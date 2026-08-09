@@ -28,7 +28,6 @@ import org.miaixz.bus.core.center.date.culture.Samsara;
  * list of these entities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PengZuHeavenStem extends Samsara {
 

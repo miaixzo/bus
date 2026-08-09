@@ -33,7 +33,6 @@ import java.util.Map;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JWTPayload extends Claims implements JWTRegister<JWTPayload> {
 

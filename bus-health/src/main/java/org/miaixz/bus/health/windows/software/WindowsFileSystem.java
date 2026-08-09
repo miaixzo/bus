@@ -48,7 +48,6 @@ import org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDisk.LogicalDiskProp
  * letter, e.g., "A:\" and "C:\"
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class WindowsFileSystem extends AbstractFileSystem {

@@ -31,7 +31,6 @@ import org.miaixz.bus.shade.screw.metadata.Table;
  * Common query interface for retrieving database metadata information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface DatabaseQuery {
 

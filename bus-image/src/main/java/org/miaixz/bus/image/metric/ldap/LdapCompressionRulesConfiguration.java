@@ -39,7 +39,6 @@ import org.miaixz.bus.image.nimble.codec.CompressionRules;
  * Represents the LdapCompressionRulesConfiguration type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LdapCompressionRulesConfiguration {
 

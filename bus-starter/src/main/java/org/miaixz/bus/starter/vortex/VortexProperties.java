@@ -33,7 +33,6 @@ import org.miaixz.bus.vortex.magic.Performance;
  * Configuration properties for the Vortex routing gateway.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
@@ -151,7 +150,6 @@ public class VortexProperties {
      * Asset registry refresh settings.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter

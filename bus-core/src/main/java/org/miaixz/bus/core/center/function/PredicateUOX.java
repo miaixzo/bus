@@ -28,7 +28,6 @@ import java.util.function.UnaryOperator;
  *
  * @param <T> The type of the object being operated on.
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface PredicateUOX<T> extends Predicate<T>, UnaryOperator<T> {
 

@@ -31,7 +31,6 @@ import org.miaixz.bus.core.xyz.ReflectKit;
  * internal KClass implementation for reflection purposes, specifically to retrieve constructors.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class KClassImpl {
 

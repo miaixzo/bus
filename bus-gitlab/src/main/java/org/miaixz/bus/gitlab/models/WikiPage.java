@@ -28,16 +28,30 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The wiki page class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WikiPage implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852283502293L;
 
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The content value.
+     */
     private String content;
+    /**
+     * The slug value.
+     */
     private String slug;
+    /**
+     * The format value.
+     */
     private String format;
 
     /**

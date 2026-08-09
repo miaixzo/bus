@@ -39,7 +39,6 @@ import org.miaixz.bus.health.mac.jna.SystemConfiguration;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class MacNetworkIF extends AbstractNetworkIF {

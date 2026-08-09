@@ -28,7 +28,6 @@ package org.miaixz.bus.image.metric;
  *
  * @param <T> the type of object to be processed
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface Editable<T> {

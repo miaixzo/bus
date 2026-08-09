@@ -33,7 +33,6 @@ import org.miaixz.bus.extra.nlp.NLPWord;
  * Project homepage: <a href="https://github.com/mayabot/mynlp/">https://github.com/mayabot/mynlp/</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MynlpResult implements NLPResult {
 

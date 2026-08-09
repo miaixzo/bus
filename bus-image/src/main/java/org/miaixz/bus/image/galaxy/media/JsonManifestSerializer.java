@@ -32,7 +32,6 @@ import org.miaixz.bus.image.galaxy.data.ElementDictionary;
  * JSON writer for DICOM manifest structures.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JsonManifestSerializer {
 

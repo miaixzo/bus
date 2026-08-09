@@ -27,7 +27,6 @@ import java.io.OutputStream;
  * Represents the MLLPOutputStream type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MLLPOutputStream extends FilterOutputStream {
 

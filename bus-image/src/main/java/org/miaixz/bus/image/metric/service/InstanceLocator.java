@@ -29,7 +29,6 @@ import java.net.URISyntaxException;
  * Represents the InstanceLocator type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class InstanceLocator implements Serializable {
 

@@ -29,7 +29,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * A table factory that supports caching entity class information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CachingTableSchemaBuilder implements TableSchemaBuilder {
 

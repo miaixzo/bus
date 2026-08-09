@@ -28,7 +28,6 @@ import java.util.Map;
  * Converts between runtime label maps and management-facing label items.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class LabelMapper {
 

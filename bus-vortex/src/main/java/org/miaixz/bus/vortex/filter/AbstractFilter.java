@@ -30,7 +30,6 @@ import org.miaixz.bus.vortex.strategy.StrategyFactory;
  * filters should extend this class and implement the {@link #filter(ServerWebExchange, WebFilterChain)} method.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractFilter implements Filter {
 

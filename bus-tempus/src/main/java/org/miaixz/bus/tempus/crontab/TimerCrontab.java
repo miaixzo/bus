@@ -26,7 +26,6 @@ import org.miaixz.bus.tempus.timings.TimerTaskList;
  * {@link TimerTaskList}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TimerCrontab {
 

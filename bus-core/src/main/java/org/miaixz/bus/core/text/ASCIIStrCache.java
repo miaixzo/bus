@@ -24,7 +24,6 @@ package org.miaixz.bus.core.text;
  * improve performance when converting characters to strings.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ASCIIStrCache {
 

@@ -29,13 +29,25 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  *
  * @param <T> the changed value type
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 public class ChangeContainer<T> {
 
+    /**
+     * Constructs a new {@code ChangeContainer} instance.
+     */
+    public ChangeContainer() {
+        // No initialization required.
+    }
+
+    /**
+     * The previous value.
+     */
     private T previous;
+    /**
+     * The current value.
+     */
     private T current;
 
     /**

@@ -76,7 +76,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * 0x000000000000F000 version
  * 0x0000000000000FFF time_hi
  * </pre>
- *
+ * <p>
  * The least significant long consists of the following unsigned fields:
  *
  * <pre>
@@ -84,12 +84,11 @@ import org.miaixz.bus.core.xyz.StringKit;
  * 0x3FFF000000000000 clock_seq
  * 0x0000FFFFFFFFFFFF node
  * </pre>
- *
+ * <p>
  * The variant field contains a value that indicates the layout of the UUID. The bit layout described above is valid
  * only for a UUID with a variant value of 2, which indicates the Leach-Salz variant.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UUID implements java.io.Serializable, Comparable<UUID> {
 
@@ -488,7 +487,6 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
      * Singleton for {@link SecureRandom}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class Holder {
 

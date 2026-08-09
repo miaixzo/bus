@@ -27,7 +27,6 @@ import org.miaixz.bus.core.lang.Normal;
  * {@link CellSetter} for {@code null} values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NullCellSetter implements CellSetter {
 

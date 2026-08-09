@@ -47,7 +47,6 @@ import org.miaixz.bus.notify.nimble.AbstractProvider;
  * China Telecom Cloud (CTYUN) SMS service provider implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CtyunSmsProvider extends AbstractProvider<CtyunNotice, Context> {
 

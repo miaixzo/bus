@@ -36,7 +36,6 @@ import org.miaixz.bus.health.unix.solaris.KstatKit.KstatChain;
  * A Power Source
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class SolarisPowerSource extends AbstractPowerSource {

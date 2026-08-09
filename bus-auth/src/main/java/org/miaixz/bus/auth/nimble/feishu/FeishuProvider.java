@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  * Feishu (Lark) login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FeishuProvider extends AbstractProvider {
 

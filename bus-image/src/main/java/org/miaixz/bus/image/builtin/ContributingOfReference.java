@@ -26,7 +26,6 @@ import org.miaixz.bus.image.galaxy.data.Code;
  * of equipment that contributed to the creation or modification of an image.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ContributingOfReference {
 

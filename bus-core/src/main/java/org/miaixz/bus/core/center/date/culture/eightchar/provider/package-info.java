@@ -21,6 +21,5 @@
  * Provides interfaces and classes for calculating "Child Limit" (童限) in Chinese astrology.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.center.date.culture.eightchar.provider;

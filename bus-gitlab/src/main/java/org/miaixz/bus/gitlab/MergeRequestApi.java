@@ -38,7 +38,6 @@ import org.miaixz.bus.gitlab.models.*;
  * @see <a href="https://docs.gitlab.com/ce/api/merge_requests.html">Merge requests API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/merge_request_approvals.html">Merge request approvals API at GitLab</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MergeRequestApi extends AbstractApi {
 
@@ -685,7 +684,6 @@ public class MergeRequestApi extends AbstractApi {
      * @param params          a MergeRequestParams instance holding the info to create the merge request
      * @return the created MergeRequest instance
      * @throws RelevantException if any exception occurs
-     * @since GitLab Starter 8.17, GitLab CE 11.0.
      */
     public MergeRequest createMergeRequest(Object projectIdOrPath, MergeRequestParams params) throws RelevantException {
         GitLabApiForm form = new GitLabApiForm(params.getForm(true));
@@ -719,7 +717,6 @@ public class MergeRequestApi extends AbstractApi {
      * @param squash             Squash commits into a single commit when merging, optional
      * @return the created MergeRequest instance
      * @throws RelevantException if any exception occurs
-     * @since GitLab Starter 8.17, GitLab CE 11.0.
      */
     public MergeRequest createMergeRequest(
             Object projectIdOrPath,

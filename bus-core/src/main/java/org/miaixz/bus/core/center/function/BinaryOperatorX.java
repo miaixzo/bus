@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
  * @param <T> The type of the operands and result of the operator.
  * @see BinaryOperator
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface BinaryOperatorX<T> extends BinaryOperator<T>, Serializable {

@@ -45,7 +45,6 @@ import org.miaixz.bus.logger.Logger;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TinyPinyinProvider implements PinyinProvider {
 
@@ -74,7 +73,7 @@ public class TinyPinyinProvider implements PinyinProvider {
     /**
      * Gets the pinyin of a single character. This method is designed to be overridden by subclasses for custom pinyin
      * conversion.
-     *
+     * <p>
      * Note that TinyPinyin does not support tone marks, so the tone parameter is ignored. Subclasses may override to
      * add custom conversion logic.
      *
@@ -93,7 +92,7 @@ public class TinyPinyinProvider implements PinyinProvider {
 
     /**
      * Gets the pinyin of a string. This method is designed to be overridden by subclasses for custom pinyin conversion.
-     *
+     * <p>
      * Note that TinyPinyin does not support tone marks, so the tone parameter is ignored. Subclasses may override to
      * add custom conversion logic.
      *

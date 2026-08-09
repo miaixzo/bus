@@ -30,7 +30,6 @@ import org.miaixz.bus.core.lang.Normal;
  * compared to JDK's {@code StringReader}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CharSequenceReader extends Reader {
 

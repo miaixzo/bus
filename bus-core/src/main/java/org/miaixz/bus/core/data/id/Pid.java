@@ -30,7 +30,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * {@link ManagementFactory#getRuntimeMXBean()} on the first access, and the cached value is used thereafter.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Pid {
 

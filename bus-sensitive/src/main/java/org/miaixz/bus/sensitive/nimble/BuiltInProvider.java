@@ -29,7 +29,6 @@ import org.miaixz.bus.sensitive.Context;
  * logic for selecting a pre-defined strategy. Do not use this for custom strategies.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BuiltInProvider extends AbstractProvider {
 

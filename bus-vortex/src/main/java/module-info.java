@@ -44,7 +44,6 @@
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 module bus.vortex {
 

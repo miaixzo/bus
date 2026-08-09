@@ -38,7 +38,6 @@ import org.miaixz.bus.core.lang.reflect.field.FieldReflect;
  * Finds, reads, and writes reflected fields.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FieldKit {
 

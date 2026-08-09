@@ -33,7 +33,6 @@ package org.miaixz.bus.core.lang.range;
  *
  * @param <T> the type of object to be stepped
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface Stepper<T> {

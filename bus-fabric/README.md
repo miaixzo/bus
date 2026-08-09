@@ -21,18 +21,18 @@ shown here; application modules should enter through `Fabric` and stay on the pr
 
 ## Module Boundaries
 
-| Package | Responsibility |
-| --- | --- |
-| `org.miaixz.bus.fabric` | Shared contracts such as `Context`, `Options`, `Call`, `Payload`, `Headers`, `Message`, and `Session`. |
-| `org.miaixz.bus.fabric.protocol.http` | HTTP request building, response handling, cache integration, download support, cookies, and HTTP body types. |
-| `org.miaixz.bus.fabric.protocol.socket` | Raw TCP, TLS socket, UDP, and KCP sessions built around frame codecs. |
-| `org.miaixz.bus.fabric.protocol.sse` | Server-sent event streams and reconnect metadata. |
-| `org.miaixz.bus.fabric.protocol.websocket` | WebSocket connection setup, message callbacks, text/binary writes, ping, and close handling. |
-| `org.miaixz.bus.fabric.protocol.stomp` | STOMP sessions opened over `ws` or `wss`, subscription helpers, heart-beat, ack/nack, and send operations. |
-| `org.miaixz.bus.fabric.network` | Low-level address, DNS, proxy, TLS, TCP, UDP, AIO, KCP, and connection pooling primitives. |
-| `org.miaixz.bus.fabric.guard` | Body, frame, TLS, and chain guards used before data is accepted or sent. |
-| `org.miaixz.bus.fabric.observe` | Protocol lifecycle observation and listener bridging. |
-| `org.miaixz.bus.fabric.cache` | Generic cache store implementations used by HTTP cache orchestration. |
+| Package                                    | Responsibility                                                                                               |
+|--------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| `org.miaixz.bus.fabric`                    | Shared contracts such as `Context`, `Options`, `Call`, `Payload`, `Headers`, `Message`, and `Session`.       |
+| `org.miaixz.bus.fabric.protocol.http`      | HTTP request building, response handling, cache integration, download support, cookies, and HTTP body types. |
+| `org.miaixz.bus.fabric.protocol.socket`    | Raw TCP, TLS socket, UDP, and KCP sessions built around frame codecs.                                        |
+| `org.miaixz.bus.fabric.protocol.sse`       | Server-sent event streams and reconnect metadata.                                                            |
+| `org.miaixz.bus.fabric.protocol.websocket` | WebSocket connection setup, message callbacks, text/binary writes, ping, and close handling.                 |
+| `org.miaixz.bus.fabric.protocol.stomp`     | STOMP sessions opened over `ws` or `wss`, subscription helpers, heart-beat, ack/nack, and send operations.   |
+| `org.miaixz.bus.fabric.network`            | Low-level address, DNS, proxy, TLS, TCP, UDP, AIO, KCP, and connection pooling primitives.                   |
+| `org.miaixz.bus.fabric.guard`              | Body, frame, TLS, and chain guards used before data is accepted or sent.                                     |
+| `org.miaixz.bus.fabric.observe`            | Protocol lifecycle observation and listener bridging.                                                        |
+| `org.miaixz.bus.fabric.cache`              | Generic cache store implementations used by HTTP cache orchestration.                                        |
 
 ## Entry Points
 
@@ -43,13 +43,13 @@ pool state.
 Context context = Context.create();
 ```
 
-| Entry | Builder | Use for |
-| --- | --- | --- |
-| `Fabric.http(context)` | `HttpX.Builder` | HTTP and HTTPS requests. |
-| `Fabric.socket(context)` | `SocketX.Builder` | TCP, TLS socket, UDP, and KCP sessions. |
-| `Fabric.sse(context)` | `SseX.Builder` | Server-sent event streams. |
-| `Fabric.websocket(context)` | `WebSocketX.Builder` | WebSocket sessions. |
-| `Fabric.stomp(context)` | `StompX.Builder` | STOMP sessions. |
+| Entry                       | Builder              | Use for                                 |
+|-----------------------------|----------------------|-----------------------------------------|
+| `Fabric.http(context)`      | `HttpX.Builder`      | HTTP and HTTPS requests.                |
+| `Fabric.socket(context)`    | `SocketX.Builder`    | TCP, TLS socket, UDP, and KCP sessions. |
+| `Fabric.sse(context)`       | `SseX.Builder`       | Server-sent event streams.              |
+| `Fabric.websocket(context)` | `WebSocketX.Builder` | WebSocket sessions.                     |
+| `Fabric.stomp(context)`     | `StompX.Builder`     | STOMP sessions.                         |
 
 Each entry also has a no-argument overload that creates a default context. Prefer passing an explicit context in
 applications so options and lifecycle policy are visible at the call site.
@@ -189,15 +189,15 @@ String text = Fabric.http(limited)
 
 Important option keys currently read by the protocol chain:
 
-| Option key | Expected value | Used by |
-| --- | --- | --- |
-| `materialize.maxBytes` | `Number` | `Payload`, HTTP bodies, socket messages, WebSocket messages, and STOMP messages when bytes are materialized. |
-| `HttpCache.OPTION` (`http.cache`) | `HttpCache` | HTTP cache coordination. |
-| `CookieJar.OPTION` (`http.cookieJar`) | `CookieJar` | Automatic HTTP cookie loading and saving. |
-| `HttpAuthenticator.OPTION` (`http.authenticator`) | `HttpAuthenticator` | HTTP challenge authentication. |
-| `ProxyPlan.OPTION` (`http.proxy`) | `ProxyPlan` | HTTP proxy selection. |
-| `TlsPolicy.OPTION` (`tls.policy`) | `TlsPolicy` | Shared atomic TLS context and settings. |
-| `SocketOptions.TLS_POLICY` (`socket.tlsPolicy`) | `TlsPolicy` | Socket-specific TLS override. |
+| Option key                                        | Expected value      | Used by                                                                                                      |
+|---------------------------------------------------|---------------------|--------------------------------------------------------------------------------------------------------------|
+| `materialize.maxBytes`                            | `Number`            | `Payload`, HTTP bodies, socket messages, WebSocket messages, and STOMP messages when bytes are materialized. |
+| `HttpCache.OPTION` (`http.cache`)                 | `HttpCache`         | HTTP cache coordination.                                                                                     |
+| `CookieJar.OPTION` (`http.cookieJar`)             | `CookieJar`         | Automatic HTTP cookie loading and saving.                                                                    |
+| `HttpAuthenticator.OPTION` (`http.authenticator`) | `HttpAuthenticator` | HTTP challenge authentication.                                                                               |
+| `ProxyPlan.OPTION` (`http.proxy`)                 | `ProxyPlan`         | HTTP proxy selection.                                                                                        |
+| `TlsPolicy.OPTION` (`tls.policy`)                 | `TlsPolicy`         | Shared atomic TLS context and settings.                                                                      |
+| `SocketOptions.TLS_POLICY` (`socket.tlsPolicy`)   | `TlsPolicy`         | Socket-specific TLS override.                                                                                |
 
 ### Materialization Limit
 
@@ -207,8 +207,8 @@ limit explicitly at the context boundary.
 
 ### Async Calls
 
-Every protocol builder can create a `Call<T>`. `enqueue()` starts background execution where the implementation
-supports it; `await()` returns the completed value.
+Every protocol builder can create a `Call<T>`. `enqueue()` starts background execution where the implementation supports
+it; `await()` returns the completed value.
 
 ```java
 Call<HttpResponse> call = Fabric.http(context)
@@ -257,8 +257,8 @@ own narrower limit; the two limits are not additive. Setting `HttpRetryPolicy.Bu
 
 Automatic transport retries require a repeatable request body and an idempotent HTTP method: `GET`, `HEAD`, `PUT`,
 `DELETE`, `OPTIONS`, or `TRACE`. `POST` and other non-idempotent requests are never replayed automatically after an
-ambiguous network failure. Pre-reuse validation reduces stale-connection failures where active probing is available,
-but it cannot guarantee that a non-idempotent request will not observe a concurrent peer close.
+ambiguous network failure. Pre-reuse validation reduces stale-connection failures where active probing is available, but
+it cannot guarantee that a non-idempotent request will not observe a concurrent peer close.
 
 ### Cookies
 

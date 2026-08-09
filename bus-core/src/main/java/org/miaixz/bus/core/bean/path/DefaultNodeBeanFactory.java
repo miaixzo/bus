@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.*;
  * {@link BeanPath} nodes. It handles various types of objects including Maps, Beans, Collections, and Arrays.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DefaultNodeBeanFactory implements NodeBeanFactory<Object> {
 

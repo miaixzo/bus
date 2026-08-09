@@ -35,7 +35,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Configures controller route prefixes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(RoutePrefixProperties.class)

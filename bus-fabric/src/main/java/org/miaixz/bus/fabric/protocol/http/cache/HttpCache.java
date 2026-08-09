@@ -54,7 +54,6 @@ import org.miaixz.bus.logger.Logger;
  * HTTP cache orchestration over a store and policy.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpCache implements AutoCloseable {
 

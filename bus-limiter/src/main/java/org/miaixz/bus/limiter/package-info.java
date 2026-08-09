@@ -23,6 +23,5 @@
  * rate limiting.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.limiter;

@@ -40,7 +40,6 @@ import org.miaixz.bus.fabric.network.dns.message.DnsName;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public sealed interface DnsRecordData permits DnsRecordData.Wire {
 
@@ -395,7 +394,6 @@ public sealed interface DnsRecordData permits DnsRecordData.Wire {
      * Immutable wire-format record-data implementation.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     final class Wire implements DnsRecordData {
 

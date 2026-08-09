@@ -26,7 +26,6 @@ import org.miaixz.bus.logger.magic.AbstractFactory;
  * A factory for creating {@link org.apache.commons.logging.Log} instances.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CommonsLoggingFactory extends AbstractFactory {
 

@@ -44,7 +44,6 @@ import org.miaixz.bus.logger.Logger;
  * Open SSE session that owns reconnectable HTTP stream resources under one terminal lifecycle.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class SseSession implements Session {
 

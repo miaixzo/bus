@@ -54,7 +54,6 @@ import org.miaixz.bus.logger.Logger;
  * attribute editing and transfer syntax adaptation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StoreSCU implements AutoCloseable {
 
@@ -687,7 +686,6 @@ public class StoreSCU implements AutoCloseable {
      * A factory for creating DIMSE response handlers for C-STORE operations.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface RSPHandlerFactory {
 

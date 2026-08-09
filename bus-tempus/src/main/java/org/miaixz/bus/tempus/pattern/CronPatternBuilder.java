@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * A builder for creating cron expression strings.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CronPatternBuilder implements Builder<String> {
 

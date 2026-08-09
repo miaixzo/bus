@@ -39,7 +39,6 @@ import org.miaixz.bus.image.nimble.opencv.lut.ColorLut;
  * such as color, opacity, visibility, and metadata like labels and pixel counts for regions in medical imaging.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RegionAttributes implements Comparable<RegionAttributes> {
 
@@ -384,9 +383,8 @@ public class RegionAttributes implements Comparable<RegionAttributes> {
      * Executes the group regions operation.
      *
      * @param regions the regions.
+     * @param <E>     the region attribute type
      * @return the operation result.
-     *
-     * @param <E> the region attribute type
      */
     public static <E extends RegionAttributes> Map<String, List<E>> groupRegions(Collection<E> regions) {
         if (regions == null || regions.isEmpty()) {

@@ -69,7 +69,6 @@ import org.miaixz.bus.logger.Logger;
  * </ol>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SM2 extends AbstractCrypto<SM2> {
 

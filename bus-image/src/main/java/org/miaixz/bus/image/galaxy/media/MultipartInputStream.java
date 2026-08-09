@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Represents the MultipartInputStream type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MultipartInputStream extends FilterInputStream {
 
@@ -326,7 +325,6 @@ public class MultipartInputStream extends FilterInputStream {
      * Represents the Field type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class Field {
 

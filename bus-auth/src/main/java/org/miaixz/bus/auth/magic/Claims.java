@@ -21,9 +21,7 @@ package org.miaixz.bus.auth.magic;
 
 import java.io.Serializable;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -34,14 +32,18 @@ import org.miaixz.bus.core.lang.Gender;
  * authorization platform.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Claims implements Serializable {
+
+    /**
+     * Constructs a new {@code Claims} instance.
+     */
+    public Claims() {
+        // No initialization required.
+    }
 
     /**
      * The unique ID of the user in the third-party system. When integrating this component, the user can be uniquely

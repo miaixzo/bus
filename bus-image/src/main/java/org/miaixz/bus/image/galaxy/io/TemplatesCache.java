@@ -29,7 +29,6 @@ import javax.xml.transform.stream.StreamSource;
  * Represents the TemplatesCache type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TemplatesCache {
 

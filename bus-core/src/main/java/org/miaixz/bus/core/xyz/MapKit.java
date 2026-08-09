@@ -38,7 +38,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Map related class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MapKit extends MapGets {
 
@@ -391,7 +390,7 @@ public class MapKit extends MapGets {
      *  {a: 4}
      * ]
      * </pre>
-     *
+     * <p>
      * The result will be:
      *
      * <pre>
@@ -436,7 +435,7 @@ public class MapKit extends MapGets {
      *   c: [1]
      * }
      * </pre>
-     *
+     * <p>
      * The result will be:
      *
      * <pre>

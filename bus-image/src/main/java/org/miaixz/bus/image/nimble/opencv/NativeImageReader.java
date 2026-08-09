@@ -50,7 +50,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the NativeImageReader type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NativeImageReader extends ImageReader implements Closeable {
 
@@ -86,17 +85,11 @@ public class NativeImageReader extends ImageReader implements Closeable {
      *
      * @param alphaPalette the alpha palette value
      * @param bluePalette  the blue palette value
-     *
      * @param params       the params value
-     *
      * @param colorSpace   the color space value
-     *
      * @param redPalette   the red palette value
-     *
      * @param greenPalette the green palette value
-     *
      * @return the result
-     *
      * @throws IOException if the operation fails
      */
     protected static final ImageTypeSpecifier createImageType(

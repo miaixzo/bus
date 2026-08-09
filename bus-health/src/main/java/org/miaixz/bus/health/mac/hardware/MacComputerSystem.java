@@ -41,7 +41,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractComputerSystem;
  * Hardware data obtained from ioreg.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class MacComputerSystem extends AbstractComputerSystem {

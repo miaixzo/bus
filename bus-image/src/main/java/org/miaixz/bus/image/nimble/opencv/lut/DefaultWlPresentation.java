@@ -49,7 +49,6 @@ package org.miaixz.bus.image.nimble.opencv.lut;
  * @see WlPresentation
  * @see PresentationStateLut
  * @author Kimi Liu
- * @since Java 21+
  */
 public record DefaultWlPresentation(PresentationStateLut presentationState, boolean pixelPadding)
         implements WlPresentation {

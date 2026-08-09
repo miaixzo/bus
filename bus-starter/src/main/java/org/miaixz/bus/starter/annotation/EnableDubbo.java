@@ -32,7 +32,6 @@ import org.miaixz.bus.starter.dubbo.DubboConfiguration;
  * annotation-based and property-based activation share the same registration path.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

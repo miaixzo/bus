@@ -22,17 +22,14 @@ package org.miaixz.bus.office;
 import java.util.List;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Shared bundle models used to describe segment input, codecs, and paged output.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Bundle {
 
@@ -45,7 +42,6 @@ public final class Bundle {
      *
      * @param <T> item type
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface Codec<T> {
 
@@ -78,7 +74,6 @@ public final class Bundle {
      * @param attributes   optional segment attributes
      * @param items        ordered items
      * @author Kimi Liu
-     * @since Java 21+
      */
     public record Segment<T>(int segmentIndex, String segmentName, Map<String, String> attributes, List<T> items) {
 
@@ -89,14 +84,18 @@ public final class Bundle {
      *
      * @param <T> item type
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @SuperBuilder
     public static class Paged<T> {
+
+        /**
+         * Constructs a new {@code Paged} instance.
+         */
+        public Paged() {
+            // No initialization required.
+        }
 
         /**
          * Bundle handle identifier.

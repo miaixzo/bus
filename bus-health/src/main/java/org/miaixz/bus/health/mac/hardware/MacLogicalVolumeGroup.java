@@ -33,7 +33,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractLogicalVolumeGroup;
  * Logical Volume Group data obtained from `diskutil cs list` command on macOS.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class MacLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
 

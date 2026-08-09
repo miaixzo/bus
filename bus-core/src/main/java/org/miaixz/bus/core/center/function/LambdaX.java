@@ -37,7 +37,6 @@ import org.miaixz.bus.core.xyz.ClassKit;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LambdaX {
 

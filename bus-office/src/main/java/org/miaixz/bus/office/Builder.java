@@ -37,7 +37,6 @@ import org.miaixz.bus.logger.Logger;
  * Provides auxiliary functions for office documents, such as Excel date judgment, reading, and processing.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Builder {
 

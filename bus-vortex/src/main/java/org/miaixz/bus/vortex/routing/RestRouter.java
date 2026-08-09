@@ -40,7 +40,6 @@ import reactor.util.annotation.NonNull;
  * Generic type parameters: {@code Router<ServerRequest, ServerResponse>}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RestRouter implements Router<ServerRequest, ServerResponse> {
 

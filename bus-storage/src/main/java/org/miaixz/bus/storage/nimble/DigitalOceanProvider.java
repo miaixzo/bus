@@ -116,7 +116,6 @@ import org.miaixz.bus.storage.Context;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DigitalOceanProvider extends GenericS3Provider {
 

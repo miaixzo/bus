@@ -25,7 +25,6 @@ import org.miaixz.bus.mapper.Charter.Behavior;
  * UPSERT behavior exposed by a database dialect.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface UpsertBehavior {
 

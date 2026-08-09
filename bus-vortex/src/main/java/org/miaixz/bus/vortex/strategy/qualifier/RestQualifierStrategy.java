@@ -59,7 +59,6 @@ import reactor.core.scheduler.Schedulers;
  * The REST qualifier owns asset lookup, HTTP verb matching, route signature validation, and policy authorization.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.THIRD)
 public class RestQualifierStrategy extends QualifierStrategy {

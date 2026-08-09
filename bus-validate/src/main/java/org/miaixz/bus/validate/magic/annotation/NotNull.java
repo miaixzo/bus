@@ -29,7 +29,6 @@ import org.miaixz.bus.validate.nimble.NotNullMatcher;
  * Validates that the annotated object is not null.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

@@ -36,7 +36,6 @@ import org.miaixz.bus.core.tree.parser.NodeParser;
  * Builds and traverses tree structures.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TreeKit {
 

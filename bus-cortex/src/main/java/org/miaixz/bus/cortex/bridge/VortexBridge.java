@@ -48,7 +48,6 @@ import org.miaixz.bus.logger.Logger;
  * Asynchronous bridge that consumes registry change events and forwards them to Vortex.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class VortexBridge
         implements Listener<RegistryChange<ApiAssets>>, AutoCloseable, CortexLifecycle, CortexDiagnostics {
@@ -717,7 +716,6 @@ public class VortexBridge
      * @param retryable whether the failure may be retried
      * @param error     delivery error message
      * @author Kimi Liu
-     * @since Java 21+
      */
     private record DeliveryResult(boolean success, boolean retryable, String error) {
 

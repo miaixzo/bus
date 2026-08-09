@@ -32,7 +32,6 @@ import org.miaixz.bus.core.Loader;
  *
  * @param <T> The type of the object to be loaded lazily.
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class LazyLoader<T> implements Loader<T>, Serializable {
 

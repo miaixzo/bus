@@ -21,6 +21,5 @@
  * UID Dictionary from SIEMENS_SYNGO_ULTRA_SOUND_TOYON_DATA_STREAMING
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_ULTRA_SOUND_TOYON_DATA_STREAMING;

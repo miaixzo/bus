@@ -32,12 +32,24 @@ import tools.jackson.databind.annotation.JsonSerialize;
  * The project fetches class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProjectFetches implements Serializable {
 
+    /**
+     * Constructs a new {@code ProjectFetches} instance.
+     */
+    public ProjectFetches() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852271365267L;
+    /**
+     * The fetches value.
+     */
     private Fetches fetches;
 
     /**
@@ -75,15 +87,30 @@ public class ProjectFetches implements Serializable {
      * The date count class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class DateCount implements Serializable {
 
+        /**
+         * Constructs a new {@code DateCount} instance.
+         */
+        public DateCount() {
+            // No initialization required.
+        }
+
+        /**
+         * The serial version uid value.
+         */
         @Serial
         private static final long serialVersionUID = 2852271507886L;
 
+        /**
+         * The count value.
+         */
         private Integer count;
 
+        /**
+         * The date value.
+         */
         @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
         private Date date;
 
@@ -133,14 +160,26 @@ public class ProjectFetches implements Serializable {
      * The fetches class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Fetches implements Serializable {
+
+        /**
+         * Constructs a new {@code Fetches} instance.
+         */
+        public Fetches() {
+            // No initialization required.
+        }
 
         @Serial
         private static final long serialVersionUID = 2852271590601L;
 
+        /**
+         * The total value.
+         */
         private Integer total;
+        /**
+         * The days value.
+         */
         private List<DateCount> days;
 
         /**

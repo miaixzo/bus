@@ -25,7 +25,6 @@ import org.miaixz.bus.image.Device;
  * Defines the DeviceServiceInterface contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface DeviceServiceInterface {
 

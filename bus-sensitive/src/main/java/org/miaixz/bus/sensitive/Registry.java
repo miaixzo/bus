@@ -35,7 +35,6 @@ import org.miaixz.bus.sensitive.nimble.*;
  * A central registry for mapping built-in desensitization strategies to their corresponding types or annotations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Registry {
 

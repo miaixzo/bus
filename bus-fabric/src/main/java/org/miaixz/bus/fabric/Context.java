@@ -31,7 +31,6 @@ import org.miaixz.bus.fabric.runtime.Reactor;
  * Immutable fabric context shared by protocol builders and runtime objects.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Context implements AutoCloseable {
 
@@ -187,7 +186,6 @@ public final class Context implements AutoCloseable {
      * Builder for immutable contexts.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

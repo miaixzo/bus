@@ -8,7 +8,9 @@
 
 ## 📖 Project Introduction
 
-**Bus Tracer** is a distributed tracing framework that provides real-time monitoring and performance analysis for microservices architectures. It helps developers track requests as they propagate through distributed systems, making it easier to diagnose performance bottlenecks and errors.
+**Bus Tracer** is a distributed tracing framework that provides real-time monitoring and performance analysis for
+microservices architectures. It helps developers track requests as they propagate through distributed systems, making it
+easier to diagnose performance bottlenecks and errors.
 
 -----
 
@@ -370,9 +372,9 @@ extend:
 ## 🔄 Version Compatibility
 
 | Bus Tracer Version | Spring Boot Version | JDK Version |
-|:---|:---|:---|
-| 8.x | 3.x+ | 17+ |
-| 7.x | 2.x+ | 11+ |
+|:-------------------|:--------------------|:------------|
+| 8.x                | 3.x+                | 17+         |
+| 7.x                | 2.x+                | 11+         |
 
 -----
 

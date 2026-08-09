@@ -29,17 +29,41 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The compare results class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CompareResults implements Serializable {
 
+    /**
+     * Constructs a new {@code CompareResults} instance.
+     */
+    public CompareResults() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852250376909L;
 
+    /**
+     * The commit value.
+     */
     private Commit commit;
+    /**
+     * The commits value.
+     */
     private List<Commit> commits;;
+    /**
+     * The diffs value.
+     */
     private List<Diff> diffs;
+    /**
+     * The compare timeout value.
+     */
     private Boolean compareTimeout;
+    /**
+     * The compare same ref value.
+     */
     private Boolean compareSameRef;
 
     /**

@@ -36,7 +36,6 @@ import org.miaixz.bus.image.nimble.codec.mp4.MP4FileType;
  * Represents the JPEGParser type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JPEGParser implements XPEGParser {
 
@@ -302,7 +301,6 @@ public class JPEGParser implements XPEGParser {
      * Defines the Params contract.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface Params {
 
@@ -369,7 +367,6 @@ public class JPEGParser implements XPEGParser {
      * Represents the Segment type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class Segment {
 
@@ -400,7 +397,6 @@ public class JPEGParser implements XPEGParser {
      * Represents the JPEGParams type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private class JPEGParams implements Params {
 
@@ -590,7 +586,6 @@ public class JPEGParser implements XPEGParser {
      * Represents the JPEG2000Params type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private class JPEG2000Params implements Params {
 

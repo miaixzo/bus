@@ -47,7 +47,6 @@ import org.miaixz.bus.core.xyz.PredicateKit;
  * hierarchy.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CompositeAnnotationScanner implements AnnotationScanner {
 

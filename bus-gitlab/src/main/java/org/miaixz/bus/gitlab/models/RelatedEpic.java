@@ -30,22 +30,52 @@ import tools.jackson.databind.annotation.JsonSerialize;
  * The related epic class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RelatedEpic extends AbstractEpic<RelatedEpic> {
 
+    /**
+     * Constructs a new {@code RelatedEpic} instance.
+     */
+    public RelatedEpic() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852279095069L;
 
+    /**
+     * The start date is fixed value.
+     */
     private Boolean startDateIsFixed;
+    /**
+     * The due date is fixed value.
+     */
     private Boolean dueDateIsFixed;
 
+    /**
+     * The due date from inherited source value.
+     */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date dueDateFromInheritedSource;
 
+    /**
+     * The related epic link id value.
+     */
     private Long relatedEpicLinkId;
+    /**
+     * The link type value.
+     */
     private LinkType linkType;
+    /**
+     * The link created at value.
+     */
     private Date linkCreatedAt;
+    /**
+     * The link updated at value.
+     */
     private Date linkUpdatedAt;
 
     /**

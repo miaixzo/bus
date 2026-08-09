@@ -31,7 +31,6 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
  * @param <T> The type of the input and output of the operator.
  * @see UnaryOperator
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface UnaryOperatorX<T> extends UnaryOperator<T>, Serializable {

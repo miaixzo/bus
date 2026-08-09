@@ -27,7 +27,6 @@ import java.util.Objects;
  * Patient orientation utilities for DICOM geometry.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class PatientOrientation {
 
@@ -62,7 +61,6 @@ public final class PatientOrientation {
      * Human anatomical orientations.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Biped implements Orientation {
 
@@ -165,7 +163,6 @@ public final class PatientOrientation {
      * Veterinary anatomical orientations.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Quadruped implements Orientation {
 
@@ -268,7 +265,6 @@ public final class PatientOrientation {
      * Coordinate axes used by patient orientation.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Axis {
         /**

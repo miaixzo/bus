@@ -21,6 +21,5 @@
  * UID Dictionary from GE_Generic_Data
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.GE_Generic_Data;

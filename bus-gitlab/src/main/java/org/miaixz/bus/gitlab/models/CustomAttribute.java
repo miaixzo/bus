@@ -26,14 +26,29 @@ import java.io.Serializable;
  * The custom attribute class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CustomAttribute implements Serializable {
 
+    /**
+     * Constructs a new {@code CustomAttribute} instance.
+     */
+    public CustomAttribute() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852250951355L;
 
+    /**
+     * The key value.
+     */
     private String key;
+    /**
+     * The value value.
+     */
     private String value;
 
     /**

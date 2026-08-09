@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Rabjung Fire Rabbit year).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RabjungYear extends Loops {
 

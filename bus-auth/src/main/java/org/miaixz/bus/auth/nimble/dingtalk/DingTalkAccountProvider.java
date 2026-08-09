@@ -27,7 +27,6 @@ import org.miaixz.bus.cache.CacheX;
  * DingTalk account login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DingTalkAccountProvider extends AbstractDingtalkProvider {
 

@@ -31,7 +31,6 @@ import org.miaixz.bus.logger.Logger;
  * Generates stable instance identifiers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Fingerprint {
 

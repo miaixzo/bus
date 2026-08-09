@@ -31,7 +31,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @param passed whether the guard passed
  * @param reason rejection reason
  * @author Kimi Liu
- * @since Java 21+
  */
 public record GuardResult(boolean passed, String reason) {
 

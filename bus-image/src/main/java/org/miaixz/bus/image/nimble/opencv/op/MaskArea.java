@@ -34,7 +34,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the MaskArea type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MaskArea {
 

@@ -34,7 +34,6 @@ import org.miaixz.bus.fabric.codec.body.RequestBody;
  * Immutable HTTP text request body with media metadata and an eagerly encoded payload.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class TextBody implements RequestBody {
 

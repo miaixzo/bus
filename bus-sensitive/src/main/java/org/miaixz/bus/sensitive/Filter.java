@@ -40,7 +40,6 @@ import org.miaixz.bus.sensitive.nimble.StrategyProvider;
  * {@link Entry} or {@link Shield} and is designed to be independent of third-party JSON libraries.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Filter {
 

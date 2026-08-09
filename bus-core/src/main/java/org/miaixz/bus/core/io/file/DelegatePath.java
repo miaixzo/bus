@@ -49,7 +49,6 @@ import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
  * convenient methods for reading file content, obtaining streams, and more.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource {
 

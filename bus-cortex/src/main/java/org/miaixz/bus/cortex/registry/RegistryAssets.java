@@ -36,7 +36,6 @@ import org.miaixz.bus.cortex.registry.prompt.PromptAssets;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class RegistryAssets {
 

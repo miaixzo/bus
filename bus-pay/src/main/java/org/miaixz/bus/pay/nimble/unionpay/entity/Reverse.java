@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.pay.nimble.unionpay.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -31,14 +29,18 @@ import org.miaixz.bus.pay.magic.Voucher;
  * UnionPay Cloud QuickPass - Reverse Order model.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Reverse extends Voucher {
+
+    /**
+     * Constructs a new {@code Reverse} instance.
+     */
+    public Reverse() {
+        // No initialization required.
+    }
 
     /**
      * Service name.

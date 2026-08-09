@@ -25,7 +25,6 @@ import org.miaixz.bus.pay.Matcher;
  * WeChat Pay V3 API interfaces for consumer complaints 2.0.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum ComplaintsApi implements Matcher {
 

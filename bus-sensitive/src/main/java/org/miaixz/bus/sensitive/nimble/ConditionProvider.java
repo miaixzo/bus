@@ -26,7 +26,6 @@ import org.miaixz.bus.sensitive.Context;
  * decide whether a strategy should be applied based on the current context.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ConditionProvider {
 

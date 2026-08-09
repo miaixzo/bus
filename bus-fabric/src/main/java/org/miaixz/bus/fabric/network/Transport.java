@@ -32,7 +32,6 @@ import org.miaixz.bus.fabric.Builder;
  * Transport families used by fabric network implementations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Transport {
 

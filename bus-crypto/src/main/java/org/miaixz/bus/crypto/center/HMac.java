@@ -43,7 +43,6 @@ import org.miaixz.bus.crypto.builtin.digest.mac.MacFactory;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HMac extends org.miaixz.bus.crypto.center.Mac {
 

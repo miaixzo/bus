@@ -32,16 +32,37 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The artifact class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Artifact implements Serializable {
 
+    /**
+     * Constructs a new {@code Artifact} instance.
+     */
+    public Artifact() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852236887008L;
 
+    /**
+     * The file type value.
+     */
     private FileType fileType;
+    /**
+     * The size value.
+     */
     private Long size;
+    /**
+     * The filename value.
+     */
     private String filename;
+    /**
+     * The file format value.
+     */
     private String fileFormat;
 
     /**
@@ -139,7 +160,6 @@ public class Artifact implements Serializable {
      * The file type enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum FileType {
 
@@ -160,6 +180,9 @@ public class Artifact implements Serializable {
          */
         JUNIT;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<FileType> enumCodec = new JacksonJsonEnumCodec<>(FileType.class);
 
         /**

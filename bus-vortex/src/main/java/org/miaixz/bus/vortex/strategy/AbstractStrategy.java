@@ -52,7 +52,6 @@ import org.miaixz.bus.vortex.magic.ErrorCode;
  * extend this class to reduce boilerplate code.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractStrategy implements Strategy {
 

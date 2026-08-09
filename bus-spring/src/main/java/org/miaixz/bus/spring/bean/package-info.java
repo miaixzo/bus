@@ -21,6 +21,5 @@
  * Instance-scoped bean, registry, and environment access infrastructure. This package must not depend on bus-starter.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.spring.bean;

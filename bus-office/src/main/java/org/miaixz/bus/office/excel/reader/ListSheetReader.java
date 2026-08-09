@@ -32,7 +32,6 @@ import org.miaixz.bus.office.excel.cell.editors.CellEditor;
  * Reads an {@link Sheet} into a list of lists.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ListSheetReader extends AbstractSheetReader<List<List<Object>>> {
 

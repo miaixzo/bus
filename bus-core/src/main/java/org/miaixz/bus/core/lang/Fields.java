@@ -51,7 +51,6 @@ package org.miaixz.bus.core.lang;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Fields {
 

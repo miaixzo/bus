@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Evaluates the annotation-first activation rule used by optional Spring Boot features.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EnabledCondition extends SpringBootCondition {
 

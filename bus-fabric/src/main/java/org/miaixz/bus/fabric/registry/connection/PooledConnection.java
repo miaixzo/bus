@@ -34,7 +34,6 @@ import org.miaixz.bus.fabric.network.Connection;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class PooledConnection {
 

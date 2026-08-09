@@ -21,6 +21,5 @@
  * Provides various encapsulations and classes related to {@link java.util.Set}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.center.set;

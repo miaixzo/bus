@@ -25,7 +25,6 @@ import org.miaixz.bus.core.net.Protocol;
  * Core cache backend options shared by cache consumers and starter-side property binding.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Options {
 
@@ -155,7 +154,6 @@ public class Options {
      * Redis connection and pool settings.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Redis {
 

@@ -32,7 +32,6 @@ import org.miaixz.bus.health.builtin.hardware.PowerSource;
  * A Power Source
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public abstract class AbstractPowerSource implements PowerSource {

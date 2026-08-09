@@ -32,7 +32,6 @@ import org.miaixz.bus.health.Parsing;
  * Queries ls
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Ls {

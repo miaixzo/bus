@@ -28,7 +28,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * Type conversion interface function, user-defined conversion rules based on given value and target type
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface Converter {

@@ -56,7 +56,6 @@ import org.opencv.imgproc.Imgproc;
  * applications. The class supports both OpenCV Mat objects and standard Java imaging interfaces.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ImageTransformer {
 
@@ -309,10 +308,10 @@ public final class ImageTransformer {
      * @param matrix        the 2x3 affine transformation matrix:
      *
      *                      <pre>
-     *               [a b tx]
-     *               [c d ty]
+     *                                    [a b tx]
+     *                                    [c d ty]
      *                      </pre>
-     *
+     *                      <p>
      *                      where (a,b,c,d) define rotation/scaling/shearing and (tx,ty) define translation
      * @param boxSize       the size of the output image canvas
      * @param interpolation the interpolation method (see {@link #scale(Mat, Dimension, Integer)})

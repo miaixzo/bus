@@ -37,7 +37,6 @@ import org.miaixz.bus.logger.Logger;
  * services.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class JmsProvider implements MQProvider, Closeable {
 

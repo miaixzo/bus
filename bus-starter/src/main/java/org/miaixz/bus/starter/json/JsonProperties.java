@@ -33,7 +33,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Immutable JSON provider selection properties.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

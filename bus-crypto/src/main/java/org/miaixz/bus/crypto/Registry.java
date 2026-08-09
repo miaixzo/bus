@@ -34,7 +34,6 @@ import org.miaixz.bus.logger.Logger;
  * concrete implementations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Registry {
 

@@ -59,7 +59,6 @@ import reactor.netty.resources.LoopResources;
  * singleton management via {@link java.util.concurrent.ConcurrentHashMap}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Holder {
 

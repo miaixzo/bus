@@ -31,7 +31,6 @@ import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
  * Queries GPU Engine and GPU Adapter Memory performance counters. Available on Windows 10 version 1709 and later.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class GpuInformation {
@@ -51,7 +50,6 @@ public final class GpuInformation {
      * {@code pid_<PID>_luid_0x<HIGH>_0x<LOW>_phys_0_eng_<N>_engtype_<TYPE>}
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum GpuEngineProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
@@ -100,7 +98,6 @@ public final class GpuInformation {
      * GPU Adapter Memory counter properties. Instance names have the form: {@code luid_0x<HIGH>_0x<LOW>_phys_0}
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum GpuAdapterMemoryProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 

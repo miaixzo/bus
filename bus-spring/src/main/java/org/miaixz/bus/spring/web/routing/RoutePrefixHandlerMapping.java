@@ -38,7 +38,6 @@ import org.miaixz.bus.logger.Logger;
  * Applies an explicit prefix only to controllers matching configured package rules.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RoutePrefixHandlerMapping extends RequestMappingHandlerMapping {
 

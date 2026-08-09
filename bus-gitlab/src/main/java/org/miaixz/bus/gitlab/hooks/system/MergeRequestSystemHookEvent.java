@@ -27,10 +27,19 @@ import org.miaixz.bus.gitlab.hooks.web.MergeRequestEvent;
  * The merge request system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MergeRequestSystemHookEvent extends MergeRequestEvent implements SystemHookEvent {
 
+    /**
+     * Constructs a new {@code MergeRequestSystemHookEvent} instance.
+     */
+    public MergeRequestSystemHookEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852292895308L;
     /**
@@ -43,6 +52,9 @@ public class MergeRequestSystemHookEvent extends MergeRequestEvent implements Sy
      */
     public static final String MERGE_REQUEST_EVENT = "merge_request";
 
+    /**
+     * The event name value.
+     */
     private String eventName;
 
     /**

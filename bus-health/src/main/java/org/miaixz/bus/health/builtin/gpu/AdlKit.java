@@ -50,7 +50,6 @@ import org.miaixz.bus.logger.Logger;
  * Adapter bus-number-to-index mappings are enumerated once on first successful init and cached thereafter.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class AdlKit {
@@ -63,7 +62,6 @@ public final class AdlKit {
      * The Holder class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class Holder {
 

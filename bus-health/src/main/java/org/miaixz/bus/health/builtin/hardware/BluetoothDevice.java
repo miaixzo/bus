@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  * connection state, pairing state, and battery level when available.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public interface BluetoothDevice {

@@ -41,7 +41,6 @@ import org.miaixz.bus.fabric.network.dns.observe.DnsMetrics;
  * Sharded in-memory DNS response cache for raw wire-format responses.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsResponseCache {
 
@@ -575,7 +574,6 @@ public final class DnsResponseCache {
      * Cached response metadata returned to the DNS server hot path.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class CachedResponse {
 
@@ -658,7 +656,6 @@ public final class DnsResponseCache {
      * One response-cache shard with access-order LRU and a lazy timing wheel.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private final class Shard {
 
@@ -892,7 +889,6 @@ public final class DnsResponseCache {
      * Cached response entry.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class Entry {
 
@@ -961,7 +957,6 @@ public final class DnsResponseCache {
      * @param key   cache key
      * @param entry cache entry
      * @author Kimi Liu
-     * @since Java 21+
      */
     private record EvictionCandidate(Shard shard, DnsCacheKey key, Entry entry) {
 

@@ -29,7 +29,6 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
  * Table primary key metadata for MySQL.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

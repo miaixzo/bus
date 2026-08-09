@@ -34,7 +34,6 @@ import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
  * Queries Processor performance counter
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class ProcessorInformation {
@@ -149,7 +148,6 @@ public final class ProcessorInformation {
      * System interrupts counters
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum InterruptsProperty implements PerfCounterQuery.PdhCounterProperty {
 
@@ -205,7 +203,6 @@ public final class ProcessorInformation {
      * Processor Frequency counters. Requires Win7 or greater
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ProcessorFrequencyProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
@@ -250,7 +247,6 @@ public final class ProcessorInformation {
      * Processor performance counters from the WMI formatted data table.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ProcessorPerformanceProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
@@ -295,7 +291,6 @@ public final class ProcessorInformation {
      * Processor performance counters
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ProcessorTickCountProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
@@ -356,7 +351,6 @@ public final class ProcessorInformation {
      * Processor performance counters, including usage and timing counters.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ProcessorUsageTickCountProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
@@ -435,7 +429,6 @@ public final class ProcessorInformation {
      * System performance counters
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum SystemTickCountProperty implements PerfCounterQuery.PdhCounterProperty {
 

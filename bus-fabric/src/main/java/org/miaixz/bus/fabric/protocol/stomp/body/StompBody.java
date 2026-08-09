@@ -36,7 +36,6 @@ import org.miaixz.bus.fabric.codec.body.ProgressBody;
  * STOMP message body with content-type metadata.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class StompBody implements MessageBody, ProgressBody {
 

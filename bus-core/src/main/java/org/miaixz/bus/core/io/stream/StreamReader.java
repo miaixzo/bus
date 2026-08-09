@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * and deserialize objects, with options for closing the stream after reading.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StreamReader {
 

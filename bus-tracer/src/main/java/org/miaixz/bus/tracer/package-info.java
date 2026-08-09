@@ -22,6 +22,5 @@
  * creating, managing, and propagating trace information across different services and application layers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.tracer;

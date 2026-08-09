@@ -29,7 +29,6 @@ import org.miaixz.bus.metrics.Metrics;
  * Registers OS-level system metrics: CPU load, process uptime.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SystemMetrics {
 
@@ -62,12 +61,10 @@ public class SystemMetrics {
                 os.getAvailableProcessors());
     }
 
-    // Holder to allow weak reference in gauge
     /**
      * The runtime mx bean holder class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class RuntimeMXBeanHolder {
 

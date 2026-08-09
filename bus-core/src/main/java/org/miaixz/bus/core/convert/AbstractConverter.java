@@ -42,7 +42,6 @@ import org.miaixz.bus.core.xyz.TypeKit;
  * which require special handling.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractConverter implements Converter, Serializable {
 

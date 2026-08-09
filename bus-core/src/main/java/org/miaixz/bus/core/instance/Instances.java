@@ -35,7 +35,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * exists in the pool, it is returned; otherwise, a new object is created and returned.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Instances {

@@ -35,9 +35,15 @@ import org.miaixz.bus.logger.Logger;
  * The gitlab request class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GitlabRequest {
+
+    /**
+     * Constructs a new {@code GitlabRequest} instance.
+     */
+    public GitlabRequest() {
+        // No initialization required.
+    }
 
     /**
      * Build a String containing a very short multi-line dump of an HTTP request.

@@ -33,7 +33,6 @@ import org.miaixz.bus.health.unix.shared.jna.AixLibc;
  * AixNetworkParams class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class AixNetworkParams extends AbstractNetworkParams {

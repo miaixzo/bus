@@ -24,6 +24,5 @@
  * deserialize workflow and activity arguments/results.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.tempus.temporal.payload;

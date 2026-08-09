@@ -34,7 +34,6 @@ import org.miaixz.bus.crypto.builtin.digest.DigesterFactory;
  * Creates and verifies certificate public-key pins.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class CertificatePin {
 

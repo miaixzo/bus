@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.TypeKit;
  *
  * @param <T> The type of the target Bean.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ValueToBeanCopier<T> extends AbstractCopier<ValueProvider<String>, T> {
 

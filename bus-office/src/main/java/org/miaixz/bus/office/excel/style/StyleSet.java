@@ -27,7 +27,6 @@ import org.apache.poi.ss.util.CellReference;
  * values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface StyleSet {
 

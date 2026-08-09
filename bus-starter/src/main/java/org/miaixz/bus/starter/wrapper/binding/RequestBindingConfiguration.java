@@ -36,7 +36,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Configures request-object binding for Servlet web applications.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(RequestBindingProperties.class)

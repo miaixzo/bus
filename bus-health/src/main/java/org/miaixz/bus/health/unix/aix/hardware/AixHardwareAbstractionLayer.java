@@ -37,7 +37,6 @@ import org.miaixz.bus.health.unix.shared.hardware.UnixDisplay;
  * AIXHardwareAbstractionLayer class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class AixHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {

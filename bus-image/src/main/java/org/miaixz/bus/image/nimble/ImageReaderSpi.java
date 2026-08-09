@@ -32,7 +32,6 @@ import org.miaixz.bus.image.nimble.stream.ImageFileInputStream;
  * Represents the ImageReaderSpi type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageReaderSpi extends javax.imageio.spi.ImageReaderSpi {
 

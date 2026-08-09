@@ -25,7 +25,6 @@ import java.awt.Color;
  * Anatomical orientation contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public sealed interface Orientation permits PatientOrientation.Biped, PatientOrientation.Quadruped {
 

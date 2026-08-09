@@ -48,7 +48,6 @@ import reactor.core.publisher.Mono;
  * verification, and forwarding cleanup are handled by {@code McpQualifierStrategy}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.SECOND)
 public class McpVettingStrategy extends VettingStrategy {

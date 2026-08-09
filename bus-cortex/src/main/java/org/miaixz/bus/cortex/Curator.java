@@ -30,7 +30,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Curator contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Curator {
 

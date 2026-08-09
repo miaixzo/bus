@@ -29,7 +29,6 @@ import java.util.concurrent.Semaphore;
  * threads will wait until the current threads complete their execution.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SemaphoreRunnable implements Runnable {
 

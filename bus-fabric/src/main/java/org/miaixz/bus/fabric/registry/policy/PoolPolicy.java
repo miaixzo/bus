@@ -38,7 +38,6 @@ import org.miaixz.bus.fabric.Policy;
  * @param acquireTimeout               non-negative acquisition timeout representable in nanoseconds
  * @param staleCheckAfter              non-negative HTTP/1 idle age after which active validation is enabled
  * @author Kimi Liu
- * @since Java 21+
  */
 public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, int maxConnectionsPerDestination,
         Duration acquireTimeout, Duration staleCheckAfter) implements Policy {
@@ -208,7 +207,6 @@ public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, in
      * Builder for pool policies.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

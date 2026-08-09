@@ -35,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
  * Handles dynamically registered health queries and application availability state-change endpoints.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HealthEndpointHandler extends Controller {
 

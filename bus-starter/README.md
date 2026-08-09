@@ -50,9 +50,9 @@ discovery resource.
 
 The root package contains two primary classes:
 
-| Type | Responsibility |
-|---|---|
-| `GeniusBuilder` | Authoritative compile-time constants for all `bus.*` configuration prefixes. |
+| Type            | Responsibility                                                                                      |
+|-----------------|-----------------------------------------------------------------------------------------------------|
+| `GeniusBuilder` | Authoritative compile-time constants for all `bus.*` configuration prefixes.                        |
 | `GeniusStarter` | Registers shared Spring Bean services and application-context-owned runtime context infrastructure. |
 
 The root package therefore remains meaningful and non-empty.
@@ -61,11 +61,11 @@ The root package therefore remains meaningful and non-empty.
 
 Infrastructure required by multiple features is enabled independently from product features:
 
-| Configuration | Default | Disable property | Responsibility |
-|---|---|---|---|
-| `GeniusStarter` | enabled | none | Registers Bean services, environment/provider services, runtime context, and task decorator. |
-| `TaskConfiguration` | enabled when Boot task classes exist | `bus.context.task.enabled=false` | Composes ordered task decorators and propagates runtime context. |
-| `WebConfiguration` | enabled for Servlet applications | `bus.context.web.enabled=false` disables binding only | Registers the shared `RequestContext` and conditionally registers context binding for request, async, and error dispatches. |
+| Configuration       | Default                              | Disable property                                      | Responsibility                                                                                                              |
+|---------------------|--------------------------------------|-------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| `GeniusStarter`     | enabled                              | none                                                  | Registers Bean services, environment/provider services, runtime context, and task decorator.                                |
+| `TaskConfiguration` | enabled when Boot task classes exist | `bus.context.task.enabled=false`                      | Composes ordered task decorators and propagates runtime context.                                                            |
+| `WebConfiguration`  | enabled for Servlet applications     | `bus.context.web.enabled=false` disables binding only | Registers the shared `RequestContext` and conditionally registers context binding for request, async, and error dispatches. |
 
 `GeniusStarter` contributes replaceable defaults for:
 
@@ -103,39 +103,39 @@ Both switches default to `true` when their required runtime classes are present.
 
 ## Feature activation model
 
-Product features use one deterministic activation order: an explicit `@EnableXxx` annotation always enables its
-feature, including when `bus.<feature>.enabled=false`; without the annotation, the feature is enabled only when its
+Product features use one deterministic activation order: an explicit `@EnableXxx` annotation always enables its feature,
+including when `bus.<feature>.enabled=false`; without the annotation, the feature is enabled only when its
 `bus.<feature>.enabled` property is `true`. If neither activation source is present, the feature remains disabled.
 
-| Feature | Import annotation | Property | Main responsibility |
-|---|---|---|---|
-| Auth | `@EnableAuth` | `bus.auth.enabled` | Authentication service and method resolution. |
-| Cache | `@EnableCache` | `bus.cache.enabled` | Cache provider assembly and AspectJ proxy support. |
-| CORS | `@EnableCors` | `bus.cors.enabled` | Validated Servlet MVC CORS policy. |
-| Cortex | `@EnableCortex` | `bus.cortex.enabled` | Cortex registry and integration assembly. |
-| Dubbo | `@EnableDubbo` | `bus.dubbo.enabled` | Apache Dubbo integration. |
-| Elastic | `@EnableElastic` | `bus.elastic.enabled` | Elasticsearch REST client lifecycle. |
-| Fabric | `@EnableFabric` | `bus.fabric.enabled` | TCP, WebSocket, and DNS service lifecycle. |
-| Health | `@EnableHealth` | `bus.health.enabled` | System health and availability integration. |
-| I18n | `@EnableI18n` | `bus.i18n.enabled` | Message source and Bus i18n adapter. |
-| Image | `@EnableImage` | `bus.image.enabled` | Image and DICOM provider integration. |
-| JDBC | `@EnableJdbc` | `bus.datasource.url` or `spring.datasource.url` | Validated dynamic data sources and routing. |
-| JSON | `@EnableJson` | `bus.json.enabled` | Application-context JSON provider selection. |
-| Limiter | `@EnableLimiter` | `bus.limiter.enabled` | Limiter scanning and service registration. |
-| Mapper | `@EnableMapper` | `bus.mapper.enabled` | MyBatis mapper scanning, plugins, tenant context, and AOT. |
-| Metrics | `@EnableMetrics` | `bus.metrics.enabled` | Metrics providers and endpoint. |
-| Mongo | `@EnableMongo` | `bus.mongo.enabled` | Mongo client settings customization. |
-| Notify | `@EnableNotify` | `bus.notify.enabled` | Notification registry and service lifecycle. |
-| Office | `@EnableOffice` | `bus.office.enabled` | Document conversion and preview service. |
-| Pay | `@EnablePay` | `bus.pay.enabled` | Payment registry and service. |
-| Sensitive | `@EnableSensitive` | `bus.sensitive.enabled` | Log sanitizer lifecycle and optional MVC body advice. |
-| Storage | `@EnableStorage` | `bus.storage.enabled` | Storage providers, registry, cache, and service. |
-| Tempus | `@EnableTempus` | `bus.tempus.enabled` | Temporal clients, workers, and lifecycle. |
-| Tracer | `@EnableTracer` | `bus.tracer.enabled` | Distributed tracing integration. |
-| Validate | `@EnableValidate` | `bus.validate.enabled` | Method validation and exception advice. |
-| Vortex | `@EnableVortex` | `bus.vortex.enabled` | Reactive routing gateway and asset lifecycle. |
-| Wrapper | `@EnableWrapper` | `bus.wrapper.enabled` | MVC binding, converters, caching, advice, and route prefixes. |
-| ZooKeeper | `@EnableZookeeper` | `bus.zookeeper.enabled` | Apache Curator client lifecycle. |
+| Feature   | Import annotation  | Property                                        | Main responsibility                                           |
+|-----------|--------------------|-------------------------------------------------|---------------------------------------------------------------|
+| Auth      | `@EnableAuth`      | `bus.auth.enabled`                              | Authentication service and method resolution.                 |
+| Cache     | `@EnableCache`     | `bus.cache.enabled`                             | Cache provider assembly and AspectJ proxy support.            |
+| CORS      | `@EnableCors`      | `bus.cors.enabled`                              | Validated Servlet MVC CORS policy.                            |
+| Cortex    | `@EnableCortex`    | `bus.cortex.enabled`                            | Cortex registry and integration assembly.                     |
+| Dubbo     | `@EnableDubbo`     | `bus.dubbo.enabled`                             | Apache Dubbo integration.                                     |
+| Elastic   | `@EnableElastic`   | `bus.elastic.enabled`                           | Elasticsearch REST client lifecycle.                          |
+| Fabric    | `@EnableFabric`    | `bus.fabric.enabled`                            | TCP, WebSocket, and DNS service lifecycle.                    |
+| Health    | `@EnableHealth`    | `bus.health.enabled`                            | System health and availability integration.                   |
+| I18n      | `@EnableI18n`      | `bus.i18n.enabled`                              | Message source and Bus i18n adapter.                          |
+| Image     | `@EnableImage`     | `bus.image.enabled`                             | Image and DICOM provider integration.                         |
+| JDBC      | `@EnableJdbc`      | `bus.datasource.url` or `spring.datasource.url` | Validated dynamic data sources and routing.                   |
+| JSON      | `@EnableJson`      | `bus.json.enabled`                              | Application-context JSON provider selection.                  |
+| Limiter   | `@EnableLimiter`   | `bus.limiter.enabled`                           | Limiter scanning and service registration.                    |
+| Mapper    | `@EnableMapper`    | `bus.mapper.enabled`                            | MyBatis mapper scanning, plugins, tenant context, and AOT.    |
+| Metrics   | `@EnableMetrics`   | `bus.metrics.enabled`                           | Metrics providers and endpoint.                               |
+| Mongo     | `@EnableMongo`     | `bus.mongo.enabled`                             | Mongo client settings customization.                          |
+| Notify    | `@EnableNotify`    | `bus.notify.enabled`                            | Notification registry and service lifecycle.                  |
+| Office    | `@EnableOffice`    | `bus.office.enabled`                            | Document conversion and preview service.                      |
+| Pay       | `@EnablePay`       | `bus.pay.enabled`                               | Payment registry and service.                                 |
+| Sensitive | `@EnableSensitive` | `bus.sensitive.enabled`                         | Log sanitizer lifecycle and optional MVC body advice.         |
+| Storage   | `@EnableStorage`   | `bus.storage.enabled`                           | Storage providers, registry, cache, and service.              |
+| Tempus    | `@EnableTempus`    | `bus.tempus.enabled`                            | Temporal clients, workers, and lifecycle.                     |
+| Tracer    | `@EnableTracer`    | `bus.tracer.enabled`                            | Distributed tracing integration.                              |
+| Validate  | `@EnableValidate`  | `bus.validate.enabled`                          | Method validation and exception advice.                       |
+| Vortex    | `@EnableVortex`    | `bus.vortex.enabled`                            | Reactive routing gateway and asset lifecycle.                 |
+| Wrapper   | `@EnableWrapper`   | `bus.wrapper.enabled`                           | MVC binding, converters, caching, advice, and route prefixes. |
+| ZooKeeper | `@EnableZookeeper` | `bus.zookeeper.enabled`                         | Apache Curator client lifecycle.                              |
 
 Each annotation imports the feature configuration directly. The shared `@ConditionalOnEnabled` rule from
 `bus-spring` accepts that explicit annotation before evaluating `bus.<feature>.enabled` as the secondary source. Both
@@ -286,15 +286,15 @@ bus:
 
 The application must provide one `DnsSnapshotProvider`; it remains the owner of DNS zones and snapshots. Optional
 `DnsSnapshotListener`, `DnsDynamicUpdateSink`, `DnsTsigKey`, and `TlsPolicy` beans extend lifecycle notifications,
-dynamic updates, TSIG validation, and DoT respectively. The Starter owns only the runtime `DnsServer` bean and closes
-it with the Spring context. DNS management, database access, and persistence are outside the Starter.
+dynamic updates, TSIG validation, and DoT respectively. The Starter owns only the runtime `DnsServer` bean and closes it
+with the Spring context. DNS management, database access, and persistence are outside the Starter.
 
 ## JDBC
 
 The Starter assembles JDBC automatically when the pool classes are available. Set `bus.datasource.enabled=false` to
 disable automatic assembly; an explicit `@EnableJdbc` always has higher priority and still enables JDBC. Datasource
-definitions use `bus.datasource` or `spring.datasource`, and both use the same root-primary plus `multi` structure.
-They are never merged: a `bus.datasource` URL selects the complete Bus group and overrides `spring.datasource`.
+definitions use `bus.datasource` or `spring.datasource`, and both use the same root-primary plus `multi` structure. They
+are never merged: a `bus.datasource` URL selects the complete Bus group and overrides `spring.datasource`.
 
 ```yaml
 bus:
@@ -319,11 +319,11 @@ bus:
 JDBC responsibilities are fixed. Reusable `DataSourceResolver`, `DataSourceDefinition`, `DataSourceMapping`,
 `DataSourceFactory`, `DynamicDataSource`, `DataSourceHolder`, and `AspectjJdbcProxy` live in `bus-spring` under
 `org.miaixz.bus.spring.jdbc`. The Starter package retains only `JdbcConfiguration`, which assembles Beans, and
-`JdbcDescriptor`, which defines the Bus-before-Spring prefix order and Hikari default. Both prefixes use
-the same resolver path. The root `name` is the default route and every `multi` entry supplies an additional route.
-Names must be nonblank and unique across the complete group. JDBC never references Mapper. When Mapper is enabled, its
-own `DataSourceListener` synchronizes dialect state for initial and runtime route changes. The routing Bean owns every
-pool created from these definitions: replacing or removing a route closes the unreferenced pool, and application-context
+`JdbcDescriptor`, which defines the Bus-before-Spring prefix order and Hikari default. Both prefixes use the same
+resolver path. The root `name` is the default route and every `multi` entry supplies an additional route. Names must be
+nonblank and unique across the complete group. JDBC never references Mapper. When Mapper is enabled, its own
+`DataSourceListener` synchronizes dialect state for initial and runtime route changes. The routing Bean owns every pool
+created from these definitions: replacing or removing a route closes the unreferenced pool, and application-context
 shutdown closes every remaining pool exactly once.
 
 Service methods select a named datasource with `@DataSource`. A method annotation overrides its class annotation, and
@@ -374,13 +374,13 @@ bound to the owning MyBatis `Configuration`, so two application contexts cannot 
 `bus.wrapper.enabled=true` activates the aggregate wrapper configuration. Child features remain independently
 controlled:
 
-| Capability | Property | Default after Wrapper is enabled |
-|---|---|---|
-| Request-object binding | `bus.wrapper.request-binding.enabled` | `true` |
-| Message converters | `bus.wrapper.message-converters.enabled` | `true` |
-| Bounded body cache | `bus.wrapper.body-cache.enabled` | `false` |
-| Response advice | `bus.wrapper.response-advice.enabled` | `false` |
-| Route prefix | `bus.wrapper.route-prefix.enabled` | `false` |
+| Capability             | Property                                 | Default after Wrapper is enabled |
+|------------------------|------------------------------------------|----------------------------------|
+| Request-object binding | `bus.wrapper.request-binding.enabled`    | `true`                           |
+| Message converters     | `bus.wrapper.message-converters.enabled` | `true`                           |
+| Bounded body cache     | `bus.wrapper.body-cache.enabled`         | `false`                          |
+| Response advice        | `bus.wrapper.response-advice.enabled`    | `false`                          |
+| Route prefix           | `bus.wrapper.route-prefix.enabled`       | `false`                          |
 
 ```yaml
 bus:
@@ -406,14 +406,14 @@ opt-in.
 
 The Starter owns the lifecycle of clients and long-running services it creates:
 
-| Feature | Lifecycle examples |
-|---|---|
-| Elastic | REST transport/client close. |
-| Fabric | TCP and WebSocket service start/stop. |
-| Notify, Office, Pay, Storage | Registry/service creation and context cleanup. |
-| Tempus | Client, worker factory, workers, and shutdown. |
-| Vortex | Router graph, server start/stop, and asset lifecycle. |
-| ZooKeeper | Curator client start/close. |
+| Feature                      | Lifecycle examples                                    |
+|------------------------------|-------------------------------------------------------|
+| Elastic                      | REST transport/client close.                          |
+| Fabric                       | TCP and WebSocket service start/stop.                 |
+| Notify, Office, Pay, Storage | Registry/service creation and context cleanup.        |
+| Tempus                       | Client, worker factory, workers, and shutdown.        |
+| Vortex                       | Router graph, server start/stop, and asset lifecycle. |
+| ZooKeeper                    | Curator client start/close.                           |
 
 An application-provided replacement Bean owns its own lifecycle unless the replacement contract states otherwise.
 
@@ -428,19 +428,19 @@ StorageService customStorageService(...) {
 }
 ```
 
-Do not depend on configuration implementation classes from business code. Configuration and property packages are
-opened to Spring for framework access but are not exported as general JPMS APIs. Only
+Do not depend on configuration implementation classes from business code. Configuration and property packages are opened
+to Spring for framework access but are not exported as general JPMS APIs. Only
 `org.miaixz.bus.starter.annotation` is exported.
 
 ## Package layout
 
-| Package group | Content |
-|---|---|
-| root | Shared startup infrastructure and property-prefix constants. |
-| `annotation` | Public `@Enable*` annotations. |
-| `context` | Default task and Servlet context propagation. |
+| Package group    | Content                                                                         |
+|------------------|---------------------------------------------------------------------------------|
+| root             | Shared startup infrastructure and property-prefix constants.                    |
+| `annotation`     | Public `@Enable*` annotations.                                                  |
+| `context`        | Default task and Servlet context propagation.                                   |
 | feature packages | One feature's configuration, properties, services, and lifecycle collaborators. |
-| `wrapper.*` | Independently controlled MVC wrapper capabilities. |
+| `wrapper.*`      | Independently controlled MVC wrapper capabilities.                              |
 
 There are no `internal` packages. Feature implementation types stay in their current feature package.
 

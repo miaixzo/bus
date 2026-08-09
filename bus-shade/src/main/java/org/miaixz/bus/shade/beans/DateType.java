@@ -23,7 +23,6 @@ package org.miaixz.bus.shade.beans;
  * Strategy for mapping database date types to entity date types.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum DateType {
     /**

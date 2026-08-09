@@ -30,7 +30,6 @@ import org.miaixz.bus.validate.magic.annotation.Blank;
  * empty or contains only whitespace.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BlankMatcher implements Validator<Object>, Matcher<Object, Blank> {
 

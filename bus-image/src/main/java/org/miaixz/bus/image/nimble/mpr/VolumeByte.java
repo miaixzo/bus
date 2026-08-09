@@ -25,7 +25,6 @@ import java.util.Arrays;
  * Byte-backed MPR volume.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class VolumeByte extends Volume<Byte> {
 

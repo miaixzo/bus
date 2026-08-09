@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.dict.Applicare_RadWorks_Version_6_0_Summary;
  * Represents the PrivateTag type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PrivateTag {
 

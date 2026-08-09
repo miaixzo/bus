@@ -30,7 +30,6 @@ import org.miaixz.bus.shade.safety.algorithm.Key;
  * Defines the contract for a decryptor, which provides methods for decrypting files and streams.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface DecryptorProvider {
 

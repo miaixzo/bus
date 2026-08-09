@@ -30,14 +30,18 @@ import org.miaixz.bus.core.lang.Normal;
  * This class holds all necessary connection parameters and settings for storage providers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Context {
+
+    /**
+     * Constructs a new {@code Context} instance.
+     */
+    public Context() {
+        // No initialization required.
+    }
 
     /**
      * The URL prefix for the storage service.

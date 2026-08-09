@@ -29,6 +29,7 @@ import java.util.Objects;
 
 import lombok.*;
 import lombok.Builder;
+import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.tls.AnyTrustManager;
@@ -47,14 +48,18 @@ import org.miaixz.bus.image.metric.pdu.IdentityRQ;
  * options.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@SuperBuilder
 public class Args {
+
+    /**
+     * Constructs a new {@code Args} instance.
+     */
+    public Args() {
+        // No initialization required.
+    }
 
     /**
      * Transfer Syntax order: Implicit VR Little Endian first.

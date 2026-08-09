@@ -32,7 +32,6 @@ import org.springframework.context.event.ContextClosedEvent;
  * Instance-owned access to one Spring application context and its event publisher.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SpringContext implements ApplicationListener<ContextClosedEvent>, AutoCloseable {
 

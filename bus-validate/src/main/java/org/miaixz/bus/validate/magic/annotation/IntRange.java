@@ -33,7 +33,6 @@ import org.miaixz.bus.validate.nimble.IntRangeMatcher;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

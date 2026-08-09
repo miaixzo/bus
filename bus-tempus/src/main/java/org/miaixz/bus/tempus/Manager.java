@@ -36,7 +36,6 @@ import org.miaixz.bus.tempus.crontab.CronCrontab;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Manager implements Serializable {
 

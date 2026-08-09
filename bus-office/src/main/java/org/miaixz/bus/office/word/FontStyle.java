@@ -29,7 +29,6 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
  * @param font  The font information (family, style, size).
  * @param color The font color.
  * @author Kimi Liu
- * @since Java 21+
  */
 public record FontStyle(Font font, Color color) {
 

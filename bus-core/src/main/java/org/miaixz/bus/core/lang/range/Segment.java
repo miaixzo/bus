@@ -31,7 +31,6 @@ import org.miaixz.bus.core.xyz.MathKit;
  *
  * @param <T> the numeric type used to represent the indices (e.g., Integer, Long)
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Segment<T extends Number> {
 

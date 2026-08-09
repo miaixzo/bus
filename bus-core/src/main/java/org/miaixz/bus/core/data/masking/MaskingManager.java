@@ -37,7 +37,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MaskingManager {
 
@@ -340,7 +339,6 @@ public class MaskingManager {
      * instance of the outer class, and it is loaded only when it is called, thus achieving lazy loading.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class SingletonHolder {
 

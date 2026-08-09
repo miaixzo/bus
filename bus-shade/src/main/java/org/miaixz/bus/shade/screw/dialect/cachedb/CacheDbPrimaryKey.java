@@ -29,7 +29,6 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
  * Represents primary key information for a CacheDB table.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

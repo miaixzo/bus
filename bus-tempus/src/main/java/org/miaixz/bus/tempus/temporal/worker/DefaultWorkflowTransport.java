@@ -43,7 +43,6 @@ import io.temporal.common.converter.DataConverter;
  * This transport intentionally avoids direct gRPC imports and keeps transport details inside the Temporal SDK layer.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DefaultWorkflowTransport implements WorkflowTransport {
 

@@ -24,6 +24,5 @@
  * without coupling the framework to a specific transport or business callback mechanism.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.tempus.temporal.notifier;

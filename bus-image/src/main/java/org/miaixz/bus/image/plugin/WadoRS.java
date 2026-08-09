@@ -54,7 +54,6 @@ import org.miaixz.bus.logger.Logger;
  * can be single or multipart.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WadoRS {
 

@@ -21,6 +21,5 @@
  * Provides DICOM image geometry utilities for orientation resolution, vector math, and localizer projection.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.nimble.geometry;

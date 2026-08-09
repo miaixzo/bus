@@ -44,7 +44,6 @@ import org.miaixz.bus.sensitive.nimble.StrategyProvider;
  *
  * @param <T> The type of the object to be processed.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Provider<T> {
 

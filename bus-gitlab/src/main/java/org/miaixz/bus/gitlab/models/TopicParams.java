@@ -30,15 +30,33 @@ import java.io.Serializable;
  * Avatar Upload has its own Upload in <code>org.miaixz.bus.gitlab.TopicsApi#updateTopicAvatar(Integer,File)</code>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TopicParams implements Serializable {
 
+    /**
+     * Constructs a new {@code TopicParams} instance.
+     */
+    public TopicParams() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852282251187L;
 
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The description value.
+     */
     private String description;
 
     /**

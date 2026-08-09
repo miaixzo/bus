@@ -21,6 +21,5 @@
  * Provides classes and interfaces for representing database metadata.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.shade.screw.metadata;

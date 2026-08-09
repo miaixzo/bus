@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.dict.DIDI_TO_PCR_1_1;
  * Represents the PrivateTag type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PrivateTag {
 

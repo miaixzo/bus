@@ -27,7 +27,6 @@ import org.miaixz.bus.image.metric.WebApplication;
  * Represents the WebApplicationCache type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WebApplicationCache extends ConfigurationCache<DicomConfiguration, WebApplication>
         implements IWebApplicationCache {

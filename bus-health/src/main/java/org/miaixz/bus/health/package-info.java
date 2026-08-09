@@ -22,6 +22,5 @@
  * memory, CPU, disk, devices, sensors, and more.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.health;

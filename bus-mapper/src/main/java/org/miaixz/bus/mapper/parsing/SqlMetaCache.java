@@ -31,7 +31,6 @@ import org.miaixz.bus.mapper.dialect.Dialect;
  * An SQL cache class for deferred generation of SQL scripts.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 public class SqlMetaCache {

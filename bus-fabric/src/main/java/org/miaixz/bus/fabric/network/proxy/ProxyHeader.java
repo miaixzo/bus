@@ -43,7 +43,6 @@ import org.miaixz.bus.fabric.Builder;
  * @param targetPort    target TCP port, or {@code 0} for {@code UNKNOWN}
  * @param sourceAddress cached TCP source endpoint, or {@code null} for {@code UNKNOWN}
  * @author Kimi Liu
- * @since Java 21+
  */
 public record ProxyHeader(String source, String target, int sourcePort, int targetPort, Address sourceAddress) {
 

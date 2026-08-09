@@ -22,6 +22,5 @@
  * calling class, multi-level callers, and to determine if a specific class is in the call stack.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.lang.caller;

@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.dict.syngoDynamics_Reporting;
  * Represents the PrivateTag type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PrivateTag {
 

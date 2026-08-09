@@ -37,7 +37,6 @@ import org.miaixz.bus.image.Tag;
  * Series entry in a DICOM manifest.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ManifestSeries implements ManifestXml, Comparable<ManifestSeries> {
 

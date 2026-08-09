@@ -29,7 +29,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * replacement when {@code isCodePoint} is true.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StringRangeReplacer extends StringReplacer {
 

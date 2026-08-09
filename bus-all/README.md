@@ -1,8 +1,10 @@
 # Bus All
 
-`bus-all` is the aggregate distribution module for the Bus framework. It provides one Maven coordinate for the curated Bus runtime modules, so applications can depend on a single artifact when they need the complete framework surface.
+`bus-all` is the aggregate distribution module for the Bus framework. It provides one Maven coordinate for the curated
+Bus runtime modules, so applications can depend on a single artifact when they need the complete framework surface.
 
-This module is a convenience artifact. For a minimal production classpath, prefer importing `bus-bom` and adding only the modules that the application actually uses.
+This module is a convenience artifact. For a minimal production classpath, prefer importing `bus-bom` and adding only
+the modules that the application actually uses.
 
 -----
 
@@ -61,7 +63,7 @@ When the project already imports `bus-bom`, the version can be omitted:
 ## Gradle Usage
 
 ```gradle
-implementation "org.miaixz:bus-all:x.x.x"
+implementation "org.miaixz:bus-all:8.x.x"
 ```
 
 With the BOM:
@@ -69,7 +71,7 @@ With the BOM:
 ```gradle
 dependencyManagement {
     imports {
-        mavenBom "org.miaixz:bus-bom:x.x.x"
+        mavenBom "org.miaixz:bus-bom:8.x.x"
     }
 }
 
@@ -114,27 +116,31 @@ dependencies {
 - `bus-validate`: validation utilities
 - `bus-vortex`: gateway and routing runtime
 
-Build-only modules such as `bus-parent` and `bus-bom` are not runtime modules and are not used as application dependencies.
+Build-only modules such as `bus-parent` and `bus-bom` are not runtime modules and are not used as application
+dependencies.
 
 -----
 
 ## Packaging Notes
 
-During package creation, `bus-all` shades the Bus runtime modules into one aggregate artifact and consolidates native-image metadata for GraalVM usage. The published POM is normalized so consumers use `bus-all` as a single entry artifact instead of receiving every internal module as a regular transitive dependency.
+During package creation, `bus-all` shades the Bus runtime modules into one aggregate artifact and consolidates
+native-image metadata for GraalVM usage. The published POM is normalized so consumers use `bus-all` as a single entry
+artifact instead of receiving every internal module as a regular transitive dependency.
 
-This makes `bus-all` convenient, but it also means the resulting classpath is intentionally broad. Choose direct module dependencies when startup time, dependency surface, native-image size or deployment footprint is important.
+This makes `bus-all` convenient, but it also means the resulting classpath is intentionally broad. Choose direct module
+dependencies when startup time, dependency surface, native-image size or deployment footprint is important.
 
 -----
 
 ## Choosing the Right Entry Point
 
-| Requirement | Recommended entry point |
-| --- | --- |
-| Full Bus runtime with one dependency | `bus-all` |
-| Version alignment for selected modules | `bus-bom` |
-| Shared build configuration | `bus-parent` |
-| Spring Boot auto-configuration | `bus-starter` |
-| Minimal runtime dependency set | Direct module dependencies |
+| Requirement                            | Recommended entry point    |
+|----------------------------------------|----------------------------|
+| Full Bus runtime with one dependency   | `bus-all`                  |
+| Version alignment for selected modules | `bus-bom`                  |
+| Shared build configuration             | `bus-parent`               |
+| Spring Boot auto-configuration         | `bus-starter`              |
+| Minimal runtime dependency set         | Direct module dependencies |
 
 -----
 

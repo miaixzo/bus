@@ -27,7 +27,6 @@ import org.miaixz.bus.image.Tag;
  * DICOM MAC parameters sequence item.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MacParameters extends DicomModule {
 

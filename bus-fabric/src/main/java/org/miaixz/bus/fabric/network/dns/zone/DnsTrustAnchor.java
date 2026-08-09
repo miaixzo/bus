@@ -36,7 +36,6 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsTrustAnchor {
 

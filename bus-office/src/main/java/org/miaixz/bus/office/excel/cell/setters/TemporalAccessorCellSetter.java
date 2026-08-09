@@ -31,7 +31,6 @@ import org.apache.poi.ss.usermodel.Cell;
  * {@link CellSetter} for {@link TemporalAccessor} values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TemporalAccessorCellSetter implements CellSetter {
 

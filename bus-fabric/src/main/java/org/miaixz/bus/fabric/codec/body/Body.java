@@ -33,7 +33,6 @@ import org.miaixz.bus.fabric.Payload;
  * Protocol-neutral body contract backed by a payload and media metadata.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Body extends AutoCloseable {
 

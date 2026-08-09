@@ -57,7 +57,6 @@ import org.miaixz.bus.mapper.handler.MybatisInterceptor;
  * a Spring container.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MapperPluginFactory {
 

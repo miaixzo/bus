@@ -39,7 +39,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Immutable health endpoint properties.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

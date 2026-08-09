@@ -27,7 +27,6 @@ import org.miaixz.bus.core.lang.Normal;
  * @param key   tag key; must not be blank
  * @param value tag value; {@code null} is normalised to {@code ""}
  * @author Kimi Liu
- * @since Java 21+
  */
 public record Tag(String key, String value) {
 

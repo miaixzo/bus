@@ -30,7 +30,6 @@ import org.miaixz.bus.gitlab.models.IssueEvent;
  *
  * @see <a href="https://docs.gitlab.com/ce/api/resource_state_events.html">Resource state events API at GitLab</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ResourceStateEventsApi extends AbstractApi {
 

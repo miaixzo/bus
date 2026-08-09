@@ -34,7 +34,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Resolves and converts character sets.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Charset {
 

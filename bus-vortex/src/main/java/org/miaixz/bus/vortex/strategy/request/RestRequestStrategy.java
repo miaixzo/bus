@@ -34,7 +34,6 @@ import reactor.core.publisher.Mono;
  * for downstream executors after parsing.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.FIRST)
 public class RestRequestStrategy extends RequestStrategy {

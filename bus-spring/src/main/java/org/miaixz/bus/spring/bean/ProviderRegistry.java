@@ -32,7 +32,6 @@ import org.miaixz.bus.core.Provider;
  * Context-owned discovery, ordering and caching of Spring Provider Beans.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProviderRegistry implements ApplicationListener<ContextClosedEvent>, AutoCloseable {
 

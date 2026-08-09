@@ -28,7 +28,6 @@ import org.miaixz.bus.fabric.Payload;
  *
  * @param <T> value type
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface DataEncoder<T> extends Encoder<T, Payload> {
 

@@ -44,7 +44,6 @@ import org.miaixz.bus.logger.Logger;
  * Default dispatcher with one registry shared by short, delayed, and background channels.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class DefaultDispatcher implements Dispatcher {
 

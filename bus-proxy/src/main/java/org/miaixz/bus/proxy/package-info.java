@@ -21,6 +21,5 @@
  * Provides a simplified API for creating dynamic proxies using aspects.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.proxy;

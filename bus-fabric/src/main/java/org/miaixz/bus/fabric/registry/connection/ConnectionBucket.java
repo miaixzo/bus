@@ -38,7 +38,6 @@ import org.miaixz.bus.fabric.network.Destination;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class ConnectionBucket {
 

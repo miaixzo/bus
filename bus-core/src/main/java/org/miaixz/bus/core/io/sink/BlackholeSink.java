@@ -28,7 +28,6 @@ import org.miaixz.bus.core.io.timout.Timeout;
  * A {@link Sink} implementation that discards every byte written to it.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class BlackholeSink implements Sink {
 

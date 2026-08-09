@@ -31,7 +31,6 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
  * Input context passed to guard strategies.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

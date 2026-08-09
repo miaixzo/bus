@@ -37,7 +37,6 @@ import org.miaixz.bus.core.xyz.TypeKit;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TripletConverter extends ConverterWithRoot implements Serializable {
 

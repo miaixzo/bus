@@ -29,26 +29,77 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The commit status class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CommitStatus implements Serializable {
 
+    /**
+     * Constructs a new {@code CommitStatus} instance.
+     */
+    public CommitStatus() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852250191072L;
 
+    /**
+     * The allow failure value.
+     */
     private Boolean allowFailure;
+    /**
+     * The author value.
+     */
     private Author author;
+    /**
+     * The coverage value.
+     */
     private Float coverage;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The finished at value.
+     */
     private Date finishedAt;
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The pipeline id value.
+     */
     private Long pipelineId;
+    /**
+     * The ref value.
+     */
     private String ref;
+    /**
+     * The sha value.
+     */
     private String sha;
+    /**
+     * The started at value.
+     */
     private Date startedAt;
+    /**
+     * The status value.
+     */
     private String status;
+    /**
+     * The target url value.
+     */
     private String targetUrl;
 
     /**

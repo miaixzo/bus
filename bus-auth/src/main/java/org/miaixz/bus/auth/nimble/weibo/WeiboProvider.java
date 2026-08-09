@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  * Weibo login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WeiboProvider extends AbstractProvider {
 

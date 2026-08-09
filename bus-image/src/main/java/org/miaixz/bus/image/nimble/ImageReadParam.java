@@ -34,7 +34,6 @@ import org.miaixz.bus.image.nimble.opencv.lut.LutShape;
  * Represents the ImageReadParam type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageReadParam extends javax.imageio.ImageReadParam {
 

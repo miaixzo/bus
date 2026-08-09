@@ -40,7 +40,6 @@ import org.miaixz.bus.starter.annotation.EnableZookeeper;
  * point for interacting with ZooKeeper.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(ZookeeperProperties.class)
 @Configuration(proxyBeanMethods = false)

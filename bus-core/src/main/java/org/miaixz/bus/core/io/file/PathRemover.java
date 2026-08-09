@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * including recursive deletion for directories and handling of read-only files.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PathRemover {
 

@@ -46,7 +46,6 @@ import org.miaixz.bus.health.unix.solaris.KstatKit.KstatChain;
  * filesystem, excluding temporary and kernel mounts.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class SolarisFileSystem extends AbstractFileSystem {

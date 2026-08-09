@@ -37,7 +37,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * Single-use WebSocket open call backed by the shared protocol call lifecycle.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class WebSocketCall extends MonoCall<WebSocketSession> {
 

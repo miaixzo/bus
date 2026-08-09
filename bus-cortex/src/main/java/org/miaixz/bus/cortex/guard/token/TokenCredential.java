@@ -26,7 +26,6 @@ import lombok.Setter;
  * A parsed token credential discovered from one request.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

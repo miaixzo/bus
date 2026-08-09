@@ -21,6 +21,5 @@
  * Provides classes for converting objects to a {@code String} representation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.convert.stringer;

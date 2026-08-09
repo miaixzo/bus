@@ -23,7 +23,6 @@ package org.miaixz.bus.image.nimble;
  * Defines the ColorSubsampling values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum ColorSubsampling {
 

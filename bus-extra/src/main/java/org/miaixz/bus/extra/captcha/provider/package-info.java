@@ -24,6 +24,5 @@
  * Turing test to tell Computers and Humans Apart) challenges.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.extra.captcha.provider;

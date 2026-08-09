@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.data;
  * Defines the SequenceVisitor contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface SequenceVisitor extends Visitor {
 

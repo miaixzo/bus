@@ -48,12 +48,11 @@ import org.miaixz.bus.core.lang.Normal;
  * }
  * }
  * </pre>
- *
+ * <p>
  * No copyright asserted on the source code of this class. May be used for any purpose, however, refer to the Unisys LZW
  * patent for any additional restrictions. Please forward any corrections to questions at fmsware.com.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GifDecoder {
 
@@ -898,7 +897,6 @@ public class GifDecoder {
      * A frame as part of a GIF animation.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     static class GifFrame {
 

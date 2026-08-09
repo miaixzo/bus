@@ -34,7 +34,6 @@ import org.miaixz.bus.image.metric.TransferCapability;
  * Compares related values. Provides DICOM processing details.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AttributeCoercion implements Serializable, Comparable<AttributeCoercion> {
 
@@ -228,7 +227,6 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
      * Provides DICOM processing details.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class Condition implements Serializable, Comparable<Condition> {
 

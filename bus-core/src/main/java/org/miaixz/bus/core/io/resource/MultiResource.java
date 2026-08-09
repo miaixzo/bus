@@ -39,7 +39,6 @@ import org.miaixz.bus.core.xyz.ListKit;
  * to reset the cursor for reuse.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MultiResource implements Resource, Iterable<Resource>, Iterator<Resource>, Serializable {
 

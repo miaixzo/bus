@@ -28,7 +28,6 @@ import org.miaixz.bus.image.UID;
  * Represents the RemapUIDsAttributesCoercion type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RemapUIDsAttributesCoercion implements AttributesCoercion {
 

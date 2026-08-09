@@ -29,20 +29,53 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The downstream pipeline class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DownstreamPipeline implements Serializable {
 
+    /**
+     * Constructs a new {@code DownstreamPipeline} instance.
+     */
+    public DownstreamPipeline() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852251939228L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The project id value.
+     */
     private Long projectId;
+    /**
+     * The sha value.
+     */
     private String sha;
+    /**
+     * The ref value.
+     */
     private String ref;
+    /**
+     * The status value.
+     */
     private String status;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The web url value.
+     */
     private String webUrl;
 
     /**

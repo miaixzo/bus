@@ -29,7 +29,6 @@ import org.miaixz.bus.logger.Logger;
  * Supported Cortex resource types.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Type {
 
@@ -371,7 +370,6 @@ public enum Type {
      * Internal type-domain classifier used to keep registry, setting and version boundaries explicit.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum Domain {
         /**

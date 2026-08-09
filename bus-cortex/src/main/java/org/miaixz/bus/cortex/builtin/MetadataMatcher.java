@@ -31,7 +31,6 @@ import org.miaixz.bus.cortex.Assets;
  * Matches and filters entries by metadata.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MetadataMatcher {
 

@@ -33,9 +33,15 @@ import org.miaixz.bus.fabric.Payload;
  * Fabric-backed HTTP support for authorization providers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class FabricX {
+
+    /**
+     * Constructs a new {@code FabricX} instance.
+     */
+    public FabricX() {
+        // No initialization required.
+    }
 
     /**
      * Shared Fabric context for authorization HTTP calls.

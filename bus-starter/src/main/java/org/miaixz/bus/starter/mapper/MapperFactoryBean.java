@@ -24,7 +24,6 @@ package org.miaixz.bus.starter.mapper;
  *
  * @param <T> The type of the mapper interface.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MapperFactoryBean<T> extends org.mybatis.spring.mapper.MapperFactoryBean<T> {
 

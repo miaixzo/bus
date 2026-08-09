@@ -33,7 +33,6 @@ import org.miaixz.bus.starter.storage.StorageConfiguration;
  * storage operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

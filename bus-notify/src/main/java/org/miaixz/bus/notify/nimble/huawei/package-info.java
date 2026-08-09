@@ -21,6 +21,5 @@
  * Provides support for Huawei Cloud messaging services.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.notify.nimble.huawei;

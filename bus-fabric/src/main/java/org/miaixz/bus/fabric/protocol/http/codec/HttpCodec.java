@@ -26,7 +26,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  * HTTP codec contract for request and response transfer over a bound route.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface HttpCodec {
 

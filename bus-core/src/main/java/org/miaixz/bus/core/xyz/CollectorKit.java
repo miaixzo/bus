@@ -39,7 +39,6 @@ import org.miaixz.bus.core.lang.tuple.Triplet;
  * Builds collectors for mutable reduction.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CollectorKit {
 

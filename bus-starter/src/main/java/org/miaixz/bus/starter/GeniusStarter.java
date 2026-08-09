@@ -51,7 +51,6 @@ import org.miaixz.bus.spring.bean.SpringContext;
  * discovered as ordinary components while retaining discovery for components owned by other Bus modules.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Configuration(proxyBeanMethods = false)

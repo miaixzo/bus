@@ -26,7 +26,6 @@ import org.miaixz.bus.core.center.date.culture.Replenish;
  * extends {@link Replenish} to associate a specific day index with a {@link Climate} instance.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ClimateDay extends Replenish {
 

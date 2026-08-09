@@ -8,7 +8,8 @@
 
 ## 📖 项目简介
 
-**Bus Cache** 是一个企业级缓存框架，提供统一的缓存抽象，支持多种存储实现。它在保持一致 API 的同时与各种缓存提供程序无缝集成，使开发者能够在不更改代码的情况下切换不同的缓存技术。
+**Bus Cache** 是一个企业级缓存框架，提供统一的缓存抽象，支持多种存储实现。它在保持一致 API
+的同时与各种缓存提供程序无缝集成，使开发者能够在不更改代码的情况下切换不同的缓存技术。
 
 该框架支持通过注解进行声明式缓存、自动缓存键生成、缓存穿透预防以及全面的指标监控。
 
@@ -25,15 +26,15 @@
 
 ### ⚡ 多种缓存实现
 
-| 实现 | 使用场景 | 性能 |
-| :--- | :--- | :--- |
-| **MemoryCache** | 本地内存缓存 | $\text{延迟 } < 1\text{ms}$ |
-| **CaffeineCache** | 高性能本地缓存 | 命中率 $> 95\%$ |
-| **GuavaCache** | 基于 Guava 的本地缓存 | 命中率 $> 90\%$ |
-| **RedisCache** | 分布式单节点 Redis | 网络延迟 |
-| **RedisClusterCache** | 分布式 Redis 集群 | 网络延迟 |
-| **MemcachedCache** | Memcached 分布式缓存 | 网络延迟 |
-| **NoOpCache** | 测试/无操作缓存 | N/A |
+| 实现                  | 使用场景              | 性能                        |
+|:----------------------|:----------------------|:----------------------------|
+| **MemoryCache**       | 本地内存缓存          | $\text{延迟 } < 1\text{ms}$ |
+| **CaffeineCache**     | 高性能本地缓存        | 命中率 $> 95\%$             |
+| **GuavaCache**        | 基于 Guava 的本地缓存 | 命中率 $> 90\%$             |
+| **RedisCache**        | 分布式单节点 Redis    | 网络延迟                    |
+| **RedisClusterCache** | 分布式 Redis 集群     | 网络延迟                    |
+| **MemcachedCache**    | Memcached 分布式缓存  | 网络延迟                    |
+| **NoOpCache**         | 测试/无操作缓存       | N/A                         |
 
 ### 🚀 声明式缓存
 
@@ -83,16 +84,16 @@
 
 `CacheProperties`（`bus.cache.*`）支持以下字段：
 
-| 配置项 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| `type` | `String` | `Collector` 实现类的全限定名 |
-| `prefix` | `String` | 应用于所有 Key 的全局缓存 Key 前缀 |
-| `timeout` | `String` | 默认过期时间（如 `"3600000"`，主要用于 Redis） |
-| `provider.url` | `String` | 数据库型 Collector 的 JDBC URL（MySQL、H2、SQLite 等） |
-| `provider.username` | `String` | 数据库用户名 |
-| `provider.password` | `String` | 数据库密码 |
+| 配置项              | 类型     | 说明                                                   |
+|:--------------------|:---------|:-------------------------------------------------------|
+| `type`              | `String` | `Collector` 实现类的全限定名                           |
+| `prefix`            | `String` | 应用于所有 Key 的全局缓存 Key 前缀                     |
+| `timeout`           | `String` | 默认过期时间（如 `"3600000"`，主要用于 Redis）         |
+| `provider.url`      | `String` | 数据库型 Collector 的 JDBC URL（MySQL、H2、SQLite 等） |
+| `provider.username` | `String` | 数据库用户名                                           |
+| `provider.password` | `String` | 数据库密码                                             |
 
-缓存实例（`MemoryCache`、`CaffeineCache`、`RedisCache` 等）是**接口类型**，必须注册为 Spring Bean，无法通过 YAML 直接绑定。
+缓存实例（`MemoryCache`、`CaffeineCache`、`RedisCache` 等）是 **接口类型**，必须注册为 Spring Bean，无法通过 YAML 直接绑定。
 
 **示例：内存 Collector（进程内，重启清零）**
 
@@ -382,8 +383,8 @@ public class RedisCacheConfig {
 }
 ```
 
-`RedisCache` 实现了 `AutoCloseable`。调用 `close()` 或使用 try-with-resources 可归还所有连接池资源。
-在 Spring 容器中，`@PreDestroy` 注解会自动触发关闭。
+`RedisCache` 实现了 `AutoCloseable`。调用 `close()` 或使用 try-with-resources 可归还所有连接池资源。 在 Spring 容器中，
+`@PreDestroy` 注解会自动触发关闭。
 
 #### Redis 集群
 
@@ -426,6 +427,7 @@ cache.write("global:config", config, CacheExpire.FOREVER);
 ```
 
 各实现对此合约的处理方式：
+
 - `MemoryCache` — TTL 检查中永不驱逐该条目
 - `RedisCache` / `RedisClusterCache` — 使用不带 `PX` 的普通 `SET` 命令
 - `MemcachedCache` — 退化为 Memcached 协议的最大 TTL（30 天）
@@ -998,9 +1000,9 @@ public class CacheWarmupService implements ApplicationRunner {
 ## 🔄 版本兼容性
 
 | Bus Cache 版本 | JDK 版本 | Spring Boot 版本 |
-| :--- | :--- | :--- |
-| 8.x | 17+ | 3.x+ |
-| 7.x | 11+ | 2.x+ |
+|:---------------|:---------|:-----------------|
+| 8.x            | 17+      | 3.x+             |
+| 7.x            | 11+      | 2.x+             |
 
 -----
 
@@ -1008,13 +1010,13 @@ public class CacheWarmupService implements ApplicationRunner {
 
 基于基准测试（10,000 次操作）：
 
-| 缓存实现 | 平均延迟 | 吞吐量 | 命中率 |
-| :--- | :--- | :--- | :--- |
-| **MemoryCache** | $0.5\text{ms}$ | $20,000\text{ ops/s}$ | $95\%$ |
-| **CaffeineCache** | $0.3\text{ms}$ | $33,000\text{ ops/s}$ | $98\%$ |
-| **GuavaCache** | $0.6\text{ms}$ | $16,000\text{ ops/s}$ | $92\%$ |
-| **RedisCache** | $2.5\text{ms}$ | $4,000\text{ ops/s}$ | N/A |
-| **MemcachedCache** | $2.0\text{ms}$ | $5,000\text{ ops/s}$ | N/A |
+| 缓存实现           | 平均延迟       | 吞吐量                | 命中率 |
+|:-------------------|:---------------|:----------------------|:-------|
+| **MemoryCache**    | $0.5\text{ms}$ | $20,000\text{ ops/s}$ | $95\%$ |
+| **CaffeineCache**  | $0.3\text{ms}$ | $33,000\text{ ops/s}$ | $98\%$ |
+| **GuavaCache**     | $0.6\text{ms}$ | $16,000\text{ ops/s}$ | $92\%$ |
+| **RedisCache**     | $2.5\text{ms}$ | $4,000\text{ ops/s}$  | N/A    |
+| **MemcachedCache** | $2.0\text{ms}$ | $5,000\text{ ops/s}$  | N/A    |
 
 -----
 
@@ -1022,30 +1024,30 @@ public class CacheWarmupService implements ApplicationRunner {
 
 ### MemoryCache 属性
 
-| 属性 | 类型 | 默认值 | 描述 |
-| :--- | :--- | :--- | :--- |
-| `maximumSize` | `long` | `1000` | 最大条目数 |
-| `expireAfterWrite` | `long` | `180000` | TTL（毫秒） |
-| `expireAfterAccess` | `long` | `0` | TTI（毫秒，0 = 禁用） |
-| `initialCapacity` | `int` | `16` | 初始映射容量 |
+| 属性                | 类型   | 默认值   | 描述                  |
+|:--------------------|:-------|:---------|:----------------------|
+| `maximumSize`       | `long` | `1000`   | 最大条目数            |
+| `expireAfterWrite`  | `long` | `180000` | TTL（毫秒）           |
+| `expireAfterAccess` | `long` | `0`      | TTI（毫秒，0 = 禁用） |
+| `initialCapacity`   | `int`  | `16`     | 初始映射容量          |
 
 ### CaffeineCache 属性
 
-| 属性 | 类型 | 默认值 | 描述 |
-| :--- | :--- | :--- | :--- |
-| `maximumSize` | `long` | `1000` | 最大条目数 |
-| `expireAfterWrite` | `long` | - | TTL（毫秒） |
-| `expireAfterAccess` | `long` | - | TTI（毫秒） |
-| `initialCapacity` | `int` | - | 初始映射容量 |
+| 属性                | 类型   | 默认值 | 描述         |
+|:--------------------|:-------|:-------|:-------------|
+| `maximumSize`       | `long` | `1000` | 最大条目数   |
+| `expireAfterWrite`  | `long` | -      | TTL（毫秒）  |
+| `expireAfterAccess` | `long` | -      | TTI（毫秒）  |
+| `initialCapacity`   | `int`  | -      | 初始映射容量 |
 
 ### RedisCache 属性
 
-| 属性 | 类型 | 默认值 | 描述 |
-| :--- | :--- | :--- | :--- |
-| `host` | `String` | `localhost` | Redis 服务器主机 |
-| `port` | `int` | `6379` | Redis 服务器端口 |
-| `timeout` | `int` | `2000` | 连接超时（毫秒） |
-| `serializer` | `BaseSerializer` | `Hessian2Serializer` | 值序列化器 |
+| 属性         | 类型             | 默认值               | 描述             |
+|:-------------|:-----------------|:---------------------|:-----------------|
+| `host`       | `String`         | `localhost`          | Redis 服务器主机 |
+| `port`       | `int`            | `6379`               | Redis 服务器端口 |
+| `timeout`    | `int`            | `2000`               | 连接超时（毫秒） |
+| `serializer` | `BaseSerializer` | `Hessian2Serializer` | 值序列化器       |
 
 -----
 

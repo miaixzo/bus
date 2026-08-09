@@ -32,7 +32,6 @@ import org.miaixz.bus.cortex.Status;
  * MCP JSON-RPC ping prober.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class McpPingProber implements Prober {
 

@@ -27,7 +27,6 @@ import org.miaixz.bus.image.Tag;
  * SOP instance reference with purpose, MAC parameters and digital signatures.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SopInstanceReferenceAndMac extends SopInstanceReferenceAndPurpose {
 

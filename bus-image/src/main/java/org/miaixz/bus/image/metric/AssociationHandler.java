@@ -32,7 +32,6 @@ import org.miaixz.bus.image.metric.pdu.*;
  * Represents the AssociationHandler type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AssociationHandler {
 

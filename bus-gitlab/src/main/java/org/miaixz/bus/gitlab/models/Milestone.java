@@ -31,30 +31,78 @@ import tools.jackson.databind.annotation.JsonSerialize;
  * The milestone class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Milestone implements Serializable {
 
+    /**
+     * Constructs a new {@code Milestone} instance.
+     */
+    public Milestone() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852265609811L;
 
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The description value.
+     */
     private String description;
 
+    /**
+     * The start date value.
+     */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date startDate;
 
+    /**
+     * The due date value.
+     */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date dueDate;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The iid value.
+     */
     private Long iid;
+    /**
+     * The project id value.
+     */
     private Long projectId;
+    /**
+     * The group id value.
+     */
     private Long groupId;
+    /**
+     * The state value.
+     */
     private String state;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The expired value.
+     */
     private Boolean expired;
+    /**
+     * The web url value.
+     */
     private String webUrl;
 
     /**

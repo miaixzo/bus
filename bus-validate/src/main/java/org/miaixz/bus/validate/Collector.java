@@ -32,7 +32,6 @@ import org.miaixz.bus.validate.magic.Criterion;
  * Validation result collector.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

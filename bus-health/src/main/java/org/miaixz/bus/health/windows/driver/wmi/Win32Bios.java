@@ -31,7 +31,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * Queries WMI class {@code Win32_BIOS}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Win32Bios {
@@ -73,7 +72,6 @@ public final class Win32Bios {
      * Serial number property.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum BiosSerialProperty {
         /**
@@ -87,7 +85,6 @@ public final class Win32Bios {
      * BIOS description properties.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum BiosProperty {
         /**

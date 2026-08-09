@@ -34,7 +34,6 @@ import org.miaixz.bus.health.windows.jna.WindowsDxgi;
  * {@code HardwareInformation.MemorySize}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DxgiAdapterInfo {
 

@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.cortex.setting.namespace;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -31,12 +30,10 @@ import org.miaixz.bus.cortex.Type;
  * Namespace directory entry for the setting domain.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@AllArgsConstructor
 public class Namespace extends Setting {
 
     /**

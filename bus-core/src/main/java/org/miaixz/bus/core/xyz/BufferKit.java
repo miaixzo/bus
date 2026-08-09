@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * project and other projects. For more information on ByteBuffer, see: https://www.cnblogs.com/ruber/p/6857159.html
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BufferKit {
 

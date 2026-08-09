@@ -35,7 +35,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * Schema difference between entity metadata and a database snapshot.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

@@ -44,7 +44,6 @@ import org.miaixz.bus.image.nimble.extend.ImageReaderExtension;
  * Represents the LdapImageReaderConfiguration type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LdapImageReaderConfiguration extends LdapDicomConfigurationExtension {
 

@@ -27,19 +27,49 @@ import java.util.Date;
  * The trigger class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Trigger implements Serializable {
 
+    /**
+     * Constructs a new {@code Trigger} instance.
+     */
+    public Trigger() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852282359329L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The last used value.
+     */
     private Date lastUsed;
+    /**
+     * The token value.
+     */
     private String token;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The owner value.
+     */
     private User owner;
 
     /**

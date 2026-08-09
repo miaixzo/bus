@@ -34,7 +34,6 @@ import org.miaixz.bus.logger.Logger;
  * Defines the QueryRetrieveLevel2 values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum QueryRetrieveLevel2 {
 

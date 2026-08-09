@@ -34,7 +34,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * named groups, where each group is a {@code LinkedHashMap<String, String>}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, String>> {
 

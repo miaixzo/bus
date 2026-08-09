@@ -25,7 +25,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * EDNS Extended DNS Error metadata attached to an OPT response.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsExtendedError {
 

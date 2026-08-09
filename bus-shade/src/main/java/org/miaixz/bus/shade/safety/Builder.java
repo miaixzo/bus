@@ -47,7 +47,6 @@ import org.miaixz.bus.shade.safety.complex.NotComplex;
  * shading.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class Builder {
 

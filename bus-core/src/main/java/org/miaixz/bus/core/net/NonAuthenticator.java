@@ -26,7 +26,6 @@ import java.net.PasswordAuthentication;
  * An {@link Authenticator} implementation that uses a username and password.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NonAuthenticator extends Authenticator {
 

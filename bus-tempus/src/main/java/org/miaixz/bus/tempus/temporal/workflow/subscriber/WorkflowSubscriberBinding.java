@@ -30,7 +30,6 @@ import io.temporal.worker.Worker;
  * for a worker instance.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface WorkflowSubscriberBinding extends Binding {
 

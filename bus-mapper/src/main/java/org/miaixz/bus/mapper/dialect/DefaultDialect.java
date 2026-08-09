@@ -27,7 +27,6 @@ import org.miaixz.bus.mapper.feature.paging.Pageable;
  * Default dialect for unknown databases.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DefaultDialect extends AbstractDialect {
 

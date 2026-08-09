@@ -34,7 +34,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * compressed immediately as it is written. Calling {@link #flush()} may reduce compression efficiency.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DeflaterSink implements Sink {
 

@@ -36,7 +36,6 @@ import org.miaixz.bus.logger.Logger;
  * Version-domain publishing workflow.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class VersionPublisher {
 

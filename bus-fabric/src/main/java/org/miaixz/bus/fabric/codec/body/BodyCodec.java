@@ -40,7 +40,6 @@ import org.miaixz.bus.fabric.Payload;
  * Default body codec for adapting payloads, streams, bytes, text, and files.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class BodyCodec {
 

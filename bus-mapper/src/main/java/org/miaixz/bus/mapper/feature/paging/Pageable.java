@@ -66,7 +66,6 @@ import lombok.Getter;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Pageable extends Serializable {
 
@@ -201,7 +200,6 @@ public interface Pageable extends Serializable {
      * Implementation of Pageable interface.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     final class PageRequest implements Pageable {

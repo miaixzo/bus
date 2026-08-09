@@ -45,7 +45,6 @@ import org.miaixz.bus.health.mac.CFKit;
  * A Power Source
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class MacPowerSource extends AbstractPowerSource {

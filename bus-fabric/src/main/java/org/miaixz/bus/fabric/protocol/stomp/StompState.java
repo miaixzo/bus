@@ -29,7 +29,6 @@ import org.miaixz.bus.fabric.Timeout;
  * Immutable STOMP heartbeat state negotiated independently from the transport {@link Timeout}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class StompState {
 

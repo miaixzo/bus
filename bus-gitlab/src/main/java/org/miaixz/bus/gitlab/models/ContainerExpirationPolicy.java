@@ -28,20 +28,50 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The container expiration policy class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ContainerExpirationPolicy implements Serializable {
 
+    /**
+     * Constructs a new {@code ContainerExpirationPolicy} instance.
+     */
+    public ContainerExpirationPolicy() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852250662811L;
 
+    /**
+     * The cadence value.
+     */
     private String cadence;
+    /**
+     * The enabled value.
+     */
     private Boolean enabled;
+    /**
+     * The keep n value.
+     */
     private Integer keepN;
+    /**
+     * The older than value.
+     */
     private String olderThan;
+    /**
+     * The name regex value.
+     */
     private String nameRegex;
+    /**
+     * The name regex keep value.
+     */
     private String nameRegexKeep;
 
+    /**
+     * The next run at value.
+     */
     private String nextRunAt;
 
     /**

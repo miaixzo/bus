@@ -38,7 +38,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * which can expose your application to man-in-the-middle attacks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AnyHostnameVerifier implements HostnameVerifier {
 

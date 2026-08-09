@@ -35,7 +35,6 @@ import org.miaixz.bus.pay.nimble.AbstractProvider;
  * of the source field separately.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Complex {
 

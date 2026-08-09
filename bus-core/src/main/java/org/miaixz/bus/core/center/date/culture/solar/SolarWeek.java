@@ -33,7 +33,6 @@ import org.miaixz.bus.core.center.date.culture.parts.WeekParts;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SolarWeek extends WeekParts {
 

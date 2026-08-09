@@ -35,7 +35,6 @@ import org.miaixz.bus.health.unix.solaris.driver.kstat.SystemPages;
  * Memory obtained by kstat and swap
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class SolarisVirtualMemory extends AbstractVirtualMemory {

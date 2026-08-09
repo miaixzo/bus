@@ -26,7 +26,6 @@ import java.util.TimeZone;
  * Interface for date information retrieval, providing date format, time zone, and locale information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface DatePrinter {
 

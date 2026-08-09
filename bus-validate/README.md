@@ -8,9 +8,12 @@
 
 ## 📖 Project Introduction
 
-**Bus Validate** is a lightweight, high-performance Java validation framework designed to simplify data validation in enterprise applications. It provides a rich set of built-in validators while supporting custom validation logic through annotation-based configuration.
+**Bus Validate** is a lightweight, high-performance Java validation framework designed to simplify data validation in
+enterprise applications. It provides a rich set of built-in validators while supporting custom validation logic through
+annotation-based configuration.
 
 **Key Features:**
+
 - **Annotation-Based**: Declarative validation using Java annotations
 - **Extensible**: Easy to create custom validators
 - **Zero Dependencies**: Lightweight design with minimal dependencies
@@ -35,12 +38,12 @@
 
 ### ⚡ Performance Optimization
 
-| Feature | Benefit | Description |
-| :--- | :--- | :--- |
-| **Lazy Evaluation** | Low Overhead | Only validates when explicitly called |
-| **Reflection Caching** | Fast Startup | Caches reflection metadata for better performance |
-| **Minimal Dependencies** | Small Footprint | Only depends on bus-logger and Lombok |
-| **Thread-Safe** | Concurrent Use | Safe to use in multi-threaded environments |
+| Feature                  | Benefit         | Description                                       |
+|:-------------------------|:----------------|:--------------------------------------------------|
+| **Lazy Evaluation**      | Low Overhead    | Only validates when explicitly called             |
+| **Reflection Caching**   | Fast Startup    | Caches reflection metadata for better performance |
+| **Minimal Dependencies** | Small Footprint | Only depends on bus-logger and Lombok             |
+| **Thread-Safe**          | Concurrent Use  | Safe to use in multi-threaded environments        |
 
 ### 🛡️ Validation Coverage
 
@@ -139,67 +142,67 @@ public class UserService {
 
 ### Null/Empty Validators
 
-| Annotation | Description | Example |
-| :--- | :--- | :--- |
-| `@NotNull` | Validates that the value is not null | `@NotNull(errmsg = "ID cannot be null")` |
-| `@Null` | Validates that the value is null | `@Null(errmsg = "Must be null")` |
+| Annotation  | Description                                                    | Example                                      |
+|:------------|:---------------------------------------------------------------|:---------------------------------------------|
+| `@NotNull`  | Validates that the value is not null                           | `@NotNull(errmsg = "ID cannot be null")`     |
+| `@Null`     | Validates that the value is null                               | `@Null(errmsg = "Must be null")`             |
 | `@NotEmpty` | Validates that the value is not empty (array, collection, map) | `@NotEmpty(errmsg = "List cannot be empty")` |
-| `@NotBlank` | Validates that the string is not blank (trimmed length > 0) | `@NotBlank(errmsg = "Name cannot be blank")` |
-| `@Blank` | Validates that the string is blank | `@Blank(errmsg = "Must be blank")` |
+| `@NotBlank` | Validates that the string is not blank (trimmed length > 0)    | `@NotBlank(errmsg = "Name cannot be blank")` |
+| `@Blank`    | Validates that the string is blank                             | `@Blank(errmsg = "Must be blank")`           |
 
 ### String Validators
 
-| Annotation | Description | Example |
-| :--- | :--- | :--- |
-| `@Email` | Validates email format | `@Email(errmsg = "Invalid email")` |
-| `@Mobile` | Validates mobile phone number | `@Mobile(errmsg = "Invalid mobile")` |
-| `@Phone` | Validates phone number | `@Phone(errmsg = "Invalid phone")` |
-| `@Chinese` | Validates Chinese characters | `@Chinese(errmsg = "Must be Chinese")` |
-| `@English` | Validates English characters | `@English(errmsg = "Must be English")` |
-| `@URL` | Validates URL format | `@URL(errmsg = "Invalid URL")` |
-| `@IPAddress` | Validates IP address | `@IPAddress(errmsg = "Invalid IP")` |
-| `@CitizenId` | Validates Chinese citizen ID | `@CitizenId(errmsg = "Invalid ID")` |
+| Annotation   | Description                   | Example                                |
+|:-------------|:------------------------------|:---------------------------------------|
+| `@Email`     | Validates email format        | `@Email(errmsg = "Invalid email")`     |
+| `@Mobile`    | Validates mobile phone number | `@Mobile(errmsg = "Invalid mobile")`   |
+| `@Phone`     | Validates phone number        | `@Phone(errmsg = "Invalid phone")`     |
+| `@Chinese`   | Validates Chinese characters  | `@Chinese(errmsg = "Must be Chinese")` |
+| `@English`   | Validates English characters  | `@English(errmsg = "Must be English")` |
+| `@URL`       | Validates URL format          | `@URL(errmsg = "Invalid URL")`         |
+| `@IPAddress` | Validates IP address          | `@IPAddress(errmsg = "Invalid IP")`    |
+| `@CitizenId` | Validates Chinese citizen ID  | `@CitizenId(errmsg = "Invalid ID")`    |
 
 ### Size/Length Validators
 
-| Annotation | Description | Example |
-| :--- | :--- | :--- |
-| `@Size` | Validates size of array, collection, map, or string length | `@Size(min = 1, max = 10)` |
-| `@Length` | Validates string length | `@Length(min = 5, max = 100)` |
-| `@Date` | Validates date format | `@Date(format = "yyyy-MM-dd")` |
+| Annotation | Description                                                | Example                        |
+|:-----------|:-----------------------------------------------------------|:-------------------------------|
+| `@Size`    | Validates size of array, collection, map, or string length | `@Size(min = 1, max = 10)`     |
+| `@Length`  | Validates string length                                    | `@Length(min = 5, max = 100)`  |
+| `@Date`    | Validates date format                                      | `@Date(format = "yyyy-MM-dd")` |
 
 ### Numeric Validators
 
-| Annotation | Description | Example |
-| :--- | :--- | :--- |
-| `@IntRange` | Validates integer range | `@IntRange(min = 0, max = 100)` |
-| `@Multiple` | Validates if value is a multiple of specified number | `@Multiple(value = 5)` |
+| Annotation  | Description                                          | Example                         |
+|:------------|:-----------------------------------------------------|:--------------------------------|
+| `@IntRange` | Validates integer range                              | `@IntRange(min = 0, max = 100)` |
+| `@Multiple` | Validates if value is a multiple of specified number | `@Multiple(value = 5)`          |
 
 ### Comparison Validators
 
-| Annotation | Description | Example |
-| :--- | :--- | :--- |
-| `@Compare` | Compares two fields | `@Compare(field = "password")` |
-| `@Equals` | Checks if value equals specified value | `@Equals(value = "ACTIVE")` |
-| `@In` | Checks if value is in specified values | `@In(values = {"A", "B", "C"})` |
-| `@NotIn` | Checks if value is not in specified values | `@NotIn(values = {"X", "Y", "Z"})` |
-| `@InEnum` | Checks if value is valid enum value | `@InEnum(StatusEnum.class)` |
+| Annotation | Description                                | Example                            |
+|:-----------|:-------------------------------------------|:-----------------------------------|
+| `@Compare` | Compares two fields                        | `@Compare(field = "password")`     |
+| `@Equals`  | Checks if value equals specified value     | `@Equals(value = "ACTIVE")`        |
+| `@In`      | Checks if value is in specified values     | `@In(values = {"A", "B", "C"})`    |
+| `@NotIn`   | Checks if value is not in specified values | `@NotIn(values = {"X", "Y", "Z"})` |
+| `@InEnum`  | Checks if value is valid enum value        | `@InEnum(StatusEnum.class)`        |
 
 ### Boolean Validators
 
-| Annotation | Description | Example |
-| :--- | :--- | :--- |
-| `@True` | Validates that value is true | `@True(errmsg = "Must be true")` |
-| `@False` | Validates that value is false | `@False(errmsg = "Must be false")` |
+| Annotation | Description                   | Example                            |
+|:-----------|:------------------------------|:-----------------------------------|
+| `@True`    | Validates that value is true  | `@True(errmsg = "Must be true")`   |
+| `@False`   | Validates that value is false | `@False(errmsg = "Must be false")` |
 
 ### Special Validators
 
-| Annotation | Description | Example |
-| :--- | :--- | :--- |
-| `@Regex` | Validates using regular expression | `@Regex(value = "^[A-Z]\\d{5}$")` |
-| `@Each` | Validates each element in a collection | `@Each @NotNull` |
-| `@Valid` | Enables nested validation | `@Valid(inside = true)` |
-| `@Group` | Specifies validation groups | `@Group({"create", "update"})` |
+| Annotation | Description                            | Example                           |
+|:-----------|:---------------------------------------|:----------------------------------|
+| `@Regex`   | Validates using regular expression     | `@Regex(value = "^[A-Z]\\d{5}$")` |
+| `@Each`    | Validates each element in a collection | `@Each @NotNull`                  |
+| `@Valid`   | Enables nested validation              | `@Valid(inside = true)`           |
+| `@Group`   | Specifies validation groups            | `@Group({"create", "update"})`    |
 
 -----
 
@@ -530,10 +533,10 @@ Builder.on(product, context).access();
 
 ## 🔄 Version Compatibility
 
-| Bus Validate Version | JDK Version | Notes |
-| :--- | :--- | :--- |
-| 8.x | 17+ | Requires Java 17 or higher |
-| 7.x | 11+ | Supports Java 11 and higher |
+| Bus Validate Version | JDK Version | Notes                       |
+|:---------------------|:------------|:----------------------------|
+| 8.x                  | 17+         | Requires Java 17 or higher  |
+| 7.x                  | 11+         | Supports Java 11 and higher |
 
 -----
 
@@ -541,35 +544,35 @@ Builder.on(product, context).access();
 
 ### Complete Annotation List
 
-| Annotation | Target Types | Null Handling | Description |
-| :--- | :--- | :--- | :--- |
-| `@NotNull` | All | ❌ Invalid | Value must not be null |
-| `@Null` | All | ✅ Valid | Value must be null |
-| `@NotEmpty` | Array, Collection, Map, String | ❌ Invalid | Value must not be empty |
-| `@NotBlank` | CharSequence | ❌ Invalid | Trimmed length must be > 0 |
-| `@Blank` | CharSequence | ✅ Valid | Trimmed length must be 0 |
-| `@Email` | CharSequence | ✅ Valid | Must be valid email format |
-| `@Mobile` | CharSequence | ✅ Valid | Must be valid mobile number |
-| `@Phone` | CharSequence | ✅ Valid | Must be valid phone number |
-| `@Chinese` | CharSequence | ✅ Valid | Must contain Chinese characters |
-| `@English` | CharSequence | ✅ Valid | Must contain English characters |
-| `@IPAddress` | CharSequence | ✅ Valid | Must be valid IP address |
-| `@CitizenId` | CharSequence | ✅ Valid | Must be valid citizen ID |
-| `@Size` | Array, Collection, Map, CharSequence | ✅ Valid | Size/length must be in range |
-| `@Length` | CharSequence | ✅ Valid | Length must be in range |
-| `@Date` | CharSequence | ✅ Valid | Must match date format |
-| `@IntRange` | Number, CharSequence | ✅ Valid | Must be in integer range |
-| `@Multiple` | Number, CharSequence | ✅ Valid | Must be multiple of value |
-| `@True` | Boolean | ✅ Valid | Must be true |
-| `@False` | Boolean | ✅ Valid | Must be false |
-| `@Compare` | All | ✅ Valid | Must compare to other field |
-| `@Equals` | All | ✅ Valid | Must equal specified value |
-| `@In` | All | ✅ Valid | Must be in specified values |
-| `@NotIn` | All | ✅ Valid | Must not be in specified values |
-| `@InEnum` | CharSequence | ✅ Valid | Must be valid enum value |
-| `@Regex` | CharSequence | ✅ Valid | Must match regex pattern |
-| `@Each` | Array, Collection | - | Validates each element |
-| `@Valid` | All | - | Enables nested validation |
+| Annotation   | Target Types                         | Null Handling | Description                     |
+|:-------------|:-------------------------------------|:--------------|:--------------------------------|
+| `@NotNull`   | All                                  | ❌ Invalid    | Value must not be null          |
+| `@Null`      | All                                  | ✅ Valid      | Value must be null              |
+| `@NotEmpty`  | Array, Collection, Map, String       | ❌ Invalid    | Value must not be empty         |
+| `@NotBlank`  | CharSequence                         | ❌ Invalid    | Trimmed length must be > 0      |
+| `@Blank`     | CharSequence                         | ✅ Valid      | Trimmed length must be 0        |
+| `@Email`     | CharSequence                         | ✅ Valid      | Must be valid email format      |
+| `@Mobile`    | CharSequence                         | ✅ Valid      | Must be valid mobile number     |
+| `@Phone`     | CharSequence                         | ✅ Valid      | Must be valid phone number      |
+| `@Chinese`   | CharSequence                         | ✅ Valid      | Must contain Chinese characters |
+| `@English`   | CharSequence                         | ✅ Valid      | Must contain English characters |
+| `@IPAddress` | CharSequence                         | ✅ Valid      | Must be valid IP address        |
+| `@CitizenId` | CharSequence                         | ✅ Valid      | Must be valid citizen ID        |
+| `@Size`      | Array, Collection, Map, CharSequence | ✅ Valid      | Size/length must be in range    |
+| `@Length`    | CharSequence                         | ✅ Valid      | Length must be in range         |
+| `@Date`      | CharSequence                         | ✅ Valid      | Must match date format          |
+| `@IntRange`  | Number, CharSequence                 | ✅ Valid      | Must be in integer range        |
+| `@Multiple`  | Number, CharSequence                 | ✅ Valid      | Must be multiple of value       |
+| `@True`      | Boolean                              | ✅ Valid      | Must be true                    |
+| `@False`     | Boolean                              | ✅ Valid      | Must be false                   |
+| `@Compare`   | All                                  | ✅ Valid      | Must compare to other field     |
+| `@Equals`    | All                                  | ✅ Valid      | Must equal specified value      |
+| `@In`        | All                                  | ✅ Valid      | Must be in specified values     |
+| `@NotIn`     | All                                  | ✅ Valid      | Must not be in specified values |
+| `@InEnum`    | CharSequence                         | ✅ Valid      | Must be valid enum value        |
+| `@Regex`     | CharSequence                         | ✅ Valid      | Must match regex pattern        |
+| `@Each`      | Array, Collection                    | -             | Validates each element          |
+| `@Valid`     | All                                  | -             | Enables nested validation       |
 
 -----
 
@@ -640,8 +643,8 @@ public class UserDataImport {
 - **Project Homepage**: [https://github.com/818000/bus](https://github.com/818000/bus)
 - **Issues**: [https://github.com/818000/bus/issues](https://github.com/818000/bus/issues)
 - **Bus Framework Modules**:
-  - [bus-core](https://github.com/818000/bus/tree/main/bus-core) - Core utilities
-  - [bus-mapper](https://github.com/818000/bus/tree/main/bus-mapper) - MyBatis enhancement
-  - [bus-logger](https://github.com/818000/bus/tree/main/bus-logger) - Logging framework
-  - [bus-crypto](https://github.com/818000/bus/tree/main/bus-crypto) - Cryptography
-  - [bus-extra](https://github.com/818000/bus/tree/main/bus-extra) - Extra utilities
+    - [bus-core](https://github.com/818000/bus/tree/main/bus-core) - Core utilities
+    - [bus-mapper](https://github.com/818000/bus/tree/main/bus-mapper) - MyBatis enhancement
+    - [bus-logger](https://github.com/818000/bus/tree/main/bus-logger) - Logging framework
+    - [bus-crypto](https://github.com/818000/bus/tree/main/bus-crypto) - Cryptography
+    - [bus-extra](https://github.com/818000/bus/tree/main/bus-extra) - Extra utilities

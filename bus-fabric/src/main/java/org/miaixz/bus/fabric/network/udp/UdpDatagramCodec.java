@@ -26,7 +26,6 @@ import org.miaixz.bus.fabric.Payload;
  * Transforms logical UDP datagrams to and from a physical relay endpoint.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface UdpDatagramCodec {
 

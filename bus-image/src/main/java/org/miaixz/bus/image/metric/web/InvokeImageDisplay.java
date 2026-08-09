@@ -23,7 +23,6 @@ package org.miaixz.bus.image.metric.web;
  * IHE Invoke Image Display request constants.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class InvokeImageDisplay {
 

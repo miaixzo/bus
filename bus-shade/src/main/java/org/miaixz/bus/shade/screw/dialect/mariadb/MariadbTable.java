@@ -29,7 +29,6 @@ import org.miaixz.bus.shade.screw.metadata.Table;
  * MariaDB table information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

@@ -41,7 +41,6 @@ import org.miaixz.bus.starter.annotation.EnableOffice;
  * conversion, conditional on their presence in the classpath.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ConditionalOnClass({ LocalOfficeProvider.class, OnlineOfficeProvider.class })
 @EnableConfigurationProperties(value = { OfficeProperties.class })

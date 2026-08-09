@@ -30,7 +30,6 @@ import java.awt.image.BufferedImage;
  * zxing-j2se package.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class LuminanceSource extends com.google.zxing.LuminanceSource {
 

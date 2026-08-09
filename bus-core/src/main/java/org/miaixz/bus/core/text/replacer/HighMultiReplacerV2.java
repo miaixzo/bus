@@ -37,7 +37,6 @@ import org.miaixz.bus.core.text.finder.MultiStringFinder;
  * </ol>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HighMultiReplacerV2 extends StringReplacer {
 
@@ -104,7 +103,6 @@ public class HighMultiReplacerV2 extends StringReplacer {
      * Inner class implementing the Aho-Corasick automaton for efficient multi-string searching and replacement.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     protected static class AhoCorasickAutomaton extends MultiStringFinder {
 

@@ -34,7 +34,6 @@ import org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatProtocol;
  * Internet Protocol Stats implementation
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class AixInternetProtocolStats extends AbstractInternetProtocolStats {

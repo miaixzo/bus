@@ -25,7 +25,6 @@ import io.temporal.common.RetryOptions;
  * Creates {@link RetryOptions} for workflow activity stubs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface RetryOptionsFactory {

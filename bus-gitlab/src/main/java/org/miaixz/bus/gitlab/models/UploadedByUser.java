@@ -28,15 +28,33 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The uploaded by user class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UploadedByUser implements Serializable {
 
+    /**
+     * Constructs a new {@code UploadedByUser} instance.
+     */
+    public UploadedByUser() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852282819125L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The username value.
+     */
     private String username;
+    /**
+     * The name value.
+     */
     private String name;
 
     /**

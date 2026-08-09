@@ -31,7 +31,6 @@ import org.miaixz.bus.image.Tag;
  * Represents the Issuer type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Issuer implements Serializable {
 

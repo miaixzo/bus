@@ -56,7 +56,6 @@ import org.miaixz.bus.logger.Logger;
  * filesystem, excluding temporary and kernel mounts.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class LinuxFileSystem extends AbstractFileSystem {

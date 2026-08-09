@@ -27,7 +27,6 @@ import org.miaixz.bus.health.builtin.hardware.VirtualMemory;
  * Virtual Memory info.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public abstract class AbstractVirtualMemory implements VirtualMemory {

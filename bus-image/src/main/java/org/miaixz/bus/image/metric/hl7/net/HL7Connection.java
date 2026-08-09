@@ -28,7 +28,6 @@ import org.miaixz.bus.image.metric.hl7.MLLPConnection;
  * Represents the HL7Connection type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HL7Connection implements Closeable {
 

@@ -35,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
  * <a href="https://gitee.com/lionsoul/jcseg">https://gitee.com/lionsoul/jcseg</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JcsegResult extends AbstractResult {
 

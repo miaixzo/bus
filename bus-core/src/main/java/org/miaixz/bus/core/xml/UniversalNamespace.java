@@ -36,7 +36,6 @@ import org.miaixz.bus.core.center.map.BiMap;
  * <a href="https://www.ibm.com/developerworks/cn/xml/x-nmspccontext/">Using the JAXP NamespaceContext Interface</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UniversalNamespace implements NamespaceContext {
 

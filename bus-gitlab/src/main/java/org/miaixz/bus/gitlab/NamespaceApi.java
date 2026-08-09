@@ -33,7 +33,6 @@ import org.miaixz.bus.gitlab.models.Namespace;
  * This class implements the client side API for the GitLab namespace calls.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NamespaceApi extends AbstractApi {
 

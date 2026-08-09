@@ -31,7 +31,6 @@ import org.miaixz.bus.core.xyz.ListKit;
  * the corresponding cell content.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class MapRowHandler extends AbstractRowHandler<Map<String, Object>> {
 

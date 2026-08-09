@@ -28,7 +28,6 @@ import org.miaixz.bus.setting.nimble.ini.IniElement;
  *
  * @param <E> The type of {@link IniElement} this formatter produces.
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractFormatter<E extends IniElement> implements ElementFormatter<E> {
 

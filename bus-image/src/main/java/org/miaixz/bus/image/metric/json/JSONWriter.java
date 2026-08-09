@@ -44,7 +44,6 @@ import org.miaixz.bus.logger.Logger;
  * being read. See sample usage below.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JSONWriter implements ImageInputHandler {
 
@@ -123,10 +122,10 @@ public class JSONWriter implements ImageInputHandler {
     /**
      * Compares this instance with another object for equality.
      *
-     * @param a  the a.
-     * @param a2 the a2.
-     * @return true if the condition is met; otherwise false.
+     * @param a   the a.
+     * @param a2  the a2.
      * @param <T> the value type
+     * @return true if the condition is met; otherwise false.
      */
     public static <T> boolean equals(T[] a, T[] a2) {
         int length = a.length;

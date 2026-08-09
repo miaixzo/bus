@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.Validator;
  * Predefined validator names within the current framework.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Builder extends Validator {
 

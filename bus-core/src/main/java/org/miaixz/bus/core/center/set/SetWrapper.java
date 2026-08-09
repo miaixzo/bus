@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
  *
  * @param <E> The type of elements in the set.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SetWrapper<E> extends SimpleWrapper<Set<E>> implements Set<E> {
 

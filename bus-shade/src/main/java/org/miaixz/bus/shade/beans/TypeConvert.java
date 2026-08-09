@@ -23,7 +23,6 @@ package org.miaixz.bus.shade.beans;
  * Interface for converting database field types to Java {@link ColumnType}s.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface TypeConvert {
 

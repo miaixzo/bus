@@ -37,7 +37,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * pointed to by {@link Link} will be wrapped and replaced with {@link MirroredAnnotationAttribute}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MirrorLinkAnnotationPostProcessor extends AbstractLinkAnnotationPostProcessor {
 

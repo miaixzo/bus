@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.exception.RelevantException;
  * Repeatable request body wrapper with a non-negotiable byte limit.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CachedBodyRequestWrapper extends HttpServletRequestWrapper {
 

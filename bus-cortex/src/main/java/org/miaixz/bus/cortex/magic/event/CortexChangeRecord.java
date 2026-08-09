@@ -26,7 +26,6 @@ import lombok.Setter;
  * Reliable change-log record used as the first-stage Cortex outbox payload.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

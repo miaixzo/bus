@@ -25,7 +25,6 @@ import org.miaixz.bus.core.cache.provider.*;
  * Creates and accesses shared caches.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CacheKit {
 

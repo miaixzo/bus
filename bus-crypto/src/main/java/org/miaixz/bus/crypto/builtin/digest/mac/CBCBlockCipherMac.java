@@ -31,7 +31,6 @@ import org.bouncycastle.crypto.params.ParametersWithIV;
  * (Cipher Block Chaining) mode.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CBCBlockCipherMac extends BCMac {
 

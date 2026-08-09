@@ -38,7 +38,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
  * Formats and validates HTTP/1 start lines and header lines.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpLine {
 

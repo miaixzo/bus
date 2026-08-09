@@ -28,10 +28,19 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The group system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GroupSystemHookEvent extends AbstractSystemHookEvent {
 
+    /**
+     * Constructs a new {@code GroupSystemHookEvent} instance.
+     */
+    public GroupSystemHookEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852292752260L;
     /**
@@ -48,16 +57,49 @@ public class GroupSystemHookEvent extends AbstractSystemHookEvent {
      */
     public static final String GROUP_RENAME_EVENT = "group_rename";
 
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The event name value.
+     */
     private String eventName;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The path value.
+     */
     private String path;
+    /**
+     * The full path value.
+     */
     private String fullPath;
+    /**
+     * The group id value.
+     */
     private Long groupId;
+    /**
+     * The owner email value.
+     */
     private String ownerEmail;
+    /**
+     * The owner name value.
+     */
     private String ownerName;
+    /**
+     * The old path value.
+     */
     private String oldPath;
+    /**
+     * The old full path value.
+     */
     private String oldFullPath;
 
     /**

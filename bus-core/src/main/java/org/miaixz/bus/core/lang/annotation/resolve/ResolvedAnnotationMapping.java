@@ -76,7 +76,6 @@ import org.miaixz.bus.core.xyz.*;
  *
  * @see MetaAnnotatedElement
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> {
 
@@ -636,7 +635,6 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
      * Represents a set of aliased attributes. All attributes in a group share the same instance of this class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private class AliasSet {
 

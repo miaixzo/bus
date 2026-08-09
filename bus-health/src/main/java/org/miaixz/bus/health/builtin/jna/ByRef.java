@@ -37,7 +37,6 @@ import org.miaixz.bus.health.Builder;
  * try-with-resources blocks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ByRef {
 
@@ -45,7 +44,6 @@ public interface ByRef {
      * The CloseableIntByReference class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class CloseableIntByReference extends IntByReference implements AutoCloseable {
 
@@ -79,7 +77,6 @@ public interface ByRef {
      * The CloseableLongByReference class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class CloseableLongByReference extends LongByReference implements AutoCloseable {
 
@@ -113,7 +110,6 @@ public interface ByRef {
      * The CloseableNativeLongByReference class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class CloseableNativeLongByReference extends NativeLongByReference implements AutoCloseable {
 
@@ -147,7 +143,6 @@ public interface ByRef {
      * The CloseablePointerByReference class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class CloseablePointerByReference extends PointerByReference implements AutoCloseable {
 
@@ -172,7 +167,6 @@ public interface ByRef {
      * The CloseableLONGLONGByReference class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class CloseableLONGLONGByReference extends LONGLONGByReference implements AutoCloseable {
 
@@ -197,7 +191,6 @@ public interface ByRef {
      * The CloseableULONGptrByReference class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class CloseableULONGptrByReference extends ULONG_PTRByReference implements AutoCloseable {
 
@@ -222,7 +215,6 @@ public interface ByRef {
      * The CloseableHANDLEByReference class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class CloseableHANDLEByReference extends HANDLEByReference implements AutoCloseable {
 
@@ -247,7 +239,6 @@ public interface ByRef {
      * The CloseableSizeTByReference class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class CloseableSizeTByReference extends size_t.ByReference implements AutoCloseable {
 
@@ -281,7 +272,6 @@ public interface ByRef {
      * The CloseablePROCESSENTRY32ByReference class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class CloseablePROCESSENTRY32ByReference extends PROCESSENTRY32.ByReference implements AutoCloseable {
 

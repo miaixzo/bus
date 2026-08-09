@@ -23,7 +23,6 @@ package org.miaixz.bus.cortex.setting.item;
  * Payload formats supported by setting entries.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum ItemFormat {
 

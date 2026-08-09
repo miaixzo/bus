@@ -72,7 +72,6 @@ import org.miaixz.bus.logger.Logger;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageReader extends javax.imageio.ImageReader {
 

@@ -30,7 +30,6 @@ import org.miaixz.bus.health.builtin.hardware.Sensors;
  * Sensors from WMI or Open Hardware Monitor
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public abstract class AbstractSensors implements Sensors {

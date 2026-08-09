@@ -39,7 +39,6 @@ import reactor.netty.resources.LoopResources;
  * application stops.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Vortex implements SmartLifecycle {
 

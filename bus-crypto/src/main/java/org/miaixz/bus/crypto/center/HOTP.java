@@ -37,7 +37,6 @@ import org.miaixz.bus.core.xyz.RandomKit;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HOTP {
 

@@ -24,6 +24,5 @@
  * activity, workflow, worker, and notifier capabilities are organized in subpackages.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.tempus.temporal;

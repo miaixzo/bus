@@ -32,7 +32,6 @@ import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
  * Queries PhysicalDisk performance counter
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class PhysicalDisk {
@@ -63,7 +62,6 @@ public final class PhysicalDisk {
      * Physical Disk performance counters.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PhysicalDiskProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 

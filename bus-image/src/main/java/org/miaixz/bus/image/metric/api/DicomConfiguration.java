@@ -33,7 +33,6 @@ import org.miaixz.bus.image.metric.net.ApplicationEntityInfo;
  * Defines the DicomConfiguration contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface DicomConfiguration extends Closeable {
 
@@ -273,7 +272,6 @@ public interface DicomConfiguration extends Closeable {
      * Defines the Option values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum Option {
         /**

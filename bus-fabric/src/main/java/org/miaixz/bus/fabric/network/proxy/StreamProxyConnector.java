@@ -56,7 +56,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * Shared HTTP CONNECT and SOCKS5 CONNECT handshakes for every stream protocol.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class StreamProxyConnector {
 

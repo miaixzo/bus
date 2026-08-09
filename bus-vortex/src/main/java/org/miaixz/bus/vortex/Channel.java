@@ -21,9 +21,7 @@ package org.miaixz.bus.vortex;
 
 import java.util.Arrays;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import org.miaixz.bus.core.lang.Symbol;
 
@@ -34,11 +32,8 @@ import org.miaixz.bus.core.lang.Symbol;
  * different validation rules or business logic based on the request's origin.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public enum Channel {
 
     /**
@@ -76,6 +71,17 @@ public enum Channel {
      * value of {@code 1} might signify a channel that uses a specific type of OAuth token.
      */
     private Integer type;
+
+    /**
+     * Constructs a source channel.
+     *
+     * @param value the channel value
+     * @param type  the channel type
+     */
+    Channel(String value, Integer type) {
+        this.value = value;
+        this.type = type;
+    }
 
     /**
      * Safely retrieves a {@code Channel} enum instance from its string representation.

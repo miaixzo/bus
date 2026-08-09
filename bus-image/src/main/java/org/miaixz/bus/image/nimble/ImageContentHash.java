@@ -36,7 +36,6 @@ import org.opencv.img_hash.RadialVarianceHash;
  * @see <a href="http://qtandopencv.blogspot.com/2016/06/introduction-to-image-hash-module-of.html">Hash for pixel
  *      data</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum ImageContentHash {
 
@@ -125,7 +124,6 @@ public enum ImageContentHash {
      * Defines the AlgorithmFactory contract.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FunctionalInterface
     private interface AlgorithmFactory {

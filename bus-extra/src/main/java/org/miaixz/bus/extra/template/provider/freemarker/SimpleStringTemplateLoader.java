@@ -31,7 +31,6 @@ import freemarker.cache.TemplateLoader;
  * where the template content is provided as a string rather than from a file or other resource.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SimpleStringTemplateLoader implements TemplateLoader {
 
@@ -44,7 +43,7 @@ public class SimpleStringTemplateLoader implements TemplateLoader {
 
     /**
      * Finds the template source. This method is designed to be overridden by subclasses for custom template lookup.
-     *
+     * <p>
      * Subclasses may override to add caching or custom loading logic.
      *
      * @param name The name of the template to find.
@@ -63,7 +62,7 @@ public class SimpleStringTemplateLoader implements TemplateLoader {
     /**
      * Gets the last modified time of the template source. This method is designed to be overridden by subclasses for
      * custom timestamp tracking.
-     *
+     * <p>
      * Subclasses may override to provide actual file modification times.
      *
      * @param templateSource The template source object.
@@ -77,7 +76,7 @@ public class SimpleStringTemplateLoader implements TemplateLoader {
     /**
      * Gets a reader for the template source. This method is designed to be overridden by subclasses for custom reader
      * creation.
-     *
+     * <p>
      * Subclasses may override to add custom encoding or buffering.
      *
      * @param templateSource The template source object.

@@ -47,7 +47,6 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
  * Ingress adapter for server-side accepted socket channels.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Ingress implements Connection, Conduit {
 
@@ -433,7 +432,9 @@ public final class Ingress implements Connection, Conduit {
      */
     private final class ChannelOperationTimeout extends AsyncTimeout {
 
-        /** Message identifying the timed operation. */
+        /**
+         * Message identifying the timed operation.
+         */
         private final String message;
 
         /**
@@ -445,7 +446,9 @@ public final class Ingress implements Connection, Conduit {
             this.message = message;
         }
 
-        /** Creates the checked timeout while retaining the close-induced I/O failure. */
+        /**
+         * Creates the checked timeout while retaining the close-induced I/O failure.
+         */
         @Override
         protected IOException newTimeoutException(final IOException cause) {
             final SocketTimeoutException failure = new SocketTimeoutException(message);
@@ -455,7 +458,9 @@ public final class Ingress implements Connection, Conduit {
             return failure;
         }
 
-        /** Closes the channel so its current blocking operation returns promptly. */
+        /**
+         * Closes the channel so its current blocking operation returns promptly.
+         */
         @Override
         protected void timedOut() {
             try {
@@ -524,7 +529,9 @@ public final class Ingress implements Connection, Conduit {
             return read;
         }
 
-        /** Returns the physical channel read timeout. */
+        /**
+         * Returns the physical channel read timeout.
+         */
         @Override
         public Timeout timeout() {
             return readTimeout;
@@ -570,7 +577,9 @@ public final class Ingress implements Connection, Conduit {
             // SocketChannel writes are flushed by the operating system.
         }
 
-        /** Returns the physical channel write timeout. */
+        /**
+         * Returns the physical channel write timeout.
+         */
         @Override
         public Timeout timeout() {
             return writeTimeout;

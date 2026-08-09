@@ -30,7 +30,6 @@ import org.miaixz.bus.cortex.setting.item.Item;
  * Historical current-state item snapshot.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

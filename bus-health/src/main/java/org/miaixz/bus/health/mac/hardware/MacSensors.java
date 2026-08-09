@@ -34,7 +34,6 @@ import org.miaixz.bus.health.mac.SmcSensorValues;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class MacSensors extends AbstractSensors {

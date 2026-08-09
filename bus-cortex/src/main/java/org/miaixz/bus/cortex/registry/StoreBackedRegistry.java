@@ -42,7 +42,6 @@ import org.miaixz.bus.logger.Logger;
  *
  * @param <T> asset type
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
 

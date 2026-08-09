@@ -64,7 +64,6 @@ import org.miaixz.bus.mapper.runtime.MapperOptions;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class IdentifierValidator {
 

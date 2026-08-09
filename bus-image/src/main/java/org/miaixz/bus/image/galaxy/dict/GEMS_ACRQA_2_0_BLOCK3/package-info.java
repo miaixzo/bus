@@ -21,6 +21,5 @@
  * UID Dictionary from GEMS_ACRQA_2_0_BLOCK3
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.GEMS_ACRQA_2_0_BLOCK3;

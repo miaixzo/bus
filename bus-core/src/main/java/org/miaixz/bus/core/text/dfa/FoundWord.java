@@ -27,7 +27,6 @@ import org.miaixz.bus.core.lang.range.DefaultSegment;
  * such as replacing the found word.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FoundWord extends DefaultSegment<Integer> {
 

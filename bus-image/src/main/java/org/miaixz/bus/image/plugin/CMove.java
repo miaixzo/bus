@@ -35,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
  * execution of a {@link MoveSCU} instance.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CMove {
 

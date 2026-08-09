@@ -41,7 +41,6 @@ import org.miaixz.bus.core.math.*;
  * to use `new BigDecimal(String)`.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MathKit extends NumberValidator {
 

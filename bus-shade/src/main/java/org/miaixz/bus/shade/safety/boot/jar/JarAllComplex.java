@@ -28,7 +28,6 @@ import org.miaixz.bus.shade.safety.Complex;
  * that all resources within the JAR are subject to the associated operation (e.g., encryption).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JarAllComplex implements Complex<JarArchiveEntry> {
 

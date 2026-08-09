@@ -25,7 +25,6 @@ import org.apache.poi.openxml4j.util.ZipSecureFile;
  * Base interface for all office context interfaces.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Context {
 

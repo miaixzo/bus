@@ -34,7 +34,6 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @param filter   optional message filter applied before protocol execution
  * @param guard    optional policy guard applied to request messages
  * @author Kimi Liu
- * @since Java 21+
  */
 record HttpSpec(Context context, HttpRequest request, EventObserver observer, Filter filter, GuardRule guard) {
 

@@ -27,7 +27,6 @@ import lombok.Setter;
  * of a table column.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

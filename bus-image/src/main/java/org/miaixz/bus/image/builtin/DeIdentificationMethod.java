@@ -26,7 +26,6 @@ import org.miaixz.bus.image.galaxy.data.Code;
  * different methods or options for de-identifying DICOM instances.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DeIdentificationMethod {
 

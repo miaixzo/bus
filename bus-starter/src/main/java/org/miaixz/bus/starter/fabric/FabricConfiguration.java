@@ -52,7 +52,6 @@ import org.miaixz.bus.starter.annotation.EnableFabric;
  * protocol capability.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(value = { FabricProperties.class })
 @Configuration(proxyBeanMethods = false)

@@ -40,7 +40,6 @@ import org.miaixz.bus.core.lang.exception.AuthorizedException;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Provider extends org.miaixz.bus.core.Provider {
 
@@ -53,7 +52,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @throws AuthorizedException if the method is not implemented by the specific provider
      */
     default Message<String> build(String state) {
-        throw new AuthorizedException(ErrorCode._110001);
+        throw new AuthorizedException(ErrorCode._110000);
     }
 
     /**
@@ -64,7 +63,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @throws AuthorizedException if the method is not implemented by the specific provider
      */
     default Message<Claims> authorize(Callback callback) {
-        throw new AuthorizedException(ErrorCode._110001);
+        throw new AuthorizedException(ErrorCode._110000);
     }
 
     /**
@@ -93,7 +92,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @throws AuthorizedException if the method is not implemented by the specific provider
      */
     default Message<Authorization> refresh(Authorization authorization) {
-        throw new AuthorizedException(ErrorCode._110001);
+        throw new AuthorizedException(ErrorCode._110000);
     }
 
     /**
@@ -104,7 +103,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @throws AuthorizedException if the method is not implemented by the specific provider
      */
     default Message<Void> revoke(Authorization authorization) {
-        throw new AuthorizedException(ErrorCode._110001);
+        throw new AuthorizedException(ErrorCode._110000);
     }
 
     /**

@@ -54,7 +54,6 @@ import org.miaixz.bus.logger.Logger;
  * Windows hard disk implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class WindowsHWDiskStore extends AbstractHWDiskStore {
@@ -500,7 +499,6 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
      * Maps to store read/write bytes per drive index
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class DiskStats {
 
@@ -545,7 +543,6 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
      * Maps for the partition structure
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class PartitionMaps {
 

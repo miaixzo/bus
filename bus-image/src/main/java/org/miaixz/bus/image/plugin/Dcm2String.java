@@ -35,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
  * dataset as a formatted string to the logger.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Dcm2String extends SimpleFileVisitor<Path> {
 

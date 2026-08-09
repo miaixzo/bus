@@ -38,7 +38,6 @@ import org.miaixz.bus.gitlab.models.*;
  * @see <a href="https://docs.gitlab.com/ce/api/issue_links.html">Issue Links API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/issues_statistics.html">Issues Statistics API at GitLab</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IssuesApi extends AbstractApi implements Constants {
 

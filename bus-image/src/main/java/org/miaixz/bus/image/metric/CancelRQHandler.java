@@ -23,7 +23,6 @@ package org.miaixz.bus.image.metric;
  * Defines the CancelRQHandler contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface CancelRQHandler {
 

@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.Keys;
  * Converts and resolves time zones.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ZoneKit {
 

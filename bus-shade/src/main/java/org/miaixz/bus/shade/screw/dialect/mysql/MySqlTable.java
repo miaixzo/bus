@@ -29,7 +29,6 @@ import org.miaixz.bus.shade.screw.metadata.Table;
  * Table metadata for MySQL.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

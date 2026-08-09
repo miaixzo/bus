@@ -27,7 +27,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Represents an exception that occurs due to issues with communication protocols.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProtocolException extends UncheckedException {
 

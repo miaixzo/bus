@@ -48,7 +48,6 @@ import org.miaixz.bus.notify.nimble.AbstractProvider;
  * Generic email service provider implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GenericEmailProvider extends AbstractProvider<GenericNotice, Context> {
 

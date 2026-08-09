@@ -21,6 +21,5 @@
  * Provides thread-safe implementations for date format formatting and parsing.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.center.date.format;

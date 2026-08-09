@@ -28,15 +28,33 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The commit stats class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CommitStats implements Serializable {
 
+    /**
+     * Constructs a new {@code CommitStats} instance.
+     */
+    public CommitStats() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852250082857L;
 
+    /**
+     * The additions value.
+     */
     private Integer additions;
+    /**
+     * The deletions value.
+     */
     private Integer deletions;
+    /**
+     * The total value.
+     */
     private Integer total;
 
     /**

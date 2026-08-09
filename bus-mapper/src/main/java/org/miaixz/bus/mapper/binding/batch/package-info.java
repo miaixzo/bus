@@ -23,6 +23,5 @@
  * This package contains classes and utilities for performing batch database operations efficiently.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.mapper.binding.batch;

@@ -30,7 +30,6 @@ import org.miaixz.bus.core.lang.thread.RetryableTask;
  *
  * @see RetryableTask
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RetryKit {
 

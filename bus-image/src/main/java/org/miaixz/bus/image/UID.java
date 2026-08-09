@@ -46,7 +46,6 @@ import org.miaixz.bus.image.galaxy.data.UIDVisitor;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum UID {
 

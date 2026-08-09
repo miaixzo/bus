@@ -33,11 +33,16 @@ import org.miaixz.bus.core.lang.Symbol;
  * finalized.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Oauth2LoginStreamingOutput implements StreamingOutput, AutoCloseable {
 
+    /**
+     * The username value.
+     */
     private final String username;
+    /**
+     * The password value.
+     */
     private final SecretString password;
 
     /**

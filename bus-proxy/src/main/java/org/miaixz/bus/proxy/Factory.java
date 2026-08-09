@@ -29,7 +29,6 @@ import org.miaixz.bus.logger.Logger;
  * implementation (e.g., CGLIB, JDK proxy) on the classpath using Java's Service Provider Interface (SPI).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Factory {
 

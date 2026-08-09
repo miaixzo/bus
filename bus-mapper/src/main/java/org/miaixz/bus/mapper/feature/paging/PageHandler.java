@@ -74,7 +74,6 @@ import org.miaixz.bus.mapper.handler.MapperHandler;
  *
  * @param <T> the generic type parameter
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<T> {
 
@@ -918,7 +917,6 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
      * SQL source for count queries.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class CountSqlSource implements SqlSource {
 
@@ -953,7 +951,6 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
      * Cache key for an internally generated count mapped statement.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class CountStatementKey {
 

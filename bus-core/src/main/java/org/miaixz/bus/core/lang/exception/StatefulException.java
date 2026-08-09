@@ -27,7 +27,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Represents an exception that carries a status code, indicating a specific state or error condition.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StatefulException extends UncheckedException {
 
@@ -44,7 +43,7 @@ public class StatefulException extends UncheckedException {
 
     /**
      * Original structured object associated with this exception.
-     *
+     * <p>
      * The value is transient because runtime state is not part of the serialized exception contract.
      */
     private transient Object raw;

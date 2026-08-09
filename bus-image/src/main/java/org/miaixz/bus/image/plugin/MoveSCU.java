@@ -49,7 +49,6 @@ import org.miaixz.bus.logger.Logger;
  * Application Entity.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MoveSCU extends Device implements AutoCloseable {
 
@@ -386,7 +385,6 @@ public class MoveSCU extends Device implements AutoCloseable {
      * Enumeration of the supported DICOM Information Models for C-MOVE.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum InformationModel {
 

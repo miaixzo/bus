@@ -28,16 +28,37 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The linked issue class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LinkedIssue extends AbstractIssue {
 
+    /**
+     * Constructs a new {@code LinkedIssue} instance.
+     */
+    public LinkedIssue() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852260826605L;
 
+    /**
+     * The issue link id value.
+     */
     private Long issueLinkId;
+    /**
+     * The link type value.
+     */
     private LinkType linkType;
+    /**
+     * The link created at value.
+     */
     private Date linkCreatedAt;
+    /**
+     * The link updated at value.
+     */
     private Date linkUpdatedAt;
 
     /**

@@ -40,7 +40,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * Extractor for 7z format archives, used to unpack archived data.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SevenZExtractor implements Extractor, RandomAccess {
 

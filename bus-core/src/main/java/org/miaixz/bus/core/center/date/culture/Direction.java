@@ -24,7 +24,6 @@ package org.miaixz.bus.core.center.date.culture;
  * {@link Samsara} to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Direction extends Samsara {
 

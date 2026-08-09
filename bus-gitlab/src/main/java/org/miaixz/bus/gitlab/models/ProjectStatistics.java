@@ -29,19 +29,49 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * be called with parameter statistics=true which is only allowed for GitLab admins.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProjectStatistics implements Serializable {
 
+    /**
+     * Constructs a new {@code ProjectStatistics} instance.
+     */
+    public ProjectStatistics() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852275036520L;
 
+    /**
+     * The commit count value.
+     */
     long commitCount;
+    /**
+     * The storage size value.
+     */
     long storageSize;
+    /**
+     * The repository size value.
+     */
     long repositorySize;
+    /**
+     * The wiki size value.
+     */
     long wikiSize;
+    /**
+     * The lfs objects size value.
+     */
     long lfsObjectsSize;
+    /**
+     * The job artifacts size value.
+     */
     long jobArtifactsSize;
+    /**
+     * The packages size value.
+     */
     long packagesSize;
 
     /**

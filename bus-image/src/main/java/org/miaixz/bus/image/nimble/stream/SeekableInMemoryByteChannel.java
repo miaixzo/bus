@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Internal buffer can be accessed via SeekableInMemoryByteChannel.array().
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SeekableInMemoryByteChannel implements SeekableByteChannel {
 

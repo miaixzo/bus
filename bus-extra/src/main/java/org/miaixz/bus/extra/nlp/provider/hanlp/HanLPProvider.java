@@ -34,7 +34,6 @@ import org.miaixz.bus.logger.Logger;
  * <a href="https://github.com/hankcs/HanLP">https://github.com/hankcs/HanLP</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HanLPProvider implements NLPProvider {
 

@@ -36,7 +36,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Routes JDBC access to a registered datasource using the current {@link DataSourceHolder} key.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DynamicDataSource extends AbstractRoutingDataSource implements AutoCloseable {
 

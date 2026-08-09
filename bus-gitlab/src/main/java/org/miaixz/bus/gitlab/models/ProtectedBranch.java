@@ -29,19 +29,49 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The protected branch class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProtectedBranch implements Serializable {
 
+    /**
+     * Constructs a new {@code ProtectedBranch} instance.
+     */
+    public ProtectedBranch() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852275321353L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The push access levels value.
+     */
     private List<BranchAccessLevel> pushAccessLevels;
+    /**
+     * The merge access levels value.
+     */
     private List<BranchAccessLevel> mergeAccessLevels;
+    /**
+     * The unprotect access levels value.
+     */
     private List<BranchAccessLevel> unprotectAccessLevels;
+    /**
+     * The code owner approval required value.
+     */
     private Boolean codeOwnerApprovalRequired;
+    /**
+     * The allow force push value.
+     */
     private Boolean allowForcePush;
 
     /**

@@ -35,7 +35,6 @@ import reactor.core.publisher.Mono;
  * signature verifier.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.FIRST)
 public class McpRequestStrategy extends RequestStrategy {

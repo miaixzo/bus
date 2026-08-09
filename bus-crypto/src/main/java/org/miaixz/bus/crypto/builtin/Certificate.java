@@ -30,9 +30,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -56,14 +54,18 @@ import org.miaixz.bus.logger.Logger;
  * Certificate related toolkit. This class provides utilities for handling and building X.509 certificates.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Certificate implements Serializable {
+
+    /**
+     * Constructs a new {@code Certificate} instance.
+     */
+    public Certificate() {
+        // No initialization required.
+    }
 
     @Serial
     private static final long serialVersionUID = 2852288292676L;

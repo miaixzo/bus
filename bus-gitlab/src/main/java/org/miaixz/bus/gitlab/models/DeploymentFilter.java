@@ -34,10 +34,19 @@ import org.miaixz.bus.gitlab.support.ISO8601;
  * The deployment filter class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DeploymentFilter implements Serializable {
 
+    /**
+     * Constructs a new {@code DeploymentFilter} instance.
+     */
+    public DeploymentFilter() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852251252095L;
 

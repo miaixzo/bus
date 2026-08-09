@@ -42,7 +42,6 @@ import org.miaixz.bus.logger.Logger;
  * connections and provides access to RabbitMQ producers and consumers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RabbitMQProvider implements MQProvider, Closeable {
 

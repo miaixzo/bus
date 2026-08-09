@@ -55,7 +55,6 @@ import org.miaixz.bus.core.center.function.SupplierX;
  *
  * @param <T> The type of the object being built.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GenericBuilder<T> implements Builder<T> {
 

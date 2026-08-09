@@ -32,7 +32,6 @@ import org.miaixz.bus.health.builtin.software.OSThread;
  * Common methods for OSThread implementation
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public abstract class AbstractOSThread implements OSThread {

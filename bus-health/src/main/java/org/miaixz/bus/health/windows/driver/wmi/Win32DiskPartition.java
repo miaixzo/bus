@@ -29,7 +29,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * Queries WMI class {@code Win32_DiskPartition}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Win32DiskPartition {
@@ -62,7 +61,6 @@ public final class Win32DiskPartition {
      * Disk partition properties
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum DiskPartitionProperty {
         /**

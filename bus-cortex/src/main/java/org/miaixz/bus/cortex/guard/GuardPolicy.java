@@ -26,7 +26,6 @@ package org.miaixz.bus.cortex.guard;
  * Vortex authorization chain.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum GuardPolicy {
 

@@ -51,7 +51,6 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
  * Method</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SqlServerDataBaseQuery extends AbstractDatabaseQuery {
 

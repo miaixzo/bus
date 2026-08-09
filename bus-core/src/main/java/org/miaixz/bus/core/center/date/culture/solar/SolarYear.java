@@ -33,7 +33,6 @@ import org.miaixz.bus.core.center.date.culture.rabjung.RabjungYear;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SolarYear extends YearParts {
 

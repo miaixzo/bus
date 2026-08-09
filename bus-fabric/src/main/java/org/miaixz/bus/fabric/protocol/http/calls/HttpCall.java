@@ -38,7 +38,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * Single-use HTTP call backed by the shared protocol call lifecycle.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpCall extends MonoCall<HttpResponse> {
 

@@ -23,7 +23,6 @@ package org.miaixz.bus.starter;
  * Centralizes the property prefixes used by Starter feature configuration.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class GeniusBuilder {
 

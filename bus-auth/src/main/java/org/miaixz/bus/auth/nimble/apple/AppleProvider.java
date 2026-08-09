@@ -51,7 +51,6 @@ import org.miaixz.bus.logger.Logger;
  * Apple login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AppleProvider extends AbstractProvider {
 
@@ -210,16 +209,16 @@ public class AppleProvider extends AbstractProvider {
     protected void validate(Context context) {
         super.validate(context);
         if (StringKit.isEmpty(context.getClientId())) {
-            throw new AuthorizedException(ErrorCode._110012.getKey(), this.complex);
-        }
-        if (StringKit.isEmpty(context.getClientSecret())) {
-            throw new AuthorizedException(ErrorCode._110013.getKey(), this.complex);
-        }
-        if (StringKit.isEmpty(context.getKid())) {
             throw new AuthorizedException(ErrorCode._110010.getKey(), this.complex);
         }
-        if (StringKit.isEmpty(context.getTeamId())) {
+        if (StringKit.isEmpty(context.getClientSecret())) {
             throw new AuthorizedException(ErrorCode._110011.getKey(), this.complex);
+        }
+        if (StringKit.isEmpty(context.getKid())) {
+            throw new AuthorizedException(ErrorCode._110008.getKey(), this.complex);
+        }
+        if (StringKit.isEmpty(context.getTeamId())) {
+            throw new AuthorizedException(ErrorCode._110009.getKey(), this.complex);
         }
     }
 
@@ -268,7 +267,6 @@ public class AppleProvider extends AbstractProvider {
      * Data class for Apple user name information.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Data
     static class AppleUserInfo {
@@ -282,7 +280,6 @@ public class AppleProvider extends AbstractProvider {
      * Data class for Apple username components.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Data
     static class AppleUsername {

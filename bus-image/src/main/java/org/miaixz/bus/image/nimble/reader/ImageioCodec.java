@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * JDK ImageIO codec facade for non-DICOM still image formats.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ImageioCodec {
 

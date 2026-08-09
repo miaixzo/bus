@@ -30,7 +30,6 @@ import org.miaixz.bus.core.compare.PinyinCompare;
  * Compares values and collections.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CompareKit {
 

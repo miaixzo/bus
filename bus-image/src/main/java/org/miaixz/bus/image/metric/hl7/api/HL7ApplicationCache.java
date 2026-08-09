@@ -27,7 +27,6 @@ import org.miaixz.bus.image.metric.hl7.net.HL7Application;
  * Represents the HL7ApplicationCache type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HL7ApplicationCache extends ConfigurationCache<HL7Configuration, HL7Application>
         implements IHL7ApplicationCache {

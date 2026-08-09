@@ -23,7 +23,6 @@ package org.miaixz.bus.image.metric.hl7;
  * Defines the MLLPRelease values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum MLLPRelease {
     /**

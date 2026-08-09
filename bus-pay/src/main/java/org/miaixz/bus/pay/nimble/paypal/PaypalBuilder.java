@@ -29,7 +29,6 @@ import org.miaixz.bus.pay.magic.Callback;
  * Builds and executes PayPal requests, including retry logic for API calls.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PaypalBuilder {
 

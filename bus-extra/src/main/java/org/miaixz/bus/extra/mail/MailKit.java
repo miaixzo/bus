@@ -39,7 +39,6 @@ import org.miaixz.bus.core.xyz.*;
  * sending plain text and HTML emails.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MailKit {
 

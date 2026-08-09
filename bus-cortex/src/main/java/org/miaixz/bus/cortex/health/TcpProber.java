@@ -32,7 +32,6 @@ import org.miaixz.bus.logger.Logger;
  * TCP connectivity prober.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TcpProber implements Prober {
 

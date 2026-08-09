@@ -48,7 +48,6 @@ import org.apache.ibatis.builder.annotation.ProviderContext;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EntityProvider extends BasicProvider {
 

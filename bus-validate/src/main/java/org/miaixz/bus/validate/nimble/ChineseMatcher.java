@@ -30,7 +30,6 @@ import org.miaixz.bus.validate.magic.annotation.Chinese;
  * Validator for checking if a string consists of only Chinese characters.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ChineseMatcher implements Matcher<Object, Chinese> {
 

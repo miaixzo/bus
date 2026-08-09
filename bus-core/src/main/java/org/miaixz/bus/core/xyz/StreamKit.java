@@ -43,7 +43,6 @@ import org.miaixz.bus.core.tree.HierarchyIterator;
  * Creates and transforms streams.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StreamKit {
 

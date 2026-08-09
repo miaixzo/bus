@@ -40,7 +40,6 @@ import io.temporal.client.WorkflowClient;
  * the same Temporal endpoint.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CachingWorkflowConnector implements WorkflowConnector, AutoCloseable {
 

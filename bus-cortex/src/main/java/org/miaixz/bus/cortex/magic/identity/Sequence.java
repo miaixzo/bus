@@ -26,7 +26,6 @@ import org.miaixz.bus.cortex.Builder;
  * Atomic sequence generator backed by CacheX.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Sequence {
 

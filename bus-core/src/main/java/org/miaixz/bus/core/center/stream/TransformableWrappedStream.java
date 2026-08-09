@@ -45,7 +45,6 @@ import org.miaixz.bus.core.xyz.*;
  * @param <T> the type of the elements in the stream
  * @param <S> the type of the {@link TransformableWrappedStream} implementation itself
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface TransformableWrappedStream<T, S extends TransformableWrappedStream<T, S>> extends WrappedStream<T, S> {
 
@@ -196,7 +195,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      *         .map(String::valueOf) // Concurrent
      *         .toList();
      * }</pre>
-     *
+     * <p>
      * If not strictly necessary, it is not recommended to perform this operation in parallel streams.
      *
      * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,
@@ -232,7 +231,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      *         .map(String::valueOf) // Concurrent
      *         .toList();
      * }</pre>
-     *
+     * <p>
      * If not strictly necessary, it is not recommended to perform this operation in parallel streams.
      *
      * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,

@@ -46,7 +46,6 @@ import reactor.core.publisher.Mono;
  * Route resolution, authorization, signature checks, and enrichment belong to qualifier strategies.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.SECOND)
 public class VettingStrategy extends AbstractStrategy {

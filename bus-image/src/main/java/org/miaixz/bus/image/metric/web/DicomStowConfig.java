@@ -32,7 +32,6 @@ import org.miaixz.bus.core.net.MediaType;
  * Configuration for DICOM STOW-RS operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DicomStowConfig {
 
@@ -200,7 +199,6 @@ public final class DicomStowConfig {
      * Represents the Builder type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

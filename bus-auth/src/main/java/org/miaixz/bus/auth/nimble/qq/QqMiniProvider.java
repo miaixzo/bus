@@ -43,7 +43,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * QQ Mini Program login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class QqMiniProvider extends AbstractProvider {
 
@@ -136,7 +135,6 @@ public class QqMiniProvider extends AbstractProvider {
      * Data class representing the response from QQ Mini Program's jscode2session API.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Data
     private static class JSCode2SessionResponse {

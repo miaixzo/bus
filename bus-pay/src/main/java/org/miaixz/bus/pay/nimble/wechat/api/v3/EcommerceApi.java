@@ -25,7 +25,6 @@ import org.miaixz.bus.pay.Matcher;
  * WeChat Pay v3 API - E-commerce Acquiring related APIs
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum EcommerceApi implements Matcher {
 

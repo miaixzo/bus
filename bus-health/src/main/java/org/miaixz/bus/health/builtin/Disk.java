@@ -19,24 +19,26 @@
 */
 package org.miaixz.bus.health.builtin;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Disk Information
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@SuperBuilder
 public class Disk {
+
+    /**
+     * Constructs a new {@code Disk} instance.
+     */
+    public Disk() {
+        // No initialization required.
+    }
 
     /**
      * Device name (e.g., /dev/sda1)

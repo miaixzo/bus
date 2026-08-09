@@ -30,7 +30,6 @@ import org.miaixz.bus.validate.nimble.MultipleMatcher;
  * A multiple validator that allows for the configuration of several validators to be applied to a single field.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

@@ -46,7 +46,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Stack Overflow login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StackOverflowProvider extends AbstractProvider {
 

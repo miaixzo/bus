@@ -25,7 +25,6 @@ import org.miaixz.bus.office.Provider;
  * Base class for all document converter implementations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractProvider implements Provider {
 

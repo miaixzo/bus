@@ -33,7 +33,6 @@ import java.util.concurrent.TimeUnit;
  * <a href="http://git.oschina.net/yu120/sequence">http://git.oschina.net/yu120/sequence</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NonClock {
 
@@ -101,7 +100,6 @@ public class NonClock {
      * Singleton holder for {@code NonClock}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class InstanceHolder {
 

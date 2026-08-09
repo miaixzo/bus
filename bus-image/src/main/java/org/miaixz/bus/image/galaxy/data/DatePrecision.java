@@ -26,7 +26,6 @@ import java.util.Calendar;
  * specify desired precision for formatting dates and to retrieve the actual precision of parsed dates.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DatePrecision {
 

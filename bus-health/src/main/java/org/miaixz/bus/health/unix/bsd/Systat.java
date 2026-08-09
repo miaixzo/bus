@@ -36,7 +36,6 @@ import org.miaixz.bus.health.builtin.hardware.PowerSource;
  * Parses output from the BSD {@code systat -ab sensors} command.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Systat {
@@ -205,7 +204,6 @@ public final class Systat {
      * Holds battery sensor fields parsed from {@code systat -ab sensors}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @ThreadSafe
     public static final class BatteryFields {

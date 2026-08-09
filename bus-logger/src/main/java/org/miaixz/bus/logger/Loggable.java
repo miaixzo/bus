@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.Normal;
  * @param format    provider-compatible message format
  * @param arguments message arguments
  * @author Kimi Liu
- * @since Java 21+
  */
 public record Loggable(Level level, Throwable throwable, String format, Object[] arguments) {
 

@@ -57,7 +57,6 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
  * AIO socket channel with core.io buffer operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class AioChannel implements Conduit {
 

@@ -31,7 +31,6 @@ import org.miaixz.bus.fabric.guard.GuardResult;
  * Frame length and write queue guard.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class LimitGuard {
 

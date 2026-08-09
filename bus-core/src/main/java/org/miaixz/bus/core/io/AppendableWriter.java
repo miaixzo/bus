@@ -29,7 +29,6 @@ import java.nio.CharBuffer;
  * An adapter class that wraps an {@link Appendable} and exposes it as a {@link Writer}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AppendableWriter extends Writer implements Appendable {
 

@@ -35,7 +35,6 @@ import org.miaixz.bus.fabric.Builder;
  * @param payload immutable snapshot of the socket-frame bytes
  * @param length  byte count, always equal to {@code payload.size()} and at most 16 MiB
  * @author Kimi Liu
- * @since Java 21+
  */
 public record SocketFrame(ByteString payload, int length) {
 

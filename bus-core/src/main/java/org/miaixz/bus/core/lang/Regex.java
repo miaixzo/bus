@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
  * Common regular expression patterns.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Regex {
 

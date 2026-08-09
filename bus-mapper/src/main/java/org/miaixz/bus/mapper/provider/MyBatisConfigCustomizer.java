@@ -29,7 +29,6 @@ import org.apache.ibatis.session.Configuration;
  * before the {@link org.apache.ibatis.session.SqlSessionFactory} is created.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface MyBatisConfigCustomizer {

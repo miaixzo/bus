@@ -30,7 +30,6 @@ import org.miaixz.bus.image.metric.pdu.PresentationContext;
  * Defines the DimseRQHandler contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface DimseRQHandler {
 

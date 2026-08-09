@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * Queries partition config
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class PerfstatConfig {

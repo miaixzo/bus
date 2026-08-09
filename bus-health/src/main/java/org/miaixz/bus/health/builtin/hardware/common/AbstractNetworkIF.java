@@ -41,7 +41,6 @@ import org.miaixz.bus.logger.Logger;
  * Network interfaces implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public abstract class AbstractNetworkIF implements NetworkIF {
@@ -182,7 +181,6 @@ public abstract class AbstractNetworkIF implements NetworkIF {
      * Creates a platform-specific {@link NetworkIF} from a {@link NetworkInterface}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FunctionalInterface
     protected interface NetworkIFFactory {

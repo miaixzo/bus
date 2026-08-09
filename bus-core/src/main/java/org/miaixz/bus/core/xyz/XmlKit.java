@@ -47,7 +47,6 @@ import org.miaixz.bus.core.xml.XmlWriter;
  * reading, writing, and some operations of XML documents.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class XmlKit {
 

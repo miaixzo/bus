@@ -23,7 +23,6 @@ package org.miaixz.bus.metrics.nimble;
  * A monotonically increasing counter.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Counter {
 

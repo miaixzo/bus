@@ -27,7 +27,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Naming convention encapsulation, mainly for camel case naming, connector naming, etc.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NamingCase {
 

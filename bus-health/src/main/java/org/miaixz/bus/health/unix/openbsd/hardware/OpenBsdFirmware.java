@@ -36,7 +36,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractFirmware;
  * OpenBSD Firmware implementation
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public class OpenBsdFirmware extends AbstractFirmware {

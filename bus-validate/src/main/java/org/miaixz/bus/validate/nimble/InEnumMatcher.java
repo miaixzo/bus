@@ -34,7 +34,6 @@ import org.miaixz.bus.validate.magic.annotation.InEnum;
  * enum.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class InEnumMatcher implements Matcher<Object, InEnum> {
 

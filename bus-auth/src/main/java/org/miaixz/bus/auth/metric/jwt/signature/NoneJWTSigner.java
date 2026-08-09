@@ -31,9 +31,15 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @see JWTSigner
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NoneJWTSigner implements JWTSigner {
+
+    /**
+     * Constructs a new {@code NoneJWTSigner} instance.
+     */
+    public NoneJWTSigner() {
+        // No initialization required.
+    }
 
     /**
      * Algorithm identifier for no signature, with a value of "none".

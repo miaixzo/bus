@@ -37,7 +37,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * {@code Sensor} table filtered by hardware parent identifier and sensor type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class LhmSensor {
@@ -61,7 +60,6 @@ public final class LhmSensor {
      * Sensor properties returned by LHM WMI queries.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum LhmSensorProperty {
         /**
@@ -83,7 +81,6 @@ public final class LhmSensor {
      * LHM Hardware properties.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum LhmHardwareProperty {
         /**

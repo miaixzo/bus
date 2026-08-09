@@ -36,7 +36,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
  * HTTP authentication header generator.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpAuth {
 

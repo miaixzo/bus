@@ -49,7 +49,6 @@ import org.miaixz.bus.logger.Logger;
  * be generated using an XSLT transformation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HL7Rcv {
 

@@ -33,6 +33,5 @@
  * only within that namespace.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.registry.api;

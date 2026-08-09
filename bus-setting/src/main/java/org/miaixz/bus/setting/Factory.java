@@ -29,7 +29,6 @@ import org.miaixz.bus.setting.nimble.ini.IniSection;
  * comments, sections, and properties.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface Factory {

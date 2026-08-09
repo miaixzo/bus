@@ -35,7 +35,6 @@ import org.springframework.core.type.StandardMethodMetadata;
  * Side-effect-free Bean definition type and source inspection.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BeanMetadata {
 

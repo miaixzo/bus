@@ -68,7 +68,6 @@ import org.miaixz.bus.mapper.Charter.Handler;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HandlerRegistry {
 
@@ -251,7 +250,6 @@ public class HandlerRegistry {
      * Immutable runtime view of registered handlers.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class HandlerSnapshot {
 

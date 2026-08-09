@@ -30,24 +30,69 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The pipeline schedule class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PipelineSchedule implements Serializable {
 
+    /**
+     * Constructs a new {@code PipelineSchedule} instance.
+     */
+    public PipelineSchedule() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852269813738L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The ref value.
+     */
     private String ref;
+    /**
+     * The cron value.
+     */
     private String cron;
+    /**
+     * The cron timezone value.
+     */
     private String cronTimezone;
+    /**
+     * The next run at value.
+     */
     private Date nextRunAt;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The active value.
+     */
     private Boolean active;
+    /**
+     * The last pipeline value.
+     */
     private Pipeline lastPipeline;
+    /**
+     * The owner value.
+     */
     private Owner owner;
+    /**
+     * The variables value.
+     */
     private List<Variable> variables;
 
     /**

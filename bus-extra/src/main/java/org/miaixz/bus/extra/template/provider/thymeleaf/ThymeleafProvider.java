@@ -38,7 +38,6 @@ import org.miaixz.bus.logger.Logger;
  * see: https://www.thymeleaf.org/
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ThymeleafProvider implements TemplateProvider {
 
@@ -156,7 +155,7 @@ public class ThymeleafProvider implements TemplateProvider {
     /**
      * Initializes the template provider with the given configuration. This method is designed to be overridden by
      * subclasses for custom initialization.
-     *
+     * <p>
      * from the TemplateConfig and initializes the provider. Subclasses may override to add custom configuration
      * settings or validation.
      *
@@ -193,7 +192,7 @@ public class ThymeleafProvider implements TemplateProvider {
 
     /**
      * Gets a template by name. This method is designed to be overridden by subclasses for custom template retrieval.
-     *
+     * <p>
      * into a ThymeleafTemplate. Subclasses may override to add caching or custom loading.
      *
      * @param resource The name of the template resource.

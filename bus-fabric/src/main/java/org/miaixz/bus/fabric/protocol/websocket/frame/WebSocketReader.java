@@ -38,7 +38,6 @@ import org.miaixz.bus.fabric.Builder;
  * Parser for one WebSocket frame from a byte source.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class WebSocketReader {
 

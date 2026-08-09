@@ -21,6 +21,5 @@
  * Provides integration for Okta related authentication.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.auth.nimble.okta;

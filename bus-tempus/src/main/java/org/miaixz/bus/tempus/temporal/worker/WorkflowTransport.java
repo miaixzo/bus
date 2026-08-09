@@ -30,7 +30,6 @@ import io.temporal.client.WorkflowClient;
  * states, and shutdown behavior.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface WorkflowTransport {
 

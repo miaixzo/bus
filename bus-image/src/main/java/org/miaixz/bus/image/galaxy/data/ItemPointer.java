@@ -27,7 +27,6 @@ import java.util.Objects;
  * Represents the ItemPointer type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ItemPointer implements Serializable {
 

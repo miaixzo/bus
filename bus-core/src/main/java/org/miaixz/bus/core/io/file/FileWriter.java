@@ -35,7 +35,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Writes multiple data types and character encodings, and append/overwrite modes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FileWriter extends FileWrapper {
 

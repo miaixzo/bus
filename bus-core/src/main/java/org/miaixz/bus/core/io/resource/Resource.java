@@ -57,7 +57,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * business needs, such as from a database.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Resource {
 

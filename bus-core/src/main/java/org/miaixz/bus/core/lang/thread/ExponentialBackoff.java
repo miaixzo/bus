@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.Assert;
  * @author Kimi Liu
  * @see Backoff
  * @see FixedBackoff
- * @since Java 21+
  */
 public class ExponentialBackoff implements Backoff {
 

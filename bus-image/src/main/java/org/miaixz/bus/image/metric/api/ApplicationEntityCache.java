@@ -27,7 +27,6 @@ import org.miaixz.bus.image.metric.net.ApplicationEntity;
  * Represents the ApplicationEntityCache type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ApplicationEntityCache extends ConfigurationCache<DicomConfiguration, ApplicationEntity>
         implements IApplicationEntityCache {

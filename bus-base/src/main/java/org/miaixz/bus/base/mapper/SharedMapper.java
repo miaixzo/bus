@@ -27,7 +27,6 @@ import java.io.Serializable;
  * @param <T> the entity type
  * @param <I> the type of the primary key, which must implement {@link Serializable}
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface SharedMapper<T, I extends Serializable> extends Mapper<T, I> {
 

@@ -2,7 +2,8 @@
 
 ## 📖 项目介绍
 
-bus-storage 是一个全面的云存储组件，提供与多个云存储提供商的统一集成，包括阿里云 OSS、七牛云、腾讯云 COS、百度云 BOS、华为云 OBS、京东云和又拍云。它提供工厂模式和 Spring 依赖注入集成方法，以实现最大的灵活性。
+bus-storage 是一个全面的云存储组件，提供与多个云存储提供商的统一集成，包括阿里云 OSS、七牛云、腾讯云 COS、百度云 BOS、华为云
+OBS、京东云和又拍云。它提供工厂模式和 Spring 依赖注入集成方法，以实现最大的灵活性。
 
 ## ✨ 核心特性
 
@@ -276,26 +277,26 @@ public class Application {
 
 ### 配置参数
 
-| 参数 | 类型 | 必需 | 描述 |
-|:---|:---|:---|:---|
-| accessKey | String | 是 | 用于身份验证的访问密钥/ID |
-| secretKey | String | 是 | 用于身份验证的密钥 |
-| bucket | String | 是 | 存储桶/容器名称 |
-| endpoint/domain | String | 提供商 | 端点 URL 或自定义域 |
-| region | String | 提供商 | 服务区域 |
-| prefix | String | 否 | 所有文件的路径前缀 |
+| 参数            | 类型   | 必需   | 描述                      |
+|:----------------|:-------|:-------|:--------------------------|
+| accessKey       | String | 是     | 用于身份验证的访问密钥/ID |
+| secretKey       | String | 是     | 用于身份验证的密钥        |
+| bucket          | String | 是     | 存储桶/容器名称           |
+| endpoint/domain | String | 提供商 | 端点 URL 或自定义域       |
+| region          | String | 提供商 | 服务区域                  |
+| prefix          | String | 否     | 所有文件的路径前缀        |
 
 ### 提供商注册表
 
-| 注册表键 | 提供商 | 描述 |
-|:---|:---|:---|
-| ALIYUN | AliyunOssProvider | 阿里云对象存储服务 |
-| QINIU | QiniuOssProvider | 七牛云存储 |
-| TENCENT | TencentOssProvider | 腾讯云对象存储 |
-| BAIDU | BaiduOssProvider | 百度云对象存储 |
-| HUAWEI | HuaweiOssProvider | 华为云对象存储服务 |
-| JD | JdOssProvider | 京东云对象存储服务 |
-| UPYUN | UpyunOssProvider | 又拍云存储 |
+| 注册表键 | 提供商             | 描述               |
+|:---------|:-------------------|:-------------------|
+| ALIYUN   | AliyunOssProvider  | 阿里云对象存储服务 |
+| QINIU    | QiniuOssProvider   | 七牛云存储         |
+| TENCENT  | TencentOssProvider | 腾讯云对象存储     |
+| BAIDU    | BaiduOssProvider   | 百度云对象存储     |
+| HUAWEI   | HuaweiOssProvider  | 华为云对象存储服务 |
+| JD       | JdOssProvider      | 京东云对象存储服务 |
+| UPYUN    | UpyunOssProvider   | 又拍云存储         |
 
 ## 💡 最佳实践
 
@@ -366,6 +367,7 @@ extend:
 ### 5. 实现重试逻辑
 
 ```java
+
 @Service
 public class ResilientStorageService {
 
@@ -385,6 +387,7 @@ public class ResilientStorageService {
 ### 问: 应该选择哪个云提供商？
 
 答: 考虑以下因素:
+
 - **地理位置**: 选择距离最近的提供商
 - **成本**: 比较存储和带宽的定价
 - **功能**: CDN、处理、分析能力
@@ -494,6 +497,7 @@ public class FileProcessingService {
 ### 存储健康检查
 
 ```java
+
 @Component
 public class StorageHealthCheck implements HealthIndicator {
 
@@ -518,13 +522,13 @@ public class StorageHealthCheck implements HealthIndicator {
 - **JDK**: 8, 11, 17, 21+
 - **Spring Boot**: 2.7.x, 3.x
 - **支持的提供商**:
-  - 阿里云 OSS: 3.4.2+
-  - 七牛云: 7.2.x
-  - 腾讯云 COS: 5.5.9+
-  - 百度云 BOS: 0.10.48+
-  - 华为云 OBS: 3.0.5+
-  - 京东云 OSS: 1.11.136+
-  - 又拍云: 4.0.1+
+    - 阿里云 OSS: 3.4.2+
+    - 七牛云: 7.2.x
+    - 腾讯云 COS: 5.5.9+
+    - 百度云 BOS: 0.10.48+
+    - 华为云 OBS: 3.0.5+
+    - 京东云 OSS: 1.11.136+
+    - 又拍云: 4.0.1+
 
 ## 📚 相关模块
 

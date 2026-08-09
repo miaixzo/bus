@@ -27,7 +27,6 @@ import org.miaixz.bus.cortex.builtin.batch.BatchOperation;
  * Batch-specific registry operations exposed to pluggable batch strategies.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface RegistryBatchOperations extends RegistryOperations {
 

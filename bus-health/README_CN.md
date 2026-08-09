@@ -8,7 +8,8 @@
 
 ## 📖 项目介绍
 
-**Bus Health** 是基于 OSHI（Operating System and Hardware Information）的跨平台系统健康监控框架。它为 Windows、Linux、macOS 和 Unix 系统提供了统一的 API 来监控系统和硬件信息。设计简洁、性能优先,使开发者能够轻松获取全面的系统健康指标,无需担心底层平台差异。
+**Bus Health** 是基于 OSHI（Operating System and Hardware Information）的跨平台系统健康监控框架。它为 Windows、Linux、macOS 和
+Unix 系统提供了统一的 API 来监控系统和硬件信息。设计简洁、性能优先,使开发者能够轻松获取全面的系统健康指标,无需担心底层平台差异。
 
 -----
 
@@ -16,21 +17,21 @@
 
 ### 🎯 平台支持
 
-* **跨平台**: 支持 Windows、Linux、macOS、Unix(Solaris、FreeBSD、AIX、OpenBSD)
+* **跨平台**: 支持 Windows、Linux、macOS、Unix (Solaris、FreeBSD、AIX、OpenBSD)
 * **统一 API**: 所有平台使用单一接口,无需编写平台特定代码
 * **零配置**: 开箱即用,自动检测平台
 
 ### ⚡ 系统信息监控
 
-| 类别 | 功能 | 描述 |
-| :--- | :--- | :--- |
-| **CPU** | 使用率、负载、时钟 | 实时 CPU 负载、每处理器统计、时钟计数器 |
-| **内存** | 物理内存、虚拟内存、交换分区 | 内存使用量、可用性和交换分区统计 |
-| **磁盘** | 存储、分区、使用率 | 磁盘驱动器、分区、文件存储、I/O 统计 |
-| **网络** | 接口、带宽 | 网络接口、IP 地址、流量监控 |
-| **进程** | 列表、CPU、内存 | 进程列表及每进程 CPU 和内存使用情况 |
-| **硬件** | 传感器、电池、显示器 | 温度、风扇、电压、电池状态、显示器信息 |
-| **系统** | 操作系统、固件、主板 | 操作系统版本、制造商、型号、序列号 |
+| 类别     | 功能                         | 描述                                    |
+|:---------|:-----------------------------|:----------------------------------------|
+| **CPU**  | 使用率、负载、时钟           | 实时 CPU 负载、每处理器统计、时钟计数器 |
+| **内存** | 物理内存、虚拟内存、交换分区 | 内存使用量、可用性和交换分区统计        |
+| **磁盘** | 存储、分区、使用率           | 磁盘驱动器、分区、文件存储、I/O 统计    |
+| **网络** | 接口、带宽                   | 网络接口、IP 地址、流量监控             |
+| **进程** | 列表、CPU、内存              | 进程列表及每进程 CPU 和内存使用情况     |
+| **硬件** | 传感器、电池、显示器         | 温度、风扇、电压、电池状态、显示器信息  |
+| **系统** | 操作系统、固件、主板         | 操作系统版本、制造商、型号、序列号      |
 
 ### 🔍 高级功能
 
@@ -38,7 +39,7 @@
 * **EDID 解析**: 详细的显示器信息,包括制造商、型号、分辨率
 * **USB 设备枚举**: 列出所有连接的 USB 设备及完整详细信息
 * **文件系统监控**: 挂载点、文件类型、使用统计
-* **网络流量**: 实时带宽监控(RX/TX 字节数和包数)
+* **网络流量**: 实时带宽监控 (RX/TX 字节数和包数)
 * **电池状态**: 容量、剩余时间、功耗、电压、温度
 * **传感器数据**: CPU 温度、风扇转速、电压读数
 
@@ -47,7 +48,7 @@
 * **轻量级**: 最小内存占用,使用 Memoizer 模式实现延迟初始化
 * **线程安全**: 所有操作都是线程安全的,支持并发访问
 * **灵活查询**: 查询特定指标或获取完整的系统概览
-* **格式化输出**: 内置格式化,提供人类可读的指标(KB、MB、GB、TB)
+* **格式化输出**: 内置格式化,提供人类可读的指标 (KB、MB、GB、TB)
 * **自定义健康检查**: 通过自定义健康检查进行扩展
 
 -----
@@ -366,20 +367,20 @@ result.forEach((key, value) -> System.out.println(key + ": " + value));
 
 ### 可用指标 (TID)
 
-| 标识符 | 描述 | 返回类型 |
-| :--- | :--- | :--- |
-| `TID.HOST` | 主机信息 | `Host` |
-| `TID.CPU` | CPU 使用率和统计 | `Cpu` |
-| `TID.MEMORY` | 内存使用情况 | `Memory` |
-| `TID.DISK` | 磁盘存储信息 | `List<Disk>` |
-| `TID.JVM` | JVM 运行时信息 | `Jvm` |
-| `TID.ALL_DISK` | 所有磁盘使用率百分比 | `Double` |
-| `TID.PROCESS` | CPU 使用率最高的进程 | `List<Map<String, Object>>` |
-| `TID.SYSTEM` | 计算机系统信息 | `ComputerSystem` |
-| `TID.PROCESSOR` | 处理器详情 | `CentralProcessor` |
-| `TID.HARDWARE` | 所有硬件信息 | `Map<String, Object>` |
-| `TID.POWERSOURCES` | 电池/电源信息 | `Map<String, Object>` |
-| `TID.NETWORKIFS` | 网络接口信息 | `Map<String, Object>` |
+| 标识符             | 描述                 | 返回类型                    |
+|:-------------------|:---------------------|:----------------------------|
+| `TID.HOST`         | 主机信息             | `Host`                      |
+| `TID.CPU`          | CPU 使用率和统计     | `Cpu`                       |
+| `TID.MEMORY`       | 内存使用情况         | `Memory`                    |
+| `TID.DISK`         | 磁盘存储信息         | `List<Disk>`                |
+| `TID.JVM`          | JVM 运行时信息       | `Jvm`                       |
+| `TID.ALL_DISK`     | 所有磁盘使用率百分比 | `Double`                    |
+| `TID.PROCESS`      | CPU 使用率最高的进程 | `List<Map<String, Object>>` |
+| `TID.SYSTEM`       | 计算机系统信息       | `ComputerSystem`            |
+| `TID.PROCESSOR`    | 处理器详情           | `CentralProcessor`          |
+| `TID.HARDWARE`     | 所有硬件信息         | `Map<String, Object>`       |
+| `TID.POWERSOURCES` | 电池/电源信息        | `Map<String, Object>`       |
+| `TID.NETWORKIFS`   | 网络接口信息         | `Map<String, Object>`       |
 
 -----
 
@@ -481,6 +482,7 @@ double totalUsage = cpu.getTotalUsage();
 ### Q2: 可以监控远程系统吗?
 
 **A**: Bus Health 监控本地系统。对于远程监控,可以考虑:
+
 - 通过 HTTP API 暴露健康检查端点
 - 使用监控代理将指标推送到中心服务器
 - 集成 Prometheus 等监控系统
@@ -503,6 +505,7 @@ for (PowerSource ps : powerSources) {
 ### Q4: 需要什么权限?
 
 **A**:
+
 - **Linux/Unix**: 大部分信息无需特殊权限
 - **Windows**: 通常无需特殊权限
 - **某些传感器**: 可能需要根据操作系统提升权限
@@ -510,8 +513,9 @@ for (PowerSource ps : powerSources) {
 ### Q5: 如何减少监控开销?
 
 **A**:
+
 - 仅查询必要的指标
-- 增加监控间隔(例如,5-10 秒而不是 1 秒)
+- 增加监控间隔 (例如,5-10 秒而不是 1 秒)
 - 使用单例 Collector 实例
 - 适当缓存结果
 
@@ -564,9 +568,9 @@ System.out.println("发送: " + host.getTxBytesPerSecond() + " KB/s");
 ## 🔄 版本兼容性
 
 | Bus Health 版本 | JDK 版本 | OSHI 版本 |
-| :--- | :--- | :--- |
-| 8.x | 17+ | 6.x+ |
-| 7.x | 11+ | 5.x+ |
+|:----------------|:---------|:----------|
+| 8.x             | 17+      | 6.x+      |
+| 7.x             | 11+      | 5.x+      |
 
 -----
 
@@ -574,19 +578,19 @@ System.out.println("发送: " + host.getTxBytesPerSecond() + " KB/s");
 
 ### 1. 初始化开销
 
-- 首次访问每个平台组件(OS、Hardware)涉及延迟初始化
-- 后续访问使用缓存实例(Memoizer 模式)
-- 典型初始化时间: 50-200ms(取决于平台)
+- 首次访问每个平台组件 (OS、Hardware)涉及延迟初始化
+- 后续访问使用缓存实例 (Memoizer 模式)
+- 典型初始化时间: 50-200ms (取决于平台)
 
 ### 2. 查询性能
 
-| 操作 | 典型时间 | 说明 |
-| :--- | :--- | :--- |
-| `getCpu()` | 600ms | 包含测量间隔 |
-| `getMemory()` | <10ms | 缓存数据 |
-| `getDisk()` | 20-50ms | 文件系统查询 |
-| `getJvm()` | <5ms | JVM MXBean 访问 |
-| `getHost()` | 3000ms | 包含网络测量 |
+| 操作          | 典型时间 | 说明            |
+|:--------------|:---------|:----------------|
+| `getCpu()`    | 600ms    | 包含测量间隔    |
+| `getMemory()` | <10ms    | 缓存数据        |
+| `getDisk()`   | 20-50ms  | 文件系统查询    |
+| `getJvm()`    | <5ms     | JVM MXBean 访问 |
+| `getHost()`   | 3000ms   | 包含网络测量    |
 
 ### 3. 内存占用
 
@@ -617,28 +621,28 @@ public Cpu getCpuWithCache() {
 
 ### 操作系统
 
-| 平台 | 状态 | 说明 |
-| :--- | :--- | :--- |
+| 平台        | 状态        | 说明                            |
+|:------------|:------------|:--------------------------------|
 | **Windows** | ✅ 完全支持 | Windows 7/8/10/11, Server 2012+ |
-| **Linux** | ✅ 完全支持 | 所有主流发行版 |
-| **macOS** | ✅ 完全支持 | macOS 10.12+ |
-| **FreeBSD** | ✅ 支持 | FreeBSD 10+ |
-| **OpenBSD** | ✅ 支持 | OpenBSD 6+ |
-| **Solaris** | ✅ 支持 | Solaris 10+ |
-| **AIX** | ✅ 支持 | AIX 6+ |
+| **Linux**   | ✅ 完全支持 | 所有主流发行版                  |
+| **macOS**   | ✅ 完全支持 | macOS 10.12+                    |
+| **FreeBSD** | ✅ 支持     | FreeBSD 10+                     |
+| **OpenBSD** | ✅ 支持     | OpenBSD 6+                      |
+| **Solaris** | ✅ 支持     | Solaris 10+                     |
+| **AIX**     | ✅ 支持     | AIX 6+                          |
 
 ### 硬件信息
 
-| 类别 | Windows | Linux | macOS | Unix |
-| :--- | :--- | :--- | :--- | :--- |
-| **CPU** | ✅ | ✅ | ✅ | ✅ |
-| **内存** | ✅ | ✅ | ✅ | ✅ |
-| **磁盘** | ✅ | ✅ | ✅ | ✅ |
-| **网络** | ✅ | ✅ | ✅ | ✅ |
-| **电池** | ✅ | ✅ | ✅ | ⚠️ |
-| **传感器** | ✅ | ⚠️ | ✅ | ⚠️ |
-| **显示器** | ✅ | ⚠️ | ✅ | ❌ |
-| **USB** | ✅ | ✅ | ✅ | ⚠️ |
+| 类别       | Windows | Linux | macOS | Unix |
+|:-----------|:--------|:------|:------|:-----|
+| **CPU**    | ✅      | ✅    | ✅    | ✅   |
+| **内存**   | ✅      | ✅    | ✅    | ✅   |
+| **磁盘**   | ✅      | ✅    | ✅    | ✅   |
+| **网络**   | ✅      | ✅    | ✅    | ✅   |
+| **电池**   | ✅      | ✅    | ✅    | ⚠️   |
+| **传感器** | ✅      | ⚠️    | ✅    | ⚠️   |
+| **显示器** | ✅      | ⚠️    | ✅    | ❌   |
+| **USB**    | ✅      | ✅    | ✅    | ⚠️   |
 
 图例: ✅ 完全支持 | ⚠️ 部分支持 | ❌ 不支持
 
@@ -685,7 +689,8 @@ implementation 'net.java.dev.jna:jna-platform:5.18.0'
 
 ## 🙏 致谢
 
-本项目部分基于 [OSHI](https://github.com/oshi/oshi)(Operating System and Hardware Information),采用 MIT 许可证。感谢 OSHI 团队的杰出工作。
+本项目部分基于 [OSHI](https://github.com/oshi/oshi)(Operating System and Hardware Information),采用 MIT 许可证。感谢 OSHI
+团队的杰出工作。
 
 -----
 

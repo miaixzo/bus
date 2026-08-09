@@ -29,7 +29,6 @@ import org.miaixz.bus.validate.Context;
  * @param <T> The type of the object to be validated.
  * @param <K> The type of the annotation associated with the validator.
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface Matcher<T, K> extends Provider {

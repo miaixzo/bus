@@ -39,7 +39,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * ASCII characters.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Z85 implements Encoder<byte[], String>, Decoder<String, byte[]>, Serializable {
 

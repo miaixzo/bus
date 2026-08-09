@@ -34,7 +34,6 @@ import org.miaixz.bus.health.linux.ProcPath;
  * Reads disk statistics from {@code /proc/diskstats}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class DiskStats {
@@ -78,7 +77,6 @@ public final class DiskStats {
      * Enum corresponding to the fields in the output of {@code /proc/diskstats}
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum IoStat {
         /**

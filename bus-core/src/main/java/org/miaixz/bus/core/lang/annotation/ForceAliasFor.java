@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.Normal;
  * will take effect.</b>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Link(type = RelationType.FORCE_ALIAS_FOR)

@@ -41,7 +41,6 @@ import org.miaixz.bus.notify.nimble.AbstractProvider;
  * JPush SMS service provider implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JpushSmsProvider extends AbstractProvider<JpushNotice, Context> {
 

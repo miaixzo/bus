@@ -33,7 +33,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * {@link MapperConfiguration} so this class remains a thin configuration holder.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ConfigurationProperties(prefix = GeniusBuilder.MAPPER)
 @Validated

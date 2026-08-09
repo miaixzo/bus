@@ -34,7 +34,6 @@ import org.miaixz.bus.core.center.function.SupplierX;
  * @param <K> The type of the keys.
  * @param <V> The type of the values.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ListValueMap<K, V> extends AbstractCollValueMap<K, V> {
 

@@ -26,7 +26,6 @@ import org.miaixz.bus.core.center.date.Culture;
  * cyclical systems found in different cultures.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class Loops extends Tradition implements Culture {
 

@@ -34,7 +34,6 @@ import org.miaixz.bus.logger.Logger;
  * Versioned artifact definition.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class VersionAssets extends Assets {
 
@@ -238,7 +237,6 @@ public class VersionAssets extends Assets {
      * Version-specific metadata payload stored directly in the raw asset metadata JSON payload.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter

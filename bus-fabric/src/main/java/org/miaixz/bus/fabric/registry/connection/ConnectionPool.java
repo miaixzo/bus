@@ -54,7 +54,6 @@ import org.miaixz.bus.logger.Logger;
  * Thread-safe reusable connection pool.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ConnectionPool implements AutoCloseable {
 

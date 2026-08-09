@@ -33,7 +33,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Manifest query result enriched with WADO retrieval parameters and viewer message metadata.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ManifestQueryResult extends Manifest {
 

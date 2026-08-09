@@ -30,7 +30,6 @@ import org.miaixz.bus.core.net.Protocol;
  * Microsoft login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MicrosoftProvider extends AbstractMicrosoftProvider {
 
@@ -65,7 +64,7 @@ public class MicrosoftProvider extends AbstractMicrosoftProvider {
         super.validate(context);
         // Microsoft's redirect uri must use the HTTPS or localhost
         if (Registry.MICROSOFT == this.complex && !Protocol.isHttpsOrLocalHost(context.getRedirectUri())) {
-            throw new AuthorizedException(ErrorCode._110005.getKey(), this.complex);
+            throw new AuthorizedException(ErrorCode._110003.getKey(), this.complex);
         }
     }
 

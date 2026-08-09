@@ -21,6 +21,5 @@
  * This package contains the specific API endpoints for Alipay.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.pay.nimble.alipay.api;

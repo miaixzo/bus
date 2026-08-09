@@ -21,6 +21,5 @@
  * Provides interfaces and implementations for rendering QR codes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.extra.qrcode.render;

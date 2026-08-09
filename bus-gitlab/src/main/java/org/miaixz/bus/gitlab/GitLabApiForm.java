@@ -38,7 +38,6 @@ import org.miaixz.bus.gitlab.support.ISO8601;
  * This class extends the standard JAX-RS Form class to make it fluent.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GitLabApiForm extends Form {
 

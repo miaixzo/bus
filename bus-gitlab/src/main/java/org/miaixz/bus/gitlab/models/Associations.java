@@ -28,16 +28,37 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The associations class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Associations implements Serializable {
 
+    /**
+     * Constructs a new {@code Associations} instance.
+     */
+    public Associations() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852237588798L;
 
+    /**
+     * The groups count value.
+     */
     private int groupsCount;
+    /**
+     * The projects count value.
+     */
     private int projectsCount;
+    /**
+     * The issues count value.
+     */
     private int issuesCount;
+    /**
+     * The merge requests count value.
+     */
     private int mergeRequestsCount;
 
     /**

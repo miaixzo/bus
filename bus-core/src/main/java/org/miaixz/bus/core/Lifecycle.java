@@ -23,7 +23,6 @@ package org.miaixz.bus.core;
  * Common lifecycle contract for managed work, services, and resources.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Lifecycle {
 

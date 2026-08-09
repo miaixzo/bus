@@ -83,7 +83,6 @@ import org.miaixz.bus.logger.Logger;
  * HTTP chain stage that leases or opens the route connection.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpConnect implements HttpStage, AutoCloseable {
 
@@ -143,7 +142,9 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
      */
     private final HttpRoutePlanner routePlanner;
 
-    /** Shared transport-level HTTP CONNECT and SOCKS5 handshake component. */
+    /**
+     * Shared transport-level HTTP CONNECT and SOCKS5 handshake component.
+     */
     private final StreamProxyConnector proxyConnector;
 
     /**
@@ -2702,7 +2703,9 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
          */
         private final class SocketOperationTimeout extends AsyncTimeout {
 
-            /** Message identifying the timed operation. */
+            /**
+             * Message identifying the timed operation.
+             */
             private final String message;
 
             /**
@@ -2714,7 +2717,9 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                 this.message = message;
             }
 
-            /** Creates the checked timeout while retaining a close-induced socket failure. */
+            /**
+             * Creates the checked timeout while retaining a close-induced socket failure.
+             */
             @Override
             protected IOException newTimeoutException(final IOException cause) {
                 final SocketTimeoutException failure = new SocketTimeoutException(message);
@@ -2724,7 +2729,9 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                 return failure;
             }
 
-            /** Closes the socket so its current blocking read or write returns promptly. */
+            /**
+             * Closes the socket so its current blocking read or write returns promptly.
+             */
             @Override
             protected void timedOut() {
                 try {
@@ -2804,7 +2811,9 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                 return SocketConduit.this.readSynchronously(sink, byteCount);
             }
 
-            /** Returns the physical socket read timeout. */
+            /**
+             * Returns the physical socket read timeout.
+             */
             @Override
             public org.miaixz.bus.core.io.timout.Timeout timeout() {
                 return readTimeout;
@@ -2844,7 +2853,9 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                 // SocketChannel writes are flushed by the operating system.
             }
 
-            /** Returns the physical socket write timeout. */
+            /**
+             * Returns the physical socket write timeout.
+             */
             @Override
             public org.miaixz.bus.core.io.timout.Timeout timeout() {
                 return writeTimeout;
@@ -2917,7 +2928,6 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
      * Internal no-operation listener.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum NoopListener implements Listener<Object> {
 

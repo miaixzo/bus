@@ -27,7 +27,6 @@ import java.util.Objects;
  * Immutable convolution kernel data for image filtering operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class KernelData {
 
@@ -313,7 +312,6 @@ public final class KernelData {
      * Defines the KernelType values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum KernelType {
         /**

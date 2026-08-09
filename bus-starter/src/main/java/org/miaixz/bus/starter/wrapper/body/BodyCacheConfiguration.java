@@ -33,7 +33,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Configures wrapper request and response body caching.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BodyCacheProperties.class)

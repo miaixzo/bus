@@ -23,7 +23,6 @@ package org.miaixz.bus.image.nimble.opencv;
  * Provides physical memory size calculation for image-like objects.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ImageSize {
 

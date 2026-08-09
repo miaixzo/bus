@@ -39,7 +39,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * XML writer for generating XML content.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class XmlWriter {
 

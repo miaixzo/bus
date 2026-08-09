@@ -32,7 +32,6 @@ import org.miaixz.bus.health.Builder;
  * mechanism.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface IOKit extends com.sun.jna.platform.mac.IOKit {
 
@@ -67,7 +66,6 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "major", "minor", "build", "reserved", "release" })
     class SMCKeyDataVers extends Structure {
@@ -114,7 +112,6 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "version", "length", "cpuPLimit", "gpuPLimit", "memPLimit" })
     class SMCKeyDataPLimitData extends Structure {
@@ -161,7 +158,6 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "dataSize", "dataType", "dataAttributes" })
     class SMCKeyDataKeyInfo extends Structure {
@@ -197,7 +193,6 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "key", "vers", "pLimitData", "keyInfo", "result", "status", "data8", "data32", "bytes" })
     class SMCKeyData extends Structure implements AutoCloseable {
@@ -271,7 +266,6 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "key", "dataSize", "dataType", "bytes" })
     class SMCVal extends Structure implements AutoCloseable {

@@ -35,7 +35,6 @@ import org.miaixz.bus.core.xyz.*;
  *
  * @param <T> The type of the current instance (for fluent API support)
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractTypeAnnotationScanner<T extends AbstractTypeAnnotationScanner<T>>
         implements AnnotationScanner {
@@ -303,7 +302,6 @@ public abstract class AbstractTypeAnnotationScanner<T extends AbstractTypeAnnota
      * Converts a JDK proxy class to its original proxied class, if applicable.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class JdkProxyClassConverter implements UnaryOperatorX<Class<?>> {
 

@@ -8,9 +8,11 @@
 
 ## 📖 项目介绍
 
-**Bus Setting** 提供了一个统一而强大的框架来管理应用程序配置。它支持 Java Properties 和 INI 文件格式，为读取、写入和操作配置文件提供了灵活的 API。
+**Bus Setting** 提供了一个统一而强大的框架来管理应用程序配置。它支持 Java Properties 和 INI 文件格式，为读取、写入和操作配置文件提供了灵活的
+API。
 
 该模块提供:
+
 * **Properties 增强**: 带有额外便捷方法的增强 Properties 类
 * **INI 文件支持**: 完全支持 INI 格式，包括节、注释和属性
 * **构建器模式**: 用于创建和修改 INI 文件的流式 API
@@ -25,7 +27,7 @@
 ### Properties 增强
 
 * **增强的 Properties**: 带有便捷 getter 方法的扩展 Properties 类
-* **类型安全访问**: 获取特定类型的值(String、Integer、Boolean 等)
+* **类型安全访问**: 获取特定类型的值 (String、Integer、Boolean 等)
 * **默认值**: 属性缺失时支持默认值
 * **全局访问**: 使用 `Builder.get(name)` 的单例样式访问
 
@@ -544,11 +546,13 @@ public class ConfigValidator {
 ### Q1: Properties 和 Ini 有什么区别？
 
 **Properties**:
+
 * 简单的键值对
 * 无层次结构或节
 * 标准 Java 格式
 
 **INI**:
+
 * 支持节和层次结构
 * 支持注释
 * 更人性化
@@ -609,10 +613,10 @@ props.load(new InputStreamReader(
 
 ## 🔄 版本兼容性
 
-| Bus Setting 版本 | JDK 版本 | 状态 |
-| :--- | :--- | :--- |
-| **8.x** | 17+ | 当前 |
-| 7.x | 11+ | 维护中 |
+| Bus Setting 版本 | JDK 版本 | 状态   |
+|:-----------------|:---------|:-------|
+| **8.x**          | 17+      | 当前   |
+| 7.x              | 11+      | 维护中 |
 
 -----
 

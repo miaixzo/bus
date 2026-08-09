@@ -42,7 +42,6 @@ import org.miaixz.bus.health.linux.SysPath;
  * filesystem paths. Limit values are memoized while usage values are read fresh on each call.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class LinuxCgroupInfo implements CgroupInfo {

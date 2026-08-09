@@ -21,8 +21,6 @@ package org.miaixz.bus.notify.nimble;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.logger.Logger;
@@ -36,9 +34,7 @@ import org.miaixz.bus.notify.magic.Notice;
  * @param <T> The type of {@link Notice} this provider handles.
  * @param <K> The type of {@link Context} this provider uses.
  * @author Kimi Liu
- * @since Java 21+
  */
-@AllArgsConstructor
 public abstract class AbstractProvider<T extends Notice, K extends Context> implements Provider<T> {
 
     /**
@@ -46,6 +42,15 @@ public abstract class AbstractProvider<T extends Notice, K extends Context> impl
      */
     public AbstractProvider() {
         // No initialization required.
+    }
+
+    /**
+     * Constructs a provider with its configuration context.
+     *
+     * @param context the provider context
+     */
+    protected AbstractProvider(K context) {
+        this.context = context;
     }
 
     /**

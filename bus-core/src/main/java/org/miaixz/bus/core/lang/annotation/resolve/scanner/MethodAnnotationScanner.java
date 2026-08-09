@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.*;
  * same signature.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MethodAnnotationScanner extends AbstractTypeAnnotationScanner<MethodAnnotationScanner>
         implements AnnotationScanner {

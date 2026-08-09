@@ -43,7 +43,6 @@ import org.miaixz.bus.core.xyz.*;
  * patterns, and the first one that matches is used to extract date components.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RegexDateParser implements DateParser, Serializable {
 

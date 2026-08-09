@@ -36,7 +36,6 @@ import org.miaixz.bus.core.text.CharsBacker;
  * Converts and formats color values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ColorKit {
 

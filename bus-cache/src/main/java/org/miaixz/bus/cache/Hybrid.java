@@ -30,7 +30,6 @@ import org.miaixz.bus.logger.Logger;
  * directly.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Hybrid implements CacheX<String, Object> {
 

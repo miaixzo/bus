@@ -37,7 +37,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * DNS domain-name normalization and wire codec utilities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsName {
 
@@ -311,7 +310,6 @@ public final class DnsName {
      * Immutable result produced by DNS name decoding.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class ReadResult {
 

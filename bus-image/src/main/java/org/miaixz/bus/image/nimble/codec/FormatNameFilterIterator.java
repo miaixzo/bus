@@ -29,7 +29,6 @@ import javax.imageio.spi.ImageReaderWriterSpi;
  *
  * @param <T> the t type.
  * @author Kimi Liu
- * @since Java 21+
  */
 final class FormatNameFilterIterator<T extends ImageReaderWriterSpi> implements Iterator<T> {
 

@@ -30,7 +30,6 @@ import org.miaixz.bus.image.metric.hl7.HL7Segment;
  * Represents the UnparsedHL7Message type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UnparsedHL7Message implements Serializable {
 

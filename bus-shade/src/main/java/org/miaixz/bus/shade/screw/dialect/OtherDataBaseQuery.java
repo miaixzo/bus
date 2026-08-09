@@ -36,7 +36,6 @@ import org.miaixz.bus.shade.screw.metadata.Table;
  * {@link InternalException} indicating that the feature is not supported.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class OtherDataBaseQuery extends AbstractDatabaseQuery {
 

@@ -19,24 +19,26 @@
 */
 package org.miaixz.bus.health.builtin;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Host Information
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@SuperBuilder
 public class Host {
+
+    /**
+     * Constructs a new {@code Host} instance.
+     */
+    public Host() {
+        // No initialization required.
+    }
 
     /**
      * System name

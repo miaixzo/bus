@@ -36,7 +36,6 @@ import org.miaixz.bus.starter.wrapper.routing.RoutePrefixConfiguration;
  * Root configuration that composes the five independent wrapper capabilities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(WrapperProperties.class)

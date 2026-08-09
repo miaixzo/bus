@@ -31,7 +31,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * Queries WMI class {@code Win32_VideoController}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Win32VideoController {
@@ -63,7 +62,6 @@ public final class Win32VideoController {
      * Video Controller properties
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum VideoControllerProperty {
         /**

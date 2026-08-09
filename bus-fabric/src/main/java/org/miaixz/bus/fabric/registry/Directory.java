@@ -45,7 +45,6 @@ import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
  * Registry directory keyed by stable registry names.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Directory implements AutoCloseable {
 

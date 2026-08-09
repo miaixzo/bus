@@ -28,21 +28,57 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The branch class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Branch implements Serializable {
 
+    /**
+     * Constructs a new {@code Branch} instance.
+     */
+    public Branch() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852238379559L;
 
+    /**
+     * The commit value.
+     */
     private Commit commit;
+    /**
+     * The developers can merge value.
+     */
     private Boolean developersCanMerge;
+    /**
+     * The developers can push value.
+     */
     private Boolean developersCanPush;
+    /**
+     * The merged value.
+     */
     private Boolean merged;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The is protected value.
+     */
     private Boolean isProtected;
+    /**
+     * The is default value.
+     */
     private Boolean isDefault;
+    /**
+     * The can push value.
+     */
     private Boolean canPush;
+    /**
+     * The web url value.
+     */
     private String webUrl;
 
     /**

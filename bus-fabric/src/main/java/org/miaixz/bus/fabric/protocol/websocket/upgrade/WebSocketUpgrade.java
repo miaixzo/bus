@@ -58,7 +58,6 @@ import org.miaixz.bus.fabric.network.Ingress;
  * HTTP upgrade adapter for WebSocket handshakes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class WebSocketUpgrade {
 

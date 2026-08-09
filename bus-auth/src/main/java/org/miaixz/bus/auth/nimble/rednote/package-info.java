@@ -23,6 +23,5 @@
  * This package contains classes and utilities for handling red envelope operations within the authentication framework.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.auth.nimble.rednote;

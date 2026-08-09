@@ -39,7 +39,6 @@ import org.miaixz.bus.fabric.protocol.stomp.body.StompBody;
  * @param headers     immutable STOMP header collection
  * @param payload     payload carried by the frame
  * @author Kimi Liu
- * @since Java 21+
  */
 public record StompMessage(String destination, Headers headers, Payload payload) {
 

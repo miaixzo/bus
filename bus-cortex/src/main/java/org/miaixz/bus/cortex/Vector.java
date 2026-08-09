@@ -41,7 +41,6 @@ import org.miaixz.bus.cortex.builtin.Selector;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
@@ -171,7 +170,6 @@ public class Vector extends Nature {
      * Fluent builder for {@link Vector}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

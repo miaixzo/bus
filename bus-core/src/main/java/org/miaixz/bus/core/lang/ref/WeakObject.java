@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  *
  * @param <T> The type of the object held by this weak reference.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WeakObject<T> extends WeakReference<T> implements Ref<T> {
 

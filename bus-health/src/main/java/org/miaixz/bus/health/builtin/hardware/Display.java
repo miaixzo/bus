@@ -30,7 +30,6 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  * {@code true} and {@link DisplayInfo#getEdid()} returns an EDID synthesized from those attributes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public interface Display {

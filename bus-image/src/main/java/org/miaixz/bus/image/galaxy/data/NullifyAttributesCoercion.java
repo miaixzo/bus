@@ -25,7 +25,6 @@ import java.util.Objects;
  * Represents the NullifyAttributesCoercion type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NullifyAttributesCoercion implements AttributesCoercion {
 

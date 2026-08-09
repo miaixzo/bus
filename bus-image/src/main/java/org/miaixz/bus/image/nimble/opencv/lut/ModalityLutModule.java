@@ -34,7 +34,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the ModalityLutModule type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ModalityLutModule {
 
@@ -79,9 +78,9 @@ public class ModalityLutModule {
      * Note: Either a Modality LUT Sequence containing a single Item or Rescale Slope and Intercept values shall be
      * present but not both. This implementation only applies a warning in such a case.
      *
+     * @param dcm the dcm value
      * @see <a href="http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.11.html">C.11.1 Modality LUT
      *      Module</a>
-     * @param dcm the dcm value
      */
     public ModalityLutModule(Attributes dcm) {
         this.rescaleSlope = OptionalDouble.empty();

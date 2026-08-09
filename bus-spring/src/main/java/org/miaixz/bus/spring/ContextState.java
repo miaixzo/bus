@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * containers, allowing the captured values to cross execution boundaries safely.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ContextState {
 

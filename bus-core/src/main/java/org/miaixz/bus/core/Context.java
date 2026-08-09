@@ -40,7 +40,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * singleton pattern via {@link #INSTANCE} for global access, but also allows for the creation of separate instances.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Context extends Keys {
 

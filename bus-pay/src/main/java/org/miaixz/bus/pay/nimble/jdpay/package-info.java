@@ -21,6 +21,5 @@
  * This package contains the implementation for the JD Pay provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.pay.nimble.jdpay;

@@ -25,14 +25,35 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The release link params class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ReleaseLinkParams {
 
+    /**
+     * Constructs a new {@code ReleaseLinkParams} instance.
+     */
+    public ReleaseLinkParams() {
+        // No initialization required.
+    }
+
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The tag name value.
+     */
     private String tagName;
+    /**
+     * The url value.
+     */
     private String url;
+    /**
+     * The filepath value.
+     */
     private String filepath;
+    /**
+     * The link type value.
+     */
     private String linkType;
 
     /**

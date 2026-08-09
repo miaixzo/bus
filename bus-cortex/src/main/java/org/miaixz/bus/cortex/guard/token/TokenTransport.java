@@ -23,7 +23,6 @@ package org.miaixz.bus.cortex.guard.token;
  * Supported token transport channels.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum TokenTransport {
 

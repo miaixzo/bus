@@ -36,7 +36,6 @@ import org.miaixz.bus.mapper.provider.NamingProvider;
  * The default table builder, which supports processing entity classes annotated with `jakarta.persistence` annotations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TableAnnotationBuilder implements TableSchemaBuilder {
 

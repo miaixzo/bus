@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.annotation.resolve.synthesize.SynthesizedAnnotat
  * of synthesized annotation within {@link SynthesizedAggregateAnnotation}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface SynthesizedAnnotationAttributeProcessor {

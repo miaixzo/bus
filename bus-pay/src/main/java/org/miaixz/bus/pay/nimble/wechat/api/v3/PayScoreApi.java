@@ -25,7 +25,6 @@ import org.miaixz.bus.pay.Matcher;
  * WeChat Pay V3 API interfaces related to WeChat Pay Score.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum PayScoreApi implements Matcher {
 

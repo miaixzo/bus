@@ -107,40 +107,6 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.Integer",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.Integer",
-            "java.lang.Integer",
-            "java.lang.Integer",
-            "java.lang.Integer",
-            "java.lang.Integer",
-            "java.lang.Integer",
-            "java.lang.Integer",
-            "java.lang.Integer",
-            "java.lang.Integer",
-            "java.lang.Integer",
-            "java.lang.Integer",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.Integer",
-            "java.lang.Integer",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "long",
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
             "org.miaixz.bus.cortex.Assets$AssetsBuilder"
           ]
         },

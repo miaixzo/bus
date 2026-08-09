@@ -41,10 +41,12 @@ import org.miaixz.bus.logger.Logger;
  * class for each concern.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GitLabApi implements AutoCloseable {
 
+    /**
+     * The logger value.
+     */
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger
             .getLogger(GitLabApi.class.getName());
 
@@ -53,68 +55,248 @@ public class GitLabApi implements AutoCloseable {
      */
     public static final int DEFAULT_PER_PAGE = 96;
     // Used to keep track of RelevantExceptions on calls that return Optional<?>
+    /**
+     * The optional exception map value.
+     */
     private static final Map<Integer, RelevantException> optionalExceptionMap = Collections
             .synchronizedMap(new WeakHashMap<>());
+    /**
+     * The personal access token api value.
+     */
     private PersonalAccessTokenApi personalAccessTokenApi;
 
+    /**
+     * The api client value.
+     */
     GitLabApiClient apiClient;
+    /**
+     * The api version value.
+     */
     private ApiVersion apiVersion;
+    /**
+     * The git lab server url value.
+     */
     private String gitLabServerUrl;
+    /**
+     * The client config properties value.
+     */
     private Map<String, Object> clientConfigProperties;
+    /**
+     * The default per page value.
+     */
     private int defaultPerPage = DEFAULT_PER_PAGE;
 
+    /**
+     * The applications api value.
+     */
     private ApplicationsApi applicationsApi;
+    /**
+     * The application settings api value.
+     */
     private ApplicationSettingsApi applicationSettingsApi;
+    /**
+     * The audit event api value.
+     */
     private AuditEventApi auditEventApi;
+    /**
+     * The award emoji api value.
+     */
     private AwardEmojiApi awardEmojiApi;
+    /**
+     * The boards api value.
+     */
     private BoardsApi boardsApi;
+    /**
+     * The commits api value.
+     */
     private CommitsApi commitsApi;
+    /**
+     * The container registry api value.
+     */
     private ContainerRegistryApi containerRegistryApi;
+    /**
+     * The discussions api value.
+     */
     private DiscussionsApi discussionsApi;
+    /**
+     * The deploy keys api value.
+     */
     private DeployKeysApi deployKeysApi;
+    /**
+     * The deployments api value.
+     */
     private DeploymentsApi deploymentsApi;
+    /**
+     * The deploy tokens api value.
+     */
     private DeployTokensApi deployTokensApi;
+    /**
+     * The environments api value.
+     */
     private EnvironmentsApi environmentsApi;
+    /**
+     * The epics api value.
+     */
     private EpicsApi epicsApi;
+    /**
+     * The events api value.
+     */
     private EventsApi eventsApi;
+    /**
+     * The external status check api value.
+     */
     private ExternalStatusCheckApi externalStatusCheckApi;
+    /**
+     * The git lab ci yaml value.
+     */
     private GitLabCiYamlApi gitLabCiYaml;
+    /**
+     * The group api value.
+     */
     private GroupApi groupApi;
+    /**
+     * The health check api value.
+     */
     private HealthCheckApi healthCheckApi;
+    /**
+     * The import export api value.
+     */
     private ImportExportApi importExportApi;
+    /**
+     * The issues api value.
+     */
     private IssuesApi issuesApi;
+    /**
+     * The job api value.
+     */
     private JobApi jobApi;
+    /**
+     * The labels api value.
+     */
     private LabelsApi labelsApi;
+    /**
+     * The license api value.
+     */
     private LicenseApi licenseApi;
+    /**
+     * The license templates api value.
+     */
     private LicenseTemplatesApi licenseTemplatesApi;
+    /**
+     * The markdown api value.
+     */
     private MarkdownApi markdownApi;
+    /**
+     * The merge request api value.
+     */
     private MergeRequestApi mergeRequestApi;
+    /**
+     * The milestones api value.
+     */
     private MilestonesApi milestonesApi;
+    /**
+     * The namespace api value.
+     */
     private NamespaceApi namespaceApi;
+    /**
+     * The notes api value.
+     */
     private NotesApi notesApi;
+    /**
+     * The notification settings api value.
+     */
     private NotificationSettingsApi notificationSettingsApi;
+    /**
+     * The packages api value.
+     */
     private PackagesApi packagesApi;
+    /**
+     * The pipeline api value.
+     */
     private PipelineApi pipelineApi;
+    /**
+     * The project api value.
+     */
     private ProjectApi projectApi;
+    /**
+     * The protected branches api value.
+     */
     private ProtectedBranchesApi protectedBranchesApi;
+    /**
+     * The release links api value.
+     */
     private ReleaseLinksApi releaseLinksApi;
+    /**
+     * The releases api value.
+     */
     private ReleasesApi releasesApi;
+    /**
+     * The repository api value.
+     */
     private RepositoryApi repositoryApi;
+    /**
+     * The repository file api value.
+     */
     private RepositoryFileApi repositoryFileApi;
+    /**
+     * The resource label events api value.
+     */
     private ResourceLabelEventsApi resourceLabelEventsApi;
+    /**
+     * The resource state events api value.
+     */
     private ResourceStateEventsApi resourceStateEventsApi;
+    /**
+     * The runners api value.
+     */
     private RunnersApi runnersApi;
+    /**
+     * The search api value.
+     */
     private SearchApi searchApi;
+    /**
+     * The services api value.
+     */
     private ServicesApi servicesApi;
+    /**
+     * The snippets api value.
+     */
     private SnippetsApi snippetsApi;
+    /**
+     * The system hooks api value.
+     */
     private SystemHooksApi systemHooksApi;
+    /**
+     * The tags api value.
+     */
     private TagsApi tagsApi;
+    /**
+     * The todos api value.
+     */
     private TodosApi todosApi;
+    /**
+     * The topics api value.
+     */
     private TopicsApi topicsApi;
+    /**
+     * The user api value.
+     */
     private UserApi userApi;
+    /**
+     * The wikis api value.
+     */
     private WikisApi wikisApi;
+    /**
+     * The keys api value.
+     */
     private KeysApi keysApi;
+    /**
+     * The metadata api value.
+     */
     private MetadataApi metadataApi;
+    /**
+     * The error tracking api value.
+     */
     private ErrorTrackingApi errorTrackingApi;
 
     /**
@@ -392,7 +574,6 @@ public class GitLabApi implements AutoCloseable {
          * The OAuth 2 API class.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         class Oauth2Api extends AbstractApi {
 
@@ -998,7 +1179,6 @@ public class GitLabApi implements AutoCloseable {
          * The version API class.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         class VersionApi extends AbstractApi {
 
@@ -2042,10 +2222,12 @@ public class GitLabApi implements AutoCloseable {
      * Specifies the version of the GitLab API to communicate with.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ApiVersion {
 
+        /**
+         * GitLab API version 4.
+         */
         V4;
 
         /**

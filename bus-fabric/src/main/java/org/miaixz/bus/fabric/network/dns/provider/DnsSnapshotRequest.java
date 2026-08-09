@@ -28,7 +28,6 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsSnapshot;
  * Snapshot load request passed to an external DNS snapshot provider outside the query hot path.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsSnapshotRequest {
 

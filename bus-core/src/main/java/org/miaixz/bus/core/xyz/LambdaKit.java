@@ -43,7 +43,6 @@ import org.miaixz.bus.core.lang.reflect.method.MethodInvoker;
  * Resolves serialized lambda metadata.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LambdaKit {
 

@@ -28,7 +28,6 @@ import org.miaixz.bus.image.Tag;
  * DICOM Key Object Selection document module.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class KeyObjectDocumentModule extends DicomModule {
 

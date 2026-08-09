@@ -35,7 +35,6 @@ import org.miaixz.bus.core.xyz.ListKit;
  * multiple values from a method.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Tuple implements Iterable<Object>, Serializable, Cloneable {
 

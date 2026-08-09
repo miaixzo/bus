@@ -70,7 +70,6 @@ import reactor.core.publisher.Mono;
  * selects buffered, realtime-streaming or download response ownership from the strict route asset mode.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
 

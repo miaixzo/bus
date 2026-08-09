@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
  * A filter that uses regular expressions to match resource names.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RegexFilter implements Filter {
 

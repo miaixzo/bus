@@ -32,7 +32,6 @@ import org.miaixz.bus.image.nimble.opencv.op.MaskArea;
  * Represents the TranscodeParam type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TranscodeParam {
 

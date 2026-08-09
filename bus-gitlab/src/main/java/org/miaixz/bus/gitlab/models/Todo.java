@@ -41,25 +41,64 @@ import tools.jackson.databind.node.ObjectNode;
  * The todo class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Todo implements Serializable {
 
+    /**
+     * Constructs a new {@code Todo} instance.
+     */
+    public Todo() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852282035620L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The project value.
+     */
     private Project project;
+    /**
+     * The author value.
+     */
     private Author author;
+    /**
+     * The action name value.
+     */
     private TodoAction actionName;
+    /**
+     * The target type value.
+     */
     private TodoType targetType;
 
+    /**
+     * The target value.
+     */
     @JsonDeserialize(using = TargetDeserializer.class)
     private Object target;
 
+    /**
+     * The target url value.
+     */
     private String targetUrl;
+    /**
+     * The body value.
+     */
     private String body;
+    /**
+     * The state value.
+     */
     private TodoState state;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
 
     /**
@@ -323,7 +362,6 @@ public class Todo implements Serializable {
      * The target deserializer class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class TargetDeserializer extends ValueDeserializer<Object> {
 

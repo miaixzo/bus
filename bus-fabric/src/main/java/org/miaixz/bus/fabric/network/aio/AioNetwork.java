@@ -61,7 +61,6 @@ import org.miaixz.bus.logger.Logger;
  * Default AIO network adapter for client connections and TCP servers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class AioNetwork implements AutoCloseable {
 
@@ -1298,7 +1297,6 @@ public final class AioNetwork implements AutoCloseable {
      * Internal no-operation listener.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum NoopListener implements Listener<Object> {
 

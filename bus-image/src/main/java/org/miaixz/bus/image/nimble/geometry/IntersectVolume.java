@@ -27,7 +27,6 @@ import java.util.List;
  * Projects a source volume intersection onto a localizer slice.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IntersectVolume extends LocalizerPoster {
 

@@ -25,7 +25,6 @@ import java.io.Serializable;
  * CAPTCHA code generation strategy.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface CodeStrategy extends Serializable {
 

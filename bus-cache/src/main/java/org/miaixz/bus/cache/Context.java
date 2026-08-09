@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.EnumValue;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Context {
 

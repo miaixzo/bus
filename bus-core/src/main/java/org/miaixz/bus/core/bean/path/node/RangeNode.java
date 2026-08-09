@@ -30,7 +30,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * to specify a sub-range of elements within a collection or array.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RangeNode implements Node {
 

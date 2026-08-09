@@ -21,6 +21,5 @@
  * Cron expression parsers for internal use.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.tempus.pattern.parser;

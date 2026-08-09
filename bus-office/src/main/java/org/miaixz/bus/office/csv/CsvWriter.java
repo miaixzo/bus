@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.*;
  * CSV data writer.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class CsvWriter implements Closeable, Flushable, Serializable {
 

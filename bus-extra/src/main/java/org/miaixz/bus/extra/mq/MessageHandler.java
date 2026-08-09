@@ -24,7 +24,6 @@ package org.miaixz.bus.extra.mq;
  * Implementations of this interface define the logic for processing messages received by a consumer.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface MessageHandler {

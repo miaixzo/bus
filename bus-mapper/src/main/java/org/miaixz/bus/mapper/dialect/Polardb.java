@@ -39,7 +39,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Polardb extends AbstractDialect {
 
@@ -52,7 +51,6 @@ public final class Polardb extends AbstractDialect {
      * Internal Polardb engine families currently supported by the framework.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum Engine {
 

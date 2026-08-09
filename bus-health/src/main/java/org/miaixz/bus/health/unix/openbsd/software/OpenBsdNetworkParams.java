@@ -31,7 +31,6 @@ import org.miaixz.bus.health.unix.shared.jna.OpenBsdLibc;
  * OpenBsdNetworkParams class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class OpenBsdNetworkParams extends AbstractNetworkParams {

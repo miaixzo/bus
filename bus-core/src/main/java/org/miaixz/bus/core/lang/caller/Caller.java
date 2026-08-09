@@ -26,7 +26,6 @@ import org.miaixz.bus.core.xyz.CallerKit;
  * class, multi-level callers, and check if a specific class is in the call stack.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Caller {
 

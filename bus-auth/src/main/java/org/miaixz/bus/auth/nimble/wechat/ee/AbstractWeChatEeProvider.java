@@ -42,7 +42,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Abstract class for WeChat Enterprise login providers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
 
@@ -105,7 +104,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
 
         // Returns OpenId or other, both indicate non-current enterprise users, not supported
         if (!object.containsKey("userid")) {
-            throw new AuthorizedException(ErrorCode._110004.getKey(), complex);
+            throw new AuthorizedException(ErrorCode._110002.getKey(), complex);
         }
         String userId = (String) object.get("userid");
         String userTicket = (String) object.get("user_ticket");

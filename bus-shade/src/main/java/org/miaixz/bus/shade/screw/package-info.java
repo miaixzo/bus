@@ -21,6 +21,5 @@
  * Core package for generating database schema documentation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.shade.screw;

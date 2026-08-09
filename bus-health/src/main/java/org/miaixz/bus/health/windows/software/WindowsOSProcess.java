@@ -58,7 +58,6 @@ import org.miaixz.bus.logger.Logger;
  * OSProcess implementation
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class WindowsOSProcess extends AbstractOSProcess {

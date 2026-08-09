@@ -36,12 +36,11 @@ import org.miaixz.bus.core.xyz.*;
  * <pre>
  *   key1=v1&amp;key2=&amp;key3=v3
  * </pre>
- *
+ * <p>
  * This class provides methods for parsing and building query strings. When parsing, you can specify a charset to decode
  * the content. When building, you can specify a charset to encode the key-value pairs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UrlQuery {
 
@@ -429,7 +428,6 @@ public class UrlQuery {
      * Defines the encoding mode for query parameters, which determines how names and values are encoded.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum EncodeMode {
         /**

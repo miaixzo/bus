@@ -37,7 +37,6 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Timer {
 
@@ -133,7 +132,6 @@ public interface Timer {
      * Rolling time window used for multi-window percentile queries.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum Window {
         /**
@@ -163,7 +161,6 @@ public interface Timer {
      * @param thresholdNanos configured threshold in nanoseconds
      * @param violatedAt     wall-clock instant of detection
      * @author Kimi Liu
-     * @since Java 21+
      */
     record ViolationEvent(String metricName, Tag[] tags, double percentile, long actualNanos, long thresholdNanos,
             Instant violatedAt) {

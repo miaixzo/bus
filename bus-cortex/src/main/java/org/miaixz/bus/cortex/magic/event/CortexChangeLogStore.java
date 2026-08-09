@@ -25,7 +25,6 @@ import java.util.List;
  * Reliable change-log store used by registry, setting, and version mutation paths.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface CortexChangeLogStore {
 

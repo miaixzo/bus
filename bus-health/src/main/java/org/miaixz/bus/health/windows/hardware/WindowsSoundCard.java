@@ -37,7 +37,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractSoundCard;
  * Sound Card data obtained from registry
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class WindowsSoundCard extends AbstractSoundCard {

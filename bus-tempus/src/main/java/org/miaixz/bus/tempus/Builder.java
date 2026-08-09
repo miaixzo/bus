@@ -34,7 +34,6 @@ import org.miaixz.bus.tempus.pattern.parser.PatternParser;
  * mode. If true, the first digit in the scheduled task expression is the second, otherwise it is the minute (default).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Builder {
 

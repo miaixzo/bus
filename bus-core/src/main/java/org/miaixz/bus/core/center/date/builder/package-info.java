@@ -21,6 +21,5 @@
  * Provides date building functionalities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.center.date.builder;

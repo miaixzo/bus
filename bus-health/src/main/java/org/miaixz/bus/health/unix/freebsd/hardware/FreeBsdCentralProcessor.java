@@ -41,7 +41,6 @@ import org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc;
  * A CPU
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class FreeBsdCentralProcessor extends AbstractCentralProcessor {

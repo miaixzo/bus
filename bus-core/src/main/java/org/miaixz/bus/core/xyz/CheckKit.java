@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * Calculates and verifies checksums.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CheckKit {
 

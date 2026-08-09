@@ -30,7 +30,6 @@ import org.miaixz.bus.spring.boot.startup.SpringStartupSummary.Stage;
  * Captures application-context refresh duration once during startup.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SpringSmartLifecycle implements SmartLifecycle {
 

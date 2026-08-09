@@ -27,17 +27,41 @@ import java.util.List;
  * This class is used to filter Groups when getting lists of groups for a specified project.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProjectGroupsFilter implements Serializable {
 
+    /**
+     * Constructs a new {@code ProjectGroupsFilter} instance.
+     */
+    public ProjectGroupsFilter() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852273582153L;
 
+    /**
+     * The search value.
+     */
     private String search;
+    /**
+     * The shared min access level value.
+     */
     private AccessLevel sharedMinAccessLevel;
+    /**
+     * The shared visible only value.
+     */
     private Boolean sharedVisibleOnly;
+    /**
+     * The skip groups value.
+     */
     private List<Long> skipGroups;
+    /**
+     * The with shared value.
+     */
     private Boolean withShared;
 
     /**

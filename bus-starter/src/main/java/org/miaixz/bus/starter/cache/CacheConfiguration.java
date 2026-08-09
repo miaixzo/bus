@@ -62,7 +62,6 @@ import org.miaixz.bus.starter.annotation.EnableCache;
  * only for in-process backends (memory, caffeine, guava).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(value = { CacheProperties.class })
 @Configuration(proxyBeanMethods = false)

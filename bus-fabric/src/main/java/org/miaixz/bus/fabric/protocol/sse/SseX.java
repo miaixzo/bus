@@ -51,7 +51,6 @@ import org.miaixz.bus.fabric.protocol.sse.retry.SseRetryPolicy;
  * Immutable SSE exchange.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class SseX {
 
@@ -287,7 +286,6 @@ public final class SseX {
      * SSE exchange builder.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

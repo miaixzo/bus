@@ -24,6 +24,5 @@
  * "https://github.com/apache/lucene-solr/tree/master/lucene/analysis">https://github.com/apache/lucene-solr/tree/master/lucene/analysis</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.extra.nlp.provider.analysis;

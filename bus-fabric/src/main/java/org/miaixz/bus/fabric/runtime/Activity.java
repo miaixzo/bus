@@ -36,7 +36,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * Atomic activity wrapper for named runnable work.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Activity implements Runnable, Lifecycle {
 

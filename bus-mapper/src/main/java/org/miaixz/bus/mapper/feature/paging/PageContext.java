@@ -52,7 +52,6 @@ import org.miaixz.bus.mapper.Order;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class PageContext {
 
@@ -362,7 +361,6 @@ public final class PageContext {
      *
      * @param <T> the type of result expected from the selection
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FunctionalInterface
     public interface PageSelector<T> {

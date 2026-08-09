@@ -25,7 +25,6 @@ package org.miaixz.bus.core.center.date.culture;
  * entities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Duty extends Samsara {
 

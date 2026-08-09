@@ -34,7 +34,6 @@ import org.miaixz.bus.gitlab.models.Visibility;
  * This class provides an entry point to all the GitLab Snippets API project calls.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SnippetsApi extends AbstractApi {
 

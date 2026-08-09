@@ -64,7 +64,6 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ICloudDriveProvider extends AbstractProvider {
 
@@ -155,13 +154,13 @@ public class ICloudDriveProvider extends AbstractProvider {
     public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
                         .build();
             }
             String path = normalizeObjectPath(bucket, objectKey);
             Map<String, Object> record = queryFileRecord(path);
             if (record == null) {
-                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
             return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
@@ -175,9 +174,9 @@ public class ICloudDriveProvider extends AbstractProvider {
                     this.getClass().getSimpleName(),
                     bucket,
                     objectKey,
-                    ErrorCode._113012.getKey(),
+                    ErrorCode._113010.getKey(),
                     e.getClass().getSimpleName());
-            return Message.<Blob>builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue())
+            return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
                     .build();
         }
     }
@@ -216,19 +215,19 @@ public class ICloudDriveProvider extends AbstractProvider {
     public Message<Blob> streamKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
                         .build();
             }
             String path = normalizeObjectPath(bucket, objectKey);
             Map<String, Object> record = queryFileRecord(path);
             if (record == null) {
-                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
 
             String downloadUrl = getAssetDownloadUrl(record);
             if (StringKit.isBlank(downloadUrl)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
                         .build();
             }
 
@@ -249,9 +248,9 @@ public class ICloudDriveProvider extends AbstractProvider {
                     this.getClass().getSimpleName(),
                     bucket,
                     objectKey,
-                    ErrorCode._113012.getKey(),
+                    ErrorCode._113010.getKey(),
                     e.getClass().getSimpleName());
-            return Message.<Blob>builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue())
+            return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
                     .build();
         }
     }
@@ -262,8 +261,8 @@ public class ICloudDriveProvider extends AbstractProvider {
             String path = buildPath(bucket, fileName);
             Map<String, Object> record = queryFileRecord(path);
             if (record == null) {
-                return Message.<byte[]>builder().errcode(ErrorCode._113003.getKey())
-                        .errmsg(ErrorCode._113003.getValue()).build();
+                return Message.<byte[]>builder().errcode(ErrorCode._100405.getKey())
+                        .errmsg(ErrorCode._100405.getValue()).build();
             }
 
             String downloadUrl = getAssetDownloadUrl(record);
@@ -372,7 +371,7 @@ public class ICloudDriveProvider extends AbstractProvider {
 
             Map<String, Object> record = queryFileRecord(oldPath);
             if (record == null) {
-                return Message.<Void>builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
+                return Message.<Void>builder().errcode(ErrorCode._100405.getKey()).errmsg(ErrorCode._100405.getValue())
                         .build();
             }
 
@@ -496,7 +495,7 @@ public class ICloudDriveProvider extends AbstractProvider {
             String filePath = buildPath(bucket, fileName);
             Map<String, Object> record = queryFileRecord(filePath);
             if (record == null) {
-                return Message.<Void>builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
+                return Message.<Void>builder().errcode(ErrorCode._100405.getKey()).errmsg(ErrorCode._100405.getValue())
                         .build();
             }
 
@@ -926,12 +925,12 @@ public class ICloudDriveProvider extends AbstractProvider {
      */
     private Errors toError(int code) {
         if (code == 401 || code == 403) {
-            return ErrorCode._113009;
+            return ErrorCode._113007;
         }
         if (code == 404) {
-            return ErrorCode._113010;
+            return ErrorCode._113008;
         }
-        return ErrorCode._113012;
+        return ErrorCode._113010;
     }
 
 }

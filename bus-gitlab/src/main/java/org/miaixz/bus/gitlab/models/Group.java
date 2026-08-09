@@ -34,10 +34,19 @@ import tools.jackson.databind.annotation.JsonSerialize;
  * The group class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Group extends AbstractGroup<Group> {
 
+    /**
+     * Constructs a new {@code Group} instance.
+     */
+    public Group() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852255907217L;
 
@@ -50,9 +59,15 @@ public class Group extends AbstractGroup<Group> {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public class Statistics {
+
+        /**
+         * Constructs a new {@code Statistics} instance.
+         */
+        public Statistics() {
+            // No initialization required.
+        }
 
         /**
          * The total storage size used by the group.
@@ -173,26 +188,86 @@ public class Group extends AbstractGroup<Group> {
 
     }
 
+    /**
+     * The path value.
+     */
     private String path;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The visibility value.
+     */
     private Visibility visibility;
+    /**
+     * The lfs enabled value.
+     */
     private Boolean lfsEnabled;
+    /**
+     * The request access enabled value.
+     */
     private Boolean requestAccessEnabled;
+    /**
+     * The parent id value.
+     */
     private Long parentId;
+    /**
+     * The shared runners minutes limit value.
+     */
     private Integer sharedRunnersMinutesLimit;
+    /**
+     * The statistics value.
+     */
     private Statistics statistics;
+    /**
+     * The projects value.
+     */
     private List<Project> projects;
+    /**
+     * The shared projects value.
+     */
     private List<Project> sharedProjects;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The shared with groups value.
+     */
     private List<SharedGroup> sharedWithGroups;
+    /**
+     * The custom attributes value.
+     */
     private List<CustomAttribute> customAttributes;
+    /**
+     * The runners token value.
+     */
     private String runnersToken;
+    /**
+     * The prevent sharing groups outside hierarchy value.
+     */
     private Boolean preventSharingGroupsOutsideHierarchy;
+    /**
+     * The prevent forking outside group value.
+     */
     private Boolean preventForkingOutsideGroup;
+    /**
+     * The project creation level value.
+     */
     private ProjectCreationLevel projectCreationLevel;
+    /**
+     * The subgroup creation level value.
+     */
     private SubgroupCreationLevel subgroupCreationLevel;
+    /**
+     * The default branch protection value.
+     */
     private DefaultBranchProtectionLevel defaultBranchProtection;
 
+    /**
+     * The marked for deletion on value.
+     */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date markedForDeletionOn;
 

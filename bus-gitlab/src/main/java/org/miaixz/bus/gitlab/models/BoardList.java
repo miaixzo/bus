@@ -28,22 +28,61 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The board list class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BoardList implements Serializable {
 
+    /**
+     * Constructs a new {@code BoardList} instance.
+     */
+    public BoardList() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852238305607L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The label value.
+     */
     private Label label;
+    /**
+     * The position value.
+     */
     private Integer position;
+    /**
+     * The assignee value.
+     */
     private Assignee assignee;
+    /**
+     * The milestone value.
+     */
     private Milestone milestone;
+    /**
+     * The iteration value.
+     */
     private Iteration iteration;
+    /**
+     * The max issue count value.
+     */
     private Integer maxIssueCount;
+    /**
+     * The max issue weight value.
+     */
     private Integer maxIssueWeight;
+    /**
+     * The limit metric value.
+     */
     private Integer limitMetric;
+    /**
+     * The list type value.
+     */
     private String listType;
 
     /**

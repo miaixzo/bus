@@ -45,9 +45,15 @@ import org.miaixz.bus.core.xyz.PatternKit;
  * @see RSAJWTSigner
  * @see ECDSAJWTSigner
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JWTSignerBuilder {
+
+    /**
+     * Constructs a new {@code JWTSignerBuilder} instance.
+     */
+    public JWTSignerBuilder() {
+        // No initialization required.
+    }
 
     /**
      * Regular expression pattern to match ECDSA algorithm identifiers (e.g., ES256, ES384, ES512).

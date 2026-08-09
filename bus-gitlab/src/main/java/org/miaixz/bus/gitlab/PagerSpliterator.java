@@ -29,12 +29,17 @@ import java.util.function.Consumer;
  * The pager spliterator class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class PagerSpliterator<T> implements Spliterator<T> {
 
+    /**
+     * The pager value.
+     */
     private Pager<T> pager;
 
+    /**
+     * The elements value.
+     */
     private Iterator<T> elements;
 
     PagerSpliterator(Pager<T> pager) {

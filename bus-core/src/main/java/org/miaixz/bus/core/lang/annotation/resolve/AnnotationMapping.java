@@ -30,7 +30,6 @@ import org.miaixz.bus.core.lang.annotation.Alias;
  * @param <T> The type of the annotation being wrapped.
  * @see AnnotationMappingProxy
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface AnnotationMapping<T extends Annotation> extends Annotation {
 

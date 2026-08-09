@@ -21,6 +21,5 @@
  * Provides functions to query Mac disk info.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.health.mac.driver.disk;

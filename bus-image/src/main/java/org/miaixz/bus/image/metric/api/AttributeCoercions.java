@@ -33,7 +33,6 @@ import org.miaixz.bus.image.metric.TransferCapability;
  * Represents the AttributeCoercions type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AttributeCoercions implements Iterable<AttributeCoercion>, Serializable {
 

@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * Long-lived fabric session contract for opened protocol connections.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Session extends Lifecycle {
 

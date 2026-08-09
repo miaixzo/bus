@@ -33,7 +33,6 @@ import org.miaixz.bus.image.galaxy.data.ValidationResult;
  * Represents the ImageServiceException type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageServiceException extends IOException {
 

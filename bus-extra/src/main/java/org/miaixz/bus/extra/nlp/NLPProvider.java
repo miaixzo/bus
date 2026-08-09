@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.EnumValue;
  * pattern, implementations are required to be thread-safe to handle concurrent requests for word segmentation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface NLPProvider extends Provider {
 

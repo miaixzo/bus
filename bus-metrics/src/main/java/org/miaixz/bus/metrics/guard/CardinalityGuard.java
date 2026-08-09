@@ -37,7 +37,6 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  * All policy lookups are thread-safe and zero-allocation in the hot path when no violation occurs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class CardinalityGuard {
 

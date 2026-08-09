@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.thread.*;
  * Creates and manages thread pools.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ThreadKit {
 

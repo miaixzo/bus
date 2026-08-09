@@ -62,7 +62,6 @@ import org.miaixz.bus.logger.Logger;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Mail implements Builder<MimeMessage> {
 

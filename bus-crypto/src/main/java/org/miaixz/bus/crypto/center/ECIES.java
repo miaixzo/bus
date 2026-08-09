@@ -37,7 +37,6 @@ import org.miaixz.bus.crypto.builtin.asymmetric.Crypto;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ECIES extends Crypto {
 

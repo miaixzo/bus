@@ -34,7 +34,6 @@ import org.miaixz.bus.fabric.Headers;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HpackCodec {
 

@@ -29,26 +29,77 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The approval rule class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ApprovalRule implements Serializable {
 
+    /**
+     * Constructs a new {@code ApprovalRule} instance.
+     */
+    public ApprovalRule() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852236195081L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The rule type value.
+     */
     private String ruleType;
+    /**
+     * The report type value.
+     */
     private String reportType;
+    /**
+     * The eligible approvers value.
+     */
     private List<User> eligibleApprovers;
+    /**
+     * The approvals required value.
+     */
     private Integer approvalsRequired;
+    /**
+     * The source rule value.
+     */
     private ApprovalRule sourceRule;
+    /**
+     * The users value.
+     */
     private List<User> users;
+    /**
+     * The groups value.
+     */
     private List<Group> groups;
+    /**
+     * The contains hidden groups value.
+     */
     private Boolean containsHiddenGroups;
+    /**
+     * The approved by value.
+     */
     private List<User> approvedBy;
+    /**
+     * The approved value.
+     */
     private Boolean approved;
+    /**
+     * The applies to all protected branches value.
+     */
     private Boolean appliesToAllProtectedBranches;
+    /**
+     * The protected branches value.
+     */
     private List<ProtectedBranch> protectedBranches;
 
     /**

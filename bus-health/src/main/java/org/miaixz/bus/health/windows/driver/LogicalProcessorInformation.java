@@ -39,7 +39,6 @@ import org.miaixz.bus.health.windows.driver.wmi.Win32Processor;
  * Queries Logical Processor Information
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class LogicalProcessorInformation {

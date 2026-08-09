@@ -39,26 +39,77 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * This class is used to filter Groups when getting lists of epics.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EpicFilter implements Serializable {
 
+    /**
+     * Constructs a new {@code EpicFilter} instance.
+     */
+    public EpicFilter() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852252738550L;
 
+    /**
+     * The author id value.
+     */
     private Long authorId;
+    /**
+     * The author username value.
+     */
     private String authorUsername;
+    /**
+     * The labels value.
+     */
     private String labels;
+    /**
+     * The order by value.
+     */
     private EpicOrderBy orderBy;
+    /**
+     * The sort value.
+     */
     private SortOrder sort;
+    /**
+     * The search value.
+     */
     private String search;
+    /**
+     * The state value.
+     */
     private EpicState state;
+    /**
+     * The created after value.
+     */
     private Date createdAfter;
+    /**
+     * The updated after value.
+     */
     private Date updatedAfter;
+    /**
+     * The updated before value.
+     */
     private Date updatedBefore;
+    /**
+     * The include ancestor groups value.
+     */
     private Boolean includeAncestorGroups;
+    /**
+     * The include descendant groups value.
+     */
     private Boolean includeDescendantGroups;
+    /**
+     * The my reaction emoji value.
+     */
     private String myReactionEmoji;
+    /**
+     * The not value.
+     */
     private Map<EpicField, Object> not;
 
     /**
@@ -281,7 +332,6 @@ public class EpicFilter implements Serializable {
      * The epic field enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum EpicField {
 
@@ -298,6 +348,9 @@ public class EpicFilter implements Serializable {
          */
         LABELS;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<EpicField> enumCodec = new JacksonJsonEnumCodec<>(EpicField.class);
 
         /**

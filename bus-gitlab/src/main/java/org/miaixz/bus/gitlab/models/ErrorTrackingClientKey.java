@@ -29,18 +29,39 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The error tracking client key class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ErrorTrackingClientKey implements Serializable {
 
+    /**
+     * Constructs a new {@code ErrorTrackingClientKey} instance.
+     */
+    public ErrorTrackingClientKey() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The active value.
+     */
     private Boolean active;
 
+    /**
+     * The public key value.
+     */
     @JsonProperty("public_key")
     private String publicKey;
 
+    /**
+     * The sentry dsn value.
+     */
     @JsonProperty("sentry_dsn")
     private String sentryDsn;
 

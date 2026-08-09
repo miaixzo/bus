@@ -21,6 +21,5 @@
  * Provides classes for I/O checksum and related utilities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.io.check;

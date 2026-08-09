@@ -42,7 +42,6 @@ import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
  * handling embedded overlays. It supports processing images with different data types.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageRendering {
 

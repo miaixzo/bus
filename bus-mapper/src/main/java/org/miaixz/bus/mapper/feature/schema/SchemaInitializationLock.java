@@ -32,7 +32,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * JVM-local table lock used during startup schema initialization.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class SchemaInitializationLock {
 
@@ -66,7 +65,6 @@ final class SchemaInitializationLock {
      * JVM-local schema lock handle.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class LockHandle implements AutoCloseable {
 
@@ -115,7 +113,6 @@ final class SchemaInitializationLock {
      * JVM-local schema lock key.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class SchemaLockKey {
 

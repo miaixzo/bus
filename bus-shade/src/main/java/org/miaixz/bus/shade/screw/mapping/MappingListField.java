@@ -30,7 +30,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Annotation used to map a list-type field in a data structure to a source list property.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = { ElementType.FIELD })

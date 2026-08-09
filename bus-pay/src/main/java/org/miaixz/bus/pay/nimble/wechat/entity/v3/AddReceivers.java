@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.pay.nimble.wechat.entity.v3;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -31,14 +29,18 @@ import org.miaixz.bus.pay.magic.Voucher;
  * Model for the V3 Add Profit Sharing Receivers API.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class AddReceivers extends Voucher {
+
+    /**
+     * Constructs a new {@code AddReceivers} instance.
+     */
+    public AddReceivers() {
+        // No initialization required.
+    }
 
     /**
      * Sub-merchant ID assigned by WeChat Pay, which is the contributing merchant for profit sharing. (Not required for

@@ -38,7 +38,6 @@ import org.miaixz.bus.core.lang.exception.CrontabException;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Part {
 

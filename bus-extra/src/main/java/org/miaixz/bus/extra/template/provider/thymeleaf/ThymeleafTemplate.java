@@ -42,7 +42,6 @@ import org.miaixz.bus.logger.Logger;
  * interface for rendering templates.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ThymeleafTemplate implements Template, Serializable {
 
@@ -96,7 +95,7 @@ public class ThymeleafTemplate implements Template, Serializable {
     /**
      * Renders the template with the given data model to a writer. This method is designed to be overridden by
      * subclasses for custom rendering logic.
-     *
+     * <p>
      * and processes the template. Subclasses may override to add custom processing.
      *
      * @param bindingMap The data model to bind to the template.
@@ -128,7 +127,7 @@ public class ThymeleafTemplate implements Template, Serializable {
     /**
      * Renders the template with the given data model to an output stream. This method is designed to be overridden by
      * subclasses for custom rendering logic.
-     *
+     * <p>
      * using the template's charset and delegates to the render method. Subclasses may override to add custom stream
      * handling.
      *

@@ -30,7 +30,6 @@ import org.miaixz.bus.core.lang.Assert;
  *
  * @param <T> The type of the converted data.
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractRowHandler<T> implements RowHandler {
 

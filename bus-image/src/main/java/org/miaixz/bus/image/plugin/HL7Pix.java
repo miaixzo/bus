@@ -37,7 +37,6 @@ import org.miaixz.bus.image.metric.hl7.MLLPRelease;
  * QBP^Q23 message over an MLLP connection to get a list of corresponding patient identifiers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HL7Pix extends Device {
 

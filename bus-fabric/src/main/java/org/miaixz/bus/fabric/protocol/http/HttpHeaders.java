@@ -39,7 +39,6 @@ import org.miaixz.bus.fabric.platform.UserAgent;
  * Defines HTTP-specific header operations on the shared immutable {@link Headers} value.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpHeaders {
 

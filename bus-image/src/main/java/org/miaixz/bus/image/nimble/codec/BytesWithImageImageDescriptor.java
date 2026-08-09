@@ -26,7 +26,6 @@ import java.nio.ByteBuffer;
  * Defines the BytesWithImageImageDescriptor contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface BytesWithImageImageDescriptor {
 

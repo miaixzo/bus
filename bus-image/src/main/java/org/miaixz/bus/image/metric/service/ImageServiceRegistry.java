@@ -38,7 +38,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the ImageServiceRegistry type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageServiceRegistry implements DimseRQHandler {
 

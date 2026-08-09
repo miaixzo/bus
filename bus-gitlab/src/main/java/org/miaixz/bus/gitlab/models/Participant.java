@@ -25,10 +25,19 @@ import java.io.Serial;
  * The participant class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Participant extends AbstractUser<Participant> {
 
+    /**
+     * Constructs a new {@code Participant} instance.
+     */
+    public Participant() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852268898216L;
 

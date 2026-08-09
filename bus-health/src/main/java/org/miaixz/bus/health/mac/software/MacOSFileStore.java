@@ -32,7 +32,6 @@ import org.miaixz.bus.health.mac.jna.SystemB;
  * OSFileStore implementation
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class MacOSFileStore extends AbstractOSFileStore {

@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.dict.SPI_P_Private_ICS_Release_1_5;
  * Represents the PrivateTag type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PrivateTag {
 

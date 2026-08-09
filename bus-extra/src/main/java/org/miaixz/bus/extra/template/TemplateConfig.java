@@ -30,7 +30,6 @@ import org.miaixz.bus.core.lang.Charset;
  * template engines, such as character encoding, template paths, resource loading mode, and custom template providers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TemplateConfig implements Serializable {
 
@@ -225,7 +224,7 @@ public class TemplateConfig implements Serializable {
     /**
      * Checks if this template config is equal to another object. This method is designed to be overridden by subclasses
      * for custom equality logic.
-     *
+     * <p>
      * Subclasses may override to add additional field comparisons.
      *
      * @param o The object to compare with.
@@ -247,7 +246,7 @@ public class TemplateConfig implements Serializable {
     /**
      * Generates a hash code for this template config. This method is designed to be overridden by subclasses for custom
      * hash code logic.
-     *
+     * <p>
      * Subclasses should override if they add additional fields to equals.
      *
      * @return The hash code.
@@ -261,7 +260,6 @@ public class TemplateConfig implements Serializable {
      * Enumeration defining different modes for loading template resources.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ResourceMode {
         /**

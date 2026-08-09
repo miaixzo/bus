@@ -38,7 +38,6 @@ import org.miaixz.bus.spring.bean.*;
  * Instance facade for the six narrowly scoped Spring Bean infrastructure services.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SpringBuilder {
 

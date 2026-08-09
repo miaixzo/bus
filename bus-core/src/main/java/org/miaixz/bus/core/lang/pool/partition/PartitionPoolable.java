@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.pool.SimplePoolable;
  *
  * @param <T> the type of the raw object being pooled
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PartitionPoolable<T> extends SimplePoolable<T> {
 

@@ -24,10 +24,9 @@ import java.io.Serializable;
 
 import javax.sql.DataSource;
 
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.shade.screw.engine.EngineConfig;
@@ -37,13 +36,18 @@ import org.miaixz.bus.shade.screw.process.ProcessConfig;
  * Main configuration class for the documentation generation process.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
+@SuperBuilder
 public class Config implements Serializable {
+
+    /**
+     * Constructs a new {@code Config} instance.
+     */
+    public Config() {
+        // No initialization required.
+    }
 
     @Serial
     private static final long serialVersionUID = -1L;

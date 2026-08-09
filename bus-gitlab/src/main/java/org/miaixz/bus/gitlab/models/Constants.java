@@ -36,7 +36,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The constants interface.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Constants {
 
@@ -84,7 +83,6 @@ public interface Constants {
      * Used to specify the type of authentication token.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum TokenType {
         /**
@@ -110,7 +108,6 @@ public interface Constants {
      * Enum to specify encoding of file contents.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Encoding {
 
@@ -123,6 +120,9 @@ public interface Constants {
          */
         BASE64;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<Encoding> enumCodec = new JacksonJsonEnumCodec<>(Encoding.class);
 
         /**
@@ -165,7 +165,6 @@ public interface Constants {
      * Enum to use for ordering the results of various API calls.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum SortOrder {
 
@@ -178,6 +177,9 @@ public interface Constants {
          */
         DESC;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<SortOrder> enumCodec = new JacksonJsonEnumCodec<>(SortOrder.class);
 
         /**
@@ -220,7 +222,6 @@ public interface Constants {
      * Enum to use for ordering the results of getEpics().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum EpicOrderBy {
 
@@ -233,6 +234,9 @@ public interface Constants {
          */
         UPDATED_AT;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<EpicOrderBy> enumCodec = new JacksonJsonEnumCodec<>(EpicOrderBy.class);
 
         /**
@@ -275,7 +279,6 @@ public interface Constants {
      * Enum to use for ordering the results of getIssues().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum IssueOrderBy {
 
@@ -288,6 +291,9 @@ public interface Constants {
          */
         UPDATED_AT;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<IssueOrderBy> enumCodec = new JacksonJsonEnumCodec<>(IssueOrderBy.class);
 
         /**
@@ -330,7 +336,6 @@ public interface Constants {
      * Enum to use for ordering the results of getPackages().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PackageOrderBy {
 
@@ -355,6 +360,9 @@ public interface Constants {
          */
         PROJECT_PATH;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<PackageOrderBy> enumCodec = new JacksonJsonEnumCodec<>(
                 PackageOrderBy.class);
 
@@ -398,7 +406,6 @@ public interface Constants {
      * Enum to use for filtering the results of getPackages().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PackageStatus {
 
@@ -415,6 +422,9 @@ public interface Constants {
          */
         PROCESSING;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<PackageStatus> enumCodec = new JacksonJsonEnumCodec<>(PackageStatus.class);
 
         /**
@@ -457,7 +467,6 @@ public interface Constants {
      * Enum to use for ordering the results of getProjects().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ProjectOrderBy {
 
@@ -486,6 +495,9 @@ public interface Constants {
          */
         LAST_ACTIVITY_AT;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<ProjectOrderBy> enumCodec = new JacksonJsonEnumCodec<>(
                 ProjectOrderBy.class);
 
@@ -529,7 +541,6 @@ public interface Constants {
      * Enum to use for ordering the results of getPipelines().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PipelineOrderBy {
 
@@ -554,6 +565,9 @@ public interface Constants {
          */
         USER_ID;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<PipelineOrderBy> enumCodec = new JacksonJsonEnumCodec<>(
                 PipelineOrderBy.class);
 
@@ -597,7 +611,6 @@ public interface Constants {
      * Enum to use for ordering the results of getMergeRequests().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum MergeRequestOrderBy {
 
@@ -610,6 +623,9 @@ public interface Constants {
          */
         UPDATED_AT;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<MergeRequestOrderBy> enumCodec = new JacksonJsonEnumCodec<>(
                 MergeRequestOrderBy.class);
 
@@ -653,7 +669,6 @@ public interface Constants {
      * Enum to use for ordering the results of getGroups() and getSubGroups().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum GroupOrderBy {
 
@@ -674,6 +689,9 @@ public interface Constants {
          */
         SIMILARITY;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<GroupOrderBy> enumCodec = new JacksonJsonEnumCodec<>(GroupOrderBy.class);
 
         /**
@@ -716,7 +734,6 @@ public interface Constants {
      * Enum to use for ordering the results of getTags().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum TagOrderBy {
 
@@ -729,6 +746,9 @@ public interface Constants {
          */
         UPDATED;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<TagOrderBy> enumCodec = new JacksonJsonEnumCodec<>(TagOrderBy.class);
 
         /**
@@ -771,7 +791,6 @@ public interface Constants {
      * Enum to use for ordering the results of getDeployments.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static enum DeploymentOrderBy {
 
@@ -796,6 +815,9 @@ public interface Constants {
          */
         REF;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<DeploymentOrderBy> enumCodec = new JacksonJsonEnumCodec<>(
                 DeploymentOrderBy.class);
 
@@ -839,7 +861,6 @@ public interface Constants {
      * Enum to use for ordering the results of getContibutors().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ContributorOrderBy {
 
@@ -856,6 +877,9 @@ public interface Constants {
          */
         COMMITS;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<ContributorOrderBy> enumCodec = new JacksonJsonEnumCodec<>(
                 ContributorOrderBy.class);
 
@@ -899,7 +923,6 @@ public interface Constants {
      * Enum to use for specifying the scope when calling getPipelines().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PipelineScope {
 
@@ -924,6 +947,9 @@ public interface Constants {
          */
         TAGS;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<PipelineScope> enumCodec = new JacksonJsonEnumCodec<>(PipelineScope.class);
 
         /**
@@ -966,7 +992,6 @@ public interface Constants {
      * Enum to use for specifying the source when calling getPipelines().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PipelineSource {
 
@@ -1015,6 +1040,9 @@ public interface Constants {
          */
         EXTERNAL_PULL_REQUEST_EVENT;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<PipelineSource> enumCodec = new JacksonJsonEnumCodec<>(
                 PipelineSource.class);
 
@@ -1058,7 +1086,6 @@ public interface Constants {
      * Enum to use for specifying the scope when calling getJobs().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum JobScope {
 
@@ -1099,6 +1126,9 @@ public interface Constants {
          */
         WAITING_FOR_RESOURCE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<JobScope> enumCodec = new JacksonJsonEnumCodec<>(JobScope.class);
 
         /**
@@ -1141,7 +1171,6 @@ public interface Constants {
      * Enum to use for specifying the scope when calling the various get issue methods.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum IssueScope {
 
@@ -1158,6 +1187,9 @@ public interface Constants {
          */
         ALL;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<IssueScope> enumCodec = new JacksonJsonEnumCodec<>(IssueScope.class);
 
         /**
@@ -1200,7 +1232,6 @@ public interface Constants {
      * Enum to use for specifying the scope for getMergeRequests methods.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum MergeRequestScope {
 
@@ -1217,6 +1248,9 @@ public interface Constants {
          */
         ALL;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<MergeRequestScope> enumCodec = new JacksonJsonEnumCodec<>(
                 MergeRequestScope.class);
 
@@ -1260,7 +1294,6 @@ public interface Constants {
      * Enum to use for querying the state of a MergeRequest
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum MergeRequestState {
 
@@ -1285,6 +1318,9 @@ public interface Constants {
          */
         ALL;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<MergeRequestState> enumCodec = new JacksonJsonEnumCodec<>(
                 MergeRequestState.class);
 
@@ -1328,7 +1364,6 @@ public interface Constants {
      * Enum to use for specifying the scope of the search attribute when calling getMergeRequests().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum MergeRequestSearchIn {
 
@@ -1341,6 +1376,9 @@ public interface Constants {
          */
         DESCRIPTION;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<MergeRequestSearchIn> enumCodec = new JacksonJsonEnumCodec<>(
                 MergeRequestSearchIn.class);
 
@@ -1384,7 +1422,6 @@ public interface Constants {
      * Enum to use for specifying the state of a merge request or issue update.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum StateEvent {
 
@@ -1397,6 +1434,9 @@ public interface Constants {
          */
         REOPEN;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<StateEvent> enumCodec = new JacksonJsonEnumCodec<>(StateEvent.class);
 
         /**
@@ -1439,7 +1479,6 @@ public interface Constants {
      * Enum to used to store the state of an issue.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum IssueState {
 
@@ -1456,6 +1495,9 @@ public interface Constants {
          */
         REOPENED;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<IssueState> enumCodec = new JacksonJsonEnumCodec<>(IssueState.class);
 
         /**
@@ -1498,7 +1540,6 @@ public interface Constants {
      * The milestone state enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum MilestoneState {
 
@@ -1519,6 +1560,9 @@ public interface Constants {
          */
         CLOSE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<MilestoneState> enumCodec = new JacksonJsonEnumCodec<>(
                 MilestoneState.class);
 
@@ -1562,7 +1606,6 @@ public interface Constants {
      * Enum to use for specifying the event action_type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ActionType {
 
@@ -1635,6 +1678,9 @@ public interface Constants {
          */
         IMPORTED;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<ActionType> enumCodec = new JacksonJsonEnumCodec<>(ActionType.class);
 
         /**
@@ -1677,7 +1723,6 @@ public interface Constants {
      * Enum to use for specifying the event target_type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum TargetType {
 
@@ -1710,6 +1755,9 @@ public interface Constants {
          */
         USER;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<TargetType> enumCodec = new JacksonJsonEnumCodec<>(TargetType.class, true,
                 false, true);
 
@@ -1753,7 +1801,6 @@ public interface Constants {
      * Enum to use for specifying the line type for a commit comment.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum LineType {
 
@@ -1766,6 +1813,9 @@ public interface Constants {
          */
         NEW;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<LineType> enumCodec = new JacksonJsonEnumCodec<>(LineType.class);
 
         /**
@@ -1808,7 +1858,6 @@ public interface Constants {
      * Enum to specify the state of an ImpersonationToken.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ImpersonationState {
 
@@ -1825,6 +1874,9 @@ public interface Constants {
          */
         INACTIVE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<ImpersonationState> enumCodec = new JacksonJsonEnumCodec<>(
                 ImpersonationState.class);
 
@@ -1868,7 +1920,6 @@ public interface Constants {
      * Enum to specify the format of a downloaded archive.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ArchiveFormat {
 
@@ -1905,12 +1956,18 @@ public interface Constants {
          */
         ZIP;
 
+        /**
+         * The value value.
+         */
         private final String value;
 
         ArchiveFormat() {
             this.value = name().toLowerCase().replace(Symbol.C_UNDERLINE, Symbol.C_DOT);
         }
 
+        /**
+         * The values map value.
+         */
         private static Map<String, ArchiveFormat> valuesMap = new HashMap<String, ArchiveFormat>(8);
 
         static {
@@ -1957,7 +2014,6 @@ public interface Constants {
      * Enum for the various Commit build status values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum CommitBuildState {
 
@@ -1986,6 +2042,9 @@ public interface Constants {
          */
         SKIPPED;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<CommitBuildState> enumCodec = new JacksonJsonEnumCodec<>(
                 CommitBuildState.class);
 
@@ -2029,7 +2088,6 @@ public interface Constants {
      * Enum for the various Application scope values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ApplicationScope {
 
@@ -2122,6 +2180,9 @@ public interface Constants {
          */
         SELF_ROTATE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<ApplicationScope> enumCodec = new JacksonJsonEnumCodec<>(
                 ApplicationScope.class);
 
@@ -2165,7 +2226,6 @@ public interface Constants {
      * Enum to use for specifying the state when doing a getTodos() with the TodosApi.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum TodoState {
 
@@ -2178,6 +2238,9 @@ public interface Constants {
          */
         DONE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<TodoState> enumCodec = new JacksonJsonEnumCodec<>(TodoState.class);
 
         /**
@@ -2220,7 +2283,6 @@ public interface Constants {
      * Enum to use for specifying the type when doing a getTodos() with the TodosApi.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum TodoType {
 
@@ -2233,6 +2295,9 @@ public interface Constants {
          */
         MERGE_REQUEST;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<TodoType> enumCodec = new JacksonJsonEnumCodec<>(TodoType.class, true,
                 true);
 
@@ -2276,7 +2341,6 @@ public interface Constants {
      * Enum to use for specifying the deploy token scope.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum DeployTokenScope {
 
@@ -2352,7 +2416,6 @@ public interface Constants {
      * Enum to use for specifying the action when doing a getTodos() with the TodosApi.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum TodoAction {
 
@@ -2385,6 +2448,9 @@ public interface Constants {
          */
         DIRECTLY_ADDRESSED;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<TodoAction> enumCodec = new JacksonJsonEnumCodec<>(TodoAction.class);
 
         /**
@@ -2427,7 +2493,6 @@ public interface Constants {
      * Enum for the build_git_strategy of the project instance.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum SquashOption {
 
@@ -2448,6 +2513,9 @@ public interface Constants {
          */
         DEFAULT_OFF;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<SquashOption> enumCodec = new JacksonJsonEnumCodec<>(SquashOption.class);
 
         /**
@@ -2490,7 +2558,6 @@ public interface Constants {
      * The project feature visibility access level enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ProjectFeatureVisibilityAccessLevel {
 
@@ -2511,6 +2578,9 @@ public interface Constants {
          */
         PUBLIC;
 
+        /**
+         * The enum codec value.
+         */
         private static final JacksonJsonEnumCodec<ProjectFeatureVisibilityAccessLevel> enumCodec = new JacksonJsonEnumCodec<>(
                 ProjectFeatureVisibilityAccessLevel.class);
 
@@ -2554,7 +2624,6 @@ public interface Constants {
      * Enum to use for specifying the status of a deployment.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum DeploymentStatus {
 
@@ -2579,6 +2648,9 @@ public interface Constants {
          */
         CANCELED;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<DeploymentStatus> enumCodec = new JacksonJsonEnumCodec<>(
                 DeploymentStatus.class);
 
@@ -2622,7 +2694,6 @@ public interface Constants {
      * The auto cancel pending pipelines enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum AutoCancelPendingPipelines {
 
@@ -2635,6 +2706,9 @@ public interface Constants {
          */
         ENABLED;
 
+        /**
+         * The enum codec value.
+         */
         private static final JacksonJsonEnumCodec<AutoCancelPendingPipelines> enumCodec = new JacksonJsonEnumCodec<>(
                 AutoCancelPendingPipelines.class);
 
@@ -2678,7 +2752,6 @@ public interface Constants {
      * Enum to use for specifying the project token scope.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ProjectAccessTokenScope {
 
@@ -2770,7 +2843,6 @@ public interface Constants {
      * Enum for the search scope when doing a globalSearch() with the SearchApi.
      *
      * @author Kimi Liu
-     * @since Java 21+
      * @param <T> the value type
      */
     public static class SearchScope<T> {
@@ -2816,12 +2888,21 @@ public interface Constants {
          * Search scope for wiki blobs.
          */
         public static final SearchScope<SearchBlob> WIKI_BLOBS = new SearchScope<>("wiki_blobs", SearchBlob.class);
+        /**
+         * The json lookup value.
+         */
         private static final Map jsonLookup = Arrays
                 .stream(
                         new SearchScope[] { PROJECTS, ISSUES, MERGE_REQUESTS, MILESTONES, SNIPPET_TITLES, SNIPPET_BLOBS,
                                 USERS, BLOBS, COMMITS, WIKI_BLOBS })
                 .collect(Collectors.toMap(searchScope -> searchScope.jsonName, FunctionX.identity()));
+        /**
+         * The json name value.
+         */
         private final String jsonName;
+        /**
+         * The result type value.
+         */
         private final Class<T> resultType;
 
         private SearchScope(String jsonName, Class<T> resultType) {
@@ -2890,7 +2971,6 @@ public interface Constants {
      * Enum for the build_git_strategy of the project instance.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum BuildGitStrategy {
 
@@ -2903,6 +2983,9 @@ public interface Constants {
          */
         CLONE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<BuildGitStrategy> enumCodec = new JacksonJsonEnumCodec<>(
                 BuildGitStrategy.class);
 
@@ -2946,7 +3029,6 @@ public interface Constants {
      * The auto devops deploy strategy enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum AutoDevopsDeployStrategy {
 
@@ -2963,6 +3045,9 @@ public interface Constants {
          */
         TIMED_INCREMENTAL;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<AutoDevopsDeployStrategy> enumCodec = new JacksonJsonEnumCodec<>(
                 AutoDevopsDeployStrategy.class);
 
@@ -3006,12 +3091,17 @@ public interface Constants {
      * Enum to use for specifying the Event scope.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum EventScope {
 
+        /**
+         * Includes events from all scopes.
+         */
         ALL;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<EventScope> enumCodec = new JacksonJsonEnumCodec<>(EventScope.class);
 
         /**
@@ -3054,7 +3144,6 @@ public interface Constants {
      * Constant to specify the project_creation_level for the group.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ProjectCreationLevel {
 
@@ -3071,6 +3160,9 @@ public interface Constants {
          */
         MAINTAINER;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<ProjectCreationLevel> enumCodec = new JacksonJsonEnumCodec<>(
                 ProjectCreationLevel.class);
 
@@ -3114,7 +3206,6 @@ public interface Constants {
      * Constant to specify the subgroup_creation_level for the group.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum SubgroupCreationLevel {
 
@@ -3127,6 +3218,9 @@ public interface Constants {
          */
         MAINTAINER;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<SubgroupCreationLevel> enumCodec = new JacksonJsonEnumCodec<>(
                 SubgroupCreationLevel.class);
 
@@ -3170,7 +3264,6 @@ public interface Constants {
      * The default branch protection level enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum DefaultBranchProtectionLevel {
 
@@ -3219,7 +3312,6 @@ public interface Constants {
      * Enum for the search scope when doing a groupSearch() with the SearchApi.
      *
      * @author Kimi Liu
-     * @since Java 21+
      * @param <T> the value type
      */
     public static class GroupSearchScope<T> {
@@ -3344,7 +3436,6 @@ public interface Constants {
      * Enum for the search scope when doing a projectSearch() with the SearchApi.
      *
      * @author Kimi Liu
-     * @since Java 21+
      * @param <T> the value type
      */
     public static class ProjectSearchScope<T> {

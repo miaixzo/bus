@@ -42,7 +42,6 @@ import org.miaixz.bus.logger.Logger;
  * Coding login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CodingProvider extends AbstractProvider {
 

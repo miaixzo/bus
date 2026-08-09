@@ -54,7 +54,6 @@ import reactor.util.retry.Retry;
  * {@link Holder#connectionProvider()} and does not dispose the provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Egress {
 
@@ -321,7 +320,6 @@ public final class Egress {
      * runtime performance configuration.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class ClientHolder {
 

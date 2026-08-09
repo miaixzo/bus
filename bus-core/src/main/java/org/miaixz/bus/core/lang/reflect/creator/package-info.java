@@ -23,6 +23,5 @@
  * arrays, and utilizing different constructor invocation strategies.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.lang.reflect.creator;

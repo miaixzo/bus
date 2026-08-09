@@ -53,7 +53,6 @@ import org.miaixz.bus.logger.Logger;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Pinyin4JProvider implements PinyinProvider {
 
@@ -68,6 +67,7 @@ public class Pinyin4JProvider implements PinyinProvider {
      * tone marks.
      */
     private static final HanyuPinyinOutputFormat WITHOUT_TONE;
+
     static {
         WITH_TONE_MARK = new HanyuPinyinOutputFormat();
         // lowercase
@@ -98,7 +98,7 @@ public class Pinyin4JProvider implements PinyinProvider {
     /**
      * Gets the pinyin of a single character. This method is designed to be overridden by subclasses for custom pinyin
      * conversion.
-     *
+     * <p>
      * and returns the first result. Subclasses may override to add custom conversion logic.
      *
      * @param c    The character to convert.
@@ -126,7 +126,7 @@ public class Pinyin4JProvider implements PinyinProvider {
 
     /**
      * Gets the pinyin of a string. This method is designed to be overridden by subclasses for custom pinyin conversion.
-     *
+     * <p>
      * and joining with the separator. Subclasses may override to add custom conversion logic.
      *
      * @param str       The string to convert.

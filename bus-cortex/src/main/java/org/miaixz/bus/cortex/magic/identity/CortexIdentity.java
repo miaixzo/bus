@@ -25,7 +25,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Common Cortex identity normalization shared by registry, setting, watch, and guard code.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class CortexIdentity {
 

@@ -38,7 +38,6 @@ import org.miaixz.bus.notify.nimble.AbstractProvider;
  * JD Cloud SMS service provider implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JdcloudSmsProvider extends AbstractProvider<JdcloudNotice, Context> {
 

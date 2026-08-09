@@ -26,7 +26,6 @@ import java.lang.reflect.Method;
  * method, its arguments, and a way to proceed with the original invocation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Invocation {
 

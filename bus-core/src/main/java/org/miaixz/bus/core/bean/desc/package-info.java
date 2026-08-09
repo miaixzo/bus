@@ -39,6 +39,5 @@
  * getIsXXX} for getters; {@code setXXX}, {@code setIsXXX} for setters).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.bean.desc;

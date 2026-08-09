@@ -27,7 +27,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Represents an exception that occurs during pagination operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PageException extends UncheckedException {
 

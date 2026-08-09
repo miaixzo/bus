@@ -27,7 +27,6 @@ package org.miaixz.bus.crypto;
  *      section in Java Cryptography Architecture Standard Algorithm Name Documentation</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Padding {
     /**

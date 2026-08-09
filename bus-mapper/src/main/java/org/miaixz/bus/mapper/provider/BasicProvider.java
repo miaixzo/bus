@@ -51,7 +51,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class BasicProvider {
 

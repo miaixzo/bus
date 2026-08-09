@@ -24,7 +24,6 @@ package org.miaixz.bus.metrics.nimble;
  * load average.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Meter extends Counter {
 

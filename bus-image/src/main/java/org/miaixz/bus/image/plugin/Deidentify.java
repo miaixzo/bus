@@ -35,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
  * de-identification rules using the {@link DeIdentifier}, and writes the modified dataset to a new file.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Deidentify {
 

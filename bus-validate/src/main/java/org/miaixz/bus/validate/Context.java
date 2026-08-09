@@ -37,7 +37,6 @@ import org.miaixz.bus.validate.magic.ErrorCode;
  * process.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

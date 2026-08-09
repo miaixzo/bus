@@ -43,7 +43,6 @@ import org.miaixz.bus.office.excel.sax.handler.RowHandler;
  * Streaming Excel reader for large datasets.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BigExcelReader implements AutoCloseable {
 
@@ -759,7 +758,6 @@ public class BigExcelReader implements AutoCloseable {
      * Batch row callback.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FunctionalInterface
     public interface BatchRowHandler {
@@ -777,7 +775,6 @@ public class BigExcelReader implements AutoCloseable {
      * Context-aware batch callback.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FunctionalInterface
     public interface ContextBatchRowHandler {
@@ -799,7 +796,6 @@ public class BigExcelReader implements AutoCloseable {
      * @param endRowIndex   last row index in this batch
      * @param rows          row batch data
      * @author Kimi Liu
-     * @since Java 21+
      */
     public record RowBatch(ExcelReadState.SheetContext sheet, long startRowIndex, long endRowIndex,
             List<List<Object>> rows) {

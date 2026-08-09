@@ -21,6 +21,5 @@
  * Provides abstract interfaces and implementations for various loaders, including lazy loading implementations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.lang.loader;

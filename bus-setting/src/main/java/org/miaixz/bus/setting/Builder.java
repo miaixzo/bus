@@ -40,7 +40,6 @@ import org.miaixz.bus.setting.nimble.yaml.Yaml;
  * {@link Props}, and {@link Yaml}. This class provides static methods that delegate to the specific format handlers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Builder {
 

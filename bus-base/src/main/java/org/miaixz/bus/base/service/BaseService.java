@@ -24,7 +24,6 @@ package org.miaixz.bus.base.service;
  *
  * @param <T> the entity type
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface BaseService<T> extends SharedService<T, String> {
 

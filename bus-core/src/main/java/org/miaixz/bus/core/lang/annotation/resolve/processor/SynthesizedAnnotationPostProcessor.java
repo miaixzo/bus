@@ -44,7 +44,6 @@ import org.miaixz.bus.core.xyz.CompareKit;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface SynthesizedAnnotationPostProcessor extends Comparable<SynthesizedAnnotationPostProcessor> {
 

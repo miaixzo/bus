@@ -57,7 +57,6 @@ import org.miaixz.bus.logger.Logger;
  * A CPU.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class MacCentralProcessor extends AbstractCentralProcessor {

@@ -45,7 +45,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * Upgrades connected HTTP transports to TLS with shared timeout, dispatcher, and cancellation ownership.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class HttpTlsConnector {
 

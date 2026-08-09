@@ -31,7 +31,6 @@ import org.miaixz.bus.cortex.setting.item.ItemScope;
  * Export service for resolved setting scopes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ItemExportService {
 

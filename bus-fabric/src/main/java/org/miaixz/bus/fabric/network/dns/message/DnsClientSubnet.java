@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * EDNS Client Subnet value extracted from a DNS query.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsClientSubnet {
 

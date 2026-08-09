@@ -26,7 +26,6 @@ package org.miaixz.bus.image.nimble.opencv.lut;
  * presentation state LUT information used in DICOM image transformations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface WlPresentation {
 

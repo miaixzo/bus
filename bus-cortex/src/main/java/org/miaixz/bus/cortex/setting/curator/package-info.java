@@ -27,6 +27,5 @@
  * delegates protected-value decryption to the secret codec.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.setting.curator;

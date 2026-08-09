@@ -37,7 +37,6 @@ import org.miaixz.bus.spring.jdbc.DataSourceListener;
  * Synchronizes Mapper dialect registrations with datasource routes owned by JDBC.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DialectListener implements DataSourceListener, AutoCloseable {
 

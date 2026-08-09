@@ -23,7 +23,6 @@ package org.miaixz.bus.cortex;
  * Strongly typed store traits shared by registry and setting stores.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Trait {
 

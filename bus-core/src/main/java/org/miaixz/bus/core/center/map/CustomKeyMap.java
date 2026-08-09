@@ -30,7 +30,6 @@ import java.util.Map;
  * @param <K> The type of keys in the map.
  * @param <V> The type of values in the map.
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class CustomKeyMap<K, V> extends TransMap<K, V> {
 

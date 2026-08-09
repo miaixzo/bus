@@ -27,7 +27,6 @@ import org.miaixz.bus.image.UID;
  * Represents the ExtendedNegotiation type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ExtendedNegotiation {
 

@@ -37,7 +37,6 @@ import org.miaixz.bus.health.windows.WmiKit;
  * Queries WMI class {@code Win32_Process} using cache
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Win32ProcessCached {

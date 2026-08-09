@@ -59,7 +59,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

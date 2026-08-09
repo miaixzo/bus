@@ -31,7 +31,6 @@ import org.miaixz.bus.health.builtin.software.common.AbstractOSProcess;
  * Minimal stand-in for the current process when the platform query fails to return it.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class CurrentProcessStub extends AbstractOSProcess {

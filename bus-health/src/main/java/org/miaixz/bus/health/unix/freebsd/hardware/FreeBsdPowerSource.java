@@ -38,7 +38,6 @@ import org.miaixz.bus.health.unix.freebsd.BsdSysctlKit;
  * A Power Source
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class FreeBsdPowerSource extends AbstractPowerSource {

@@ -25,7 +25,6 @@ import org.miaixz.bus.pay.Matcher;
  * WeChat Pay V3 API interfaces for "Pay as a Service" (Smart Guide).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum SmartGuideApi implements Matcher {
 

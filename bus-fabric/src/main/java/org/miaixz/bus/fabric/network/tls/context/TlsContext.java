@@ -42,7 +42,6 @@ import org.miaixz.bus.fabric.network.tls.TlsSettings;
  * Reusable TLS context for creating configured client and server engines.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class TlsContext {
 

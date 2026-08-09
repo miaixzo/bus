@@ -25,7 +25,6 @@ import org.miaixz.bus.core.lang.Normal;
  * An interface for objects that can be ordered. This is often used for sorting components or plugins.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Order extends Comparable<Order> {
 

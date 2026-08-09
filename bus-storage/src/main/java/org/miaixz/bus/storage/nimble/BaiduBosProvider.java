@@ -60,7 +60,6 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequ
  * S3-compatible client.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BaiduBosProvider extends AbstractProvider {
 
@@ -166,20 +165,20 @@ public class BaiduBosProvider extends AbstractProvider {
                                     .hash(response.eTag()).extend(extend).build())
                     .build();
         } catch (Exception e) {
-            Errors error = ErrorCode._113012;
+            Errors error = ErrorCode._113010;
             if (e instanceof NoSuchBucketException) {
-                error = ErrorCode._113011;
+                error = ErrorCode._113009;
             } else if (e instanceof NoSuchKeyException) {
-                error = ErrorCode._113010;
+                error = ErrorCode._113008;
             } else if (e instanceof S3Exception s3) {
                 if (s3.statusCode() == 401 || s3.statusCode() == 403) {
-                    error = ErrorCode._113009;
+                    error = ErrorCode._113007;
                 } else if (s3.statusCode() == 404) {
                     String code = s3.awsErrorDetails() == null ? null : s3.awsErrorDetails().errorCode();
-                    error = StringKit.containsIgnoreCase(code, "bucket") ? ErrorCode._113011 : ErrorCode._113010;
+                    error = StringKit.containsIgnoreCase(code, "bucket") ? ErrorCode._113009 : ErrorCode._113008;
                 }
             } else if (e instanceof IllegalArgumentException) {
-                error = ErrorCode._113008;
+                error = ErrorCode._113006;
             }
             Logger.error(
                     false,
@@ -250,20 +249,20 @@ public class BaiduBosProvider extends AbstractProvider {
                                     .hash(response.eTag()).extend(extend).build())
                     .build();
         } catch (Exception e) {
-            Errors error = ErrorCode._113012;
+            Errors error = ErrorCode._113010;
             if (e instanceof NoSuchBucketException) {
-                error = ErrorCode._113011;
+                error = ErrorCode._113009;
             } else if (e instanceof NoSuchKeyException) {
-                error = ErrorCode._113010;
+                error = ErrorCode._113008;
             } else if (e instanceof S3Exception s3) {
                 if (s3.statusCode() == 401 || s3.statusCode() == 403) {
-                    error = ErrorCode._113009;
+                    error = ErrorCode._113007;
                 } else if (s3.statusCode() == 404) {
                     String code = s3.awsErrorDetails() == null ? null : s3.awsErrorDetails().errorCode();
-                    error = StringKit.containsIgnoreCase(code, "bucket") ? ErrorCode._113011 : ErrorCode._113010;
+                    error = StringKit.containsIgnoreCase(code, "bucket") ? ErrorCode._113009 : ErrorCode._113008;
                 }
             } else if (e instanceof IllegalArgumentException) {
-                error = ErrorCode._113008;
+                error = ErrorCode._113006;
             }
             Logger.error(
                     false,

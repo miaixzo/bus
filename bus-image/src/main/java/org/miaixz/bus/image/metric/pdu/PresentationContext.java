@@ -26,7 +26,6 @@ import org.miaixz.bus.image.UID;
  * Represents the PresentationContext type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PresentationContext {
 

@@ -44,7 +44,6 @@ import org.miaixz.bus.logger.Logger;
  *
  * @see <a href="https://docs.gitlab.com/ee/api/project_import_export.html">Project import/export API at GitLab</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImportExportApi extends AbstractApi {
 

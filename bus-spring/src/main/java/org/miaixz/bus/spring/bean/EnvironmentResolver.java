@@ -29,7 +29,6 @@ import org.springframework.core.env.Environment;
  * Read-only, deterministic access to one Spring Environment.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EnvironmentResolver {
 

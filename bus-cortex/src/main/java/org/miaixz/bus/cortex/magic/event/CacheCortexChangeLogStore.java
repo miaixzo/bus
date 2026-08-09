@@ -32,7 +32,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Cache-backed fallback outbox store.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CacheCortexChangeLogStore implements CortexChangeLogStore {
 

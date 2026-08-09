@@ -28,7 +28,6 @@ package org.miaixz.bus.core.center.map.concurrent;
  * @param <V> The type of the value in the map entry.
  * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">ConcurrentLinkedHashMap Project</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface EntryWeigher<K, V> {
 

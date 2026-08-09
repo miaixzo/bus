@@ -42,7 +42,6 @@ import org.miaixz.bus.image.nimble.opencv.op.ByteLutCollection;
  * @param name     the name.
  * @param lutTable the lut table.
  * @author Kimi Liu
- * @since Java 21+
  */
 public record ByteLut(String name, byte[][] lutTable) {
 
@@ -245,7 +244,6 @@ public record ByteLut(String name, byte[][] lutTable) {
      * Icon implementation for LUT visualization.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private class LutIcon implements Icon {
 

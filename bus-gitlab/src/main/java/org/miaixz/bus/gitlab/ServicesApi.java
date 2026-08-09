@@ -30,7 +30,6 @@ import org.miaixz.bus.gitlab.services.*;
  * info.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ServicesApi extends AbstractApi {
 

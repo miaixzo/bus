@@ -38,7 +38,6 @@ import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
  *
  * @param <S> accepted session type
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ServerRuntime<S> {
 

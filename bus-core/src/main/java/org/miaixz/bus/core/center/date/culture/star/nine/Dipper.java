@@ -26,7 +26,6 @@ import org.miaixz.bus.core.center.date.culture.Samsara;
  * manage a cyclical list of these entities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Dipper extends Samsara {
 

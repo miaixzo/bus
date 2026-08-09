@@ -41,7 +41,6 @@ import org.miaixz.bus.logger.Logger;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FixLO2UN extends SimpleFileVisitor<Path> {
 
@@ -226,7 +225,6 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
      * directory, preserving the source's subdirectory structure.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum Dest {
 

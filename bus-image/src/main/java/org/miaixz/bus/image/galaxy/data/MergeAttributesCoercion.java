@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.data;
  * Represents the MergeAttributesCoercion type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MergeAttributesCoercion implements AttributesCoercion {
 

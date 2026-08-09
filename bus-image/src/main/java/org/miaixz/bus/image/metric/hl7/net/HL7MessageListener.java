@@ -28,7 +28,6 @@ import org.miaixz.bus.image.metric.hl7.HL7Exception;
  * Defines the HL7MessageListener contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface HL7MessageListener {
 

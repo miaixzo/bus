@@ -31,7 +31,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * Connection-pool acquisition boundary for HTTP routes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class HttpConnectionAcquirer {
 

@@ -47,7 +47,6 @@ import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
  * {@link AffixSqlRewriter} using values from {@link AffixValueProvider} and exclusions from {@link AffixRuleConfig}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AffixRewriteHandler extends ScopedProviderHandler<Object, AffixRuleConfig, AffixValueProvider> {
 

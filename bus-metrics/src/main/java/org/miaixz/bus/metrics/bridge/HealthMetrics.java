@@ -57,7 +57,6 @@ import org.miaixz.bus.metrics.Metrics;
  * background daemon thread.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HealthMetrics {
 
@@ -294,7 +293,6 @@ public class HealthMetrics {
      * @param ioWait     I/O wait CPU usage percentage
      * @param totalUsage total CPU usage percentage
      * @author Kimi Liu
-     * @since Java 21+
      */
     private record CpuSnapshot(double userUsage, double sysUsage, double ioWait, double totalUsage) {
 

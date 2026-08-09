@@ -34,7 +34,6 @@ import org.miaixz.bus.health.Builder;
  * removed if/when its code is incorporated into the JNA project.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface CLibrary extends LibCAPI, Library {
 
@@ -218,7 +217,6 @@ public interface CLibrary extends LibCAPI, Library {
      * Socket address structure.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "sa_family", "sa_data" })
     class Sockaddr extends Structure {
@@ -244,7 +242,6 @@ public interface CLibrary extends LibCAPI, Library {
          * A reference to a {@link Sockaddr} structure.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         public static class ByReference extends Sockaddr implements Structure.ByReference {
 
@@ -263,7 +260,6 @@ public interface CLibrary extends LibCAPI, Library {
      * TCP statistics structure for BSD.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class BsdTcpstat {
 
@@ -335,7 +331,6 @@ public interface CLibrary extends LibCAPI, Library {
      * UDP statistics structure for BSD.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class BsdUdpstat {
 
@@ -392,7 +387,6 @@ public interface CLibrary extends LibCAPI, Library {
      * IP statistics structure for BSD.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class BsdIpstat {
 
@@ -444,7 +438,6 @@ public interface CLibrary extends LibCAPI, Library {
      * IPv6 statistics structure for BSD.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class BsdIp6stat {
 
@@ -471,7 +464,6 @@ public interface CLibrary extends LibCAPI, Library {
      * Address information structure.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "ai_flags", "ai_family", "ai_socktype", "ai_protocol", "ai_addrlen", "ai_addr", "ai_canonname",
             "ai_next" })
@@ -546,7 +538,6 @@ public interface CLibrary extends LibCAPI, Library {
          * A reference to an {@link Addrinfo} structure.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         public static class ByReference extends Addrinfo implements Structure.ByReference {
 

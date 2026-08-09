@@ -29,7 +29,6 @@ import org.miaixz.bus.core.center.function.ConsumerX;
  *
  * @param <T> The type of the object to be loaded.
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface Loader<T> extends Serializable {

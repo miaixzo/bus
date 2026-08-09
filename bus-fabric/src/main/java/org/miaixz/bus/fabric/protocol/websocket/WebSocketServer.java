@@ -71,7 +71,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * WebSocket server that upgrades accepted plain or TLS connections through {@link WebSocketUpgrade}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class WebSocketServer implements Lifecycle {
 
@@ -1039,7 +1038,6 @@ public final class WebSocketServer implements Lifecycle {
      * Builder for WebSocket servers.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

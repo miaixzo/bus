@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.vortex;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import org.springframework.http.MediaType;
 
@@ -39,11 +37,8 @@ import org.miaixz.bus.vortex.strategy.ResponseStrategy;
  * {@link ResponseStrategy} to dynamically handle different data formats.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public enum Formats {
 
     /**
@@ -72,6 +67,17 @@ public enum Formats {
      * The corresponding HTTP {@link MediaType}, used to set the {@code Content-Type} header in the response.
      */
     private MediaType mediaType;
+
+    /**
+     * Constructs a response format.
+     *
+     * @param provider  the data format provider
+     * @param mediaType the associated media type
+     */
+    Formats(Provider provider, MediaType mediaType) {
+        this.provider = provider;
+        this.mediaType = mediaType;
+    }
 
     /**
      * Safely retrieves a {@code Formats} enum instance from a string name, ignoring case.

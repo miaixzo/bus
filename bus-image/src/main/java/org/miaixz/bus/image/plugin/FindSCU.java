@@ -67,7 +67,6 @@ import org.miaixz.bus.logger.Logger;
  * Hanging Protocol.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FindSCU implements AutoCloseable {
 
@@ -633,7 +632,6 @@ public class FindSCU implements AutoCloseable {
      * Enumeration of the supported DICOM Information Models for C-FIND.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum InformationModel {
 
@@ -722,7 +720,6 @@ public class FindSCU implements AutoCloseable {
      * A visitor to merge attributes in nested sequences.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class MergeNested implements Visitor {
 

@@ -30,7 +30,6 @@ import org.miaixz.bus.mapper.Order;
  * SPI interface for processing the final SQL script.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface SqlScriptWrapper extends Order {
 
@@ -63,7 +62,6 @@ public interface SqlScriptWrapper extends Order {
      * A holder class that manages {@link SqlScriptWrapper} SPI implementations.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class Holder {
 

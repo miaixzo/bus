@@ -32,26 +32,68 @@ import tools.jackson.databind.annotation.JsonSerialize;
  * The project access token class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProjectAccessToken implements Serializable {
 
+    /**
+     * Constructs a new {@code ProjectAccessToken} instance.
+     */
+    public ProjectAccessToken() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852270950370L;
 
+    /**
+     * The user id value.
+     */
     private Long userId;
+    /**
+     * The scopes value.
+     */
     private List<Constants.ProjectAccessTokenScope> scopes;
+    /**
+     * The name value.
+     */
     private String name;
 
+    /**
+     * The expires at value.
+     */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date expiresAt;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The active value.
+     */
     private Boolean active;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The revoked value.
+     */
     private Boolean revoked;
+    /**
+     * The access level value.
+     */
     private Long accessLevel;
+    /**
+     * The last used at value.
+     */
     private Date lastUsedAt;
+    /**
+     * The token value.
+     */
     private String token;
 
     /**

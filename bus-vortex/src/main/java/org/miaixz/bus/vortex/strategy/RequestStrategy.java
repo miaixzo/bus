@@ -56,7 +56,6 @@ import reactor.core.publisher.Mono;
  * Protocol-specific classes decide whether to parse and cache the body or pass the request through untouched.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.FIRST)
 public class RequestStrategy extends AbstractStrategy {

@@ -33,7 +33,6 @@ import org.miaixz.bus.core.io.source.Source;
  * Queue-backed output stream that writes {@link SliceBuffer} slices asynchronously.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class WriteBuffer extends OutputStream {
 

@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the JSONReader type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JSONReader {
 
@@ -594,8 +593,8 @@ public class JSONReader {
      * Executes the enum array operation.
      *
      * @param enumType the enum type.
+     * @param <T>      the value type
      * @return the operation result.
-     * @param <T> the value type
      */
     public <T extends Enum<T>> T[] enumArray(Class<T> enumType) {
         next();
@@ -740,7 +739,6 @@ public class JSONReader {
      * Defines the Callback contract.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface Callback {
 
@@ -758,7 +756,6 @@ public class JSONReader {
      * Represents the Element type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class Element {
 

@@ -35,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
  * "https://github.com/apache/lucene-solr/tree/master/lucene/analysis">https://github.com/apache/lucene-solr/tree/master/lucene/analysis</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AnalysisResult extends AbstractResult {
 

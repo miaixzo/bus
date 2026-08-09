@@ -31,7 +31,6 @@ import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
  * Non-blocking HTTP/2 push-observer dispatcher and pushed-stream identity owner.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class Http2PushDispatcher {
 

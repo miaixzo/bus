@@ -25,7 +25,6 @@ import org.miaixz.bus.core.center.date.culture.Samsara;
  * Represents a quarter in the Lunar calendar.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LunarQuarter extends Samsara {
 

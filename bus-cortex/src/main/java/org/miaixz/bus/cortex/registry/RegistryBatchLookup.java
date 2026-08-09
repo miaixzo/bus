@@ -34,7 +34,6 @@ import org.miaixz.bus.cortex.Assets;
  * @param skipMethodVersionFallback whether method/version fallback should be skipped
  * @param warnings                  lookup warnings
  * @author Kimi Liu
- * @since Java 21+
  */
 public record RegistryBatchLookup(Map<RegistryRouteKey, Assets> existingByRoute, Set<RegistryRouteKey> missingRoutes,
         boolean authoritativeByRoute, boolean skipMethodVersionFallback, List<String> warnings) {

@@ -33,10 +33,19 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The import status class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImportStatus implements Serializable {
 
+    /**
+     * Constructs a new {@code ImportStatus} instance.
+     */
+    public ImportStatus() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852257150210L;
 
@@ -44,7 +53,6 @@ public class ImportStatus implements Serializable {
      * Enum representing the status of the import.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Status {
 
@@ -69,6 +77,9 @@ public class ImportStatus implements Serializable {
          */
         FINISHED;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<Status> enumCodec = new JacksonJsonEnumCodec<>(Status.class);
 
         /**
@@ -107,14 +118,41 @@ public class ImportStatus implements Serializable {
 
     }
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The name with namespace value.
+     */
     private String nameWithNamespace;
+    /**
+     * The path value.
+     */
     private String path;
+    /**
+     * The path with namespace value.
+     */
     private String pathWithNamespace;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The import status value.
+     */
     private Status importStatus;
+    /**
+     * The import error value.
+     */
     private String importError;
 
     /**

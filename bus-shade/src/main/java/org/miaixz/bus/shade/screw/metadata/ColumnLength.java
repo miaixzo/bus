@@ -25,7 +25,6 @@ import java.io.Serializable;
  * Represents the length of a database column.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ColumnLength extends Serializable {
 

@@ -37,7 +37,6 @@ import org.miaixz.bus.fabric.protocol.socket.SocketOptions;
  * Provider contract for creating AIO channels and servers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface AioProvider {
 
@@ -134,7 +133,6 @@ public interface AioProvider {
  * System provider implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class SystemAioProvider implements AioProvider {
 

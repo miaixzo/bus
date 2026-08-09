@@ -32,7 +32,6 @@ import org.miaixz.bus.cortex.setting.delivery.RuntimeItemOverlayPublisher;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
 

@@ -25,12 +25,27 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The repository change class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RepositoryChange {
 
+    /**
+     * Constructs a new {@code RepositoryChange} instance.
+     */
+    public RepositoryChange() {
+        // No initialization required.
+    }
+
+    /**
+     * The after value.
+     */
     private String after;
+    /**
+     * The before value.
+     */
     private String before;
+    /**
+     * The ref value.
+     */
     private String ref;
 
     /**

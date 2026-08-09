@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * Enum for the various Job status values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum JobStatus {
 
@@ -65,6 +64,9 @@ public enum JobStatus {
      */
     MANUAL;
 
+    /**
+     * The enum codec value.
+     */
     private static JacksonJsonEnumCodec<JobStatus> enumCodec = new JacksonJsonEnumCodec<>(JobStatus.class);
 
     /**

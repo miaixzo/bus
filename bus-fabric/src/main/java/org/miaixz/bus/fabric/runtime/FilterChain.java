@@ -32,7 +32,6 @@ import org.miaixz.bus.fabric.Message;
  * Runtime executor for protocol-neutral message filters.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class FilterChain implements Filter.Chain {
 

@@ -38,7 +38,6 @@ import org.miaixz.bus.extra.qrcode.QrConfig;
  * SVG renderer for QR codes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SVGRender implements BitMatrixRender {
 

@@ -40,7 +40,6 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsZoneMode;
  * Resolver for authoritative and override zones in a compiled runtime index.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsAuthoritativeResolver {
 

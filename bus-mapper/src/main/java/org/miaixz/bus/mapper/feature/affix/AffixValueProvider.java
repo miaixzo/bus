@@ -31,7 +31,6 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface AffixValueProvider extends MapperProvider<AffixRuleConfig> {

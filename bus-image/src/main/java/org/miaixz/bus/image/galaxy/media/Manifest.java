@@ -36,7 +36,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Patient-centric DICOM manifest model.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Manifest implements ManifestXml {
 

@@ -33,7 +33,6 @@ import org.miaixz.bus.fabric.network.Destination;
  * Lease for a borrowed network connection.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ConnectionLease {
 

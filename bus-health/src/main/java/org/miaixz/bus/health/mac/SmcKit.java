@@ -49,7 +49,6 @@ import org.miaixz.bus.logger.Logger;
  * Provides access to SMC calls on macOS
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class SmcKit {

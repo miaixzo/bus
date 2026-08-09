@@ -29,7 +29,6 @@ import com.sun.jna.Pointer;
  * declared here.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ObjCRuntime extends Library {
 

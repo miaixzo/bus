@@ -32,9 +32,15 @@ import org.miaixz.bus.image.Builder;
  * Holds the shared SAX parser factory.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SAXParserFactoryHolder {
+
+    /**
+     * Constructs a new {@code SAXParserFactoryHolder} instance.
+     */
+    public SAXParserFactoryHolder() {
+        // No initialization required.
+    }
 
     /**
      * The factory value.

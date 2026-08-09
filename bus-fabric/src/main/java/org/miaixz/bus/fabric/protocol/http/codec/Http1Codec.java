@@ -52,7 +52,6 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  * HTTP/1.1 codec bound to a selected network connection.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Http1Codec implements HttpCodec {
 

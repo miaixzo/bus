@@ -29,17 +29,41 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The uploaded file class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UploadedFile implements Serializable {
 
+    /**
+     * Constructs a new {@code UploadedFile} instance.
+     */
+    public UploadedFile() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852282875090L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The size value.
+     */
     private Long size;
+    /**
+     * The filename value.
+     */
     private String filename;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The uploaded by value.
+     */
     private UploadedByUser uploadedBy;
 
     /**

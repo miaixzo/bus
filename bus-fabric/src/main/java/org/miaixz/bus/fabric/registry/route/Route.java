@@ -34,7 +34,6 @@ import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
  * @param proxy   direct, HTTP, or SOCKS proxy plan
  * @param socket  endpoint to connect, which may be resolved or unresolved
  * @author Kimi Liu
- * @since Java 21+
  */
 public record Route(Address address, ProxyPlan proxy, InetSocketAddress socket) {
 

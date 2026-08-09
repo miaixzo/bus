@@ -27,7 +27,6 @@ import org.miaixz.bus.image.Device;
  * Represents the DeviceCache type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DeviceCache extends ConfigurationCache<DicomConfiguration, Device> implements IDeviceCache {
 

@@ -45,7 +45,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * existing native logging properties. Spring Boot remains the owner of the logging configuration model.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 

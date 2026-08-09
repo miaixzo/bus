@@ -42,7 +42,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * Computes schema differences.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @RequiredArgsConstructor
 public class SchemaDiffer {

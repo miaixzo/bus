@@ -73,7 +73,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 public class NamingProvider implements Provider {

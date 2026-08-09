@@ -57,32 +57,32 @@ application code
  Registry -> Holder -> Factory -> SPI discovery
 ```
 
-| Type | Responsibility |
-|---|---|
-| `Logger` | Static facade, caller resolution, level checks, aligned diagnostic output, and generic `log` dispatch. |
-| `Level` | Common `TRACE`, `DEBUG`, `INFO`, `WARN`, and `ERROR` level model. |
-| `Provider` | Backend-neutral logging operations and level checks. |
-| `Factory` | Creates and caches providers for names and classes. |
-| `Holder` | Selects or explicitly installs the default factory. |
-| `Registry` | Resolves the cached provider for a name or class. |
-| `Loggable` | Immutable event snapshot with a defensive copy of its argument array. |
-| `Operator` | Transforms a complete event or a named diagnostic value without writing output. |
-| `Executor` | Applies operators in registration order and isolates logging from operator failures. |
+| Type       | Responsibility                                                                                         |
+|------------|--------------------------------------------------------------------------------------------------------|
+| `Logger`   | Static facade, caller resolution, level checks, aligned diagnostic output, and generic `log` dispatch. |
+| `Level`    | Common `TRACE`, `DEBUG`, `INFO`, `WARN`, and `ERROR` level model.                                      |
+| `Provider` | Backend-neutral logging operations and level checks.                                                   |
+| `Factory`  | Creates and caches providers for names and classes.                                                    |
+| `Holder`   | Selects or explicitly installs the default factory.                                                    |
+| `Registry` | Resolves the cached provider for a name or class.                                                      |
+| `Loggable` | Immutable event snapshot with a defensive copy of its argument array.                                  |
+| `Operator` | Transforms a complete event or a named diagnostic value without writing output.                        |
+| `Executor` | Applies operators in registration order and isolates logging from operator failures.                   |
 
 ## Supported backends
 
 The module includes adapters for:
 
-| Backend | Factory | Provider |
-|---|---|---|
-| SLF4J | `Slf4jLoggingFactory` | `Slf4jLoggingProvider` |
-| Log4j 2 | `Log4jLoggingFactory` | `Log4jLoggingProvider` |
+| Backend                | Factory                 | Provider                 |
+|------------------------|-------------------------|--------------------------|
+| SLF4J                  | `Slf4jLoggingFactory`   | `Slf4jLoggingProvider`   |
+| Log4j 2                | `Log4jLoggingFactory`   | `Log4jLoggingProvider`   |
 | Apache Commons Logging | `CommonsLoggingFactory` | `CommonsLoggingProvider` |
-| JBoss Logging | `JbossLoggingFactory` | `JbossLoggingProvider` |
-| `java.util.logging` | `JdkLoggingFactory` | `JdkLoggingProvider` |
-| tinylog | `TinyLoggingFactory` | `TinyLoggingProvider` |
-| Colored console | `ColorLoggingFactory` | `ColorLoggingProvider` |
-| Plain console | `NormalLoggingFactory` | `NormalLoggingProvider` |
+| JBoss Logging          | `JbossLoggingFactory`   | `JbossLoggingProvider`   |
+| `java.util.logging`    | `JdkLoggingFactory`     | `JdkLoggingProvider`     |
+| tinylog                | `TinyLoggingFactory`    | `TinyLoggingProvider`    |
+| Colored console        | `ColorLoggingFactory`   | `ColorLoggingProvider`   |
+| Plain console          | `NormalLoggingFactory`  | `NormalLoggingProvider`  |
 
 Factories are discovered through `META-INF/services/org.miaixz.bus.logger.Factory`. Discovery selects the first
 available SPI implementation. If no supported provider is available, a classpath `logging.properties` selects JUL;
@@ -136,8 +136,8 @@ try {
 }
 ```
 
-Pass the exception through the throwable overload. Do not interpolate the exception into the message and lose its
-stack trace.
+Pass the exception through the throwable overload. Do not interpolate the exception into the message and lose its stack
+trace.
 
 ### Dynamic levels
 
@@ -260,12 +260,12 @@ all level checks accurately.
 
 ## Package layout
 
-| Package | Content |
-|---|---|
-| `org.miaixz.bus.logger` | Public facade, event model, registry, executor, and SPI contracts. |
-| `org.miaixz.bus.logger.magic` | Shared abstract factory and provider implementations. |
-| `org.miaixz.bus.logger.magic.level` | Reusable level-specific contracts. |
-| `org.miaixz.bus.logger.nimble.*` | Backend adapters. |
+| Package                             | Content                                                            |
+|-------------------------------------|--------------------------------------------------------------------|
+| `org.miaixz.bus.logger`             | Public facade, event model, registry, executor, and SPI contracts. |
+| `org.miaixz.bus.logger.magic`       | Shared abstract factory and provider implementations.              |
+| `org.miaixz.bus.logger.magic.level` | Reusable level-specific contracts.                                 |
+| `org.miaixz.bus.logger.nimble.*`    | Backend adapters.                                                  |
 
 All of these packages are exported by the JPMS module. Backend modules are optional static requirements.
 

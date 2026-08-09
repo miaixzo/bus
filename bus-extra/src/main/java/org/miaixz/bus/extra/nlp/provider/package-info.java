@@ -23,6 +23,5 @@
  * NLP libraries, offering diverse options for text analysis.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.extra.nlp.provider;

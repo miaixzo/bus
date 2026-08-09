@@ -41,7 +41,6 @@ import org.miaixz.bus.fabric.observe.tags.Tags;
  * @param tags   immutable sanitized event tags
  * @param cause  optional failure cause
  * @author Kimi Liu
- * @since Java 21+
  */
 public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Throwable cause) {
 
@@ -125,7 +124,6 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
      * Builder for fabric events.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

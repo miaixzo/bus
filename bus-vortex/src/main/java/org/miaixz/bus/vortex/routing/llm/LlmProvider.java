@@ -29,7 +29,6 @@ import reactor.core.publisher.Mono;
  * non-streaming modes. Implementations should support the OpenAIProvider Chat Completions API format.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface LlmProvider {
 

@@ -35,7 +35,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JsonSerializer extends AbstractSerializer {
 

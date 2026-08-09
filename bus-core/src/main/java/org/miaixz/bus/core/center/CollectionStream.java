@@ -34,7 +34,6 @@ import org.miaixz.bus.core.xyz.*;
  * transforming, grouping, and merging collections by leveraging the power of the Java Stream API.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CollectionStream extends CollectionValidator {
 

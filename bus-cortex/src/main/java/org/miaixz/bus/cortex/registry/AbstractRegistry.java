@@ -36,7 +36,6 @@ import org.miaixz.bus.logger.Logger;
  *
  * @param <T> registered asset type
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractRegistry<T extends Assets> implements Registry<T> {
 

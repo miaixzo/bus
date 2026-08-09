@@ -53,7 +53,6 @@ import co.elastic.clients.transport.rest5_client.low_level.Rest5ClientBuilder;
  * defined in {@link ElasticProperties}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(value = { ElasticProperties.class })
 @Configuration(proxyBeanMethods = false)

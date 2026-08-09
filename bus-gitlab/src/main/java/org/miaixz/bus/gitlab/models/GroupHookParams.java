@@ -26,36 +26,117 @@ import java.io.Serializable;
  * The group hook params class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GroupHookParams implements Serializable {
 
+    /**
+     * Constructs a new {@code GroupHookParams} instance.
+     */
+    public GroupHookParams() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852256256678L;
 
+    /**
+     * The url value.
+     */
     private String url;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The push events value.
+     */
     private Boolean pushEvents;
+    /**
+     * The push events branch filter value.
+     */
     private String pushEventsBranchFilter;
+    /**
+     * The branch filter strategy value.
+     */
     private String branchFilterStrategy;
+    /**
+     * The issues events value.
+     */
     private Boolean issuesEvents;
+    /**
+     * The confidential issues events value.
+     */
     private Boolean confidentialIssuesEvents;
+    /**
+     * The merge requests events value.
+     */
     private Boolean mergeRequestsEvents;
+    /**
+     * The tag push events value.
+     */
     private Boolean tagPushEvents;
+    /**
+     * The note events value.
+     */
     private Boolean noteEvents;
+    /**
+     * The confidential note events value.
+     */
     private Boolean confidentialNoteEvents;
+    /**
+     * The job events value.
+     */
     private Boolean jobEvents;
+    /**
+     * The pipeline events value.
+     */
     private Boolean pipelineEvents;
+    /**
+     * The wiki page events value.
+     */
     private Boolean wikiPageEvents;
+    /**
+     * The deployment events value.
+     */
     private Boolean deploymentEvents;
+    /**
+     * The feature flag events value.
+     */
     private Boolean featureFlagEvents;
+    /**
+     * The releases events value.
+     */
     private Boolean releasesEvents;
+    /**
+     * The subgroup events value.
+     */
     private Boolean subgroupEvents;
+    /**
+     * The member events value.
+     */
     private Boolean memberEvents;
+    /**
+     * The enable ssl verification value.
+     */
     private Boolean enableSslVerification;
+    /**
+     * The token value.
+     */
     private String token;
+    /**
+     * The resource access token events value.
+     */
     private Boolean resourceAccessTokenEvents;
+    /**
+     * The custom webhook template value.
+     */
     private String customWebhookTemplate;
 
     /**

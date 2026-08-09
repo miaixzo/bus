@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  * Handles WMI Queries. Designed to be extended with user-customized behavior.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class WmiQueryHandler {

@@ -31,7 +31,6 @@ import org.miaixz.bus.mapper.binding.function.Fn;
  *
  * @param <T> The type of the entity class.
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

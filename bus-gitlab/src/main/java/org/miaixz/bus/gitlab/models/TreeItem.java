@@ -28,10 +28,19 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The tree item class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TreeItem implements Serializable {
 
+    /**
+     * Constructs a new {@code TreeItem} instance.
+     */
+    public TreeItem() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852282298357L;
 
@@ -39,7 +48,6 @@ public class TreeItem implements Serializable {
      * The type enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Type {
 
@@ -69,9 +77,21 @@ public class TreeItem implements Serializable {
 
     }
 
+    /**
+     * The id value.
+     */
     private String id;
+    /**
+     * The mode value.
+     */
     private String mode;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The path value.
+     */
     private String path;
 
     /**

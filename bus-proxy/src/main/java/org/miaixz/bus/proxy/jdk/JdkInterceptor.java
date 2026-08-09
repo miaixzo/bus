@@ -35,7 +35,6 @@ import org.miaixz.bus.proxy.invoker.Interceptor;
  * on a proxy, allowing an {@link Aspect} to be applied.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JdkInterceptor extends Interceptor implements InvocationHandler {
 

@@ -32,7 +32,6 @@ import org.miaixz.bus.health.linux.ProcPath;
  * Reads auxiliary vector from {@code /proc/self/auxv}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Auxv {

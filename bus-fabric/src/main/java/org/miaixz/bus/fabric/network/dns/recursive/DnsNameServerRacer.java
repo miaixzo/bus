@@ -53,7 +53,6 @@ import org.miaixz.bus.fabric.network.dns.message.DnsResponseCode;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsNameServerRacer {
 
@@ -452,7 +451,6 @@ public final class DnsNameServerRacer {
      * Immutable public health snapshot for one name server.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class DnsNameServerHealth {
 
@@ -517,7 +515,6 @@ public final class DnsNameServerRacer {
      * Mutable internal health state stored in the shared map.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class HealthState {
 
@@ -555,7 +552,6 @@ public final class DnsNameServerRacer {
      * Immutable race result exposed to recursive callers that need the remaining retry budget.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class DnsNameServerRace {
 
@@ -610,7 +606,6 @@ public final class DnsNameServerRacer {
      * Immutable internal group result.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class RaceGroup {
 
@@ -665,7 +660,6 @@ public final class DnsNameServerRacer {
      * Immutable result from one race task or group.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class RaceResult {
 

@@ -25,7 +25,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Represents the AAssociateRQ type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AAssociateRQ extends AAssociateRQAC {
 

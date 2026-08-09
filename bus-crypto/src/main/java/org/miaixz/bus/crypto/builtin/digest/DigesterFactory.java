@@ -32,7 +32,6 @@ import org.miaixz.bus.logger.Logger;
  * improve initialization performance.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DigesterFactory {
 

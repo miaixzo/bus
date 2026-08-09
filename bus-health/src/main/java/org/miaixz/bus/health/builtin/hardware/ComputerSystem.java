@@ -26,7 +26,6 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  * motherboard, logic board, etc.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public interface ComputerSystem {

@@ -32,7 +32,6 @@ import org.miaixz.bus.crypto.center.AES;
  * when implemented in dedicated hardware.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AESProvider implements Provider {
 

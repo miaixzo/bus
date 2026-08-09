@@ -49,7 +49,6 @@ import java.util.stream.*;
  * @see EasyStream
  * @see EntryStream
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<T>, Iterable<T> {
 

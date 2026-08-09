@@ -35,7 +35,6 @@ import org.miaixz.bus.cortex.setting.secret.SecretMasker;
  * Consumer-facing query service for resolved setting values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ItemQueryService {
 

@@ -40,7 +40,6 @@ import org.miaixz.bus.image.metric.hl7.MLLPRelease;
  * It can send messages from files, directories, or standard input.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HL7Snd extends Device {
 
@@ -173,7 +172,6 @@ public class HL7Snd extends Device {
      * A {@link SimpleFileVisitor} that sends each visited file as an HL7 message.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class HL7Send extends SimpleFileVisitor<Path> {
 

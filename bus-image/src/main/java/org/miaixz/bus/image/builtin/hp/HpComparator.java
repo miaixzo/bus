@@ -25,7 +25,6 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  * Comparator for Hanging Protocol image ordering.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface HpComparator {

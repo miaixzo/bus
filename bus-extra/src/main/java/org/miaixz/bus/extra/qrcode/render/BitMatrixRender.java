@@ -27,7 +27,6 @@ import com.google.zxing.common.BitMatrix;
  * Interface for rendering a {@link BitMatrix}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface BitMatrixRender {
 

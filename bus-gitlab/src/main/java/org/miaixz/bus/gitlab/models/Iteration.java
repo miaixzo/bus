@@ -34,25 +34,67 @@ import tools.jackson.databind.annotation.JsonSerialize;
  * The iteration class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Iteration implements Serializable {
 
+    /**
+     * Constructs a new {@code Iteration} instance.
+     */
+    public Iteration() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852259131760L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The iid value.
+     */
     private Long iid;
+    /**
+     * The sequence value.
+     */
     private Long sequence;
+    /**
+     * The group id value.
+     */
     private Long groupId;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The state value.
+     */
     private IterationState state;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
 
+    /**
+     * The start date value.
+     */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date startDate;
+    /**
+     * The due date value.
+     */
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date dueDate;
 
@@ -60,7 +102,6 @@ public class Iteration implements Serializable {
      * The iteration state enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum IterationState {
 
@@ -77,6 +118,9 @@ public class Iteration implements Serializable {
          */
         CLOSED(3);
 
+        /**
+         * The value value.
+         */
         private int value;
 
         IterationState(int value) {
@@ -124,6 +168,9 @@ public class Iteration implements Serializable {
 
     }
 
+    /**
+     * The web url value.
+     */
     private String webUrl;
 
     /**

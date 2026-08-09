@@ -24,7 +24,6 @@ package org.miaixz.bus.core.lang.annotation.resolve.attribute;
  * value of {@link #linked}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ForceAliasedAnnotationAttribute extends AbstractWrappedAnnotationAttribute {
 

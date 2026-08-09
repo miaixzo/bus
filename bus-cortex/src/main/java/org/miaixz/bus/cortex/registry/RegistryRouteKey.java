@@ -25,14 +25,13 @@ import org.miaixz.bus.cortex.Type;
 /**
  * Route identity used by registry batch lookup strategies.
  *
- * @author Kimi Liu
  * @param namespace_id namespace identifier
  * @param app_id       application identifier
  * @param type         registry type key
  * @param method       route method
  * @param version      route version
  * @param verb         HTTP verb code
- * @since Java 21+
+ * @author Kimi Liu
  */
 public record RegistryRouteKey(String namespace_id, String app_id, Integer type, String method, String version,
         Integer verb) {

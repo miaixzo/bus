@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @param <T> result type
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Call<T> extends Lifecycle {
 

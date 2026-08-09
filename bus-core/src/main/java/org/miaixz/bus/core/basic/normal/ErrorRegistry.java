@@ -21,6 +21,8 @@ package org.miaixz.bus.core.basic.normal;
 
 import org.miaixz.bus.core.lang.I18n;
 import org.miaixz.bus.core.lang.Keys;
+import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * A base class for registering error codes, implementing the {@link Errors} interface.
@@ -34,11 +36,10 @@ import org.miaixz.bus.core.lang.Keys;
  *
  * <pre>{@code
  *
- * Errors error = ErrorRegistry.builder().key("AUTH_001").value("Authentication failed").build();
+ * Errors error = ErrorRegistry.register("AUTH_001", "Authentication failed");
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ErrorRegistry implements Errors {
 
@@ -75,6 +76,25 @@ public class ErrorRegistry implements Errors {
      */
     public static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Creates and registers an error code entry.
+     *
+     * @param key   unique error code used for lookup, localization, and duplicate detection
+     * @param value default error message used when no localized message is available
+     * @return registered error descriptor containing the supplied code and default message
+     * @throws IllegalArgumentException if {@code key} or {@code value} is blank
+     * @throws AlreadyExistsException   if the same {@code key} has already been registered
+     */
+    public static Errors register(String key, String value) {
+        if (StringKit.isBlank(key)) {
+            throw new IllegalArgumentException("Key cannot be blank");
+        }
+        if (StringKit.isBlank(value)) {
+            throw new IllegalArgumentException("Value cannot be blank");
+        }
+        return builder().key(key).value(value).build();
     }
 
     /**
@@ -120,7 +140,6 @@ public class ErrorRegistry implements Errors {
      * A builder for {@link ErrorRegistry}, supporting a fluent, chainable interface.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Builder {
 

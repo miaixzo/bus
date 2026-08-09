@@ -30,7 +30,6 @@ import org.miaixz.bus.image.Tag;
  * IDs, accession numbers, and other identifiers that may be qualified by an issuing authority.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IDWithIssuer {
 

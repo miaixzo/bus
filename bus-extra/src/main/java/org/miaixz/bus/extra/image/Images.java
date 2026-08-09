@@ -48,7 +48,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * like scaling, cutting, watermarking, and more.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Images implements Flushable, Serializable {
 
@@ -819,7 +818,7 @@ public class Images implements Flushable, Serializable {
      * Flushes the source and target images to free resources. This method is designed to be overridden by subclasses
      * for custom resource cleanup. When overriding, ensure all image resources are properly released and the method is
      * idempotent (safe to call multiple times).
-     *
+     * <p>
      * Subclasses should call {@code super.flush()} to ensure proper cleanup of inherited resources.
      */
     @Override

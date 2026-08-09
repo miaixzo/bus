@@ -37,7 +37,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * O(1) STOMP receipt future registry.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class StompReceipt {
 

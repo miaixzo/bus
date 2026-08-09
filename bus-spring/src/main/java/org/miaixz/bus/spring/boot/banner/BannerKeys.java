@@ -23,7 +23,6 @@ package org.miaixz.bus.spring.boot.banner;
  * Constants used exclusively by Bus banner rendering.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class BannerKeys {
 

@@ -58,7 +58,6 @@ import org.miaixz.bus.logger.Logger;
  * Opens and reads SSE streams from an immutable SSE exchange specification.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class SseRunner {
 

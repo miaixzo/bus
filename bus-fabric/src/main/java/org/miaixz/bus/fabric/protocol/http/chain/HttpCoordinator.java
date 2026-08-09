@@ -37,7 +37,6 @@ import org.miaixz.bus.logger.Logger;
  * HTTP chain coordinator that resolves cache hits and writes cacheable network responses.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpCoordinator implements HttpStage {
 

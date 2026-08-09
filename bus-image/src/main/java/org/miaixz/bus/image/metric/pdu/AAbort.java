@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Represents the AAbort type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AAbort extends IOException {
 

@@ -47,7 +47,6 @@ import org.miaixz.bus.logger.Logger;
  * and output format settings.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Dcm2Jpg {
 
@@ -491,7 +490,6 @@ public class Dcm2Jpg {
      * A functional interface for defining how to read a {@link BufferedImage} from a DICOM file.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private interface ReadImage {
 

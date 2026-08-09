@@ -42,7 +42,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public class MacUsbDevice extends AbstractUsbDevice {

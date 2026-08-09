@@ -34,7 +34,6 @@ import org.miaixz.bus.shade.safety.algorithm.Key;
  * An {@link EncryptorProvider} implementation that uses the built-in JDK cryptographic algorithms.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JdkEncryptorProvider implements EncryptorProvider {
 

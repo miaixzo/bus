@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * Fabric time source abstraction.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Clock {
 

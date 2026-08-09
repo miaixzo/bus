@@ -30,7 +30,6 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  * Represents the ColorModelFactory type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ColorModelFactory {
 

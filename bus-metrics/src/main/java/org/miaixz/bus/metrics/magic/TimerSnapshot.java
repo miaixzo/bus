@@ -33,7 +33,6 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  * @param bucketCounts histogram bucket counts
  * @param bucketBounds histogram bucket bounds
  * @author Kimi Liu
- * @since Java 21+
  */
 public record TimerSnapshot(String name, Tag[] tags, long count, double totalNanos, double maxNanos,
         long[] bucketCounts, double[] bucketBounds) {

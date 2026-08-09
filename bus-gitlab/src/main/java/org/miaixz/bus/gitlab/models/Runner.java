@@ -33,22 +33,61 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The runner class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Runner implements Serializable {
 
+    /**
+     * Constructs a new {@code Runner} instance.
+     */
+    public Runner() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852280665555L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The runner type value.
+     */
     private RunnerType runnerType;
+    /**
+     * The active value.
+     */
     private Boolean active;
+    /**
+     * The is shared value.
+     */
     private Boolean isShared;
+    /**
+     * The tags value.
+     */
     private List<String> tags;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The online value.
+     */
     private Boolean online;
+    /**
+     * The status value.
+     */
     private RunnerStatus status;
+    /**
+     * The ip address value.
+     */
     private String ipAddress;
 
     /**
@@ -175,7 +214,6 @@ public class Runner implements Serializable {
      * Enum to use for RunnersApi filtering on status.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum RunnerStatus {
 
@@ -196,6 +234,9 @@ public class Runner implements Serializable {
          */
         OFFLINE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<RunnerStatus> enumCodec = new JacksonJsonEnumCodec<>(RunnerStatus.class);
 
         /**
@@ -238,7 +279,6 @@ public class Runner implements Serializable {
      * Enum to use for RunnersApi filtering on type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum RunnerType {
 
@@ -255,6 +295,9 @@ public class Runner implements Serializable {
          */
         PROJECT_TYPE;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<RunnerType> enumCodec = new JacksonJsonEnumCodec<>(RunnerType.class);
 
         /**

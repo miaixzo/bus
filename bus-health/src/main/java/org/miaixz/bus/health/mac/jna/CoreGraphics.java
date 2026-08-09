@@ -37,7 +37,6 @@ import org.miaixz.bus.health.Builder;
  * working with display hardware, low-level user input events, and the windowing system.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface CoreGraphics extends Library {
 
@@ -148,7 +147,6 @@ public interface CoreGraphics extends Library {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "x", "y" })
     class CGPoint extends Structure {
@@ -179,7 +177,6 @@ public interface CoreGraphics extends Library {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "width", "height" })
     class CGSize extends Structure {
@@ -207,7 +204,6 @@ public interface CoreGraphics extends Library {
      * JNA wrapper for a CGSize structure returned by value from native functions.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "width", "height" })
     class CGSizeByValue extends Structure implements Structure.ByValue {
@@ -238,7 +234,6 @@ public interface CoreGraphics extends Library {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "origin", "size" })
     class CGRect extends Structure implements AutoCloseable {

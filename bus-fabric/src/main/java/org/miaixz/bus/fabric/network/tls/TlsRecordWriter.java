@@ -39,7 +39,6 @@ import org.miaixz.bus.fabric.network.Conduit;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class TlsRecordWriter {
 

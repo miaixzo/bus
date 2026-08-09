@@ -35,7 +35,6 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
  * object and save them as single-frame (SF) DICOM objects.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Emf2sf {
 

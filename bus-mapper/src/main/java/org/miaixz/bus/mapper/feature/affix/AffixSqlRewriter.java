@@ -34,7 +34,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * preserves schema qualifiers and identifier delimiters, and avoids applying the same affix more than once.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AffixSqlRewriter {
 

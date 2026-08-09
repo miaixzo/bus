@@ -51,7 +51,6 @@ import org.miaixz.bus.logger.Logger;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CommonsFtp extends AbstractFtp {
 
@@ -371,7 +370,7 @@ public class CommonsFtp extends AbstractFtp {
     /**
      * Lists files and directories in the specified path. This method is designed to be overridden by subclasses for
      * custom listing logic. When overriding, ensure proper filtering of "." and ".." entries.
-     *
+     * <p>
      * Subclasses may override to add custom filtering, sorting, or enhanced error handling.
      *
      * @param path The directory path to list.
@@ -461,7 +460,7 @@ public class CommonsFtp extends AbstractFtp {
     /**
      * Renames a file or directory on the FTP server. This method is designed to be overridden by subclasses for custom
      * rename logic. When overriding, ensure proper validation of paths and handling of atomic operations.
-     *
+     * <p>
      * Subclasses may override to add validation, logging, or transaction support.
      *
      * @param oldPath The current path of the file or directory.
@@ -488,7 +487,7 @@ public class CommonsFtp extends AbstractFtp {
     /**
      * Creates a directory on the FTP server. This method is designed to be overridden by subclasses for custom
      * directory creation logic. When overriding, ensure proper path validation and handling of existing directories.
-     *
+     * <p>
      * Subclasses may override to add recursive creation, permission setting, or enhanced error handling.
      *
      * @param dir The directory path to create.
@@ -614,7 +613,7 @@ public class CommonsFtp extends AbstractFtp {
     /**
      * Deletes a file on the FTP server. This method is designed to be overridden by subclasses for custom file deletion
      * logic. When overriding, ensure proper validation of file paths and handling of permissions.
-     *
+     * <p>
      * and returns to the original directory if backToPwd is enabled. Subclasses may override to add validation,
      * logging, or undo/redo support.
      *
@@ -654,7 +653,7 @@ public class CommonsFtp extends AbstractFtp {
      * Deletes a directory and all its contents recursively on the FTP server. This method is designed to be overridden
      * by subclasses for custom directory deletion logic. When overriding, ensure proper handling of symbolic links and
      * circular references.
-     *
+     * <p>
      * Subclasses may override to add non-recursive deletion, progress tracking, or enhanced error handling.
      *
      * @param dirPath The path of the directory to delete.
@@ -986,7 +985,7 @@ public class CommonsFtp extends AbstractFtp {
     /**
      * Gets an input stream for reading a remote file. This method is designed to be overridden by subclasses for custom
      * stream handling. When overriding, ensure proper stream management and resource cleanup.
-     *
+     * <p>
      * and returns to the original directory if backToPwd is enabled. Subclasses may override to add buffering, progress
      * monitoring, or enhanced error handling.
      *
@@ -1126,7 +1125,7 @@ public class CommonsFtp extends AbstractFtp {
     /**
      * Closes the FTP connection and releases all resources. This method is designed to be overridden by subclasses for
      * custom cleanup logic. When overriding, ensure the method is idempotent and all resources are properly released.
-     *
+     * <p>
      * Subclasses should call {@code super.close()} to ensure proper cleanup of inherited resources.
      *
      * @throws IOException if an I/O error occurs during disconnection.

@@ -23,6 +23,5 @@
  * Note: As JDK 11+ has removed "javax.xml.bind" related types, this package is encapsulated within the 'extra' module.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.xml;

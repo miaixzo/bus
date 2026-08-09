@@ -32,7 +32,6 @@ import org.miaixz.bus.core.text.CharsBacker;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FastCharArrayReader extends Reader {
 

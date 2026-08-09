@@ -22,6 +22,5 @@
  * advice. This non-exported package contains Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.starter.validate;

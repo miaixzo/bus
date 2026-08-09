@@ -21,6 +21,5 @@
  * UID Dictionary from KRETZ_US
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.KRETZ_US;

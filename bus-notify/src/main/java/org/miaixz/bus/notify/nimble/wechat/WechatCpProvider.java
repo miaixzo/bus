@@ -28,7 +28,6 @@ import org.miaixz.bus.notify.nimble.AbstractProvider;
  * WeChat Enterprise Account/WeCom message provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WechatCpProvider extends AbstractProvider<WechatNotice, Context> {
 

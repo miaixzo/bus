@@ -36,7 +36,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractBaseboard;
  * Baseboard data obtained from ioreg.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class MacBaseboard extends AbstractBaseboard {

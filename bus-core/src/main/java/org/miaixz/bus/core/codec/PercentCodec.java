@@ -51,7 +51,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
 
@@ -192,7 +191,6 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
      * construction is handled by this Builder.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Builder implements org.miaixz.bus.core.Builder<PercentCodec> {
 

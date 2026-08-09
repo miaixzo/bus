@@ -36,7 +36,6 @@ import org.miaixz.bus.cache.CacheX;
  * @param <K> The type of keys.
  * @param <V> The type of values.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NoOpCache<K, V> implements CacheX<K, V> {
 

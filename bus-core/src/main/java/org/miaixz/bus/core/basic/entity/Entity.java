@@ -25,9 +25,7 @@ import java.io.Serializable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -38,14 +36,18 @@ import org.miaixz.bus.core.xyz.FieldKit;
  * Represents a base entity with a primary key.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Entity implements Serializable {
+
+    /**
+     * Constructs a new {@code Entity} instance.
+     */
+    public Entity() {
+        // No initialization required.
+    }
 
     @Serial
     private static final long serialVersionUID = 2852290719680L;

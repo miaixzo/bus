@@ -61,7 +61,6 @@ import io.opentelemetry.api.metrics.ObservableDoubleGauge;
  * The {@code instrumentationScope} defaults to {@code "bus-metrics"}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class OpenTelemetryProvider implements Provider {
 

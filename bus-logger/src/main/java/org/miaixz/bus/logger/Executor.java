@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Thread-safe executor that applies neutral log operators in registration order.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Executor {
 

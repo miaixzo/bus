@@ -51,7 +51,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * correspondence.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Hashids implements Encoder<long[], String>, Decoder<String, long[]> {
 

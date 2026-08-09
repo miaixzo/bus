@@ -41,7 +41,6 @@ import org.miaixz.bus.logger.Logger;
  * An abstract base class for SQL interception and handling in MyBatis.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractSqlHandler {
 

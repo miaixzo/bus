@@ -85,12 +85,6 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
             "org.miaixz.bus.vortex.Args$Limit$LimitBuilder"
           ]
         },
@@ -233,7 +227,9 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.String",
-            "int"
+            "int",
+            "java.lang.String",
+            "java.lang.Integer"
           ]
         },
         {
@@ -704,8 +700,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
+            "org.miaixz.bus.vortex.handler.ErrorsHandler$Message$MessageBuilder"
           ]
         },
         {
@@ -854,6 +849,23 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.vortex.handler.ErrorsHandler$Message$MessageBuilderImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.vortex.Holder",
       "methods": [
         {
@@ -876,13 +888,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.basic.entity.Message",
-            "org.miaixz.bus.core.basic.entity.Authorize"
-          ]
         },
         {
           "name": "<init>",
@@ -994,16 +999,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.Integer",
-            "org.miaixz.bus.vortex.magic.Limiter$RateLimiter"
-          ]
         },
         {
           "name": "<init>",
@@ -2226,15 +2221,6 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.Integer",
-            "java.lang.String",
-            "java.lang.Integer",
-            "org.miaixz.bus.vortex.Context"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
             "org.miaixz.bus.vortex.magic.Principal$PrincipalBuilder"
           ]
         },
@@ -2470,10 +2456,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "long",
-            "long",
-            "double",
-            "long"
+            "org.miaixz.bus.vortex.nimble.CacheStats$CacheStatsBuilder"
           ]
         },
         {
@@ -2559,6 +2542,23 @@
         },
         {
           "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.vortex.nimble.CacheStats$CacheStatsBuilderImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
           "parameterTypes": []
         }
       ]
@@ -3398,21 +3398,6 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.String",
-            "java.util.List",
-            "boolean",
-            "java.lang.Double",
-            "java.lang.Integer",
-            "java.lang.Double",
-            "java.lang.Double",
-            "java.lang.Double",
-            "java.util.List",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
             "org.miaixz.bus.vortex.routing.llm.LlmRequest$LlmRequestBuilder"
           ]
         },
@@ -3685,17 +3670,6 @@
         }
       ],
       "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.Long",
-            "java.lang.String",
-            "java.util.List",
-            "org.miaixz.bus.vortex.routing.llm.LlmResponse$Usage"
-          ]
-        },
         {
           "name": "<init>",
           "parameterTypes": [

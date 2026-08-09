@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.CollKit;
  *
  * @param <T> The type of the nodes.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Graph<T> extends SetValueMap<T, T> {
 

@@ -38,7 +38,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class CsvParser extends ComputeIterator<CsvRow> implements Closeable, Serializable {
 

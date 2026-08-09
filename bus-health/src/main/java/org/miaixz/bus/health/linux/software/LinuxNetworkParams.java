@@ -42,7 +42,6 @@ import org.miaixz.bus.logger.Logger;
  * LinuxNetworkParams class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class LinuxNetworkParams extends AbstractNetworkParams {

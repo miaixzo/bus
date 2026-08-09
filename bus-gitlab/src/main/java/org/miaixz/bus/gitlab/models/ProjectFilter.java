@@ -31,38 +31,125 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * This class is used to filter Projects when getting lists of projects for a specified user.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProjectFilter implements Serializable {
 
+    /**
+     * Constructs a new {@code ProjectFilter} instance.
+     */
+    public ProjectFilter() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852271736070L;
 
+    /**
+     * The archived value.
+     */
     private Boolean archived;
+    /**
+     * The visibility value.
+     */
     private Visibility visibility;
+    /**
+     * The order by value.
+     */
     private ProjectOrderBy orderBy;
+    /**
+     * The sort value.
+     */
     private SortOrder sort;
+    /**
+     * The search value.
+     */
     private String search;
+    /**
+     * The search namespaces value.
+     */
     private Boolean searchNamespaces;
+    /**
+     * The simple value.
+     */
     private Boolean simple;
+    /**
+     * The owned value.
+     */
     private Boolean owned;
+    /**
+     * The membership value.
+     */
     private Boolean membership;
+    /**
+     * The starred value.
+     */
     private Boolean starred;
+    /**
+     * The statistics value.
+     */
     private Boolean statistics;
+    /**
+     * The with custom attributes value.
+     */
     private Boolean withCustomAttributes;
+    /**
+     * The with issues enabled value.
+     */
     private Boolean withIssuesEnabled;
+    /**
+     * The with merge requests enabled value.
+     */
     private Boolean withMergeRequestsEnabled;
+    /**
+     * The with programming language value.
+     */
     private String withProgrammingLanguage;
+    /**
+     * The wiki checksum failed value.
+     */
     private Boolean wikiChecksumFailed;
+    /**
+     * The repository checksum failed value.
+     */
     private Boolean repositoryChecksumFailed;
+    /**
+     * The min access level value.
+     */
     private AccessLevel minAccessLevel;
+    /**
+     * The id after value.
+     */
     private Long idAfter;
+    /**
+     * The id before value.
+     */
     private Long idBefore;
+    /**
+     * The last activity after value.
+     */
     private Date lastActivityAfter;
+    /**
+     * The last activity before value.
+     */
     private Date lastActivityBefore;
+    /**
+     * The repository storage value.
+     */
     private String repositoryStorage;
+    /**
+     * The imported value.
+     */
     private Boolean imported;
+    /**
+     * The topic value.
+     */
     private String topic;
+    /**
+     * The topic id value.
+     */
     private Integer topic_id;
 
     /**
@@ -385,7 +472,6 @@ public class ProjectFilter implements Serializable {
     /**
      * Limit projects where the wiki checksum calculation has failed.
      *
-     * @since GitLab 11.2
      * @param wikiChecksumFailed if true, limit projects where the wiki checksum calculation has failed
      * @return the reference to this ProjectFilter instance
      */
@@ -407,7 +493,6 @@ public class ProjectFilter implements Serializable {
     /**
      * Limit projects where the repository checksum calculation has failed.
      *
-     * @since GitLab 11.2
      * @param repositoryChecksumFailed if true, limit projects where the repository checksum calculation has failed
      * @return the reference to this ProjectFilter instance
      */

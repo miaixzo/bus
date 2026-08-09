@@ -48,7 +48,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * request-access implementation for other Servlet integrations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ Servlet.class, Filter.class, FilterRegistrationBean.class })

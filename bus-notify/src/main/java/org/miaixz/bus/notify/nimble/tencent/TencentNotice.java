@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.notify.nimble.tencent;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -32,14 +30,18 @@ import org.miaixz.bus.notify.magic.Notice;
  * Notice for Tencent Cloud notification services.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class TencentNotice extends Notice {
+
+    /**
+     * Constructs a new {@code TencentNotice} instance.
+     */
+    public TencentNotice() {
+        // No initialization required.
+    }
 
     /**
      * The SMS application ID.

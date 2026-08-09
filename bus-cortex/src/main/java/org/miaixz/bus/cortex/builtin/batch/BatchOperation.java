@@ -32,7 +32,6 @@ import org.miaixz.bus.cortex.Type;
  * Batch registry operation descriptor.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
@@ -49,7 +48,6 @@ public class BatchOperation {
      * Type of operation to apply to each entry in the batch.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum OperationType {
         /**
@@ -75,7 +73,6 @@ public class BatchOperation {
      * Conflict handling policy for batch writes.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ConflictPolicy {
         /**

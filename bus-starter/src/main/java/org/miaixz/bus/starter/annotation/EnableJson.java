@@ -37,7 +37,6 @@ import org.miaixz.bus.starter.json.JsonConfiguration;
  * {@link EnableWrapper}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

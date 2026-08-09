@@ -42,7 +42,6 @@ import org.miaixz.bus.health.unix.shared.jna.CLibrary;
  * Internet Protocol Stats implementation
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class MacInternetProtocolStats extends AbstractInternetProtocolStats {

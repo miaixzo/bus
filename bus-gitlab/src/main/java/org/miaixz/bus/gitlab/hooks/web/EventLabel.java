@@ -33,10 +33,19 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The event label class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EventLabel implements Serializable {
 
+    /**
+     * Constructs a new {@code EventLabel} instance.
+     */
+    public EventLabel() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852231062892L;
 
@@ -44,7 +53,6 @@ public class EventLabel implements Serializable {
      * The label type enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum LabelType {
 
@@ -57,6 +65,9 @@ public class EventLabel implements Serializable {
          */
         GROUP_LABEL;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<LabelType> enumCodec = new JacksonJsonEnumCodec<>(LabelType.class, true,
                 true);
 
@@ -96,19 +107,46 @@ public class EventLabel implements Serializable {
 
     }
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The color value.
+     */
     private String color;
+    /**
+     * The project id value.
+     */
     private Long projectId;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The template value.
+     */
     private Boolean template;
+    /**
+     * The description value.
+     */
     private String description;
 
     /**
      * The type field.
      */
     private LabelType type;
+    /**
+     * The group id value.
+     */
     private Long groupId;
 
     /**

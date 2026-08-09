@@ -21,6 +21,5 @@
  * Provides classes for processing and handling database metadata.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.shade.screw.process;

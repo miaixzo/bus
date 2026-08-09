@@ -36,7 +36,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * Owns WebSocket ping scheduling and pong-deadline state.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class WebSocketPing implements AutoCloseable {
 

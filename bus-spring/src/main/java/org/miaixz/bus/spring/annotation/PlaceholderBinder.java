@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Resolves placeholders and binds environment properties to typed objects.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface PlaceholderBinder {
 

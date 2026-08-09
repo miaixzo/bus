@@ -31,7 +31,6 @@ import org.miaixz.bus.fabric.observe.window.RollingWindow;
  * Event observer that records marker counters, failure counters, rolling event rate, and terminal durations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class MeterEventObserver implements EventObserver {
 

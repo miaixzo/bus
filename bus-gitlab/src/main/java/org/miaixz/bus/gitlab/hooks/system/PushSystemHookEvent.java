@@ -28,10 +28,19 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The push system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PushSystemHookEvent extends AbstractPushEvent implements SystemHookEvent {
 
+    /**
+     * Constructs a new {@code PushSystemHookEvent} instance.
+     */
+    public PushSystemHookEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852227399553L;
     /**

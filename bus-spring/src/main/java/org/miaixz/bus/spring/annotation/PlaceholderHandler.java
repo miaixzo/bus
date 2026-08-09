@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.MethodKit;
  * Resolves annotation attribute placeholders when a wrapped annotation is accessed.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PlaceholderHandler implements InvocationHandler {
 

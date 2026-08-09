@@ -43,7 +43,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Renren login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RenrenProvider extends AbstractProvider {
 

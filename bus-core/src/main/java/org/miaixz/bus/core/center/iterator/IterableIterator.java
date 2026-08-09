@@ -27,7 +27,6 @@ import java.util.Iterator;
  *
  * @param <T> the type of elements returned by this iterator
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface IterableIterator<T> extends Iterable<T>, Iterator<T> {
 

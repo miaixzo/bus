@@ -39,7 +39,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * Creates, inspects, and converts exceptions.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ExceptionKit {
 

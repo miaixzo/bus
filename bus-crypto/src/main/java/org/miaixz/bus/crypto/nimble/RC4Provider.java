@@ -34,7 +34,6 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RC4Provider implements Provider {
 

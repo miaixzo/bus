@@ -27,7 +27,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Number validator.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NumberValidator {
 
@@ -162,7 +161,7 @@ public class NumberValidator {
         // deal with any possible sign up front
         final int start = (chars[0] == Symbol.C_MINUS || chars[0] == Symbol.C_PLUS) ? 1 : 0;
         if (sz > start + 1 && chars[start] == Symbol.C_ZERO && !StringKit.contains(text, Symbol.C_DOT)) { // leading 0,
-                                                                                                          // skip if is
+            // skip if is
             // a decimal number
             if (chars[start + 1] == 'x' || chars[start + 1] == Symbol.C_X) { // leading 0x/0X
                 int i = start + 2;

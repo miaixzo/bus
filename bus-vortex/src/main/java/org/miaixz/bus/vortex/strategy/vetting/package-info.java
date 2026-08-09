@@ -24,6 +24,5 @@
  * signatures, content type, and protocol-specific request constraints.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.vortex.strategy.vetting;

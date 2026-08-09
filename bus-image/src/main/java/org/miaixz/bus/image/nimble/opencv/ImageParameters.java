@@ -23,7 +23,6 @@ package org.miaixz.bus.image.nimble.opencv;
  * Represents the ImageParameters type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageParameters {
 

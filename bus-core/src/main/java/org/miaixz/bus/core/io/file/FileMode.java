@@ -23,7 +23,6 @@ package org.miaixz.bus.core.io.file;
  * File read and write modes, commonly used with {@link java.io.RandomAccessFile}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum FileMode {
 

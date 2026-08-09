@@ -21,6 +21,5 @@
  * Provides various non-cryptographic hash algorithm implementations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.codec.hash;

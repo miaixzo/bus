@@ -41,7 +41,6 @@ import org.miaixz.bus.fabric.network.tls.context.TlsContext;
  * Thin SSLEngine adapter with validation and bus exceptions.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class TlsEngine implements AutoCloseable {
 

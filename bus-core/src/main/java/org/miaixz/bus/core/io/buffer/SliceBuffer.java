@@ -26,7 +26,6 @@ import java.util.concurrent.Semaphore;
  * A leased {@link ByteBuffer} slice allocated from a {@link SlabBuffer}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class SliceBuffer {
 

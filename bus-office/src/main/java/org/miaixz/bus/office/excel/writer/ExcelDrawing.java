@@ -37,7 +37,6 @@ import org.miaixz.bus.office.excel.style.ShapeConfig;
  * Writes Excel drawing data for writing specified graphics.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ExcelDrawing {
 

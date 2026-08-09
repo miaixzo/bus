@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Represents the MetadataParser type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class MetadataParser {
 

@@ -33,19 +33,49 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The award emoji class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AwardEmoji implements Serializable {
 
+    /**
+     * Constructs a new {@code AwardEmoji} instance.
+     */
+    public AwardEmoji() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852238050300L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The user value.
+     */
     private User user;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The awardable id value.
+     */
     private Long awardableId;
+    /**
+     * The awardable type value.
+     */
     private AwardableType awardableType;
 
     /**
@@ -203,7 +233,6 @@ public class AwardEmoji implements Serializable {
      * The awardable type enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum AwardableType {
 
@@ -224,6 +253,9 @@ public class AwardEmoji implements Serializable {
          */
         SNIPPET;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<AwardableType> enumCodec = new JacksonJsonEnumCodec<>(AwardableType.class,
                 true);
 

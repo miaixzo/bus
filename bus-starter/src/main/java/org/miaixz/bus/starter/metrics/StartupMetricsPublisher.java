@@ -31,7 +31,6 @@ import org.miaixz.bus.spring.boot.startup.SpringStartupSummary;
  * Publishes Spring Boot startup summaries through the configured Bus metrics provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class StartupMetricsPublisher implements SpringStartupPublisher {
 

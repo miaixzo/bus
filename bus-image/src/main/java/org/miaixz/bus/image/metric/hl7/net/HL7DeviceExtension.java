@@ -34,7 +34,6 @@ import org.miaixz.bus.image.metric.net.DeviceExtension;
  * Represents the HL7DeviceExtension type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HL7DeviceExtension extends DeviceExtension {
 

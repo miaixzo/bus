@@ -37,7 +37,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Creates concrete datasource instances from normalized definitions without reading the Spring environment.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DataSourceFactory {
 

@@ -27,7 +27,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Represents Zao Ma Tou (the mount of the Kitchen God) in Chinese culture.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Vesta extends Loops {
 

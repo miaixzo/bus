@@ -33,7 +33,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * to provide channel-specific copying functionality.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ChannelCopier extends IoCopier<ReadableByteChannel, WritableByteChannel> {
 

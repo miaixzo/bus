@@ -34,7 +34,6 @@ import org.miaixz.bus.logger.Logger;
  * <a href="https://github.com/chenlb/mmseg4j-core">https://github.com/chenlb/mmseg4j-core</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MmsegResult extends AbstractResult {
 

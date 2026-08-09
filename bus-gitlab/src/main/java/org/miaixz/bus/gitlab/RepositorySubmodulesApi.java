@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.models.Commit;
  *
  * @see <a href="https://docs.gitlab.com/ee/api/repository_submodules.html">Repository Submodules API</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RepositorySubmodulesApi extends AbstractApi {
 

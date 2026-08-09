@@ -34,7 +34,6 @@ import org.miaixz.bus.proxy.Provider;
  * classes that do not implement interfaces by creating a subclass at runtime.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SpringCglibProvider implements Provider {
 

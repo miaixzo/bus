@@ -23,7 +23,6 @@ package org.miaixz.bus.pay.magic;
  * Represents a basic currency.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Currency {
 

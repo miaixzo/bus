@@ -40,7 +40,6 @@ import java.io.OutputStream;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AnimatedGifEncoder {
 

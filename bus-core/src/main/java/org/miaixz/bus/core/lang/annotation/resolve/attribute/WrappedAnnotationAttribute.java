@@ -39,7 +39,6 @@ import java.util.Collection;
  * is equivalent to adding a new root node, and all associated leaf nodes of the tree must be updated accordingly.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface WrappedAnnotationAttribute extends AnnotationAttribute {
 

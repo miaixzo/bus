@@ -33,7 +33,6 @@ import org.miaixz.bus.health.Parsing;
  * Reads from procstat into a map
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class ProcstatKit {

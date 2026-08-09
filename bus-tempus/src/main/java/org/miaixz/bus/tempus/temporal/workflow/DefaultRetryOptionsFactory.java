@@ -29,7 +29,6 @@ import io.temporal.common.RetryOptions;
  * Builds Temporal SDK retry options from {@link WorkflowBindingOptions}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DefaultRetryOptionsFactory implements RetryOptionsFactory {
 

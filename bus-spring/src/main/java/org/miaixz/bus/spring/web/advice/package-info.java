@@ -21,6 +21,5 @@
  * Reusable Spring MVC response advice contracts. This package must not contain starter activation policy.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.spring.web.advice;

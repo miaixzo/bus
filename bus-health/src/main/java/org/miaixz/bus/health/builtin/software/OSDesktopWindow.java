@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  * This class encapsulates information about a window on the operating system's GUI desktop
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public class OSDesktopWindow {

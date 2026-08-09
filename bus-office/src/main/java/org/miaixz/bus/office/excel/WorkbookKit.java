@@ -39,7 +39,6 @@ import org.miaixz.bus.logger.Logger;
  * Creates, reads, and modifies Excel workbooks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WorkbookKit {
 

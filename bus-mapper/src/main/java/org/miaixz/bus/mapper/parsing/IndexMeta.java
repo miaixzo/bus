@@ -31,7 +31,6 @@ import lombok.experimental.Accessors;
  * Index metadata shared by entity parsing and database schema snapshots.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

@@ -25,7 +25,6 @@ package org.miaixz.bus.core.lang.thread.threadlocal;
  * {@link ThreadLocalMap} for its thread-local variables.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SpecificThread extends Thread {
 

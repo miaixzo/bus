@@ -29,7 +29,6 @@ import org.miaixz.bus.starter.zookeeper.ZookeeperConfiguration;
  * Enables ZooKeeper configuration regardless of the value assigned to {@code bus.zookeeper.enabled}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

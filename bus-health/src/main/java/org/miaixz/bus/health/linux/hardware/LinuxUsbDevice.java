@@ -36,7 +36,6 @@ import org.miaixz.bus.logger.Logger;
  * Linux Usb Device
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public class LinuxUsbDevice extends AbstractUsbDevice {

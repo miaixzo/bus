@@ -51,7 +51,6 @@ import org.miaixz.bus.core.xyz.ReflectKit;
  * @param <T>   The type of the object to be created.
  * @param clazz The class to create an instance of.
  * @author Kimi Liu
- * @since Java 21+
  */
 public record AdaptiveObjectCreator<T>(Class<T> clazz) implements ObjectCreator<T> {
 

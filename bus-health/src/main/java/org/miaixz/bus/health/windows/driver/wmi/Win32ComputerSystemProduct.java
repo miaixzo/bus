@@ -31,7 +31,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * Queries WMI class {@code Win32_ComputerSystemProduct}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Win32ComputerSystemProduct {
@@ -63,7 +62,6 @@ public final class Win32ComputerSystemProduct {
      * Computer System ID number
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ComputerSystemProductProperty {
         /**

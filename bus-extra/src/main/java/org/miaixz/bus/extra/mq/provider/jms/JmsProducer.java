@@ -37,7 +37,6 @@ import org.miaixz.bus.logger.Logger;
  * JMS provider, converting the internal {@link Message} format into a JMS {@link BytesMessage} for transmission.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JmsProducer implements Producer {
 

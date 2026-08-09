@@ -38,7 +38,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @param <K> The type of keys in the map (typically {@code String}).
  * @param <V> The type of values in the map.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CamelCaseMap<K, V> extends FunctionKeyMap<K, V> {
 

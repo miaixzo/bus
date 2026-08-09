@@ -32,7 +32,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Projects item application scope, profile scope, and extension payloads for binding.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ItemBindingProjection {
 

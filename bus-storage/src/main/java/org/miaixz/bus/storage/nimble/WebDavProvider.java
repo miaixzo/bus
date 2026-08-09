@@ -48,7 +48,6 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WebDavProvider extends AbstractProvider {
 
@@ -111,19 +110,19 @@ public class WebDavProvider extends AbstractProvider {
     public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
                         .build();
             }
 
             String url = getUrl(bucket + Symbol.SLASH + objectKey);
             if (!client.exists(url)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
 
             List<DavResource> resources = client.list(url, 0);
             if (resources == null || resources.isEmpty() || resources.get(0).isDirectory()) {
-                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
             DavResource resource = resources.get(0);
@@ -144,12 +143,12 @@ public class WebDavProvider extends AbstractProvider {
                                     .type(resource.getContentType()).hash(resource.getEtag()).extend(extend).build())
                     .build();
         } catch (Exception e) {
-            Errors error = ErrorCode._113012;
+            Errors error = ErrorCode._113010;
             if (e instanceof IllegalArgumentException) {
-                error = ErrorCode._113008;
+                error = ErrorCode._113006;
             } else if (StringKit.containsIgnoreCase(e.getMessage(), "404")
                     || StringKit.containsIgnoreCase(e.getMessage(), "not found")) {
-                error = ErrorCode._113010;
+                error = ErrorCode._113008;
             }
             Logger.error(
                     false,
@@ -200,19 +199,19 @@ public class WebDavProvider extends AbstractProvider {
     public Message<Blob> streamKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
                         .build();
             }
 
             String url = getUrl(bucket + Symbol.SLASH + objectKey);
             if (!client.exists(url)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
 
             List<DavResource> resources = client.list(url, 0);
             if (resources == null || resources.isEmpty() || resources.get(0).isDirectory()) {
-                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
             DavResource resource = resources.get(0);
@@ -233,12 +232,12 @@ public class WebDavProvider extends AbstractProvider {
                                     .type(resource.getContentType()).hash(resource.getEtag()).extend(extend).build())
                     .build();
         } catch (Exception e) {
-            Errors error = ErrorCode._113012;
+            Errors error = ErrorCode._113010;
             if (e instanceof IllegalArgumentException) {
-                error = ErrorCode._113008;
+                error = ErrorCode._113006;
             } else if (StringKit.containsIgnoreCase(e.getMessage(), "404")
                     || StringKit.containsIgnoreCase(e.getMessage(), "not found")) {
-                error = ErrorCode._113010;
+                error = ErrorCode._113008;
             }
             Logger.error(
                     false,

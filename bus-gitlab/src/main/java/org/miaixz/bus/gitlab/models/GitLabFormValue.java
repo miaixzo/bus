@@ -23,16 +23,21 @@ package org.miaixz.bus.gitlab.models;
  * The Git lab form value class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GitLabFormValue {
 
+    /**
+     * The value value.
+     */
     private Object value;
 
     /**
      * The type field.
      */
     private GitLabFormValueType type;
+    /**
+     * The required value.
+     */
     private boolean required;
 
     /**

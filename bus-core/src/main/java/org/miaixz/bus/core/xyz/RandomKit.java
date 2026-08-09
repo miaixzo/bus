@@ -39,7 +39,6 @@ import org.miaixz.bus.core.lang.selector.WeightRandomSelector;
  * Generates random values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RandomKit {
 

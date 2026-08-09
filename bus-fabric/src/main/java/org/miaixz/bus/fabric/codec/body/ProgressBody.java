@@ -39,7 +39,6 @@ import org.miaixz.bus.fabric.Payload;
  * Body capability for progress-aware reads or writes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ProgressBody extends Body {
 

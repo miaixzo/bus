@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * Retrieves and parses `manifest.mf` files from JARs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ManifestKit {
 

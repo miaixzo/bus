@@ -26,25 +26,79 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The event project class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EventProject {
 
+    /**
+     * Constructs a new {@code EventProject} instance.
+     */
+    public EventProject() {
+        // No initialization required.
+    }
+
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The web url value.
+     */
     private String webUrl;
+    /**
+     * The avatar url value.
+     */
     private String avatarUrl;
+    /**
+     * The git ssh url value.
+     */
     private String gitSshUrl;
+    /**
+     * The git http url value.
+     */
     private String gitHttpUrl;
+    /**
+     * The namespace value.
+     */
     private String namespace;
+    /**
+     * The visibility level value.
+     */
     private AccessLevel visibilityLevel;
+    /**
+     * The path with namespace value.
+     */
     private String pathWithNamespace;
+    /**
+     * The default branch value.
+     */
     private String defaultBranch;
+    /**
+     * The ci config path value.
+     */
     private String ciConfigPath;
+    /**
+     * The homepage value.
+     */
     private String homepage;
+    /**
+     * The url value.
+     */
     private String url;
+    /**
+     * The ssh url value.
+     */
     private String sshUrl;
+    /**
+     * The http url value.
+     */
     private String httpUrl;
 
     /**

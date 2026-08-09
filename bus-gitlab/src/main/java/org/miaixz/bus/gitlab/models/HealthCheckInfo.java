@@ -35,31 +35,61 @@ import tools.jackson.databind.annotation.JsonDeserialize;
  * The health check info class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HealthCheckInfo implements Serializable {
 
+    /**
+     * Constructs a new {@code HealthCheckInfo} instance.
+     */
+    public HealthCheckInfo() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852256691706L;
 
+    /**
+     * The db check value.
+     */
     @JsonDeserialize(using = HealthCheckItemDeserializer.class)
     private HealthCheckItem dbCheck;
 
+    /**
+     * The redis check value.
+     */
     @JsonDeserialize(using = HealthCheckItemDeserializer.class)
     private HealthCheckItem redisCheck;
 
+    /**
+     * The cache check value.
+     */
     @JsonDeserialize(using = HealthCheckItemDeserializer.class)
     private HealthCheckItem cacheCheck;
 
+    /**
+     * The queues check value.
+     */
     @JsonDeserialize(using = HealthCheckItemDeserializer.class)
     private HealthCheckItem queuesCheck;
 
+    /**
+     * The shared state check value.
+     */
     @JsonDeserialize(using = HealthCheckItemDeserializer.class)
     private HealthCheckItem sharedStateCheck;
 
+    /**
+     * The fs shards check value.
+     */
     @JsonDeserialize(using = HealthCheckItemDeserializer.class)
     private HealthCheckItem fsShardsCheck;
 
+    /**
+     * The gitaly check value.
+     */
     @JsonDeserialize(using = HealthCheckItemDeserializer.class)
     private HealthCheckItem gitalyCheck;
 
@@ -219,7 +249,6 @@ public class HealthCheckInfo implements Serializable {
      * HealthCheckItem.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class HealthCheckItemDeserializer extends ValueDeserializer<HealthCheckItem> {
 

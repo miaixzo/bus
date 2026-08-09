@@ -50,7 +50,6 @@ import org.miaixz.bus.logger.Logger;
  * supports both modern transcoding via {@link Transcoder} and a legacy approach.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Dcm2Dcm {
 

@@ -33,7 +33,6 @@ import org.miaixz.bus.image.metric.hl7.HL7ContentHandler;
  * and hat) format. It uses a SAX parser and an {@link HL7ContentHandler} to perform the transformation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Xml2HL7 {
 

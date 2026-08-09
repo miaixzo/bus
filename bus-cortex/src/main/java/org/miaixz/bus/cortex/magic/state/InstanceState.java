@@ -23,7 +23,6 @@ package org.miaixz.bus.cortex.magic.state;
  * Instance lifecycle state.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum InstanceState {
 

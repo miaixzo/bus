@@ -23,7 +23,6 @@ package org.miaixz.bus.metrics.nimble;
  * A timing handle returned by {@link Timer#start()}. Call {@link #stop()} to record the elapsed duration.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Sample {
 

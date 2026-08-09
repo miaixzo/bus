@@ -30,7 +30,6 @@ import org.miaixz.bus.mapper.builder.GenericTypeResolver;
  * {@link java.lang.reflect.Field}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FieldMeta {
 

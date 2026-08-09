@@ -23,7 +23,6 @@ package org.miaixz.bus.core.lang;
  * Enumeration for various time zones, providing both English and Chinese names.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum ZoneId {
 

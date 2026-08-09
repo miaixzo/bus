@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  * Ximalaya login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class XimalayaProvider extends AbstractProvider {
 
@@ -188,8 +187,8 @@ public class XimalayaProvider extends AbstractProvider {
      *
      * @param authorization the token information
      * @return {@link Claims} containing the user's information
-     * @see AbstractProvider#token(Callback)
      * @throws AuthorizedException if parsing the response fails or required user information is missing
+     * @see AbstractProvider#token(Callback)
      */
     @Override
     public Message<Claims> userInfo(Authorization authorization) {

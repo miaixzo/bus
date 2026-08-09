@@ -30,7 +30,6 @@ import org.miaixz.bus.tempus.temporal.Subscriber;
  * Spring lifecycle bridge for Temporal subscriber startup and shutdown.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TempusLifecycle implements SmartLifecycle {
 

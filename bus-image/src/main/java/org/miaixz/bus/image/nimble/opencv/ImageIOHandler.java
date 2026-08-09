@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  * including JPEG, PNG, TIFF, BMP, and medical imaging formats.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ImageIOHandler {
 

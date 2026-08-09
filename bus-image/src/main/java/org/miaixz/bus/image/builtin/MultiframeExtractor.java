@@ -39,7 +39,6 @@ import org.miaixz.bus.image.galaxy.data.*;
  * legacy single-frame DICOM images.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MultiframeExtractor {
 
@@ -393,7 +392,6 @@ public class MultiframeExtractor {
      * implementation specifies the target single-frame SOP Class UID and whether it's an enhanced image.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum Impl {
 

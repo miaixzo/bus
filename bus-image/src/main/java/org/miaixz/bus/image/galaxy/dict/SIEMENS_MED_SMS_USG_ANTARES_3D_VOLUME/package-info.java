@@ -21,6 +21,5 @@
  * UID Dictionary from SIEMENS_MED_SMS_USG_ANTARES_3D_VOLUME
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_SMS_USG_ANTARES_3D_VOLUME;

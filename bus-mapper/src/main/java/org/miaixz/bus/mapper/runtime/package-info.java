@@ -24,6 +24,5 @@
  * share the same mapper option model and interceptor construction logic.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.mapper.runtime;

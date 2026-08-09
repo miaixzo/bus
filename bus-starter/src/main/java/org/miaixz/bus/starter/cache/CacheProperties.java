@@ -37,7 +37,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Immutable starter-side cache configuration bound from {@code bus.cache}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

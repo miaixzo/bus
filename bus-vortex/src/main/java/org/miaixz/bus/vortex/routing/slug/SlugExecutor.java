@@ -63,7 +63,6 @@ import reactor.core.publisher.Mono;
  * match other streaming protocols.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SlugExecutor implements Executor<ServerRequest, ServerResponse> {
 

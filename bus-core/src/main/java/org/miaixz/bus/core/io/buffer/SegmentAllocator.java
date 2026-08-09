@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.Normal;
  * single global monitor on the read/write hot path while keeping retained memory bounded.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class SegmentAllocator {
 

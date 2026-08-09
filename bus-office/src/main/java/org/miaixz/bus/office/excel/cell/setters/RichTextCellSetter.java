@@ -26,7 +26,6 @@ import org.apache.poi.ss.usermodel.RichTextString;
  * {@link CellSetter} for {@link RichTextString} values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RichTextCellSetter implements CellSetter {
 

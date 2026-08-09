@@ -35,7 +35,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Immutable notification channel properties.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

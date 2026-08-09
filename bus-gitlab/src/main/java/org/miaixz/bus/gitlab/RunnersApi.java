@@ -37,7 +37,6 @@ import org.miaixz.bus.gitlab.models.RunnerDetail;
  * This class provides an entry point to all the GitLab API repository files calls.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RunnersApi extends AbstractApi {
 

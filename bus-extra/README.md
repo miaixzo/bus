@@ -8,7 +8,9 @@
 
 ## 📖 Project Introduction
 
-**Bus Extra** is a powerful extension library built on the Bus framework, providing a rich set of utility functions for enterprise applications. It offers seamless integration with multiple third-party libraries through a unified API, enabling developers to quickly implement complex functionality.
+**Bus Extra** is a powerful extension library built on the Bus framework, providing a rich set of utility functions for
+enterprise applications. It offers seamless integration with multiple third-party libraries through a unified API,
+enabling developers to quickly implement complex functionality.
 
 **Key Highlights**:
 
@@ -25,14 +27,14 @@
 
 Support for multiple compression formats with unified API:
 
-| Format | Archive | Extract | Stream |
-| :--- | :---: | :---: | :---: |
-| **ZIP** | ✓ | ✓ | ✓ |
-| **7Z** | ✓ | ✓ | ✓ |
-| **GZIP** | ✓ | ✓ | ✓ |
-| **TAR** | ✓ | ✓ | ✓ |
-| **BZIP2** | ✓ | ✓ | ✓ |
-| **XZ** | ✓ | ✓ | ✓ |
+| Format    | Archive | Extract | Stream |
+|:----------|:-------:|:-------:|:------:|
+| **ZIP**   |   ✓    |   ✓    |   ✓   |
+| **7Z**    |   ✓    |   ✓    |   ✓   |
+| **GZIP**  |   ✓    |   ✓    |   ✓   |
+| **TAR**   |   ✓    |   ✓    |   ✓   |
+| **BZIP2** |   ✓    |   ✓    |   ✓   |
+| **XZ**    |   ✓    |   ✓    |   ✓   |
 
 ```java
 // Compress to ZIP
@@ -73,6 +75,7 @@ ImageKit.convert(srcFile, destFile);
 Flexible JSON processing with pluggable providers:
 
 **Supported Providers**:
+
 - FastJSON2 (default)
 - Jackson
 - Gson
@@ -114,6 +117,7 @@ mail.send("to@example.com", "Test", "Hello World!");
 Unified abstraction for multiple message queues:
 
 **Supported MQs**:
+
 - **Apache Kafka**
 - **RabbitMQ**
 - **RocketMQ**
@@ -136,6 +140,7 @@ consumer.subscribe("topic-name", message -> {
 Chinese character to Pinyin conversion with multiple engines:
 
 **Supported Engines**:
+
 - JPinyin
 - Pinyin4J
 - TinyPinyin
@@ -158,6 +163,7 @@ String withTone = PinyinKit.getPinyin("你好", true); // "ni3 hao3"
 Comprehensive QR code and barcode support:
 
 **Supported Formats**:
+
 - QR Code
 - Code 128
 - Code 39
@@ -166,6 +172,7 @@ Comprehensive QR code and barcode support:
 - And more...
 
 **Output Formats**:
+
 - Image (PNG, JPG, etc.)
 - SVG (vector)
 - ASCII Art (text)
@@ -192,6 +199,7 @@ QrConfig config = QrConfig.of(300, 300)
 Secure remote operations with multiple SSH libraries:
 
 **Supported Libraries**:
+
 - JSch
 - SSHJ
 
@@ -212,6 +220,7 @@ sftp.listFiles(remoteDir);
 Unified template engine abstraction:
 
 **Supported Engines**:
+
 - **Beetl**: High-performance Java template engine
 - **FreeMarker**: Mature template engine
 - **Thymeleaf**: Modern server-side Java template engine
@@ -228,6 +237,7 @@ String result = template.render("template.btl");
 Chinese word segmentation support:
 
 **Supported Segementers**:
+
 - Ansj
 - Jieba
 - JCseg
@@ -575,11 +585,11 @@ String json = provider.toJsonString(obj);
 
 ### Q2: Which Pinyin engine should I use?
 
-| Engine | Performance | Accuracy | Dictionary Size | Recommendation |
-| :--- | :--- | :--- | :--- | :--- |
-| **TinyPinyin** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | Small | Mobile apps |
-| **JPinyin** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | Medium | General use |
-| **Pinyin4J** | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Large | Desktop apps |
+| Engine         | Performance | Accuracy   | Dictionary Size | Recommendation |
+|:---------------|:------------|:-----------|:----------------|:---------------|
+| **TinyPinyin** | ⭐⭐⭐⭐⭐  | ⭐⭐⭐     | Small           | Mobile apps    |
+| **JPinyin**    | ⭐⭐⭐⭐    | ⭐⭐⭐⭐   | Medium          | General use    |
+| **Pinyin4J**   | ⭐⭐⭐      | ⭐⭐⭐⭐⭐ | Large           | Desktop apps   |
 
 ```java
 // Switch engine
@@ -671,9 +681,9 @@ ImageWriter.of(image, "jpg")
 ## 🔄 Version Compatibility
 
 | Bus Extra Version | Bus Core Version | JDK Version |
-| :--- | :--- | :--- |
-| 8.x | 8.x | 17+ |
-| 7.x | 7.x | 11+ |
+|:------------------|:-----------------|:------------|
+| 8.x               | 8.x              | 17+         |
+| 7.x               | 7.x              | 11+         |
 
 -----
 
@@ -713,14 +723,14 @@ String json = provider.toJsonString(obj, "yyyy-MM-dd HH:mm:ss");
 
 ## 📊 Feature Comparison
 
-| Feature | Bus Extra | Apache Commons | Other Libraries |
-| :--- | :---: | :---: | :---: |
-| **Unified API** | ✓ | ✗ | ✗ |
-| **Provider Pattern** | ✓ | ✗ | Partial |
-| **Optional Dependencies** | ✓ | ✗ | ✗ |
-| **Chinese Support** | ✓ | ✗ | Partial |
-| **Modern Java** | ✓ | ✗ | Partial |
-| **Zero Intrusion** | ✓ | N/A | ✗ |
+| Feature                   | Bus Extra | Apache Commons | Other Libraries |
+|:--------------------------|:---------:|:--------------:|:---------------:|
+| **Unified API**           |    ✓     |       ✗       |       ✗        |
+| **Provider Pattern**      |    ✓     |       ✗       |     Partial     |
+| **Optional Dependencies** |    ✓     |       ✗       |       ✗        |
+| **Chinese Support**       |    ✓     |       ✗       |     Partial     |
+| **Modern Java**           |    ✓     |       ✗       |     Partial     |
+| **Zero Intrusion**        |    ✓     |      N/A       |       ✗        |
 
 -----
 

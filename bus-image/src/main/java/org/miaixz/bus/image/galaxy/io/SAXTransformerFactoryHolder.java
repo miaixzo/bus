@@ -30,9 +30,15 @@ import org.miaixz.bus.image.Builder;
  * Holds the shared SAX transformer factory.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SAXTransformerFactoryHolder {
+
+    /**
+     * Constructs a new {@code SAXTransformerFactoryHolder} instance.
+     */
+    public SAXTransformerFactoryHolder() {
+        // No initialization required.
+    }
 
     /**
      * The factory value.

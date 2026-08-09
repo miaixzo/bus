@@ -39,7 +39,6 @@ import org.miaixz.bus.fabric.Builder;
  * @param payload immutable payload snapshot
  * @param control derived control-frame flag; constructor input is ignored and recomputed from the opcode
  * @author Kimi Liu
- * @since Java 21+
  */
 public record WebSocketFrame(int opcode, boolean fin, ByteString payload, boolean control) {
 

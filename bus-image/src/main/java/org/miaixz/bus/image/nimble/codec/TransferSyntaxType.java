@@ -28,7 +28,6 @@ import org.miaixz.bus.image.galaxy.data.VR;
  * Defines the TransferSyntaxType values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum TransferSyntaxType {
 

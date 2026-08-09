@@ -21,6 +21,5 @@
  * UID Dictionary from http___www_gemedicalsystems_com_it_solutions_rad_pacs_
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.http___www_gemedicalsystems_com_it_solutions_rad_pacs_;

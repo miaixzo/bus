@@ -45,7 +45,6 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsZone;
  * DNSSEC signer for authoritative-zone response RRsets.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsAuthoritativeSigner {
 
@@ -673,7 +672,6 @@ public final class DnsAuthoritativeSigner {
      * @param typeCode    DNS type code
      * @param recordClass DNS record class
      * @author Kimi Liu
-     * @since Java 21+
      */
     private record RrsetKey(String owner, int typeCode, int recordClass) {
 
@@ -702,7 +700,6 @@ public final class DnsAuthoritativeSigner {
      * @param keyTag      DNSKEY key tag
      * @param signerName  signer name
      * @author Kimi Liu
-     * @since Java 21+
      */
     private record SignatureFields(int typeCovered, int algorithm, int labels, long originalTtl, long expiration,
             long inception, int keyTag, String signerName) {

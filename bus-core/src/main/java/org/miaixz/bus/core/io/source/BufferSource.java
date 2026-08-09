@@ -34,7 +34,6 @@ import org.miaixz.bus.core.io.sink.Sink;
  * penalties. It also enables clients to read ahead, buffering necessary input before consumption.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface BufferSource extends Source, ReadableByteChannel {
 
@@ -273,7 +272,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * Finds the first candidate in {@code selector} that is a prefix of this buffer, consumes it from this buffer, and
      * returns its index. If no byte string in {@code selector} is a prefix of this buffer, -1 is returned and no bytes
      * are consumed.
-     *
+     * <p>
      * This can be used as an alternative to {@link #readByteString} or even {@link #readUtf8} if the set of expected
      * values is known in advance.
      *

@@ -31,7 +31,6 @@ import com.sun.jna.ptr.PointerByReference;
  * if/when its code is incorporated into the JNA project.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Nvml {
 
@@ -64,7 +63,6 @@ public interface Nvml {
      * The NvmlLibrary interface.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     interface NvmlLibrary extends Library {
 
@@ -180,7 +178,6 @@ public interface Nvml {
      * The NvmlUtilization class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "gpu", "memory" })
     class NvmlUtilization extends Structure {
@@ -208,7 +205,6 @@ public interface Nvml {
      * The NvmlMemory class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "total", "free", "used" })
     class NvmlMemory extends Structure {
@@ -241,7 +237,6 @@ public interface Nvml {
      * The NvmlPciInfo class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "busIdLegacy", "domain", "bus", "device", "pciDeviceId", "pciSubSystemId", "busId" })
     class NvmlPciInfo extends Structure {

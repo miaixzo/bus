@@ -23,7 +23,6 @@ package org.miaixz.bus.fabric.network.dns.zone;
  * DNS zone resolution mode.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum DnsZoneMode {
 

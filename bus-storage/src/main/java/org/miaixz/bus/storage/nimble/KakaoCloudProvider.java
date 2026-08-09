@@ -74,7 +74,6 @@ import org.miaixz.bus.storage.Context;
  * KakaoTalk Business Platform.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class KakaoCloudProvider extends GenericS3Provider {
 

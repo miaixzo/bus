@@ -31,13 +31,18 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The job attributes class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JobAttributes implements Serializable {
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852260015811L;
 
+    /**
+     * The job attributes value.
+     */
     @JsonProperty("job_variables_attributes")
     private List<JobAttribute> jobAttributes;
 

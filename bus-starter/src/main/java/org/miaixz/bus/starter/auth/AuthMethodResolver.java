@@ -61,7 +61,6 @@ import org.miaixz.bus.spring.ContextBuilder;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AuthMethodResolver implements HandlerMethodArgumentResolver {
 

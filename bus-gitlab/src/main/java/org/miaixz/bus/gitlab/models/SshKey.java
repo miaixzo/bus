@@ -31,19 +31,46 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The ssh key class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SshKey implements Serializable {
 
+    /**
+     * Constructs a new {@code SshKey} instance.
+     */
+    public SshKey() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852281539315L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The key value.
+     */
     private String key;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The expires at value.
+     */
     private Date expiresAt;
 
+    /**
+     * The user id value.
+     */
     private Long userId;
 
     /**

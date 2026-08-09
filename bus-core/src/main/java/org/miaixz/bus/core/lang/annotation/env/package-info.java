@@ -22,6 +22,5 @@
  * conditionally enabled based on the active application environment (e.g., development, production).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.lang.annotation.env;

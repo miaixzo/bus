@@ -32,7 +32,6 @@ import org.miaixz.bus.image.Tag;
  * Represents the Code type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Code implements Serializable {
 
@@ -336,7 +335,6 @@ public class Code implements Serializable {
      * Represents the Key type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public final class Key {
 

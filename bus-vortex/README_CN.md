@@ -8,7 +8,8 @@
 
 ## 📖 项目介绍
 
-**Bus Vortex** 是一个基于 Spring WebFlux 构建的分布式、完全异步、高性能、可扩展且轻量级的 API 网关。受淘宝开放平台启发,它站在 Spring 生态系统的肩膀上,提供企业级 API 路由和管理能力。
+**Bus Vortex** 是一个基于 Spring WebFlux 构建的分布式、完全异步、高性能、可扩展且轻量级的 API 网关。受淘宝开放平台启发,它站在
+Spring 生态系统的肩膀上,提供企业级 API 路由和管理能力。
 
 -----
 
@@ -36,7 +37,7 @@
 ### 🌍 技术栈
 
 - **加密**: MD5、AES、RSA
-- **网络**: Netty(编解码、长连接、自动重连)
+- **网络**: Netty (编解码、长连接、自动重连)
 - **限流**: 漏桶、令牌桶算法
 - **授权**: RBAC、验证
 - **会话**: 独立、分布式会话管理
@@ -72,27 +73,27 @@ public class Assets {
 
 ### 请求参数
 
-| 参数 | 描述 |
-|:---|:---|
-| method | API 方法名称(例如 xxx.xxx.xxx)|
-| v | API 版本号,与 method 一起使用(例如 1.1, 1.2)|
-| namespace | 可选的 namespace 路由范围 |
-| app_id | 可选的应用级路由范围 |
-| type | 可选的注册表类型范围；支持数字 `Type.key()` 和历史枚举名 |
-| format | 返回格式(支持 json、xml)|
-| sign | 如果配置中启用 decrypt 且请求包含 sign 字段,则解密请求 |
+| 参数      | 描述                                                     |
+|:----------|:---------------------------------------------------------|
+| method    | API 方法名称(例如 xxx.xxx.xxx)                           |
+| v         | API 版本号,与 method 一起使用(例如 1.1, 1.2)             |
+| namespace | 可选的 namespace 路由范围                                |
+| app_id    | 可选的应用级路由范围                                     |
+| type      | 可选的注册表类型范围；支持数字 `Type.key()` 和历史枚举名 |
+| format    | 返回格式(支持 json、xml)                                 |
+| sign      | 如果配置中启用 decrypt 且请求包含 sign 字段,则解密请求   |
 
 ### 公开路由解析规则
 
 - 运行时候选链：
-  - `namespace:type:app_id:method:version:verb`
-  - `namespace:type:method:version:verb`
-  - `namespace:app_id:method:version:verb`
-  - `namespace:method:version:verb`
-  - `type:app_id:method:version:verb`
-  - `type:method:version:verb`
-  - `app_id:method:version:verb`
-  - `method:version:verb`
+    - `namespace:type:app_id:method:version:verb`
+    - `namespace:type:method:version:verb`
+    - `namespace:app_id:method:version:verb`
+    - `namespace:method:version:verb`
+    - `type:app_id:method:version:verb`
+    - `type:method:version:verb`
+    - `app_id:method:version:verb`
+    - `method:version:verb`
 - `method`、`version`、`verb` 是运行时必填维度
 - `namespace`、`type`、`app_id` 是可选路由范围；缺失时只跳过对应层级
 - `type` 在 route key 中统一使用数字 `Type.key()`
@@ -178,7 +179,7 @@ public class AuthProviderImpl implements AuthorizeProvider {
 
 ### 扩展性
 
-实现 WebFilter 来扩展网关功能,如限流、日志、黑名单、熔断(尚未实现)等。
+实现 WebFilter 来扩展网关功能,如限流、日志、黑名单、熔断 (尚未实现)等。
 
 ```java
 @Component
@@ -194,11 +195,13 @@ public class CustomFilter implements WebFilter {
 
 ### @ApiVersion
 
-自动将版本前缀路径合并到 RequestMappingInfo。**建议**: 在类级别配置主要版本,可以在方法级别配置次要版本(将覆盖类级别的主要版本)。
+自动将版本前缀路径合并到 RequestMappingInfo。 **建议**: 在类级别配置主要版本,可以在方法级别配置次要版本
+(将覆盖类级别的主要版本)。
 
 ### @ClientVersion
 
-根据请求头中的 `cv` 和 `terminal` 参数路由到不同的处理方法(扩展 `RequestMappingHandlerMapping` 中的 `getCustomCondition` 方法)。
+根据请求头中的 `cv` 和 `terminal` 参数路由到不同的处理方法 (扩展 `RequestMappingHandlerMapping` 中的
+`getCustomCondition` 方法)。
 
 ### @VersionMapping
 
@@ -212,6 +215,7 @@ public class CustomFilter implements WebFilter {
 ### 示例用法
 
 ```java
+
 @RequestMapping("/t")
 @RestController
 @ApiVersion("5")
@@ -255,6 +259,7 @@ public class TController {
 ### 使用 @VersionMapping
 
 ```java
+
 @RestController
 @VersionMapping(value = "/t", apiVersion = "5")
 public class TController {
@@ -336,25 +341,25 @@ context.putQueryParameter("lang", "en");
 
 ### 核心配置
 
-| 属性 | 类型 | 默认值 | 描述 |
-|:---|:---|:---|:---|
-| bus.vortex.port | int | 8765 | 网关服务器端口 |
-| bus.vortex.path | String | /router/rest | 网关路由路径 |
-| bus.vortex.condition | boolean | false | 是否启用自定义 Spring MVC 条件桥接 |
-| bus.vortex.limit.enabled | boolean | false | 启用限流 |
-| bus.vortex.performance.max-connections | int | 5000 | 出站 HTTP 连接池最大连接数 |
-| bus.vortex.performance.pending-acquire-timeout-seconds | int | 45 | 等待获取出站连接的最长时间 |
-| bus.vortex.performance.pending-acquire-max-count | int | 0 | 出站连接等待队列上限；`0` 表示按 `max-connections * 2` 派生 |
-| bus.vortex.performance.sanitize-null-like-parameters | boolean | true | 在路由前移除 `null` / `"null"` / `"undefined"` 参数 |
+| 属性                                                   | 类型    | 默认值       | 描述                                                        |
+|:-------------------------------------------------------|:--------|:-------------|:------------------------------------------------------------|
+| bus.vortex.port                                        | int     | 8765         | 网关服务器端口                                              |
+| bus.vortex.path                                        | String  | /router/rest | 网关路由路径                                                |
+| bus.vortex.condition                                   | boolean | false        | 是否启用自定义 Spring MVC 条件桥接                          |
+| bus.vortex.limit.enabled                               | boolean | false        | 启用限流                                                    |
+| bus.vortex.performance.max-connections                 | int     | 5000         | 出站 HTTP 连接池最大连接数                                  |
+| bus.vortex.performance.pending-acquire-timeout-seconds | int     | 45           | 等待获取出站连接的最长时间                                  |
+| bus.vortex.performance.pending-acquire-max-count       | int     | 0            | 出站连接等待队列上限；`0` 表示按 `max-connections * 2` 派生 |
+| bus.vortex.performance.sanitize-null-like-parameters   | boolean | true         | 在路由前移除 `null` / `"null"` / `"undefined"` 参数         |
 
 -----
 
 ## 🔄 版本兼容性
 
 | Bus Vortex 版本 | Spring Boot 版本 | JDK 版本 |
-|:---|:---|:---|
-| 8.x | 3.x+ | 17+ |
-| 7.x | 2.x+ | 11+ |
+|:----------------|:-----------------|:---------|
+| 8.x             | 3.x+             | 17+      |
+| 7.x             | 2.x+             | 11+      |
 
 -----
 

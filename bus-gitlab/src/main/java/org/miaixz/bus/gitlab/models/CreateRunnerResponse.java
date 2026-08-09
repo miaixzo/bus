@@ -28,14 +28,32 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The create runner response class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CreateRunnerResponse implements Serializable {
 
+    /**
+     * Constructs a new {@code CreateRunnerResponse} instance.
+     */
+    public CreateRunnerResponse() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     private static final long serialVersionUID = 2852250855127L;
 
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The token value.
+     */
     private String token;
+    /**
+     * The token expires at value.
+     */
     private Date tokenExpiresAt;
 
     /**

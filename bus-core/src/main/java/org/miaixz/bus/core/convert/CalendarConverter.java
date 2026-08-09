@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Converts an object to a {@link java.util.Calendar}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CalendarConverter extends AbstractConverter {
 

@@ -22,6 +22,5 @@
  * definitions for interceptors and invocation chains, which are central to AOP concepts.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.proxy.invoker;

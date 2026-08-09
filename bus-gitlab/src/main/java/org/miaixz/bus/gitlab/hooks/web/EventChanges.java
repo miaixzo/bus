@@ -35,21 +35,63 @@ import org.miaixz.bus.logger.Logger;
  * The event changes class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class EventChanges {
 
+    /**
+     * Constructs a new {@code EventChanges} instance.
+     */
+    public EventChanges() {
+        // No initialization required.
+    }
+
+    /**
+     * The author id value.
+     */
     private ChangeContainer<Long> authorId;
+    /**
+     * The created at value.
+     */
     private ChangeContainer<Date> createdAt;
+    /**
+     * The updated at value.
+     */
     private ChangeContainer<Date> updatedAt;
+    /**
+     * The updated by id value.
+     */
     private ChangeContainer<Long> updatedById;
+    /**
+     * The title value.
+     */
     private ChangeContainer<String> title;
+    /**
+     * The description value.
+     */
     private ChangeContainer<String> description;
+    /**
+     * The state value.
+     */
     private ChangeContainer<String> state;
+    /**
+     * The milestone id value.
+     */
     private ChangeContainer<Long> milestoneId;
+    /**
+     * The labels value.
+     */
     private ChangeContainer<List<EventLabel>> labels;
+    /**
+     * The assignees value.
+     */
     private ChangeContainer<List<Assignee>> assignees;
+    /**
+     * The total time spent value.
+     */
     private ChangeContainer<Integer> totalTimeSpent;
+    /**
+     * The other properties value.
+     */
     private Map<String, ChangeContainer<Object>> otherProperties = new LinkedHashMap<>();
 
     /**
@@ -276,6 +318,7 @@ public abstract class EventChanges {
      * Returns the value.
      *
      * @param property the property value
+     * @param <T>      result type
      * @return the result
      */
 

@@ -31,7 +31,6 @@ import org.miaixz.bus.image.nimble.Photometric;
  * Represents the CompressionRule type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CompressionRule implements Comparable<CompressionRule>, Serializable {
 
@@ -190,7 +189,6 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
      * Represents the Condition type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class Condition implements Comparable<Condition>, Serializable {
 

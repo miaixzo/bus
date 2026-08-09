@@ -40,7 +40,6 @@ import org.miaixz.bus.logger.Logger;
  * Kujiale login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class KujialeProvider extends AbstractProvider {
 

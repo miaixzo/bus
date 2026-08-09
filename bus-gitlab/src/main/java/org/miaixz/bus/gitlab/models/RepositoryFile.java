@@ -32,22 +32,61 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The repository file class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RepositoryFile implements Serializable {
 
+    /**
+     * Constructs a new {@code RepositoryFile} instance.
+     */
+    public RepositoryFile() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852280333826L;
 
+    /**
+     * The file name value.
+     */
     private String fileName; // file name only, Ex. class.rb
+    /**
+     * The file path value.
+     */
     private String filePath; // full path to file. Ex. lib/class.rb
+    /**
+     * The size value.
+     */
     private Integer size;
+    /**
+     * The encoding value.
+     */
     private Encoding encoding;
+    /**
+     * The content value.
+     */
     private String content;
+    /**
+     * The content sha256 value.
+     */
     private String contentSha256;
+    /**
+     * The ref value.
+     */
     private String ref;
+    /**
+     * The blob id value.
+     */
     private String blobId;
+    /**
+     * The commit id value.
+     */
     private String commitId;
+    /**
+     * The last commit id value.
+     */
     private String lastCommitId;
 
     /**

@@ -43,7 +43,6 @@ import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
  * A Power Source
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class LinuxPowerSource extends AbstractPowerSource {
@@ -52,7 +51,6 @@ public final class LinuxPowerSource extends AbstractPowerSource {
      * The Prop enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum Prop {
         POWER_SUPPLY_NAME, POWER_SUPPLY_STATUS, POWER_SUPPLY_CAPACITY, POWER_SUPPLY_PRESENT, POWER_SUPPLY_ONLINE,
@@ -70,7 +68,6 @@ public final class LinuxPowerSource extends AbstractPowerSource {
      * unnecessary work on systems where udev is available.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class PropByName {
 
@@ -78,6 +75,7 @@ public final class LinuxPowerSource extends AbstractPowerSource {
          * The MAP constant.
          */
         static final Map<String, Prop> MAP = new HashMap<>();
+
         static {
             for (Prop p : Prop.values()) {
                 MAP.put(p.name(), p);

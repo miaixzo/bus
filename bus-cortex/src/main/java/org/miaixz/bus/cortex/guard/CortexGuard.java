@@ -25,7 +25,6 @@ import java.util.List;
  * Orchestrates guard strategies for Cortex mutation paths.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CortexGuard {
 

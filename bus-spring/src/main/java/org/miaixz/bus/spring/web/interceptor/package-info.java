@@ -21,6 +21,5 @@
  * Reusable Spring MVC interceptor infrastructure. This package must not depend on bus-starter.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.spring.web.interceptor;

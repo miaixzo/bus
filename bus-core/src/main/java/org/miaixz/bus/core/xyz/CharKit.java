@@ -30,7 +30,6 @@ import org.miaixz.bus.core.text.ASCIIStrCache;
  * Character class. Some methods are inspired by Apache Commons Lang.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CharKit {
 

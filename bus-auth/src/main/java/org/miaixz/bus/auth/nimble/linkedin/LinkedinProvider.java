@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  * LinkedIn login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LinkedinProvider extends AbstractProvider {
 

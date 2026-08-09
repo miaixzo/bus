@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.exception.RelevantException;
  *
  * @see <a href="https://gitlab.com/help/api/search.md">Search API</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SearchApi extends AbstractApi {
 
@@ -50,12 +49,12 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /search?scope=:scope&amp;search=:search-query</code>
      * </pre>
      *
+     * @param <T>    result type
      * @param scope  search the expression within the specified scope. Currently these scopes are supported: projects,
      *               issues, merge_requests, milestones, snippet_titles, snippet_blobs, users
      * @param search the search query
      * @return a List containing the object type specified by the scope
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.5
      */
     public <T> List<T> globalSearch(SearchScope<T> scope, String search) throws RelevantException {
         return (globalSearch(scope, search, this.getDefaultPerPage()).all());
@@ -68,12 +67,12 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /search?scope=:scope&amp;search=:search-query</code>
      * </pre>
      *
+     * @param <T>    result type
      * @param scope  search the expression within the specified scope. Currently these scopes are supported: projects,
      *               issues, merge_requests, milestones, snippet_titles, snippet_blobs, users
      * @param search the search query
      * @return a Stream containing the object type specified by the scope
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.5
      */
     public <T> Stream<T> globalSearchStream(SearchScope<T> scope, String search) throws RelevantException {
         return (globalSearch(scope, search, getDefaultPerPage()).stream());
@@ -86,13 +85,13 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /search?scope=:scope&amp;search=:search-query</code>
      * </pre>
      *
+     * @param <T>          result type
      * @param scope        search the expression within the specified scope. Currently these scopes are supported:
      *                     projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs, users
      * @param search       the search query
      * @param itemsPerPage the number of items that will be fetched per page
      * @return a Pager containing the object type specified by the scope
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.5
      */
     public <T> Pager<T> globalSearch(SearchScope<T> scope, String search, int itemsPerPage) throws RelevantException {
 
@@ -109,13 +108,13 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /groups/:groupId/search?scope=:scope&amp;search=:search-query</code>
      * </pre>
      *
+     * @param <T>           result type
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
      * @param scope         search the expression within the specified scope. Currently these scopes are supported:
      *                      projects, issues, merge_requests, milestones, users
      * @param search        the search query
      * @return a List containing the object type specified by the scope
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.5
      */
     public <T> List<T> groupSearch(Object groupIdOrPath, GroupSearchScope<T> scope, String search)
             throws RelevantException {
@@ -130,13 +129,13 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /groups/:groupId/search?scope=:scope&amp;search=:search-query</code>
      * </pre>
      *
+     * @param <T>           result type
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
      * @param scope         search the expression within the specified scope. Currently these scopes are supported:
      *                      projects, issues, merge_requests, milestones, users
      * @param search        the search query
      * @return a Stream containing the object type specified by the scope
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.5
      */
     public <T> Stream<T> groupSearchStream(Object groupIdOrPath, GroupSearchScope<T> scope, String search)
             throws RelevantException {
@@ -151,6 +150,7 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /groups/:groupId/search?scope=:scope&amp;search=:search-query</code>
      * </pre>
      *
+     * @param <T>           result type
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
      * @param scope         search the expression within the specified scope. Currently these scopes are supported:
      *                      projects, issues, merge_requests, milestones, users
@@ -158,7 +158,6 @@ public class SearchApi extends AbstractApi {
      * @param itemsPerPage  the number of items that will be fetched per page
      * @return a Pager containing the object type specified by the scope
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.5
      */
     public <T> Pager<T> groupSearch(Object groupIdOrPath, GroupSearchScope<T> scope, String search, int itemsPerPage)
             throws RelevantException {
@@ -177,13 +176,13 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /projects/:projectId/search?scope=:scope&amp;search=:search-query</code>
      * </pre>
      *
+     * @param <T>             result type
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param scope           search the expression within the specified scope. Currently these scopes are supported:
      *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
      * @param search          the search query
      * @return a List containing the object type specified by the scope
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.5
      */
     public <T> List<T> projectSearch(Object projectIdOrPath, ProjectSearchScope<T> scope, String search)
             throws RelevantException {
@@ -198,6 +197,7 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /projects/:projectId/search?scope=:scope&amp;search=:search-query&amp;ref=ref</code>
      * </pre>
      *
+     * @param <T>             result type
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param scope           search the expression within the specified scope. Currently these scopes are supported:
      *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
@@ -206,7 +206,6 @@ public class SearchApi extends AbstractApi {
      *                        by default. This is only applicable for scopes: commits, blobs, and wiki_blobs.
      * @return a List containing the object type specified by the scope
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.5
      */
     public <T> List<T> projectSearch(Object projectIdOrPath, ProjectSearchScope<T> scope, String search, String ref)
             throws RelevantException {
@@ -221,13 +220,13 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /projects/:projectId/search?scope=:scope&amp;search=:search-query</code>
      * </pre>
      *
+     * @param <T>             result type
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param scope           search the expression within the specified scope. Currently these scopes are supported:
      *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
      * @param search          the search query
      * @return a Stream containing the object type specified by the scope
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.5
      */
     public <T> Stream<T> projectSearchStream(Object projectIdOrPath, ProjectSearchScope<T> scope, String search)
             throws RelevantException {
@@ -242,6 +241,7 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /projects/:projectId/search?scope=:scope&amp;search=:search-query&amp;ref=ref</code>
      * </pre>
      *
+     * @param <T>             result type
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param scope           search the expression within the specified scope. Currently these scopes are supported:
      *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
@@ -250,7 +250,6 @@ public class SearchApi extends AbstractApi {
      *                        by default. This is only applicable for scopes: commits, blobs, and wiki_blobs.
      * @return a Stream containing the object type specified by the scope
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.5
      */
     public <T> Stream<T> projectSearchStream(
             Object projectIdOrPath,
@@ -268,6 +267,7 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /project/:projectId/search?scope=:scope&amp;search=:search-query</code>
      * </pre>
      *
+     * @param <T>             result type
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param scope           search the expression within the specified scope. Currently these scopes are supported:
      *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
@@ -275,7 +275,6 @@ public class SearchApi extends AbstractApi {
      * @param itemsPerPage    the number of items that will be fetched per page
      * @return a Pager containing the object type specified by the scope
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.5
      */
     public <T> Pager<T> projectSearch(
             Object projectIdOrPath,
@@ -293,6 +292,7 @@ public class SearchApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /project/:projectId/search?scope=:scope&amp;search=:search-query&amp;ref=ref</code>
      * </pre>
      *
+     * @param <T>             result type
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param scope           search the expression within the specified scope. Currently these scopes are supported:
      *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
@@ -302,7 +302,6 @@ public class SearchApi extends AbstractApi {
      * @param itemsPerPage    the number of items that will be fetched per page
      * @return a Pager containing the object type specified by the scope
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.5
      */
     public <T> Pager<T> projectSearch(
             Object projectIdOrPath,

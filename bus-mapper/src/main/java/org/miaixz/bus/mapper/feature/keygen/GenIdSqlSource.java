@@ -26,7 +26,6 @@ import org.apache.ibatis.mapping.SqlSource;
  * Wraps an {@link SqlSource} to enable primary key generation before insertion.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GenIdSqlSource implements SqlSource {
 

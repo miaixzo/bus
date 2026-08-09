@@ -44,7 +44,6 @@ import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
  * within Spring Boot JARs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BootURLConnection extends JarURLConnection {
 

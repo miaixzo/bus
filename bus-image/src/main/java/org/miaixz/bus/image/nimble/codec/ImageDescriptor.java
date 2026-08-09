@@ -28,7 +28,6 @@ import org.miaixz.bus.image.nimble.Photometric;
  * Represents the ImageDescriptor type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ImageDescriptor {
 

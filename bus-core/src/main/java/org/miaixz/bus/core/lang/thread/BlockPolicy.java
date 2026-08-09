@@ -33,7 +33,6 @@ import org.miaixz.bus.core.center.function.ConsumerX;
  * be found in the {@link RejectPolicy} enumeration.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BlockPolicy implements RejectedExecutionHandler {
 

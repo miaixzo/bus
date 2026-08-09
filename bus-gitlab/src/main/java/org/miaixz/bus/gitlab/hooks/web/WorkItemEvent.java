@@ -30,10 +30,19 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The work item event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WorkItemEvent extends AbstractEvent {
 
+    /**
+     * Constructs a new {@code WorkItemEvent} instance.
+     */
+    public WorkItemEvent() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852233532039L;
     /**
@@ -46,11 +55,29 @@ public class WorkItemEvent extends AbstractEvent {
      */
     public static final String OBJECT_KIND = "work_item";
 
+    /**
+     * The user value.
+     */
     private User user;
+    /**
+     * The project value.
+     */
     private EventProject project;
+    /**
+     * The repository value.
+     */
     private EventRepository repository;
+    /**
+     * The object attributes value.
+     */
     private ObjectAttributes objectAttributes;
+    /**
+     * The labels value.
+     */
     private List<EventLabel> labels;
+    /**
+     * The changes value.
+     */
     private WorkItemChanges changes;
 
     /**
@@ -210,9 +237,15 @@ public class WorkItemEvent extends AbstractEvent {
      * The object attributes class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class ObjectAttributes extends EventWorkItem {
+
+        /**
+         * Constructs a new {@code ObjectAttributes} instance.
+         */
+        public ObjectAttributes() {
+            // No initialization required.
+        }
 
     }
 

@@ -36,7 +36,6 @@ import org.miaixz.bus.fabric.Policy;
  * Immutable retry and redirect policy.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpRetryPolicy implements Policy {
 
@@ -277,7 +276,6 @@ public final class HttpRetryPolicy implements Policy {
      * Builder for retry policies.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

@@ -43,7 +43,6 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
  * Protocol-neutral asynchronous TCP listener backed by an existing {@link AioGroup}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class AioServer implements AutoCloseable {
 

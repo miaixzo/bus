@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.notify.nimble.emay;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -31,14 +29,18 @@ import org.miaixz.bus.notify.magic.Notice;
  * Notice for Emay SMS service.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class EmayNotice extends Notice {
+
+    /**
+     * Constructs a new {@code EmayNotice} instance.
+     */
+    public EmayNotice() {
+        // No initialization required.
+    }
 
     /**
      * The request URL for the Emay API.

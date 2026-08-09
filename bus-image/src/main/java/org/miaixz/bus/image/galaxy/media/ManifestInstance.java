@@ -32,7 +32,6 @@ import org.miaixz.bus.image.Tag;
  * SOP instance entry in a DICOM manifest.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ManifestInstance implements ManifestXml, Comparable<ManifestInstance> {
 

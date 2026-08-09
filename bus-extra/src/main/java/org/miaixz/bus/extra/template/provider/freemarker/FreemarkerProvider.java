@@ -40,7 +40,6 @@ import freemarker.template.Configuration;
  * see: <a href="https://freemarker.apache.org/">https://freemarker.apache.org/</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FreemarkerProvider implements TemplateProvider {
 
@@ -158,7 +157,7 @@ public class FreemarkerProvider implements TemplateProvider {
     /**
      * Initializes the template provider with the given configuration. This method is designed to be overridden by
      * subclasses for custom initialization.
-     *
+     * <p>
      * from the TemplateConfig and initializes the provider. Subclasses may override to add custom configuration
      * settings or validation.
      *
@@ -193,7 +192,7 @@ public class FreemarkerProvider implements TemplateProvider {
 
     /**
      * Gets a template by name. This method is designed to be overridden by subclasses for custom template retrieval.
-     *
+     * <p>
      * Subclasses may override to add caching, custom loading, or error handling.
      *
      * @param resource The name of the template resource.

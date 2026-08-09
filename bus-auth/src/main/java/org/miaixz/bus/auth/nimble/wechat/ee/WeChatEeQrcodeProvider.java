@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * WeChat Enterprise QR code login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WeChatEeQrcodeProvider extends AbstractWeChatEeProvider {
 
@@ -88,7 +87,7 @@ public class WeChatEeQrcodeProvider extends AbstractWeChatEeProvider {
     protected void validate(Context context) {
         super.validate(context);
         if ("CorpApp".equals(context.getLoginType()) && StringKit.isEmpty(context.getUnionId())) {
-            throw new AuthorizedException(ErrorCode._110014.getKey(), this.complex);
+            throw new AuthorizedException(ErrorCode._110012.getKey(), this.complex);
         }
     }
 

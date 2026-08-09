@@ -50,7 +50,6 @@ import org.miaixz.bus.logger.Logger;
  * </ol>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Crypto extends AbstractCrypto<Crypto> {
 

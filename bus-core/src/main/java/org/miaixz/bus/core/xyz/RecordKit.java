@@ -30,7 +30,6 @@ import org.miaixz.bus.core.bean.copier.ValueProvider;
  * Inspects Java record classes and components.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RecordKit {
 

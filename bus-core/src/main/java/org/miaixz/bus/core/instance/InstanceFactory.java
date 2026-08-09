@@ -38,7 +38,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * Instance factory class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class InstanceFactory implements Instance {
 
@@ -395,7 +394,6 @@ public final class InstanceFactory implements Instance {
      * Static inner class for singleton implementation.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class Holder {
 

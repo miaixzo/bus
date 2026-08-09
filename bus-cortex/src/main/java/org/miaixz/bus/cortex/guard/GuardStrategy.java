@@ -23,7 +23,6 @@ package org.miaixz.bus.cortex.guard;
  * Extension point for access-control evaluators.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface GuardStrategy {

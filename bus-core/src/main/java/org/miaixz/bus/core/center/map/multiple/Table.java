@@ -35,7 +35,6 @@ import org.miaixz.bus.core.xyz.MapKit;
  * @param <C> The type of the column key.
  * @param <V> The type of the value stored in the table.
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
 
@@ -271,7 +270,6 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
      * @param <C> The type of the column key.
      * @param <V> The type of the value.
      * @author Kimi Liu
-     * @since Java 21+
      */
     interface Cell<R, C, V> {
 

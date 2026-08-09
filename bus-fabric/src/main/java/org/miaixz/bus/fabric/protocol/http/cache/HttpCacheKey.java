@@ -35,7 +35,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  * Cache key and vary matching rules for HTTP cache entries.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class HttpCacheKey {
 

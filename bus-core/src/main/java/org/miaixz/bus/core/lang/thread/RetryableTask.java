@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.ThreadKit;
  *
  * @param <T> The type of the task result.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RetryableTask<T> {
 

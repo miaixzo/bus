@@ -25,7 +25,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Property keys used by early Spring Boot environment processing.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class EnvironmentKeys {
 

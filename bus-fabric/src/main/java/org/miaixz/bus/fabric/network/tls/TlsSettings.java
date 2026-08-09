@@ -39,7 +39,6 @@ import org.miaixz.bus.fabric.network.tls.cert.CertificatePolicy;
  * Immutable TLS settings selected before handshake.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class TlsSettings {
 
@@ -382,7 +381,6 @@ public final class TlsSettings {
      * Builder for TLS settings.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

@@ -21,6 +21,5 @@
  * Provides handlers and interceptors for customizing and extending MyBatis SQL execution behavior.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.mapper.handler;

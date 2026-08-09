@@ -23,7 +23,6 @@ package org.miaixz.bus.logger;
  * Processes a log event immediately before it is delegated to a logging provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface Operator {

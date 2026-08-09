@@ -29,7 +29,6 @@ import java.util.Objects;
  * Annotation lookup key for fine-grained caching, used to uniquely identify an annotation lookup operation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AnnotationLookupKey implements Serializable {
 

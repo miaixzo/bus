@@ -72,7 +72,6 @@ import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
  *
  * @param <T> the generic type parameter
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AuditHandler<T> extends ScopedProviderHandler<T, AuditConfig, AuditProvider> {
 

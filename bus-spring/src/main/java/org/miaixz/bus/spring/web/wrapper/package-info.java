@@ -21,6 +21,5 @@
  * Bounded servlet request and response body wrappers. This package must not own starter configuration.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.spring.web.wrapper;

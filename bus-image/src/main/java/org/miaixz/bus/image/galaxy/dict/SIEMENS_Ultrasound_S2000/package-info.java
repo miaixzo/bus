@@ -21,6 +21,5 @@
  * UID Dictionary from SIEMENS_Ultrasound_S2000
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_Ultrasound_S2000;

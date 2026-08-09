@@ -27,20 +27,59 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The build commit class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BuildCommit {
 
+    /**
+     * Constructs a new {@code BuildCommit} instance.
+     */
+    public BuildCommit() {
+        // No initialization required.
+    }
+
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The sha value.
+     */
     private String sha;
+    /**
+     * The message value.
+     */
     private String message;
+    /**
+     * The author name value.
+     */
     private String authorName;
+    /**
+     * The author email value.
+     */
     private String authorEmail;
+    /**
+     * The author url value.
+     */
     private String authorUrl;
+    /**
+     * The status value.
+     */
     private String status;
+    /**
+     * The duration value.
+     */
     private Float duration;
+    /**
+     * The started at value.
+     */
     private Date startedAt;
+    /**
+     * The finished at value.
+     */
     private Date finishedAt;
 
     /**

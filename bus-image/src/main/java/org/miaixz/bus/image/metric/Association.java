@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the Association type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Association {
 

@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Represents the JPEGImageWriteParam type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JPEGImageWriteParam extends ImageWriteParam {
 

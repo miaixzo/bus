@@ -23,7 +23,6 @@ package org.miaixz.bus.cortex.setting.item;
  * Exposure policy for setting delivery.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum ItemExposure {
 

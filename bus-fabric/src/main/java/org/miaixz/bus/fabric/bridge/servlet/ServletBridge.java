@@ -37,7 +37,6 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  * chains.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ServletBridge implements Translator<HttpRequest> {
 

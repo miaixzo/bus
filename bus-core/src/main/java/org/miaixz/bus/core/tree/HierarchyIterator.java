@@ -51,7 +51,6 @@ import org.miaixz.bus.core.xyz.TreeKit;
  * @see EasyStream#iterateHierarchies
  * @see StreamKit#iterateHierarchies
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class HierarchyIterator<T> implements Iterator<T> {
 
@@ -194,7 +193,6 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
      *
      * @param <T> The type of the elements.
      * @author Kimi Liu
-     * @since Java 21+
      */
     static class DepthFirst<T> extends HierarchyIterator<T> {
 
@@ -232,7 +230,6 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
      *
      * @param <T> The type of the elements.
      * @author Kimi Liu
-     * @since Java 21+
      */
     static class BreadthFirst<T> extends HierarchyIterator<T> {
 

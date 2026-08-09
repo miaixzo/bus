@@ -32,7 +32,6 @@ import org.miaixz.bus.starter.health.HealthConfiguration;
  * selected system metrics through Spring Boot's standard health infrastructure when it is available.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

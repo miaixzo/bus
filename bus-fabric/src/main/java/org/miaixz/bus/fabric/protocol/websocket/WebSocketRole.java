@@ -23,7 +23,6 @@ package org.miaixz.bus.fabric.protocol.websocket;
  * WebSocket endpoint role that selects RFC 6455 mask behavior.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum WebSocketRole {
 

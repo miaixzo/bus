@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * A {@link Source} implementation that reads from an {@link InputStream} into writable buffer segments.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class InputStreamSource implements Source {
 

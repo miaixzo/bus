@@ -25,7 +25,6 @@ import java.lang.annotation.*;
  * Marks the version field on an entity class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

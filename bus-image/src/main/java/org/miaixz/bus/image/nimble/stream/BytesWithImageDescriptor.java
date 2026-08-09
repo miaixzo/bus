@@ -29,7 +29,6 @@ import org.miaixz.bus.image.galaxy.data.VR;
  * Defines the BytesWithImageDescriptor contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface BytesWithImageDescriptor extends ImageReaderDescriptor {
 

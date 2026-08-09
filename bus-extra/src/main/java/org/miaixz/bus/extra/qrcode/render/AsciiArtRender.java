@@ -36,7 +36,6 @@ import org.miaixz.bus.extra.qrcode.QrConfig;
  * ASCII Art renderer.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AsciiArtRender implements BitMatrixRender {
 

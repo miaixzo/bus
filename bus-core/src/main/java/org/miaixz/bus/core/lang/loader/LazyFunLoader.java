@@ -33,7 +33,6 @@ import org.miaixz.bus.core.lang.Assert;
  * @param <T> The type of the object being loaded.
  * @see LazyLoader
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LazyFunLoader<T> extends LazyLoader<T> {
 

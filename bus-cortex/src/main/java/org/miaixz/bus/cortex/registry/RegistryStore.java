@@ -35,7 +35,6 @@ import org.miaixz.bus.cortex.Vector;
  *
  * @param <T> stored asset type
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface RegistryStore<T extends Assets> {
 

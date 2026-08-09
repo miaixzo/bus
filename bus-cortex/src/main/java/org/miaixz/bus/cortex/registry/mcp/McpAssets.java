@@ -38,7 +38,6 @@ import org.miaixz.bus.logger.Logger;
  * MCP tool or service definition.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @SuperBuilder
 public class McpAssets extends Assets {
@@ -183,7 +182,6 @@ public class McpAssets extends Assets {
      * MCP-specific metadata payload stored directly in the raw asset metadata JSON payload.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter

@@ -27,7 +27,6 @@ import org.miaixz.bus.setting.nimble.ini.IniCommentService;
  * A formatter that parses a string value into an {@link IniComment} object.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CommentFormatter extends AbstractFormatter<IniComment> {
 

@@ -35,7 +35,6 @@ import org.miaixz.bus.image.nimble.extend.ImageWriterExtension;
  * Represents the JsonImageWriterConfiguration type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JsonImageWriterConfiguration extends JsonConfigurationExtension {
 

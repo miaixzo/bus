@@ -21,9 +21,7 @@ package org.miaixz.bus.core.basic.entity;
 
 import jakarta.persistence.Column;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -31,14 +29,18 @@ import lombok.experimental.SuperBuilder;
  * Represents tenant information used for multi-tenant isolation and ownership identification.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Tenant extends Tracer {
+
+    /**
+     * Constructs a new {@code Tenant} instance.
+     */
+    public Tenant() {
+        // No initialization required.
+    }
 
     /**
      * The unique identifier of the tenant to which the current entity belongs.

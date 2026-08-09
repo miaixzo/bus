@@ -32,7 +32,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * Provides dynamic SQL operations based on specified fields.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FunctionProvider {
 

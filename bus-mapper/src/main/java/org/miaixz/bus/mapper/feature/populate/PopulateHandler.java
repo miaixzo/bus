@@ -56,7 +56,6 @@ import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
  *
  * @param <T> the entity type
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PopulateHandler<T> extends ScopedProviderHandler<T, PopulateConfig, PopulateProvider> {
 

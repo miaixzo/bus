@@ -29,7 +29,6 @@ import org.miaixz.bus.core.center.function.FunctionX;
  * Base wrapper for DICOM module-like structures backed by {@link Attributes}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DicomModule {
 

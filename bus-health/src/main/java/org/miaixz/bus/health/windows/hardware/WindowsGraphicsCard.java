@@ -49,7 +49,6 @@ import org.miaixz.bus.logger.Logger;
  * Graphics Card obtained from WMI
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public final class WindowsGraphicsCard extends AbstractGraphicsCard {
@@ -295,7 +294,6 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
         return WindowsDxgi.registryValueToVram(value);
     }
 
-    // fall back if something went wrong
     /**
      * Returns the graphics cards from wmi.
      *

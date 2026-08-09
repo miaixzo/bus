@@ -24,6 +24,5 @@
  * including support for animated GIFs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.extra.image.gif;

@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.pay.nimble.wechat.entity.v2;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -31,14 +29,18 @@ import org.miaixz.bus.pay.magic.Voucher;
  * Download Fund Flow model.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class DownloadFundFlow extends Voucher {
+
+    /**
+     * Constructs a new {@code DownloadFundFlow} instance.
+     */
+    public DownloadFundFlow() {
+        // No initialization required.
+    }
 
     /**
      * Merchant ID.

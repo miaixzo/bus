@@ -32,7 +32,6 @@ import org.miaixz.bus.tempus.Executor;
  * way to handle task lifecycle events.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TaskListenerManager implements Serializable {
 

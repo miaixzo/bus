@@ -30,7 +30,6 @@ import org.miaixz.bus.image.Format;
  * Defines the TemporalType values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 enum TemporalType {
 

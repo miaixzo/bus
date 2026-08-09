@@ -33,7 +33,6 @@ import org.miaixz.bus.logger.Level;
  * A console logger that prints colorful messages using {@code System.out.println}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ColorLoggingProvider extends NormalLoggingProvider {
 

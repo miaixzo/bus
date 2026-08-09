@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The health check status enum.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum HealthCheckStatus {
 
@@ -41,6 +40,9 @@ public enum HealthCheckStatus {
      */
     FAILED;
 
+    /**
+     * The enum codec value.
+     */
     private static JacksonJsonEnumCodec<HealthCheckStatus> enumCodec = new JacksonJsonEnumCodec<>(
             HealthCheckStatus.class);
 

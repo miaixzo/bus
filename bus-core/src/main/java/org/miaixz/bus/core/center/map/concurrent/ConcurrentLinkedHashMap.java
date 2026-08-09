@@ -75,7 +75,6 @@ import org.miaixz.bus.core.xyz.RuntimeKit;
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         implements ConcurrentMap<K, V>, Serializable {
@@ -1107,7 +1106,6 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * The draining status of the buffers.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum DrainStatus {
 
@@ -1182,7 +1180,6 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * A listener that ignores all notifications.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum DiscardingListener implements BiConsumerX<Object, Object> {
 
@@ -1207,7 +1204,6 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * A value, its selector, and the entry's status.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     static final class WeightedValue<V> {
 
@@ -1250,8 +1246,6 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * A node contains the data, the weighted value, and the linkage pointers on the page-replacement algorithm's data
      * structures.
      *
-     * @author Kimi Liu
-     * @since Java 21+
      * @param <K> the value type
      * @param <V> the value type
      */
@@ -1331,10 +1325,9 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
     /**
      * A weigher that enforces that the selector falls within a valid range.
      *
-     * @author Kimi Liu
-     * @since Java 21+
      * @param <K> the value type
      * @param <V> the value type
+     * @author Kimi Liu
      */
     static final class BoundedEntryWeigher<K, V> implements EntryWeigher<K, V>, Serializable {
 
@@ -1374,10 +1367,9 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * serialized so the deserialized instance contains only the entries. This is acceptable as caches hold transient
      * data that is recomputable and serialization would tend to be used as a fast warm-up process.
      *
-     * @author Kimi Liu
-     * @since Java 21+
      * @param <K> the value type
      * @param <V> the value type
+     * @author Kimi Liu
      */
     static final class SerializationProxy<K, V> implements Serializable {
 
@@ -1418,7 +1410,6 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * @param <K> the key type
      * @param <V> the value type
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder<K, V> {
 
@@ -1539,7 +1530,6 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * Adds the node to the page replacement policy.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     final class AddTask implements Runnable {
 
@@ -1574,7 +1564,6 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * Removes a node from the page replacement policy.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     final class RemovalTask implements Runnable {
 
@@ -1603,7 +1592,6 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * Updates the weighted size and evicts an entry on overflow.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     final class UpdateTask implements Runnable {
 
@@ -1634,7 +1622,6 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * An adapter to safely externalize the keys.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     final class KeySet extends AbstractSet<K> {
 
@@ -1733,7 +1720,6 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * An adapter to safely externalize the data iterator.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     final class KeyIterator implements Iterator<K> {
 
@@ -1784,7 +1770,6 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * An adapter to safely externalize the values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     final class Values extends AbstractCollection<V> {
 
@@ -1841,7 +1826,6 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * An adapter to safely externalize the value iterator.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     final class ValueIterator implements Iterator<V> {
 
@@ -1891,7 +1875,6 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * An adapter to safely externalize the entries.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     final class EntrySet extends AbstractSet<Entry<K, V>> {
 
@@ -1985,7 +1968,6 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * An adapter to safely externalize the entry iterator.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     final class EntryIterator implements Iterator<Entry<K, V>> {
 
@@ -2035,7 +2017,6 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * An entry that allows updates to write through to the map.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     final class WriteThroughEntry extends SimpleEntry<K, V> {
 

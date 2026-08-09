@@ -27,7 +27,6 @@ import org.miaixz.bus.core.lang.exception.RelevantException;
  * This interface provides a base class handler for processing GitLab Web Hook and System Hook callouts.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface HookManager {
 

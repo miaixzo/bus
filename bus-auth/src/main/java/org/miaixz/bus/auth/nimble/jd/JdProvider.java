@@ -48,7 +48,6 @@ import org.miaixz.bus.logger.Logger;
  * JD (Jingdong) login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JdProvider extends AbstractProvider {
 

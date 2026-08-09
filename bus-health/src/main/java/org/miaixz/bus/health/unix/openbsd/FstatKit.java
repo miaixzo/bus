@@ -30,7 +30,6 @@ import org.miaixz.bus.health.Executor;
  * Reads from fstat.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class FstatKit {

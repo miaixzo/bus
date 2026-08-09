@@ -15,16 +15,16 @@
 
 ## 核心模型
 
-| 类型 | 职责 |
-|---|---|
-| `Logger` | 提供调用者识别、普通日志及对齐日志的静态门面。 |
-| `Provider` | 定义各日志后端共同实现的日志操作。 |
-| `Factory` | 创建并缓存指定后端的 Provider。 |
-| `Registry` | 选择当前 Factory，并按名称或类解析 Provider。 |
-| `Level` | 统一日志级别模型。 |
+| 类型       | 职责                                                     |
+|------------|----------------------------------------------------------|
+| `Logger`   | 提供调用者识别、普通日志及对齐日志的静态门面。           |
+| `Provider` | 定义各日志后端共同实现的日志操作。                       |
+| `Factory`  | 创建并缓存指定后端的 Provider。                          |
+| `Registry` | 选择当前 Factory，并按名称或类解析 Provider。            |
+| `Level`    | 统一日志级别模型。                                       |
 | `Loggable` | 保存级别、异常、格式串和防御性复制参数的不可变事件快照。 |
-| `Operator` | 在不写日志的前提下处理事件或单个具名诊断值。 |
-| `Executor` | 按注册顺序执行 Operator，再将事件交给 Provider。 |
+| `Operator` | 在不写日志的前提下处理事件或单个具名诊断值。             |
+| `Executor` | 按注册顺序执行 Operator，再将事件交给 Provider。         |
 
 事件链路如下：
 
@@ -32,8 +32,8 @@
 Logger -> Loggable -> Executor -> Provider -> 日志后端
 ```
 
-Operator 发生异常时不会导致日志系统不可用。`Executor` 会使用固定的处理失败消息替换当前事件，并在不暴露
-被拒绝参数的情况下继续交给 Provider。
+Operator 发生异常时不会导致日志系统不可用。`Executor` 会使用固定的处理失败消息替换当前事件，并在不暴露 被拒绝参数的情况下继续交给
+Provider。
 
 ## 支持的 Provider
 
@@ -94,15 +94,13 @@ try {
 }
 ```
 
-注册按照对象身份识别并进行引用计数。同一个 Operator 实例可以由多个 ApplicationContext 注册，只有完成
-相同次数的注销后才会从处理链移除。
+注册按照对象身份识别并进行引用计数。同一个 Operator 实例可以由多个 ApplicationContext 注册，只有完成 相同次数的注销后才会从处理链移除。
 
 ### 日志敏感数据处理
 
 `bus-logger` 保持内容中立，不包含密码、令牌、Cookie 或 Authorization Header 等判定规则。
-`bus-sensitive` 提供 `Sanitizer`，`bus-starter` 会在 Sensitive 功能启用后，为每个 ApplicationContext 将一个
-Sanitizer 绑定到 `Executor`。使用 Starter 的应用应配置 `bus.sensitive.enabled=true`，不应手工注册全局
-Sanitizer。
+`bus-sensitive` 提供 `Sanitizer`，`bus-starter` 会在 Sensitive 功能启用后，为每个 ApplicationContext 将一个 Sanitizer 绑定到
+`Executor`。使用 Starter 的应用应配置 `bus.sensitive.enabled=true`，不应手工注册全局 Sanitizer。
 
 需要脱敏时应使用 `password={}` 这类具名占位符或结构化 Map。没有字段名的纯位置参数无法被安全分类。
 
@@ -113,5 +111,4 @@ Reachability Metadata 使用精确成员覆盖动态 Provider 发现和运行时
 
 ## 验证边界
 
-Bus 不承载也不运行测试。集成、Provider、Metadata、AOT 和 Native Image 测试均位于相邻的 Abarth 仓库。
-Bus 构建必须显式跳过测试。
+Bus 不承载也不运行测试。集成、Provider、Metadata、AOT 和 Native Image 测试均位于相邻的 Abarth 仓库。 Bus 构建必须显式跳过测试。

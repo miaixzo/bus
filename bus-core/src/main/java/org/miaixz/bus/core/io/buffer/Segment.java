@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Each byte array has a single owning segment. The pos, limit, prev, and next references are not shared.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Segment {
 
@@ -89,7 +88,9 @@ public class Segment {
      */
     volatile boolean cached;
 
-    /** Allocator bucket that owns this segment across cross-thread buffer transfers. */
+    /**
+     * Allocator bucket that owns this segment across cross-thread buffer transfers.
+     */
     int poolBucket = -1;
 
     /**

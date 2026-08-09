@@ -24,7 +24,6 @@ package org.miaixz.bus.core;
  * initialization and shutdown sequences.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Plugin extends Order {
 

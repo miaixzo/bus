@@ -43,7 +43,6 @@ import org.miaixz.bus.core.xyz.WatchKit;
  * and processes it line by line.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FileTailer implements Serializable {
 
@@ -327,7 +326,6 @@ public class FileTailer implements Serializable {
      * A concrete implementation of {@link ConsumerX} that prints each accepted string (line) to the console.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class ConsoleLineHandler implements ConsumerX<String> {
 

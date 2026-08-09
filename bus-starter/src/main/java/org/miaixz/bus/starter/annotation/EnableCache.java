@@ -33,7 +33,6 @@ import org.miaixz.bus.starter.cache.CacheConfiguration;
  * caching using annotations like {@code @Cached}, {@code @CachedGet}, and {@code @Invalid}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

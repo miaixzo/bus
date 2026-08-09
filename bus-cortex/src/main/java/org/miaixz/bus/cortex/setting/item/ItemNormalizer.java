@@ -34,7 +34,6 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
  * Canonical normalization policy for setting entries.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ItemNormalizer {
 

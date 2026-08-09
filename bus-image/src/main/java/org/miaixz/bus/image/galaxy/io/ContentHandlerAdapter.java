@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  * including nested sequences and bulk data.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ContentHandlerAdapter extends DefaultHandler {
 

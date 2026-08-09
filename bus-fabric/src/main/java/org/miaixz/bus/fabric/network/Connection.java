@@ -28,7 +28,6 @@ import org.miaixz.bus.core.net.Protocol;
  * Protocol-neutral network connection contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Connection extends AutoCloseable, Lifecycle {
 

@@ -39,7 +39,6 @@ import org.miaixz.bus.fabric.Session;
  * Demultiplexes protocol messages to channel-specific handlers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Demuxer implements Handler {
 
@@ -233,7 +232,6 @@ public final class Demuxer implements Handler {
      * Builder for demuxers.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 
@@ -328,7 +326,6 @@ public final class Demuxer implements Handler {
      * No-op handler.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class NoopHandler implements Handler {
 

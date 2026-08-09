@@ -25,10 +25,19 @@ import java.io.Serial;
  * The project user class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProjectUser extends AbstractUser<ProjectUser> {
 
+    /**
+     * Constructs a new {@code ProjectUser} instance.
+     */
+    public ProjectUser() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852275208778L;
 

@@ -27,7 +27,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Represents an exception that occurs due to license-related issues.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LicenseException extends UncheckedException {
 

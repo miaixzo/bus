@@ -23,7 +23,6 @@ package org.miaixz.bus.core.center.date.culture;
  * Represents the concept of Yin and Yang (阴阳) in Chinese philosophy.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Opposite {
 

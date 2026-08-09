@@ -32,7 +32,6 @@ import org.miaixz.bus.core.center.function.UnaryOperatorX;
  * Functional operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FunctionKit {
 

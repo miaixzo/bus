@@ -29,7 +29,6 @@ import java.nio.Buffer;
  * ...
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SafeBuffer {
 

@@ -21,6 +21,5 @@
  * Provides functions to query Solaris information
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.health.unix.solaris.driver;

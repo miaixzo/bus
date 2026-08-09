@@ -25,6 +25,5 @@
  * delivery as registry-private infrastructure.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.magic.watch;

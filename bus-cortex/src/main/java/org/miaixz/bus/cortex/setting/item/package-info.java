@@ -28,6 +28,5 @@
  * {@code profile_ids}. ItemRevision history is nested one level deeper under {@code setting.item.revision}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.setting.item;

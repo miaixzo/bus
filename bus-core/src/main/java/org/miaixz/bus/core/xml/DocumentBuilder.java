@@ -27,7 +27,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * Creates securely configured XML document builders.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DocumentBuilder {
 

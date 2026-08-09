@@ -38,7 +38,6 @@ import org.miaixz.bus.logger.Logger;
  * The linux logical volume group class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
 

@@ -120,7 +120,6 @@ import reactor.netty.http.server.HttpServer;
  * @see Executor
  * @see Strategy
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(value = { VortexProperties.class })
 @Configuration(proxyBeanMethods = false)
@@ -499,7 +498,7 @@ public class VortexConfiguration {
              */
             @Override
             public Mono<Delegate> authorize(Principal principal) {
-                return Mono.error(new ValidateException(ErrorCode._116002));
+                return Mono.error(new ValidateException(ErrorCode._100160));
             }
 
         };

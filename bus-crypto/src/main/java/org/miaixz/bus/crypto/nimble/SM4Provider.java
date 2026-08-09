@@ -32,7 +32,6 @@ import org.miaixz.bus.crypto.center.SM4;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SM4Provider implements Provider {
 

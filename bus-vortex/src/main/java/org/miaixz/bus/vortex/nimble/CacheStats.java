@@ -20,6 +20,7 @@
 package org.miaixz.bus.vortex.nimble;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.vortex.Monitor;
 
@@ -58,12 +59,10 @@ import org.miaixz.bus.vortex.Monitor;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
+@SuperBuilder
 public class CacheStats {
 
     /**

@@ -42,7 +42,6 @@ import org.miaixz.bus.metrics.nimble.Sample;
  * {@code /user/{id}}), use the {@code HttpMetricsInterceptor} in bus-starter instead.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HttpMetrics implements Filter {
 

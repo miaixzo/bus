@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.notify.nimble.upyun;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -33,14 +31,18 @@ import org.miaixz.bus.notify.magic.Notice;
  * Notice for Upyun SMS service.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class UpyunNotice extends Notice {
+
+    /**
+     * Constructs a new {@code UpyunNotice} instance.
+     */
+    public UpyunNotice() {
+        // No initialization required.
+    }
 
     /**
      * The authentication token for Upyun API.
@@ -61,7 +63,6 @@ public class UpyunNotice extends Notice {
      * Represents the result of sending an SMS to a mobile number.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter

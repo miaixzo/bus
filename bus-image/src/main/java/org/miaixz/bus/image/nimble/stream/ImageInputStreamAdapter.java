@@ -28,7 +28,6 @@ import javax.imageio.stream.ImageInputStream;
  * Represents the ImageInputStreamAdapter type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageInputStreamAdapter extends InputStream {
 

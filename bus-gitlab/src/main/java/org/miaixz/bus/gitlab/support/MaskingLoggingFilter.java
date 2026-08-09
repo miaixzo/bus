@@ -51,7 +51,6 @@ import org.miaixz.bus.core.net.Http;
  * could be sub-classed and have its behavior modified.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Priority(Integer.MIN_VALUE)
 public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponseFilter, WriterInterceptor {
@@ -441,11 +440,16 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      * "...more..." to the end of the entity log string.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     protected class LoggingStream extends FilterOutputStream {
 
+        /**
+         * The sb value.
+         */
         private final StringBuilder sb;
+        /**
+         * The output stream value.
+         */
         private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         LoggingStream(StringBuilder sb, OutputStream out) {

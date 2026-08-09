@@ -30,7 +30,6 @@ import org.miaixz.bus.fabric.Listener;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class StompListener implements Listener<StompSession> {
 

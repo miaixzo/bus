@@ -8,7 +8,8 @@
 
 ## 📖 项目介绍
 
-**Bus Cortex** 是 bus 框架的注册与配置中心模块。它提供统一的服务注册、配置管理、健康探测和基于命名空间的多租户隔离——所有数据通过单一 `CacheX` 存储抽象（Memory / Redis / JDBC）读写，无需额外基础设施。
+**Bus Cortex** 是 bus 框架的注册与配置中心模块。它提供统一的服务注册、配置管理、健康探测和基于命名空间的多租户隔离——所有数据通过单一
+`CacheX` 存储抽象（Memory / Redis / JDBC）读写，无需额外基础设施。
 
 - **统一注册表**：API / MCP / Prompt / Version 四类注册表，统一 `Registry<T>` 接口
 - **服务+实例分离模型**：`ApiAssets`（服务定义）+ `Instance`（运行时实例），参考 Nacos 设计
@@ -27,20 +28,26 @@
 
 四种注册类型，一套统一 API：
 
-| 注册表 | 资产类型 | 说明 |
-|:---|:---|:---|
-| **ApiRegistry** | `ApiAssets` + `Instance` | HTTP / gRPC / MCP / WebSocket / LLM API 服务 |
-| **McpRegistry** | `McpAssets` | MCP 工具/服务器定义 |
-| **PromptRegistry** | `PromptAssets` | Prompt 模板管理 |
-| **VersionRegistry** | `VersionAssets` | 服务版本生命周期（ACTIVE / DEPRECATED / DISABLED） |
+| 注册表              | 资产类型                 | 说明                                               |
+|:--------------------|:-------------------------|:---------------------------------------------------|
+| **ApiRegistry**     | `ApiAssets` + `Instance` | HTTP / gRPC / MCP / WebSocket / LLM API 服务       |
+| **McpRegistry**     | `McpAssets`              | MCP 工具/服务器定义                                |
+| **PromptRegistry**  | `PromptAssets`           | Prompt 模板管理                                    |
+| **VersionRegistry** | `VersionAssets`          | 服务版本生命周期（ACTIVE / DEPRECATED / DISABLED） |
 
 ```java
 // 类型安全的静态 Facade（与 bus-metrics Metrics 模式一致）
-Cortex.apiRegistry().register(service, instance);
-Cortex.mcpRegistry().register(mcpAssets);
+Cortex.apiRegistry().
+
+register(service, instance);
+Cortex.
+
+mcpRegistry().
+
+register(mcpAssets);
 
 List<ApiAssets> services = Cortex.query(
-    Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(), ApiAssets.class);
+        Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(), ApiAssets.class);
 ```
 
 ### ⚡ 服务与实例分离
@@ -50,9 +57,10 @@ ApiAssets（服务定义，canonical identity = namespace + type + method + vers
     └── Instance（运行时实例，唯一性由 namespace + app_id + method + version + fingerprint 决定）
 ```
 
-**实例标识规则**：同一 API 定义下允许存在多个运行时实例。运行时唯一性按 `namespace + app_id + method + version + fingerprint` 约束。
+**实例标识规则**：同一 API 定义下允许存在多个运行时实例。运行时唯一性按
+`namespace + app_id + method + version + fingerprint` 约束。
 
-相同 fingerprint 重复注册视为**幂等刷新 TTL**，不视为冲突。
+相同 fingerprint 重复注册视为 **幂等刷新 TTL**，不视为冲突。
 
 **网关路由语义**：同步到 bus-vortex 时，`ApiAssets.key` 继续保留为轻量公开别名
 `method:version:verbCode`，例如 `dp.license.get:1.0:1`。真正的运行时候选链由 `Keying` 单独生成，顺序为：
@@ -73,12 +81,12 @@ ApiAssets（服务定义，canonical identity = namespace + type + method + vers
 
 ### 🔧 配置中心
 
-| 能力 | 实现 |
-|:---|:---|
-| **带版本号发布** | `ConfigPublisher` + `Sequence` 原子序列号（CacheX CAS，避免时钟回拨） |
-| **版本回滚** | `DefaultConfig.rollback()` 从 `ConfigVersion` 快照还原（默认保留最近 10 个） |
-| **灰度发布** | `GrayRouter` 匹配 `GrayRule`（IP_LIST / IP_RANGE / PERCENTAGE / HEADER） |
-| **变更回调** | `@ConfigChange` 注解——纯 Java，无 Spring 依赖 |
+| 能力                | 实现                                                                                           |
+|:--------------------|:-----------------------------------------------------------------------------------------------|
+| **带版本号发布**    | `ConfigPublisher` + `Sequence` 原子序列号（CacheX CAS，避免时钟回拨）                          |
+| **版本回滚**        | `DefaultConfig.rollback()` 从 `ConfigVersion` 快照还原（默认保留最近 10 个）                   |
+| **灰度发布**        | `GrayRouter` 匹配 `GrayRule`（IP_LIST / IP_RANGE / PERCENTAGE / HEADER）                       |
+| **变更回调**        | `@ConfigChange` 注解——纯 Java，无 Spring 依赖                                                  |
 | **推送+轮询双通路** | 配置变更：`ConfigPublisher.notify()` 直接推送；实例变更：`HealthProbeScheduler` 定时 scan+diff |
 
 ```java
@@ -101,27 +109,28 @@ rule.setGrayContent("jdbc:mysql://canary/...");
 
 服务端主动探测，可插拔探测器：
 
-| 探测器 | 协议 | 适用场景 |
-|:---|:---|:---|
-| `HttpProber` | HTTP GET/HEAD | 标准 Web 服务 |
-| `TcpProber` | TCP 连接 | 非 HTTP 服务 |
-| `McpPingProber` | MCP JSON-RPC ping/pong | MCP 服务器 |
-| `ProcessProber` | 本地 PID 存活检测 | 同机进程 |
-| `CompositeProber` | 聚合多个探测器 | 多协议服务 |
+| 探测器            | 协议                   | 适用场景      |
+|:------------------|:-----------------------|:--------------|
+| `HttpProber`      | HTTP GET/HEAD          | 标准 Web 服务 |
+| `TcpProber`       | TCP 连接               | 非 HTTP 服务  |
+| `McpPingProber`   | MCP JSON-RPC ping/pong | MCP 服务器    |
+| `ProcessProber`   | 本地 PID 存活检测      | 同机进程      |
+| `CompositeProber` | 聚合多个探测器         | 多协议服务    |
 
-`HealthProbeScheduler` 内置线程池（默认并发度 = `min(32, instanceCount/10)`），对所有已注册实例并发探测。健康实例续期 TTL；不健康实例不续期，TTL 到期后由 CacheX 自动清理。
+`HealthProbeScheduler` 内置线程池（默认并发度 = `min(32, instanceCount/10)`），对所有已注册实例并发探测。健康实例续期
+TTL；不健康实例不续期，TTL 到期后由 CacheX 自动清理。
 
 ### 🛡️ 安全与防护
 
-| 组件 | 功能 |
-|:---|:---|
-| `AccessTokenStore` | HMAC-SHA256 签发 Token，CacheX 支持主动吊销 |
+| 组件                  | 功能                                                             |
+|:----------------------|:-----------------------------------------------------------------|
+| `AccessTokenStore`    | HMAC-SHA256 签发 Token，CacheX 支持主动吊销                      |
 | `AccessTokenResolver` | 两步校验：HMAC 重新验签（防伪造）+ CacheX 黑名单检查（支持吊销） |
-| `AccessGuard` | RBAC 权限校验（ADMIN / PROVIDER / CONSUMER） |
-| `NamespaceGuard` | 阻止跨 namespace 写操作 |
-| `RateLimiter` | 令牌桶限流，按 namespace/method 维度（CacheX 计数） |
-| `CircuitBreaker` | 状态机：CLOSED → OPEN → HALF_OPEN |
-| `ParamValidator` | 入参校验（正则 `^[a-zA-Z0-9._-]{1,128}$`），防 CacheX key 注入 |
+| `AccessGuard`         | RBAC 权限校验（ADMIN / PROVIDER / CONSUMER）                     |
+| `NamespaceGuard`      | 阻止跨 namespace 写操作                                          |
+| `RateLimiter`         | 令牌桶限流，按 namespace/method 维度（CacheX 计数）              |
+| `CircuitBreaker`      | 状态机：CLOSED → OPEN → HALF_OPEN                                |
+| `ParamValidator`      | 入参校验（正则 `^[a-zA-Z0-9._-]{1,128}$`），防 CacheX key 注入   |
 
 ### 🌉 与 bus-vortex 联动（VortexBridge）
 
@@ -144,16 +153,16 @@ ApiRegistry.register()
 
 所有核心操作均通过 `Metrics` 静态门面埋点：
 
-| 指标名 | 类型 | 埋点位置 |
-|:---|:---|:---|
-| `cortex.registry.register.total` | Counter | ApiRegistry.register |
-| `cortex.registry.deregister.total` | Counter | ApiRegistry.deregister |
-| `cortex.registry.instances.active` | Gauge | HealthProbeScheduler |
-| `cortex.config.publish.total` | Counter | ConfigPublisher.publish |
-| `cortex.health.check.total` | Counter | Prober 各实现 |
-| `cortex.vortex.sync.total` | Counter | VortexBridge.SyncWorker |
-| `cortex.security.token.issued` | Counter | AccessTokenStore.issue |
-| `cortex.registry.query.duration` | Timer | AbstractRegistry.query |
+| 指标名                             | 类型    | 埋点位置                |
+|:-----------------------------------|:--------|:------------------------|
+| `cortex.registry.register.total`   | Counter | ApiRegistry.register    |
+| `cortex.registry.deregister.total` | Counter | ApiRegistry.deregister  |
+| `cortex.registry.instances.active` | Gauge   | HealthProbeScheduler    |
+| `cortex.config.publish.total`      | Counter | ConfigPublisher.publish |
+| `cortex.health.check.total`        | Counter | Prober 各实现           |
+| `cortex.vortex.sync.total`         | Counter | VortexBridge.SyncWorker |
+| `cortex.security.token.issued`     | Counter | AccessTokenStore.issue  |
+| `cortex.registry.query.duration`   | Timer   | AbstractRegistry.query  |
 
 -----
 
@@ -177,7 +186,8 @@ bus:
     server-addr: 127.0.0.1:8766   # 唯一必填项
 ```
 
-> **命名空间说明**：`namespace` 不作为应用侧固定 YAML 配置项。运行时由上层系统动态决定（Token 中的 namespace 声明 / 请求 Header `X-Namespace` / 管理后台上下文），未提供时回落到 `public`。
+> **命名空间说明**：`namespace` 不作为应用侧固定 YAML 配置项。运行时由上层系统动态决定（Token 中的 namespace 声明 / 请求
+> Header `X-Namespace` / 管理后台上下文），未提供时回落到 `public`。
 
 ### 第三步：启用注解
 
@@ -207,33 +217,67 @@ import org.miaixz.bus.cortex.registry.api.Instance;
 
 // 注册服务 + 实例
 ApiAssets service = new ApiAssets();
-service.setNamespace_id("production");
-service.setApp_id("order-service");
-service.setMethod("vortex.user.get");
-service.setVersion("v1.0.0");
-service.setPath("/v2/api");
-service.setProtocol(1);  // 1=HTTP
-service.setVerb(1);      // 1=GET
+service.
 
-Instance instance = new Instance();
-instance.setNamespace_id("production");
-instance.setApp_id("order-service");
-instance.setMethod("vortex.user.get");
-instance.setVersion("v1.0.0");
-instance.setHost("192.168.1.10");
-instance.setPort(8080);
-instance.setWeight(100);
+        setNamespace_id("production");
+service.
 
-Cortex.apiRegistry().register(service, instance);
+        setApp_id("order-service");
+service.
 
-// 查询 API 定义
-List<ApiAssets> results = Cortex.query(
-    Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(),
-    ApiAssets.class
-);
+        setMethod("vortex.user.get");
+service.
+
+        setVersion("v1.0.0");
+service.
+
+        setPath("/v2/api");
+service.
+
+        setProtocol(1);  // 1=HTTP
+service.
+
+        setVerb(1);      // 1=GET
+
+        Instance instance = new Instance();
+instance.
+
+        setNamespace_id("production");
+instance.
+
+        setApp_id("order-service");
+instance.
+
+        setMethod("vortex.user.get");
+instance.
+
+        setVersion("v1.0.0");
+instance.
+
+        setHost("192.168.1.10");
+instance.
+
+        setPort(8080);
+instance.
+
+        setWeight(100);
+
+Cortex.
+
+        apiRegistry().
+
+        register(service, instance);
+
+        // 查询 API 定义
+        List<ApiAssets> results = Cortex.query(
+                Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(),
+                ApiAssets.class
+        );
 
 // 注销
-Cortex.deregister("production", "vortex.user.get:v1.0.0");
+Cortex.
+
+        deregister("production","vortex.user.get:v1.0.0");
 ```
 
 ### 2. 配置管理
@@ -278,15 +322,19 @@ public class OrderService {
 ```java
 // 订阅实例变化
 String watchId = Cortex.apiRegistry().watch(
-    Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(),
-    (added, removed, updated) -> {
-        log.info("实例变更: 新增 {} 下线 {} 更新 {}",
-            added.size(), removed.size(), updated.size());
-    }
-);
+                Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(),
+                (added, removed, updated) -> {
+                    log.info("实例变更: 新增 {} 下线 {} 更新 {}",
+                            added.size(), removed.size(), updated.size());
+                }
+        );
 
 // 取消订阅
-Cortex.apiRegistry().unwatch(watchId);
+Cortex.
+
+apiRegistry().
+
+unwatch(watchId);
 ```
 
 ### 5. MCP 与 Prompt 注册
@@ -345,20 +393,20 @@ bus:
 
 ### 配置属性说明
 
-| 属性 | 类型 | 默认值 | 说明 |
-|:---|:---|:---|:---|
-| `bus.cortex.server-addr` | String | — | **必填**，注册中心地址 |
-| `bus.cortex.vortex.enabled` | boolean | `false` | 启用 bus-vortex 同步 |
-| `bus.cortex.vortex.sync-url` | String | — | bus-vortex 同步接口地址 |
-| `bus.cortex.vortex.sync-interval` | long | `30000` | 全量同步间隔（ms） |
-| `bus.cortex.vortex.max-retries` | int | `3` | 最大重试次数 |
-| `bus.cortex.security.enabled` | boolean | `false` | 启用 Token + RBAC |
-| `bus.cortex.security.hmac-secret` | String | — | HMAC-SHA256 签名密钥 |
-| `bus.cortex.security.token-expire-seconds` | long | `86400` | Token 有效期（生产建议 3600） |
-| `bus.cortex.health-check.interval-ms` | long | `30000` | 健康探测间隔 |
-| `bus.cortex.health-check.timeout-ms` | long | `5000` | 单实例探测超时 |
-| `bus.cortex.health-check.max-retries` | int | `3` | 探测重试次数 |
-| `bus.cortex.audit.enabled` | boolean | `false` | 启用操作审计日志 |
+| 属性                                       | 类型    | 默认值  | 说明                          |
+|:-------------------------------------------|:--------|:--------|:------------------------------|
+| `bus.cortex.server-addr`                   | String  | —       | **必填**，注册中心地址        |
+| `bus.cortex.vortex.enabled`                | boolean | `false` | 启用 bus-vortex 同步          |
+| `bus.cortex.vortex.sync-url`               | String  | —       | bus-vortex 同步接口地址       |
+| `bus.cortex.vortex.sync-interval`          | long    | `30000` | 全量同步间隔（ms）            |
+| `bus.cortex.vortex.max-retries`            | int     | `3`     | 最大重试次数                  |
+| `bus.cortex.security.enabled`              | boolean | `false` | 启用 Token + RBAC             |
+| `bus.cortex.security.hmac-secret`          | String  | —       | HMAC-SHA256 签名密钥          |
+| `bus.cortex.security.token-expire-seconds` | long    | `86400` | Token 有效期（生产建议 3600） |
+| `bus.cortex.health-check.interval-ms`      | long    | `30000` | 健康探测间隔                  |
+| `bus.cortex.health-check.timeout-ms`       | long    | `5000`  | 单实例探测超时                |
+| `bus.cortex.health-check.max-retries`      | int     | `3`     | 探测重试次数                  |
+| `bus.cortex.audit.enabled`                 | boolean | `false` | 启用操作审计日志              |
 
 -----
 
@@ -429,11 +477,11 @@ CacheX 后端：Memory / Redis / JDBC 均可。
 
 **必须使用 Redis 或 JDBC** 作为 CacheX 后端——Memory 模式无法在多 Pod 间共享唯一性状态。
 
-| 存储 | 唯一性机制 | 生产可用 |
-|:---|:---|:---|
+| 存储   | 唯一性机制           | 生产可用      |
+|:-------|:---------------------|:--------------|
 | Memory | JVM synchronized/CAS | 仅限开发/测试 |
-| JDBC | UNIQUE 约束 + upsert | 小规模生产 |
-| Redis | `SETNX` / Lua CAS | **推荐** |
+| JDBC   | UNIQUE 约束 + upsert | 小规模生产    |
+| Redis  | `SETNX` / Lua CAS    | **推荐**      |
 
 ### Pod IP 与滚动发布
 
@@ -453,7 +501,8 @@ strategy:
     maxUnavailable: 1
 ```
 
-TTL 建议：`healthCheck.intervalMs × 3`（默认 90s）。HealthProbeScheduler 为健康实例续期 TTL；不健康实例不续期，到期后由 CacheX 自动清理。
+TTL 建议：`healthCheck.intervalMs × 3`（默认 90s）。HealthProbeScheduler 为健康实例续期 TTL；不健康实例不续期，到期后由 CacheX
+自动清理。
 
 ### PreStop Hook（防非优雅退出）
 
@@ -474,8 +523,8 @@ terminationGracePeriodSeconds: 30
 ## 🔄 版本兼容性
 
 | Bus Cortex 版本 | Spring Boot 版本 | JDK 版本 |
-|:---|:---|:---|
-| 8.x | 3.x+ | 17+ |
+|:----------------|:-----------------|:---------|
+| 8.x             | 3.x+             | 17+      |
 
 -----
 

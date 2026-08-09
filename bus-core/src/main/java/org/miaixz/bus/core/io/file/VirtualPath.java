@@ -42,7 +42,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * A virtual path can be associated with a {@link Resource} object, which represents the content at that path.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class VirtualPath implements Path {
 

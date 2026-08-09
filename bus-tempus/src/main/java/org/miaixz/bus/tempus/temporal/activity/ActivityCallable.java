@@ -32,7 +32,6 @@ package org.miaixz.bus.tempus.temporal.activity;
  * @param <R> activity request type
  * @param <C> activity result type
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ActivityCallable<R, C> {
 

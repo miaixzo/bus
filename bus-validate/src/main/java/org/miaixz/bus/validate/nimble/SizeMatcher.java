@@ -31,7 +31,6 @@ import org.miaixz.bus.validate.magic.annotation.Size;
  * Validator for the {@link Size} annotation, which checks the size of various data types.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SizeMatcher implements Matcher<Object, Size> {
 

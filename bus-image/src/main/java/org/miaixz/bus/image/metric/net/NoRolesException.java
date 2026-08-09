@@ -29,7 +29,6 @@ import org.miaixz.bus.image.metric.TransferCapability;
  * Represents the NoRolesException type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NoRolesException extends IOException {
 

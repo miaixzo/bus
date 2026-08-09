@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * Includes key statistics of TCP and UDP protocols
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public interface InternetProtocolStats {
@@ -78,7 +77,6 @@ public interface InternetProtocolStats {
      * The TCP connection state as described in RFC 793.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum TcpState {
 
@@ -145,9 +143,7 @@ public interface InternetProtocolStats {
         /**
          * No TCP state.
          */
-        NONE
-
-        ;
+        NONE;
 
         /**
          * Maps a BSD TCP state code to a {@link TcpState}.
@@ -294,7 +290,6 @@ public interface InternetProtocolStats {
      * Encapsulates statistics associated with a TCP connection.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Immutable
     final class TcpStats {
@@ -499,7 +494,6 @@ public interface InternetProtocolStats {
      * Encapsulates statistics associated with a UDP connection.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Immutable
     final class UdpStats {
@@ -596,7 +590,6 @@ public interface InternetProtocolStats {
      * Encapsulates information associated with an IP connection.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Immutable
     final class IPConnection {

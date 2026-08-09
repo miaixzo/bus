@@ -21,6 +21,5 @@
  * Provides classes related to the Twelve Yellow and Black Path Deities (黄道黑道十二神) in Chinese traditional calendar.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.center.date.culture.star.twelve;

@@ -38,7 +38,6 @@ import org.miaixz.bus.setting.nimble.props.Props;
  * the {@link INI} builder.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IniSetting extends ArrayList<IniElement> {
 

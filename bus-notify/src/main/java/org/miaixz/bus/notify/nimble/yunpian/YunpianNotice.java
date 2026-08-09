@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.notify.nimble.yunpian;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -32,14 +30,18 @@ import org.miaixz.bus.notify.magic.Notice;
  * Notice for Yunpian SMS service.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class YunpianNotice extends Notice {
+
+    /**
+     * Constructs a new {@code YunpianNotice} instance.
+     */
+    public YunpianNotice() {
+        // No initialization required.
+    }
 
     /**
      * The API key for Yunpian API.

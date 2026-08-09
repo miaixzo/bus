@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.pay.nimble.wechat.entity.v3;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -29,14 +27,18 @@ import lombok.experimental.SuperBuilder;
  * Model for the H5 Scene Info object in the V3 Unified Order API.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class H5Info {
+
+    /**
+     * Constructs a new {@code H5Info} instance.
+     */
+    public H5Info() {
+        // No initialization required.
+    }
 
     /**
      * The scene type (e.g., "iOS", "Android", "Wap").

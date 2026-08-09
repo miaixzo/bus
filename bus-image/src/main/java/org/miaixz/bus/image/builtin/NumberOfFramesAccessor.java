@@ -25,7 +25,6 @@ package org.miaixz.bus.image.builtin;
  * based on the instance UID.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NumberOfFramesAccessor {
 

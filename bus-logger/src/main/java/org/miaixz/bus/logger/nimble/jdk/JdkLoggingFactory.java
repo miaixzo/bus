@@ -32,7 +32,6 @@ import org.miaixz.bus.logger.magic.AbstractFactory;
  * A factory for creating {@link java.util.logging.Logger} instances.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JdkLoggingFactory extends AbstractFactory {
 

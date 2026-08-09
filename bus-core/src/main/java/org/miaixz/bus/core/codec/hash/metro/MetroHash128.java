@@ -38,7 +38,6 @@ import org.miaixz.bus.core.codec.hash.Hash128;
  * Adapted from: <a href="https://github.com/postamar/java-metrohash/">https://github.com/postamar/java-metrohash/</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MetroHash128 extends AbstractMetroHash<MetroHash128> implements Hash128<byte[]> {
 

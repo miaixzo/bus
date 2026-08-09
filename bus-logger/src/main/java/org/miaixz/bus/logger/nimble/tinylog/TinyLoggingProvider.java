@@ -37,7 +37,6 @@ import org.miaixz.bus.logger.magic.AbstractProvider;
  * A logger provider implementation that wraps the tinylog logging framework.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TinyLoggingProvider extends AbstractProvider {
 

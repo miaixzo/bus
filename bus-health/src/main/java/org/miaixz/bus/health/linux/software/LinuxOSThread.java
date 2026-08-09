@@ -35,7 +35,6 @@ import org.miaixz.bus.health.linux.driver.proc.ProcessStat;
  * OSThread implementation
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class LinuxOSThread extends AbstractOSThread {
@@ -297,7 +296,6 @@ public class LinuxOSThread extends AbstractOSThread {
      * /proc/pid/task/tid/stat per the man file.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum ThreadPidStat {
 

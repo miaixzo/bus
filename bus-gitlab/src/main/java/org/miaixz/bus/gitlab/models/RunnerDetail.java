@@ -33,21 +33,57 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The runner detail class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RunnerDetail extends Runner {
 
+    /**
+     * Constructs a new {@code RunnerDetail} instance.
+     */
+    public RunnerDetail() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852280720196L;
 
+    /**
+     * The architecture value.
+     */
     private String architecture;
+    /**
+     * The platform value.
+     */
     private String platform;
+    /**
+     * The contacted at value.
+     */
     private Date contactedAt;
+    /**
+     * The projects value.
+     */
     private List<Project> projects;
+    /**
+     * The token value.
+     */
     private String token;
+    /**
+     * The revision value.
+     */
     private String revision;
+    /**
+     * The tag list value.
+     */
     private List<String> tagList;
+    /**
+     * The version value.
+     */
     private String version;
+    /**
+     * The access level value.
+     */
     private RunnerAccessLevel accessLevel;
 
     /**
@@ -59,7 +95,6 @@ public class RunnerDetail extends Runner {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum RunnerAccessLevel {
 
@@ -72,6 +107,9 @@ public class RunnerDetail extends Runner {
          */
         REF_PROTECTED;
 
+        /**
+         * The enum codec value.
+         */
         private static JacksonJsonEnumCodec<RunnerAccessLevel> enumCodec = new JacksonJsonEnumCodec<>(
                 RunnerAccessLevel.class);
 

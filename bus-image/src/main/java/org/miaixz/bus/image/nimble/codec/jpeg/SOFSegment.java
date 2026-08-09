@@ -25,7 +25,6 @@ import org.miaixz.bus.core.xyz.ByteKit;
  * Represents the SOFSegment type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SOFSegment {
 

@@ -33,7 +33,6 @@ import org.miaixz.bus.health.unix.shared.jna.CLibrary;
  * the JNA project.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface LinuxLibc extends LibC, CLibrary {
 
@@ -91,7 +90,6 @@ public interface LinuxLibc extends LibC, CLibrary {
      * JNA wrapper for the rusage structure.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "ru_utime_sec", "ru_utime_usec", "ru_stime_sec", "ru_stime_usec", "ru_maxrss", "ru_ixrss", "ru_idrss",
             "ru_isrss", "ru_minflt", "ru_majflt", "ru_nswap", "ru_inblock", "ru_oublock", "ru_msgsnd", "ru_msgrcv",
@@ -202,18 +200,17 @@ public interface LinuxLibc extends LibC, CLibrary {
      * <p>
      * This class maps to the native Linux utmpx structure: {@code
      * struct utmpx {
-     *     short ut_type;
-     *     pid_t ut_pid;
-     *     char ut_line[UT_LINESIZE];
-     *     char ut_id[4];
-     *     char ut_user[UT_NAMESIZE];
-     *     char ut_host[UT_HOSTSIZE];
-     *     struct exit_status ut_exit; int ut_session; struct timeval ut_tv; int32_t ut_addr_v6[4]; char reserved[20];
+     * short ut_type;
+     * pid_t ut_pid;
+     * char ut_line[UT_LINESIZE];
+     * char ut_id[4];
+     * char ut_user[UT_NAMESIZE];
+     * char ut_host[UT_HOSTSIZE];
+     * struct exit_status ut_exit; int ut_session; struct timeval ut_tv; int32_t ut_addr_v6[4]; char reserved[20];
      * }; }
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "ut_type", "ut_pid", "ut_line", "ut_id", "ut_user", "ut_host", "ut_exit", "ut_session", "ut_tv",
             "ut_addr_v6", "reserved" })
@@ -280,7 +277,6 @@ public interface LinuxLibc extends LibC, CLibrary {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "e_termination", "e_exit" })
     class Exit_status extends Structure {
@@ -310,7 +306,6 @@ public interface LinuxLibc extends LibC, CLibrary {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Ut_Tv extends Structure {

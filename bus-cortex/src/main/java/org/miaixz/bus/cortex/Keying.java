@@ -40,7 +40,6 @@ import org.miaixz.bus.cortex.registry.RegistryIdentity;
  *
  * @param <S> domain-owned key specification type
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Keying<S> {
 
@@ -88,7 +87,6 @@ public interface Keying<S> {
      * Route-side generation intentionally does not auto-fill these dimensions with persistence defaults.
      * </p>
      *
-     * @author Kimi Liu
      * @param mode        registry key mode
      * @param namespace   namespace
      * @param type        registry type
@@ -298,7 +296,6 @@ public interface Keying<S> {
      * @param profile   runtime profile
      * @param revision  revision number
      * @author Kimi Liu
-     * @since Java 21+
      */
     record SettingSpec(int mode, String namespace, String group, String dataId, String profile, String revision) {
 

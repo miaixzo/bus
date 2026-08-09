@@ -34,7 +34,6 @@ import org.miaixz.bus.cortex.Type;
  *
  * @param <T> changed asset type
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
@@ -44,7 +43,6 @@ public class RegistryChange<T extends Assets> implements Change<T> {
      * Registry mutation kinds that can produce a change notification.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Action {
         /**

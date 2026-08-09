@@ -49,7 +49,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @param <K> The type of the keys.
  * @param <V> The type of the values.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LinkedForestMap<K, V> implements ForestMap<K, V> {
 
@@ -322,7 +321,6 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
      * @param <K> The type of the key.
      * @param <V> The type of the value.
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class TreeEntryNode<K, V> implements TreeEntry<K, V> {
 
@@ -691,7 +689,6 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
      * @param <V> The value type.
      * @param <N> The type of the wrapped {@link TreeEntry}.
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class EntryNodeWrapper<K, V, N extends TreeEntry<K, V>>
             implements Map.Entry<K, TreeEntry<K, V>>, Wrapper<N> {

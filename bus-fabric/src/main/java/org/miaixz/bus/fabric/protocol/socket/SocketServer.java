@@ -83,7 +83,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * Socket server listener that accepts TCP sessions through the shared fabric runtime.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class SocketServer implements Lifecycle {
 
@@ -1438,7 +1437,6 @@ public final class SocketServer implements Lifecycle {
      * Builder for socket servers.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

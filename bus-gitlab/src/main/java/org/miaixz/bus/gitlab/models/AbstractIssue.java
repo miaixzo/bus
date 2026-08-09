@@ -42,7 +42,6 @@ import tools.jackson.databind.node.ValueNode;
  * The abstract issue class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
@@ -55,55 +54,172 @@ public abstract class AbstractIssue implements Serializable {
         // No initialization required.
     }
 
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852235017309L;
 
+    /**
+     * The references value.
+     */
     private References references;
 
+    /**
+     * The assignee value.
+     */
     private Assignee assignee;
+    /**
+     * The assignees value.
+     */
     private List<Assignee> assignees;
+    /**
+     * The author value.
+     */
     private Author author;
+    /**
+     * The confidential value.
+     */
     private Boolean confidential;
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The updated at value.
+     */
     private Date updatedAt;
+    /**
+     * The closed at value.
+     */
     private Date closedAt;
+    /**
+     * The closed by value.
+     */
     private User closedBy;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The due date value.
+     */
     private Date dueDate;
 
+    /**
+     * The actual id value.
+     */
     @JsonProperty("id")
     private ValueNode actualId;
 
+    /**
+     * The external id value.
+     */
     @JsonIgnore
     private String externalId;
 
+    /**
+     * The id value.
+     */
     @JsonIgnore
     private Long id;
 
+    /**
+     * The iid value.
+     */
     private Long iid;
+    /**
+     * The labels value.
+     */
     private List<String> labels;
+    /**
+     * The milestone value.
+     */
     private Milestone milestone;
+    /**
+     * The project id value.
+     */
     private Long projectId;
+    /**
+     * The state value.
+     */
     private IssueState state;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The user notes count value.
+     */
     private Integer userNotesCount;
+    /**
+     * The web url value.
+     */
     private String webUrl;
+    /**
+     * The severity value.
+     */
     private String severity;
+    /**
+     * The weight value.
+     */
     private Integer weight;
+    /**
+     * The discussion locked value.
+     */
     private Boolean discussionLocked;
+    /**
+     * The time stats value.
+     */
     private TimeStats timeStats;
+    /**
+     * The issue type value.
+     */
     private String issueType;
+    /**
+     * The epic value.
+     */
     private IssueEpic epic;
+    /**
+     * The imported value.
+     */
     private Boolean imported;
 
+    /**
+     * The upvotes value.
+     */
     private Integer upvotes;
+    /**
+     * The downvotes value.
+     */
     private Integer downvotes;
+    /**
+     * The merge requests count value.
+     */
     private Integer mergeRequestsCount;
+    /**
+     * The has tasks value.
+     */
     private Boolean hasTasks;
+    /**
+     * The task status value.
+     */
     private String taskStatus;
+    /**
+     * The imported from value.
+     */
     private String importedFrom;
+    /**
+     * The health status value.
+     */
     private String healthStatus;
+    /**
+     * The iteration value.
+     */
     private Iteration iteration;
+    /**
+     * The task completion status value.
+     */
     private TaskCompletionStatus taskCompletionStatus;
 
     /**
@@ -188,7 +304,6 @@ public abstract class AbstractIssue implements Serializable {
      * The task completion status class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -201,10 +316,19 @@ public abstract class AbstractIssue implements Serializable {
             // No initialization required.
         }
 
+        /**
+         * The serial version uid value.
+         */
         @Serial
         private static final long serialVersionUID = 2852235115381L;
 
+        /**
+         * The count value.
+         */
         private Integer count;
+        /**
+         * The completed count value.
+         */
         private Integer completedCount;
 
         /**

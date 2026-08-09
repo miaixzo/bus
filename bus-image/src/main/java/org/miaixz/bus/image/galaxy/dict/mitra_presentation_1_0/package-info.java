@@ -21,6 +21,5 @@
  * UID Dictionary from mitra_presentation_1_0
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.mitra_presentation_1_0;

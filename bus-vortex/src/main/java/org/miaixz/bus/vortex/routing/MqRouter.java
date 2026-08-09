@@ -55,7 +55,6 @@ import reactor.core.publisher.Mono;
  * Generic type parameters: {@code Router<ServerRequest, ServerResponse>}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MqRouter implements Router<ServerRequest, ServerResponse> {
 

@@ -32,7 +32,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * Owns the single WebSocket close-handshake deadline.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class WebSocketDeadline implements AutoCloseable {
 

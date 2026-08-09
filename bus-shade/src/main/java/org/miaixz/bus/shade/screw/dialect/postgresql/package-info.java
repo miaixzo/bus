@@ -21,6 +21,5 @@
  * Provides PostgreSQL-specific database dialect support.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.shade.screw.dialect.postgresql;

@@ -32,7 +32,6 @@ import org.miaixz.bus.core.convert.Convert;
  * @param <K> The type of the key.
  * @param <G> The type of the group key.
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface GroupedTypeGetter<K, G> {
 

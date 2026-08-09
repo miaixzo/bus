@@ -47,7 +47,6 @@ import org.miaixz.bus.setting.nimble.ini.*;
  * support for sections (groups), variable substitution, and custom line formatters.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Loader {
 
@@ -595,7 +594,6 @@ public class Loader {
      * decrypting encrypted values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FunctionalInterface
     public interface ValueEditor {

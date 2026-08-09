@@ -35,7 +35,6 @@ import org.miaixz.bus.fabric.network.dns.message.DnsName;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsRecordSet {
 

@@ -37,7 +37,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @param <T> The type of the bean being traversed.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BeanPath<T> implements Iterator<BeanPath<T>> {
 

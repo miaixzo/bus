@@ -23,7 +23,6 @@ package org.miaixz.bus.fabric.network.dns.provider;
  * External sink that handles DNS Dynamic Update requests outside the query hot path.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface DnsDynamicUpdateSink {
 

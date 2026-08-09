@@ -27,10 +27,19 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  * The bugzilla service class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BugzillaService extends NotificationService {
 
+    /**
+     * Constructs a new {@code BugzillaService} instance.
+     */
+    public BugzillaService() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852283785895L;
 

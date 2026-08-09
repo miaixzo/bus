@@ -38,7 +38,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the ImageDescriptor type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ImageDescriptor {
 

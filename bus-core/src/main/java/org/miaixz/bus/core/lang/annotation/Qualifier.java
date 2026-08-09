@@ -35,12 +35,11 @@ import java.lang.annotation.*;
  *   {@code @Retention(RetentionPolicy.RUNTIME)}
  *   public @interface Offline {}
  * </pre>
- *
+ * <p>
  * This {@code @Offline} annotation can then be used at an injection point to request a specific "offline"
  * implementation of a service. This concept is central to standards like JSR-330 ({@code jakarta.inject.Qualifier}).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

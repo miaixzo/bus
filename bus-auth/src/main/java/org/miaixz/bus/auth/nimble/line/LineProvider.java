@@ -45,7 +45,6 @@ import org.miaixz.bus.logger.Logger;
  * LINE login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LineProvider extends AbstractProvider {
 

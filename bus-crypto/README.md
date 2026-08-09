@@ -8,7 +8,9 @@
 
 ## 📖 Project Introduction
 
-**Bus Crypto** is an enterprise-grade cryptographic framework for Java, providing comprehensive encryption, decryption, hashing, and digital signature capabilities. Built on top of the Java Cryptography Architecture (JCA) and enhanced with Bouncy Castle, it offers a unified, developer-friendly API for all your security needs.
+**Bus Crypto** is an enterprise-grade cryptographic framework for Java, providing comprehensive encryption, decryption,
+hashing, and digital signature capabilities. Built on top of the Java Cryptography Architecture (JCA) and enhanced with
+Bouncy Castle, it offers a unified, developer-friendly API for all your security needs.
 
 -----
 
@@ -27,14 +29,14 @@
 
 ### ⚡ Advanced Features
 
-| Feature | Description |
-| :--- | :--- |
-| **Chinese National Standards** | Full support for SM2/SM3/SM4 (国密) algorithms |
-| **Multiple Modes** | ECB, CBC, CTR, OFB, CFB, GCM, etc. |
-| **Flexible Padding** | PKCS5Padding, PKCS7Padding, NoPadding, ISO10126Padding |
-| **Stream & Block Ciphers** | Support for both encryption paradigms |
-| **Bouncy Castle Integration** | Optional BC provider for extended algorithms |
-| **Thread-Safe Operations** | Safe for concurrent use in multi-threaded environments |
+| Feature                        | Description                                            |
+|:-------------------------------|:-------------------------------------------------------|
+| **Chinese National Standards** | Full support for SM2/SM3/SM4 (国密) algorithms         |
+| **Multiple Modes**             | ECB, CBC, CTR, OFB, CFB, GCM, etc.                     |
+| **Flexible Padding**           | PKCS5Padding, PKCS7Padding, NoPadding, ISO10126Padding |
+| **Stream & Block Ciphers**     | Support for both encryption paradigms                  |
+| **Bouncy Castle Integration**  | Optional BC provider for extended algorithms           |
+| **Thread-Safe Operations**     | Safe for concurrent use in multi-threaded environments |
 
 ### 🛡️ Security Best Practices
 
@@ -470,51 +472,51 @@ Builder.disableCustomProvider();
 
 ### Symmetric Algorithms
 
-| Algorithm | Key Size | Block Size | Modes | Notes |
-|:---|:---|:---|:---|:---|
-| **AES** | 128/192/256 | 128 | ECB/CBC/CTR/GCM/OFB/CFB | Most widely used |
-| **DES** | 56 | 64 | ECB/CBC/CTR | Deprecated, legacy only |
-| **TDEA** | 112/168 | 64 | ECB/CBC | Triple DES, legacy |
-| **SM4** | 128 | 128 | ECB/CBC/CTR | Chinese standard |
-| **ChaCha20** | 256 | N/A (stream) | Stream cipher | High performance |
-| **ZUC** | 128/256 | N/A (stream) | Stream cipher | Chinese standard |
-| **RC4** | 40-2048 | N/A (stream) | Stream cipher | Legacy, not recommended |
-| **TEA** | 128 | 64 | ECB | Simple, fast |
+| Algorithm    | Key Size    | Block Size   | Modes                   | Notes                   |
+|:-------------|:------------|:-------------|:------------------------|:------------------------|
+| **AES**      | 128/192/256 | 128          | ECB/CBC/CTR/GCM/OFB/CFB | Most widely used        |
+| **DES**      | 56          | 64           | ECB/CBC/CTR             | Deprecated, legacy only |
+| **TDEA**     | 112/168     | 64           | ECB/CBC                 | Triple DES, legacy      |
+| **SM4**      | 128         | 128          | ECB/CBC/CTR             | Chinese standard        |
+| **ChaCha20** | 256         | N/A (stream) | Stream cipher           | High performance        |
+| **ZUC**      | 128/256     | N/A (stream) | Stream cipher           | Chinese standard        |
+| **RC4**      | 40-2048     | N/A (stream) | Stream cipher           | Legacy, not recommended |
+| **TEA**      | 128         | 64           | ECB                     | Simple, fast            |
 
 ### Asymmetric Algorithms
 
-| Algorithm | Key Size | Operations | Notes |
-|:---|:---|:---|:---|
-| **RSA** | 512-4096 | Encrypt/Decrypt/Sign/Verify | Most common |
-| **SM2** | 256 | Encrypt/Decrypt/Sign/Verify | Chinese ECC standard |
-| **ECIES** | Variable | Encrypt/Decrypt | Elliptic Curve Integrated |
+| Algorithm | Key Size | Operations                  | Notes                     |
+|:----------|:---------|:----------------------------|:--------------------------|
+| **RSA**   | 512-4096 | Encrypt/Decrypt/Sign/Verify | Most common               |
+| **SM2**   | 256      | Encrypt/Decrypt/Sign/Verify | Chinese ECC standard      |
+| **ECIES** | Variable | Encrypt/Decrypt             | Elliptic Curve Integrated |
 
 ### Digest Algorithms
 
-| Algorithm | Output Size | Notes |
-|:---|:---|:---|
-| **MD5** | 128 bits | Legacy, not secure |
-| **SHA-1** | 160 bits | Legacy, not secure |
-| **SHA-256** | 256 bits | Recommended |
-| **SHA-512** | 512 bits | High security |
-| **SM3** | 256 bits | Chinese standard |
+| Algorithm   | Output Size | Notes              |
+|:------------|:------------|:-------------------|
+| **MD5**     | 128 bits    | Legacy, not secure |
+| **SHA-1**   | 160 bits    | Legacy, not secure |
+| **SHA-256** | 256 bits    | Recommended        |
+| **SHA-512** | 512 bits    | High security      |
+| **SM3**     | 256 bits    | Chinese standard   |
 
 ### HMAC Algorithms
 
-| Algorithm | Output Size | Notes |
-|:---|:---|:---|
-| **HMac-MD5** | 128 bits | Legacy use only |
-| **HMac-SHA1** | 160 bits | Legacy use only |
-| **HMac-SHA256** | 256 bits | Recommended |
-| **HMac-SHA512** | 512 bits | High security |
-| **HMac-SM3** | 256 bits | Chinese standard |
+| Algorithm       | Output Size | Notes            |
+|:----------------|:------------|:-----------------|
+| **HMac-MD5**    | 128 bits    | Legacy use only  |
+| **HMac-SHA1**   | 160 bits    | Legacy use only  |
+| **HMac-SHA256** | 256 bits    | Recommended      |
+| **HMac-SHA512** | 512 bits    | High security    |
+| **HMac-SM3**    | 256 bits    | Chinese standard |
 
 ### Password Hashing
 
-| Algorithm | Security | Speed | Notes |
-|:---|:---|:---|:---|
-| **BCrypt** | High | Slow | Recommended |
-| **PBKDF2** | High | Slow | PKCS#5 standard |
+| Algorithm  | Security  | Speed      | Notes              |
+|:-----------|:----------|:-----------|:-------------------|
+| **BCrypt** | High      | Slow       | Recommended        |
+| **PBKDF2** | High      | Slow       | PKCS#5 standard    |
 | **Argon2** | Very High | Adjustable | Winner of PHC 2015 |
 
 -----
@@ -594,11 +596,13 @@ SM4 sm4 = Builder.sm4();
 ```
 
 **Use AES** for:
+
 - Global applications
 - Maximum compatibility
 - Better performance on most platforms
 
 **Use SM4** for:
+
 - Chinese domestic applications
 - Compliance with Chinese cryptography regulations
 - Integration with Chinese systems
@@ -677,6 +681,7 @@ String hash = Builder.md5(password);
 ```
 
 **BCrypt advantages**:
+
 - Built-in salt generation
 - Computationally slow (prevents brute force)
 - Adjustable work factor
@@ -731,9 +736,9 @@ public class SecurityConfig {
 ## 🔄 Version Compatibility
 
 | Bus Crypto Version | JDK Version | Bouncy Castle Version |
-|:---|:---|:---|
-| 8.x | 17+ | 1.70+ (optional) |
-| 7.x | 11+ | 1.60+ (optional) |
+|:-------------------|:------------|:----------------------|
+| 8.x                | 17+         | 1.70+ (optional)      |
+| 7.x                | 11+         | 1.60+ (optional)      |
 
 -----
 
@@ -742,21 +747,21 @@ public class SecurityConfig {
 ### Algorithm Selection
 
 1. **For new applications**:
-   - Use AES-256 for symmetric encryption
-   - Use RSA-4096 or ECC for asymmetric encryption
-   - Use SHA-256 or SHA-512 for hashing
-   - Use BCrypt or Argon2 for passwords
+    - Use AES-256 for symmetric encryption
+    - Use RSA-4096 or ECC for asymmetric encryption
+    - Use SHA-256 or SHA-512 for hashing
+    - Use BCrypt or Argon2 for passwords
 
 2. **For Chinese domestic applications**:
-   - Use SM2 for asymmetric encryption
-   - Use SM3 for hashing
-   - Use SM4 for symmetric encryption
+    - Use SM2 for asymmetric encryption
+    - Use SM3 for hashing
+    - Use SM4 for symmetric encryption
 
 3. **Avoid these algorithms**:
-   - MD5 (except for non-cryptographic hashes)
-   - SHA-1 (except for compatibility)
-   - DES (use AES instead)
-   - RC4 (broken stream cipher)
+    - MD5 (except for non-cryptographic hashes)
+    - SHA-1 (except for compatibility)
+    - DES (use AES instead)
+    - RC4 (broken stream cipher)
 
 ### Key Management
 

@@ -40,7 +40,6 @@ import org.miaixz.bus.image.nimble.KernelData;
  * handling across the application.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ImageCV extends Mat implements PlanarImage {
 

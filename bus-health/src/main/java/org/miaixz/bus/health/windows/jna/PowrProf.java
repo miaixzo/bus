@@ -31,7 +31,6 @@ import org.miaixz.bus.health.Builder;
  * into the JNA project.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
 
@@ -44,7 +43,6 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
      * The BATTERY_QUERY_INFORMATION_LEVEL enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum BATTERY_QUERY_INFORMATION_LEVEL {
         /**
@@ -89,7 +87,6 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
      * Contains information about the current state of the system battery.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "acOnLine", "batteryPresent", "charging", "discharging", "spare1", "tag", "maxCapacity",
             "remainingCapacity", "rate", "estimatedTime", "defaultAlert1", "defaultAlert2" })
@@ -186,7 +183,6 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
      * Contains information about a processor.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "number", "maxMhz", "currentMhz", "mhzLimit", "maxIdleState", "currentIdleState" })
     class ProcessorPowerInformation extends Structure {
@@ -244,7 +240,6 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
      * The BATTERY_QUERY_INFORMATION class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "BatteryTag", "InformationLevel", "AtRate" })
     class BATTERY_QUERY_INFORMATION extends Structure implements AutoCloseable {
@@ -286,16 +281,15 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
      * <p>
      * This class maps to the native Windows structure: {@code
      * typedef struct _BATTERY_INFORMATION {
-     *     ULONG Capabilities;
-     *     BYTE Technology;
-     *     BYTE Reserved[3];
-     *     CHAR Chemistry[4];
-     *     ULONG DesignedCapacity; ULONG FullChargedCapacity; ULONG DefaultAlert1; ULONG DefaultAlert2; ULONG
+     * ULONG Capabilities;
+     * BYTE Technology;
+     * BYTE Reserved[3];
+     * CHAR Chemistry[4];
+     * ULONG DesignedCapacity; ULONG FullChargedCapacity; ULONG DefaultAlert1; ULONG DefaultAlert2; ULONG
      * CriticalBias; ULONG CycleCount; } BATTERY_INFORMATION; }
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "Capabilities", "Technology", "Reserved", "Chemistry", "DesignedCapacity", "FullChargedCapacity",
             "DefaultAlert1", "DefaultAlert2", "CriticalBias", "CycleCount" })
@@ -375,7 +369,6 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "BatteryTag", "Timeout", "PowerState", "LowCapacity", "HighCapacity" })
     class BATTERY_WAIT_STATUS extends Structure implements AutoCloseable {
@@ -430,7 +423,6 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "PowerState", "Capacity", "Voltage", "Rate" })
     class BATTERY_STATUS extends Structure implements AutoCloseable {
@@ -480,7 +472,6 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "Day", "Month", "Year" })
     class BATTERY_MANUFACTURE_DATE extends Structure implements AutoCloseable {

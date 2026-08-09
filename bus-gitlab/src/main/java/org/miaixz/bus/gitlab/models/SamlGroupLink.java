@@ -28,17 +28,35 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The saml group link class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SamlGroupLink implements Serializable {
 
+    /**
+     * Constructs a new {@code SamlGroupLink} instance.
+     */
+    public SamlGroupLink() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852280791389L;
 
+    /**
+     * The name value.
+     */
     private String name;
 
+    /**
+     * The access level value.
+     */
     private AccessLevel accessLevel;
 
+    /**
+     * The member role id value.
+     */
     private int memberRoleId;
 
     /**

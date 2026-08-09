@@ -50,7 +50,6 @@ import org.miaixz.bus.logger.Logger;
  * Shared static HTTP entry points for the small set of synchronous cortex runtime calls.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Callout {
 
@@ -217,7 +216,6 @@ public final class Callout {
      * Shared current-fabric HTTP execution context for one timeout bucket.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class Client {
 
@@ -367,7 +365,6 @@ public final class Callout {
      * @param errorMessage transport or timeout failure message
      * @param timeout      whether the request timed out before receiving a response
      * @author Kimi Liu
-     * @since Java 21+
      */
     public record Response(int statusCode, String body, String errorMessage, boolean timeout) {
 

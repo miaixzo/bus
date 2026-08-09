@@ -35,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
  * FreeBsdNetworkParams class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class FreeBsdNetworkParams extends AbstractNetworkParams {

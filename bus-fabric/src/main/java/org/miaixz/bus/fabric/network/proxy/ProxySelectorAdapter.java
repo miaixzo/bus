@@ -36,7 +36,6 @@ import org.miaixz.bus.fabric.UnoUrl;
  * Adapter from JDK {@link ProxySelector} to {@link ProxyPlan} snapshots.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ProxySelectorAdapter {
 

@@ -34,7 +34,6 @@ import org.miaixz.bus.starter.limiter.LimiterConfiguration;
  * {@link org.miaixz.bus.limiter.magic.annotation.Downgrade}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

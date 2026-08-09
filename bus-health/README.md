@@ -8,7 +8,10 @@
 
 ## 📖 Project Introduction
 
-**Bus Health** is a cross-platform system health monitoring framework based on OSHI (Operating System and Hardware Information). It provides a unified API for monitoring system and hardware information across Windows, Linux, macOS, and Unix systems. Designed with simplicity and performance in mind, it enables developers to easily obtain comprehensive system health metrics without worrying about underlying platform differences.
+**Bus Health** is a cross-platform system health monitoring framework based on OSHI (Operating System and Hardware
+Information). It provides a unified API for monitoring system and hardware information across Windows, Linux, macOS, and
+Unix systems. Designed with simplicity and performance in mind, it enables developers to easily obtain comprehensive
+system health metrics without worrying about underlying platform differences.
 
 -----
 
@@ -22,15 +25,15 @@
 
 ### ⚡ System Information Monitoring
 
-| Category | Features | Description |
-| :--- | :--- | :--- |
-| **CPU** | Usage, Load, Ticks | Real-time CPU load, per-processor stats, tick counters |
-| **Memory** | Physical, Virtual, Swap | Memory usage, availability, and swap statistics |
-| **Disk** | Storage, Partitions, Usage | Disk drives, partitions, file stores, I/O statistics |
-| **Network** | Interfaces, Bandwidth | Network interfaces, IP addresses, traffic monitoring |
-| **Process** | List, CPU, Memory | Process listing with CPU and memory usage per process |
-| **Hardware** | Sensors, Battery, Display | Temperature, fans, voltage, battery status, display info |
-| **System** | OS, Firmware, Baseboard | OS version, manufacturer, model, serial numbers |
+| Category     | Features                   | Description                                              |
+|:-------------|:---------------------------|:---------------------------------------------------------|
+| **CPU**      | Usage, Load, Ticks         | Real-time CPU load, per-processor stats, tick counters   |
+| **Memory**   | Physical, Virtual, Swap    | Memory usage, availability, and swap statistics          |
+| **Disk**     | Storage, Partitions, Usage | Disk drives, partitions, file stores, I/O statistics     |
+| **Network**  | Interfaces, Bandwidth      | Network interfaces, IP addresses, traffic monitoring     |
+| **Process**  | List, CPU, Memory          | Process listing with CPU and memory usage per process    |
+| **Hardware** | Sensors, Battery, Display  | Temperature, fans, voltage, battery status, display info |
+| **System**   | OS, Firmware, Baseboard    | OS version, manufacturer, model, serial numbers          |
 
 ### 🔍 Advanced Capabilities
 
@@ -366,20 +369,20 @@ result.forEach((key, value) -> System.out.println(key + ": " + value));
 
 ### Available Metrics (TID)
 
-| Identifier | Description | Return Type |
-| :--- | :--- | :--- |
-| `TID.HOST` | Host information | `Host` |
-| `TID.CPU` | CPU usage and statistics | `Cpu` |
-| `TID.MEMORY` | Memory usage | `Memory` |
-| `TID.DISK` | Disk storage information | `List<Disk>` |
-| `TID.JVM` | JVM runtime information | `Jvm` |
-| `TID.ALL_DISK` | All disk usage percentage | `Double` |
-| `TID.PROCESS` | Top processes by CPU | `List<Map<String, Object>>` |
-| `TID.SYSTEM` | Computer system info | `ComputerSystem` |
-| `TID.PROCESSOR` | Processor details | `CentralProcessor` |
-| `TID.HARDWARE` | All hardware information | `Map<String, Object>` |
-| `TID.POWERSOURCES` | Battery/power source info | `Map<String, Object>` |
-| `TID.NETWORKIFS` | Network interface info | `Map<String, Object>` |
+| Identifier         | Description               | Return Type                 |
+|:-------------------|:--------------------------|:----------------------------|
+| `TID.HOST`         | Host information          | `Host`                      |
+| `TID.CPU`          | CPU usage and statistics  | `Cpu`                       |
+| `TID.MEMORY`       | Memory usage              | `Memory`                    |
+| `TID.DISK`         | Disk storage information  | `List<Disk>`                |
+| `TID.JVM`          | JVM runtime information   | `Jvm`                       |
+| `TID.ALL_DISK`     | All disk usage percentage | `Double`                    |
+| `TID.PROCESS`      | Top processes by CPU      | `List<Map<String, Object>>` |
+| `TID.SYSTEM`       | Computer system info      | `ComputerSystem`            |
+| `TID.PROCESSOR`    | Processor details         | `CentralProcessor`          |
+| `TID.HARDWARE`     | All hardware information  | `Map<String, Object>`       |
+| `TID.POWERSOURCES` | Battery/power source info | `Map<String, Object>`       |
+| `TID.NETWORKIFS`   | Network interface info    | `Map<String, Object>`       |
 
 -----
 
@@ -481,6 +484,7 @@ double totalUsage = cpu.getTotalUsage();
 ### Q2: Can I monitor remote systems?
 
 **A**: Bus Health monitors the local system. For remote monitoring, consider:
+
 - Exposing health endpoints via HTTP API
 - Using a monitoring agent that pushes metrics to a central server
 - Integrating with monitoring systems like Prometheus
@@ -503,6 +507,7 @@ for (PowerSource ps : powerSources) {
 ### Q4: What permissions are required?
 
 **A**:
+
 - **Linux/Unix**: Most information works without special permissions
 - **Windows**: Generally no special permissions needed
 - **Some sensors**: May require elevated privileges depending on OS
@@ -510,6 +515,7 @@ for (PowerSource ps : powerSources) {
 ### Q5: How to reduce monitoring overhead?
 
 **A**:
+
 - Query only necessary metrics
 - Increase monitoring interval (e.g., 5-10 seconds instead of 1 second)
 - Use singleton Collector instance
@@ -564,9 +570,9 @@ System.out.println("TX: " + host.getTxBytesPerSecond() + " KB/s");
 ## 🔄 Version Compatibility
 
 | Bus Health Version | JDK Version | OSHI Version |
-| :--- | :--- | :--- |
-| 8.x | 17+ | 6.x+ |
-| 7.x | 11+ | 5.x+ |
+|:-------------------|:------------|:-------------|
+| 8.x                | 17+         | 6.x+         |
+| 7.x                | 11+         | 5.x+         |
 
 -----
 
@@ -580,13 +586,13 @@ System.out.println("TX: " + host.getTxBytesPerSecond() + " KB/s");
 
 ### 2. Query Performance
 
-| Operation | Typical Time | Notes |
-| :--- | :--- | :--- |
-| `getCpu()` | 600ms | Includes measurement interval |
-| `getMemory()` | <10ms | Cached data |
-| `getDisk()` | 20-50ms | File system queries |
-| `getJvm()` | <5ms | JVM MXBean access |
-| `getHost()` | 3000ms | Includes network measurement |
+| Operation     | Typical Time | Notes                         |
+|:--------------|:-------------|:------------------------------|
+| `getCpu()`    | 600ms        | Includes measurement interval |
+| `getMemory()` | <10ms        | Cached data                   |
+| `getDisk()`   | 20-50ms      | File system queries           |
+| `getJvm()`    | <5ms         | JVM MXBean access             |
+| `getHost()`   | 3000ms       | Includes network measurement  |
 
 ### 3. Memory Footprint
 
@@ -617,28 +623,28 @@ public Cpu getCpuWithCache() {
 
 ### Operating Systems
 
-| Platform | Status | Notes |
-| :--- | :--- | :--- |
+| Platform    | Status             | Notes                           |
+|:------------|:-------------------|:--------------------------------|
 | **Windows** | ✅ Fully Supported | Windows 7/8/10/11, Server 2012+ |
-| **Linux** | ✅ Fully Supported | All major distributions |
-| **macOS** | ✅ Fully Supported | macOS 10.12+ |
-| **FreeBSD** | ✅ Supported | FreeBSD 10+ |
-| **OpenBSD** | ✅ Supported | OpenBSD 6+ |
-| **Solaris** | ✅ Supported | Solaris 10+ |
-| **AIX** | ✅ Supported | AIX 6+ |
+| **Linux**   | ✅ Fully Supported | All major distributions         |
+| **macOS**   | ✅ Fully Supported | macOS 10.12+                    |
+| **FreeBSD** | ✅ Supported       | FreeBSD 10+                     |
+| **OpenBSD** | ✅ Supported       | OpenBSD 6+                      |
+| **Solaris** | ✅ Supported       | Solaris 10+                     |
+| **AIX**     | ✅ Supported       | AIX 6+                          |
 
 ### Hardware Information
 
-| Category | Windows | Linux | macOS | Unix |
-| :--- | :--- | :--- | :--- | :--- |
-| **CPU** | ✅ | ✅ | ✅ | ✅ |
-| **Memory** | ✅ | ✅ | ✅ | ✅ |
-| **Disk** | ✅ | ✅ | ✅ | ✅ |
-| **Network** | ✅ | ✅ | ✅ | ✅ |
-| **Battery** | ✅ | ✅ | ✅ | ⚠️ |
-| **Sensors** | ✅ | ⚠️ | ✅ | ⚠️ |
-| **Display** | ✅ | ⚠️ | ✅ | ❌ |
-| **USB** | ✅ | ✅ | ✅ | ⚠️ |
+| Category    | Windows | Linux | macOS | Unix |
+|:------------|:--------|:------|:------|:-----|
+| **CPU**     | ✅      | ✅    | ✅    | ✅   |
+| **Memory**  | ✅      | ✅    | ✅    | ✅   |
+| **Disk**    | ✅      | ✅    | ✅    | ✅   |
+| **Network** | ✅      | ✅    | ✅    | ✅   |
+| **Battery** | ✅      | ✅    | ✅    | ⚠️   |
+| **Sensors** | ✅      | ⚠️    | ✅    | ⚠️   |
+| **Display** | ✅      | ⚠️    | ✅    | ❌   |
+| **USB**     | ✅      | ✅    | ✅    | ⚠️   |
 
 Legend: ✅ Full Support | ⚠️ Partial Support | ❌ Not Supported
 
@@ -685,7 +691,8 @@ implementation 'net.java.dev.jna:jna-platform:5.18.0'
 
 ## 🙏 Acknowledgments
 
-Part of this project is based on [OSHI](https://github.com/oshi/oshi) (Operating System and Hardware Information), licensed under the MIT License. We thank the OSHI team for their excellent work.
+Part of this project is based on [OSHI](https://github.com/oshi/oshi) (Operating System and Hardware Information),
+licensed under the MIT License. We thank the OSHI team for their excellent work.
 
 -----
 

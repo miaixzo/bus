@@ -30,7 +30,6 @@ import java.lang.annotation.Target;
  * programmatic field name.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.METHOD })

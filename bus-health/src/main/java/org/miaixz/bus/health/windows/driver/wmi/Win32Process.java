@@ -34,7 +34,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * Queries WMI class {@code Win32_Process}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Win32Process {
@@ -93,7 +92,6 @@ public final class Win32Process {
      * Process command lines.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum CommandLineProperty {
         /**
@@ -111,7 +109,6 @@ public final class Win32Process {
      * Process properties accessible from WTSEnumerateProcesses in Vista+
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ProcessXPProperty {
         /**

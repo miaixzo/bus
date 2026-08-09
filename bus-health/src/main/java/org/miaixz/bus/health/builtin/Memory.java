@@ -19,24 +19,26 @@
 */
 package org.miaixz.bus.health.builtin;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * System Memory Information
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@SuperBuilder
 public class Memory {
+
+    /**
+     * Constructs a new {@code Memory} instance.
+     */
+    public Memory() {
+        // No initialization required.
+    }
 
     /**
      * Total memory (MemTotal in /proc/meminfo)

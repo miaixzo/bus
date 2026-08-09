@@ -47,7 +47,6 @@ import org.miaixz.bus.setting.Builder;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractCollector implements Collector, AutoCloseable {
 
@@ -407,7 +406,6 @@ public abstract class AbstractCollector implements Collector, AutoCloseable {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     protected static final class Tally {
 

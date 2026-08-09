@@ -37,7 +37,6 @@ import org.miaixz.bus.fabric.guard.GuardRule;
  * immediately without waiting, sleeping, or scheduling work.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class RateGuard implements GuardRule {
 

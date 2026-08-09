@@ -28,7 +28,6 @@ import java.util.jar.JarFile;
  * Creates various types of resource loaders.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class Loaders {
 

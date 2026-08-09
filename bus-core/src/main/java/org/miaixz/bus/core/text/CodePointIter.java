@@ -27,7 +27,6 @@ import java.util.Iterator;
  *
  * @param text the string to iterate over
  * @author Kimi Liu
- * @since Java 21+
  */
 public record CodePointIter(String text) implements Iterable<Integer> {
 

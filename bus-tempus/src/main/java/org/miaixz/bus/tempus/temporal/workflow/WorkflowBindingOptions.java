@@ -33,7 +33,6 @@ import lombok.Setter;
  * subscriber contracts while delegating all values to the grouped sections.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
@@ -544,7 +543,6 @@ public class WorkflowBindingOptions {
      * Temporal connection options.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -583,7 +581,6 @@ public class WorkflowBindingOptions {
      * Temporal workflow target binding options.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -622,7 +619,6 @@ public class WorkflowBindingOptions {
      * Temporal runtime options.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -687,7 +683,6 @@ public class WorkflowBindingOptions {
      * Workflow timeout options.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -721,7 +716,6 @@ public class WorkflowBindingOptions {
      * Activity timeout options.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -755,7 +749,6 @@ public class WorkflowBindingOptions {
      * Activity retry options.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -794,7 +787,6 @@ public class WorkflowBindingOptions {
      * Worker capacity options.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -848,7 +840,6 @@ public class WorkflowBindingOptions {
      * Worker recovery options.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter

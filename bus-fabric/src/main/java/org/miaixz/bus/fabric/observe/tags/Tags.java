@@ -38,7 +38,6 @@ import org.miaixz.bus.crypto.Builder;
  * Immutable event tag set.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Tags {
 

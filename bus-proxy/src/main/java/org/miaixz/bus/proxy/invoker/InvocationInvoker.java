@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * points to be used within this proxy framework.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class InvocationInvoker implements ProxyChain {
 

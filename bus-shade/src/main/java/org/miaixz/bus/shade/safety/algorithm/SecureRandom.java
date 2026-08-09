@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.Normal;
  * reproducibility is required.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SecureRandom extends java.security.SecureRandom {
 

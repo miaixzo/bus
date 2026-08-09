@@ -32,7 +32,6 @@ import com.sun.jna.win32.W32APIOptions;
  * NtDll
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface NtDll extends com.sun.jna.platform.win32.NtDll {
 
@@ -54,13 +53,9 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      *
      * @param ProcessHandle            the process handle value
      * @param ProcessInformation       the process information value
-     *
      * @param ProcessInformationClass  the process information class value
-     *
      * @param ProcessInformationLength the process information length value
-     *
      * @param ReturnLength             the return length value
-     *
      * @return the result
      */
     int NtQueryInformationProcess(
@@ -78,7 +73,6 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "Reserved1", "PebBaseAddress", "Reserved2" })
     class PROCESS_BASIC_INFORMATION extends Structure {
@@ -115,7 +109,6 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "pad", "pad2", "ProcessParameters" })
     class PEB extends Structure {
@@ -152,7 +145,6 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "MaximumLength", "Length", "Flags", "DebugFlags", "ConsoleHandle", "ConsoleFlags", "StandardInput",
             "StandardOutput", "StandardError", "CurrentDirectory", "DllPath", "ImagePathName", "CommandLine",
@@ -365,7 +357,6 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "Length", "MaximumLength", "Buffer" })
     class UNICODE_STRING extends Structure {
@@ -402,7 +393,6 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "Length", "MaximumLength", "Buffer" })
     class STRING extends Structure {
@@ -438,7 +428,6 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "DosPath", "Handle" })
     class CURDIR extends Structure {
@@ -469,7 +458,6 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "Flags", "Length", "TimeStamp", "DosPath" })
     class RTL_DRIVE_LETTER_CURDIR extends Structure {

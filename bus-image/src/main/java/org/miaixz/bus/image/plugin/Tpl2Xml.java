@@ -47,7 +47,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * converted into a separate XML file.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Tpl2Xml {
 
@@ -245,7 +244,6 @@ public class Tpl2Xml {
      * Represents a single element from a private dictionary template.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     static class DictionaryElement {
 

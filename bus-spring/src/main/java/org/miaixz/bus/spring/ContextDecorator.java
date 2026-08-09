@@ -26,7 +26,6 @@ import org.springframework.core.task.TaskDecorator;
  * Propagates the generic runtime context across task execution boundaries.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ContextDecorator implements TaskDecorator, Ordered {
 

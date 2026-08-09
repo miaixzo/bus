@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * CRC16 algorithms.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class CRC16Checksum implements Checksum, Serializable {
 

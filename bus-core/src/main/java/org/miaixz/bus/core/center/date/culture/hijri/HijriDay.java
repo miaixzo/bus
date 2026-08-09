@@ -28,7 +28,6 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
  * model used by the surrounding calendar classes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HijriDay extends DayParts {
 

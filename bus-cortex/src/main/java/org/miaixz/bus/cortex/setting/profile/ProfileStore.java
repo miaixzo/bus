@@ -29,7 +29,6 @@ import org.miaixz.bus.cortex.Trait;
  * Durable store contract for {@code setting.profile} directory entries.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ProfileStore {
 

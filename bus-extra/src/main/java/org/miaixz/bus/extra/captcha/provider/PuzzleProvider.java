@@ -32,7 +32,6 @@ import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
  * Sliding CAPTCHA Provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PuzzleProvider extends AbstractProvider {
 

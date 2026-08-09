@@ -8,7 +8,9 @@
 
 ## 📖 Project Introduction
 
-**Bus Cron** is a lightweight, high-performance scheduled task framework based on cron expressions. It provides a simple yet powerful API for task scheduling, supporting standard Linux crontab-style syntax while offering enterprise-grade features like task listeners, flexible scheduling patterns, and thread pool management.
+**Bus Cron** is a lightweight, high-performance scheduled task framework based on cron expressions. It provides a simple
+yet powerful API for task scheduling, supporting standard Linux crontab-style syntax while offering enterprise-grade
+features like task listeners, flexible scheduling patterns, and thread pool management.
 
 -----
 
@@ -16,7 +18,8 @@
 
 ### 🎯 Basic Capabilities
 
-* **Cron Expression Support**: Full support for standard 5-field cron expressions (minute, hour, day of month, month, day of week)
+* **Cron Expression Support**: Full support for standard 5-field cron expressions (minute, hour, day of month, month,
+  day of week)
 * **Quartz Compatibility**: Supports 6-field (with seconds) and 7-field (with year) expressions for Quartz compatibility
 * **Flexible Scheduling**: Schedule tasks using cron patterns, Runnable tasks, or custom Crontab implementations
 * **Thread Pool Management**: Configurable thread pool with daemon/non-daemon options
@@ -24,17 +27,18 @@
 
 ### ⚡ Advanced Features
 
-| Feature | Description | Benefit |
-| :--- | :--- | :--- |
-| **Second-Level Precision** | Optional second matching mode | Sub-minute scheduling accuracy |
-| **Time Zone Support** | Per-scheduler timezone configuration | Multi-region deployment support |
-| **Trigger Queue Mode** | Pre-calculated trigger times | Improved scheduling performance |
-| **Task Metadata** | ID-based task management | Dynamic task control |
-| **Configuration Loading** | Load tasks from config files | Externalized task management |
+| Feature                    | Description                          | Benefit                         |
+|:---------------------------|:-------------------------------------|:--------------------------------|
+| **Second-Level Precision** | Optional second matching mode        | Sub-minute scheduling accuracy  |
+| **Time Zone Support**      | Per-scheduler timezone configuration | Multi-region deployment support |
+| **Trigger Queue Mode**     | Pre-calculated trigger times         | Improved scheduling performance |
+| **Task Metadata**          | ID-based task management             | Dynamic task control            |
+| **Configuration Loading**  | Load tasks from config files         | Externalized task management    |
 
 ### 🌍 Cron Expression Format
 
 **Standard 5-Field Format**:
+
 ```
 * * * * *
 │ │ │ │ │
@@ -46,6 +50,7 @@
 ```
 
 **6-Field Format** (Quartz-compatible, includes seconds):
+
 ```
 * * * * * *
 │ │ │ │ │ │
@@ -58,6 +63,7 @@
 ```
 
 **7-Field Format** (includes year):
+
 ```
 * * * * * * *
 │ │ │ │ │ │ │
@@ -526,9 +532,9 @@ Use daemon mode for background tasks that can be interrupted, and non-daemon mod
 ## 🔄 Version Compatibility
 
 | Bus Cron Version | JDK Version |
-| :--- | :--- |
-| 8.x | 17+ |
-| 7.x | 11+ |
+|:-----------------|:------------|
+| 8.x              | 17+         |
+| 7.x              | 11+         |
 
 -----
 
@@ -536,23 +542,23 @@ Use daemon mode for background tasks that can be interrupted, and non-daemon mod
 
 ### Scheduler Configuration Options
 
-| Option | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `timezone` | `TimeZone` | `TimeZone.getDefault()` | Time zone for task scheduling |
-| `matchSecond` | `boolean` | `false` | Whether to enable second-level precision |
-| `daemon` | `boolean` | `false` | Whether to use daemon threads |
-| `useTriggerQueue` | `boolean` | `false` | Whether to use trigger queue mode |
+| Option            | Type       | Default                 | Description                              |
+|:------------------|:-----------|:------------------------|:-----------------------------------------|
+| `timezone`        | `TimeZone` | `TimeZone.getDefault()` | Time zone for task scheduling            |
+| `matchSecond`     | `boolean`  | `false`                 | Whether to enable second-level precision |
+| `daemon`          | `boolean`  | `false`                 | Whether to use daemon threads            |
+| `useTriggerQueue` | `boolean`  | `false`                 | Whether to use trigger queue mode        |
 
 ### Cron Expression Special Characters
 
-| Character | Description | Example |
-| :--- | :--- | :--- |
-| `*` | Match all values | `* * * * *` (every minute) |
-| `?` | Same as `*` | `? * ? * ?` |
-| `/` | Step values | `*/5 * * * *` (every 5 minutes) |
-| `-` | Range | `0 9-17 * * *` (9 AM to 5 PM) |
-| `,` | List | `0 9,12,18 * * *` (9 AM, noon, 6 PM) |
-| `L` | Last day | `0 0 L * *` (last day of month) |
+| Character | Description      | Example                              |
+|:----------|:-----------------|:-------------------------------------|
+| `*`       | Match all values | `* * * * *` (every minute)           |
+| `?`       | Same as `*`      | `? * ? * ?`                          |
+| `/`       | Step values      | `*/5 * * * *` (every 5 minutes)      |
+| `-`       | Range            | `0 9-17 * * *` (9 AM to 5 PM)        |
+| `,`       | List             | `0 9,12,18 * * *` (9 AM, noon, 6 PM) |
+| `L`       | Last day         | `0 0 L * *` (last day of month)      |
 
 -----
 

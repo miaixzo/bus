@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
  * Unique HTTP/2 flow-control synchronization boundary and window arithmetic.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class Http2FlowController {
 

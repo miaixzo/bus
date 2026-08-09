@@ -10,7 +10,7 @@
 
 **Bus Core** 是一个轻量级的企业级Java工具库,为日常Java开发提供全面的、生产就绪的工具类。它是整个Bus框架生态系统的基础,提供零依赖、线程安全、高度优化的通用操作实现。
 
-该框架以**性能、可靠性和易用性**为设计理念,在保持最小开销的同时消除样板代码,提升开发者生产力。
+该框架以 **性能、可靠性和易用性**为设计理念,在保持最小开销的同时消除样板代码,提升开发者生产力。
 
 -----
 
@@ -27,13 +27,13 @@
 
 ### ⚡ 性能优化
 
-| 特性 | 性能提升 | 描述 |
-| :--- | :--- | :--- |
-| **不可变对象** | $\text{线程安全}$ | 大多数工具类设计为不可变且线程安全 |
-| **延迟初始化** | $\text{快速启动}$ | 对象仅在需要时创建 |
-| **对象池化** | $\text{GC } \downarrow 40\%$ | 可重用对象减少内存分配开销 |
-| **高效算法** | $\text{速度 } \uparrow 2-5\text{x}$ | 优化算法优于标准库实现 |
-| **减少装箱/拆箱** | $\text{内存 } \downarrow 30\%$ | 减少基本类型对象转换 |
+| 特性              | 性能提升                            | 描述                               |
+|:------------------|:------------------------------------|:-----------------------------------|
+| **不可变对象**    | $\text{线程安全}$                   | 大多数工具类设计为不可变且线程安全 |
+| **延迟初始化**    | $\text{快速启动}$                   | 对象仅在需要时创建                 |
+| **对象池化**      | $\text{GC } \downarrow 40\%$        | 可重用对象减少内存分配开销         |
+| **高效算法**      | $\text{速度 } \uparrow 2-5\text{x}$ | 优化算法优于标准库实现             |
+| **减少装箱/拆箱** | $\text{内存 } \downarrow 30\%$      | 减少基本类型对象转换               |
 
 ### 🛡️ 生产就绪
 
@@ -48,45 +48,52 @@
 ## 🧩 核心组件
 
 ### 1. **字符串操作** (`org.miaixz.bus.core.xyz.StringKit`)
+
 - 字符串验证、格式化和转换
 - 文本相似度计算
 - 占位符模板渲染
-- 编码/解码支持(Base64、URL、Hex等)
+- 编码/解码支持 (Base64、URL、Hex等)
 - 正则表达式工具
 
 ### 2. **集合工具** (`org.miaixz.bus.core.xyz.CollKit`、`MapKit`、`ListKit`)
+
 - 集合过滤、转换和聚合
 - 并发集合操作
-- 自定义集合实现(BoundedQueue、UniqueKeySet)
+- 自定义集合实现 (BoundedQueue、UniqueKeySet)
 - 集合转换和连接操作
 
 ### 3. **日期/时间操作** (`org.miaixz.bus.core.center.date`)
+
 - 增强的`DateTime`类,支持时区
 - 日期格式化和解析
-- 历法操作(中国农历、公历、藏历)
+- 历法操作 (中国农历、公历、藏历)
 - 日期算术和比较
 - 时区和区域设置支持
 
 ### 4. **类型转换** (`org.miaixz.bus.core.convert.Convert`)
+
 - 通用类型转换器,支持50+种转换器
 - 支持基本类型、集合和自定义对象
 - 带回退默认值的双向转换
 - Bean属性映射和复制
 
 ### 5. **IO操作** (`org.miaixz.bus.core.io`)
+
 - 文件和目录操作
 - 流处理和资源管理
-- BOM(字节顺序标记)检测
+- BOM (字节顺序标记)检测
 - 带进度跟踪的文件复制
 - 从类路径和文件系统加载资源
 
 ### 6. **加密学** (`org.miaixz.bus.core.codec`)
-- 哈希算法(MD5、SHA-1、SHA-256、CRC、MurmurHash、CityHash)
-- 对称/非对称加密(AES、DES、RSA)
-- 编码/解码(Base64、Hex、Binary)
-- 安全密码哈希(BCrypt、PBKDF2、Argon2)
+
+- 哈希算法 (MD5、SHA-1、SHA-256、CRC、MurmurHash、CityHash)
+- 对称/非对称加密 (AES、DES、RSA)
+- 编码/解码 (Base64、Hex、Binary)
+- 安全密码哈希 (BCrypt、PBKDF2、Argon2)
 
 ### 7. **反射与注解** (`org.miaixz.bus.core.xyz.ReflectKit`、`FieldKit`、`MethodKit`)
+
 - 动态方法调用
 - 字段访问和操作
 - 注解处理和解析
@@ -94,12 +101,14 @@
 - 构造函数和参数发现
 
 ### 8. **网络工具** (`org.miaixz.bus.core.net`)
-- IP地址验证和转换(IPv4/IPv6)
+
+- IP地址验证和转换 (IPv4/IPv6)
 - URL解析和构建
 - HTTP客户端工具
 - SSL/TLS配置辅助
 
 ### 9. **数学运算** (`org.miaixz.bus.core.xyz.MathKit`)
+
 - 扩展的数学函数
 - 数字格式化和解析
 - 中文数字转换
@@ -107,6 +116,7 @@
 - 货币和金额工具
 
 ### 10. **树结构** (`org.miaixz.bus.core.tree`)
+
 - 通用树节点实现
 - 树遍历算法
 - 从扁平结构构建树
@@ -469,46 +479,54 @@ List<Class<?>> hierarchy = ReflectKit.getClassHierarchy(User.class);
 import org.miaixz.bus.core.net.ip.IpKit;
 import org.miaixz.bus.core.net.url.UrlBuilder;
 import org.miaixz.bus.core.xyz.NetKit;
+
 import java.net.InetAddress;
 
 // IP地址验证
 boolean isIPv4 = IpKit.isIPv4("192.168.1.1");           // true
-boolean isIPv6 = IpKit.isIPv6("::1");                   // true
-boolean isInternal = IpKit.isInternal("192.168.1.1");    // true
+        boolean isIPv6 = IpKit.isIPv6("::1");                   // true
+        boolean isInternal = IpKit.isInternal("192.168.1.1");    // true
 
-// IP转换
-long ipLong = IpKit.ipv4ToLong("192.168.1.1");          // 3232235777
-String ipStr = IpKit.longToIPv4(3232235777L);           // "192.168.1.1"
+        // IP转换
+        long ipLong = IpKit.ipv4ToLong("192.168.1.1");          // 3232235777
+        String ipStr = IpKit.longToIPv4(3232235777L);           // "192.168.1.1"
 
-// 本地IP
-String localIp = IpKit.getLocalIp();
-String localMac = IpKit.getLocalMacAddress();
+        // 本地IP
+        String localIp = IpKit.getLocalIp();
+        String localMac = IpKit.getLocalMacAddress();
 
-// URL构建
-String url = UrlBuilder.create()
-    .setScheme("https")
-    .setHost("example.com")
-    .setPort(443)
-    .setPath("/api/users")
-    .addQuery("id", "123")
-    .addQuery("name", "John")
-    .build();
+        // URL构建
+        String url = UrlBuilder.create()
+                .setScheme("https")
+                .setHost("example.com")
+                .setPort(443)
+                .setPath("/api/users")
+                .addQuery("id", "123")
+                .addQuery("name", "John")
+                .build();
 // "https://example.com:443/api/users?id=123&name=John"
 
-// URL解析
-Map<String, String> query = UrlBuilder.of(url).getQueryMap();
+        // URL解析
+        Map<String, String> query = UrlBuilder.of(url).getQueryMap();
 
-// 网络接口信息
-Map<String, String> ips = NetKit.localIpList();
-for (Map.Entry<String, String> entry : ips.entrySet()) {
-    System.out.println(entry.getKey() + ": " + entry.getValue());
-}
+        // 网络接口信息
+        Map<String, String> ips = NetKit.localIpList();
+for(
+        Map.Entry<String, String> entry :ips.
 
-// 端口验证
-boolean isValidPort = NetKit.isValidPort(8080);          // true
+        entrySet()){
+        System.out.
 
-// 域名验证
-boolean isValidDomain = NetKit.isDomain("example.com");  // true
+        println(entry.getKey() +": "+entry.
+
+        getValue());
+        }
+
+        // 端口验证
+        boolean isValidPort = NetKit.isValidPort(8080);          // true
+
+        // 域名验证
+        boolean isValidDomain = NetKit.isDomain("example.com");  // true
 ```
 
 ### 9. 数学与数字运算
@@ -564,34 +582,37 @@ boolean isPrime = MathKit.isPrime(17);                   // true
 ```java
 import org.miaixz.bus.core.tree.TreeKit;
 import org.miaixz.bus.core.tree.TreeNode;
+
 import java.util.List;
 
 // 创建树节点
 TreeNode<String> root = new TreeNode<>("root");
-TreeNode<String> child1 = new TreeNode<>("child1");
-TreeNode<String> child2 = new TreeNode<>("child2");
+        TreeNode<String> child1 = new TreeNode<>("child1");
+        TreeNode<String> child2 = new TreeNode<>("child2");
 
 // 构建树结构
-root.addChildren(child1, child2);
+root.
 
-// 遍历树
-List<TreeNode<String>> nodes = TreeKit.listAll(root);   // 所有节点
+        addChildren(child1, child2);
 
-// 从扁平列表构建树
-List<Menu> menus = getMenuList();  // 带parentId的扁平列表
-List<TreeNode<Menu>> tree = TreeKit.build(menus, Menu::getId, Menu::getParentId);
+        // 遍历树
+        List<TreeNode<String>> nodes = TreeKit.listAll(root);   // 所有节点
 
-// 获取树路径
-List<TreeNode<String>> path = TreeKit.getPath(child1);  // [root, child1]
+        // 从扁平列表构建树
+        List<Menu> menus = getMenuList();  // 带parentId的扁平列表
+        List<TreeNode<Menu>> tree = TreeKit.build(menus, Menu::getId, Menu::getParentId);
 
-// 统计节点
-int count = TreeKit.count(root);                         // 3
+        // 获取树路径
+        List<TreeNode<String>> path = TreeKit.getPath(child1);  // [root, child1]
 
-// 查找节点
-TreeNode<String> found = TreeKit.find(root, "child1");
+        // 统计节点
+        int count = TreeKit.count(root);                         // 3
 
-// 转换为列表
-List<String> values = TreeKit.toList(root);             // ["root", "child1", "child2"]
+        // 查找节点
+        TreeNode<String> found = TreeKit.find(root, "child1");
+
+        // 转换为列表
+        List<String> values = TreeKit.toList(root);             // ["root", "child1", "child2"]
 ```
 
 -----
@@ -600,46 +621,46 @@ List<String> values = TreeKit.toList(root);             // ["root", "child1", "c
 
 ### 核心工具类
 
-| 类 | 包名 | 描述 |
-| :--- | :--- | :--- |
-| `StringKit` | `org.miaixz.bus.core.xyz` | 字符串操作、验证、格式化 |
-| `CollKit` | `org.miaixz.bus.core.xyz` | 集合操作(过滤、映射、归约) |
-| `MapKit` | `org.miaixz.bus.core.xyz` | Map操作和工具 |
-| `ListKit` | `org.miaixz.bus.core.xyz` | List特定操作 |
-| `SetKit` | `org.miaixz.bus.core.xyz` | Set特定操作 |
-| `ArrayKit` | `org.miaixz.bus.core.xyz` | 数组操作工具 |
-| `DateKit` | `org.miaixz.bus.core.xyz` | 日期/时间工具 |
-| `FileKit` | `org.miaixz.bus.core.xyz` | 文件和目录操作 |
-| `IoKit` | `org.miaixz.bus.core.xyz` | I/O流操作 |
-| `ResourceKit` | `org.miaixz.bus.core.xyz` | 资源加载工具 |
-| `Convert` | `org.miaixz.bus.core.convert` | 通用类型转换器 |
-| `BeanKit` | `org.miaixz.bus.core.xyz` | Bean属性操作 |
-| `ReflectKit` | `org.miaixz.bus.core.xyz` | 反射工具 |
-| `MathKit` | `org.miaixz.bus.core.xyz` | 数学运算 |
-| `NetKit` | `org.miaixz.bus.core.xyz` | 网络工具 |
-| `IpKit` | `org.miaixz.bus.core.net.ip` | IP地址操作 |
-| `HashKit` | `org.miaixz.bus.core.codec.hash` | 哈希算法 |
-| `TreeKit` | `org.miaixz.bus.core.tree` | 树结构操作 |
+| 类            | 包名                             | 描述                       |
+|:--------------|:---------------------------------|:---------------------------|
+| `StringKit`   | `org.miaixz.bus.core.xyz`        | 字符串操作、验证、格式化   |
+| `CollKit`     | `org.miaixz.bus.core.xyz`        | 集合操作(过滤、映射、归约) |
+| `MapKit`      | `org.miaixz.bus.core.xyz`        | Map操作和工具              |
+| `ListKit`     | `org.miaixz.bus.core.xyz`        | List特定操作               |
+| `SetKit`      | `org.miaixz.bus.core.xyz`        | Set特定操作                |
+| `ArrayKit`    | `org.miaixz.bus.core.xyz`        | 数组操作工具               |
+| `DateKit`     | `org.miaixz.bus.core.xyz`        | 日期/时间工具              |
+| `FileKit`     | `org.miaixz.bus.core.xyz`        | 文件和目录操作             |
+| `IoKit`       | `org.miaixz.bus.core.xyz`        | I/O流操作                  |
+| `ResourceKit` | `org.miaixz.bus.core.xyz`        | 资源加载工具               |
+| `Convert`     | `org.miaixz.bus.core.convert`    | 通用类型转换器             |
+| `BeanKit`     | `org.miaixz.bus.core.xyz`        | Bean属性操作               |
+| `ReflectKit`  | `org.miaixz.bus.core.xyz`        | 反射工具                   |
+| `MathKit`     | `org.miaixz.bus.core.xyz`        | 数学运算                   |
+| `NetKit`      | `org.miaixz.bus.core.xyz`        | 网络工具                   |
+| `IpKit`       | `org.miaixz.bus.core.net.ip`     | IP地址操作                 |
+| `HashKit`     | `org.miaixz.bus.core.codec.hash` | 哈希算法                   |
+| `TreeKit`     | `org.miaixz.bus.core.tree`       | 树结构操作                 |
 
-### Center包(增强实现)
+### Center包 (增强实现)
 
-| 类 | 包名 | 描述 |
-| :--- | :--- | :--- |
-| `DateTime` | `org.miaixz.bus.core.center.date` | 增强的Date,支持时区 |
-| `Calendar` | `org.miaixz.bus.core.center.date` | 历法工具 |
-| `Formatter` | `org.miaixz.bus.core.center.date` | 日期格式化和解析 |
-| `ChineseDate` | `org.miaixz.bus.core.center.date.culture.lunar` | 中国农历 |
-| `SolarDate` | `org.miaixz.bus.core.center.date.culture.solar` | 公历操作 |
-| `UniqueId` | `org.miaixz.bus.core.center.date.culture.solar` | 唯一ID生成 |
+| 类            | 包名                                            | 描述                |
+|:--------------|:------------------------------------------------|:--------------------|
+| `DateTime`    | `org.miaixz.bus.core.center.date`               | 增强的Date,支持时区 |
+| `Calendar`    | `org.miaixz.bus.core.center.date`               | 历法工具            |
+| `Formatter`   | `org.miaixz.bus.core.center.date`               | 日期格式化和解析    |
+| `ChineseDate` | `org.miaixz.bus.core.center.date.culture.lunar` | 中国农历            |
+| `SolarDate`   | `org.miaixz.bus.core.center.date.culture.solar` | 公历操作            |
+| `UniqueId`    | `org.miaixz.bus.core.center.date.culture.solar` | 唯一ID生成          |
 
-### Codec包(编码/加密)
+### Codec包 (编码/加密)
 
-| 类 | 包名 | 描述 |
-| :--- | :--- | :--- |
-| `Base64` | `org.miaixz.bus.core.codec.binary` | Base64编码/解码 |
-| `Hex` | `org.miaixz.bus.core.codec.binary` | Hex编码/解码 |
-| `SecureUtil` | `org.miaixz.bus.core.center.crypto` | 安全密码哈希 |
-| `Encryptor` | `org.miaixz.bus.crypto.builtin` | 加密工具 |
+| 类           | 包名                                | 描述            |
+|:-------------|:------------------------------------|:----------------|
+| `Base64`     | `org.miaixz.bus.core.codec.binary`  | Base64编码/解码 |
+| `Hex`        | `org.miaixz.bus.core.codec.binary`  | Hex编码/解码    |
+| `SecureUtil` | `org.miaixz.bus.core.center.crypto` | 安全密码哈希    |
+| `Encryptor`  | `org.miaixz.bus.crypto.builtin`     | 加密工具        |
 
 -----
 
@@ -717,7 +738,9 @@ for (String s : list) {
 
 ### Q1: Bus Core是线程安全的吗?
 
-**答**: 是的,Bus Core中的大多数工具类设计为线程安全的。静态工具方法本质上是线程安全的,因为它们不维护状态。但是,当使用实例类(如`DateTime`)时,您应该:
+**答**: 是的,Bus Core中的大多数工具类设计为线程安全的。静态工具方法本质上是线程安全的,因为它们不维护状态。但是,当使用实例类
+(如`DateTime`)时,您应该:
+
 - 使用不可变实例
 - 在跨线程共享时同步访问
 - 使用线程本地实例
@@ -731,9 +754,10 @@ DateTime date2 = date1.offsetDay(1);  // 创建新实例
 ### Q2: Bus Core与Apache Commons Lang相比如何?
 
 **答**: Bus Core提供多项优势:
+
 - **现代Java**: 为Java 17+构建,使用最新特性
 - **更好的性能**: 优化算法优于Commons
-- **更全面**: 包含许多Commons中没有的工具(加密、树等)
+- **更全面**: 包含许多Commons中没有的工具 (加密、树等)
 - **一致的API**: 所有工具采用统一设计
 - **零依赖**: 无外部依赖
 
@@ -748,6 +772,7 @@ String result = String.format("Hello, %s", "World");
 ### Q3: 我可以在Spring Boot中使用Bus Core吗?
 
 **答**: 当然可以!Bus Core与Spring Boot无缝集成:
+
 - 无需特殊配置
 - 与Spring的依赖注入协作
 - 兼容Spring的类型转换系统
@@ -786,12 +811,14 @@ DateTime parsed = DateTime.of("2026-01-04 10:00:00",
 ### Q5: 使用Bus Core的性能开销如何?
 
 **答**: Bus Core设计为最小开销:
+
 - **对象创建**: 大多数工具是静态方法 - 无对象分配
 - **内存**: 不可变对象减少GC压力
 - **算法**: 优化算法优于标准库
 - **延迟加载**: 对象仅在需要时创建
 
-基准测试结果(每秒操作数):
+基准测试结果 (每秒操作数):
+
 - 字符串格式化: ~15M ops/s
 - 集合过滤: ~10M ops/s
 - 日期解析: ~500K ops/s
@@ -811,7 +838,9 @@ public class CustomConverter implements Converter<MyType> {
 }
 
 // 注册转换器
-Convert.register(CustomConverter.class);
+Convert.
+
+register(CustomConverter .class);
 
 // 2. 自定义集合操作
 public class CustomCollKit {
@@ -866,49 +895,49 @@ System.setProperty("bus.core.cache.size", "1000");
 
 ## 🔄 版本兼容性
 
-| Bus Core版本 | JDK版本 | Spring Boot | 说明 |
-| :--- | :--- | :--- | :--- |
-| 8.x | 17+ | 3.x+ | 当前稳定版 |
-| 7.x | 11+ | 2.x+ | 之前LTS版 |
+| Bus Core版本 | JDK版本 | Spring Boot | 说明       |
+|:-------------|:--------|:------------|:-----------|
+| 8.x          | 17+     | 3.x+        | 当前稳定版 |
+| 7.x          | 11+     | 2.x+        | 之前LTS版  |
 
 -----
 
 ## 📊 性能基准
 
-基于JMH基准测试(每秒操作数,越高越好):
+基于JMH基准测试 (每秒操作数,越高越好):
 
 ### 字符串操作
 
-| 操作 | Bus Core | Apache Commons | JDK |
-| :--- | :--- | :--- | :--- |
-| 字符串格式化 | 15.2M | 8.5M | 12.1M |
-| 字符串连接 | 45.3M | 32.1M | 38.7M |
-| 空检查 | 250M | 180M | 220M |
+| 操作         | Bus Core | Apache Commons | JDK   |
+|:-------------|:---------|:---------------|:------|
+| 字符串格式化 | 15.2M    | 8.5M           | 12.1M |
+| 字符串连接   | 45.3M    | 32.1M          | 38.7M |
+| 空检查       | 250M     | 180M           | 220M  |
 
 ### 集合操作
 
-| 操作 | Bus Core | Apache Commons | JDK Stream |
-| :--- | :--- | :--- | :--- |
-| 过滤(10K) | 12.5K ops | 8.2K ops | 10.1K ops |
-| 去重(10K) | 8.7K ops | 5.9K ops | 7.3K ops |
-| 连接(10K) | 18.9K ops | 14.2K ops | 16.5K ops |
+| 操作      | Bus Core  | Apache Commons | JDK Stream |
+|:----------|:----------|:---------------|:-----------|
+| 过滤(10K) | 12.5K ops | 8.2K ops       | 10.1K ops  |
+| 去重(10K) | 8.7K ops  | 5.9K ops       | 7.3K ops   |
+| 连接(10K) | 18.9K ops | 14.2K ops      | 16.5K ops  |
 
 ### 日期/时间操作
 
-| 操作 | Bus Core | Java 8 Time | Joda Time |
-| :--- | :--- | :--- | :--- |
-| 解析 | 520K ops | 480K ops | 450K ops |
-| 格式化 | 680K ops | 620K ops | 590K ops |
-| 偏移 | 1.2M ops | 950K ops | 890K ops |
+| 操作   | Bus Core | Java 8 Time | Joda Time |
+|:-------|:---------|:------------|:----------|
+| 解析   | 520K ops | 480K ops    | 450K ops  |
+| 格式化 | 680K ops | 620K ops    | 590K ops  |
+| 偏移   | 1.2M ops | 950K ops    | 890K ops  |
 
 ### 哈希算法
 
-| 算法 | 速度(MB/秒) | 碰撞率 |
-| :--- | :--- | :--- |
-| MD5 | 520 | < 0.001% |
-| SHA-256 | 180 | < 0.0001% |
-| MurmurHash3 | 1250 | < 0.01% |
-| CRC32 | 2100 | < 0.1% |
+| 算法        | 速度(MB/秒) | 碰撞率    |
+|:------------|:------------|:----------|
+| MD5         | 520         | < 0.001%  |
+| SHA-256     | 180         | < 0.0001% |
+| MurmurHash3 | 1250        | < 0.01%   |
+| CRC32       | 2100        | < 0.1%    |
 
 -----
 

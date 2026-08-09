@@ -38,7 +38,6 @@ import org.miaixz.bus.logger.Logger;
  * (hot methods).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MethodProvider implements Provider {
 

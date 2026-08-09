@@ -21,9 +21,7 @@ package org.miaixz.bus.pay.nimble.wechat.entity.v3;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -31,14 +29,18 @@ import lombok.experimental.SuperBuilder;
  * V3 Unified Order - Discount details.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Detail {
+
+    /**
+     * Constructs a new {@code Detail} instance.
+     */
+    public Detail() {
+        // No initialization required.
+    }
 
     /**
      * Original price of the order.

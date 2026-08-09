@@ -25,7 +25,6 @@ import org.miaixz.bus.cortex.registry.RegistryStore;
  * Durable storage contract for API registry entries.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ApiRegistryStore extends RegistryStore<ApiAssets> {
 

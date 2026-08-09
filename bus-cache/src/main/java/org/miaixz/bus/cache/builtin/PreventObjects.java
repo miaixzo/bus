@@ -32,7 +32,6 @@ import java.io.Serializable;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PreventObjects {
 
@@ -74,7 +73,6 @@ public class PreventObjects {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class NullMarker implements Serializable {
 

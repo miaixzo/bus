@@ -21,6 +21,5 @@
  * Provides AIX-specific hardware and operating system support.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.health.unix.aix;

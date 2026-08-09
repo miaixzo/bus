@@ -44,7 +44,6 @@ import org.miaixz.bus.office.excel.writer.ExcelWriter;
  * @param <T> The type of the subclass, used for returning {@code this}.
  * @param <C> The type of the Excel configuration.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> implements Closeable {
 

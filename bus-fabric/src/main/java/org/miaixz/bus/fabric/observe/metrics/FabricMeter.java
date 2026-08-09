@@ -38,7 +38,6 @@ import org.miaixz.bus.fabric.observe.ObservationMarker;
  * Thread-safe fabric metric counter and timer.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class FabricMeter {
 

@@ -37,7 +37,6 @@ import org.miaixz.bus.core.xyz.MethodKit;
  * In general, annotation attribute processing occurs during the {@link SynthesizedAnnotationPostProcessor} invocation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface AnnotationAttribute {
 

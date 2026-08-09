@@ -25,7 +25,6 @@ import java.io.*;
  * Represents the MLLPInputStream type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MLLPInputStream extends BufferedInputStream {
 

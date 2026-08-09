@@ -27,10 +27,19 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The issue epic class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IssueEpic extends AbstractMinimalEpic<IssueEpic> {
 
+    /**
+     * Constructs a new {@code IssueEpic} instance.
+     */
+    public IssueEpic() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852257290207L;
 

@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.Assert;
  *
  * @param <T> the type of elements to be compared.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IndexedCompare<T> implements Comparator<T> {
 

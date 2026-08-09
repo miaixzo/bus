@@ -58,7 +58,6 @@ import org.miaixz.bus.core.center.function.SupplierX;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class VisibleContext {
 
@@ -171,7 +170,6 @@ public class VisibleContext {
      * AutoCloseable interface for automatic state restoration.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FunctionalInterface
     public interface Ignore extends AutoCloseable {

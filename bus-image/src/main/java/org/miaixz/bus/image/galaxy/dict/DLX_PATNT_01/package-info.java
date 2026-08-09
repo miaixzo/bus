@@ -21,6 +21,5 @@
  * UID Dictionary from DLX_PATNT_01
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.DLX_PATNT_01;

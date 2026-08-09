@@ -29,7 +29,6 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  * Represents the PaletteColorModel type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PaletteColorModel extends ColorModel {
 
@@ -316,7 +315,6 @@ public class PaletteColorModel extends ColorModel {
      * Represents the InflateSegmentedLut type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class InflateSegmentedLut {
 
@@ -462,7 +460,6 @@ public class PaletteColorModel extends ColorModel {
      * Represents the LUT type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static abstract class LUT {
 
@@ -555,7 +552,6 @@ public class PaletteColorModel extends ColorModel {
          * Represents the Packed type.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         static class Packed extends LUT {
 
@@ -660,7 +656,6 @@ public class PaletteColorModel extends ColorModel {
          * Represents the PerColor type.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         static class PerColor extends LUT {
 

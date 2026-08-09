@@ -57,7 +57,6 @@ import org.miaixz.bus.logger.Logger;
  * Concurrent TLS state machine exposing one plaintext {@link Conduit} boundary.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class TlsChannel implements Conduit, Lifecycle {
 
@@ -1133,7 +1132,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
 
     /**
      * Reads encrypted bytes while retaining any unconsumed prefix.
-     *
+     * <p>
      * The selected timeout is copied to the encrypted conduit immediately before the physical read. A non-null duration
      * is reserved for TLS-owned phases such as handshake; {@code null} uses the active protocol-configured plaintext
      * policy.
@@ -1173,7 +1172,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
 
     /**
      * Writes all bytes currently staged in encrypted output.
-     *
+     * <p>
      * The selected timeout is copied to the encrypted conduit immediately before the physical write. Each native
      * progress step is timed independently by the underlying conduit.
      *

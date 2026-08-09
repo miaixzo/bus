@@ -30,7 +30,6 @@ import org.miaixz.bus.logger.Logger;
  * Creates and working with dynamic proxies.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Builder {
 

@@ -25,7 +25,6 @@ import org.miaixz.bus.image.metric.pdu.AAssociateRJ;
  * Defines the AssociationMonitor contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface AssociationMonitor {
 

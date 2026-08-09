@@ -28,7 +28,6 @@ package org.miaixz.bus.core.center.date.culture.parts;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class DayParts extends MonthParts {
 

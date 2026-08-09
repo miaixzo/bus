@@ -29,7 +29,6 @@ import org.miaixz.bus.cache.nimble.MemoryCache;
  * Default cache implementation for notification services.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum NotifyCache implements CacheX<String, Object> {
 

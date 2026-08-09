@@ -34,15 +34,23 @@ import org.miaixz.bus.logger.Logger;
  * This class provides a handler for processing GitLab WebHook callouts.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WebHookManager implements HookManager {
 
+    /**
+     * The jackson json value.
+     */
     private final JacksonJson jacksonJson = new JacksonJson();
 
     // Collection of objects listening for WebHook events.
+    /**
+     * The webhook listeners value.
+     */
     private final List<WebHookListener> webhookListeners = new CopyOnWriteArrayList<WebHookListener>();
 
+    /**
+     * The secret token value.
+     */
     private String secretToken;
 
     /**

@@ -8,7 +8,8 @@
 
 ## 📖 Project Introduction
 
-**Bus Mapper** is an enterprise-level enhancement framework based on MyBatis. It is designed to **enhance without changing** the core MyBatis functionality, created to simplify development and improve efficiency.
+**Bus Mapper** is an enterprise-level enhancement framework based on MyBatis. It is designed to **enhance without
+changing** the core MyBatis functionality, created to simplify development and improve efficiency.
 
 -----
 
@@ -24,13 +25,13 @@
 
 ### ⚡ Performance Optimization
 
-| Feature | Performance Gain | Description |
-| :--- | :--- | :--- |
-| **Multi-Values Batch Insert** | $\uparrow 10-20\text{x}$ | Inserts multiple records in a single SQL statement. |
-| **Object Pooling Management** | $\text{GC } \downarrow 60\%$ | `StringBuilder` reuse to reduce memory footprint. |
-| **Intelligent Caching** | $\text{Hit Rate } 99.5\%$ | Multi-level caching for metadata and SQL. |
-| **Lock-Free Concurrency** | $\text{QPS } \uparrow 15\%$ | Lock-free design using `ConcurrentHashMap`. |
-| **Column Selection Optimization** | $\text{Network } \downarrow 90\%$ | Loads fields on demand, reducing data transfer. |
+| Feature                           | Performance Gain                  | Description                                         |
+|:----------------------------------|:----------------------------------|:----------------------------------------------------|
+| **Multi-Values Batch Insert**     | $\uparrow 10-20\text{x}$          | Inserts multiple records in a single SQL statement. |
+| **Object Pooling Management**     | $\text{GC } \downarrow 60\%$      | `StringBuilder` reuse to reduce memory footprint.   |
+| **Intelligent Caching**           | $\text{Hit Rate } 99.5\%$         | Multi-level caching for metadata and SQL.           |
+| **Lock-Free Concurrency**         | $\text{QPS } \uparrow 15\%$       | Lock-free design using `ConcurrentHashMap`.         |
+| **Column Selection Optimization** | $\text{Network } \downarrow 90\%$ | Loads fields on demand, reducing data transfer.     |
 
 ### 🛡️ Enterprise Features
 
@@ -121,10 +122,10 @@ bus:
           ignore: tenant,token,user
 ```
 
-The Spring Boot configuration model uses `affix` as the prefix-and-suffix rewrite scope. Internally, `bus-mapper` exposes `MapperOptions` as the pure
-Java/MyBatis option model for mapper properties. Plugin assembly, configuration normalization, and type-resolution
-helpers live in separate components. The starter keeps Spring Boot binding, resource resolution, mapper scanning, and
-lifecycle wiring.
+The Spring Boot configuration model uses `affix` as the prefix-and-suffix rewrite scope. Internally, `bus-mapper`
+exposes `MapperOptions` as the pure Java/MyBatis option model for mapper properties. Plugin assembly, configuration
+normalization, and type-resolution helpers live in separate components. The starter keeps Spring Boot binding, resource
+resolution, mapper scanning, and lifecycle wiring.
 
 #### 3\. Enable Mapper Scanning
 
@@ -505,19 +506,19 @@ bus:
 
 ### Entity Class Annotations
 
-| Annotation | Description | Example |
-| :--- | :--- | :--- |
-| `@Table` | Specifies the table name | `@Table("user")` |
-| `@Id` | Marks the primary key field | `@Id` |
-| `@KeyType` | Primary key generation strategy | `@KeyType(KeyType.Type.AUTO)` |
-| `@Column` | Specifies the column name | `@Column("user_name")` |
-| `@Version` | Optimistic locking version number | `@Version` |
-| `@TenantId` | Tenant ID field | `@TenantId` |
-| `@CreateTime` | Creation time auto-fill | `@CreateTime` |
-| `@UpdateTime` | Update time auto-fill | `@UpdateTime` |
-| `@Ignore` | Ignores the field | `@Ignore` |
-| `@TableAudit` | Table-level auditing | `@TableAudit` |
-| `@Audit` | Field-level auditing | `@Audit` |
+| Annotation    | Description                       | Example                       |
+|:--------------|:----------------------------------|:------------------------------|
+| `@Table`      | Specifies the table name          | `@Table("user")`              |
+| `@Id`         | Marks the primary key field       | `@Id`                         |
+| `@KeyType`    | Primary key generation strategy   | `@KeyType(KeyType.Type.AUTO)` |
+| `@Column`     | Specifies the column name         | `@Column("user_name")`        |
+| `@Version`    | Optimistic locking version number | `@Version`                    |
+| `@TenantId`   | Tenant ID field                   | `@TenantId`                   |
+| `@CreateTime` | Creation time auto-fill           | `@CreateTime`                 |
+| `@UpdateTime` | Update time auto-fill             | `@UpdateTime`                 |
+| `@Ignore`     | Ignores the field                 | `@Ignore`                     |
+| `@TableAudit` | Table-level auditing              | `@TableAudit`                 |
+| `@Audit`      | Field-level auditing              | `@Audit`                      |
 
 ### Primary Key Strategies
 
@@ -732,9 +733,9 @@ TenantConfig config = TenantConfig.builder()
 ## 🔄 Version Compatibility
 
 | Bus Mapper Version | MyBatis Version | Spring Boot Version | JDK Version |
-| :--- | :--- | :--- | :--- |
-| 8.x | 3.5.x+ | 3.x+ | 17+ |
-| 7.x | 3.5.x+ | 2.x+ | 11+ |
+|:-------------------|:----------------|:--------------------|:------------|
+| 8.x                | 3.5.x+          | 3.x+                | 17+         |
+| 7.x                | 3.5.x+          | 2.x+                | 11+         |
 
 -----
 
@@ -786,31 +787,31 @@ Based on JMH benchmark results:
 
 ### Batch Insert Performance (10,000 Records)
 
-| Framework | Time Taken | Performance Increase |
-| :--- | :--- | :--- |
-| Traditional Loop | $2500\text{ms}$ | - |
-| MyBatis Flex | $700\text{ms}$ | $\uparrow 3.6\text{x}$ |
-| **Bus Mapper** | **$180\text{ms}$** | **$\uparrow 13.9\text{x}$** |
+| Framework        | Time Taken         | Performance Increase        |
+|:-----------------|:-------------------|:----------------------------|
+| Traditional Loop | $2500\text{ms}$    | -                           |
+| MyBatis Flex     | $700\text{ms}$     | $\uparrow 3.6\text{x}$      |
+| **Bus Mapper**   | **$180\text{ms}$** | **$\uparrow 13.9\text{x}$** |
 
 ### Query Performance (1,000 Operations)
 
-| Framework | Average Latency | QPS |
-| :--- | :--- | :--- |
-| MyBatis Flex | $14.5\text{ms}$ | $68/\text{s}$ |
+| Framework      | Average Latency   | QPS               |
+|:---------------|:------------------|:------------------|
+| MyBatis Flex   | $14.5\text{ms}$   | $68/\text{s}$     |
 | **Bus Mapper** | **$12\text{ms}$** | **$83/\text{s}$** |
 
 ### Caching Efficiency
 
-| Framework | Hit Rate | Time Saved |
-| :--- | :--- | :--- |
-| MyBatis Flex | $95\%$ | $520\text{ms}$ |
+| Framework      | Hit Rate     | Time Saved         |
+|:---------------|:-------------|:-------------------|
+| MyBatis Flex   | $95\%$       | $520\text{ms}$     |
 | **Bus Mapper** | **$99.5\%$** | **$890\text{ms}$** |
 
 ### Memory and GC (1 Hour)
 
-| Metric | Bus Mapper | MyBatis Flex |
-| :--- | :--- | :--- |
-| Full GC Count | $2-3$ | $5-7$ |
+| Metric        | Bus Mapper     | MyBatis Flex   |
+|:--------------|:---------------|:---------------|
+| Full GC Count | $2-3$          | $5-7$          |
 | Total GC Time | $120\text{ms}$ | $280\text{ms}$ |
 
 Detailed Report: [可疑链接已删除]
@@ -897,37 +898,37 @@ bus:
 
 ### Supported Schema Changes
 
-| Change | Supported | Required flag |
-| :--- | :--- | :--- |
-| Create missing table | Yes | `allow-create-table: true` |
-| Add missing column | Yes | `allow-add-column: true` |
-| Create primary key | Yes | `allow-create-primary-key: true` |
-| Create composite primary key | Yes | `allow-create-primary-key: true` |
-| Create normal index | Yes | `allow-create-index: true` |
-| Create unique index | Yes | `allow-create-unique: true` |
-| Create composite index | Yes | `allow-create-index: true` |
-| Create foreign key | Yes | `allow-create-foreign-key: true` |
-| Fix table or column comments | Yes | `allow-modify-comment: true` |
-| Change SQL type | Yes | `allow-modify-type: true` |
-| Expand varchar length | Yes | `allow-expand-length: true` |
-| Shrink varchar length | Blocked by default | `allow-shrink-length: true`, `allow-dangerous: true`, and whitelist |
-| Drop column, index, primary key, or foreign key | Blocked by default | matching drop flag, `allow-dangerous: true`, and whitelist |
+| Change                                          | Supported          | Required flag                                                       |
+|:------------------------------------------------|:-------------------|:--------------------------------------------------------------------|
+| Create missing table                            | Yes                | `allow-create-table: true`                                          |
+| Add missing column                              | Yes                | `allow-add-column: true`                                            |
+| Create primary key                              | Yes                | `allow-create-primary-key: true`                                    |
+| Create composite primary key                    | Yes                | `allow-create-primary-key: true`                                    |
+| Create normal index                             | Yes                | `allow-create-index: true`                                          |
+| Create unique index                             | Yes                | `allow-create-unique: true`                                         |
+| Create composite index                          | Yes                | `allow-create-index: true`                                          |
+| Create foreign key                              | Yes                | `allow-create-foreign-key: true`                                    |
+| Fix table or column comments                    | Yes                | `allow-modify-comment: true`                                        |
+| Change SQL type                                 | Yes                | `allow-modify-type: true`                                           |
+| Expand varchar length                           | Yes                | `allow-expand-length: true`                                         |
+| Shrink varchar length                           | Blocked by default | `allow-shrink-length: true`, `allow-dangerous: true`, and whitelist |
+| Drop column, index, primary key, or foreign key | Blocked by default | matching drop flag, `allow-dangerous: true`, and whitelist          |
 
 Supported modes:
 
-| Mode | Behavior |
-| :--- | :--- |
-| `NONE` | Does not read metadata, generate SQL, or execute SQL. |
-| `SCRIPT` | Reads metadata and writes generated SQL; it does not execute DDL. |
-| `CREATE` | Creates missing tables only; existing tables are skipped. |
-| `VALIDATE` | Reads metadata and reports differences; it does not execute DDL. |
-| `UPDATE` | Executes only differences explicitly allowed by configuration. |
+| Mode       | Behavior                                                          |
+|:-----------|:------------------------------------------------------------------|
+| `NONE`     | Does not read metadata, generate SQL, or execute SQL.             |
+| `SCRIPT`   | Reads metadata and writes generated SQL; it does not execute DDL. |
+| `CREATE`   | Creates missing tables only; existing tables are skipped.         |
+| `VALIDATE` | Reads metadata and reports differences; it does not execute DDL.  |
+| `UPDATE`   | Executes only differences explicitly allowed by configuration.    |
 
 ### Existing Table Behavior
 
 When a table already exists, Bus Mapper reads current database metadata and compares it with entity metadata. It only
-executes differences that are both supported by the active dialect and enabled by configuration. Missing indexes,
-unique indexes, primary keys, and foreign keys can be added to existing tables. Existing field type changes require
+executes differences that are both supported by the active dialect and enabled by configuration. Missing indexes, unique
+indexes, primary keys, and foreign keys can be added to existing tables. Existing field type changes require
 `allow-modify-type: true`, and length expansion requires `allow-expand-length: true`. Every table or column comment DDL
 requires `allow-modify-comment: true`; when it is `false`, newly created tables, added columns, existing tables, and
 existing columns do not generate comment SQL.
@@ -961,15 +962,16 @@ bus:
       allow-expand-length: true
 ```
 
-`entity-packages` scans entity classes annotated with `@Entity` or `@Table`; when `include-entities` is empty, every discovered entity is eligible for initialization.
+`entity-packages` scans entity classes annotated with `@Entity` or `@Table`; when `include-entities` is empty, every
+discovered entity is eligible for initialization.
 
 ### Per-Database Initialization
 
 When a project configures multiple databases through `configurationProperties.namespaces`, `schema` can be placed under
 the matching namespace. Affix rules are not duplicated under `schema`; initialization reads the existing
 `affix.prefix.value/ignore` and `affix.suffix.value/ignore` configuration from the same namespace. Prefix and suffix
-ignore lists are independent: ignoring one side does not prevent the other side from being applied.
-Affixes support both global and datasource-bound configuration: datasource `affix.*` values win first, followed by
+ignore lists are independent: ignoring one side does not prevent the other side from being applied. Affixes support both
+global and datasource-bound configuration: datasource `affix.*` values win first, followed by
 `shared.affix.*`, `default.affix.*`, or top-level `bus.mapper.affix`.
 
 ```yaml
@@ -1010,8 +1012,8 @@ bus:
 before. When namespace-level `schema` exists, the global `bus.mapper.schema` object is used as the default template for
 each namespace so the same entities are not initialized a second time globally. The namespace `name` is also the unique
 datasource route key used for schema initialization; it must match a named datasource bean or a route registered in the
-dynamic datasource. `configurationProperties.shared.schema` can provide default schema options for all namespaces,
-with each namespace allowed to override them.
+dynamic datasource. `configurationProperties.shared.schema` can provide default schema options for all namespaces, with
+each namespace allowed to override them.
 
 Use `SCRIPT` first in production-like environments to review generated DDL before allowing execution:
 

@@ -32,7 +32,6 @@ import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketFrame;
  * data frame and is released immediately when the message completes or the assembler is reset.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class WebSocketAssembler {
 

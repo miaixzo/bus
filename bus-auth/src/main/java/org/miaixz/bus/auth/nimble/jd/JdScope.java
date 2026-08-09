@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.auth.nimble.jd;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
@@ -28,10 +27,8 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
  * JD (Jingdong) authorization scopes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
-@AllArgsConstructor
 public enum JdScope implements AuthorizeScope {
 
     /**
@@ -54,4 +51,16 @@ public enum JdScope implements AuthorizeScope {
      */
     private final boolean isDefault;
 
+    /**
+     * Constructs an authorization scope.
+     *
+     * @param scope       the scope value
+     * @param description the scope description
+     * @param isDefault   whether the scope is enabled by default
+     */
+    JdScope(String scope, String description, boolean isDefault) {
+        this.scope = scope;
+        this.description = description;
+        this.isDefault = isDefault;
+    }
 }

@@ -29,18 +29,51 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The event commit class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EventCommit {
 
+    /**
+     * Constructs a new {@code EventCommit} instance.
+     */
+    public EventCommit() {
+        // No initialization required.
+    }
+
+    /**
+     * The id value.
+     */
     private String id;
+    /**
+     * The message value.
+     */
     private String message;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The timestamp value.
+     */
     private Date timestamp;
+    /**
+     * The url value.
+     */
     private String url;
+    /**
+     * The author value.
+     */
     private Author author;
+    /**
+     * The added value.
+     */
     private List<String> added;
+    /**
+     * The modified value.
+     */
     private List<String> modified;
+    /**
+     * The removed value.
+     */
     private List<String> removed;
 
     /**

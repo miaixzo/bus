@@ -48,7 +48,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FileChannelCopier extends IoCopier<FileChannel, FileChannel> {
 

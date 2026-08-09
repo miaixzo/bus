@@ -25,7 +25,6 @@ import org.miaixz.bus.fabric.Message;
  * Guard rule contract for message checks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface GuardRule {
 

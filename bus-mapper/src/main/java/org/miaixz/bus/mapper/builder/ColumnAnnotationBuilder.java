@@ -42,7 +42,6 @@ import org.miaixz.bus.mapper.provider.NamingProvider;
  * field annotations to generate column information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
 

@@ -28,7 +28,6 @@ import org.miaixz.bus.image.metric.pdu.ExtendedNegotiation;
  * Represents the StorageOptions type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StorageOptions implements Serializable {
 
@@ -193,7 +192,6 @@ public class StorageOptions implements Serializable {
      * Defines the LevelOfSupport values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum LevelOfSupport {
 
@@ -240,7 +238,6 @@ public class StorageOptions implements Serializable {
      * Defines the DigitalSignatureSupport values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum DigitalSignatureSupport {
 
@@ -287,7 +284,6 @@ public class StorageOptions implements Serializable {
      * Defines the ElementCoercion values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ElementCoercion {
 

@@ -30,7 +30,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * '_x005F_x5116_'.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EscapeStrCellSetter extends CharSequenceCellSetter {
 

@@ -31,7 +31,6 @@ import org.miaixz.bus.image.galaxy.data.VR;
  * externally or handled specially.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface BulkDataDescriptor {

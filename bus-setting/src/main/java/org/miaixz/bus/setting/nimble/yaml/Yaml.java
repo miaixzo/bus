@@ -39,7 +39,6 @@ import org.miaixz.bus.logger.Logger;
  * Reads and writing YAML files, based on the SnakeYAML library.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Yaml {
 

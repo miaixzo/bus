@@ -28,19 +28,49 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * The project approvals config class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProjectApprovalsConfig implements Serializable {
 
+    /**
+     * Constructs a new {@code ProjectApprovalsConfig} instance.
+     */
+    public ProjectApprovalsConfig() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852271099830L;
 
+    /**
+     * The approvals before merge value.
+     */
     private Integer approvalsBeforeMerge;
+    /**
+     * The reset approvals on push value.
+     */
     private Boolean resetApprovalsOnPush;
+    /**
+     * The selective code owner removals value.
+     */
     private Boolean selectiveCodeOwnerRemovals;
+    /**
+     * The disable overriding approvers per merge request value.
+     */
     private Boolean disableOverridingApproversPerMergeRequest;
+    /**
+     * The merge requests author approval value.
+     */
     private Boolean mergeRequestsAuthorApproval;
+    /**
+     * The merge requests disable committers approval value.
+     */
     private Boolean mergeRequestsDisableCommittersApproval;
+    /**
+     * The require password to approve value.
+     */
     private Boolean requirePasswordToApprove;
 
     /**

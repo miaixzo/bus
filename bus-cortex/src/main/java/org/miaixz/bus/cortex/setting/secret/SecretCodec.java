@@ -23,7 +23,6 @@ package org.miaixz.bus.cortex.setting.secret;
  * Codec abstraction for protected setting values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface SecretCodec {
 

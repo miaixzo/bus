@@ -27,9 +27,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Detailed project template metadata returned for a specific project template.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProjectTemplateDetail extends ProjectTemplate {
+
+    /**
+     * Constructs a new {@code ProjectTemplateDetail} instance.
+     */
+    public ProjectTemplateDetail() {
+        // No initialization required.
+    }
 
     /**
      * Short display name for the template.

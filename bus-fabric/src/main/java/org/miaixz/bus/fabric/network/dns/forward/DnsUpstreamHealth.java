@@ -37,7 +37,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsUpstreamHealth {
 
@@ -250,7 +249,6 @@ public final class DnsUpstreamHealth {
      * Immutable upstream health snapshot.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Snapshot {
 
@@ -348,7 +346,6 @@ public final class DnsUpstreamHealth {
      * Internal mutable health state snapshot replaced atomically in the map.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class HealthState {
 

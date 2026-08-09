@@ -38,7 +38,6 @@ import org.miaixz.bus.fabric.runtime.Activity;
  * Worker executor that accepts only short-task entries promoted by {@link DispatchQueue}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DispatchWorker implements AutoCloseable {
 

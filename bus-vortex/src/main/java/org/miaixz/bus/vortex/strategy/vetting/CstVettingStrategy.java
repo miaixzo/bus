@@ -29,7 +29,6 @@ import org.miaixz.bus.vortex.strategy.VettingStrategy;
  * authorization, enrichment, and forwarding cleanup are handled by {@code CstQualifierStrategy}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.SECOND)
 public class CstVettingStrategy extends VettingStrategy {

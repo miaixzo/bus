@@ -30,7 +30,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * various template engines to be used interchangeably.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Template {
 

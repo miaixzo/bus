@@ -29,7 +29,6 @@ import org.miaixz.bus.shade.screw.metadata.Database;
  * Represents database information for a MariaDB instance.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

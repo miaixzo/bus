@@ -67,7 +67,6 @@ import org.miaixz.bus.mapper.Order;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 public final class Sort implements Serializable, Iterable<Order> {
@@ -231,7 +230,6 @@ public final class Sort implements Serializable, Iterable<Order> {
      * Builder for creating Sort instances with a fluent API.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class SortBuilder {
 

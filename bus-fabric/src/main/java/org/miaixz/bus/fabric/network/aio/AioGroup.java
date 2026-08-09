@@ -41,7 +41,6 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
  * owns that dispatcher and closes it after the channel group and channel lifecycle scope have closed.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class AioGroup implements AutoCloseable {
 

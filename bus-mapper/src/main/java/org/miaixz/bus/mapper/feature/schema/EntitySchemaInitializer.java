@@ -57,7 +57,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EntitySchemaInitializer {
 
@@ -641,7 +640,6 @@ public class EntitySchemaInitializer {
      * Schema execution phase.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum SchemaPhase {
 

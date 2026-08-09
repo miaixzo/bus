@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.Normal;
  * WADO-URI/WADO-RS access parameters for manifest query results.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WadoParameters extends ArchiveParameters {
 
@@ -249,7 +248,6 @@ public class WadoParameters extends ArchiveParameters {
      * Represents the Builder type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Builder {
 

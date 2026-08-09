@@ -29,23 +29,65 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The license template class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LicenseTemplate implements Serializable {
 
+    /**
+     * Constructs a new {@code LicenseTemplate} instance.
+     */
+    public LicenseTemplate() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852260622196L;
 
+    /**
+     * The key value.
+     */
     private String key;
+    /**
+     * The name value.
+     */
     private String name;
+    /**
+     * The nickname value.
+     */
     private String nickname;
+    /**
+     * The featured value.
+     */
     private boolean featured;
+    /**
+     * The html url value.
+     */
     private String htmlUrl;
+    /**
+     * The source url value.
+     */
     private String sourceUrl;
+    /**
+     * The description value.
+     */
     private String description;
+    /**
+     * The conditions value.
+     */
     private List<String> conditions;
+    /**
+     * The permissions value.
+     */
     private List<String> permissions;
+    /**
+     * The limitations value.
+     */
     private List<String> limitations;
+    /**
+     * The content value.
+     */
     private String content;
 
     /**

@@ -28,7 +28,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * Provider Interface) to extend the logic for creating table information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface TableSchemaBuilder extends Order {
 
@@ -51,7 +50,6 @@ public interface TableSchemaBuilder extends Order {
      * A factory chain interface for invoking table information creation logic in a chained manner.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     interface Chain {
 

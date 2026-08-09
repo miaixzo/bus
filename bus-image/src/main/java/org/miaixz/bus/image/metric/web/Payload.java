@@ -31,7 +31,6 @@ import java.util.Objects;
  * Multipart payload abstraction.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Payload {
 
@@ -85,7 +84,6 @@ public interface Payload {
      *
      * @param data the data.
      * @author Kimi Liu
-     * @since Java 21+
      */
     record ByteArrayPayload(byte[] data) implements Payload {
 
@@ -125,7 +123,6 @@ public interface Payload {
      *
      * @param path the path.
      * @author Kimi Liu
-     * @since Java 21+
      */
     record FilePayload(Path path) implements Payload {
 
@@ -172,7 +169,6 @@ public interface Payload {
      * Defines the EmptyPayload values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum EmptyPayload implements Payload {
 

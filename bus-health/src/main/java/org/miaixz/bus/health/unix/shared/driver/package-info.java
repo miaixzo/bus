@@ -21,6 +21,5 @@
  * Provides functions to query information common to all unix systems
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.health.unix.shared.driver;

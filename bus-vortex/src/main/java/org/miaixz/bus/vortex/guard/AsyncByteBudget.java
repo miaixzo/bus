@@ -36,7 +36,6 @@ import reactor.core.publisher.Sinks;
  * A caller must retain the returned {@link Lease} for as long as an equivalent in-memory representation remains live.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class AsyncByteBudget implements AutoCloseable {
 

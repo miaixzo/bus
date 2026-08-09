@@ -21,6 +21,5 @@
  * Provides interfaces and abstract implementations for various getter methods.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.lang.getter;

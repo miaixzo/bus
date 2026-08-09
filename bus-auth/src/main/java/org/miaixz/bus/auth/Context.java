@@ -22,9 +22,7 @@ package org.miaixz.bus.auth;
 import java.util.List;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -33,14 +31,18 @@ import lombok.experimental.SuperBuilder;
  * configuration parameters required for authentication processes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Context {
+
+    /**
+     * Constructs a new {@code Context} instance.
+     */
+    public Context() {
+        // No initialization required.
+    }
 
     /**
      * Corresponds to the key of various platforms (OAuth2: Client ID).

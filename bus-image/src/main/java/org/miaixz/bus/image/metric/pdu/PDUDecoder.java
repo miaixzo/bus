@@ -48,7 +48,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the PDUDecoder type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PDUDecoder extends PDVInputStream {
 

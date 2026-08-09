@@ -36,7 +36,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractBluetoothDevice;
  * macOS Bluetooth device enumeration via {@code system_profiler SPBluetoothDataType}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public final class MacBluetoothDevice extends AbstractBluetoothDevice {

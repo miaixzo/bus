@@ -32,7 +32,6 @@ import org.miaixz.bus.logger.magic.AbstractProvider;
  * A logger provider implementation that wraps a {@link org.jboss.logging.Logger} instance.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JbossLoggingProvider extends AbstractProvider {
 

@@ -32,7 +32,6 @@ import org.miaixz.bus.logger.Logger;
  * that strategy.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StrategyManager {
 

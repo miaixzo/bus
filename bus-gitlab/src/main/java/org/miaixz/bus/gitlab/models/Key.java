@@ -29,17 +29,41 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The key class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Key implements Serializable {
 
+    /**
+     * Constructs a new {@code Key} instance.
+     */
+    public Key() {
+        // No initialization required.
+    }
+
+    /**
+     * The serial version uid value.
+     */
     @Serial
     private static final long serialVersionUID = 2852260056272L;
 
+    /**
+     * The created at value.
+     */
     private Date createdAt;
+    /**
+     * The id value.
+     */
     private Long id;
+    /**
+     * The key value.
+     */
     private String key;
+    /**
+     * The title value.
+     */
     private String title;
+    /**
+     * The user value.
+     */
     private User user;
 
     /**

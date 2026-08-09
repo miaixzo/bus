@@ -28,7 +28,6 @@ import java.util.Objects;
  * Represents the DateRange type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DateRange implements Serializable {
 

@@ -39,7 +39,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * <a href="https.blog.spoock.com/2018/10/23/java-xxe/">https://blog.spoock.com/2018/10/23/java-xxe/</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class XXE {
 

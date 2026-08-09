@@ -21,6 +21,5 @@
  * Provides encapsulated operations for Excel reading and writing using POI, with {@code ExcelKit} as the entry point.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.office.excel;

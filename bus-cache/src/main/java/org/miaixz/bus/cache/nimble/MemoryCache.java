@@ -51,7 +51,6 @@ import org.miaixz.bus.logger.Logger;
  * @param <K> The type of keys.
  * @param <V> The type of values.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MemoryCache<K, V> implements CacheX<K, V> {
 
@@ -559,7 +558,6 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
      * A singleton scheduler for handling periodic cache maintenance tasks.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum CacheScheduler {
 
@@ -612,7 +610,6 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
      * An internal class to hold the cached value along with its metadata.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter

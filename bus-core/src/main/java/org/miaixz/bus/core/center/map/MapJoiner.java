@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * with specified delimiters, similar to how {@link StringJoiner} works for sequences.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MapJoiner {
 

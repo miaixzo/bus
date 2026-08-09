@@ -22,6 +22,5 @@
  * token exchange, and user information retrieval.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.auth.nimble.router;

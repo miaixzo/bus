@@ -29,7 +29,6 @@ import org.miaixz.bus.fabric.network.dns.policy.DnsPolicyRule;
  * Immutable DNS view containing zones visible to one client group.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsView {
 

@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Represents a month in the Tibetan calendar. Only supports Tibetan calendar from December 1950 to December 2050.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RabjungMonth extends MonthParts {
 

@@ -30,7 +30,6 @@ import org.miaixz.bus.tempus.crontab.TimerCrontab;
  * the next and executing the tasks within.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TimingWheel {
 

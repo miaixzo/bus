@@ -37,7 +37,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Unified Fabric communication service properties.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

@@ -26,7 +26,6 @@ import org.apache.poi.ss.usermodel.Cell;
  * achieve customizable cell value settings.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface CellSetter {

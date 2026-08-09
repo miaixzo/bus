@@ -29,7 +29,6 @@ import org.miaixz.bus.fabric.Payload;
  *
  * @param <T> application value encoded and decoded by this codec
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface DataCodec<T> {
 

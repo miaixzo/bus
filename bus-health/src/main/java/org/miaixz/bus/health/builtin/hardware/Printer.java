@@ -25,7 +25,6 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  * Printer interface representing a printer device.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public interface Printer {
@@ -90,7 +89,6 @@ public interface Printer {
      * Printer status enumeration.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum PrinterStatus {
         /**

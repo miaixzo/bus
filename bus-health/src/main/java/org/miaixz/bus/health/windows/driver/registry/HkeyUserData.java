@@ -39,7 +39,6 @@ import org.miaixz.bus.logger.Logger;
  * Reads session data from HKEY_USERS
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class HkeyUserData {

@@ -25,12 +25,27 @@ import java.util.Date;
  * The issue changes class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IssueChanges extends EventChanges {
 
+    /**
+     * Constructs a new {@code IssueChanges} instance.
+     */
+    public IssueChanges() {
+        // No initialization required.
+    }
+
+    /**
+     * The due date value.
+     */
     private ChangeContainer<Date> dueDate;
+    /**
+     * The confidential value.
+     */
     private ChangeContainer<Boolean> confidential;
+    /**
+     * The heath status value.
+     */
     private ChangeContainer<String> heathStatus;
 
     /**

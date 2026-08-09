@@ -29,7 +29,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * concatenate them.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StringRepeater {
 

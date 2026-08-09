@@ -23,7 +23,6 @@ package org.miaixz.bus.image.nimble.stream;
  * Defines the ImageReaderDescriptor contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ImageReaderDescriptor {
 

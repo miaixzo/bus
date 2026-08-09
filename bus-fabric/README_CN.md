@@ -20,18 +20,18 @@ Bus Fabric 是 Bus 体系中负责协议执行与共享网络运行时能力的�
 
 ## 模块边界
 
-| 包 | 职责 |
-| --- | --- |
-| `org.miaixz.bus.fabric` | `Context`、`Options`、`Call`、`Payload`、`Headers`、`Message`、`Session` 等共享契约。 |
-| `org.miaixz.bus.fabric.protocol.http` | HTTP 请求构建、响应处理、缓存接入、下载支持、Cookie 与 HTTP Body 类型。 |
-| `org.miaixz.bus.fabric.protocol.socket` | 基于帧编解码的 TCP、TLS Socket、UDP、KCP 会话。 |
-| `org.miaixz.bus.fabric.protocol.sse` | Server-Sent Events 流与重连元数据。 |
-| `org.miaixz.bus.fabric.protocol.websocket` | WebSocket 连接、消息回调、文本/二进制写入、ping 与 close。 |
-| `org.miaixz.bus.fabric.protocol.stomp` | 基于 `ws` 或 `wss` 打开的 STOMP 会话、订阅辅助方法、heart-beat、ack/nack 与发送操作。 |
-| `org.miaixz.bus.fabric.network` | Address、DNS、代理、TLS、TCP、UDP、AIO、KCP、连接池等底层网络能力。 |
-| `org.miaixz.bus.fabric.guard` | Body、Frame、TLS 与组合守卫。 |
-| `org.miaixz.bus.fabric.observe` | 协议生命周期观测与监听器桥接。 |
-| `org.miaixz.bus.fabric.cache` | HTTP 缓存编排复用的通用缓存存储实现。 |
+| 包                                         | 职责                                                                                  |
+|--------------------------------------------|---------------------------------------------------------------------------------------|
+| `org.miaixz.bus.fabric`                    | `Context`、`Options`、`Call`、`Payload`、`Headers`、`Message`、`Session` 等共享契约。 |
+| `org.miaixz.bus.fabric.protocol.http`      | HTTP 请求构建、响应处理、缓存接入、下载支持、Cookie 与 HTTP Body 类型。               |
+| `org.miaixz.bus.fabric.protocol.socket`    | 基于帧编解码的 TCP、TLS Socket、UDP、KCP 会话。                                       |
+| `org.miaixz.bus.fabric.protocol.sse`       | Server-Sent Events 流与重连元数据。                                                   |
+| `org.miaixz.bus.fabric.protocol.websocket` | WebSocket 连接、消息回调、文本/二进制写入、ping 与 close。                            |
+| `org.miaixz.bus.fabric.protocol.stomp`     | 基于 `ws` 或 `wss` 打开的 STOMP 会话、订阅辅助方法、heart-beat、ack/nack 与发送操作。 |
+| `org.miaixz.bus.fabric.network`            | Address、DNS、代理、TLS、TCP、UDP、AIO、KCP、连接池等底层网络能力。                   |
+| `org.miaixz.bus.fabric.guard`              | Body、Frame、TLS 与组合守卫。                                                         |
+| `org.miaixz.bus.fabric.observe`            | 协议生命周期观测与监听器桥接。                                                        |
+| `org.miaixz.bus.fabric.cache`              | HTTP 缓存编排复用的通用缓存存储实现。                                                 |
 
 ## 入口
 
@@ -41,13 +41,13 @@ Bus Fabric 是 Bus 体系中负责协议执行与共享网络运行时能力的�
 Context context = Context.create();
 ```
 
-| 入口 | Builder | 适用场景 |
-| --- | --- | --- |
-| `Fabric.http(context)` | `HttpX.Builder` | HTTP 与 HTTPS 请求。 |
-| `Fabric.socket(context)` | `SocketX.Builder` | TCP、TLS Socket、UDP 与 KCP 会话。 |
-| `Fabric.sse(context)` | `SseX.Builder` | Server-Sent Events 流。 |
-| `Fabric.websocket(context)` | `WebSocketX.Builder` | WebSocket 会话。 |
-| `Fabric.stomp(context)` | `StompX.Builder` | STOMP 会话。 |
+| 入口                        | Builder              | 适用场景                           |
+|-----------------------------|----------------------|------------------------------------|
+| `Fabric.http(context)`      | `HttpX.Builder`      | HTTP 与 HTTPS 请求。               |
+| `Fabric.socket(context)`    | `SocketX.Builder`    | TCP、TLS Socket、UDP 与 KCP 会话。 |
+| `Fabric.sse(context)`       | `SseX.Builder`       | Server-Sent Events 流。            |
+| `Fabric.websocket(context)` | `WebSocketX.Builder` | WebSocket 会话。                   |
+| `Fabric.stomp(context)`     | `StompX.Builder`     | STOMP 会话。                       |
 
 每个入口也提供无参重载，会创建默认 `Context`。业务代码建议显式传入 `Context`，这样运行时选项和生命周期策略都能在调用点被看见。
 
@@ -184,20 +184,20 @@ String text = Fabric.http(limited)
 
 当前协议链路会读取的重要 option key：
 
-| Option key | 期望值 | 使用方 |
-| --- | --- | --- |
-| `materialize.maxBytes` | `Number` | `Payload`、HTTP Body、Socket 消息、WebSocket 消息、STOMP 消息在一次性读取 bytes/text 时使用。 |
-| `HttpCache.OPTION`（`http.cache`） | `HttpCache` | HTTP 缓存编排。 |
-| `CookieJar.OPTION`（`http.cookieJar`） | `CookieJar` | HTTP 自动加载与保存 Cookie。 |
-| `HttpAuthenticator.OPTION`（`http.authenticator`） | `HttpAuthenticator` | HTTP 挑战认证。 |
-| `ProxyPlan.OPTION`（`http.proxy`） | `ProxyPlan` | HTTP 代理选择。 |
-| `TlsPolicy.OPTION`（`tls.policy`） | `TlsPolicy` | 共享且原子的 TLS 上下文与设置。 |
-| `SocketOptions.TLS_POLICY`（`socket.tlsPolicy`） | `TlsPolicy` | Socket 专属 TLS 覆盖。 |
+| Option key                                         | 期望值              | 使用方                                                                                        |
+|----------------------------------------------------|---------------------|-----------------------------------------------------------------------------------------------|
+| `materialize.maxBytes`                             | `Number`            | `Payload`、HTTP Body、Socket 消息、WebSocket 消息、STOMP 消息在一次性读取 bytes/text 时使用。 |
+| `HttpCache.OPTION`（`http.cache`）                 | `HttpCache`         | HTTP 缓存编排。                                                                               |
+| `CookieJar.OPTION`（`http.cookieJar`）             | `CookieJar`         | HTTP 自动加载与保存 Cookie。                                                                  |
+| `HttpAuthenticator.OPTION`（`http.authenticator`） | `HttpAuthenticator` | HTTP 挑战认证。                                                                               |
+| `ProxyPlan.OPTION`（`http.proxy`）                 | `ProxyPlan`         | HTTP 代理选择。                                                                               |
+| `TlsPolicy.OPTION`（`tls.policy`）                 | `TlsPolicy`         | 共享且原子的 TLS 上下文与设置。                                                               |
+| `SocketOptions.TLS_POLICY`（`socket.tlsPolicy`）   | `TlsPolicy`         | Socket 专属 TLS 覆盖。                                                                        |
 
 ### 一次性读取阈值
 
-`bytes()` 与 `text()` 是一次性读取 API，适合小体量内容，并受 `Options.materializeMaxBytes(...)` 保护。
-默认阈值为 `64 MiB`。大体量内容应使用流式 API，或在 `Context` 边界显式提高阈值。
+`bytes()` 与 `text()` 是一次性读取 API，适合小体量内容，并受 `Options.materializeMaxBytes(...)` 保护。 默认阈值为 `64 MiB`
+。大体量内容应使用流式 API，或在 `Context` 边界显式提高阈值。
 
 ### 异步调用
 
@@ -238,14 +238,12 @@ try (HttpCache cache = HttpCache.create(
 ### HTTP 连接复用与重试
 
 默认情况下，从空闲队列取出的、符合条件的 HTTP/1 连接会在复用前进行校验。对于独占的空闲
-`SocketChannel`，连接从空闲队列移除后会通过非阻塞读取探测对端是否已经关闭；该过程不会持有连接池
-协调锁。无法安全探测网络状态的传输（包括基于流的 TLS 连接）会降级为本地可复用状态检查。直接交接
-给等待请求的连接不会经过空闲队列。应用如果能够接受可靠性与性能之间的权衡，可以通过
+`SocketChannel`，连接从空闲队列移除后会通过非阻塞读取探测对端是否已经关闭；该过程不会持有连接池 协调锁。无法安全探测网络状态的传输（包括基于流的
+TLS 连接）会降级为本地可复用状态检查。直接交接 给等待请求的连接不会经过空闲队列。应用如果能够接受可靠性与性能之间的权衡，可以通过
 `PoolPolicy.staleCheckAfter(...)` 延后对近期使用连接的主动校验。
 
-传输重试使用一个总次数限制。陈旧复用连接的恢复属于该总次数的一部分，同时受自身更严格的子限制
-约束，两项限制不会叠加。将 `HttpRetryPolicy.Builder.maxAttempts(0)` 或 `maxFollowUps(0)` 设置为零，
-会禁用包括陈旧连接恢复在内的所有传输重试。
+传输重试使用一个总次数限制。陈旧复用连接的恢复属于该总次数的一部分，同时受自身更严格的子限制 约束，两项限制不会叠加。将
+`HttpRetryPolicy.Builder.maxAttempts(0)` 或 `maxFollowUps(0)` 设置为零， 会禁用包括陈旧连接恢复在内的所有传输重试。
 
 自动传输重试要求请求体可以重复发送，并且 HTTP 方法具有幂等性，包括 `GET`、`HEAD`、`PUT`、
 `DELETE`、`OPTIONS` 和 `TRACE`。`POST` 及其他非幂等请求在发生不明确的网络故障后不会被自动重放。
@@ -268,7 +266,8 @@ Fabric.http(stateful)
 
 ### 断点下载
 
-下载能力由 `HttpDownload` 表达。先通过 HTTP 入口构建 `GET` 请求，再把请求交给下载任务；下载任务负责 range resume、进度、暂停、取消与 sidecar 元数据。
+下载能力由 `HttpDownload` 表达。先通过 HTTP 入口构建 `GET` 请求，再把请求交给下载任务；下载任务负责 range resume、进度、暂停、取消与
+sidecar 元数据。
 
 ```java
 HttpRequest request = Fabric.http(context)
@@ -347,8 +346,8 @@ String body = Fabric.http(context)
 
 ### 观测
 
-可以在 Builder 上挂载 observer 接收协议事件。`EventListenerBridge` 会把 fabric observation marker 映射到
-call start/end、DNS、connect、TLS、cache、headers、body、close、failure 等命名回调。
+可以在 Builder 上挂载 observer 接收协议事件。`EventListenerBridge` 会把 fabric observation marker 映射到 call
+start/end、DNS、connect、TLS、cache、headers、body、close、failure 等命名回调。
 
 ```java
 EventObserver observer = EventListenerBridge.of(new EventListenerBridge.Listener() {

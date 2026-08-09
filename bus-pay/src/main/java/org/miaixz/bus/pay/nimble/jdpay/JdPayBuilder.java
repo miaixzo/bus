@@ -50,7 +50,6 @@ import org.miaixz.bus.pay.nimble.wechat.WechatPayBuilder;
  * Builds and signs JD Pay requests, providing methods for signing, encryption, decryption, and XML manipulation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JdPayBuilder {
 

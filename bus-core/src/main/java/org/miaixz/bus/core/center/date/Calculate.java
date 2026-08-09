@@ -28,7 +28,6 @@ import java.time.temporal.*;
  * Date calculation class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Calculate extends Resolver {
 

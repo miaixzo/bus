@@ -38,7 +38,6 @@ import org.miaixz.bus.core.lang.loader.Loaders;
  * packaging.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Injector {
 

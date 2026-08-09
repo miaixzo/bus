@@ -40,7 +40,6 @@ import org.miaixz.bus.metrics.nimble.indigenous.NativeProvider;
  * cluster-level /metricz.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CortexExporter {
 

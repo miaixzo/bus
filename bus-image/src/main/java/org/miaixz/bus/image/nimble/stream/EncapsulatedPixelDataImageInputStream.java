@@ -34,7 +34,6 @@ import org.miaixz.bus.image.nimble.codec.TransferSyntaxType;
  * Represents the EncapsulatedPixelDataImageInputStream type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EncapsulatedPixelDataImageInputStream extends MemoryCacheImageInputStream
         implements BytesWithImageImageDescriptor {

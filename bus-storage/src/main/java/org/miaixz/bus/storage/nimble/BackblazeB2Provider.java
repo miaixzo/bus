@@ -26,7 +26,6 @@ import org.miaixz.bus.storage.Context;
  * {@link GenericS3Provider} to offer Backblaze B2-specific configurations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BackblazeB2Provider extends GenericS3Provider {
 

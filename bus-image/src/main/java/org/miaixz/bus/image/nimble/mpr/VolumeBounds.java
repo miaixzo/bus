@@ -33,7 +33,6 @@ import org.miaixz.bus.image.nimble.geometry.Vector3;
  * @param colDir    the col dir.
  * @param normalDir the normal dir.
  * @author Kimi Liu
- * @since Java 21+
  */
 public record VolumeBounds(VolumeSize size, Vector3 spacing, Vector3 origin, Vector3 rowDir, Vector3 colDir,
         Vector3 normalDir) {

@@ -34,7 +34,6 @@ import org.miaixz.bus.fabric.network.tls.TlsPolicy;
  * Immutable destination for grouping reusable network connections.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Destination {
 

@@ -23,9 +23,7 @@ import java.io.Serial;
 
 import jakarta.persistence.Transient;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -35,14 +33,18 @@ import lombok.experimental.SuperBuilder;
  * debugging of requests across distributed systems.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Tracer extends Authorize {
+
+    /**
+     * Constructs a new {@code Tracer} instance.
+     */
+    public Tracer() {
+        // No initialization required.
+    }
 
     @Serial
     private static final long serialVersionUID = 2852291120377L;

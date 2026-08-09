@@ -49,7 +49,6 @@ import org.miaixz.bus.logger.Logger;
  * authentication flow features.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

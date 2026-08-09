@@ -36,7 +36,6 @@ import org.miaixz.bus.validate.magic.annotation.Each;
  * Validator for performing validation on each element of a container (Array, Collection, or Map).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EachMatcher implements Matcher<Object, Each> {
 

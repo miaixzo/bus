@@ -36,7 +36,6 @@ import io.temporal.worker.WorkerFactory;
  * This object only stores Temporal runtime resources and lifecycle state. It does not hold business parsing objects.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.pay.nimble.tenpay.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -31,14 +29,18 @@ import org.miaixz.bus.pay.magic.Voucher;
  * Model for submitting a micropayment.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 public class MicroPay extends Voucher {
+
+    /**
+     * Constructs a new {@code MicroPay} instance.
+     */
+    public MicroPay() {
+        // No initialization required.
+    }
 
     /**
      * Sub-merchant App ID.

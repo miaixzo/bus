@@ -27,7 +27,6 @@ import java.util.List;
  * Base class for projecting slice or volume outlines onto a localizer image plane.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class LocalizerPoster {
 

@@ -26,10 +26,12 @@ import java.util.Arrays;
  * around secrets (passwords) instead of a String instance.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SecretString implements CharSequence, AutoCloseable {
 
+    /**
+     * The chars value.
+     */
     private final char[] chars;
 
     /**

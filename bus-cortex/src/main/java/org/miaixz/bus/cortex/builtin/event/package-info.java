@@ -28,6 +28,5 @@
  * runtime overlays, warmup snapshots, and other non-revisioned operational data.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.builtin.event;

@@ -32,7 +32,6 @@ import org.miaixz.bus.logger.Logger;
  * Validator for authorization configuration classes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Checker {
 
@@ -99,7 +98,7 @@ public class Checker {
                     complex == null ? null : complex.getName(),
                     false,
                     "missingRedirectUri");
-            throw new AuthorizedException(ErrorCode._110005.getKey(), complex);
+            throw new AuthorizedException(ErrorCode._110003.getKey(), complex);
         }
         if (!Protocol.isHttp(redirectUri) && !Protocol.isHttps(redirectUri)) {
             Logger.warn(
@@ -109,7 +108,7 @@ public class Checker {
                     complex == null ? null : complex.getName(),
                     true,
                     "unsupportedRedirectProtocol");
-            throw new AuthorizedException(ErrorCode._110005.getKey(), complex);
+            throw new AuthorizedException(ErrorCode._110003.getKey(), complex);
         }
     }
 
@@ -145,7 +144,7 @@ public class Checker {
                     complex == null ? null : complex.getName(),
                     false,
                     callback != null && StringKit.isNotEmpty(callback.getState()));
-            throw new AuthorizedException(ErrorCode._110007.getKey(), complex);
+            throw new AuthorizedException(ErrorCode._110005.getKey(), complex);
         }
     }
 
@@ -178,7 +177,7 @@ public class Checker {
                     complex == null ? null : complex.getName(),
                     StringKit.isNotEmpty(state),
                     cache != null);
-            throw new AuthorizedException(ErrorCode._110008.getKey(), complex);
+            throw new AuthorizedException(ErrorCode._110006.getKey(), complex);
         }
     }
 

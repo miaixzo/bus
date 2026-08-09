@@ -36,7 +36,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpCookie;
  * Thread-safe in-memory protocol cookie jar.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class CookieJar {
 

@@ -37,7 +37,6 @@ import org.miaixz.bus.health.builtin.software.OperatingSystem;
  * Common methods for OperatingSystem implementations
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractOperatingSystem implements OperatingSystem {
 

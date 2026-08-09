@@ -39,7 +39,6 @@ import org.miaixz.bus.mapper.builder.TableSchemaBuilder;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class MapperFactory {
 

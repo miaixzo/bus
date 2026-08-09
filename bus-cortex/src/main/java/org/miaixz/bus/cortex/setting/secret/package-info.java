@@ -24,6 +24,5 @@
  * management-safe views that do not leak secret or encrypted content.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.setting.secret;

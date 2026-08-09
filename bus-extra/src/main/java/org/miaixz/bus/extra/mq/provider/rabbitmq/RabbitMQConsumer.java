@@ -38,7 +38,6 @@ import org.miaixz.bus.logger.Logger;
  * delivered messages.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RabbitMQConsumer implements Consumer {
 

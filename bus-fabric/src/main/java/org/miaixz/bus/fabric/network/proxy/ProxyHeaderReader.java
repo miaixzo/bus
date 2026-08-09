@@ -41,7 +41,6 @@ import org.miaixz.bus.fabric.network.Conduit;
  * Reader for optional PROXY protocol v1 metadata before ingress creation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ProxyHeaderReader {
 

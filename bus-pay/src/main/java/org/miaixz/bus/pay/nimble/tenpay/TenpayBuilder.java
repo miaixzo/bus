@@ -23,7 +23,6 @@ package org.miaixz.bus.pay.nimble.tenpay;
  * Builds and signs Tenpay (QQ Wallet) requests.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TenpayBuilder {
 

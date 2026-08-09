@@ -29,7 +29,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * Queries WMI class {@code Win32_DiskDrive}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Win32DiskDrive {
@@ -61,7 +60,6 @@ public final class Win32DiskDrive {
      * Disk drive properties
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum DiskDriveProperty {
         /**

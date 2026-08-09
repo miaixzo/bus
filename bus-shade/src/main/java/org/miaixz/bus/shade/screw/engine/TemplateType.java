@@ -30,7 +30,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Enumeration of supported template types for document generation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum TemplateType implements Serializable {
 

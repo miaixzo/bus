@@ -26,7 +26,6 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsSnapshot;
  * Result returned by an external Dynamic Update sink.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsUpdateResult {
 

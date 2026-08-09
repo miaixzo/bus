@@ -11,6 +11,7 @@
 **Bus Validate** 是一个轻量级、高性能的 Java 验证框架，旨在简化企业应用程序中的数据验证。它提供丰富的内置验证器，同时支持通过基于注解的配置自定义验证逻辑。
 
 **核心特性**：
+
 - **基于注解**：使用 Java 注解进行声明式验证
 - **可扩展**：易于创建自定义验证器
 - **零依赖**：轻量级设计，最小依赖
@@ -35,12 +36,12 @@
 
 ### ⚡ 性能优化
 
-| 功能 | 好处 | 描述 |
-| :--- | :--- | :--- |
-| **延迟求值** | 低开销 | 仅在显式调用时验证 |
-| **反射缓存** | 快速启动 | 缓存反射元数据以提高性能 |
-| **最小依赖** | 小占用 | 仅依赖 bus-logger 和 Lombok |
-| **线程安全** | 并发使用 | 在多线程环境中安全使用 |
+| 功能         | 好处     | 描述                        |
+|:-------------|:---------|:----------------------------|
+| **延迟求值** | 低开销   | 仅在显式调用时验证          |
+| **反射缓存** | 快速启动 | 缓存反射元数据以提高性能    |
+| **最小依赖** | 小占用   | 仅依赖 bus-logger 和 Lombok |
+| **线程安全** | 并发使用 | 在多线程环境中安全使用      |
 
 ### 🛡️ 验证覆盖
 
@@ -139,67 +140,67 @@ public class UserService {
 
 ### 空/空验证器
 
-| 注解 | 描述 | 示例 |
-| :--- | :--- | :--- |
-| `@NotNull` | 验证值不为 null | `@NotNull(errmsg = "ID 不能为空")` |
-| `@Null` | 验证值为 null | `@Null(errmsg = "必须为 null")` |
-| `@NotEmpty` | 验证值不为空（数组、集合、映射） | `@NotEmpty(errmsg = "列表不能为空")` |
+| 注解        | 描述                                   | 示例                                 |
+|:------------|:---------------------------------------|:-------------------------------------|
+| `@NotNull`  | 验证值不为 null                        | `@NotNull(errmsg = "ID 不能为空")`   |
+| `@Null`     | 验证值为 null                          | `@Null(errmsg = "必须为 null")`      |
+| `@NotEmpty` | 验证值不为空（数组、集合、映射）       | `@NotEmpty(errmsg = "列表不能为空")` |
 | `@NotBlank` | 验证字符串不为空（去除空格后长度 > 0） | `@NotBlank(errmsg = "名称不能为空")` |
-| `@Blank` | 验证字符串为空 | `@Blank(errmsg = "必须为空")` |
+| `@Blank`    | 验证字符串为空                         | `@Blank(errmsg = "必须为空")`        |
 
 ### 字符串验证器
 
-| 注解 | 描述 | 示例 |
-| :--- | :--- | :--- |
-| `@Email` | 验证邮箱格式 | `@Email(errmsg = "邮箱无效")` |
-| `@Mobile` | 验证手机号码 | `@Mobile(errmsg = "手机无效")` |
-| `@Phone` | 验证电话号码 | `@Phone(errmsg = "电话无效")` |
-| `@Chinese` | 验证中文字符 | `@Chinese(errmsg = "必须为中文")` |
-| `@English` | 验证英文字符 | `@English(errmsg = "必须为英文")` |
-| `@URL` | 验证 URL 格式 | `@URL(errmsg = "URL 无效")` |
-| `@IPAddress` | 验证 IP 地址 | `@IPAddress(errmsg = "IP 无效")` |
+| 注解         | 描述               | 示例                                |
+|:-------------|:-------------------|:------------------------------------|
+| `@Email`     | 验证邮箱格式       | `@Email(errmsg = "邮箱无效")`       |
+| `@Mobile`    | 验证手机号码       | `@Mobile(errmsg = "手机无效")`      |
+| `@Phone`     | 验证电话号码       | `@Phone(errmsg = "电话无效")`       |
+| `@Chinese`   | 验证中文字符       | `@Chinese(errmsg = "必须为中文")`   |
+| `@English`   | 验证英文字符       | `@English(errmsg = "必须为英文")`   |
+| `@URL`       | 验证 URL 格式      | `@URL(errmsg = "URL 无效")`         |
+| `@IPAddress` | 验证 IP 地址       | `@IPAddress(errmsg = "IP 无效")`    |
 | `@CitizenId` | 验证中国公民身份证 | `@CitizenId(errmsg = "身份证无效")` |
 
 ### 大小/长度验证器
 
-| 注解 | 描述 | 示例 |
-| :--- | :--- | :--- |
-| `@Size` | 验证数组、集合、映射或字符串长度的大小 | `@Size(min = 1, max = 10)` |
-| `@Length` | 验证字符串长度 | `@Length(min = 5, max = 100)` |
-| `@Date` | 验证日期格式 | `@Date(format = "yyyy-MM-dd")` |
+| 注解      | 描述                                   | 示例                           |
+|:----------|:---------------------------------------|:-------------------------------|
+| `@Size`   | 验证数组、集合、映射或字符串长度的大小 | `@Size(min = 1, max = 10)`     |
+| `@Length` | 验证字符串长度                         | `@Length(min = 5, max = 100)`  |
+| `@Date`   | 验证日期格式                           | `@Date(format = "yyyy-MM-dd")` |
 
 ### 数字验证器
 
-| 注解 | 描述 | 示例 |
-| :--- | :--- | :--- |
-| `@IntRange` | 验证整数范围 | `@IntRange(min = 0, max = 100)` |
-| `@Multiple` | 验证值是否为指定数字的倍数 | `@Multiple(value = 5)` |
+| 注解        | 描述                       | 示例                            |
+|:------------|:---------------------------|:--------------------------------|
+| `@IntRange` | 验证整数范围               | `@IntRange(min = 0, max = 100)` |
+| `@Multiple` | 验证值是否为指定数字的倍数 | `@Multiple(value = 5)`          |
 
 ### 比较验证器
 
-| 注解 | 描述 | 示例 |
-| :--- | :--- | :--- |
-| `@Compare` | 比较两个字段 | `@Compare(field = "password")` |
-| `@Equals` | 检查值是否等于指定值 | `@Equals(value = "ACTIVE")` |
-| `@In` | 检查值是否在指定值中 | `@In(values = {"A", "B", "C"})` |
-| `@NotIn` | 检查值是否不在指定值中 | `@NotIn(values = {"X", "Y", "Z"})` |
-| `@InEnum` | 检查值是否为有效枚举值 | `@InEnum(StatusEnum.class)` |
+| 注解       | 描述                   | 示例                               |
+|:-----------|:-----------------------|:-----------------------------------|
+| `@Compare` | 比较两个字段           | `@Compare(field = "password")`     |
+| `@Equals`  | 检查值是否等于指定值   | `@Equals(value = "ACTIVE")`        |
+| `@In`      | 检查值是否在指定值中   | `@In(values = {"A", "B", "C"})`    |
+| `@NotIn`   | 检查值是否不在指定值中 | `@NotIn(values = {"X", "Y", "Z"})` |
+| `@InEnum`  | 检查值是否为有效枚举值 | `@InEnum(StatusEnum.class)`        |
 
 ### 布尔验证器
 
-| 注解 | 描述 | 示例 |
-| :--- | :--- | :--- |
-| `@True` | 验证值为 true | `@True(errmsg = "必须为 true")` |
+| 注解     | 描述           | 示例                              |
+|:---------|:---------------|:----------------------------------|
+| `@True`  | 验证值为 true  | `@True(errmsg = "必须为 true")`   |
 | `@False` | 验证值为 false | `@False(errmsg = "必须为 false")` |
 
 ### 特殊验证器
 
-| 注解 | 描述 | 示例 |
-| :--- | :--- | :--- |
-| `@Regex` | 使用正则表达式验证 | `@Regex(value = "^[A-Z]\\d{5}$")` |
-| `@Each` | 验证集合中的每个元素 | `@Each @NotNull` |
-| `@Valid` | 启用嵌套验证 | `@Valid(inside = true)` |
-| `@Group` | 指定验证组 | `@Group({"create", "update"})` |
+| 注解     | 描述                 | 示例                              |
+|:---------|:---------------------|:----------------------------------|
+| `@Regex` | 使用正则表达式验证   | `@Regex(value = "^[A-Z]\\d{5}$")` |
+| `@Each`  | 验证集合中的每个元素 | `@Each @NotNull`                  |
+| `@Valid` | 启用嵌套验证         | `@Valid(inside = true)`           |
+| `@Group` | 指定验证组           | `@Group({"create", "update"})`    |
 
 -----
 
@@ -530,10 +531,10 @@ Builder.on(product, context).access();
 
 ## 🔄 版本兼容性
 
-| Bus Validate 版本 | JDK 版本 | 说明 |
-| :--- | :--- | :--- |
-| 8.x | 17+ | 需要 Java 17 或更高版本 |
-| 7.x | 11+ | 支持 Java 11 及更高版本 |
+| Bus Validate 版本 | JDK 版本 | 说明                    |
+|:------------------|:---------|:------------------------|
+| 8.x               | 17+      | 需要 Java 17 或更高版本 |
+| 7.x               | 11+      | 支持 Java 11 及更高版本 |
 
 -----
 
@@ -541,35 +542,35 @@ Builder.on(product, context).access();
 
 ### 完整注解列表
 
-| 注解 | 目标类型 | 空值处理 | 描述 |
-| :--- | :--- | :--- | :--- |
-| `@NotNull` | 所有 | ❌ 无效 | 值不能为 null |
-| `@Null` | 所有 | ✅ 有效 | 值必须为 null |
-| `@NotEmpty` | 数组、集合、映射、字符串 | ❌ 无效 | 值不能为空 |
-| `@NotBlank` | CharSequence | ❌ 无效 | 去除空格后的长度必须 > 0 |
-| `@Blank` | CharSequence | ✅ 有效 | 去除空格后的长度必须为 0 |
-| `@Email` | CharSequence | ✅ 有效 | 必须为有效邮箱格式 |
-| `@Mobile` | CharSequence | ✅ 有效 | 必须为有效手机号码 |
-| `@Phone` | CharSequence | ✅ 有效 | 必须为有效电话号码 |
-| `@Chinese` | CharSequence | ✅ 有效 | 必须包含中文字符 |
-| `@English` | CharSequence | ✅ 有效 | 必须包含英文字符 |
-| `@IPAddress` | CharSequence | ✅ 有效 | 必须为有效 IP 地址 |
-| `@CitizenId` | CharSequence | ✅ 有效 | 必须为有效公民身份证 |
-| `@Size` | 数组、集合、映射、CharSequence | ✅ 有效 | 大小/长度必须在范围内 |
-| `@Length` | CharSequence | ✅ 有效 | 长度必须在范围内 |
-| `@Date` | CharSequence | ✅ 有效 | 必须匹配日期格式 |
-| `@IntRange` | 数字、CharSequence | ✅ 有效 | 必须在整数范围内 |
-| `@Multiple` | 数字、CharSequence | ✅ 有效 | 必须为值的倍数 |
-| `@True` | 布尔 | ✅ 有效 | 必须为 true |
-| `@False` | 布尔 | ✅ 有效 | 必须为 false |
-| `@Compare` | 所有 | ✅ 有效 | 必须与其他字段比较 |
-| `@Equals` | 所有 | ✅ 有效 | 必须等于指定值 |
-| `@In` | 所有 | ✅ 有效 | 必须在指定值中 |
-| `@NotIn` | 所有 | ✅ 有效 | 必须不在指定值中 |
-| `@InEnum` | CharSequence | ✅ 有效 | 必须为有效枚举值 |
-| `@Regex` | CharSequence | ✅ 有效 | 必须匹配正则表达式模式 |
-| `@Each` | 数组、集合 | - | 验证每个元素 |
-| `@Valid` | 所有 | - | 启用嵌套验证 |
+| 注解         | 目标类型                       | 空值处理 | 描述                     |
+|:-------------|:-------------------------------|:---------|:-------------------------|
+| `@NotNull`   | 所有                           | ❌ 无效  | 值不能为 null            |
+| `@Null`      | 所有                           | ✅ 有效  | 值必须为 null            |
+| `@NotEmpty`  | 数组、集合、映射、字符串       | ❌ 无效  | 值不能为空               |
+| `@NotBlank`  | CharSequence                   | ❌ 无效  | 去除空格后的长度必须 > 0 |
+| `@Blank`     | CharSequence                   | ✅ 有效  | 去除空格后的长度必须为 0 |
+| `@Email`     | CharSequence                   | ✅ 有效  | 必须为有效邮箱格式       |
+| `@Mobile`    | CharSequence                   | ✅ 有效  | 必须为有效手机号码       |
+| `@Phone`     | CharSequence                   | ✅ 有效  | 必须为有效电话号码       |
+| `@Chinese`   | CharSequence                   | ✅ 有效  | 必须包含中文字符         |
+| `@English`   | CharSequence                   | ✅ 有效  | 必须包含英文字符         |
+| `@IPAddress` | CharSequence                   | ✅ 有效  | 必须为有效 IP 地址       |
+| `@CitizenId` | CharSequence                   | ✅ 有效  | 必须为有效公民身份证     |
+| `@Size`      | 数组、集合、映射、CharSequence | ✅ 有效  | 大小/长度必须在范围内    |
+| `@Length`    | CharSequence                   | ✅ 有效  | 长度必须在范围内         |
+| `@Date`      | CharSequence                   | ✅ 有效  | 必须匹配日期格式         |
+| `@IntRange`  | 数字、CharSequence             | ✅ 有效  | 必须在整数范围内         |
+| `@Multiple`  | 数字、CharSequence             | ✅ 有效  | 必须为值的倍数           |
+| `@True`      | 布尔                           | ✅ 有效  | 必须为 true              |
+| `@False`     | 布尔                           | ✅ 有效  | 必须为 false             |
+| `@Compare`   | 所有                           | ✅ 有效  | 必须与其他字段比较       |
+| `@Equals`    | 所有                           | ✅ 有效  | 必须等于指定值           |
+| `@In`        | 所有                           | ✅ 有效  | 必须在指定值中           |
+| `@NotIn`     | 所有                           | ✅ 有效  | 必须不在指定值中         |
+| `@InEnum`    | CharSequence                   | ✅ 有效  | 必须为有效枚举值         |
+| `@Regex`     | CharSequence                   | ✅ 有效  | 必须匹配正则表达式模式   |
+| `@Each`      | 数组、集合                     | -        | 验证每个元素             |
+| `@Valid`     | 所有                           | -        | 启用嵌套验证             |
 
 -----
 
@@ -640,8 +641,8 @@ public class UserDataImport {
 - **项目主页**：[https://github.com/818000/bus](https://github.com/818000/bus)
 - **问题**：[https://github.com/818000/bus/issues](https://github.com/818000/bus/issues)
 - **Bus 框架模块**：
-  - [bus-core](https://github.com/818000/bus/tree/main/bus-core) - 核心工具
-  - [bus-mapper](https://github.com/818000/bus/tree/main/bus-mapper) - MyBatis 增强
-  - [bus-logger](https://github.com/818000/bus/tree/main/bus-logger) - 日志框架
-  - [bus-crypto](https://github.com/818000/bus/tree/main/bus-crypto) - 加密
-  - [bus-extra](https://github.com/818000/bus/tree/main/bus-extra) - 额外工具
+    - [bus-core](https://github.com/818000/bus/tree/main/bus-core) - 核心工具
+    - [bus-mapper](https://github.com/818000/bus/tree/main/bus-mapper) - MyBatis 增强
+    - [bus-logger](https://github.com/818000/bus/tree/main/bus-logger) - 日志框架
+    - [bus-crypto](https://github.com/818000/bus/tree/main/bus-crypto) - 加密
+    - [bus-extra](https://github.com/818000/bus/tree/main/bus-extra) - 额外工具

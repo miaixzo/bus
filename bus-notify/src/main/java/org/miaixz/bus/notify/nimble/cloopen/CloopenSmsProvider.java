@@ -37,7 +37,6 @@ import org.miaixz.bus.notify.nimble.AbstractProvider;
  * Cloopen Cloud SMS service provider implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CloopenSmsProvider extends AbstractProvider<CloopenNotice, Context> {
 

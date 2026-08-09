@@ -28,7 +28,6 @@ import org.miaixz.bus.metrics.Metrics;
  * classpath.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CacheMetrics {
 
@@ -67,7 +66,6 @@ public class CacheMetrics {
      * The instrumented cache class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class InstrumentedCache<K, V> implements CacheX<K, V> {
 

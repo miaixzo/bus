@@ -52,7 +52,6 @@ import org.miaixz.bus.fabric.protocol.http.http2.Http2Stream;
  * HTTP/2 codec bound to an HTTP/2 connection.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Http2Codec implements HttpCodec {
 

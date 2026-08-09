@@ -26,6 +26,5 @@
  * framework was made because the annotations provided by JSR-303 are limited and not easily extensible.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.validate;

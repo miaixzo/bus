@@ -37,7 +37,6 @@ import org.miaixz.bus.logger.Logger;
  * The aspect runs before transaction advice so datasource selection occurs before a transaction obtains its connection.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Order(-1)
 @Aspect

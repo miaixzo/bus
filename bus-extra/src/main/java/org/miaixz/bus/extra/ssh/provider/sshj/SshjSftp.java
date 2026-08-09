@@ -56,7 +56,6 @@ import org.miaixz.bus.logger.Logger;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SshjSftp extends AbstractFtp {
 
@@ -177,7 +176,7 @@ public class SshjSftp extends AbstractFtp {
      * Reconnects to the SFTP server if the connection has timed out. This method is designed to be overridden by
      * subclasses for custom reconnection logic. When overriding, ensure proper exception handling and connection state
      * validation.
-     *
+     * <p>
      * to change to the root directory. If that fails, it closes and reinitializes the connection. Subclasses should
      * call {@code super.reconnectIfTimeout()} or implement equivalent reconnection logic.
      *
@@ -207,7 +206,7 @@ public class SshjSftp extends AbstractFtp {
     /**
      * Changes the current working directory on the SFTP server. This method is designed to be overridden by subclasses
      * for custom directory handling. When overriding, ensure proper exception handling and path normalization.
-     *
+     * <p>
      * then updates the working directory. Subclasses may override to add caching or validation.
      *
      * @param directory The target directory path.
@@ -236,7 +235,7 @@ public class SshjSftp extends AbstractFtp {
     /**
      * Returns the current working directory on the SFTP server. This method is designed to be overridden by subclasses
      * for custom directory handling. When overriding, ensure proper exception handling and path normalization.
-     *
+     * <p>
      * Subclasses may override to add caching or custom path resolution.
      *
      * @return The current working directory path.
@@ -249,7 +248,7 @@ public class SshjSftp extends AbstractFtp {
     /**
      * Renames a file or directory on the SFTP server. This method is designed to be overridden by subclasses for custom
      * rename logic. When overriding, ensure proper validation of paths and handling of atomic operations.
-     *
+     * <p>
      * and verifies the file exists at the new location. Subclasses may override to add validation.
      *
      * @param oldPath The current path of the file or directory.
@@ -277,7 +276,7 @@ public class SshjSftp extends AbstractFtp {
     /**
      * Creates a directory on the SFTP server. This method is designed to be overridden by subclasses for custom
      * directory creation logic. When overriding, ensure proper path validation and handling of existing directories.
-     *
+     * <p>
      * and verifies the directory was created. Subclasses may override to add recursive creation.
      *
      * @param dir The directory path to create.
@@ -304,7 +303,7 @@ public class SshjSftp extends AbstractFtp {
     /**
      * Lists files and directories in the specified path. This method is designed to be overridden by subclasses for
      * custom listing logic. When overriding, ensure proper filtering and error handling.
-     *
+     * <p>
      * Subclasses may override to add filtering, sorting, or enhanced error handling.
      *
      * @param path The directory path to list.
@@ -335,7 +334,7 @@ public class SshjSftp extends AbstractFtp {
     /**
      * Deletes a file on the SFTP server. This method is designed to be overridden by subclasses for custom file
      * deletion logic. When overriding, ensure proper validation of file paths and handling of permissions.
-     *
+     * <p>
      * and verifies the file was deleted. Subclasses may override to add validation or logging.
      *
      * @param path The path of the file to delete.
@@ -362,7 +361,7 @@ public class SshjSftp extends AbstractFtp {
     /**
      * Deletes a directory on the SFTP server. This method is designed to be overridden by subclasses for custom
      * directory deletion logic. When overriding, ensure proper handling of symbolic links and non-empty directories.
-     *
+     * <p>
      * and verifies the directory was deleted. Subclasses may override to add recursive deletion.
      *
      * @param dirPath The path of the directory to delete.
@@ -389,7 +388,7 @@ public class SshjSftp extends AbstractFtp {
     /**
      * Uploads a file to the SFTP server. This method is designed to be overridden by subclasses for custom upload
      * logic. When overriding, ensure proper handling of file paths and error conditions.
-     *
+     * <p>
      * then delegates to the underlying SFTP client. Subclasses may override to add progress monitoring.
      *
      * @param destPath The destination path on the server. If ending with "/", the filename is appended.
@@ -423,7 +422,7 @@ public class SshjSftp extends AbstractFtp {
     /**
      * Downloads a file from the SFTP server. This method is designed to be overridden by subclasses for custom download
      * logic. When overriding, ensure proper handling of file paths and error conditions.
-     *
+     * <p>
      * Subclasses may override to add progress monitoring or resumption support.
      *
      * @param destPath The path of the remote file to download.
@@ -450,7 +449,7 @@ public class SshjSftp extends AbstractFtp {
      * Recursively downloads a folder from the SFTP server. This method is designed to be overridden by subclasses for
      * custom recursive download logic. When overriding, ensure proper handling of directory structure and error
      * conditions.
-     *
+     * <p>
      * all files from the source path. Subclasses may override to add filtering or parallel download.
      *
      * @param destPath  The remote directory path to download.
@@ -476,7 +475,7 @@ public class SshjSftp extends AbstractFtp {
     /**
      * Gets an input stream for reading a remote file. This method is designed to be overridden by subclasses for custom
      * stream handling. When overriding, ensure proper stream management and resource cleanup.
-     *
+     * <p>
      * Subclasses may override to add buffering, progress monitoring, or enhanced error handling.
      *
      * @param path The path of the remote file to read.
@@ -505,7 +504,7 @@ public class SshjSftp extends AbstractFtp {
     /**
      * Closes the SFTP connection and releases all resources. This method is designed to be overridden by subclasses for
      * custom cleanup logic. When overriding, ensure the method is idempotent and all resources are properly released.
-     *
+     * <p>
      * Subclasses should call {@code super.close()} to ensure proper cleanup of inherited resources.
      */
     @Override
