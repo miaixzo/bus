@@ -37665,19 +37665,19 @@
           "name": "HASHED_STORAGE_ENABLED"
         },
         {
-          "name": "HELP_PAGE_DOCUMENTATION_BASE_URL"
+          "name": "GUIDANCE_PAGE_DOCUMENTATION_BASE_URL"
         },
         {
-          "name": "HELP_PAGE_HIDE_COMMERCIAL_CONTENT"
+          "name": "GUIDANCE_PAGE_HIDE_COMMERCIAL_CONTENT"
         },
         {
-          "name": "HELP_PAGE_SUPPORT_URL"
+          "name": "GUIDANCE_PAGE_SUPPORT_URL"
         },
         {
-          "name": "HELP_PAGE_TEXT"
+          "name": "GUIDANCE_PAGE_TEXT"
         },
         {
-          "name": "HELP_TEXT"
+          "name": "GUIDANCE_TEXT"
         },
         {
           "name": "HIDE_THIRD_PARTY_OFFERS"

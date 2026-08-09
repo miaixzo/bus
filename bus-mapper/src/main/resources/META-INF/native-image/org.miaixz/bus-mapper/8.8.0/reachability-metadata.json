@@ -3141,7 +3141,9 @@
         },
         {
           "name": "getDialect",
-          "parameterTypes": []
+          "parameterTypes": [
+            "org.apache.ibatis.session.Configuration"
+          ]
         },
         {
           "name": "getDialect",
@@ -3172,10 +3174,15 @@
           "parameterTypes": []
         },
         {
-          "name": "initializeDialect",
+          "name": "removeDialect",
           "parameterTypes": [
-            "java.lang.String",
             "javax.sql.DataSource"
+          ]
+        },
+        {
+          "name": "removeDialectProvider",
+          "parameterTypes": [
+            "org.apache.ibatis.session.Configuration"
           ]
         },
         {
@@ -3185,8 +3192,9 @@
           ]
         },
         {
-          "name": "setKeyProvider",
+          "name": "setDialectProvider",
           "parameterTypes": [
+            "org.apache.ibatis.session.Configuration",
             "java.util.function.Supplier"
           ]
         }
@@ -5921,7 +5929,7 @@
           "name": "ignored",
           "parameterTypes": [
             "java.lang.String",
-            "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig"
+            "java.util.List"
           ]
         },
         {
@@ -7710,12 +7718,6 @@
           "parameterTypes": []
         },
         {
-          "name": "detectOverriddenMethods",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.handler.MapperHandler"
-          ]
-        },
-        {
           "name": "getHandlers",
           "parameterTypes": []
         },
@@ -7730,15 +7732,14 @@
           "parameterTypes": []
         },
         {
-          "name": "isMethodOverridden",
-          "parameterTypes": [
-            "java.lang.Class",
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "publishSnapshot",
           "parameterTypes": []
+        },
+        {
+          "name": "resolveHooks",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.handler.MapperHandler"
+          ]
         },
         {
           "name": "size",
@@ -8152,12 +8153,6 @@
           "parameterTypes": [
             "java.lang.String",
             "org.miaixz.bus.core.lang.EnumValue$Sort"
-          ]
-        },
-        {
-          "name": "propertyIsValid",
-          "parameterTypes": [
-            "java.lang.String"
           ]
         }
       ]

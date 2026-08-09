@@ -2263,7 +2263,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getGpuUtilization",
+          "name": "getGpuUsage",
           "parameterTypes": []
         },
         {
@@ -13450,7 +13450,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getGpuUtilization",
+          "name": "getGpuUsage",
           "parameterTypes": []
         },
         {
@@ -14254,12 +14254,6 @@
         {
           "name": "getVirtualMax",
           "parameterTypes": []
-        },
-        {
-          "name": "parseMeminfo",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
         },
         {
           "name": "queryMemInfo",
@@ -16090,12 +16084,6 @@
             "java.lang.String",
             "int",
             "java.util.Map"
-          ]
-        },
-        {
-          "name": "stateLookup",
-          "parameterTypes": [
-            "int"
           ]
         }
       ]
@@ -39130,7 +39118,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getGpuUtilization",
+          "name": "getGpuUsage",
           "parameterTypes": []
         },
         {
