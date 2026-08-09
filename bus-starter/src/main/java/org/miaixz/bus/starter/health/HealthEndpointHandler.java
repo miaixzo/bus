@@ -21,6 +21,7 @@ package org.miaixz.bus.starter.health;
 
 import java.util.Map;
 
+import org.miaixz.bus.core.xyz.StringKit;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -62,9 +63,21 @@ public class HealthEndpointHandler extends Controller {
      */
     @ResponseBody
     public Message<?> healthz(@RequestParam(value = "tid", required = false) String tid) {
-        Logger.debug(true, "Starter", "Health status requested: details={}", tid);
+        if (StringKit.isBlank(tid)) {
+            Logger.debug(true, "Starter", "Health status requested");
+        } else {
+            Logger.debug(true, "Starter", "Health status requested: tid={}", tid);
+        }
         try {
             Map<String, Object> body = this.service.healthz(tid);
+            Logger.debug(
+                    true,
+                    "Starter",
+                    "Health status resolved: status={}, liveness={}, readiness={}, source={}",
+                    body.get("status"),
+                    body.get("liveness"),
+                    body.get("readiness"),
+                    body.get("source"));
             if ("UP".equals(body.get("status"))) {
                 return write(body);
             }
