@@ -29,7 +29,6 @@ import org.miaixz.bus.health.windows.PerfCounterQuery;
  * Queries Memory performance counter
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class MemoryInformation {
@@ -60,7 +59,6 @@ public final class MemoryInformation {
      * For pages in/out
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PageSwapProperty implements PerfCounterQuery.PdhCounterProperty {
 

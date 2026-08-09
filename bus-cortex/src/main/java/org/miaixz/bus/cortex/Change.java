@@ -27,7 +27,6 @@ package org.miaixz.bus.cortex;
  *
  * @param <T> domain value type described by the concrete change implementation
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Change<T> {
 

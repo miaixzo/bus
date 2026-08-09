@@ -45,7 +45,6 @@ import org.miaixz.bus.logger.Logger;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HoubbProvider implements PinyinProvider {
 
@@ -63,7 +62,7 @@ public class HoubbProvider implements PinyinProvider {
     /**
      * Gets the pinyin of a single character. This method is designed to be overridden by subclasses for custom pinyin
      * conversion.
-     *
+     * <p>
      * Subclasses may override to add custom conversion logic.
      *
      * @param c    The character to convert.
@@ -79,7 +78,7 @@ public class HoubbProvider implements PinyinProvider {
 
     /**
      * Gets the pinyin of a string. This method is designed to be overridden by subclasses for custom pinyin conversion.
-     *
+     * <p>
      * Subclasses may override to add custom conversion logic.
      *
      * @param str       The string to convert.

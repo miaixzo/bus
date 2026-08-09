@@ -29,7 +29,6 @@ import org.miaixz.bus.health.unix.shared.jna.AixLibc;
  * OSThread implementation
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class AixOSThread extends AbstractOSThread {

@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.caller.StackTraceCaller;
  * stack depths and to check if a method was invoked by a specific class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CallerKit {
 

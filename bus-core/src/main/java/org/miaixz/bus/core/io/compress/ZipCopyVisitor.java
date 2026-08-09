@@ -31,7 +31,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * traversal and copying process.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ZipCopyVisitor extends SimpleFileVisitor<Path> {
 

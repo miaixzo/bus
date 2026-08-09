@@ -42,7 +42,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
  * The project class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Project implements Serializable {
 
@@ -3856,7 +3855,6 @@ public class Project implements Serializable {
      * The merge method enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum MergeMethod {
 

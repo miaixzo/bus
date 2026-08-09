@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Represents modern Gregorian festivals.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SolarFestival extends AbstractFestival {
 

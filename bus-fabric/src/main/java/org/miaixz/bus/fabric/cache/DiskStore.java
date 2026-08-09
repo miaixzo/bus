@@ -52,7 +52,6 @@ import org.miaixz.bus.fabric.Payload;
  * Disk-backed protocol-neutral cache store using DiskLruCache editor and snapshot storage.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DiskStore implements CacheStore {
 

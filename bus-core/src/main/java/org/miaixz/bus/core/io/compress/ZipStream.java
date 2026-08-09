@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * Wrapper for {@link ZipInputStream} resources.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ZipStream implements ZipResource {
 

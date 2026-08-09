@@ -32,7 +32,6 @@ import org.miaixz.bus.fabric.network.dns.server.DnsTsigKey;
  * Immutable DNS runtime snapshot supplied by an external control project.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsSnapshot {
 

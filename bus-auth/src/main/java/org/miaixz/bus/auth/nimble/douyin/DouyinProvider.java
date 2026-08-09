@@ -42,7 +42,6 @@ import org.miaixz.bus.logger.Logger;
  * Douyin (TikTok) login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DouyinProvider extends AbstractProvider {
 

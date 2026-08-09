@@ -38,7 +38,6 @@ import org.miaixz.bus.image.metric.net.KeycloakClient;
  * Represents the JsonConfiguration type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JsonConfiguration {
 
@@ -82,8 +81,8 @@ public class JsonConfiguration {
      * Gets the json configuration extension.
      *
      * @param clazz the clazz.
+     * @param <T>   the value type
      * @return the json configuration extension.
-     * @param <T> the value type
      */
     public <T extends JsonConfigurationExtension> T getJsonConfigurationExtension(Class<T> clazz) {
         for (JsonConfigurationExtension extension : extensions) {

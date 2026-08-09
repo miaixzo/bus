@@ -39,7 +39,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * content is written to the file.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FileAppender implements Serializable {
 

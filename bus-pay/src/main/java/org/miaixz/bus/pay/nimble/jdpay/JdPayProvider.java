@@ -33,7 +33,6 @@ import org.miaixz.bus.pay.nimble.jdpay.api.JdPayApi;
  * JD Pay provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JdPayProvider extends AbstractProvider<Voucher, Context> {
 

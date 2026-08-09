@@ -23,7 +23,6 @@ package org.miaixz.bus.extra.json;
  * Framework-independent allow-list callback for JSON deserialization target classes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface JsonTypeFilter {

@@ -32,7 +32,6 @@ import org.miaixz.bus.core.net.Http;
  * @param location    the location.
  * @param payload     the payload.
  * @author Kimi Liu
- * @since Java 21+
  */
 public record MultipartPart(String contentType, String location, Payload payload) {
 

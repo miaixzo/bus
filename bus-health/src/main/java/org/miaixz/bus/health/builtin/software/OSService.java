@@ -27,7 +27,6 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  * class is provided for information purposes only. Interpretation of the meaning of services is platform-dependent.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public class OSService {
@@ -97,7 +96,6 @@ public class OSService {
      * Service Execution States
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum State {
         /**

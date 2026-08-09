@@ -48,7 +48,6 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  * SOAP message builder and HTTP sender backed by {@link HttpX}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class SoapX {
 

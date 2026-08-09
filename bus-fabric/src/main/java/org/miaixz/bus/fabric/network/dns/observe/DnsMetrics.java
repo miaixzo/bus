@@ -33,7 +33,6 @@ import org.miaixz.bus.fabric.observe.metrics.FabricMeter;
  * DNS Server metric facade with fixed {@code dns.server.*} metric names.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsMetrics {
 
@@ -335,7 +334,6 @@ public final class DnsMetrics {
      * DNSSEC validation result categories.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum DnssecResult {
 

@@ -30,7 +30,6 @@ import java.util.List;
  * Represents the CompressionRules type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CompressionRules implements Iterable<CompressionRule>, Serializable {
 

@@ -43,7 +43,6 @@ import org.miaixz.bus.extra.ssh.Session;
  * management.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JschSession implements Session {
 
@@ -81,7 +80,7 @@ public class JschSession implements Session {
     /**
      * Gets the underlying raw JSch session. This method is designed to be overridden by subclasses for custom session
      * access.
-     *
+     * <p>
      * Subclasses may override to add validation or wrapping.
      *
      * @return The raw JSch {@link com.jcraft.jsch.Session}.
@@ -94,7 +93,7 @@ public class JschSession implements Session {
     /**
      * Checks if the session is connected. This method is designed to be overridden by subclasses for custom connection
      * checks.
-     *
+     * <p>
      * Subclasses may override to add additional connection validation.
      *
      * @return {@code true} if the session is connected, {@code false} otherwise.
@@ -107,7 +106,7 @@ public class JschSession implements Session {
     /**
      * Closes the session and releases all resources. This method is designed to be overridden by subclasses for custom
      * cleanup logic.
-     *
+     * <p>
      * Subclasses should call {@code super.close()} to ensure proper cleanup.
      *
      * @throws IOException if an error occurs during closing.
@@ -120,7 +119,7 @@ public class JschSession implements Session {
     /**
      * Binds a local port to a remote address (local port forwarding). This method is designed to be overridden by
      * subclasses for custom port forwarding logic.
-     *
+     * <p>
      * Subclasses may override to add logging or validation.
      *
      * @param localAddress  The local address to bind.
@@ -144,7 +143,7 @@ public class JschSession implements Session {
     /**
      * Unbinds a local port forwarding. This method is designed to be overridden by subclasses for custom port unbinding
      * logic.
-     *
+     * <p>
      * Subclasses may override to add logging or validation.
      *
      * @param localAddress The local address to unbind.
@@ -161,7 +160,7 @@ public class JschSession implements Session {
     /**
      * Binds a remote port to a local address (remote port forwarding). This method is designed to be overridden by
      * subclasses for custom port forwarding logic.
-     *
+     * <p>
      * Subclasses may override to add logging or validation.
      *
      * @param remoteAddress The remote address to bind.
@@ -185,7 +184,7 @@ public class JschSession implements Session {
     /**
      * Unbinds a remote port forwarding. This method is designed to be overridden by subclasses for custom port
      * unbinding logic.
-     *
+     * <p>
      * Subclasses may override to add logging or validation.
      *
      * @param remoteAddress The remote address to unbind.

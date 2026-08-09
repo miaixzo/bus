@@ -34,7 +34,6 @@ import org.miaixz.bus.health.builtin.hardware.Printer.PrinterStatus;
  * Parses printer information from {@code lpstat} and {@code lpoptions} commands.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Lpstat {

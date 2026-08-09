@@ -46,7 +46,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * Annotation class, providing encapsulated functions for quickly obtaining annotation objects, annotation values, etc.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AnnoKit {
 
@@ -565,7 +564,7 @@ public class AnnoKit {
      *    B -&gt; M1 -&gt; M2 -&gt; M3
      *    C -&gt; M2 -&gt; M3
      * </pre>
-     *
+     * <p>
      * If {@code annotationType} is {@code M2}, the synthesized annotation derived from root annotation B is returned
      * first.
      *
@@ -623,7 +622,7 @@ public class AnnoKit {
      *    B -&gt; M3 -&gt; M1 -&gt; M2
      *    C -&gt; M2
      * </pre>
-     *
+     * <p>
      * If {@code annotationType} is {@code M1}, the synthesized annotations derived from root annotations A and B are
      * both returned.
      *

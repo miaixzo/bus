@@ -34,7 +34,6 @@ import org.miaixz.bus.starter.elastic.ElasticConfiguration;
  * {@link co.elastic.clients.elasticsearch.ElasticsearchClient}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

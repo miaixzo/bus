@@ -59,7 +59,6 @@ import org.miaixz.bus.fabric.protocol.http.body.MultipartBody;
  * Fabric-backed HTTP support for payment providers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class FabricX {
 

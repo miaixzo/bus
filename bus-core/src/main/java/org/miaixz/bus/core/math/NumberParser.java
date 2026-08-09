@@ -47,7 +47,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * https://stackoverflow.com/questions/5876369/why-does-casting-double-nan-to-int-not-throw-an-exception-in-java
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NumberParser {
 

@@ -34,7 +34,6 @@ import org.miaixz.bus.setting.nimble.ini.IniSection;
  * comment, a section, or a property, in that order.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DefaultFormatter implements Format {
 

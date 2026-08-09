@@ -28,7 +28,6 @@ import org.miaixz.bus.validate.magic.annotation.True;
  * Validator for the {@link True} annotation. Checks if a Boolean value is {@code true}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TrueMatcher implements Matcher<Boolean, True> {
 

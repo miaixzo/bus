@@ -30,7 +30,6 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * Queries performance stats for cpu
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class PerfstatCpu {

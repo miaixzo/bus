@@ -35,7 +35,6 @@ import java.lang.annotation.Target;
  * This annotation is itself annotated with {@link Scope}, identifying it as a scope-defining annotation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Scope
 @Retention(RetentionPolicy.RUNTIME)

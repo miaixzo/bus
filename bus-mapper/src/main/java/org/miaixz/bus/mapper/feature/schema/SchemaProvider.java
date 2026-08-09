@@ -31,7 +31,6 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * starter adapter resolves this provider from the runtime container and uses it during mapper plugin configuration.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface SchemaProvider extends MapperProvider<SchemaConfig> {
 

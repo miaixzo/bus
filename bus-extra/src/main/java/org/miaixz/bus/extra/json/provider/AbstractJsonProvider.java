@@ -26,7 +26,6 @@ import org.miaixz.bus.extra.json.JsonProvider;
  * JSON provider implementations, allowing them to share common logic or default behaviors if needed in the future.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractJsonProvider implements JsonProvider {
 

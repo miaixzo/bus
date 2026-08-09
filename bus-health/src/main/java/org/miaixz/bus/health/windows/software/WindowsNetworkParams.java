@@ -41,7 +41,6 @@ import org.miaixz.bus.logger.Logger;
  * WindowsNetworkParams class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class WindowsNetworkParams extends AbstractNetworkParams {

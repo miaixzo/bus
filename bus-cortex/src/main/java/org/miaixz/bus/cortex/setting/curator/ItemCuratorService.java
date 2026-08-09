@@ -40,7 +40,6 @@ import org.miaixz.bus.cortex.setting.item.revision.ItemRevisionStore;
  * Application service for the setting domain.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ItemCuratorService {
 

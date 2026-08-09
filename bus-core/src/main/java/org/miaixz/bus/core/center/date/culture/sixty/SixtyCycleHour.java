@@ -40,7 +40,6 @@ import org.miaixz.bus.core.center.date.culture.star.twelve.TwelveStar;
  * for cyclical operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SixtyCycleHour extends Loops {
 

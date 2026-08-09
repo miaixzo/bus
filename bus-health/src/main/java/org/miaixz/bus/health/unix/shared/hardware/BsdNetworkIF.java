@@ -33,7 +33,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
  * BsdNetworkIF applicable to FreeBSD and OpenBSD.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class BsdNetworkIF extends AbstractNetworkIF {

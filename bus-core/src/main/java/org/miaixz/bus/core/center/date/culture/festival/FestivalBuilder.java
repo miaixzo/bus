@@ -25,7 +25,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Builder for constructing {@link Festival} instances.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FestivalBuilder {
 

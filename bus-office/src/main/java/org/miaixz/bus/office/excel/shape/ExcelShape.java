@@ -34,7 +34,6 @@ import org.miaixz.bus.core.xyz.StreamKit;
  * Creates and positions pictures and shapes in Excel.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ExcelShape {
 

@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  * Google login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GoogleProvider extends AbstractProvider {
 

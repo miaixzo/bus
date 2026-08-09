@@ -30,7 +30,6 @@ import java.util.stream.Stream;
  * @see EasyStream
  * @see EntryStream
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class EnhancedWrappedStream<T, S extends EnhancedWrappedStream<T, S>>
         implements TerminableWrappedStream<T, S>, TransformableWrappedStream<T, S> {

@@ -23,7 +23,6 @@ package org.miaixz.bus.fabric.network.dns.message;
  * DNS response codes supported by the server codec.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum DnsResponseCode {
 

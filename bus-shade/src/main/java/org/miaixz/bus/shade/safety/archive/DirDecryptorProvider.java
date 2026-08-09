@@ -32,7 +32,6 @@ import org.miaixz.bus.shade.safety.provider.EntryDecryptorProvider;
  * decrypt files within a directory, applying a filter to determine which files should be decrypted.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DirDecryptorProvider extends EntryDecryptorProvider<File> implements DecryptorProvider {
 

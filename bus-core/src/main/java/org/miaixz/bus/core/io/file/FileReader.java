@@ -38,7 +38,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * Reads file content as multiple data types and character encodings.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FileReader extends FileWrapper {
 

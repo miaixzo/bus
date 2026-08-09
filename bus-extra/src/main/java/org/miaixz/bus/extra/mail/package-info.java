@@ -22,6 +22,5 @@
  * API for sending emails, handling attachments, and managing mail account configurations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.extra.mail;

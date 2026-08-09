@@ -31,7 +31,6 @@ import org.miaixz.bus.core.net.Http;
  * Immutable case-insensitive header collection with insertion-ordered multi-values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Headers {
 
@@ -519,7 +518,6 @@ public final class Headers {
      * Builder for immutable headers.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

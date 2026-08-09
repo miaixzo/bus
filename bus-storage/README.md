@@ -2,7 +2,9 @@
 
 ## 📖 Project Introduction
 
-bus-storage is a comprehensive cloud storage component that provides unified integration with multiple cloud storage providers including Alibaba Cloud OSS, Qiniu Cloud, Tencent Cloud COS, Baidu Cloud BOS, Huawei Cloud OBS, JD Cloud, and UpYun. It offers both factory pattern and Spring dependency injection integration methods for maximum flexibility.
+bus-storage is a comprehensive cloud storage component that provides unified integration with multiple cloud storage
+providers including Alibaba Cloud OSS, Qiniu Cloud, Tencent Cloud COS, Baidu Cloud BOS, Huawei Cloud OBS, JD Cloud, and
+UpYun. It offers both factory pattern and Spring dependency injection integration methods for maximum flexibility.
 
 ## ✨ Core Features
 
@@ -27,7 +29,7 @@ bus-storage is a comprehensive cloud storage component that provides unified int
 
 ### Provider Dependencies
 
-Add the required cloud provider SDK(s):
+Add the required cloud provider SDK (s):
 
 ```xml
   <properties>
@@ -276,26 +278,26 @@ public class Application {
 
 ### Configuration Parameters
 
-| Parameter | Type | Required | Description |
-|:---|:---|:---|:---|
-| accessKey | String | Yes | Access key/ID for authentication |
-| secretKey | String | Yes | Secret key for authentication |
-| bucket | String | Yes | Bucket/container name |
-| endpoint/domain | String | Provider | Endpoint URL or custom domain |
-| region | String | Provider | Region for the service |
-| prefix | String | No | Path prefix for all files |
+| Parameter       | Type   | Required | Description                      |
+|:----------------|:-------|:---------|:---------------------------------|
+| accessKey       | String | Yes      | Access key/ID for authentication |
+| secretKey       | String | Yes      | Secret key for authentication    |
+| bucket          | String | Yes      | Bucket/container name            |
+| endpoint/domain | String | Provider | Endpoint URL or custom domain    |
+| region          | String | Provider | Region for the service           |
+| prefix          | String | No       | Path prefix for all files        |
 
 ### Provider Registry
 
-| Registry Key | Provider | Description |
-|:---|:---|:---|
-| ALIYUN | AliyunOssProvider | Alibaba Cloud Object Storage Service |
-| QINIU | QiniuOssProvider | Qiniu Cloud Storage |
-| TENCENT | TencentOssProvider | Tencent Cloud Object Storage |
-| BAIDU | BaiduOssProvider | Baidu Cloud Object Storage |
-| HUAWEI | HuaweiOssProvider | Huawei Cloud Object Storage Service |
-| JD | JdOssProvider | JD Cloud Object Storage Service |
-| UPYUN | UpyunOssProvider | UpYun Cloud Storage |
+| Registry Key | Provider           | Description                          |
+|:-------------|:-------------------|:-------------------------------------|
+| ALIYUN       | AliyunOssProvider  | Alibaba Cloud Object Storage Service |
+| QINIU        | QiniuOssProvider   | Qiniu Cloud Storage                  |
+| TENCENT      | TencentOssProvider | Tencent Cloud Object Storage         |
+| BAIDU        | BaiduOssProvider   | Baidu Cloud Object Storage           |
+| HUAWEI       | HuaweiOssProvider  | Huawei Cloud Object Storage Service  |
+| JD           | JdOssProvider      | JD Cloud Object Storage Service      |
+| UPYUN        | UpyunOssProvider   | UpYun Cloud Storage                  |
 
 ## 💡 Best Practices
 
@@ -366,6 +368,7 @@ extend:
 ### 5. Implement Retry Logic
 
 ```java
+
 @Service
 public class ResilientStorageService {
 
@@ -385,6 +388,7 @@ public class ResilientStorageService {
 ### Q: Which cloud provider should I choose?
 
 A: Consider factors like:
+
 - **Geographic location**: Choose provider with nearest region
 - **Cost**: Compare pricing for storage and bandwidth
 - **Features**: CDN, processing, analytics capabilities
@@ -494,6 +498,7 @@ public class FileProcessingService {
 ### Storage Health Check
 
 ```java
+
 @Component
 public class StorageHealthCheck implements HealthIndicator {
 
@@ -518,13 +523,13 @@ public class StorageHealthCheck implements HealthIndicator {
 - **JDK**: 8, 11, 17, 21+
 - **Spring Boot**: 2.7.x, 3.x
 - **Supported Providers**:
-  - Alibaba Cloud OSS: 3.4.2+
-  - Qiniu Cloud: 7.2.x
-  - Tencent Cloud COS: 5.5.9+
-  - Baidu Cloud BOS: 0.10.48+
-  - Huawei Cloud OBS: 3.0.5+
-  - JD Cloud OSS: 1.11.136+
-  - UpYun: 4.0.1+
+    - Alibaba Cloud OSS: 3.4.2+
+    - Qiniu Cloud: 7.2.x
+    - Tencent Cloud COS: 5.5.9+
+    - Baidu Cloud BOS: 0.10.48+
+    - Huawei Cloud OBS: 3.0.5+
+    - JD Cloud OSS: 1.11.136+
+    - UpYun: 4.0.1+
 
 ## 📚 Related Modules
 

@@ -37,7 +37,6 @@ import org.miaixz.bus.notify.Context;
  * Alibaba Cloud SMS service provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AliyunSmsProvider extends AliyunProvider<AliyunNotice, Context> {
 

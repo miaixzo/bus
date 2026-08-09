@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The issue event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IssueEvent implements Serializable {
 
@@ -43,7 +42,6 @@ public class IssueEvent implements Serializable {
      * Enum to use for specifying the state events resource type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ResourceType {
 

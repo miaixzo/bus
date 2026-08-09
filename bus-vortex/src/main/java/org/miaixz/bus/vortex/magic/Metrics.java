@@ -38,7 +38,6 @@ import org.miaixz.bus.vortex.provider.MetricsProvider;
  * Used in management APIs, health checks, and performance monitoring dashboards.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

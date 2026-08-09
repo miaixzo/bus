@@ -36,7 +36,6 @@ import org.miaixz.bus.gitlab.models.Application;
  * <a href="https://docs.gitlab.com/ce/api/applications.html">Applications API at GitLab</a> for more information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ApplicationsApi extends AbstractApi {
 

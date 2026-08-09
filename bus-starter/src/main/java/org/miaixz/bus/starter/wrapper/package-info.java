@@ -22,6 +22,5 @@
  * capability remains isolated in a child package, and this non-exported package must not define business APIs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.starter.wrapper;

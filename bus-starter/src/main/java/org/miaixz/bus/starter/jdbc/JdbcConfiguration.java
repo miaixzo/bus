@@ -55,7 +55,6 @@ import org.miaixz.bus.starter.annotation.EnableJdbc;
  * {@link DataSourceFactory}. This class only connects those collaborators to Spring Bean lifecycle infrastructure.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ConditionalOnClass(value = { HikariDataSource.class })
 @ConditionalOnEnabled(annotation = EnableJdbc.class, prefix = GeniusBuilder.DATASOURCE, matchIfMissing = true)

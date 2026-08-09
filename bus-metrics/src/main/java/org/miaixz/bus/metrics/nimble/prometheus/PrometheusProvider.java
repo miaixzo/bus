@@ -52,7 +52,6 @@ import io.prometheus.metrics.model.registry.PrometheusRegistry;
  * Meter (EWMA rates) and LlmTimer are implemented locally since the Prometheus SDK has no equivalent types.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PrometheusProvider implements Provider {
 

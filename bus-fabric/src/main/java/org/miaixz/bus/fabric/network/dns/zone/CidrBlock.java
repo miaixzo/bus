@@ -30,7 +30,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * Immutable IPv4 or IPv6 CIDR block used to select DNS split-horizon views.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class CidrBlock {
 

@@ -33,7 +33,6 @@ import org.miaixz.bus.health.builtin.software.OSFileStore;
  * Common methods for filesystem implementations
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public abstract class AbstractFileSystem implements FileSystem {

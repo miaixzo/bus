@@ -33,7 +33,6 @@ import org.miaixz.bus.gitlab.models.LabelEvent;
  *
  * @see <a href="https://docs.gitlab.com/ce/api/resource_label_events.html">Resource label events API at GitLab</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ResourceLabelEventsApi extends AbstractApi {
 

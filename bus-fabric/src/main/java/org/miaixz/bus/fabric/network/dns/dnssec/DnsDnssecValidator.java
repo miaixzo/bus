@@ -64,7 +64,6 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsTrustAnchor;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsDnssecValidator {
 
@@ -999,7 +998,6 @@ public final class DnsDnssecValidator {
      * Parsed RRSIG RDATA fields used for cryptographic validation.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class SignatureFields {
 

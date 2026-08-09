@@ -56,7 +56,6 @@ import org.miaixz.bus.starter.annotation.EnableMapper;
  * for both annotation-based and property-based feature activation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
 

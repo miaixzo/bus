@@ -34,7 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The note event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NoteEvent extends AbstractEvent {
 
@@ -267,7 +266,6 @@ public class NoteEvent extends AbstractEvent {
      * The noteable type enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static enum NoteableType {
 
@@ -331,7 +329,6 @@ public class NoteEvent extends AbstractEvent {
      * The object attributes class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class ObjectAttributes {
 

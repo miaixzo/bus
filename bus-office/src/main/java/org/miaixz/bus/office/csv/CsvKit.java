@@ -28,7 +28,6 @@ import java.nio.charset.Charset;
  * Reads and writes CSV data.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CsvKit {
 

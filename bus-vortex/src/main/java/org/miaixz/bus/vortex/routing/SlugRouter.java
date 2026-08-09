@@ -32,7 +32,6 @@ import reactor.core.publisher.Mono;
  * Router for public slug forwarding requests.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SlugRouter implements Router<ServerRequest, ServerResponse> {
 

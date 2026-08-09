@@ -32,7 +32,6 @@ import org.miaixz.bus.starter.validate.ValidateConfiguration;
  * It allows for declarative validation using annotations like {@code @Valid} on method parameters.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

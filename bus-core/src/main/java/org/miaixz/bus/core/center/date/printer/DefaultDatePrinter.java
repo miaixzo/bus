@@ -33,7 +33,6 @@ import java.util.TimeZone;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DefaultDatePrinter implements DatePrinter, Serializable {
 

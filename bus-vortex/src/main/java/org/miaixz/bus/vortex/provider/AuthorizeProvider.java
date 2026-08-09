@@ -39,7 +39,6 @@ import reactor.core.publisher.Mono;
  * identity provider. An instance of this provider is injected into protocol-specific qualifier strategies.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface AuthorizeProvider {
 
@@ -74,7 +73,7 @@ public interface AuthorizeProvider {
             return Mono.just(
                     Delegate.builder()
                             .message(
-                                    Message.<Void>builder().errcode(ErrorCode._116002.getKey())
+                                    Message.<Void>builder().errcode(ErrorCode._100160.getKey())
                                             .errmsg("Unsupported policy: " + policy).build())
                             .build());
         }
@@ -103,7 +102,7 @@ public interface AuthorizeProvider {
         return Mono.just(
                 Delegate.builder()
                         .message(
-                                Message.<Void>builder().errcode(ErrorCode._116002.getKey())
+                                Message.<Void>builder().errcode(ErrorCode._100160.getKey())
                                         .errmsg("Unsupported credential type: " + principal.getType()).build())
                         .build());
     }

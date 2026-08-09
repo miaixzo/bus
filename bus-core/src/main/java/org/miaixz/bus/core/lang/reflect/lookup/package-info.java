@@ -31,6 +31,5 @@
  * "https://blog.csdn.net/u013202238/article/details/108687086">https://blog.csdn.net/u013202238/article/details/108687086</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.lang.reflect.lookup;

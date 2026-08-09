@@ -27,7 +27,6 @@ import org.miaixz.bus.setting.nimble.ini.IniPropertyService;
  * A formatter that parses a string value into an {@link IniProperty} object (a key-value pair).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PropertyFormatter extends AbstractFormatter<IniProperty> {
 

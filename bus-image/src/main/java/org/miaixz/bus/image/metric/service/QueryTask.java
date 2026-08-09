@@ -25,7 +25,6 @@ import org.miaixz.bus.image.metric.CancelRQHandler;
  * Defines the QueryTask contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface QueryTask extends Runnable, CancelRQHandler {
 

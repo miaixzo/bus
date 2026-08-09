@@ -54,7 +54,6 @@ import org.miaixz.bus.core.center.function.SupplierX;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AuditContext {
 

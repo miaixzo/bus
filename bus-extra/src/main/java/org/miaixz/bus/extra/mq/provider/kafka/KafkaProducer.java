@@ -35,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
  * Kafka {@link ProducerRecord}s.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class KafkaProducer implements Producer {
 

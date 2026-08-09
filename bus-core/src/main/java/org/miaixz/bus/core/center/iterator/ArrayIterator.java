@@ -30,7 +30,6 @@ import java.util.Objects;
  *
  * @param <E> the type of elements in the array
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ArrayIterator<E> implements IterableIterator<E>, ResettableIterator<E>, Serializable {
 

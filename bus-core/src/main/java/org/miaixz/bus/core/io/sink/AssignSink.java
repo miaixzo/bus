@@ -30,7 +30,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * an existing {@link Sink} and add custom behavior without modifying the original sink.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AssignSink implements Sink {
 

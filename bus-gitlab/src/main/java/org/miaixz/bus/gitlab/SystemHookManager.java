@@ -37,7 +37,6 @@ import tools.jackson.databind.node.ObjectNode;
  * This class provides a handler for processing GitLab System Hook callouts.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SystemHookManager implements HookManager {
 

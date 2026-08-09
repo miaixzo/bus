@@ -34,7 +34,6 @@ import org.miaixz.bus.gitlab.models.DeployKey;
  * This class implements the client side API for the GitLab Deploy Keys API calls.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DeployKeysApi extends AbstractApi {
 

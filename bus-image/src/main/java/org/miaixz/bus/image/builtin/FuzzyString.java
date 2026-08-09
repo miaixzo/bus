@@ -25,7 +25,6 @@ package org.miaixz.bus.image.builtin;
  * used for approximate string comparisons.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface FuzzyString {
 

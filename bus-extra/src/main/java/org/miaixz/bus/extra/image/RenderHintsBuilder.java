@@ -43,7 +43,6 @@ import org.miaixz.bus.core.lang.Assert;
  * </ol>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RenderHintsBuilder implements Builder<RenderingHints> {
 
@@ -245,7 +244,6 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
      * @see RenderingHints#VALUE_ANTIALIAS_OFF
      * @see RenderingHints#VALUE_ANTIALIAS_DEFAULT
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Antialias {
 
@@ -289,7 +287,6 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
      * @see RenderingHints#VALUE_TEXT_ANTIALIAS_OFF
      * @see RenderingHints#VALUE_TEXT_ANTIALIAS_DEFAULT
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum TextAntialias {
 
@@ -353,7 +350,6 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
      * @see RenderingHints#VALUE_COLOR_RENDER_QUALITY
      * @see RenderingHints#VALUE_COLOR_RENDER_DEFAULT
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ColorRender {
 
@@ -397,7 +393,6 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
      * @see RenderingHints#VALUE_RENDER_QUALITY
      * @see RenderingHints#VALUE_RENDER_DEFAULT
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Render {
 
@@ -442,7 +437,6 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
      * @see RenderingHints#VALUE_DITHER_DISABLE
      * @see RenderingHints#VALUE_DITHER_DEFAULT
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Dither {
 
@@ -486,7 +480,6 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
      * @see RenderingHints#VALUE_FRACTIONALMETRICS_OFF
      * @see RenderingHints#VALUE_FRACTIONALMETRICS_DEFAULT
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum FractionalMetrics {
 
@@ -532,7 +525,6 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
      * @see RenderingHints#VALUE_INTERPOLATION_BILINEAR
      * @see RenderingHints#VALUE_INTERPOLATION_NEAREST_NEIGHBOR
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Interpolation {
 
@@ -576,7 +568,6 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
      * @see RenderingHints#VALUE_ALPHA_INTERPOLATION_QUALITY
      * @see RenderingHints#VALUE_ALPHA_INTERPOLATION_DEFAULT
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum AlphaInterpolation {
 
@@ -620,7 +611,6 @@ public class RenderHintsBuilder implements Builder<RenderingHints> {
      * @see RenderingHints#VALUE_STROKE_PURE
      * @see RenderingHints#VALUE_STROKE_DEFAULT
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum StrokeControl {
 

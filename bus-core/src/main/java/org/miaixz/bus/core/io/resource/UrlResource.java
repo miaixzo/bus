@@ -38,7 +38,6 @@ import org.miaixz.bus.core.xyz.UrlKit;
  * identified by a {@link URL}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UrlResource implements Resource, Serializable {
 

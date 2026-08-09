@@ -37,7 +37,6 @@ import org.miaixz.bus.vortex.strategy.LimiterStrategy;
  *
  * @see LimiterStrategy
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
@@ -116,7 +115,6 @@ public class Limiter {
      * concurrent requests and the critical section contains only a few arithmetic operations.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class RateLimiter {
 

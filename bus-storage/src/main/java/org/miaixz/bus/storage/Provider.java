@@ -33,7 +33,6 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * Provides an interface for file storage operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
 
@@ -101,7 +100,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @return A {@link Message} containing storage metadata when successful.
      */
     default Message<Blob> stat(String fileName) {
-        return Message.<Blob>builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
+        return Message.<Blob>builder().errcode(ErrorCode._113011.getKey()).errmsg(ErrorCode._113011.getValue()).build();
     }
 
     /**
@@ -112,7 +111,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @return A {@link Message} containing storage metadata when successful.
      */
     default Message<Blob> stat(String bucket, String fileName) {
-        return Message.<Blob>builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
+        return Message.<Blob>builder().errcode(ErrorCode._113011.getKey()).errmsg(ErrorCode._113011.getValue()).build();
     }
 
     /**
@@ -123,7 +122,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @return A {@link Message} containing storage metadata when successful.
      */
     default Message<Blob> statKey(String bucket, String objectKey) {
-        return Message.<Blob>builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
+        return Message.<Blob>builder().errcode(ErrorCode._113011.getKey()).errmsg(ErrorCode._113011.getValue()).build();
     }
 
     /**
@@ -133,7 +132,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @return A {@link Message} containing a stream resource when successful.
      */
     default Message<Blob> stream(String fileName) {
-        return Message.<Blob>builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
+        return Message.<Blob>builder().errcode(ErrorCode._113011.getKey()).errmsg(ErrorCode._113011.getValue()).build();
     }
 
     /**
@@ -144,7 +143,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @return A {@link Message} containing a stream resource when successful.
      */
     default Message<Blob> stream(String bucket, String fileName) {
-        return Message.<Blob>builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
+        return Message.<Blob>builder().errcode(ErrorCode._113011.getKey()).errmsg(ErrorCode._113011.getValue()).build();
     }
 
     /**
@@ -155,7 +154,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @return A {@link Message} containing a stream resource when successful.
      */
     default Message<Blob> streamKey(String bucket, String objectKey) {
-        return Message.<Blob>builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
+        return Message.<Blob>builder().errcode(ErrorCode._113011.getKey()).errmsg(ErrorCode._113011.getValue()).build();
     }
 
     /**

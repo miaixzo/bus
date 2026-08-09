@@ -30,7 +30,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * Job Events</a> is incorrect, this class represents the actual content of the Job Hook event.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BuildEvent extends AbstractEvent {
 

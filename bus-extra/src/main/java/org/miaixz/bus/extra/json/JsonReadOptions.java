@@ -30,7 +30,6 @@ import java.util.Objects;
  *
  * @param typeFilter allow-list applied to concrete classes found in the requested Java type
  * @author Kimi Liu
- * @since Java 21+
  */
 public record JsonReadOptions(JsonTypeFilter typeFilter) {
 

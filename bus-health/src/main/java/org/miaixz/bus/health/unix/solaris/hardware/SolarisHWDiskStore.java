@@ -44,7 +44,6 @@ import org.miaixz.bus.health.unix.solaris.software.SolarisOperatingSystem;
  * Solaris hard disk implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class SolarisHWDiskStore extends AbstractHWDiskStore {

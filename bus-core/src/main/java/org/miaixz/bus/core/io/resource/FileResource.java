@@ -37,7 +37,6 @@ import org.miaixz.bus.core.xyz.UrlKit;
  * of the {@link Resource} interface for file-system based resources.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FileResource implements Resource, Serializable {
 

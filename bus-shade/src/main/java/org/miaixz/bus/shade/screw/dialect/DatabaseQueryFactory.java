@@ -37,7 +37,6 @@ import org.miaixz.bus.logger.Logger;
  * A factory for creating {@link DatabaseQuery} instances based on the database type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

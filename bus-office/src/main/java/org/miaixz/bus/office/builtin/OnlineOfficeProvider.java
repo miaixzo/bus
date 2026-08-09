@@ -29,7 +29,6 @@ import org.miaixz.bus.logger.Logger;
  * used with an online office manager.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class OnlineOfficeProvider extends AbstractProvider {
 

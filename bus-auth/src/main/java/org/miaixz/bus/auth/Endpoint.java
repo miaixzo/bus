@@ -27,7 +27,6 @@ import lombok.Getter;
  * for authorization, token exchange, user information retrieval, token refreshing, and token revocation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @AllArgsConstructor

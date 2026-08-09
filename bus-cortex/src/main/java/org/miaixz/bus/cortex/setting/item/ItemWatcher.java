@@ -27,7 +27,6 @@ import org.miaixz.bus.logger.Logger;
  * Listener that logs setting watch events.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ItemWatcher implements Listener<Watch<String>> {
 

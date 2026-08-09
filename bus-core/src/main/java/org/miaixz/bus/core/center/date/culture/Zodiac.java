@@ -31,7 +31,6 @@ import org.miaixz.bus.core.xyz.DateKit;
  * entities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Zodiac extends Samsara {
 

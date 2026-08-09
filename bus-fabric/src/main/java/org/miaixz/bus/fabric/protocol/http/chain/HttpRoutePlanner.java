@@ -38,7 +38,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
  * Pure HTTP route planner that performs no DNS, socket, pool, or TLS I/O.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class HttpRoutePlanner {
 

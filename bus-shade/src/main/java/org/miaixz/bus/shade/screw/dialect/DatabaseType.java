@@ -36,7 +36,6 @@ import org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDataBaseQuery;
  * Enumeration of supported database types.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum DatabaseType implements Serializable {
 

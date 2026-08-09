@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.Gender;
  * authorization platform.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

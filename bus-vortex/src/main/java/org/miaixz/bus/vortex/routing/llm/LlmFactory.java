@@ -33,7 +33,6 @@ import org.miaixz.bus.logger.Logger;
  * (type + endpoint + apiKey) to avoid repeated creation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LlmFactory {
 

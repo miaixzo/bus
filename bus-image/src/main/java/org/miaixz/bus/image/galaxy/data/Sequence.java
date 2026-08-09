@@ -32,7 +32,6 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
  * Represents the Sequence type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Sequence extends ArrayList<Attributes> implements Value {
 

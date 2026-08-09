@@ -40,7 +40,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * {@link Link} in annotation objects.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractLinkAnnotationPostProcessor implements SynthesizedAnnotationPostProcessor {
 

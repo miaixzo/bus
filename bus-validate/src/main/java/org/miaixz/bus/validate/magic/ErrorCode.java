@@ -26,7 +26,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Validation error codes, starting from 115xxx.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
@@ -320,142 +319,141 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
     /**
      * Generic parameter validation failure.
      */
-    public static final Errors _115000 = ErrorRegistry.builder().key(_PARAMETER_VALIDATE)
-            .value(_PARAMETER_VALIDATE_VALUE).build();
+    public static final Errors _115000 = ErrorRegistry.register(_PARAMETER_VALIDATE, _PARAMETER_VALIDATE_VALUE);
 
     /**
      * A value that must be blank is not blank.
      */
-    public static final Errors _115001 = ErrorRegistry.builder().key(_BLANK).value(_BLANK_VALUE).build();
+    public static final Errors _115001 = ErrorRegistry.register(_BLANK, _BLANK_VALUE);
 
     /**
      * A value that must be Chinese text is invalid.
      */
-    public static final Errors _115002 = ErrorRegistry.builder().key(_CHINESE).value(_CHINESE_VALUE).build();
+    public static final Errors _115002 = ErrorRegistry.register(_CHINESE, _CHINESE_VALUE);
 
     /**
      * A citizen ID number is invalid.
      */
-    public static final Errors _115003 = ErrorRegistry.builder().key(_CITIZEN_ID).value(_CITIZEN_ID_VALUE).build();
+    public static final Errors _115003 = ErrorRegistry.register(_CITIZEN_ID, _CITIZEN_ID_VALUE);
 
     /**
      * A comparison rule is not satisfied.
      */
-    public static final Errors _115004 = ErrorRegistry.builder().key(_COMPARE).value(_COMPARE_VALUE).build();
+    public static final Errors _115004 = ErrorRegistry.register(_COMPARE, _COMPARE_VALUE);
 
     /**
      * A date value has an invalid format.
      */
-    public static final Errors _115005 = ErrorRegistry.builder().key(_DATE).value(_DATE_VALUE).build();
+    public static final Errors _115005 = ErrorRegistry.register(_DATE, _DATE_VALUE);
 
     /**
      * An element validation rule failed.
      */
-    public static final Errors _115006 = ErrorRegistry.builder().key(_EACH).value(_EACH_VALUE).build();
+    public static final Errors _115006 = ErrorRegistry.register(_EACH, _EACH_VALUE);
 
     /**
      * An email address has an invalid format.
      */
-    public static final Errors _115007 = ErrorRegistry.builder().key(_EMAIL).value(_EMAIL_VALUE).build();
+    public static final Errors _115007 = ErrorRegistry.register(_EMAIL, _EMAIL_VALUE);
 
     /**
      * A value that must be English text is invalid.
      */
-    public static final Errors _115008 = ErrorRegistry.builder().key(_ENGLISH).value(_ENGLISH_VALUE).build();
+    public static final Errors _115008 = ErrorRegistry.register(_ENGLISH, _ENGLISH_VALUE);
 
     /**
      * A value does not equal the required value.
      */
-    public static final Errors _115009 = ErrorRegistry.builder().key(_EQUALS).value(_EQUALS_VALUE).build();
+    public static final Errors _115009 = ErrorRegistry.register(_EQUALS, _EQUALS_VALUE);
 
     /**
      * A value that must be false is invalid.
      */
-    public static final Errors _115010 = ErrorRegistry.builder().key(_FALSE).value(_FALSE_VALUE).build();
+    public static final Errors _115010 = ErrorRegistry.register(_FALSE, _FALSE_VALUE);
 
     /**
      * A value is not included in the allowed set.
      */
-    public static final Errors _115011 = ErrorRegistry.builder().key(_IN).value(_IN_VALUE).build();
+    public static final Errors _115011 = ErrorRegistry.register(_IN, _IN_VALUE);
 
     /**
      * A value is not included in the allowed enum set.
      */
-    public static final Errors _115012 = ErrorRegistry.builder().key(_IN_ENUM).value(_IN_ENUM_VALUE).build();
+    public static final Errors _115012 = ErrorRegistry.register(_IN_ENUM, _IN_ENUM_VALUE);
 
     /**
      * An integer value is outside the allowed range.
      */
-    public static final Errors _115013 = ErrorRegistry.builder().key(_INT_RANGE).value(_INT_RANGE_VALUE).build();
+    public static final Errors _115013 = ErrorRegistry.register(_INT_RANGE, _INT_RANGE_VALUE);
 
     /**
      * An IP address is invalid.
      */
-    public static final Errors _115014 = ErrorRegistry.builder().key(_IP_ADDRESS).value(_IP_ADDRESS_VALUE).build();
+    public static final Errors _115014 = ErrorRegistry.register(_IP_ADDRESS, _IP_ADDRESS_VALUE);
 
     /**
      * A text value length is outside the allowed range.
      */
-    public static final Errors _115015 = ErrorRegistry.builder().key(_LENGTH).value(_LENGTH_VALUE).build();
+    public static final Errors _115015 = ErrorRegistry.register(_LENGTH, _LENGTH_VALUE);
 
     /**
      * A mobile phone number is invalid.
      */
-    public static final Errors _115016 = ErrorRegistry.builder().key(_MOBILE).value(_MOBILE_VALUE).build();
+    public static final Errors _115016 = ErrorRegistry.register(_MOBILE, _MOBILE_VALUE);
 
     /**
      * A combined validation rule failed.
      */
-    public static final Errors _115017 = ErrorRegistry.builder().key(_MULTIPLE).value(_MULTIPLE_VALUE).build();
+    public static final Errors _115017 = ErrorRegistry.register(_MULTIPLE, _MULTIPLE_VALUE);
 
     /**
      * A required non-blank value is blank.
      */
-    public static final Errors _115018 = ErrorRegistry.builder().key(_NOT_BLANK).value(_NOT_BLANK_VALUE).build();
+    public static final Errors _115018 = ErrorRegistry.register(_NOT_BLANK, _NOT_BLANK_VALUE);
 
     /**
      * A required non-empty value is empty.
      */
-    public static final Errors _115019 = ErrorRegistry.builder().key(_NOT_EMPTY).value(_NOT_EMPTY_VALUE).build();
+    public static final Errors _115019 = ErrorRegistry.register(_NOT_EMPTY, _NOT_EMPTY_VALUE);
 
     /**
      * A value is included in the disallowed set.
      */
-    public static final Errors _115020 = ErrorRegistry.builder().key(_NOT_IN).value(_NOT_IN_VALUE).build();
+    public static final Errors _115020 = ErrorRegistry.register(_NOT_IN, _NOT_IN_VALUE);
 
     /**
      * A required non-null value is null.
      */
-    public static final Errors _115021 = ErrorRegistry.builder().key(_NOT_NULL).value(_NOT_NULL_VALUE).build();
+    public static final Errors _115021 = ErrorRegistry.register(_NOT_NULL, _NOT_NULL_VALUE);
 
     /**
      * A value that must be null is not null.
      */
-    public static final Errors _115022 = ErrorRegistry.builder().key(_NULL).value(_NULL_VALUE).build();
+    public static final Errors _115022 = ErrorRegistry.register(_NULL, _NULL_VALUE);
 
     /**
      * A landline phone number is invalid.
      */
-    public static final Errors _115023 = ErrorRegistry.builder().key(_PHONE).value(_PHONE_VALUE).build();
+    public static final Errors _115023 = ErrorRegistry.register(_PHONE, _PHONE_VALUE);
 
     /**
      * A reflective validation rule failed.
      */
-    public static final Errors _115024 = ErrorRegistry.builder().key(_REFLECT).value(_REFLECT_VALUE).build();
+    public static final Errors _115024 = ErrorRegistry.register(_REFLECT, _REFLECT_VALUE);
 
     /**
      * A value does not match the required regular expression.
      */
-    public static final Errors _115025 = ErrorRegistry.builder().key(_REGEX).value(_REGEX_VALUE).build();
+    public static final Errors _115025 = ErrorRegistry.register(_REGEX, _REGEX_VALUE);
 
     /**
      * A value size is outside the allowed range.
      */
-    public static final Errors _115026 = ErrorRegistry.builder().key(_SIZE).value(_SIZE_VALUE).build();
+    public static final Errors _115026 = ErrorRegistry.register(_SIZE, _SIZE_VALUE);
 
     /**
      * A value that must be true is invalid.
      */
-    public static final Errors _115027 = ErrorRegistry.builder().key(_TRUE).value(_TRUE_VALUE).build();
+    public static final Errors _115027 = ErrorRegistry.register(_TRUE, _TRUE_VALUE);
 
 }

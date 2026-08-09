@@ -21,6 +21,5 @@
  * UID Dictionary from GE_GENESIS_REV3_0
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.GE_GENESIS_REV3_0;

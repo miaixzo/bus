@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MI_RWVM_SUV;
  * Represents the PrivateTag type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PrivateTag {
 

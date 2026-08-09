@@ -23,7 +23,6 @@ package org.miaixz.bus.fabric.observe;
  * Stable observation marker codes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum ObservationMarker {
 
@@ -374,7 +373,6 @@ public enum ObservationMarker {
      * Observation timer role.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Timing {
 

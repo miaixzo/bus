@@ -30,7 +30,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The work item event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WorkItemEvent extends AbstractEvent {
 
@@ -210,7 +209,6 @@ public class WorkItemEvent extends AbstractEvent {
      * The object attributes class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class ObjectAttributes extends EventWorkItem {
 

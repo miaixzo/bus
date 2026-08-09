@@ -28,7 +28,6 @@ import org.miaixz.bus.shade.safety.Complex;
  *
  * @param <E> The type of entry to be filtered.
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class EntryEncryptorProvider<E> extends WrappedEncryptorProvider
         implements EncryptorProvider, Complex<E> {

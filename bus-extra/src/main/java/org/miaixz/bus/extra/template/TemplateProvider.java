@@ -26,7 +26,6 @@ import org.miaixz.bus.core.lang.Wrapper;
  * a unified way to initialize and retrieve templates.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface TemplateProvider extends Wrapper<Object> {
 

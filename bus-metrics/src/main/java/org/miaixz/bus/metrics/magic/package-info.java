@@ -23,6 +23,5 @@
  * serialise metric state without holding locks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.metrics.magic;

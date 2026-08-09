@@ -31,7 +31,6 @@ import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
  * day selection. This class extends {@link Samsara} to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class God extends Samsara {
 

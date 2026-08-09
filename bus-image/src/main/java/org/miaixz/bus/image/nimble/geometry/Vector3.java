@@ -28,7 +28,6 @@ import java.util.Objects;
  * @param y the y.
  * @param z the z.
  * @author Kimi Liu
- * @since Java 21+
  */
 public record Vector3(double x, double y, double z) {
 

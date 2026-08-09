@@ -36,7 +36,6 @@ import org.miaixz.bus.vortex.Holder;
  * Controlled parameter container that centralizes sanitization while preserving the familiar {@link Map} API.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Parameter extends AbstractMap<String, Object> {
 

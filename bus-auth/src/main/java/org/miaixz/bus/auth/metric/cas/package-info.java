@@ -21,6 +21,5 @@
  * Provides standard CAS (Central Authentication Service) protocol implementations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.auth.metric.cas;

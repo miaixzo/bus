@@ -23,7 +23,6 @@ package org.miaixz.bus.cortex.version;
  * Built-in release tracks. Custom tracks are accepted as normalized string values by {@link #normalize(String)}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum ReleaseTrack {
 

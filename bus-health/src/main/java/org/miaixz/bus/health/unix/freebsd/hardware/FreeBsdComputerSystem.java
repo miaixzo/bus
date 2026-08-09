@@ -38,7 +38,6 @@ import org.miaixz.bus.health.unix.shared.hardware.UnixBaseboard;
  * Hardware data obtained from dmidecode.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class FreeBsdComputerSystem extends AbstractComputerSystem {

@@ -38,7 +38,6 @@ import org.miaixz.bus.gitlab.models.RegistryRepositoryTag;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ContainerRegistryApi extends AbstractApi {
 

@@ -31,7 +31,6 @@ import org.miaixz.bus.pay.magic.Voucher;
  * Query Red Packet Info model.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Represents the HL7Parser type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HL7Parser {
 

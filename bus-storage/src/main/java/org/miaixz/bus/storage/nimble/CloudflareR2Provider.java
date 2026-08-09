@@ -26,7 +26,6 @@ import org.miaixz.bus.storage.Context;
  * {@link GenericS3Provider} to offer Cloudflare R2-specific configurations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CloudflareR2Provider extends GenericS3Provider {
 

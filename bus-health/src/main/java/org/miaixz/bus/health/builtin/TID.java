@@ -29,7 +29,6 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class TID {
 

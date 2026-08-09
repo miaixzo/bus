@@ -22,6 +22,5 @@
  * Interfaces, Power Sources, Sensors, and USB Devices
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.health.builtin;

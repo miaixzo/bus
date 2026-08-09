@@ -39,7 +39,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Configures application message converters.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(MessageConverterProperties.class)

@@ -34,7 +34,6 @@ import org.miaixz.bus.gitlab.support.ISO8601;
  * This class is used to filter issues when getting issue statistics. of them.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IssuesStatisticsFilter implements Serializable {
 

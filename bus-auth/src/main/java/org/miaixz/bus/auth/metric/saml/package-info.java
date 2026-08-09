@@ -21,6 +21,5 @@
  * Provides standard SAML (Security Assertion Markup Language) protocol implementations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.auth.metric.saml;

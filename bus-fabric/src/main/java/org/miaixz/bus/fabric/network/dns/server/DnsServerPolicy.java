@@ -28,7 +28,6 @@ import org.miaixz.bus.fabric.Policy;
  * Fabric policy carrying DNS server options without starting the server by default.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsServerPolicy implements Policy {
 

@@ -35,7 +35,6 @@ import org.miaixz.bus.gitlab.models.DeployToken;
  * Since GitLab 12.9
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DeployTokensApi extends AbstractApi {
 

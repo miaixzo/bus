@@ -31,7 +31,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Immutable image processing and DICOM server properties.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

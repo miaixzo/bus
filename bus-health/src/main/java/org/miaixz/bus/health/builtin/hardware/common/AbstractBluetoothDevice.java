@@ -27,7 +27,6 @@ import org.miaixz.bus.health.builtin.hardware.BluetoothDevice;
  * Abstract base class for Bluetooth device implementations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public abstract class AbstractBluetoothDevice implements BluetoothDevice {

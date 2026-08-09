@@ -29,7 +29,6 @@ import org.miaixz.bus.core.xyz.SetKit;
  * especially in DFA-based algorithms.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StopChar {
 

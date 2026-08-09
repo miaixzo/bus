@@ -21,6 +21,5 @@
  * UID Dictionary from GE_1_2_840_113708_794_1_1_2_0
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.GE_1_2_840_113708_794_1_1_2_0;

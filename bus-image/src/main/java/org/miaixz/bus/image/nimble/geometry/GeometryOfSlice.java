@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Spatial geometry of a single cross-sectional DICOM image slice.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GeometryOfSlice {
 

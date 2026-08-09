@@ -28,7 +28,6 @@ import org.miaixz.bus.image.metric.pdu.IdentityRQ;
  * Defines the IdentityNegotiator contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface IdentityNegotiator {
 

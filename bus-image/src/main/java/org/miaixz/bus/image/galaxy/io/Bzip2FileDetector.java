@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.StreamKit;
  * (0x42 0x5A 0x68) at the beginning of the file. It also handles specific file extensions for VCF Bzip2 files.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Bzip2FileDetector extends FileTypeDetector {
 

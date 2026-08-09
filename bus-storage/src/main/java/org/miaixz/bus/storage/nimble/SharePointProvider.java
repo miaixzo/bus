@@ -86,7 +86,6 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * use appropriate consumer-facing authentication flows.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SharePointProvider extends AbstractProvider {
 
@@ -183,18 +182,18 @@ public class SharePointProvider extends AbstractProvider {
     public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
                         .build();
             }
             Map<String, Object> metadata = getItemMetadata(bucket, objectKey, true);
             if (metadata == null || metadata.containsKey("folder")) {
-                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
             return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(toBlob(bucket, objectKey, metadata, null)).build();
         } catch (Exception e) {
-            Errors error = StringKit.containsIgnoreCase(e.getMessage(), "404") ? ErrorCode._113010 : ErrorCode._113012;
+            Errors error = StringKit.containsIgnoreCase(e.getMessage(), "404") ? ErrorCode._113008 : ErrorCode._113010;
             Logger.error(
                     false,
                     "Storage",
@@ -244,12 +243,12 @@ public class SharePointProvider extends AbstractProvider {
     public Message<Blob> streamKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
                         .build();
             }
             Map<String, Object> metadata = getItemMetadata(bucket, objectKey, true);
             if (metadata == null || metadata.containsKey("folder")) {
-                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
 
@@ -269,7 +268,7 @@ public class SharePointProvider extends AbstractProvider {
             return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(toBlob(bucket, objectKey, metadata, stream(response))).build();
         } catch (Exception e) {
-            Errors error = StringKit.containsIgnoreCase(e.getMessage(), "404") ? ErrorCode._113010 : ErrorCode._113012;
+            Errors error = StringKit.containsIgnoreCase(e.getMessage(), "404") ? ErrorCode._113008 : ErrorCode._113010;
             Logger.error(
                     false,
                     "Storage",
@@ -903,12 +902,12 @@ public class SharePointProvider extends AbstractProvider {
      */
     private Errors toError(int code) {
         if (code == 401 || code == 403) {
-            return ErrorCode._113009;
+            return ErrorCode._113007;
         }
         if (code == 404) {
-            return ErrorCode._113010;
+            return ErrorCode._113008;
         }
-        return ErrorCode._113012;
+        return ErrorCode._113010;
     }
 
     /**

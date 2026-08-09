@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.Optional;
  * and description into one object.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Port {
 

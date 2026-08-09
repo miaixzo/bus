@@ -30,7 +30,6 @@ import java.io.Serializable;
  * Avatar Upload has its own Upload in <code>org.miaixz.bus.gitlab.TopicsApi#updateTopicAvatar(Integer,File)</code>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TopicParams implements Serializable {
 

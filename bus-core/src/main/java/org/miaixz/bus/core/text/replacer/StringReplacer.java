@@ -30,7 +30,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * define specific replacement logic.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class StringReplacer implements UnaryOperatorX<CharSequence>, Serializable {
 

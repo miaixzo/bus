@@ -21,6 +21,5 @@
  * Starter activation for runtime context propagation across task and Servlet boundaries.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.starter.context;

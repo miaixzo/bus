@@ -29,7 +29,6 @@ import lombok.experimental.SuperBuilder;
  * Gray release rule definition.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

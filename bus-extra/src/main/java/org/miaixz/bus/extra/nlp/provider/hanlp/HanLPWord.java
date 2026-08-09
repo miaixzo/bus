@@ -30,7 +30,6 @@ import org.miaixz.bus.extra.nlp.NLPWord;
  * to the common {@link NLPWord} interface, providing a unified way to access segmented word information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HanLPWord implements NLPWord {
 

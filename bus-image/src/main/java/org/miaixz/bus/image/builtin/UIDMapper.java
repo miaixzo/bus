@@ -25,7 +25,6 @@ package org.miaixz.bus.image.builtin;
  * de-identification or anonymization processes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface UIDMapper {
 

@@ -48,7 +48,6 @@ import org.miaixz.bus.core.xyz.CompareKit;
  * build metadata.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Version implements Comparable<Version>, Serializable {
 

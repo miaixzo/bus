@@ -33,7 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * settings that can be accessed via API calls</a> for more information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Setting {
 

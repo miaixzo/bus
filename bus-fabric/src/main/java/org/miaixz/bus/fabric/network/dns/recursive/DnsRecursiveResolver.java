@@ -58,7 +58,6 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsTrustAnchor;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsRecursiveResolver {
 

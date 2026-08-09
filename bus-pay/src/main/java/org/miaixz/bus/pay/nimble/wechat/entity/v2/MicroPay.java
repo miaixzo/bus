@@ -31,7 +31,6 @@ import org.miaixz.bus.pay.magic.Voucher;
  * Micropay model. Supports: micropay, face payment deposit, micropay deposit.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

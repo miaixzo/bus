@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.TypeKit;
  * class is done by traversal.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SpecialConverter extends ConverterWithRoot implements Serializable {
 

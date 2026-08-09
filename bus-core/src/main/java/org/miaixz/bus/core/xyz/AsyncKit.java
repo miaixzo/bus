@@ -36,7 +36,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * callbacks to be registered and invoked upon task completion.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AsyncKit {
 

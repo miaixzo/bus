@@ -36,7 +36,6 @@ import org.miaixz.bus.health.windows.driver.wmi.Win32Bios.BiosProperty;
  * Firmware data obtained from WMI
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class WindowsFirmware extends AbstractFirmware {

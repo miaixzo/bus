@@ -37,7 +37,6 @@ import org.miaixz.bus.core.lang.annotation.resolve.synthesize.SynthesizedAggrega
  * <b>Note: the priority of this annotation is lower than {@link Alias}.</b>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

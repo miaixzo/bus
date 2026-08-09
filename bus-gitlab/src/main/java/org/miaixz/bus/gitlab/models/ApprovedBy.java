@@ -31,7 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * instance.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ApprovedBy implements Serializable {
 

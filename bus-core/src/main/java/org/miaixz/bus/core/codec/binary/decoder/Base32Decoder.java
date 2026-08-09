@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Decodes a Base32 encoded string into a byte array.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Base32Decoder implements Decoder<CharSequence, byte[]> {
 

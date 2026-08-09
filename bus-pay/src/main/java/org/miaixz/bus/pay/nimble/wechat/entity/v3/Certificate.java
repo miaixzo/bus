@@ -33,7 +33,6 @@ import lombok.experimental.SuperBuilder;
  * Model for the response of the V3 Get Platform Certificates API.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

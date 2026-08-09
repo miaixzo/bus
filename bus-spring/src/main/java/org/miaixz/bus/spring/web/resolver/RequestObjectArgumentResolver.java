@@ -55,7 +55,6 @@ import org.miaixz.bus.spring.web.wrapper.CachedBodyRequestWrapper;
  * JSON body when the request content type is JSON, otherwise from query, form, and multipart values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RequestObjectArgumentResolver implements HandlerMethodArgumentResolver {
 

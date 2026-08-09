@@ -31,7 +31,6 @@ import org.miaixz.bus.shade.safety.algorithm.Key;
  * all encryption operations to the wrapped provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class WrappedEncryptorProvider implements EncryptorProvider {
 

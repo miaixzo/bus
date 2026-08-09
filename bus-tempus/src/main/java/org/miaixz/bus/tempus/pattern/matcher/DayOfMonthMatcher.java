@@ -29,7 +29,6 @@ import org.miaixz.bus.core.center.date.Month;
  * 'L' (last day of the month) token.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DayOfMonthMatcher extends BoolArrayMatcher {
 

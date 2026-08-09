@@ -32,7 +32,6 @@ import org.miaixz.bus.core.Version;
  * ImageIO reader SPI for native JPEG XL decoding.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NativeJXLImageReaderSpi extends ImageReaderSpi {
 

@@ -33,7 +33,6 @@ import org.miaixz.bus.health.unix.aix.driver.Lscfg;
  * Baseboard data obtained by lscfg
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class AixBaseboard extends AbstractBaseboard {

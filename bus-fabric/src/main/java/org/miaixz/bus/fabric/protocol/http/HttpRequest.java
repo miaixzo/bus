@@ -47,7 +47,6 @@ import org.miaixz.bus.fabric.protocol.http.cache.HttpCacheControl;
  * Immutable HTTP request snapshot.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpRequest {
 
@@ -393,7 +392,6 @@ public final class HttpRequest {
      * Builder for HTTP requests.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

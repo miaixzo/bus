@@ -27,7 +27,6 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * The Power Source is one or more batteries with some capacity, and some state of charge/discharge
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public interface PowerSource {
@@ -209,7 +208,6 @@ public interface PowerSource {
      * Units of Battery Capacity
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum CapacityUnits {
         /**

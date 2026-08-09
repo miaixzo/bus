@@ -31,7 +31,6 @@ import lombok.experimental.SuperBuilder;
  * Represents the notice or content of a message template.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
@@ -99,7 +98,6 @@ public class Notice {
      * Enumerates the types of content that can be sent.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Type {
         /**
@@ -129,7 +127,6 @@ public class Notice {
      * Enumerates the sending modes for messages.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Mode {
         /**

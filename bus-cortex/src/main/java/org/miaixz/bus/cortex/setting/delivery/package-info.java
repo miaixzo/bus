@@ -26,6 +26,5 @@
  * non-revisioned runtime overlay path backed by the shared cache.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.setting.delivery;

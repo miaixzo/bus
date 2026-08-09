@@ -39,7 +39,6 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
  * In-memory DNSSEC validation-result cache.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsValidationCache {
 
@@ -350,7 +349,6 @@ public final class DnsValidationCache {
      * Validation cache kind.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Kind {
 
@@ -389,7 +387,6 @@ public final class DnsValidationCache {
      * @param type        record type code
      * @param recordsHash records hash
      * @author Kimi Liu
-     * @since Java 21+
      */
     private record Key(Kind kind, String owner, int type, int recordsHash) {
 
@@ -415,7 +412,6 @@ public final class DnsValidationCache {
      *
      * @param expiresAt expiration time
      * @author Kimi Liu
-     * @since Java 21+
      */
     private record Entry(Instant expiresAt) {
 

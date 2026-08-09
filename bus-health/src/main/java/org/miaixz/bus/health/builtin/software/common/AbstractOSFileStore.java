@@ -26,7 +26,6 @@ import org.miaixz.bus.health.builtin.software.OSFileStore;
  * Common implementations for OSFileStore
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public abstract class AbstractOSFileStore implements OSFileStore {

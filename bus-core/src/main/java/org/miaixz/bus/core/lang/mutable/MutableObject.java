@@ -30,7 +30,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  *
  * @param <T> The type of the mutable object.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MutableObject<T> implements Mutable<T>, Serializable {
 

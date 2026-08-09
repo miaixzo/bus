@@ -23,7 +23,6 @@ package org.miaixz.bus.spring.web.resolver;
  * Immutable and deliberately non-configurable request-object binding limits.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RequestBindingOptions {
 

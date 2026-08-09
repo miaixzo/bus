@@ -28,7 +28,6 @@ import org.miaixz.bus.core.io.sink.Sink;
  * Streaming cache writer.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface CacheWriter extends AutoCloseable {
 

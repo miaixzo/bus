@@ -21,6 +21,5 @@
  * UID Dictionary from acuson_1_2_840_113680_1_0_7f10
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.acuson_1_2_840_113680_1_0_7f10;

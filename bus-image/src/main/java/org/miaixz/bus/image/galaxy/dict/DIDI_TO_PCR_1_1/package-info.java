@@ -21,6 +21,5 @@
  * UID Dictionary from DIDI_TO_PCR_1_1
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.DIDI_TO_PCR_1_1;

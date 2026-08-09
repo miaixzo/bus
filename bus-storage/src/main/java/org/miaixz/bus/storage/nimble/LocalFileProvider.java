@@ -49,7 +49,6 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * Local file storage service provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LocalFileProvider extends AbstractProvider {
 
@@ -101,13 +100,13 @@ public class LocalFileProvider extends AbstractProvider {
     public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
                         .build();
             }
 
             Path filePath = Paths.get(context.getRegion(), bucket, objectKey);
             if (!Files.isRegularFile(filePath)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
 
@@ -134,7 +133,7 @@ public class LocalFileProvider extends AbstractProvider {
                                     .extend(extend).build())
                     .build();
         } catch (Exception e) {
-            Errors error = e instanceof IllegalArgumentException ? ErrorCode._113008 : ErrorCode._113012;
+            Errors error = e instanceof IllegalArgumentException ? ErrorCode._113006 : ErrorCode._113010;
             Logger.error(
                     false,
                     "Storage",
@@ -184,13 +183,13 @@ public class LocalFileProvider extends AbstractProvider {
     public Message<Blob> streamKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
                         .build();
             }
 
             Path filePath = Paths.get(context.getRegion(), bucket, objectKey);
             if (!Files.isRegularFile(filePath)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
 
@@ -217,7 +216,7 @@ public class LocalFileProvider extends AbstractProvider {
                                     .type(Files.probeContentType(filePath)).extend(extend).build())
                     .build();
         } catch (Exception e) {
-            Errors error = e instanceof IllegalArgumentException ? ErrorCode._113008 : ErrorCode._113012;
+            Errors error = e instanceof IllegalArgumentException ? ErrorCode._113006 : ErrorCode._113010;
             Logger.error(
                     false,
                     "Storage",

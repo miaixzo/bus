@@ -24,6 +24,5 @@
  * enhance flexibility and convenience when working with key-value data structures.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.center.map;

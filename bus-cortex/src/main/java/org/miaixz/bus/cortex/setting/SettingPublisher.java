@@ -45,7 +45,6 @@ import org.miaixz.bus.logger.Logger;
  * Setting publisher responsible for current-state updates and item revision history.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SettingPublisher {
 

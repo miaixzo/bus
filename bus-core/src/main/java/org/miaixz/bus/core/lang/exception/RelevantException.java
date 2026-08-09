@@ -32,7 +32,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Represents an exception related to I/O operations or other relevant system issues.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

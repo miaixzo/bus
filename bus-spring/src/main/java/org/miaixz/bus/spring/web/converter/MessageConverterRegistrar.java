@@ -28,7 +28,6 @@ import org.springframework.http.converter.HttpMessageConverter;
  * Stateless contract for appending Bus-managed HTTP message converters.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface MessageConverterRegistrar extends Ordered {
 

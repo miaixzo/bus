@@ -21,6 +21,5 @@
  * Provides various strategies for CAPTCHA code generation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.extra.captcha.strategy;

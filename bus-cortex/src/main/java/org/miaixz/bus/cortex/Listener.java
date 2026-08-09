@@ -24,7 +24,6 @@ package org.miaixz.bus.cortex;
  *
  * @param <C> concrete change notification type
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface Listener<C extends Change<?>> {

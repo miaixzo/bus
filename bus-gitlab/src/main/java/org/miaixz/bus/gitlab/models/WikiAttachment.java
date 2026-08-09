@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The wiki attachment class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WikiAttachment implements Serializable {
 
@@ -39,7 +38,6 @@ public class WikiAttachment implements Serializable {
      * The link class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Link implements Serializable {
 

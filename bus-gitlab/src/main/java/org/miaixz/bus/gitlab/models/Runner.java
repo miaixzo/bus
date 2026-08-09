@@ -33,7 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The runner class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Runner implements Serializable {
 
@@ -175,7 +174,6 @@ public class Runner implements Serializable {
      * Enum to use for RunnersApi filtering on status.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum RunnerStatus {
 
@@ -238,7 +236,6 @@ public class Runner implements Serializable {
      * Enum to use for RunnersApi filtering on type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum RunnerType {
 

@@ -37,7 +37,6 @@ import org.miaixz.bus.shade.screw.process.ProcessConfig;
  * Main configuration class for the documentation generation process.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

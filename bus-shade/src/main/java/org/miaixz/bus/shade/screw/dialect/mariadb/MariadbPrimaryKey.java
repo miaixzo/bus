@@ -29,7 +29,6 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
  * MariaDB table primary key.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

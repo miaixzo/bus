@@ -31,7 +31,6 @@ import org.miaixz.bus.image.metric.pdu.CommonExtended;
  * Represents the RelatedSOPClasses type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RelatedSOPClasses {
 

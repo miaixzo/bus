@@ -43,7 +43,6 @@ import org.miaixz.bus.cortex.setting.item.ItemQuery;
  * Default consumer-facing curator implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DefaultCurator implements Curator {
 

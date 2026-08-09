@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The board list class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BoardList implements Serializable {
 

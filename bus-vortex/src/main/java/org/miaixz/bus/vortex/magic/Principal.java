@@ -37,7 +37,6 @@ import org.miaixz.bus.vortex.provider.AuthorizeProvider;
  * agnostic of the specific credential type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

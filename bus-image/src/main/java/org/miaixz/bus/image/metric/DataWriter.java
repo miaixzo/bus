@@ -27,7 +27,6 @@ import org.miaixz.bus.image.metric.net.PDVOutputStream;
  * Defines the DataWriter contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface DataWriter {
 

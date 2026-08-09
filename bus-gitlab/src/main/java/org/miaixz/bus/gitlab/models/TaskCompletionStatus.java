@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The task completion status class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TaskCompletionStatus implements Serializable {
 

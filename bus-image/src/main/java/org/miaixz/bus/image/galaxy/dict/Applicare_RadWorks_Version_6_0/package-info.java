@@ -21,6 +21,5 @@
  * UID Dictionary from Applicare_RadWorks_Version_6_0
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.Applicare_RadWorks_Version_6_0;

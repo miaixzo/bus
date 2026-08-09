@@ -28,7 +28,6 @@ import java.io.Serializable;
  * The accept merge request params class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AcceptMergeRequestParams implements Serializable {
 

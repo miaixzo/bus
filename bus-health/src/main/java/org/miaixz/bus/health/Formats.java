@@ -34,7 +34,6 @@ import org.miaixz.bus.core.xyz.ByteKit;
  * Formats units or converting between numeric types.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Formats {

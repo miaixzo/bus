@@ -25,7 +25,6 @@ import org.miaixz.bus.image.metric.DimseRQHandler;
  * Defines the ImageService contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ImageService extends DimseRQHandler {
 

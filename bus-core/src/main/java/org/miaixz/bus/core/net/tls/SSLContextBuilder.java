@@ -45,7 +45,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * {@link SSLContext#getSocketFactory()}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SSLContextBuilder implements Builder<SSLContext> {
 

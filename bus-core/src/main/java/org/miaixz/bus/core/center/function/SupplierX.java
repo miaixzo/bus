@@ -31,7 +31,6 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
  * @param <R> The type of results supplied by this supplier.
  * @see Supplier
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface SupplierX<R> extends Supplier<R>, Serializable {

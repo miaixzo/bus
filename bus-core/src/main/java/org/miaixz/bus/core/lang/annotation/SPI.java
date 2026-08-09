@@ -44,7 +44,6 @@ import org.miaixz.bus.core.lang.Normal;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

@@ -33,7 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The award emoji class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AwardEmoji implements Serializable {
 
@@ -203,7 +202,6 @@ public class AwardEmoji implements Serializable {
      * The awardable type enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum AwardableType {
 

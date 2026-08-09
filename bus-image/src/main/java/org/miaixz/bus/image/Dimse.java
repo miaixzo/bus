@@ -28,7 +28,6 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  * attribute tags.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Dimse {
 

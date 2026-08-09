@@ -51,7 +51,6 @@ import org.miaixz.bus.logger.Logger;
  * Provides access to kstat information on Solaris
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class KstatKit {
@@ -283,7 +282,6 @@ public final class KstatKit {
      * lock and allows another instance to be instantiated.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class KstatChain implements AutoCloseable {
 

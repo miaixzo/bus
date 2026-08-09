@@ -55,7 +55,6 @@ import org.miaixz.bus.logger.Logger;
  * families, all of which are developed and marketed by Microsoft.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class WindowsOperatingSystem extends AbstractOperatingSystem {

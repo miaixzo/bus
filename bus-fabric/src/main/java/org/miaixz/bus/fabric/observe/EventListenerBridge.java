@@ -32,7 +32,6 @@ import org.miaixz.bus.fabric.observe.event.FabricEvent;
  * Bridges current fabric observer events to named listener callbacks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class EventListenerBridge implements EventObserver {
 

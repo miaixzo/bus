@@ -32,7 +32,6 @@ import org.miaixz.bus.starter.tempus.TempusConfiguration;
  * the value assigned to {@code bus.tempus.enabled}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

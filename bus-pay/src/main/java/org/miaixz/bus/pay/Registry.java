@@ -31,7 +31,6 @@ import org.miaixz.bus.pay.nimble.wechat.WechatPayProvider;
  * Represents the types of payment platforms.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Registry implements Complex {
 
@@ -253,7 +252,6 @@ public enum Registry implements Complex {
          * Wechat Pay API URLs for different regions.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         enum R {
 

@@ -26,7 +26,6 @@ import java.net.SocketAddress;
  * Defines the Listener contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Listener extends Closeable {
 

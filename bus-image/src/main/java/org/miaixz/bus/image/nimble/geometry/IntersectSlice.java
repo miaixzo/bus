@@ -26,7 +26,6 @@ import java.util.List;
  * Projects a source slice intersection onto a localizer slice.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IntersectSlice extends LocalizerPoster {
 

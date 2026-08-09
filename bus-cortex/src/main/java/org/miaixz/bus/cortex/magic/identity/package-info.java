@@ -31,6 +31,5 @@
  * network coordinates directly.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.magic.identity;

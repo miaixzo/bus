@@ -40,7 +40,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * @param <R> the type of the root object
  * @param <T> the annotation type
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GenericSynthesizedAnnotation<R, T extends Annotation> implements SynthesizedAnnotation {
 

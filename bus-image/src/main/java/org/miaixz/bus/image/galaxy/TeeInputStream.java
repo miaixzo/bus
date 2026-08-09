@@ -28,7 +28,6 @@ import java.io.OutputStream;
  * Represents the TeeInputStream type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TeeInputStream extends FilterInputStream {
 

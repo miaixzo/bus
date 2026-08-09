@@ -30,7 +30,6 @@ import org.miaixz.bus.spring.boot.startup.SpringStartupSummary.Stage;
  * Collects Spring lifecycle stages and creates the completed startup summary.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class SpringStartupCollector {
 

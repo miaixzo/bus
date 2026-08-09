@@ -32,7 +32,6 @@ import java.lang.annotation.*;
  * annotation will have that annotation inherited by its subclasses.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

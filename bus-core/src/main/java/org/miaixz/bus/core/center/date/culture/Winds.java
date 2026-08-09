@@ -24,7 +24,6 @@ package org.miaixz.bus.core.center.date.culture;
  * manage a cyclical list of these entities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Winds extends Samsara {
 

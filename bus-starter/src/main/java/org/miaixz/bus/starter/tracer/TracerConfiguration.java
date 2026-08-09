@@ -37,7 +37,6 @@ import org.miaixz.bus.tracer.Tracer;
  * as the entry point for setting up tracing-related beans.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(value = { TracerProperties.class })
 @Configuration(proxyBeanMethods = false)

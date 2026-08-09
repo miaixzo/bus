@@ -31,7 +31,6 @@ import org.miaixz.bus.pay.magic.Voucher;
  * Model for the Get RSA Public Key API.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

@@ -48,7 +48,6 @@ import org.miaixz.bus.logger.Logger;
  * OSProcess implementation
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class FreeBsdOSProcess extends AbstractOSProcess {
@@ -807,14 +806,10 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         return ProcLimits.queryOpenFileLimit(processId, index);
     }
 
-    /*
-     * Package-private for use by FreeBsdOSThread
-     */
     /**
      * The PsThreadColumns enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum PsThreadColumns {
         TDNAME, LWP, STATE, ETIMES, SYSTIME, TIME, TDADDR, NIVCSW, NVCSW, MAJFLT, MINFLT, PRI

@@ -21,6 +21,5 @@
  * Provides integration for Kujiale related authentication.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.auth.nimble.kujiale;

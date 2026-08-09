@@ -39,7 +39,6 @@ import org.miaixz.bus.core.xyz.NetKit;
  * @param ttl        non-negative DNS TTL or {@link Duration#ZERO} when unavailable
  * @param duration   non-negative backend lookup duration
  * @author Kimi Liu
- * @since Java 21+
  */
 public record DnsResult(String host, List<InetAddress> addresses, Instant resolvedAt, Duration ttl, Duration duration) {
 

@@ -31,7 +31,6 @@ import org.miaixz.bus.logger.Logger;
  * Shared cache backend factory used by both the cache starter and downstream modules.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Factory {
 
@@ -351,7 +350,6 @@ public class Factory {
      * @param maximumSize mirror capacity
      * @param expireMs    mirror TTL
      * @author Kimi Liu
-     * @since Java 21+
      */
     private record Backend(CacheX<String, Object> cache, boolean scan, boolean counter, boolean mirror,
             long maximumSize, long expireMs) {

@@ -30,7 +30,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * Base implementation of {@link AnnotationAttribute} with value caching support.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CacheableAnnotationAttribute implements AnnotationAttribute {
 

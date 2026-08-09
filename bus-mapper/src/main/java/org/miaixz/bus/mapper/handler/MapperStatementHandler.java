@@ -31,7 +31,6 @@ import org.apache.ibatis.session.Configuration;
  * Manipulates MyBatis {@link org.apache.ibatis.executor.statement.StatementHandler} objects.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MapperStatementHandler {
 

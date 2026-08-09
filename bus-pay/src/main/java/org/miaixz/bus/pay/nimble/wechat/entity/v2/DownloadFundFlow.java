@@ -31,7 +31,6 @@ import org.miaixz.bus.pay.magic.Voucher;
  * Download Fund Flow model.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

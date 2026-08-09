@@ -40,7 +40,6 @@ import org.miaixz.bus.core.lang.mutable.MutableObject;
  * Regular expression class. For common regex patterns, see {@link Validator}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PatternKit extends RegexValidator {
 

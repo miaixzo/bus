@@ -36,7 +36,6 @@ import org.apache.ibatis.reflection.TypeParameterResolver;
  * Spring and can therefore be reused by any mapper runtime integration that already has a mapper interface and method.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class MapperMethodTypeResolver {
 

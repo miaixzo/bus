@@ -27,7 +27,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * <a href="https://github.com/venshine/CheckPasswordStrength">https://github.com/venshine/CheckPasswordStrength</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Strength {
 
@@ -299,7 +298,6 @@ public class Strength {
      * Password strength level enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PASSWD_LEVEL {
         /**
@@ -329,7 +327,6 @@ public class Strength {
      * Character type enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum CHAR_TYPE {
         /**

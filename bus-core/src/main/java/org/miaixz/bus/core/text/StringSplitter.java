@@ -44,7 +44,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StringSplitter extends ComputeIterator<String> implements Serializable {
 
@@ -144,7 +143,7 @@ public class StringSplitter extends ComputeIterator<String> implements Serializa
             result = text.substring(offset, start);
             offset = finder.end(start);
         } while (ignoreEmpty && result.isEmpty()); // Continue searching if the result is empty and we are ignoring
-                                                   // empty strings.
+        // empty strings.
 
         count++;
         return result;

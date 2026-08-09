@@ -79,7 +79,6 @@ import org.miaixz.bus.core.xyz.*;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CharsBacker extends CharsValidator {
 
@@ -1706,7 +1705,7 @@ public class CharsBacker extends CharsValidator {
      *     0   1   2   3   4
      *       A   B   C   D
      * </pre>
-     *
+     * <p>
      * When {@code fromIndex} is negative, it refers to a reverse insertion point, where -1 is the position before the
      * last character:
      *

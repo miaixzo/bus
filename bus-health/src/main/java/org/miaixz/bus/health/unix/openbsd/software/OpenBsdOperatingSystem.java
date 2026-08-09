@@ -40,7 +40,6 @@ import org.miaixz.bus.logger.Logger;
  * which was based on Research Unix.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
@@ -365,7 +364,6 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
      * Package-private for use by OpenBsdOSProcess
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum PsKeywords {
         STATE, PID, PPID, USER, UID, GROUP, GID, PRI, VSZ, RSS, ETIME, CPUTIME, COMM, MAJFLT, MINFLT, NVCSW, NIVCSW,

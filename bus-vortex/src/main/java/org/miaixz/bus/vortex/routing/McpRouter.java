@@ -34,7 +34,6 @@ import reactor.core.publisher.Mono;
  * parameters: {@code Router<ServerRequest, ServerResponse>}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class McpRouter implements Router<ServerRequest, ServerResponse> {
 

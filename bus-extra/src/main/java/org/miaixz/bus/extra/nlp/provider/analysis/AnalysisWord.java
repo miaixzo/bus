@@ -33,7 +33,6 @@ import org.miaixz.bus.extra.nlp.NLPWord;
  * interface, providing a unified way to access segmented word information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AnalysisWord implements NLPWord {
 

@@ -28,6 +28,5 @@
  * {@code false}; the property controls activation only when the annotation is absent.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.starter.annotation;

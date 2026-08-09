@@ -23,7 +23,6 @@ package org.miaixz.bus.pay.nimble.wechat;
  * WeChat Pay v3 interface authorization and authentication types.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum AuthType {
 

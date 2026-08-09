@@ -41,7 +41,6 @@ import org.miaixz.bus.health.builtin.software.common.AbstractFileSystem;
  * system or other implementation specific means of file storage.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class AixFileSystem extends AbstractFileSystem {
@@ -82,7 +81,6 @@ public class AixFileSystem extends AbstractFileSystem {
      */
     private static final java.util.regex.Pattern FS_PATTERN = java.util.regex.Pattern.compile("^(?:[\\w.]+:)?/");
 
-    // Called by AixOSFileStore
     /**
      * Returns the file store matching.
      *
@@ -122,7 +120,7 @@ public class AixFileSystem extends AbstractFileSystem {
              * /dev/hd10opt    16777216   600058    17220
              * /dev/livedump     524288    58200        4
              * NFS mounts appear as hostname:/path or ip:/path and are matched by FS_PATTERN
-            */
+             */
             if (FS_PATTERN.matcher(line).find()) {
                 String[] split = Pattern.SPACES_PATTERN.split(line);
                 if (split.length >= 4) {

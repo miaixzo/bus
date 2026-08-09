@@ -50,7 +50,6 @@ import tools.jackson.databind.ser.std.SimpleFilterProvider;
  * JSON serialization and deserialization functionalities using Jackson's {@link ObjectMapper}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JacksonProvider extends AbstractJsonProvider {
 

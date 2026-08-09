@@ -31,7 +31,6 @@ import lombok.experimental.SuperBuilder;
  * Represents tenant information used for multi-tenant isolation and ownership identification.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

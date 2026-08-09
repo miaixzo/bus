@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * containerized environment.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public interface CgroupInfo {

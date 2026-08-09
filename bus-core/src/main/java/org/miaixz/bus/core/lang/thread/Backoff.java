@@ -30,7 +30,6 @@ import java.time.Duration;
  * @author Kimi Liu
  * @see FixedBackoff
  * @see ExponentialBackoff
- * @since Java 21+
  */
 @FunctionalInterface
 public interface Backoff {

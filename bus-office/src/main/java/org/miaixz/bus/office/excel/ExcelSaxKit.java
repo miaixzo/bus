@@ -58,7 +58,6 @@ import org.miaixz.bus.office.excel.sax.handler.RowHandler;
  * Reads Excel workbooks through SAX events.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ExcelSaxKit {
 

@@ -32,7 +32,6 @@ import org.miaixz.bus.fabric.network.Destination;
  * or duplicate HTTP/2 stream accounting.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class MultiplexCapacity {
 

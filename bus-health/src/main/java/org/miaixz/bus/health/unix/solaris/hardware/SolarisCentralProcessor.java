@@ -42,7 +42,6 @@ import org.miaixz.bus.health.unix.solaris.software.SolarisOperatingSystem;
  * A CPU
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class SolarisCentralProcessor extends AbstractCentralProcessor {

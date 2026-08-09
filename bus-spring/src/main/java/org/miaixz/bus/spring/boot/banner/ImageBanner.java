@@ -40,7 +40,6 @@ import org.miaixz.bus.logger.Logger;
  * luminance and color distance calculations to map image pixels to ASCII characters and ANSI colors.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageBanner {
 

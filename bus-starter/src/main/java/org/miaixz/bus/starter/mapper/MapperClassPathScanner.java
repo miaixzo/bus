@@ -60,7 +60,6 @@ import org.miaixz.bus.logger.Logger;
  * a specific marker interface. If no annotation or marker interface is specified, it will scan for all interfaces.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MapperClassPathScanner extends ClassPathBeanDefinitionScanner {
 

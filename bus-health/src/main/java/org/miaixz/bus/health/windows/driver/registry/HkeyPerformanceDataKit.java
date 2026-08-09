@@ -37,7 +37,6 @@ import org.miaixz.bus.logger.Logger;
  * Reads HKEY_PERFORMANCE_DATA information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class HkeyPerformanceDataKit {

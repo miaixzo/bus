@@ -38,7 +38,6 @@ import reactor.core.publisher.Mono;
  * HTTP 503 and a short retry hint.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Ordered.HIGHEST_PRECEDENCE)
 public final class AdmissionFilter extends AbstractFilter {

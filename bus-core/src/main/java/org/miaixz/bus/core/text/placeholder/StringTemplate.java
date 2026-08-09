@@ -45,7 +45,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * (extracting values from a formatted string).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class StringTemplate {
 
@@ -634,7 +633,6 @@ public abstract class StringTemplate {
      * Features for controlling formatting and parsing behavior.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Feature {
 
@@ -794,7 +792,6 @@ public abstract class StringTemplate {
      * @param <B> The type of the concrete builder subclass.
      * @param <T> The type of the concrete template subclass.
      * @author Kimi Liu
-     * @since Java 21+
      */
     protected static abstract class AbstractBuilder<B extends AbstractBuilder<B, T>, T extends StringTemplate> {
 

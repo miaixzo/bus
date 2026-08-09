@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * with CSS.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CellBorderStyle implements Serializable {
 

@@ -26,7 +26,6 @@ import java.io.Serializable;
  * The markdown request class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MarkdownRequest implements Serializable {
 

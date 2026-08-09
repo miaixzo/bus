@@ -35,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
  * Project homepage: <a href="https://github.com/chenlb/mmseg4j-core">https://github.com/chenlb/mmseg4j-core</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MmsegProvider implements NLPProvider {
 

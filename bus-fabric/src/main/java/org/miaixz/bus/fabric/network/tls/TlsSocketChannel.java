@@ -53,7 +53,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * Blocking {@link SSLSocket} conduit used by the built-in HTTP socket connector.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class TlsSocketChannel implements Conduit {
 

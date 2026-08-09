@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * tables and configurations for encoding.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Soundex implements FuzzyString {
 

@@ -31,7 +31,6 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
  * after the factory has been initialized.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DialectBinding implements BeanPostProcessor {
 

@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  *
  * @param <T> the changed value type
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

@@ -34,7 +34,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
  * The iteration class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Iteration implements Serializable {
 
@@ -60,7 +59,6 @@ public class Iteration implements Serializable {
      * The iteration state enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum IterationState {
 

@@ -31,7 +31,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * Queries WMI class {@code Win32_Printer}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Win32Printer {
@@ -45,7 +44,6 @@ public final class Win32Printer {
      * Printer properties from WMI
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PrinterProperty {
         /**

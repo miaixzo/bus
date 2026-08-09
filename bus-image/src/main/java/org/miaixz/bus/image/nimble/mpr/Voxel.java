@@ -26,7 +26,6 @@ import java.util.Arrays;
  *
  * @param <T> numeric sample type
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Voxel<T extends Number> {
 

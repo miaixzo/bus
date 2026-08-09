@@ -28,7 +28,6 @@ import org.miaixz.bus.image.galaxy.data.BulkData;
  * to abstract the creation process of bulk data, allowing for different strategies to handle large data elements.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface BulkDataCreator {

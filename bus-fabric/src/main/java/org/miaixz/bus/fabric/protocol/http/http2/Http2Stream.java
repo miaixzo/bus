@@ -42,7 +42,6 @@ import org.miaixz.bus.fabric.Payload;
  * Single-reader/single-consumer state view for one HTTP/2 stream.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Http2Stream implements AutoCloseable {
 

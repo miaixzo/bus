@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Parses multipart headers with continuation-line support.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class MultipartHeaderParser {
 

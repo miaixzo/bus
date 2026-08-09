@@ -48,7 +48,6 @@ import org.miaixz.bus.logger.Logger;
  * implementations handled by subclasses.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractProvider extends FabricX implements Provider {
 
@@ -105,7 +104,7 @@ public abstract class AbstractProvider extends FabricX implements Provider {
                     getClass().getSimpleName(),
                     complex == null ? null : complex.getName(),
                     "unsupportedConfiguration");
-            throw new AuthorizedException(ErrorCode._110002);
+            throw new AuthorizedException(ErrorCode._100100);
         }
         // Validate configuration
         this.validate(this.context);

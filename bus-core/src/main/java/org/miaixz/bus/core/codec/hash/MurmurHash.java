@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.ByteKit;
  * https://code.google.com/p/smhasher/source/browse/trunk/MurmurHash3.cpp#255
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MurmurHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]> {
 

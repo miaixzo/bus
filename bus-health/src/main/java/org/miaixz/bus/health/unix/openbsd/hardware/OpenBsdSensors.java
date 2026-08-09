@@ -31,7 +31,6 @@ import org.miaixz.bus.health.unix.bsd.Systat;
  * Sensors
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class OpenBsdSensors extends AbstractSensors {

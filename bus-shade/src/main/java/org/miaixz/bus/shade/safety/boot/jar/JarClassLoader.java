@@ -39,7 +39,6 @@ import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
  * loading to apply decryption using provided {@link DecryptorProvider} and {@link Key}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JarClassLoader extends URLClassLoader {
 
@@ -174,7 +173,6 @@ public class JarClassLoader extends URLClassLoader {
      * An internal enumeration wrapper that applies the custom {@link JarURLHandler} to each URL.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private class XJarEnumeration implements Enumeration<URL> {
 

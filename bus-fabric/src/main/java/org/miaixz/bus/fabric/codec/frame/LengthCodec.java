@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * Length-based frame codec for binary protocols that prefix payloads with a length value.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class LengthCodec implements FrameCodec {
 

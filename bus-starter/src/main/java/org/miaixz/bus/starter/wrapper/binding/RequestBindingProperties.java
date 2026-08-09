@@ -33,7 +33,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Explicit RequestObject binding activation properties.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

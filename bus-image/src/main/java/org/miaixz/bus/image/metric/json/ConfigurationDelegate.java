@@ -26,7 +26,6 @@ import org.miaixz.bus.image.Device;
  * Defines the ConfigurationDelegate contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ConfigurationDelegate {
 

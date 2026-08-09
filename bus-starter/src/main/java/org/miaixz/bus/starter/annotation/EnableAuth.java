@@ -32,7 +32,6 @@ import org.miaixz.bus.starter.auth.AuthConfiguration;
  * in turn sets up all the necessary beans for the third-party authentication and authorization module.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

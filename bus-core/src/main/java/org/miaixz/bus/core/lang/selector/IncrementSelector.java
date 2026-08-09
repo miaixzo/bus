@@ -27,7 +27,6 @@ import java.util.ArrayList;
  *
  * @param <T> the type of the elements
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IncrementSelector<T> extends ArrayList<T> implements Selector<T> {
 

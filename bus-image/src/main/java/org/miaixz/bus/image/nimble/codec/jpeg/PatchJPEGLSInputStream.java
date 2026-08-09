@@ -36,7 +36,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the PatchJPEGLSInputStream type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PatchJPEGLSInputStream extends ImageInputStreamImpl implements BytesWithImageImageDescriptor {
 

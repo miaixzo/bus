@@ -23,6 +23,5 @@
  * met via the {@link org.miaixz.bus.tempus.crontab.Crontab#execute()} method.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.tempus.timings;

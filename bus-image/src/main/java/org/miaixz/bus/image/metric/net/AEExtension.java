@@ -26,7 +26,6 @@ import java.io.Serializable;
  * Represents the AEExtension type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AEExtension implements Serializable {
 

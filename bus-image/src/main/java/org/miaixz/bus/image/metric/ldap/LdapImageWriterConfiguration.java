@@ -44,7 +44,6 @@ import org.miaixz.bus.image.nimble.extend.ImageWriterExtension;
  * Represents the LdapImageWriterConfiguration type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LdapImageWriterConfiguration extends LdapDicomConfigurationExtension {
 

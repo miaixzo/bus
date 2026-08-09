@@ -33,7 +33,6 @@ import org.miaixz.bus.logger.Logger;
  * Temporal integrations should use {@link JsonPayloadConverter} directly.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractPayloadConverter implements PayloadConverter {
 

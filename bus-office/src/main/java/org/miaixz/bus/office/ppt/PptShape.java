@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * PowerPoint slide.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PptShape {
 
@@ -320,7 +319,6 @@ public class PptShape {
      * Shape type enumeration.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Type {
         /**
@@ -355,7 +353,6 @@ public class PptShape {
      * metadata.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Data {
 

@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The search blob class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SearchBlob implements Serializable {
 

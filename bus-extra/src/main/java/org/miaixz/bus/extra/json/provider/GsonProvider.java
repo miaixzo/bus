@@ -38,7 +38,6 @@ import org.miaixz.bus.extra.json.JsonWriteOptions;
  * JSON serialization and deserialization functionalities using Gson.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GsonProvider extends AbstractJsonProvider {
 

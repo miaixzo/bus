@@ -33,7 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The environment class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Environment implements Serializable {
 
@@ -213,7 +212,6 @@ public class Environment implements Serializable {
      * The environment state enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum EnvironmentState {
 

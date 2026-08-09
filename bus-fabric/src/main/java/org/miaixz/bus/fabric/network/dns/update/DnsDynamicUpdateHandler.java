@@ -42,7 +42,6 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsZone;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsDynamicUpdateHandler {
 
@@ -139,7 +138,6 @@ public final class DnsDynamicUpdateHandler {
     /**
      * Snapshot installation operation invoked after an update sink accepts a replacement snapshot.
      *
-     * @since Java 21+
      */
     @FunctionalInterface
     public interface SnapshotInstaller {

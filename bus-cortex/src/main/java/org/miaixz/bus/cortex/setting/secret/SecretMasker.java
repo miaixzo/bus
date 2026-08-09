@@ -29,7 +29,6 @@ import org.miaixz.bus.cortex.setting.item.revision.ItemRevision;
  * Masks sensitive setting values for management views and audit-safe output.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SecretMasker {
 

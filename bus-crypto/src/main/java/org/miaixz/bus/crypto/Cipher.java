@@ -42,7 +42,6 @@ import org.miaixz.bus.core.lang.Algorithm;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Cipher {
 
@@ -146,7 +145,6 @@ public interface Cipher {
      * settings.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     interface Parameters {
 

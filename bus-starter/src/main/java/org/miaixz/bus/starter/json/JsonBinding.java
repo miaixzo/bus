@@ -29,7 +29,6 @@ import org.miaixz.bus.extra.json.JsonProvider;
  * {@code JsonKit} and shared Spring request infrastructure.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JsonBinding implements AutoCloseable {
 

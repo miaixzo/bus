@@ -23,7 +23,6 @@ package org.miaixz.bus.fabric;
  * Protocol-neutral message filter applied by HTTP, socket, WebSocket, SSE, and STOMP exchanges.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Filter {
 
@@ -40,7 +39,6 @@ public interface Filter {
      * Downstream filter chain contract.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     interface Chain {
 

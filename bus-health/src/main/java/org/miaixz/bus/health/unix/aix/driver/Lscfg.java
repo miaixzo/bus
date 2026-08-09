@@ -32,7 +32,6 @@ import org.miaixz.bus.health.Parsing;
  * Queries lscfg
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Lscfg {

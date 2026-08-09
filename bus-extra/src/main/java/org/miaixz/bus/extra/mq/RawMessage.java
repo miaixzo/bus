@@ -25,7 +25,6 @@ package org.miaixz.bus.extra.mq;
  * @param topic   the message topic
  * @param content the message content
  * @author Kimi Liu
- * @since Java 21+
  */
 public record RawMessage(String topic, byte[] content) implements Message {
 

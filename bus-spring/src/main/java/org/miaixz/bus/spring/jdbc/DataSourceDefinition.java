@@ -28,7 +28,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Defines one named datasource after compatible property binding.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DataSourceDefinition {
 

@@ -28,7 +28,6 @@ import org.miaixz.bus.logger.Logger;
  * Manages stdio MCP sub-processes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class McpProcessManager {
 

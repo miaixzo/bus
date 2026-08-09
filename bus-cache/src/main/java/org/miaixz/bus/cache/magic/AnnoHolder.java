@@ -32,7 +32,6 @@ import org.miaixz.bus.cache.magic.annotation.CacheKey;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AnnoHolder {
 
@@ -169,7 +168,6 @@ public class AnnoHolder {
      * A builder for creating {@link AnnoHolder} instances using a fluent API.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Builder {
 

@@ -30,7 +30,6 @@ import org.miaixz.bus.validate.magic.annotation.Email;
  * Validator for email addresses.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EmailMatcher implements Matcher<Object, Email> {
 

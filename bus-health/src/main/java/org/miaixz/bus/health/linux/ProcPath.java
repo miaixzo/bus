@@ -33,7 +33,6 @@ import org.miaixz.bus.health.Builder;
  * initializing this class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class ProcPath {

@@ -29,7 +29,6 @@ import org.miaixz.bus.starter.mongo.MongoConfiguration;
  * Enables Mongo customizers regardless of the value assigned to {@code bus.mongo.enabled}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

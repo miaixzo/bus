@@ -32,7 +32,6 @@ import org.miaixz.bus.logger.Logger;
  * Shared cancellation scope for one logical operation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Cancellation {
 

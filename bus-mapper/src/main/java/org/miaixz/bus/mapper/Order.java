@@ -66,7 +66,6 @@ import org.miaixz.bus.core.lang.Normal;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Order extends org.miaixz.bus.core.Order {
 
@@ -215,7 +214,6 @@ public interface Order extends org.miaixz.bus.core.Order {
      * Simple implementation of the Order interface that provides complete sorting capabilities.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     class SimpleOrder implements Order, Serializable {

@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.dict.AMI_Sequence_Annotations_01;
  * Represents the PrivateTag type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PrivateTag {
 

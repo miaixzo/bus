@@ -28,7 +28,6 @@ import org.miaixz.bus.extra.captcha.provider.ShearProvider;
  * Generates graphic CAPTCHA images.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CaptchaBuilder {
 

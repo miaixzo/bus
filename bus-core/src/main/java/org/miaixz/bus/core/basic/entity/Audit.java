@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.annotation.Logical;
  * Base entity carrying logical status and audit metadata.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

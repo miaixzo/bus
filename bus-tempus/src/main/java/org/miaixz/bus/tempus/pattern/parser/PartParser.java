@@ -50,7 +50,6 @@ import org.miaixz.bus.tempus.pattern.matcher.*;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PartParser {
 

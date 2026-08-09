@@ -41,7 +41,6 @@ import tools.jackson.databind.node.ObjectNode;
  * The todo class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Todo implements Serializable {
 
@@ -323,7 +322,6 @@ public class Todo implements Serializable {
      * The target deserializer class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class TargetDeserializer extends ValueDeserializer<Object> {
 

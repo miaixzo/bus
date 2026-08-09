@@ -28,7 +28,6 @@ import org.miaixz.bus.mapper.OGNL;
  * {@code @jakarta.persistence.Table} annotation or POJOs without any annotations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SchemaClassParser extends SchemaTypeParser {
 

@@ -40,7 +40,6 @@ import org.miaixz.bus.logger.Logger;
  * Sentinel to enforce flow control, hotspot protection, and fallback mechanisms based on configured rules.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Sentinel {
 

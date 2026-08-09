@@ -29,7 +29,6 @@ import org.miaixz.bus.image.nimble.opencv.PlanarImage;
  * Maximum, minimum and mean intensity projections for image stacks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum MipProjection {
 

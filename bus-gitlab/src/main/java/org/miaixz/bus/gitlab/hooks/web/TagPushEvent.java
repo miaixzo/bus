@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The tag push event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TagPushEvent extends AbstractPushEvent implements Event {
 

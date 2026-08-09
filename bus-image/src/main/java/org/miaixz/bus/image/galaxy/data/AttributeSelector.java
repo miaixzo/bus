@@ -32,7 +32,6 @@ import org.miaixz.bus.image.Tag;
  * sequences.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AttributeSelector implements Serializable {
 

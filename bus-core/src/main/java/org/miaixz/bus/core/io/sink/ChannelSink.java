@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * A {@link Sink} implementation that writes {@link Buffer} segments to a {@link WritableByteChannel}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ChannelSink implements Sink {
 

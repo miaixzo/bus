@@ -34,7 +34,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * object along with its character encoding, offering additional methods related to file properties.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FileWrapper implements Wrapper<File>, Serializable {
 

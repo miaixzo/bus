@@ -33,7 +33,6 @@ import java.lang.annotation.*;
  * environment-specific rules.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

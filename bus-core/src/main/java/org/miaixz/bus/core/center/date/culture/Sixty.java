@@ -25,7 +25,6 @@ package org.miaixz.bus.core.center.date.culture;
  * a cyclical list of these entities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Sixty extends Samsara {
 

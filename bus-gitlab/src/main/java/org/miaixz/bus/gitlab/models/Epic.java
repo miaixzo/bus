@@ -30,7 +30,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
  * The epic class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Epic extends AbstractEpic<Epic> {
 

@@ -30,7 +30,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The metadata class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Metadata implements Serializable {
 
@@ -137,7 +136,6 @@ public class Metadata implements Serializable {
      * The kas class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Kas {
 

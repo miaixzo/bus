@@ -53,7 +53,6 @@ import org.miaixz.bus.sensitive.magic.annotation.Sensitive;
  * methods or classes annotated with {@link Sensitive} to perform data encryption and desensitization.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SensitiveResponseBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice<Object> {

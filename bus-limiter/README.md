@@ -8,7 +8,9 @@
 
 ## 📖 Project Introduction
 
-**Bus Limiter** is a lightweight, localized hotspot detection and degradation framework designed for high-traffic scenarios. It effortlessly solves ultra-high concurrency query issues in business applications. Integration is extremely simple - get started in just 10 seconds!
+**Bus Limiter** is a lightweight, localized hotspot detection and degradation framework designed for high-traffic
+scenarios. It effortlessly solves ultra-high concurrency query issues in business applications. Integration is extremely
+simple - get started in just 10 seconds!
 
 -----
 
@@ -32,12 +34,12 @@
 
 ### ⚡ Key Benefits
 
-| Feature | Performance Gain | Description |
-|:---|:---|:---|
-| **Hotspot Detection** | $\text{Load } \downarrow 90\%$ | Identifies and caches frequently accessed data |
-| **Automatic Degradation** | $\text{Stability } \uparrow$ | Prevents system overload during traffic spikes |
-| **Zero Configuration** | $\text{Setup Time } 10\text{s}$ | Add annotations and start using immediately |
-| **Smart Recovery** | $\text{Auto-Heal}$ | Automatically returns to normal when traffic decreases |
+| Feature                   | Performance Gain                | Description                                            |
+|:--------------------------|:--------------------------------|:-------------------------------------------------------|
+| **Hotspot Detection**     | $\text{Load } \downarrow 90\%$  | Identifies and caches frequently accessed data         |
+| **Automatic Degradation** | $\text{Stability } \uparrow$    | Prevents system overload during traffic spikes         |
+| **Zero Configuration**    | $\text{Setup Time } 10\text{s}$ | Add annotations and start using immediately            |
+| **Smart Recovery**        | $\text{Auto-Heal}$              | Automatically returns to normal when traffic decreases |
 
 -----
 
@@ -55,7 +57,8 @@
 
 ### Basic Requirements
 
-**Important**: Only applicable to Spring Boot and Spring environments. All classes annotated with `@Hotspot` or `@Downgrade` must be registered in the Spring context.
+**Important**: Only applicable to Spring Boot and Spring environments. All classes annotated with `@Hotspot` or
+`@Downgrade` must be registered in the Spring context.
 
 -----
 
@@ -63,13 +66,17 @@
 
 ### Use Case 1: Hotspot Detection
 
-Add the `@Hotspot` annotation to any method to enable automatic hotspot detection and response with cached data during hot periods. After the hotspot period ends, it automatically returns to normal business logic.
+Add the `@Hotspot` annotation to any method to enable automatic hotspot detection and response with cached data during
+hot periods. After the hotspot period ends, it automatically returns to normal business logic.
 
 #### Real-World Example
 
-For a product query business, when a `tid` is provided, it returns product information. When a product goes on promotion, access volume increases significantly. However, for the same `tid`, the returned information remains consistent within a short time window.
+For a product query business, when a `tid` is provided, it returns product information. When a product goes on
+promotion, access volume increases significantly. However, for the same `tid`, the returned information remains
+consistent within a short time window.
 
 The framework can:
+
 1. Automatically identify this `tid` as a hotspot within a short time
 2. Cache the result to reduce downstream pressure
 3. Automatically remove the hotspot when traffic decreases
@@ -79,7 +86,9 @@ This is essentially real-time hotspot monitoring with short-term caching of hots
 
 #### QPS-Based Hotspot Detection
 
-The following example demonstrates: When the same `tid` is called more than 50 times within 5 seconds, it automatically becomes a hotspot and returns the last cached value. When calls drop below 50 times within 5 seconds, the framework automatically removes the hotspot and returns to normal code execution. All of this is automatic.
+The following example demonstrates: When the same `tid` is called more than 50 times within 5 seconds, it automatically
+becomes a hotspot and returns the last cached value. When calls drop below 50 times within 5 seconds, the framework
+automatically removes the hotspot and returns to normal code execution. All of this is automatic.
 
 ```java
 @Hotspot(grade = FlowGrade.FLOW_GRADE_QPS, count = 50, duration = 5)
@@ -89,6 +98,7 @@ public Object get(String tid) {
 ```
 
 **Parameters**:
+
 - `grade`: FlowGrade.FLOW_GRADE_QPS - Uses QPS (queries per second) as the measurement dimension
 - `count`: 50 - Threshold value (50 QPS)
 - `duration`: 5 - Time window in seconds (5 seconds)
@@ -104,7 +114,8 @@ public Object get(String tid) {
 }
 ```
 
-This means: If a specific `tid` has more than 50 threads running simultaneously within 5 seconds, it becomes a hotspot and returns cached data directly.
+This means: If a specific `tid` has more than 50 threads running simultaneously within 5 seconds, it becomes a hotspot
+and returns cached data directly.
 
 -----
 
@@ -114,7 +125,9 @@ Add the `@Downgrade` annotation to any method to enable automatic degradation fu
 
 #### Real-World Example
 
-A method needs to call an external interface with poor performance and high latency. When concurrency increases, the thread pool fills up, the thread pool queue gradually accumulates, causing timeouts or dropped requests, potentially bringing down the entire system.
+A method needs to call an external interface with poor performance and high latency. When concurrency increases, the
+thread pool fills up, the thread pool queue gradually accumulates, causing timeouts or dropped requests, potentially
+bringing down the entire system.
 
 By adding the `@Downgrade` annotation, this issue can be resolved:
 
@@ -130,18 +143,21 @@ public String getFallback(String name) {
 ```
 
 **How it works**:
+
 - When the number of simultaneously running threads for this method exceeds 100, degradation is triggered
 - Degradation automatically calls the method named `originalMethodName + Fallback` (parameters must match)
 - After degradation is triggered, it directly returns `"fallback"`
 - When the thread count falls below 100, the framework automatically removes the degradation and returns `"name"`
 
 **Fallback Method Requirements**:
+
 - Method name must be `originalMethodName + Fallback`
 - Parameters must match the original method
 - If no fallback method is defined, an error will be thrown when degradation is triggered
 - You can throw errors in the fallback method to let upstream systems know the method has reached its bottleneck
 
 **Parameters**:
+
 - `grade`: FlowGrade.FLOW_GRADE_THREAD - Uses thread count as the measurement dimension
 - `count`: 100 - Threshold value (100 threads)
 
@@ -151,25 +167,25 @@ public String getFallback(String name) {
 
 ### @Hotspot Annotation
 
-| Parameter | Type | Description |
-|:---|:---|:---|
-| grade | FlowGrade | Measurement dimension (QPS or THREAD) |
-| count | int | Threshold value |
-| duration | int | Time window in seconds |
+| Parameter | Type      | Description                           |
+|:----------|:----------|:--------------------------------------|
+| grade     | FlowGrade | Measurement dimension (QPS or THREAD) |
+| count     | int       | Threshold value                       |
+| duration  | int       | Time window in seconds                |
 
 ### @Downgrade Annotation
 
-| Parameter | Type | Description |
-|:---|:---|:---|
-| grade | FlowGrade | Measurement dimension (QPS or THREAD) |
-| count | int | Threshold value |
-| fallbackMethod | String | Custom fallback method name (optional) |
+| Parameter      | Type      | Description                            |
+|:---------------|:----------|:---------------------------------------|
+| grade          | FlowGrade | Measurement dimension (QPS or THREAD)  |
+| count          | int       | Threshold value                        |
+| fallbackMethod | String    | Custom fallback method name (optional) |
 
 ### FlowGrade Enum
 
-| Value | Description |
-|:---|:---|
-| FLOW_GRADE_QPS | Based on queries per second |
+| Value             | Description                      |
+|:------------------|:---------------------------------|
+| FLOW_GRADE_QPS    | Based on queries per second      |
 | FLOW_GRADE_THREAD | Based on concurrent thread count |
 
 -----
@@ -213,8 +229,8 @@ public Object getData(String key) {
 
 ### 1. Choose the Right Measurement Dimension
 
-**QPS-based**: Suitable for read-heavy scenarios, especially cacheable queries
-**Thread-based**: Suitable for scenarios with long execution times or external calls
+**QPS-based**: Suitable for read-heavy scenarios, especially cacheable queries **Thread-based**: Suitable for scenarios
+with long execution times or external calls
 
 ### 2. Set Reasonable Thresholds
 
@@ -225,6 +241,7 @@ public Object getData(String key) {
 ### 3. Use with Monitoring
 
 Combine with logging and monitoring to observe:
+
 - Hotspot activation frequency
 - Degradation trigger rate
 - Fallback method execution count
@@ -232,6 +249,7 @@ Combine with logging and monitoring to observe:
 ### 4. Fallback Strategy
 
 Design your fallback methods to:
+
 - Return cached or default values
 - Provide simplified functionality
 - Maintain system stability even with reduced features
@@ -242,11 +260,11 @@ Design your fallback methods to:
 
 ### Resource Usage
 
-| Metric | Impact |
-|:---|:---|
+| Metric              | Impact                             |
+|:--------------------|:-----------------------------------|
 | **Memory Overhead** | Minimal (only caches hotspot data) |
-| **CPU Usage** | Negligible (efficient counting) |
-| **Response Time** | Reduced during hotspot periods |
+| **CPU Usage**       | Negligible (efficient counting)    |
+| **Response Time**   | Reduced during hotspot periods     |
 
 ### Benefits
 
@@ -259,9 +277,9 @@ Design your fallback methods to:
 ## 🔄 Version Compatibility
 
 | Bus Limiter Version | Spring Boot Version | JDK Version |
-|:---|:---|:---|
-| 8.x | 3.x+ | 17+ |
-| 7.x | 2.x+ | 11+ |
+|:--------------------|:--------------------|:------------|
+| 8.x                 | 3.x+                | 17+         |
+| 7.x                 | 2.x+                | 11+         |
 
 -----
 
@@ -270,6 +288,7 @@ Design your fallback methods to:
 ### Q1: What's the difference between hotspot and degradation?
 
 **A**:
+
 - **Hotspot**: Automatically caches frequently accessed data to reduce downstream load
 - **Degradation**: Automatically switches to fallback logic when system is overloaded
 
@@ -280,17 +299,20 @@ Design your fallback methods to:
 ### Q3: How do I know if hotspot/degradation is triggered?
 
 **A**: Add logging in your methods and monitor:
+
 - Cache hit rate for hotspots
 - Fallback method execution count for degradation
 - Response times and error rates
 
 ### Q4: Will this affect my normal business logic?
 
-**A**: No. The framework only activates when thresholds are exceeded and automatically returns to normal when traffic decreases.
+**A**: No. The framework only activates when thresholds are exceeded and automatically returns to normal when traffic
+decreases.
 
 ### Q5: What happens if the fallback method fails?
 
-**A**: The exception from the fallback method will be thrown to the caller. Design your fallback methods to be simple and reliable.
+**A**: The exception from the fallback method will be thrown to the caller. Design your fallback methods to be simple
+and reliable.
 
 -----
 

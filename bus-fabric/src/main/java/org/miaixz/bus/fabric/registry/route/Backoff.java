@@ -33,7 +33,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @param failures     consecutive failure count
  * @param backoffUntil retry boundary
  * @author Kimi Liu
- * @since Java 21+
  */
 public record Backoff(Route route, Instant failedAt, int failures, Instant backoffUntil) {
 

@@ -73,7 +73,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Spring beans.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class MapperPluginBuilder {
 
@@ -261,8 +260,8 @@ public final class MapperPluginBuilder {
     /**
      * Resolves effective physical table-name affix rules for Mapper startup operations.
      * <p>
-     * Affix rules follow the same provider and property resolution path used by the runtime handler, so
-     * identifier validation and schema DDL generation observe the same global and datasource-specific table names.
+     * Affix rules follow the same provider and property resolution path used by the runtime handler, so identifier
+     * validation and schema DDL generation observe the same global and datasource-specific table names.
      *
      * @param properties         mapper properties
      * @param providers          provider holder
@@ -303,22 +302,26 @@ public final class MapperPluginBuilder {
         String configuredSuffixIgnore = suffixPart == null ? null : suffixPart.getIgnore();
         if (StringKit.isNotEmpty(configuredPrefix)) {
             if (!affixProperties.containsKey(sharedAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE)) {
-                affixProperties
-                        .setProperty(sharedAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE, configuredPrefix);
+                affixProperties.setProperty(
+                        sharedAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
+                        configuredPrefix);
             }
             if (!affixProperties.containsKey(defaultAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE)) {
-                affixProperties
-                        .setProperty(defaultAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE, configuredPrefix);
+                affixProperties.setProperty(
+                        defaultAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
+                        configuredPrefix);
             }
         }
         if (StringKit.isNotEmpty(configuredSuffix)) {
             if (!affixProperties.containsKey(sharedAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE)) {
-                affixProperties
-                        .setProperty(sharedAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE, configuredSuffix);
+                affixProperties.setProperty(
+                        sharedAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
+                        configuredSuffix);
             }
             if (!affixProperties.containsKey(defaultAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE)) {
-                affixProperties
-                        .setProperty(defaultAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE, configuredSuffix);
+                affixProperties.setProperty(
+                        defaultAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
+                        configuredSuffix);
             }
         }
         if (StringKit.isNotEmpty(configuredPrefixIgnore)) {

@@ -26,7 +26,6 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  * Represents the StoredValue type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class StoredValue {
 
@@ -76,7 +75,6 @@ public abstract class StoredValue {
      * Represents the Unsigned type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Unsigned extends StoredValue {
 
@@ -131,7 +129,6 @@ public abstract class StoredValue {
      * Represents the Signed type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Signed extends StoredValue {
 

@@ -35,7 +35,6 @@ import tools.jackson.databind.annotation.JsonDeserialize;
  * The health check info class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HealthCheckInfo implements Serializable {
 
@@ -219,7 +218,6 @@ public class HealthCheckInfo implements Serializable {
      * HealthCheckItem.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class HealthCheckItemDeserializer extends ValueDeserializer<HealthCheckItem> {
 

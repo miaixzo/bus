@@ -32,7 +32,6 @@ import org.miaixz.bus.validate.magic.Matcher;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

@@ -8,15 +8,19 @@
 
 ## 📖 Project Introduction
 
-**Bus Cortex** is the registry and configuration center for the bus framework. It provides unified service registration, configuration management, health probing, and namespace-based multi-tenant isolation — all backed by a single `CacheX` storage abstraction (Memory / Redis / JDBC) with zero extra infrastructure.
+**Bus Cortex** is the registry and configuration center for the bus framework. It provides unified service registration,
+configuration management, health probing, and namespace-based multi-tenant isolation — all backed by a single `CacheX`
+storage abstraction (Memory / Redis / JDBC) with zero extra infrastructure.
 
 - **Unified Registry**: API / MCP / Prompt / Version — four registries behind one `Registry<T>` interface
 - **Service + Instance Model**: `ApiAssets` (definition) + `Instance` (runtime), following Nacos-style separation
 - **Configuration Center**: Versioned publish, gray release routing, `@ConfigChange` callback annotations
 - **Health Probing**: Pluggable `Prober` (HTTP / TCP / MCP Ping / Process PID), server-side active probing
-- **Namespace Isolation**: Dynamic namespace resolution (Token / Header / context), `NamespaceGuard` enforced write isolation
+- **Namespace Isolation**: Dynamic namespace resolution (Token / Header / context), `NamespaceGuard` enforced write
+  isolation
 - **Security**: HMAC-SHA256 Token + RBAC (ADMIN / PROVIDER / CONSUMER), rate limiting, circuit breaking
-- **bus Ecosystem**: VortexBridge auto-syncs to bus-vortex; bus-metrics instrumentation built-in; bus-cache as the sole storage dependency
+- **bus Ecosystem**: VortexBridge auto-syncs to bus-vortex; bus-metrics instrumentation built-in; bus-cache as the sole
+  storage dependency
 - **Three-Step Onboarding**: One dependency + one config line + one annotation
 
 -----
@@ -27,20 +31,26 @@
 
 Four registry types, one consistent API:
 
-| Registry | Asset Type | Description |
-|:---|:---|:---|
-| **ApiRegistry** | `ApiAssets` + `Instance` | HTTP / gRPC / MCP / WebSocket / LLM API services |
-| **McpRegistry** | `McpAssets` | MCP tool/server definitions |
-| **PromptRegistry** | `PromptAssets` | Prompt template management |
-| **VersionRegistry** | `VersionAssets` | Service version lifecycle (ACTIVE / DEPRECATED / DISABLED) |
+| Registry            | Asset Type               | Description                                                |
+|:--------------------|:-------------------------|:-----------------------------------------------------------|
+| **ApiRegistry**     | `ApiAssets` + `Instance` | HTTP / gRPC / MCP / WebSocket / LLM API services           |
+| **McpRegistry**     | `McpAssets`              | MCP tool/server definitions                                |
+| **PromptRegistry**  | `PromptAssets`           | Prompt template management                                 |
+| **VersionRegistry** | `VersionAssets`          | Service version lifecycle (ACTIVE / DEPRECATED / DISABLED) |
 
 ```java
 // Type-safe static facade (same pattern as bus-metrics Metrics)
-Cortex.apiRegistry().register(service, instance);
-Cortex.mcpRegistry().register(mcpAssets);
+Cortex.apiRegistry().
+
+register(service, instance);
+Cortex.
+
+mcpRegistry().
+
+register(mcpAssets);
 
 List<ApiAssets> services = Cortex.query(
-    Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(), ApiAssets.class);
+        Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(), ApiAssets.class);
 ```
 
 ### ⚡ Service + Instance Separation
@@ -50,7 +60,8 @@ ApiAssets (definition, canonical identity = namespace + type + method + version[
     └── Instance (runtime, unique by namespace + app_id + method + version + fingerprint)
 ```
 
-**Instance Identity**: Multiple runtime instances may coexist for the same API definition. Runtime uniqueness is scoped by `namespace + app_id + method + version + fingerprint`.
+**Instance Identity**: Multiple runtime instances may coexist for the same API definition. Runtime uniqueness is scoped
+by `namespace + app_id + method + version + fingerprint`.
 
 Same-fingerprint re-registration is treated as an **idempotent TTL refresh**, not a conflict.
 
@@ -67,22 +78,22 @@ Same-fingerprint re-registration is treated as an **idempotent TTL refresh**, no
 7. `app_id:method:version:verb`
 8. `method:version:verb`
 
-`method` / `version` / `verb` are required runtime dimensions; `namespace`, `type`, and `app_id` participate only
-when present.
+`method` / `version` / `verb` are required runtime dimensions; `namespace`, `type`, and `app_id` participate only when
+present.
 
-`Keying` is now a generic key-strategy interface. Registry/runtime routing uses `Keying<Keying.RegistrySpec>` with
-the built-in `RegistryGenerator`, while the setting domain uses `Keying<Keying.SettingSpec>` with the built-in
+`Keying` is now a generic key-strategy interface. Registry/runtime routing uses `Keying<Keying.RegistrySpec>` with the
+built-in `RegistryGenerator`, while the setting domain uses `Keying<Keying.SettingSpec>` with the built-in
 `SettingGenerator`.
 
 ### 🔧 Configuration Center
 
-| Capability | Implementation |
-|:---|:---|
-| **Versioned Publish** | `ConfigPublisher` with `Sequence` atomic version numbers (CacheX CAS, no clock drift) |
-| **Version Rollback** | `DefaultConfig.rollback()` restores from `ConfigVersion` snapshots (retains last 10) |
-| **Gray Release** | `GrayRouter` matches `GrayRule` (IP_LIST / IP_RANGE / PERCENTAGE / HEADER) |
-| **Watch Callback** | `@ConfigChange` annotation — pure Java, no Spring dependency |
-| **Push + Poll** | Config changes: push via `ConfigPublisher.notify()`; Instance changes: poll via `HealthProbeScheduler` scan+diff |
+| Capability            | Implementation                                                                                                   |
+|:----------------------|:-----------------------------------------------------------------------------------------------------------------|
+| **Versioned Publish** | `ConfigPublisher` with `Sequence` atomic version numbers (CacheX CAS, no clock drift)                            |
+| **Version Rollback**  | `DefaultConfig.rollback()` restores from `ConfigVersion` snapshots (retains last 10)                             |
+| **Gray Release**      | `GrayRouter` matches `GrayRule` (IP_LIST / IP_RANGE / PERCENTAGE / HEADER)                                       |
+| **Watch Callback**    | `@ConfigChange` annotation — pure Java, no Spring dependency                                                     |
+| **Push + Poll**       | Config changes: push via `ConfigPublisher.notify()`; Instance changes: poll via `HealthProbeScheduler` scan+diff |
 
 ```java
 // Publish
@@ -104,27 +115,28 @@ rule.setGrayContent("jdbc:mysql://canary/...");
 
 Server-side active probing with pluggable probers:
 
-| Prober | Protocol | Use Case |
-|:---|:---|:---|
-| `HttpProber` | HTTP GET/HEAD | Standard web services |
-| `TcpProber` | TCP connect | Non-HTTP services |
-| `McpPingProber` | MCP JSON-RPC ping/pong | MCP servers |
-| `ProcessProber` | Local PID check | Same-host processes |
+| Prober            | Protocol                    | Use Case                |
+|:------------------|:----------------------------|:------------------------|
+| `HttpProber`      | HTTP GET/HEAD               | Standard web services   |
+| `TcpProber`       | TCP connect                 | Non-HTTP services       |
+| `McpPingProber`   | MCP JSON-RPC ping/pong      | MCP servers             |
+| `ProcessProber`   | Local PID check             | Same-host processes     |
 | `CompositeProber` | Aggregates multiple probers | Multi-protocol services |
 
-`HealthProbeScheduler` runs a scheduled thread pool (default parallelism = `min(32, instanceCount/10)`), probing all registered instances. Healthy instances get TTL refreshed; unhealthy instances expire naturally via CacheX TTL.
+`HealthProbeScheduler` runs a scheduled thread pool (default parallelism = `min(32, instanceCount/10)`), probing all
+registered instances. Healthy instances get TTL refreshed; unhealthy instances expire naturally via CacheX TTL.
 
 ### 🛡️ Security & Guard
 
-| Component | Function |
-|:---|:---|
-| `AccessTokenStore` | HMAC-SHA256 token issuance with CacheX-backed revocation |
+| Component             | Function                                                                              |
+|:----------------------|:--------------------------------------------------------------------------------------|
+| `AccessTokenStore`    | HMAC-SHA256 token issuance with CacheX-backed revocation                              |
 | `AccessTokenResolver` | Two-step validation: HMAC verify (anti-forgery) + CacheX blacklist check (revocation) |
-| `AccessGuard` | RBAC enforcement (ADMIN / PROVIDER / CONSUMER) |
-| `NamespaceGuard` | Cross-namespace write prevention |
-| `RateLimiter` | Token bucket rate limiting per namespace/method (CacheX counters) |
-| `CircuitBreaker` | State machine: CLOSED → OPEN → HALF_OPEN |
-| `ParamValidator` | Input validation (regex `^[a-zA-Z0-9._-]{1,128}$`) preventing CacheX key injection |
+| `AccessGuard`         | RBAC enforcement (ADMIN / PROVIDER / CONSUMER)                                        |
+| `NamespaceGuard`      | Cross-namespace write prevention                                                      |
+| `RateLimiter`         | Token bucket rate limiting per namespace/method (CacheX counters)                     |
+| `CircuitBreaker`      | State machine: CLOSED → OPEN → HALF_OPEN                                              |
+| `ParamValidator`      | Input validation (regex `^[a-zA-Z0-9._-]{1,128}$`) preventing CacheX key injection    |
 
 ### 🌉 bus-vortex Integration (VortexBridge)
 
@@ -147,16 +159,16 @@ ApiRegistry.register()
 
 All operations instrumented via `Metrics` static facade:
 
-| Metric | Type | Location |
-|:---|:---|:---|
-| `cortex.registry.register.total` | Counter | ApiRegistry.register |
-| `cortex.registry.deregister.total` | Counter | ApiRegistry.deregister |
-| `cortex.registry.instances.active` | Gauge | HealthProbeScheduler |
-| `cortex.config.publish.total` | Counter | ConfigPublisher.publish |
-| `cortex.health.check.total` | Counter | Prober implementations |
-| `cortex.vortex.sync.total` | Counter | VortexBridge.SyncWorker |
-| `cortex.security.token.issued` | Counter | AccessTokenStore.issue |
-| `cortex.registry.query.duration` | Timer | AbstractRegistry.query |
+| Metric                             | Type    | Location                |
+|:-----------------------------------|:--------|:------------------------|
+| `cortex.registry.register.total`   | Counter | ApiRegistry.register    |
+| `cortex.registry.deregister.total` | Counter | ApiRegistry.deregister  |
+| `cortex.registry.instances.active` | Gauge   | HealthProbeScheduler    |
+| `cortex.config.publish.total`      | Counter | ConfigPublisher.publish |
+| `cortex.health.check.total`        | Counter | Prober implementations  |
+| `cortex.vortex.sync.total`         | Counter | VortexBridge.SyncWorker |
+| `cortex.security.token.issued`     | Counter | AccessTokenStore.issue  |
+| `cortex.registry.query.duration`   | Timer   | AbstractRegistry.query  |
 
 -----
 
@@ -180,7 +192,8 @@ bus:
     server-addr: 127.0.0.1:8766   # The only required field
 ```
 
-> **Namespace**: Not a fixed YAML config. Resolved dynamically at runtime from Token / request Header (`X-Namespace`) / management context. Falls back to `public` if unspecified.
+> **Namespace**: Not a fixed YAML config. Resolved dynamically at runtime from Token / request Header (`X-Namespace`) /
+> management context. Falls back to `public` if unspecified.
 
 ### Step 3: Enable
 
@@ -194,7 +207,8 @@ public class Application {
 }
 ```
 
-On startup: auto-registration, `@ConfigValue` field injection, and configuration change callbacks are all activated automatically.
+On startup: auto-registration, `@ConfigValue` field injection, and configuration change callbacks are all activated
+automatically.
 
 -----
 
@@ -210,33 +224,67 @@ import org.miaixz.bus.cortex.registry.api.Instance;
 
 // Register a service with instance
 ApiAssets service = new ApiAssets();
-service.setNamespace_id("production");
-service.setApp_id("order-service");
-service.setMethod("vortex.user.get");
-service.setVersion("v1.0.0");
-service.setPath("/v2/api");
-service.setProtocol(1);  // HTTP
-service.setVerb(1);      // GET
+service.
 
-Instance instance = new Instance();
-instance.setNamespace_id("production");
-instance.setApp_id("order-service");
-instance.setMethod("vortex.user.get");
-instance.setVersion("v1.0.0");
-instance.setHost("192.168.1.10");
-instance.setPort(8080);
-instance.setWeight(100);
+        setNamespace_id("production");
+service.
 
-Cortex.apiRegistry().register(service, instance);
+        setApp_id("order-service");
+service.
 
-// Query API definitions
-List<ApiAssets> results = Cortex.query(
-    Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(),
-    ApiAssets.class
-);
+        setMethod("vortex.user.get");
+service.
+
+        setVersion("v1.0.0");
+service.
+
+        setPath("/v2/api");
+service.
+
+        setProtocol(1);  // HTTP
+service.
+
+        setVerb(1);      // GET
+
+        Instance instance = new Instance();
+instance.
+
+        setNamespace_id("production");
+instance.
+
+        setApp_id("order-service");
+instance.
+
+        setMethod("vortex.user.get");
+instance.
+
+        setVersion("v1.0.0");
+instance.
+
+        setHost("192.168.1.10");
+instance.
+
+        setPort(8080);
+instance.
+
+        setWeight(100);
+
+Cortex.
+
+        apiRegistry().
+
+        register(service, instance);
+
+        // Query API definitions
+        List<ApiAssets> results = Cortex.query(
+                Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(),
+                ApiAssets.class
+        );
 
 // Deregister
-Cortex.deregister("production", "vortex.user.get:v1.0.0");
+Cortex.
+
+        deregister("production","vortex.user.get:v1.0.0");
 ```
 
 ### 2. Configuration Management
@@ -281,14 +329,18 @@ public class OrderService {
 ```java
 // Watch for instance changes
 String watchId = Cortex.apiRegistry().watch(
-    Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(),
-    (added, removed, updated) -> {
-        log.info("Instances changed: +{} -{} ~{}", added.size(), removed.size(), updated.size());
-    }
-);
+                Vector.newBuilder().namespace_id("production").method("vortex.user.get").build(),
+                (added, removed, updated) -> {
+                    log.info("Instances changed: +{} -{} ~{}", added.size(), removed.size(), updated.size());
+                }
+        );
 
 // Unsubscribe
-Cortex.apiRegistry().unwatch(watchId);
+Cortex.
+
+apiRegistry().
+
+unwatch(watchId);
 ```
 
 ### 5. MCP & Prompt Registry
@@ -347,20 +399,20 @@ bus:
 
 ### Configuration Properties
 
-| Property | Type | Default | Description |
-|:---|:---|:---|:---|
-| `bus.cortex.server-addr` | String | — | **Required.** Registry center address |
-| `bus.cortex.vortex.enabled` | boolean | `false` | Enable bus-vortex sync |
-| `bus.cortex.vortex.sync-url` | String | — | bus-vortex sync endpoint URL |
-| `bus.cortex.vortex.sync-interval` | long | `30000` | Full sync interval (ms) |
-| `bus.cortex.vortex.max-retries` | int | `3` | Max retry attempts |
-| `bus.cortex.security.enabled` | boolean | `false` | Enable Token + RBAC |
-| `bus.cortex.security.hmac-secret` | String | — | HMAC-SHA256 signing key |
-| `bus.cortex.security.token-expire-seconds` | long | `86400` | Token TTL (recommend 3600 for production) |
-| `bus.cortex.health-check.interval-ms` | long | `30000` | Health probe interval |
-| `bus.cortex.health-check.timeout-ms` | long | `5000` | Probe timeout per instance |
-| `bus.cortex.health-check.max-retries` | int | `3` | Probe retry count |
-| `bus.cortex.audit.enabled` | boolean | `false` | Enable operation audit logging |
+| Property                                   | Type    | Default | Description                               |
+|:-------------------------------------------|:--------|:--------|:------------------------------------------|
+| `bus.cortex.server-addr`                   | String  | —       | **Required.** Registry center address     |
+| `bus.cortex.vortex.enabled`                | boolean | `false` | Enable bus-vortex sync                    |
+| `bus.cortex.vortex.sync-url`               | String  | —       | bus-vortex sync endpoint URL              |
+| `bus.cortex.vortex.sync-interval`          | long    | `30000` | Full sync interval (ms)                   |
+| `bus.cortex.vortex.max-retries`            | int     | `3`     | Max retry attempts                        |
+| `bus.cortex.security.enabled`              | boolean | `false` | Enable Token + RBAC                       |
+| `bus.cortex.security.hmac-secret`          | String  | —       | HMAC-SHA256 signing key                   |
+| `bus.cortex.security.token-expire-seconds` | long    | `86400` | Token TTL (recommend 3600 for production) |
+| `bus.cortex.health-check.interval-ms`      | long    | `30000` | Health probe interval                     |
+| `bus.cortex.health-check.timeout-ms`       | long    | `5000`  | Probe timeout per instance                |
+| `bus.cortex.health-check.max-retries`      | int     | `3`     | Probe retry count                         |
+| `bus.cortex.audit.enabled`                 | boolean | `false` | Enable operation audit logging            |
 
 -----
 
@@ -431,11 +483,11 @@ CacheX backend: Memory / Redis / JDBC all work.
 
 **Must use Redis or JDBC** as CacheX backend — Memory cannot share uniqueness state across pods.
 
-| Storage | Uniqueness Mechanism | Production Ready |
-|:---|:---|:---|
-| Memory | JVM synchronized/CAS | Development only |
-| JDBC | UNIQUE constraint + upsert | Small scale |
-| Redis | `SETNX` / Lua CAS | **Recommended** |
+| Storage | Uniqueness Mechanism       | Production Ready |
+|:--------|:---------------------------|:-----------------|
+| Memory  | JVM synchronized/CAS       | Development only |
+| JDBC    | UNIQUE constraint + upsert | Small scale      |
+| Redis   | `SETNX` / Lua CAS          | **Recommended**  |
 
 ### Pod IP & Rolling Update
 
@@ -455,15 +507,16 @@ strategy:
     maxUnavailable: 1
 ```
 
-TTL recommended: `healthCheck.intervalMs × 3` (default 90s). HealthProbeScheduler refreshes TTL for healthy instances; unhealthy instances expire naturally.
+TTL recommended: `healthCheck.intervalMs × 3` (default 90s). HealthProbeScheduler refreshes TTL for healthy instances;
+unhealthy instances expire naturally.
 
 -----
 
 ## 🔄 Version Compatibility
 
 | Bus Cortex Version | Spring Boot Version | JDK Version |
-|:---|:---|:---|
-| 8.x | 3.x+ | 17+ |
+|:-------------------|:--------------------|:------------|
+| 8.x                | 3.x+                | 17+         |
 
 -----
 

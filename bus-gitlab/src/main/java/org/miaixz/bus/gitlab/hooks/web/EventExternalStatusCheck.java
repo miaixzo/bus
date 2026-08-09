@@ -25,7 +25,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The event external status check class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EventExternalStatusCheck {
 

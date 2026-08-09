@@ -8,9 +8,13 @@
 
 ## 📖 Project Introduction
 
-**Bus Auth** is an enterprise-grade authentication and authorization framework designed to simplify integration with third-party identity providers. It provides a unified API for implementing OAuth2, SAML, LDAP, and custom authentication protocols, supporting **40+** mainstream platforms worldwide.
+**Bus Auth** is an enterprise-grade authentication and authorization framework designed to simplify integration with
+third-party identity providers. It provides a unified API for implementing OAuth2, SAML, LDAP, and custom authentication
+protocols, supporting **40+** mainstream platforms worldwide.
 
-The framework abstracts away protocol complexities, allowing developers to focus on business logic rather than authentication implementation details. Whether it's social logins, enterprise SSO, or custom identity providers, Bus Auth provides a consistent, type-safe, and extensible approach.
+The framework abstracts away protocol complexities, allowing developers to focus on business logic rather than
+authentication implementation details. Whether it's social logins, enterprise SSO, or custom identity providers, Bus
+Auth provides a consistent, type-safe, and extensible approach.
 
 -----
 
@@ -25,31 +29,35 @@ The framework abstracts away protocol complexities, allowing developers to focus
 
 ### 🔐 Security First
 
-| Feature | Description |
-| :--- | :--- |
-| **PKCE Support** | RFC 7636 compliant Proof Key for Code Exchange for mobile/spa apps |
-| **State Validation** | Built-in CSRF protection with state parameter validation |
-| **Token Management** | Secure token storage, refresh, and revocation |
-| **Signature Verification** | HMAC-SHA256 signature support for OAuth1.0a |
-| **Cache Integration** | Distributed state caching support |
+| Feature                    | Description                                                        |
+|:---------------------------|:-------------------------------------------------------------------|
+| **PKCE Support**           | RFC 7636 compliant Proof Key for Code Exchange for mobile/spa apps |
+| **State Validation**       | Built-in CSRF protection with state parameter validation           |
+| **Token Management**       | Secure token storage, refresh, and revocation                      |
+| **Signature Verification** | HMAC-SHA256 signature support for OAuth1.0a                        |
+| **Cache Integration**      | Distributed state caching support                                  |
 
 ### 🌍 Platform Coverage
 
 **Social Platforms** (15+)
+
 - GitHub, Google, Facebook, Twitter, LinkedIn, Microsoft
 - WeChat, QQ, Weibo, Douyin, TikTok
 - Apple, Amazon, Slack, Line, VK
 
 **Enterprise Platforms** (10+)
+
 - DingTalk, Feishu, Lark, WeChat Work
 - Okta, GitLab, Gitee, Teambition
 - Huawei, Aliyun, Baidu Cloud
 
 **E-Commerce** (8+)
+
 - Alipay, Taobao, JD, Meituan, Eleme
 - Kujiale, Xiaomi, RedNote
 
 **Domestic Platforms** (China)
+
 - Ximalaya, Renren, OSChina, Coding, Proginn
 - Stack Overflow, Pinterest, Figma
 
@@ -82,11 +90,11 @@ The framework abstracts away protocol complexities, allowing developers to focus
 ```java
 // Create authentication context
 Context context = Context.builder()
-    .clientId("your_client_id")
-    .clientSecret("your_client_secret")
-    .redirectUri("https://yourapp.com/callback")
-    .scopes(Arrays.asList("user", "repo"))
-    .build();
+                .clientId("your_client_id")
+                .clientSecret("your_client_secret")
+                .redirectUri("https://yourapp.com/callback")
+                .scopes(Arrays.asList("user", "repo"))
+                .build();
 ```
 
 #### 2. Create Authentication Provider
@@ -97,9 +105,9 @@ Provider github = new GithubProvider(context);
 
 // Method 2: Using Authorizer builder (recommended)
 Provider github = Authorizer.builder()
-    .source("GITHUB")
-    .context(context)
-    .build();
+        .source("GITHUB")
+        .context(context)
+        .build();
 ```
 
 #### 3. Generate Authorization URL
@@ -121,21 +129,23 @@ String authUrl = message.getData();
 ```java
 // Extract callback parameters
 Callback callback = Callback.builder()
-    .code(request.getParameter("code"))
-    .state(request.getParameter("state"))
-    .build();
+                .code(request.getParameter("code"))
+                .state(request.getParameter("state"))
+                .build();
 
 // Perform authentication
 Message result = github.authorize(callback);
 
-if (result.isSuccess()) {
-    Claims claims = result.getData(Claims.class);
-    String uuid = claims.getUuid();
-    String username = claims.getUsername();
-    String email = claims.getEmail();
+if(result.
 
-    // Log user in or create account
-    // Store claims.getToken() for future API calls
+isSuccess()){
+Claims claims = result.getData(Claims.class);
+String uuid = claims.getUuid();
+String username = claims.getUsername();
+String email = claims.getEmail();
+
+// Log user in or create account
+// Store claims.getToken() for future API calls
 }
 ```
 
@@ -148,10 +158,10 @@ if (result.isSuccess()) {
 ```java
 // Configuration
 Context context = Context.builder()
-    .clientId("github_client_id")
-    .clientSecret("github_client_secret")
-    .redirectUri("http://localhost:8080/auth/github/callback")
-    .build();
+                .clientId("github_client_id")
+                .clientSecret("github_client_secret")
+                .redirectUri("http://localhost:8080/auth/github/callback")
+                .build();
 
 Provider github = new GithubProvider(context);
 
@@ -169,9 +179,9 @@ public void githubLogin(HttpServletResponse response) throws IOException {
 @GetMapping("/auth/github/callback")
 public Message githubCallback(@RequestParam String code, @RequestParam String state) {
     Callback callback = Callback.builder()
-        .code(code)
-        .state(state)
-        .build();
+            .code(code)
+            .state(state)
+            .build();
 
     Message result = github.authorize(callback);
 
@@ -189,11 +199,11 @@ public Message githubCallback(@RequestParam String code, @RequestParam String st
 ```java
 // WeChat Work requires additional agentId
 Context context = Context.builder()
-    .clientId("corp_id")
-    .clientSecret("corp_secret")
-    .unionId("agent_id")
-    .redirectUri("https://yourapp.com/callback/wechat")
-    .build();
+                .clientId("corp_id")
+                .clientSecret("corp_secret")
+                .unionId("agent_id")
+                .redirectUri("https://yourapp.com/callback/wechat")
+                .build();
 
 Provider wechatWork = new WeChatEeWebProvider(context);
 
@@ -207,11 +217,11 @@ Claims user = result.getData(Claims.class);
 ```java
 // Enable PKCE mode
 Context context = Context.builder()
-    .clientId("client_id")
-    .clientSecret("")  // No client secret for public clients
-    .redirectUri("myapp://callback")
-    .pkce(true)  // Enable PKCE
-    .build();
+                .clientId("client_id")
+                .clientSecret("")  // No client secret for public clients
+                .redirectUri("myapp://callback")
+                .pkce(true)  // Enable PKCE
+                .build();
 
 Provider google = new GoogleProvider(context);
 
@@ -220,7 +230,9 @@ String codeVerifier = Builder.codeVerifier();
 String codeChallenge = Builder.codeChallenge("S256", codeVerifier);
 
 // Store codeVerifier for later use
-cache.set(state, codeVerifier, 10, TimeUnit.MINUTES);
+cache.
+
+set(state, codeVerifier, 10,TimeUnit.MINUTES);
 
 // Include code_challenge in authorization URL
 ```
@@ -258,10 +270,14 @@ public class CustomProvider extends AbstractProvider {
 // Method 2: Use Registry with custom Complex
 Complex customComplex = new Complex() {
     @Override
-    public String getName() { return "CUSTOM"; }
+    public String getName() {
+        return "CUSTOM";
+    }
 
     @Override
-    public Protocol getProtocol() { return Protocol.OIDC; }
+    public Protocol getProtocol() {
+        return Protocol.OIDC;
+    }
 
     @Override
     public Class<? extends AbstractProvider> getTargetClass() {
@@ -275,10 +291,10 @@ Complex customComplex = new Complex() {
 };
 
 Provider provider = Authorizer.builder()
-    .source("CUSTOM")
-    .context(context)
-    .complex(customComplex)
-    .build();
+        .source("CUSTOM")
+        .context(context)
+        .complex(customComplex)
+        .build();
 ```
 
 ### 5. Token Management
@@ -308,9 +324,15 @@ Message revokeMsg = provider.revoke(token);
 Map<String, Provider> providers = new HashMap<>();
 
 // Configure multiple providers
-providers.put("github", new GithubProvider(githubContext));
-providers.put("google", new GoogleProvider(googleContext));
-providers.put("wechat", new WeChatMpProvider(wechatContext));
+providers.
+
+put("github",new GithubProvider(githubContext));
+        providers.
+
+put("google",new GoogleProvider(googleContext));
+        providers.
+
+put("wechat",new WeChatMpProvider(wechatContext));
 
 // Unified authentication endpoint
 @PostMapping("/auth/{provider}")
@@ -364,17 +386,25 @@ Provider github = new GithubProvider(context, cache);
 ```java
 // Override default endpoints
 Map<Endpoint, String> customEndpoints = new HashMap<>();
-customEndpoints.put(Endpoint.AUTHORIZE, "https://custom.auth.com/authorize");
-customEndpoints.put(Endpoint.TOKEN, "https://custom.auth.com/token");
-customEndpoints.put(Endpoint.USERINFO, "https://custom.auth.com/userinfo");
-customEndpoints.put(Endpoint.REFRESH, "https://custom.auth.com/refresh");
+customEndpoints.
+
+put(Endpoint.AUTHORIZE, "https://custom.auth.com/authorize");
+customEndpoints.
+
+put(Endpoint.TOKEN, "https://custom.auth.com/token");
+customEndpoints.
+
+put(Endpoint.USERINFO, "https://custom.auth.com/userinfo");
+customEndpoints.
+
+put(Endpoint.REFRESH, "https://custom.auth.com/refresh");
 
 Context context = Context.builder()
-    .clientId("client_id")
-    .clientSecret("client_secret")
-    .redirectUri("https://yourapp.com/callback")
-    .endpoint(customEndpoints)  // Custom endpoints
-    .build();
+        .clientId("client_id")
+        .clientSecret("client_secret")
+        .redirectUri("https://yourapp.com/callback")
+        .endpoint(customEndpoints)  // Custom endpoints
+        .build();
 ```
 
 -----
@@ -383,37 +413,37 @@ Context context = Context.builder()
 
 ### Context Parameters
 
-| Parameter | Type | Required | Description |
-| :--- | :--- | :--- | :--- |
-| `clientId` | String | ✅ | OAuth2 client ID or API key |
-| `clientSecret` | String | ✅ | OAuth2 client secret |
-| `unionId` | String | ❌ | Platform-specific identifier (e.g., WeChat agentId) |
-| `extId` | String | ❌ | Extended identifier |
-| `deviceId` | String | ❌ | Device ID for some platforms |
-| `type` | String | ❌ | Platform-specific type |
-| `flag` | boolean | ❌ | Platform-specific flag |
-| `pkce` | boolean | ❌ | Enable PKCE mode (default: false) |
-| `prefix` | String | ❌ | Domain prefix (for Okta, Coding) |
-| `redirectUri` | String | ✅ | OAuth2 callback URL |
-| `scopes` | List<String> | ❌ | OAuth2 scopes (permissions) |
-| `ignoreState` | boolean | ❌ | Skip state validation (not recommended) |
-| `ignoreRedirectUri` | boolean | ❌ | Skip redirect URI validation |
-| `kid` | String | ❌ | Apple Key ID |
-| `teamId` | String | ❌ | Apple Team ID |
-| `loginType` | String | ❌ | WeChat Work login type |
-| `lang` | String | ❌ | Language code (default: zh) |
-| `extension` | String | ❌ | Extension properties |
-| `endpoint` | Map<Endpoint, String> | ❌ | Custom OAuth endpoints |
+| Parameter           | Type                  | Required | Description                                         |
+|:--------------------|:----------------------|:---------|:----------------------------------------------------|
+| `clientId`          | String                | ✅       | OAuth2 client ID or API key                         |
+| `clientSecret`      | String                | ✅       | OAuth2 client secret                                |
+| `unionId`           | String                | ❌       | Platform-specific identifier (e.g., WeChat agentId) |
+| `extId`             | String                | ❌       | Extended identifier                                 |
+| `deviceId`          | String                | ❌       | Device ID for some platforms                        |
+| `type`              | String                | ❌       | Platform-specific type                              |
+| `flag`              | boolean               | ❌       | Platform-specific flag                              |
+| `pkce`              | boolean               | ❌       | Enable PKCE mode (default: false)                   |
+| `prefix`            | String                | ❌       | Domain prefix (for Okta, Coding)                    |
+| `redirectUri`       | String                | ✅       | OAuth2 callback URL                                 |
+| `scopes`            | List<String>          | ❌       | OAuth2 scopes (permissions)                         |
+| `ignoreState`       | boolean               | ❌       | Skip state validation (not recommended)             |
+| `ignoreRedirectUri` | boolean               | ❌       | Skip redirect URI validation                        |
+| `kid`               | String                | ❌       | Apple Key ID                                        |
+| `teamId`            | String                | ❌       | Apple Team ID                                       |
+| `loginType`         | String                | ❌       | WeChat Work login type                              |
+| `lang`              | String                | ❌       | Language code (default: zh)                         |
+| `extension`         | String                | ❌       | Extension properties                                |
+| `endpoint`          | Map<Endpoint, String> | ❌       | Custom OAuth endpoints                              |
 
 ### Supported Endpoints
 
-| Endpoint | Description |
-| :--- | :--- |
-| `AUTHORIZE` | Authorization endpoint URL |
-| `TOKEN` | Token endpoint URL |
-| `USERINFO` | User information endpoint URL |
-| `REFRESH` | Token refresh endpoint URL |
-| `REVOKE` | Token revocation endpoint URL |
+| Endpoint    | Description                   |
+|:------------|:------------------------------|
+| `AUTHORIZE` | Authorization endpoint URL    |
+| `TOKEN`     | Token endpoint URL            |
+| `USERINFO`  | User information endpoint URL |
+| `REFRESH`   | Token refresh endpoint URL    |
+| `REVOKE`    | Token revocation endpoint URL |
 
 ### Provider Registry
 
@@ -429,9 +459,9 @@ Registry.DINGTALK
 
 // Use with Authorizer
 Provider provider = Authorizer.builder()
-    .source(Registry.GITHUB.getName())
-    .context(context)
-    .build();
+        .source(Registry.GITHUB.getName())
+        .context(context)
+        .build();
 ```
 
 -----
@@ -445,11 +475,11 @@ Provider provider = Authorizer.builder()
 // You can customize scopes for specific needs
 
 Context context = Context.builder()
-    .clientId("client_id")
-    .clientSecret("client_secret")
-    .redirectUri("https://yourapp.com/callback")
-    .scopes(Arrays.asList("read", "write", "email"))  // Custom scopes
-    .build();
+        .clientId("client_id")
+        .clientSecret("client_secret")
+        .redirectUri("https://yourapp.com/callback")
+        .scopes(Arrays.asList("read", "write", "email"))  // Custom scopes
+        .build();
 ```
 
 ### 2. State Validation
@@ -459,11 +489,11 @@ Context context = Context.builder()
 // To disable (not recommended for production):
 
 Context context = Context.builder()
-    .clientId("client_id")
-    .clientSecret("client_secret")
-    .redirectUri("https://yourapp.com/callback")
-    .ignoreState(true)  // ⚠️ Disable state validation
-    .build();
+        .clientId("client_id")
+        .clientSecret("client_secret")
+        .redirectUri("https://yourapp.com/callback")
+        .ignoreState(true)  // ⚠️ Disable state validation
+        .build();
 ```
 
 ### 3. Custom User Info Mapping
@@ -481,14 +511,14 @@ public class CustomGithubProvider extends GithubProvider {
         // Custom mapping logic
         Map<String, Object> rawData = response.getData();
         Claims claims = Claims.builder()
-            .uuid(rawData.get("id").toString())
-            .username(rawData.get("login").toString())
-            .email(rawData.get("email").toString())
-            .avatar(rawData.get("avatar_url").toString())
-            .source("GITHUB")
-            .token(authorization)
-            .rawJson(JsonKit.toJsonString(rawData))
-            .build();
+                .uuid(rawData.get("id").toString())
+                .username(rawData.get("login").toString())
+                .email(rawData.get("email").toString())
+                .avatar(rawData.get("avatar_url").toString())
+                .source("GITHUB")
+                .token(authorization)
+                .rawJson(JsonKit.toJsonString(rawData))
+                .build();
 
         return Message.success(claims);
     }
@@ -531,13 +561,13 @@ try {
 ```java
 // ❌ Not recommended
 Context context = Context.builder()
-    .redirectUri("http://yourapp.com/callback")
-    .build();
+                .redirectUri("http://yourapp.com/callback")
+                .build();
 
 // ✅ Recommended
 Context context = Context.builder()
-    .redirectUri("https://yourapp.com/callback")
-    .build();
+        .redirectUri("https://yourapp.com/callback")
+        .build();
 ```
 
 ### 2. Enable State Validation
@@ -545,8 +575,8 @@ Context context = Context.builder()
 ```java
 // ✅ Always enable state validation in production
 Context context = Context.builder()
-    .ignoreState(false)  // Default: false
-    .build();
+                .ignoreState(false)  // Default: false
+                .build();
 ```
 
 ### 3. Use Distributed Cache
@@ -667,6 +697,7 @@ String codeChallenge = Builder.codeChallenge("S256", codeVerifier);
 ### Q3: How do I implement "Login with GitHub" for a Spring Boot app?
 
 ```java
+
 @Controller
 public class AuthController {
 
@@ -684,8 +715,8 @@ public class AuthController {
 
     @GetMapping("/auth/github/callback")
     public String callback(@RequestParam String code,
-                          @RequestParam String state,
-                          HttpSession session) {
+                           @RequestParam String state,
+                           HttpSession session) {
         // Validate state
         String savedState = (String) session.getAttribute("oauth_state");
         if (!state.equals(savedState)) {
@@ -694,9 +725,9 @@ public class AuthController {
 
         // Authenticate
         Callback callback = Callback.builder()
-            .code(code)
-            .state(state)
-            .build();
+                .code(code)
+                .state(state)
+                .build();
 
         Message result = githubProvider.authorize(callback);
         Claims user = result.getData(Claims.class);
@@ -734,10 +765,10 @@ Context getContextForRequest(HttpServletRequest request) {
     String redirectUri = determineRedirectUri(request);
 
     return Context.builder()
-        .clientId(clientId)
-        .clientSecret(clientSecret)
-        .redirectUri(redirectUri)
-        .build();
+            .clientId(clientId)
+            .clientSecret(clientSecret)
+            .redirectUri(redirectUri)
+            .build();
 }
 ```
 
@@ -780,6 +811,7 @@ public void callApi(Claims user) {
 ### Q8: Which providers are supported?
 
 Bus Auth supports **40+** providers including:
+
 - Social: GitHub, Google, Facebook, Twitter, LinkedIn, Microsoft, Apple
 - Chinese: WeChat, QQ, Weibo, Douyin, DingTalk, Feishu
 - Enterprise: Okta, GitLab, Gitee, WeChat Work
@@ -789,10 +821,10 @@ Bus Auth supports **40+** providers including:
 
 ## 🔄 Version Compatibility
 
-| Bus Auth Version | JDK Version | Spring Boot | Notes |
-| :--- | :--- | :--- | :--- |
-| 8.x | 17+ | 3.x | Current stable version |
-| 7.x | 11+ | 2.x | Legacy version |
+| Bus Auth Version | JDK Version | Spring Boot | Notes                  |
+|:-----------------|:------------|:------------|:-----------------------|
+| 8.x              | 17+         | 3.x         | Current stable version |
+| 7.x              | 11+         | 2.x         | Legacy version         |
 
 -----
 
@@ -811,23 +843,27 @@ Bus Auth supports **40+** providers including:
 ## 📊 Supported Providers
 
 ### Social Login
+
 - GitHub, GitLab, Gitee
 - Google, Facebook, Twitter, LinkedIn, Microsoft
 - Apple, Amazon, Slack, Line, VK
 - Stack Overflow, Pinterest, Figma
 
 ### Chinese Platforms
+
 - WeChat (MP, Open, Mini, Work)
 - QQ, Weibo, Douyin, Toutiao
 - DingTalk, Feishu, Baidu, Xiaomi
 - Alipay, Taobao, JD, Meituan
 
 ### Enterprise
+
 - Okta, GitLab, Coding
 - WeChat Work (Enterprise WeChat)
 - Aliyun, Huawei Cloud
 
 ### Domestic (China)
+
 - Ximalaya, Renren, OSChina
 - Kujiale, Proginn, RedNote
 - Teambition, Eleme

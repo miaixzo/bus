@@ -37,7 +37,6 @@ import org.miaixz.bus.notify.nimble.AbstractProvider;
  * Baidu Cloud SMS service provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BaiduSmsProvider extends AbstractProvider<BaiduNotice, Context> {
 

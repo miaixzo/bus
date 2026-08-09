@@ -29,7 +29,6 @@ import java.util.Properties;
  * providers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MQConfig implements Serializable {
 

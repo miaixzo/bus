@@ -32,7 +32,6 @@ import org.miaixz.bus.notify.magic.Notice;
  *
  * @param <T> the type of notice used for the notification, extending {@link Notice}
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Provider<T extends Notice> extends org.miaixz.bus.core.Provider {
 

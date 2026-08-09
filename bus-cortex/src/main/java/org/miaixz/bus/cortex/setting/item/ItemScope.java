@@ -41,7 +41,6 @@ import org.miaixz.bus.cortex.builtin.Selector;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

@@ -26,7 +26,6 @@ import org.miaixz.bus.health.Edid;
  * Holds the human-readable information described by a display's EDID.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public interface DisplayInfo {

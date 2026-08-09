@@ -45,7 +45,6 @@ import org.miaixz.bus.logger.Logger;
  * provides functionality to find, create, update, and manage Unified Procedure Steps on a remote SCP.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UpsSCU {
 
@@ -405,7 +404,6 @@ public class UpsSCU {
      * An enumeration of the various UPS operations supported by this SCU.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum Operation {
 
@@ -510,7 +508,6 @@ public class UpsSCU {
      * A factory for creating DIMSE response handlers for various DICOM operations.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface RSPHandlerFactory {
 

@@ -31,7 +31,6 @@ import org.miaixz.bus.cortex.Type;
  * Result summary of a batch registry operation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
@@ -172,7 +171,6 @@ public class BatchResult {
      * One failed batch entry.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter

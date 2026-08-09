@@ -21,6 +21,5 @@
  * UID Dictionary from GEMS_LUNAR_RAW
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.GEMS_LUNAR_RAW;

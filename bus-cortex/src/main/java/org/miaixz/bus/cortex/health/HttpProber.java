@@ -33,7 +33,6 @@ import org.miaixz.bus.logger.Logger;
  * HTTP-based prober.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HttpProber implements Prober {
 

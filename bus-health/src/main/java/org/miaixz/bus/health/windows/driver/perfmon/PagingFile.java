@@ -29,7 +29,6 @@ import org.miaixz.bus.health.windows.PerfCounterQuery;
  * Queries Paging File performance counter
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class PagingFile {
@@ -60,7 +59,6 @@ public final class PagingFile {
      * For swap file usage
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PagingPercentProperty implements PerfCounterQuery.PdhCounterProperty {
 

@@ -26,7 +26,6 @@ import org.miaixz.bus.core.center.date.culture.Replenish;
  * associate a specific day index with a {@link Nine} instance.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NineDay extends Replenish {
 

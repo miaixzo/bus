@@ -21,6 +21,5 @@
  * UID Dictionary from GEMS_ADWSoft_DPO1
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.GEMS_ADWSoft_DPO1;

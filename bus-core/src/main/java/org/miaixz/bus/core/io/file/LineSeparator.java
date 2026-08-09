@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * @see #LINUX
  * @see #WINDOWS
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum LineSeparator {
 

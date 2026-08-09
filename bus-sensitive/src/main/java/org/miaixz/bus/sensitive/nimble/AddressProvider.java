@@ -31,7 +31,6 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
  * example: "Beijing Haidian District Xizhimen Street No. 1" might become "Beijing Haidian District**********".
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AddressProvider extends AbstractProvider {
 

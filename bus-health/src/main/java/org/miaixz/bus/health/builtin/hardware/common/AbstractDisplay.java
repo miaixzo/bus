@@ -28,7 +28,6 @@ import org.miaixz.bus.health.builtin.hardware.DisplayInfoImpl;
  * A Display
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public abstract class AbstractDisplay implements Display {

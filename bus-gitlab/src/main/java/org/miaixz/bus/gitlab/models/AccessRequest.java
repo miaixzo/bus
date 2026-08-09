@@ -26,7 +26,6 @@ import java.util.Date;
  * The access request class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AccessRequest extends AbstractUser<AccessRequest> {
 

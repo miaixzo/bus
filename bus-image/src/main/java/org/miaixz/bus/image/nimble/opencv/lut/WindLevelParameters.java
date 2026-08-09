@@ -29,7 +29,6 @@ import org.miaixz.bus.image.nimble.PresentationLutObject;
  * Represents the WindLevelParameters type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WindLevelParameters implements WlParams {
 

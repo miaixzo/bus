@@ -38,7 +38,6 @@ import org.miaixz.bus.gitlab.models.Milestone;
  * @see <a href="https://docs.gitlab.com/ce/api/milestones.html">Project milestones API</a>
  * @see <a href="https://docs.gitlab.com/ce/api/group_milestones.html">Group milestones API</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MilestonesApi extends AbstractApi {
 

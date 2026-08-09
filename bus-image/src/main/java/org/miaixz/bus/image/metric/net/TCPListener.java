@@ -37,7 +37,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the TCPListener type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TCPListener implements Listener {
 

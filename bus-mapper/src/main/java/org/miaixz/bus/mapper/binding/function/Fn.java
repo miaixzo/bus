@@ -37,7 +37,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * @param <T> The type of the entity class.
  * @param <R> The return type of the method reference.
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Fn<T, R> extends FunctionX<T, R>, Serializable {
 
@@ -188,7 +187,6 @@ public interface Fn<T, R> extends FunctionX<T, R>, Serializable {
      * @param <T> The entity type.
      * @param <R> The return type.
      * @author Kimi Liu
-     * @since Java 21+
      */
     class FnType<T, R> implements Fn<T, R> {
 
@@ -258,7 +256,6 @@ public interface Fn<T, R> extends FunctionX<T, R>, Serializable {
      * @param <T> The entity type.
      * @param <R> The return type.
      * @author Kimi Liu
-     * @since Java 21+
      */
     class FnName<T, R> implements Fn<T, R> {
 
@@ -356,7 +353,6 @@ public interface Fn<T, R> extends FunctionX<T, R>, Serializable {
      *
      * @param <E> The entity type.
      * @author Kimi Liu
-     * @since Java 21+
      */
     class FnArray<E> extends TableMeta {
 

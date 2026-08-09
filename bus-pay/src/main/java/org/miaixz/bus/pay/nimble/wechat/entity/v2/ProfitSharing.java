@@ -32,7 +32,6 @@ import org.miaixz.bus.pay.magic.Voucher;
  * sharing receivers, deleting profit sharing receivers, completing profit sharing.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

@@ -35,7 +35,6 @@ import org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions;
  * retry, worker, and recovery options are inherited from {@link WorkflowBindingOptions}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

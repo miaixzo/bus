@@ -42,7 +42,6 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
  * resource handling, and metadata access.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractDatabaseQuery implements DatabaseQuery {
 

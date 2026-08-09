@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  * Amazon login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AmazonProvider extends AbstractProvider {
 

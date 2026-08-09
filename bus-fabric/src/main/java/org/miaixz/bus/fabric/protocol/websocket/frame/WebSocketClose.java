@@ -34,7 +34,6 @@ import org.miaixz.bus.fabric.Builder;
  * @param reason close reason
  * @param normal normal close flag
  * @author Kimi Liu
- * @since Java 21+
  */
 public record WebSocketClose(int code, String reason, boolean normal) {
 

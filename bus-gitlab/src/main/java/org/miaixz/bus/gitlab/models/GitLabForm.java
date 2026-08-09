@@ -28,7 +28,6 @@ import java.util.Map;
  * The Git lab form class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GitLabForm {
 

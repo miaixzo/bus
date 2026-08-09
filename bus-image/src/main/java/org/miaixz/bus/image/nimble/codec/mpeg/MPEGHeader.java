@@ -28,7 +28,6 @@ import org.miaixz.bus.image.galaxy.data.VR;
  * Represents the MPEGHeader type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MPEGHeader {
 

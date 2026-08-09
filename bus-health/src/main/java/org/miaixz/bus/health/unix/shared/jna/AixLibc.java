@@ -30,7 +30,6 @@ import org.miaixz.bus.health.Parsing;
  * the JNA project.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface AixLibc extends CLibrary {
 
@@ -65,7 +64,6 @@ public interface AixLibc extends CLibrary {
      * Represents the process information structure on AIX.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class AixPsInfo {
 
@@ -247,7 +245,6 @@ public interface AixLibc extends CLibrary {
      * Represents the lightweight process (thread) information structure on AIX.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class AixLwpsInfo {
 
@@ -343,7 +340,6 @@ public interface AixLibc extends CLibrary {
      * 64-bit timestruc required for psinfo structure.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class Timestruc {
 

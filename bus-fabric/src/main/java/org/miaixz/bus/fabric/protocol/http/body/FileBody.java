@@ -33,7 +33,6 @@ import org.miaixz.bus.fabric.codec.body.RequestBody;
  * HTTP file body that opens file streams lazily.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class FileBody implements RequestBody {
 

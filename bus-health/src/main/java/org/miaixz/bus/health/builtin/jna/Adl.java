@@ -32,7 +32,6 @@ import com.sun.jna.win32.StdCallLibrary;
  * removed if/when its code is incorporated into the JNA project.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Adl {
 
@@ -65,7 +64,6 @@ public interface Adl {
      * ADL malloc callback: allocates memory and returns a pointer. Uses __stdcall per ADL SDK.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     interface AdlMallocCallback extends StdCallLibrary.StdCallCallback {
 
@@ -83,7 +81,6 @@ public interface Adl {
      * The AdlLibrary interface.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     interface AdlLibrary extends Library {
 
@@ -203,7 +200,6 @@ public interface Adl {
      * The AdapterInfo class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "iSize", "iAdapterIndex", "strUDID", "iBusNumber", "iDeviceNumber", "iFunctionNumber", "iVendorID",
             "strAdapterName", "strDisplayName", "iPresent", "iExist", "strDriverPath", "strDriverPathExt",
@@ -298,7 +294,6 @@ public interface Adl {
      * The ADLODNPerformanceStatus class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "iCoreClock", "iMemoryClock", "iDCEFClock", "iGFXClock", "iUVDClock", "iVCEClock",
             "iGPUActivityPercent", "iCurrentCorePerformanceLevel", "iCurrentMemoryPerformanceLevel",
@@ -409,7 +404,6 @@ public interface Adl {
      * The ADLODNFanControl class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "iMode", "iFanControlMode", "iCurrentFanSpeedMode", "iCurrentFanSpeed", "iTargetFanSpeed",
             "iTargetTemperature", "iMinPerformanceClock", "iMinFanLimit" })

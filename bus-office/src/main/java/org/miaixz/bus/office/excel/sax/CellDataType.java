@@ -25,7 +25,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Enumeration of cell data types for SAX parsing of Excel files.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum CellDataType {
 

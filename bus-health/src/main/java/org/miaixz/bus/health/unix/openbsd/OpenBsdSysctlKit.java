@@ -35,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
  * Provides access to sysctl calls on OpenBSD
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class OpenBsdSysctlKit {

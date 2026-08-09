@@ -27,7 +27,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * key, allowing for approximate string matching based on pronunciation rather than spelling.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Metaphone implements FuzzyString {
 

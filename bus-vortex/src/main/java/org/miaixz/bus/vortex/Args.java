@@ -46,7 +46,6 @@ import org.miaixz.bus.vortex.strategy.vetting.RestVettingStrategy;
  * @see RestVettingStrategy
  * @see McpVettingStrategy
  * @see RequestStrategy
- * @since Java 21+
  */
 public class Args {
 
@@ -323,7 +322,6 @@ public class Args {
      * prefix like {@code vortex.limit}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter

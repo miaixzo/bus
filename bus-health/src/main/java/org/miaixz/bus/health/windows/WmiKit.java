@@ -37,7 +37,6 @@ import org.miaixz.bus.health.Parsing;
  * Executes WMI queries and converts their result values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class WmiKit {

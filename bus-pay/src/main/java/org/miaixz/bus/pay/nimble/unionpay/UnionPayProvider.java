@@ -35,7 +35,6 @@ import org.miaixz.bus.pay.nimble.AbstractProvider;
  * UnionPay Cloud QuickPass provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UnionPayProvider extends AbstractProvider<Voucher, Context> {
 

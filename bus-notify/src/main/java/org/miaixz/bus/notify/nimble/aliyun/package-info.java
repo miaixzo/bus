@@ -21,6 +21,5 @@
  * Provides support for Alibaba Cloud notification services, including SMS, email, and voice.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.notify.nimble.aliyun;

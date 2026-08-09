@@ -29,7 +29,6 @@ import org.miaixz.bus.auth.metric.JWT;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JWTParser {
 

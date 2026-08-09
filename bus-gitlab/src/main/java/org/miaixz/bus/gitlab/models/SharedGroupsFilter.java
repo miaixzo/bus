@@ -31,7 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * Filter used when listing groups that a specified group has been invited to.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SharedGroupsFilter implements Serializable {
 

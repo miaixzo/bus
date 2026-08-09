@@ -33,7 +33,6 @@ import org.miaixz.bus.fabric.Options;
  * @param options immutable binding options; {@code null} is normalized to {@link Options#empty()}
  * @param <T>     bound value type
  * @author Kimi Liu
- * @since Java 21+
  */
 public record Binding<T>(String key, T value, Options options) {
 

@@ -27,7 +27,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * found sensitive word with an asterisk.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface SensitiveProcessor {
 

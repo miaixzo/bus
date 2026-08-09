@@ -33,7 +33,6 @@ import org.miaixz.bus.fabric.network.Destination;
  * Mutation remains under the existing pool lock; this component intentionally owns no scheduler or lock.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class IdleConnectionIndex {
 

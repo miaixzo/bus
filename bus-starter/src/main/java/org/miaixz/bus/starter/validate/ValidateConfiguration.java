@@ -36,7 +36,6 @@ import org.miaixz.bus.starter.annotation.EnableValidate;
  * annotated with validation constraints.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.miaixz.bus.validate.Builder")

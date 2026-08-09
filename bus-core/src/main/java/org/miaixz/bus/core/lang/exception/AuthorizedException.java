@@ -27,7 +27,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Represents an exception indicating a failure in authorization.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AuthorizedException extends UncheckedException {
 

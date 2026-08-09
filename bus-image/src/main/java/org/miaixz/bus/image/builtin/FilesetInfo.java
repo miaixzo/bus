@@ -28,7 +28,6 @@ import java.util.Optional;
  * provides a structured way to store and access metadata related to a DICOM fileset.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FilesetInfo {
 

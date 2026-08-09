@@ -31,7 +31,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Office integration activation properties; provider details remain owned by bus-office.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

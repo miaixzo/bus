@@ -40,7 +40,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * <a href="https://github.com/Anujraval24/Base58Encoding">https://github.com/Anujraval24/Base58Encoding</a>.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Base58 {
 

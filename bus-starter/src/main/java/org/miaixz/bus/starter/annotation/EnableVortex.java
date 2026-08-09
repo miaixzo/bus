@@ -33,7 +33,6 @@ import org.miaixz.bus.starter.vortex.VortexConfiguration;
  * routing logic.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

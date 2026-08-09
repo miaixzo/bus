@@ -31,7 +31,6 @@ import org.miaixz.bus.pay.magic.Voucher;
  * Refund application model. Supports: general interface refund application, face payment refund, deposit refund.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

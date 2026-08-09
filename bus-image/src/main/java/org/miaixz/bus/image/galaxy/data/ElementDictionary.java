@@ -28,7 +28,6 @@ import java.util.ServiceLoader;
  * Representations (VRs), and keywords. This class supports both standard and private DICOM elements.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class ElementDictionary {
 

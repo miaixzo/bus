@@ -38,7 +38,6 @@ import org.miaixz.bus.fabric.network.udp.UdpDatagramCodec;
  * Strict SOCKS5 UDP relay framing with fragmentation disabled.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Socks5UdpCodec implements UdpDatagramCodec {
 

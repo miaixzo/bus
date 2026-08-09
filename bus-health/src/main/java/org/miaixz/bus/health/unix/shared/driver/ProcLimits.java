@@ -33,7 +33,6 @@ import org.miaixz.bus.health.Parsing;
  * Reads process resource limits from {@code /proc/<pid>/limits}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class ProcLimits {

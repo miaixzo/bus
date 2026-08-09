@@ -29,7 +29,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * read-only callback, but they do not own or modify this holder.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DataSourceHolder {
 

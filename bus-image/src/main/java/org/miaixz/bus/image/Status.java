@@ -38,7 +38,6 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  * and timing information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Status {
 

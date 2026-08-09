@@ -37,7 +37,6 @@ import org.miaixz.bus.notify.nimble.AbstractProvider;
  * Qiniu Cloud SMS service provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class QiniuSmsProvider extends AbstractProvider<QiniuNotice, Context> {
 

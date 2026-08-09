@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The tree item class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TreeItem implements Serializable {
 
@@ -39,7 +38,6 @@ public class TreeItem implements Serializable {
      * The type enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Type {
 

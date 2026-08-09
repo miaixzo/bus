@@ -26,7 +26,6 @@ import org.miaixz.bus.core.lang.Normal;
  * loading to another {@link Loader} instance.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RegexLoader extends PatternLoader implements Loader {
 

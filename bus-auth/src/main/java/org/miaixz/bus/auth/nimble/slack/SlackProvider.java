@@ -45,7 +45,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Slack login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SlackProvider extends AbstractProvider {
 

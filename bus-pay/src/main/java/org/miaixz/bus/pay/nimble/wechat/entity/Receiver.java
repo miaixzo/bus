@@ -31,7 +31,6 @@ import org.miaixz.bus.pay.magic.Voucher;
  * Generic profit sharing receiver.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

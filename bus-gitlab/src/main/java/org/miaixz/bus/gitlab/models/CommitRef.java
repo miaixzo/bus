@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The commit ref class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CommitRef implements Serializable {
 
@@ -53,7 +52,6 @@ public class CommitRef implements Serializable {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum RefType {
 

@@ -27,7 +27,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Multi-string finder. Implemented using the Aho-Corasick automaton algorithm.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MultiStringFinder {
 
@@ -197,7 +196,6 @@ public class MultiStringFinder {
      * Represents a node in the Aho-Corasick automaton.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     protected static class Node {
 

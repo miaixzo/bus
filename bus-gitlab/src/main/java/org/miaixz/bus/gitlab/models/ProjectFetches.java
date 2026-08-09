@@ -32,7 +32,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
  * The project fetches class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProjectFetches implements Serializable {
 
@@ -75,7 +74,6 @@ public class ProjectFetches implements Serializable {
      * The date count class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class DateCount implements Serializable {
 
@@ -133,7 +131,6 @@ public class ProjectFetches implements Serializable {
      * The fetches class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Fetches implements Serializable {
 

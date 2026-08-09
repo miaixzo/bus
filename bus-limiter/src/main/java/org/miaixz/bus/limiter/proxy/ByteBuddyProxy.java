@@ -34,7 +34,6 @@ import org.miaixz.bus.logger.Logger;
  * intercepts all its methods using a {@link ByteBuddyHandler} to apply limiting rules.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ByteBuddyProxy {
 

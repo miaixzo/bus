@@ -34,7 +34,6 @@ import org.miaixz.bus.logger.Logger;
  * {@link ConnectionFactory} for ActiveMQ.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ActiveMQProvider extends JmsProvider {
 

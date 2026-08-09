@@ -33,7 +33,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * Operating-system family classifier parsed from a User-Agent value.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class OsFamily {
 

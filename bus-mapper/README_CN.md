@@ -8,7 +8,7 @@
 
 ## 📖 项目介绍
 
-**Bus Mapper** 是基于 MyBatis 的企业级增强框架。它致力于**在不改变**核心 MyBatis 功能的前提下进行增强,旨在简化开发并提高效率。
+**Bus Mapper** 是基于 MyBatis 的企业级增强框架。它致力于 **在不改变**核心 MyBatis 功能的前提下进行增强,旨在简化开发并提高效率。
 
 -----
 
@@ -24,13 +24,13 @@
 
 ### ⚡ 性能优化
 
-| 特性 | 性能提升 | 描述 |
-| :--- | :--- | :--- |
-| **多值批量插入** | $\uparrow 10-20\text{x}$ | 单条 SQL 语句插入多条记录 |
-| **对象池管理** | $\text{GC } \downarrow 60\%$ | `StringBuilder` 复用减少内存占用 |
-| **智能缓存** | $\text{命中率 } 99.5\%$ | 元数据和 SQL 的多级缓存 |
-| **无锁并发** | $\text{QPS } \uparrow 15\%$ | 使用 `ConcurrentHashMap` 的无锁设计 |
-| **列选择优化** | $\text{网络 } \downarrow 90\%$ | 按需加载字段,减少数据传输 |
+| 特性             | 性能提升                       | 描述                                |
+|:-----------------|:-------------------------------|:------------------------------------|
+| **多值批量插入** | $\uparrow 10-20\text{x}$       | 单条 SQL 语句插入多条记录           |
+| **对象池管理**   | $\text{GC } \downarrow 60\%$   | `StringBuilder` 复用减少内存占用    |
+| **智能缓存**     | $\text{命中率 } 99.5\%$        | 元数据和 SQL 的多级缓存             |
+| **无锁并发**     | $\text{QPS } \uparrow 15\%$    | 使用 `ConcurrentHashMap` 的无锁设计 |
+| **列选择优化**   | $\text{网络 } \downarrow 90\%$ | 按需加载字段,减少数据传输           |
 
 ### 🛡️ 企业级特性
 
@@ -46,7 +46,7 @@
 
 **主流数据库**: MySQL / MariaDB、PostgreSQL、Oracle、SQL Server、SQLite、H2、Hsqldb
 
-**国产数据库**: 神舟通用(Oscar)、瀚高数据库(CirroData)、虚谷数据库(Xugudb)
+**国产数据库**: 神舟通用 (Oscar)、瀚高数据库 (CirroData)、虚谷数据库 (Xugudb)
 
 **企业数据库**: DB2、Informix、AS400、Firebird、Herddb
 
@@ -121,8 +121,9 @@ bus:
           ignore: tenant,token,user
 ```
 
-Spring Boot 配置模型使用 `affix` 作为前缀与后缀改写作用域。内部实现上，`bus-mapper` 提供 `MapperOptions` 作为纯 Java/MyBatis 配置模型，承载 mapper
-属性；插件装配、配置归一化和类型解析由独立组件负责。starter 继续只负责 Spring Boot 绑定、资源解析、Mapper 扫描和生命周期装配。
+Spring Boot 配置模型使用 `affix` 作为前缀与后缀改写作用域。内部实现上，`bus-mapper` 提供 `MapperOptions` 作为纯
+Java/MyBatis 配置模型，承载 mapper 属性；插件装配、配置归一化和类型解析由独立组件负责。starter 继续只负责 Spring Boot
+绑定、资源解析、Mapper 扫描和生命周期装配。
 
 #### 3. 启用 Mapper 扫描
 
@@ -236,7 +237,7 @@ userMapper.deleteById(1L);
 userMapper.deleteBatchByIds(Arrays.asList(1L, 2L, 3L));
 ```
 
-### 4. Lambda 条件查询(类型安全)
+### 4. Lambda 条件查询 (类型安全)
 
 ```java
 // Create condition wrapper
@@ -289,7 +290,7 @@ long count = wrapper
 
 ### 5. 高级查询
 
-#### 流式查询(大数据集)
+#### 流式查询 (大数据集)
 
 ```java
 // Use a cursor to avoid loading into memory all at once
@@ -397,7 +398,7 @@ TenantContext.runWithTenant("tenant_001", () -> {
 });
 ```
 
-#### 快速配置(推荐)
+#### 快速配置 (推荐)
 
 ```java
 @Configuration
@@ -453,7 +454,7 @@ public class MapperConfiguration {
 
 #### 忽略租户过滤
 
-要临时忽略租户过滤(例如,管理员视图):
+要临时忽略租户过滤 (例如,管理员视图):
 
 ```java
 // Temporarily ignore tenant filtering
@@ -503,19 +504,19 @@ bus:
 
 ### 实体类注解
 
-| 注解 | 描述 | 示例 |
-| :--- | :--- | :--- |
-| `@Table` | 指定表名 | `@Table("user")` |
-| `@Id` | 标记主键字段 | `@Id` |
-| `@KeyType` | 主键生成策略 | `@KeyType(KeyType.Type.AUTO)` |
-| `@Column` | 指定列名 | `@Column("user_name")` |
-| `@Version` | 乐观锁版本号 | `@Version` |
-| `@TenantId` | 租户 ID 字段 | `@TenantId` |
-| `@CreateTime` | 创建时间自动填充 | `@CreateTime` |
-| `@UpdateTime` | 更新时间自动填充 | `@UpdateTime` |
-| `@Ignore` | 忽略字段 | `@Ignore` |
-| `@TableAudit` | 表级审计 | `@TableAudit` |
-| `@Audit` | 字段级审计 | `@Audit` |
+| 注解          | 描述             | 示例                          |
+|:--------------|:-----------------|:------------------------------|
+| `@Table`      | 指定表名         | `@Table("user")`              |
+| `@Id`         | 标记主键字段     | `@Id`                         |
+| `@KeyType`    | 主键生成策略     | `@KeyType(KeyType.Type.AUTO)` |
+| `@Column`     | 指定列名         | `@Column("user_name")`        |
+| `@Version`    | 乐观锁版本号     | `@Version`                    |
+| `@TenantId`   | 租户 ID 字段     | `@TenantId`                   |
+| `@CreateTime` | 创建时间自动填充 | `@CreateTime`                 |
+| `@UpdateTime` | 更新时间自动填充 | `@UpdateTime`                 |
+| `@Ignore`     | 忽略字段         | `@Ignore`                     |
+| `@TableAudit` | 表级审计         | `@TableAudit`                 |
+| `@Audit`      | 字段级审计       | `@Audit`                      |
 
 ### 主键策略
 
@@ -730,9 +731,9 @@ TenantConfig config = TenantConfig.builder()
 ## 🔄 版本兼容性
 
 | Bus Mapper 版本 | MyBatis 版本 | Spring Boot 版本 | JDK 版本 |
-| :--- | :--- | :--- | :--- |
-| 8.x | 3.5.x+ | 3.x+ | 17+ |
-| 7.x | 3.5.x+ | 2.x+ | 11+ |
+|:----------------|:-------------|:-----------------|:---------|
+| 8.x             | 3.5.x+       | 3.x+             | 17+      |
+| 7.x             | 3.5.x+       | 2.x+             | 11+      |
 
 -----
 
@@ -782,34 +783,34 @@ wrapper.select(User::getId, User::getName)
 
 基于 JMH 基准测试结果:
 
-### 批量插入性能(10,000 条记录)
+### 批量插入性能 (10,000 条记录)
 
-| 框架 | 耗时 | 性能提升 |
-| :--- | :--- | :--- |
-| 传统循环 | $2500\text{ms}$ | - |
-| MyBatis Flex | $700\text{ms}$ | $\uparrow 3.6\text{x}$ |
+| 框架           | 耗时               | 性能提升                    |
+|:---------------|:-------------------|:----------------------------|
+| 传统循环       | $2500\text{ms}$    | -                           |
+| MyBatis Flex   | $700\text{ms}$     | $\uparrow 3.6\text{x}$      |
 | **Bus Mapper** | **$180\text{ms}$** | **$\uparrow 13.9\text{x}$** |
 
-### 查询性能(1,000 次操作)
+### 查询性能 (1,000 次操作)
 
-| 框架 | 平均延迟 | QPS |
-| :--- | :--- | :--- |
-| MyBatis Flex | $14.5\text{ms}$ | $68/\text{s}$ |
+| 框架           | 平均延迟          | QPS               |
+|:---------------|:------------------|:------------------|
+| MyBatis Flex   | $14.5\text{ms}$   | $68/\text{s}$     |
 | **Bus Mapper** | **$12\text{ms}$** | **$83/\text{s}$** |
 
 ### 缓存效率
 
-| 框架 | 命中率 | 节省时间 |
-| :--- | :--- | :--- |
-| MyBatis Flex | $95\%$ | $520\text{ms}$ |
+| 框架           | 命中率       | 节省时间           |
+|:---------------|:-------------|:-------------------|
+| MyBatis Flex   | $95\%$       | $520\text{ms}$     |
 | **Bus Mapper** | **$99.5\%$** | **$890\text{ms}$** |
 
-### 内存和 GC(1 小时)
+### 内存和 GC (1 小时)
 
-| 指标 | Bus Mapper | MyBatis Flex |
-| :--- | :--- | :--- |
-| Full GC 次数 | $2-3$ | $5-7$ |
-| GC 总时间 | $120\text{ms}$ | $280\text{ms}$ |
+| 指标         | Bus Mapper     | MyBatis Flex   |
+|:-------------|:---------------|:---------------|
+| Full GC 次数 | $2-3$          | $5-7$          |
+| GC 总时间    | $120\text{ms}$ | $280\text{ms}$ |
 
 详细报告：[可疑链接已删除]
 
@@ -853,7 +854,7 @@ int deleteBatchByIds(Collection<I> ids);   // Batch delete
 int delete(T entity);                      // Delete by entity properties
 ```
 
-### ConditionWrapper 方法(流式 API)
+### ConditionWrapper 方法 (流式 API)
 
 ```java
 .eq(User::getName, "John Doe")             // Equals
@@ -892,39 +893,41 @@ bus:
 
 ### 支持的表结构变更
 
-| 变更 | 是否支持 | 必须开启的配置 |
-| :--- | :--- | :--- |
-| 创建缺失表 | 支持 | `allow-create-table: true` |
-| 添加缺失字段 | 支持 | `allow-add-column: true` |
-| 创建主键 | 支持 | `allow-create-primary-key: true` |
-| 创建组合主键 | 支持 | `allow-create-primary-key: true` |
-| 创建普通索引 | 支持 | `allow-create-index: true` |
-| 创建唯一索引 | 支持 | `allow-create-unique: true` |
-| 创建组合索引 | 支持 | `allow-create-index: true` |
-| 创建外键 | 支持 | `allow-create-foreign-key: true` |
-| 修正表/字段注释 | 支持 | `allow-modify-comment: true` |
-| 修改 SQL 类型 | 支持 | `allow-modify-type: true` |
-| 扩大 varchar 长度 | 支持 | `allow-expand-length: true` |
-| 缩小 varchar 长度 | 默认阻止 | `allow-shrink-length: true`、`allow-dangerous: true`、白名单 |
-| 删除字段、索引、主键、外键 | 默认阻止 | 对应 drop 开关、`allow-dangerous: true`、白名单 |
+| 变更                       | 是否支持 | 必须开启的配置                                               |
+|:---------------------------|:---------|:-------------------------------------------------------------|
+| 创建缺失表                 | 支持     | `allow-create-table: true`                                   |
+| 添加缺失字段               | 支持     | `allow-add-column: true`                                     |
+| 创建主键                   | 支持     | `allow-create-primary-key: true`                             |
+| 创建组合主键               | 支持     | `allow-create-primary-key: true`                             |
+| 创建普通索引               | 支持     | `allow-create-index: true`                                   |
+| 创建唯一索引               | 支持     | `allow-create-unique: true`                                  |
+| 创建组合索引               | 支持     | `allow-create-index: true`                                   |
+| 创建外键                   | 支持     | `allow-create-foreign-key: true`                             |
+| 修正表/字段注释            | 支持     | `allow-modify-comment: true`                                 |
+| 修改 SQL 类型              | 支持     | `allow-modify-type: true`                                    |
+| 扩大 varchar 长度          | 支持     | `allow-expand-length: true`                                  |
+| 缩小 varchar 长度          | 默认阻止 | `allow-shrink-length: true`、`allow-dangerous: true`、白名单 |
+| 删除字段、索引、主键、外键 | 默认阻止 | 对应 drop 开关、`allow-dangerous: true`、白名单              |
 
 支持模式：
 
-| 模式 | 行为 |
-| :--- | :--- |
-| `NONE` | 不读取元数据，不生成 SQL，不执行 SQL。 |
-| `SCRIPT` | 读取元数据并输出 SQL 脚本，不执行 DDL。 |
-| `CREATE` | 只创建缺失表，已存在表直接跳过。 |
-| `VALIDATE` | 读取元数据并输出差异报告，不执行 DDL。 |
-| `UPDATE` | 只执行配置明确放行的结构差异。 |
+| 模式       | 行为                                    |
+|:-----------|:----------------------------------------|
+| `NONE`     | 不读取元数据，不生成 SQL，不执行 SQL。  |
+| `SCRIPT`   | 读取元数据并输出 SQL 脚本，不执行 DDL。 |
+| `CREATE`   | 只创建缺失表，已存在表直接跳过。        |
+| `VALIDATE` | 读取元数据并输出差异报告，不执行 DDL。  |
+| `UPDATE`   | 只执行配置明确放行的结构差异。          |
 
 ### 已存在表的处理规则
 
-当数据表已经存在时，Bus Mapper 会读取当前数据库元数据，并与实体元数据进行差异比较。只有同时满足“当前方言支持”和“配置明确放行”的差异才会执行。已有表缺少索引、唯一索引、主键、外键时，可以在启动初始化时补齐。已有字段类型变更必须开启
+当数据表已经存在时，Bus Mapper
+会读取当前数据库元数据，并与实体元数据进行差异比较。只有同时满足“当前方言支持”和“配置明确放行”的差异才会执行。已有表缺少索引、唯一索引、主键、外键时，可以在启动初始化时补齐。已有字段类型变更必须开启
 `allow-modify-type: true`，字段长度扩展必须开启 `allow-expand-length: true`。所有表/字段注释 DDL 都必须开启
 `allow-modify-comment: true`；当该配置为 `false` 时，新建表、新增字段、已有表和已有字段都不会生成注释 SQL。
 
-破坏性变更默认全部阻止。删除字段、删除索引、删除主键、删除外键、缩小字段长度等操作，必须同时满足对应操作开关、`allow-dangerous: true` 和
+破坏性变更默认全部阻止。删除字段、删除索引、删除主键、删除外键、缩小字段长度等操作，必须同时满足对应操作开关、
+`allow-dangerous: true` 和
 `dangerous-whitelist` 白名单。
 
 ### Spring Boot 启动配置示例
@@ -959,8 +962,8 @@ bus:
 
 当项目使用 `configurationProperties.namespaces` 配置多个数据库时，可以把 `schema` 放在对应 namespace 下。词缀规则不在
 `schema` 下重复配置，初始化时会读取同一个 namespace 的 `affix.prefix.value/ignore` 和
-`affix.suffix.value/ignore` 配置。前缀与后缀的忽略表相互独立：忽略其中一端不会阻止另一端生效。
-词缀支持全局和按数据库两种配置：数据源级 `affix.*` 优先，其次使用 `shared.affix.*`、`default.affix.*` 或顶层
+`affix.suffix.value/ignore` 配置。前缀与后缀的忽略表相互独立：忽略其中一端不会阻止另一端生效。 词缀支持全局和按数据库两种配置：数据源级
+`affix.*` 优先，其次使用 `shared.affix.*`、`default.affix.*` 或顶层
 `bus.mapper.affix`。
 
 ```yaml
@@ -998,8 +1001,8 @@ bus:
 ```
 
 `bus.mapper.schema` 仍然保持兼容：没有 namespace 级 `schema` 时按原全局配置执行；存在 namespace 级 `schema` 时，全局
-`bus.mapper.schema` 会作为每个 namespace 的默认模板，避免同一批实体再被全局初始化一次。namespace 的 `name` 同时也是
-schema 初始化使用的唯一数据源路由键，必须与具名数据源 Bean 或动态数据源中注册的路由名称一致。也可以使用
+`bus.mapper.schema` 会作为每个 namespace 的默认模板，避免同一批实体再被全局初始化一次。namespace 的 `name` 同时也是 schema
+初始化使用的唯一数据源路由键，必须与具名数据源 Bean 或动态数据源中注册的路由名称一致。也可以使用
 `configurationProperties.shared.schema` 作为所有 namespace 的默认 schema 配置，再由具体 namespace 覆盖。
 
 生产环境或类生产环境首次启用时，先使用 `SCRIPT` 模式生成 SQL 脚本并人工确认：
@@ -1209,10 +1212,10 @@ BUS_MAPPER_POSTGRES_PASSWORD='your-password' mvn -B -ntp -f bus-mapper/pom.xml \
 
 ### 方言覆盖
 
-所有内置方言均提供 schema 操作：MySQL、PostgreSQL、H2、SQLite、Firebird、Oscar、Oracle9i、SQL Server、
-Polardb、HerdDB、SQL Server 2012、DB2、AS/400、HSQLDB、CirroData、Informix、Oracle、XuguDB、Dameng。每个方言保留原有分页与
-UPSERT 行为，同时通过 `OptionsBehavior.types()` 与各方言直接实现的 `SchemaBehavior` 方法暴露 schema 和 metadata 能力。schema SQL
-规则直接归属于 `org.miaixz.bus.mapper.dialect` 下的对应方言类，例如 MySQL DDL 位于 `MySql`，PostgreSQL DDL 位于
+所有内置方言均提供 schema 操作：MySQL、PostgreSQL、H2、SQLite、Firebird、Oscar、Oracle9i、SQL Server、 Polardb、HerdDB、SQL Server
+2012、DB2、AS/400、HSQLDB、CirroData、Informix、Oracle、XuguDB、Dameng。每个方言保留原有分页与 UPSERT 行为，同时通过
+`OptionsBehavior.types()` 与各方言直接实现的 `SchemaBehavior` 方法暴露 schema 和 metadata 能力。schema SQL 规则直接归属于
+`org.miaixz.bus.mapper.dialect` 下的对应方言类，例如 MySQL DDL 位于 `MySql`，PostgreSQL DDL 位于
 `PostgreSql`，H2 DDL 位于 `H2`。
 
 本方案不使用 Flyway，不使用 Liquibase，也不创建迁移记录表。

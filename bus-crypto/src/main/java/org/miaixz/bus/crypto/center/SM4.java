@@ -43,7 +43,6 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
  * </ol>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SM4 extends Crypto {
 

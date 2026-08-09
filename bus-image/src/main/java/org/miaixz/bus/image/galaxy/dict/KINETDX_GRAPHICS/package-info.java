@@ -21,6 +21,5 @@
  * UID Dictionary from KINETDX_GRAPHICS
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.KINETDX_GRAPHICS;

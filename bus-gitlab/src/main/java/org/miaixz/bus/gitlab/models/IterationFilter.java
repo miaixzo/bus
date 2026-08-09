@@ -34,7 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The iteration filter class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IterationFilter implements Serializable {
 
@@ -294,7 +293,6 @@ public class IterationFilter implements Serializable {
      * The iteration filter state enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum IterationFilterState {
 
@@ -362,7 +360,6 @@ public class IterationFilter implements Serializable {
      * The iteration filter in enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum IterationFilterIn {
 

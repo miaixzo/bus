@@ -49,7 +49,6 @@ import org.miaixz.bus.core.lang.annotation.resolve.processor.SynthesizedAnnotati
  * value retrieval.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface SynthesizedAggregateAnnotation
         extends AggregateAnnotation, Hierarchical, AnnotationSynthesizer, AnnotationAttributeValueProvider {

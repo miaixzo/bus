@@ -31,7 +31,6 @@ import java.util.Objects;
  * candidate switch.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ConnectionException extends SocketException {
 

@@ -27,7 +27,6 @@ import org.miaixz.bus.health.builtin.software.common.AbstractOSThread;
  * OSThread implementation
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class MacOSThread extends AbstractOSThread {

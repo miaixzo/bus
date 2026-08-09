@@ -29,7 +29,6 @@ import java.util.concurrent.locks.StampedLock;
  * standard Java locks as well as custom segment locks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Lock {
 
@@ -68,6 +67,7 @@ public class Lock {
     }
 
     // region ----- SegmentLock
+
     /**
      * Creates a segment lock with strong references, using {@link java.util.concurrent.locks.ReentrantLock} for each
      * segment. Segment locks divide a resource into segments, each protected by its own lock, reducing contention.

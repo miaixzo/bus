@@ -24,7 +24,6 @@ package org.miaixz.bus.shade.beans;
  * date/time types, and other common types.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum MySQLColumnType implements ColumnType {
 

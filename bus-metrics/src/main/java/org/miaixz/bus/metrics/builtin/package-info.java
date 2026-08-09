@@ -21,6 +21,5 @@
  * Built-in instrumentation for JVM, system, HTTP, cache, and framework-neutral application startup metrics.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.metrics.builtin;

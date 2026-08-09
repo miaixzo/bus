@@ -51,7 +51,6 @@ import org.miaixz.bus.mapper.parsing.SqlSource;
  * @param <T> the type parameter for the mapper handler
  * @param <C> the configuration type (e.g., TenantConfig, PopulateConfig, etc.)
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implements MapperHandler<T> {
 
@@ -369,7 +368,6 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
      * Cache key for database-specific feature configuration.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class DerivedConfigKey {
 

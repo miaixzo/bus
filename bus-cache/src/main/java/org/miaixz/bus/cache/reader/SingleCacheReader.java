@@ -35,7 +35,6 @@ import org.miaixz.bus.proxy.invoker.ProxyChain;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Singleton
 public class SingleCacheReader extends AbstractReader {

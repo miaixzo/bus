@@ -46,7 +46,6 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * GitLab repositories as storage buckets.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GitlabFileProvider extends AbstractProvider {
 
@@ -109,7 +108,7 @@ public class GitlabFileProvider extends AbstractProvider {
     public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
                         .build();
             }
 
@@ -130,12 +129,12 @@ public class GitlabFileProvider extends AbstractProvider {
                                     .extend(extend).build())
                     .build();
         } catch (Exception e) {
-            Errors error = ErrorCode._113012;
+            Errors error = ErrorCode._113010;
             if (e instanceof IllegalArgumentException) {
-                error = ErrorCode._113008;
+                error = ErrorCode._113006;
             } else if (StringKit.containsIgnoreCase(e.getMessage(), "404")
                     || StringKit.containsIgnoreCase(e.getMessage(), "not found")) {
-                error = ErrorCode._113010;
+                error = ErrorCode._113008;
             }
             Logger.error(
                     false,
@@ -186,7 +185,7 @@ public class GitlabFileProvider extends AbstractProvider {
     public Message<Blob> streamKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
                         .build();
             }
 
@@ -208,12 +207,12 @@ public class GitlabFileProvider extends AbstractProvider {
                                     .hash(file.getContentSha256()).extend(extend).build())
                     .build();
         } catch (Exception e) {
-            Errors error = ErrorCode._113012;
+            Errors error = ErrorCode._113010;
             if (e instanceof IllegalArgumentException) {
-                error = ErrorCode._113008;
+                error = ErrorCode._113006;
             } else if (StringKit.containsIgnoreCase(e.getMessage(), "404")
                     || StringKit.containsIgnoreCase(e.getMessage(), "not found")) {
-                error = ErrorCode._113010;
+                error = ErrorCode._113008;
             }
             Logger.error(
                     false,

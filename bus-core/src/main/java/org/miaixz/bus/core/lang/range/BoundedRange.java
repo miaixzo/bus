@@ -109,7 +109,6 @@ import org.miaixz.bus.core.lang.Assert;
  * @param <T> the type of the boundary values, which must be comparable
  * @see Bound
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BoundedRange<T extends Comparable<? super T>> implements PredicateX<T> {
 

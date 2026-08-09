@@ -40,7 +40,6 @@ import org.miaixz.bus.core.center.date.culture.star.twentyeight.TwentyEightStar;
  * Represents a day in the Lunar calendar.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LunarDay extends DayParts {
 

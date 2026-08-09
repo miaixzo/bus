@@ -38,7 +38,6 @@ import org.miaixz.bus.gitlab.models.ExternalStatusCheckStatus.Status;
  * <a href="https://docs.gitlab.com/ee/api/status_checks.html">External Status Checks API</a> for more information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ExternalStatusCheckApi extends AbstractApi {
 

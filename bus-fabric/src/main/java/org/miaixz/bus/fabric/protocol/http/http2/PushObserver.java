@@ -28,7 +28,6 @@ import org.miaixz.bus.core.io.ByteString;
  * Observer for HTTP/2 server push events.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface PushObserver {
 

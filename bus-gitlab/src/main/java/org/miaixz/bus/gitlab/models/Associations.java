@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The associations class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Associations implements Serializable {
 

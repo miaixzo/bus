@@ -30,7 +30,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The system hook class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SystemHook implements Serializable {
 
@@ -404,7 +403,6 @@ public class SystemHook implements Serializable {
      * The URL variable class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class UrlVariable implements Serializable {
 

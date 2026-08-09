@@ -28,7 +28,6 @@ import org.miaixz.bus.core.center.date.culture.parts.YearParts;
  * Represents a half-year in the Gregorian calendar.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SolarHalfYear extends YearParts {
 

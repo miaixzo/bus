@@ -33,7 +33,6 @@ import org.miaixz.bus.cortex.registry.StoreBackedRegistry;
  * Registry for MCP tool definitions.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class McpRegistry extends StoreBackedRegistry<McpAssets> {
 

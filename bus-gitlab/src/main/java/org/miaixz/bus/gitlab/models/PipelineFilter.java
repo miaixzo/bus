@@ -35,7 +35,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * This class is used to filter Pipelines when getting lists of them.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PipelineFilter implements Serializable {
 

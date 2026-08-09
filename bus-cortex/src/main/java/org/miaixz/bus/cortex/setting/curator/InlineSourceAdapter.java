@@ -25,7 +25,6 @@ import org.miaixz.bus.cortex.setting.item.Item;
  * Inline resolver that returns the stored content directly.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class InlineSourceAdapter implements ItemSourceAdapter {
 

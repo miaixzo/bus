@@ -35,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
  * A factory for creating {@link TemplateEngine} instances based on the provided configuration.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

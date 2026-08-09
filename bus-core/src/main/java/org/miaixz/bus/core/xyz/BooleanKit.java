@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Parses and combines Boolean values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BooleanKit {
 

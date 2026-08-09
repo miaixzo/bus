@@ -28,7 +28,6 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
  * Pinterest authorization scopes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @AllArgsConstructor

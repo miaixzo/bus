@@ -48,7 +48,6 @@ import org.miaixz.bus.logger.Logger;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PopulateBuilder {
 
@@ -356,7 +355,6 @@ public class PopulateBuilder {
      * Entity metadata holder.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class EntityMetadata {
 

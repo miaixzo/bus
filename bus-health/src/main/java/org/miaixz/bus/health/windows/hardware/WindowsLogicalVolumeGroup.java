@@ -45,7 +45,6 @@ import org.miaixz.bus.logger.Logger;
  * Windows Logical Volume Group
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
 

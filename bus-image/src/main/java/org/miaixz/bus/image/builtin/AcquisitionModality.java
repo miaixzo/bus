@@ -29,7 +29,6 @@ import org.miaixz.bus.image.galaxy.data.Code;
  * code value and a descriptive name. It provides methods to retrieve, add, and remove modality codes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AcquisitionModality {
 

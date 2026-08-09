@@ -48,7 +48,6 @@ import org.miaixz.bus.logger.Logger;
  * Linux hard disk implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class LinuxHWDiskStore extends AbstractHWDiskStore {
@@ -699,12 +698,10 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         return !getDisks(this).isEmpty();
     }
 
-    // Order the field is in udev stats
     /**
      * The UdevStat enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum UdevStat {
 

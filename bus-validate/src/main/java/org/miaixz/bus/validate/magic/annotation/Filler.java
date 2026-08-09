@@ -34,7 +34,6 @@ import java.lang.annotation.*;
  * {@link #value()} attribute of this annotation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Target({ ElementType.METHOD })

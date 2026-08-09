@@ -39,7 +39,6 @@ import org.miaixz.bus.mapper.feature.visible.VisibleProvider;
  * source routing state.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

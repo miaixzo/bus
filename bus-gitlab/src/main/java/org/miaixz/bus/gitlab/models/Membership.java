@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The membership class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Membership implements Serializable {
 

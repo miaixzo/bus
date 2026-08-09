@@ -24,7 +24,6 @@ package org.miaixz.bus.extra.json;
  * Implementations must be side-effect free because a provider may invoke the callback more than once.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface JsonPropertyFilter {

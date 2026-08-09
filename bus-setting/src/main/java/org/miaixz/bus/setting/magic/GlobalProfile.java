@@ -28,7 +28,6 @@ import org.miaixz.bus.setting.Setting;
  * instance, allowing different parts of an application to retrieve profile-specific settings.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GlobalProfile {
 

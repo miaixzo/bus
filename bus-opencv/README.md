@@ -202,7 +202,7 @@ public class VideoExample {
 
 ```java
 public class ObjectDetectionExample {
-    
+
     public void detectObjects(String imagePath) {
         Mat image = Imgcodecs.imread(imagePath);
 
@@ -218,7 +218,7 @@ public class ObjectDetectionExample {
                 + " at " + obj.getBoundingBox());
         }
     }
-    
+
 }
 ```
 

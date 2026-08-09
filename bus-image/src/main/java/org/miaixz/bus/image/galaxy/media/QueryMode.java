@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.media;
  * Manifest completion mode used by a remote query connector.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum QueryMode {
 

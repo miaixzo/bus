@@ -34,7 +34,6 @@ import org.miaixz.bus.image.galaxy.data.*;
  * Represents the SAXWriter type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SAXWriter implements ImageInputHandler {
 

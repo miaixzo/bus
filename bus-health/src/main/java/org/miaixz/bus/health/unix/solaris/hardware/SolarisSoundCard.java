@@ -36,7 +36,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractSoundCard;
  * Solaris Sound Card.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class SolarisSoundCard extends AbstractSoundCard {

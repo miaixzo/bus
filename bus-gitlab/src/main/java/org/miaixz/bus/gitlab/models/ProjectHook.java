@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The project hook class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProjectHook implements Serializable {
 

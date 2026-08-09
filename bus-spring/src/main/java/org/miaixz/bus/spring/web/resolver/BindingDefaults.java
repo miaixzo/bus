@@ -23,7 +23,6 @@ package org.miaixz.bus.spring.web.resolver;
  * Default package rules used by web binding and type resolution.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class BindingDefaults {
 

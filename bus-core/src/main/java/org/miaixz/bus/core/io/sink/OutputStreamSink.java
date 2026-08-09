@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * A {@link Sink} implementation that writes buffer segments to an {@link OutputStream}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class OutputStreamSink implements Sink {
 

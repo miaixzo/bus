@@ -68,7 +68,6 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsZoneMode;
  * DNS server runtime that serves UDP and TCP queries from an immutable snapshot index.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsServer implements AutoCloseable, Lifecycle {
 

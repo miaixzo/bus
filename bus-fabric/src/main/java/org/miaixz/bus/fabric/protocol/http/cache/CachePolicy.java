@@ -39,7 +39,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  * Pure HTTP cache policy.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class CachePolicy implements Policy {
 

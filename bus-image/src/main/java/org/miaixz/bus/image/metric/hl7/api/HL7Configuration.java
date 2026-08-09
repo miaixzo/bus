@@ -27,7 +27,6 @@ import org.miaixz.bus.image.metric.hl7.net.HL7ApplicationInfo;
  * Defines the HL7Configuration contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface HL7Configuration {
 

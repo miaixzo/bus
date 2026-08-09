@@ -32,7 +32,6 @@ import java.util.Objects;
  * @param <M> the middle element type
  * @param <R> the right element type
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Triplet<L, M, R> extends Pair<L, R> {
 

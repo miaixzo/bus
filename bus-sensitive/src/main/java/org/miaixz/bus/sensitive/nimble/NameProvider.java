@@ -34,7 +34,6 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
  * is masked. 3. If the name has 3 or more characters, only the first and last characters are kept visible.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NameProvider extends AbstractProvider {
 

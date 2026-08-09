@@ -30,7 +30,6 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  * The jira service class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JiraService extends NotificationService {
 

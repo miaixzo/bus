@@ -47,7 +47,6 @@ import reactor.core.publisher.Mono;
  * installed {@link AdmissionFilter} remains the outer lifecycle boundary.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.MIN_VALUE)
 public class PrimaryFilter extends AbstractFilter {
@@ -157,7 +156,6 @@ public class PrimaryFilter extends AbstractFilter {
      * {@link WebFilterChain}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public class Chain implements Strategy.Chain {
 

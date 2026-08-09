@@ -46,7 +46,6 @@ import org.miaixz.bus.mapper.feature.keygen.GenId;
  * field.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

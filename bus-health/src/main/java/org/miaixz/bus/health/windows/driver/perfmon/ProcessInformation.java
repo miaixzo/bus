@@ -32,7 +32,6 @@ import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
  * Queries Process Information performance counter
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class ProcessInformation {
@@ -93,7 +92,6 @@ public final class ProcessInformation {
      * Process performance counters
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ProcessPerformanceProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 
@@ -168,7 +166,6 @@ public final class ProcessInformation {
      * Handle performance counters
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum HandleCountProperty implements PerfCounterQuery.PdhCounterProperty {
 
@@ -224,7 +221,6 @@ public final class ProcessInformation {
      * Processor performance counters
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum IdleProcessorTimeProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 

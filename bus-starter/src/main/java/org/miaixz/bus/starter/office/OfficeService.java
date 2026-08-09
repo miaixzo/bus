@@ -29,7 +29,6 @@ import org.miaixz.bus.office.Registry;
  * conversions) into a central registry upon application startup.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class OfficeService {
 

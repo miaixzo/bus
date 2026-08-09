@@ -36,7 +36,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * Creates the convenient creation of file watchers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WatchKit {
 

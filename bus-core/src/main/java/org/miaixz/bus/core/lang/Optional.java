@@ -39,7 +39,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @param <T> The type of the value held by this {@code Optional}.
  * @see java.util.Optional
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Optional<T> {
 

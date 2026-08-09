@@ -34,7 +34,6 @@ import org.miaixz.bus.gitlab.models.Label;
  * @see <a href="https://docs.gitlab.com/ce/api/labels.html">Labels API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/group_labels.html">Group Labels API at GitLab</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LabelsApi extends AbstractApi {
 

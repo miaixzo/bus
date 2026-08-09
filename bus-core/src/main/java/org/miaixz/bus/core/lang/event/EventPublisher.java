@@ -23,7 +23,6 @@ package org.miaixz.bus.core.lang.event;
  * Interface for event publishers, used to publish events to registered subscribers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface EventPublisher {
 

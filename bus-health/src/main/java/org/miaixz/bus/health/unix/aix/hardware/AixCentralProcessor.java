@@ -45,7 +45,6 @@ import org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatCpu;
  * A CPU
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class AixCentralProcessor extends AbstractCentralProcessor {

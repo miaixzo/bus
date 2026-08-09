@@ -30,7 +30,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Durable version-domain store.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface VersionStore {
 

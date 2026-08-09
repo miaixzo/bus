@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Image_Stamp;
  * Represents the PrivateTag type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PrivateTag {
 

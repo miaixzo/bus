@@ -32,7 +32,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  *
  * @param <T> The generic type of the entity class.
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ClassMapper<T> {
 
@@ -58,7 +57,6 @@ public interface ClassMapper<T> {
      * Caches entity class types.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class CachingEntityClass {
 

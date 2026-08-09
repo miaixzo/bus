@@ -37,7 +37,6 @@ import org.miaixz.bus.core.lang.loader.spi.ServiceLoader;
  * only when exactly one provider can be instantiated from the current classpath.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JsonFactory {
 

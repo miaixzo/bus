@@ -30,7 +30,6 @@ import java.util.NoSuchElementException;
  *
  * @param <T> the type of elements returned by this iterator
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class ComputeIterator<T> implements Iterator<T> {
 

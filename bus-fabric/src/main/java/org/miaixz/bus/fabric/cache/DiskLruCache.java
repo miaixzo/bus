@@ -47,7 +47,6 @@ import org.miaixz.bus.logger.Logger;
  * files.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DiskLruCache implements Closeable, Flushable {
 
@@ -973,7 +972,6 @@ public class DiskLruCache implements Closeable, Flushable {
      * interface is easier to implement and works on all versions of Java and Android.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface DiskFile {
 
@@ -1195,7 +1193,6 @@ public class DiskLruCache implements Closeable, Flushable {
      * A snapshot of the values for an entry.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public final class Snapshot implements Closeable {
 
@@ -1289,7 +1286,6 @@ public class DiskLruCache implements Closeable, Flushable {
      * Edits the values for an entry.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public final class Editor {
 
@@ -1789,7 +1785,6 @@ public class DiskLruCache implements Closeable, Flushable {
      * Live cache entry bound to the outer cache directory and journal lifecycle.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private class Entry extends State {
 

@@ -23,7 +23,6 @@ package org.miaixz.bus.pay.nimble;
  * Unified interface for scope classes of various platforms.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface PayScope {
 

@@ -31,7 +31,6 @@ import java.util.Objects;
  * @param imageHeight      the image height.
  * @param unit             the unit.
  * @author Kimi Liu
- * @since Java 21+
  */
 public record MeasurementsAdapter(double calibrationRatio, int offsetX, int offsetY, boolean upYAxis, int imageHeight,
         String unit) {

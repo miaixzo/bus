@@ -35,7 +35,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstraction
  * Graphics Card info obtained from prtconf
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class SolarisGraphicsCard extends AbstractGraphicsCard {

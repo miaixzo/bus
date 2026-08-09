@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the PDUEncoder type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PDUEncoder extends PDVOutputStream {
 

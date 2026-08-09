@@ -35,7 +35,6 @@ import org.miaixz.bus.health.unix.solaris.software.SolarisOperatingSystem;
  * SolarisNetworks class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class SolarisNetworkIF extends AbstractNetworkIF {

@@ -21,6 +21,5 @@
  * Provides classes related to the Minor Liu Ren (小六壬) divination system.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.center.date.culture.ren;

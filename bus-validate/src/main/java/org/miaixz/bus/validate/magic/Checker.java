@@ -42,7 +42,6 @@ import org.miaixz.bus.validate.magic.annotation.NotBlank;
  * {@link Verified} object and its associated {@link Criterion} rules.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Checker {
 

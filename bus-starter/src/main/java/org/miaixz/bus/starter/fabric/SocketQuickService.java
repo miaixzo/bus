@@ -34,7 +34,6 @@ import org.miaixz.bus.logger.Logger;
  * Service class that manages a current-fabric TCP socket server lifecycle.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SocketQuickService {
 

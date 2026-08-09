@@ -35,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
  * readiness probes are critical.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AvailabilityListener {
 

@@ -22,6 +22,5 @@
  * fields, including field invocation and reflection.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.lang.reflect.field;

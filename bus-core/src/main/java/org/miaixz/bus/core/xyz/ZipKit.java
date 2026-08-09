@@ -47,7 +47,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  *
  * @see ZipWriter
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ZipKit {
 

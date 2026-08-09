@@ -28,7 +28,6 @@ import org.miaixz.bus.image.nimble.codec.ImageReaderFactory;
  * Represents the ImageReaderExtension type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageReaderExtension extends DeviceExtension {
 

@@ -41,7 +41,6 @@ import org.miaixz.bus.image.metric.hl7.HL7Segment;
  * optionally apply an XSLT transformation during the conversion process.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HL72Xml {
 

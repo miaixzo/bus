@@ -28,7 +28,6 @@ import org.miaixz.bus.proxy.Aspect;
  * A simple base class for interceptors, holding a reference to the target object and the aspect to be applied.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Interceptor implements Serializable {
 

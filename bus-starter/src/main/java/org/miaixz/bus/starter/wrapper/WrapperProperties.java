@@ -33,7 +33,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Wrapper aggregate activation switch; all feature options use dedicated properties classes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

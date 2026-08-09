@@ -33,7 +33,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * O(compression), and the ability to merge digests from multiple instances.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class TDigest {
 
@@ -258,7 +257,6 @@ class TDigest {
      * A centroid is a cluster of values approximated by their weighted mean.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class Centroid {
 

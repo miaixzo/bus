@@ -42,7 +42,6 @@ import org.miaixz.bus.fabric.Builder;
  * Public suffix list backed domain boundary checks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class PublicSuffix {
 

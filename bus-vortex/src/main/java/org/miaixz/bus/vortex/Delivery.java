@@ -26,7 +26,6 @@ package org.miaixz.bus.vortex;
  * reserved for bounded format conversion and is therefore not returned by {@link #of(Integer)}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Delivery {
 

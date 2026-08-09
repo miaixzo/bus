@@ -21,6 +21,5 @@
  * Provides classes that model the structure of an INI configuration file, including sections, properties, and comments.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.setting.nimble.ini;

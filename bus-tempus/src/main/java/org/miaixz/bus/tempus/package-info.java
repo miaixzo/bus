@@ -34,6 +34,5 @@
  * {@link org.miaixz.bus.tempus.Scheduler} instance.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.tempus;

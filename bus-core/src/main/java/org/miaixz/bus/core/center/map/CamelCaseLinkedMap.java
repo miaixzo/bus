@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.Normal;
  * @param <K> The type of keys in the map (typically {@code String}).
  * @param <V> The type of values in the map.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CamelCaseLinkedMap<K, V> extends CamelCaseMap<K, V> {
 

@@ -39,7 +39,6 @@ import org.miaixz.bus.vortex.strategy.ResponseStrategy;
  * {@link ResponseStrategy} to dynamically handle different data formats.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @NoArgsConstructor

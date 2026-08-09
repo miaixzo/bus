@@ -71,7 +71,6 @@ import java.util.List;
  *
  * @param <T> the type of content in the page
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Page<T> extends ArrayList<T> {
 
@@ -398,7 +397,6 @@ public class Page<T> extends ArrayList<T> {
      *
      * @param <T> the type of content
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Builder<T> {
 

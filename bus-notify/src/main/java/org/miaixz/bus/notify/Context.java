@@ -29,7 +29,6 @@ import lombok.experimental.SuperBuilder;
  * Configuration information for notification services.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

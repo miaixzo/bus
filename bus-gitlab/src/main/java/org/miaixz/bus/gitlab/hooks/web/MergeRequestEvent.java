@@ -31,7 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The merge request event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MergeRequestEvent extends AbstractEvent {
 
@@ -242,7 +241,6 @@ public class MergeRequestEvent extends AbstractEvent {
      * The object attributes class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class ObjectAttributes extends EventMergeRequest {
 

@@ -30,7 +30,6 @@ import org.miaixz.bus.image.metric.json.JSONWriter;
  * Defines the JsonHL7ConfigurationExtension contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface JsonHL7ConfigurationExtension {
 

@@ -40,7 +40,6 @@ import org.miaixz.bus.cortex.builtin.LabelMapper;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
@@ -110,7 +109,8 @@ public class Assets extends Nature {
      * <li>{@code 3}: file download with separate admission and progress protection</li>
      * </ul>
      */
-    private Integer stream;
+    @Builder.Default
+    private Integer stream = 1;
 
     /**
      * HTTP request method (verb). {@code 1}=GET, {@code 2}=POST, {@code 3}=HEAD, {@code 4}=PUT, {@code 5}=PATCH,

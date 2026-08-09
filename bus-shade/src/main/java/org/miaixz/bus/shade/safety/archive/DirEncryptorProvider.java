@@ -32,7 +32,6 @@ import org.miaixz.bus.shade.safety.provider.EntryEncryptorProvider;
  * encrypt files within a directory, applying a filter to determine which files should be encrypted.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DirEncryptorProvider extends EntryEncryptorProvider<File> implements EncryptorProvider {
 

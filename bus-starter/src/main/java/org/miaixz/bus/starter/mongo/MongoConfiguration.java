@@ -43,7 +43,6 @@ import org.miaixz.bus.starter.annotation.EnableMongo;
  * sequence.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(value = { MongoProperties.class })
 @Configuration(proxyBeanMethods = false)

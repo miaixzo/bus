@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Utilities for applying common TLS parameters to JSSE engines.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TlsParameters {
 

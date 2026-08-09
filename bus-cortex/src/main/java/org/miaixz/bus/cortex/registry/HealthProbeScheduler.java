@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  * Server-side active health probe scheduler.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, CortexDiagnostics {
 

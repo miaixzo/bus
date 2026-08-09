@@ -23,7 +23,6 @@ package org.miaixz.bus.tempus.temporal.worker;
  * Known Temporal workflow transport states.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum WorkflowTransportState {
 

@@ -41,7 +41,6 @@ import org.miaixz.bus.fabric.codec.body.ResponseBody;
  * Immutable payload-backed body that combines HTTP media metadata, length, and progress tracking.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class PayloadBody implements RequestBody, ResponseBody, ProgressBody {
 

@@ -24,7 +24,6 @@ package org.miaixz.bus.auth.nimble;
  * scope string and check if a scope is enabled by default.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface AuthorizeScope {
 

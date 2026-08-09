@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The saml group link class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SamlGroupLink implements Serializable {
 

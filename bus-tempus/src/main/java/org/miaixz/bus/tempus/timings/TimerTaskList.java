@@ -32,7 +32,6 @@ import org.miaixz.bus.tempus.crontab.TimerCrontab;
  * acts as a bucket for tasks that expire within the same time range.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TimerTaskList implements Delayed {
 

@@ -34,7 +34,6 @@ import org.miaixz.bus.fabric.Clock;
  * Host resolver contract with a default JDK DNS implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Resolver {
 

@@ -33,7 +33,6 @@ import com.caucho.hessian.io.Hessian2Output;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Hessian2Serializer extends AbstractSerializer {
 

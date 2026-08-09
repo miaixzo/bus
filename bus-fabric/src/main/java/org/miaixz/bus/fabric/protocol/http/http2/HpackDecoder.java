@@ -43,7 +43,6 @@ import org.miaixz.bus.fabric.Builder;
  * Reader-thread-owned HPACK decoder with static, Huffman and dynamic table support.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class HpackDecoder {
 

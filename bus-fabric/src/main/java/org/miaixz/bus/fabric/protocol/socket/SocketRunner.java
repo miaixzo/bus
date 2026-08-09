@@ -71,7 +71,6 @@ import org.miaixz.bus.logger.Logger;
  * Opens socket sessions from an immutable socket exchange specification.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class SocketRunner {
 

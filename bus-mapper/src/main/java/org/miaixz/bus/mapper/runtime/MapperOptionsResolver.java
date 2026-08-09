@@ -47,7 +47,6 @@ import org.miaixz.bus.mapper.Charter.Schema;
  * mapper handlers, and resolves higher-level options that are stored inside that property contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class MapperOptionsResolver {
 

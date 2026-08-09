@@ -49,7 +49,6 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * for file storage operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SftpFileProvider extends AbstractProvider {
 
@@ -126,13 +125,13 @@ public class SftpFileProvider extends AbstractProvider {
     public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
                         .build();
             }
 
             FtpEntry entry = client.entry(objectKey);
             if (entry == null || entry.isDirectory()) {
-                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
 
@@ -143,12 +142,12 @@ public class SftpFileProvider extends AbstractProvider {
                                     .build())
                     .build();
         } catch (Exception e) {
-            Errors error = ErrorCode._113012;
+            Errors error = ErrorCode._113010;
             if (e instanceof IllegalArgumentException) {
-                error = ErrorCode._113008;
+                error = ErrorCode._113006;
             } else if (StringKit.containsIgnoreCase(e.getMessage(), "No such file")
                     || StringKit.containsIgnoreCase(e.getMessage(), "does not exist")) {
-                error = ErrorCode._113010;
+                error = ErrorCode._113008;
             }
             Logger.error(
                     false,
@@ -198,19 +197,19 @@ public class SftpFileProvider extends AbstractProvider {
     public Message<Blob> streamKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
                         .build();
             }
 
             FtpEntry entry = client.entry(objectKey);
             if (entry == null || entry.isDirectory()) {
-                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
 
             InputStream inputStream = client.getFileStream(objectKey);
             if (inputStream == null) {
-                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
 
@@ -221,12 +220,12 @@ public class SftpFileProvider extends AbstractProvider {
                                     .extend(toExtend(entry)).build())
                     .build();
         } catch (Exception e) {
-            Errors error = ErrorCode._113012;
+            Errors error = ErrorCode._113010;
             if (e instanceof IllegalArgumentException) {
-                error = ErrorCode._113008;
+                error = ErrorCode._113006;
             } else if (StringKit.containsIgnoreCase(e.getMessage(), "No such file")
                     || StringKit.containsIgnoreCase(e.getMessage(), "does not exist")) {
-                error = ErrorCode._113010;
+                error = ErrorCode._113008;
             }
             Logger.error(
                     false,

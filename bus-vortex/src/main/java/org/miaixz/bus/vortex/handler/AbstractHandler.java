@@ -30,7 +30,6 @@ import org.miaixz.bus.vortex.Handler;
  * lifecycle (e.g., only in {@code preHandle}).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractHandler implements Handler {
 

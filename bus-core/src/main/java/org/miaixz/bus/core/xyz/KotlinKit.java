@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.reflect.kotlin.KParameter;
  * Invokes Kotlin reflection through Java wrappers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class KotlinKit {
 

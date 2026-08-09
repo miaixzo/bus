@@ -52,7 +52,6 @@ import org.miaixz.bus.core.xyz.*;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NumberConverter extends AbstractConverter implements MatcherConverter {
 

@@ -31,7 +31,6 @@ import org.bouncycastle.crypto.params.ParametersWithIV;
  * BouncyCastle library is included, it is automatically used as the provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BCHMac extends BCMac {
 

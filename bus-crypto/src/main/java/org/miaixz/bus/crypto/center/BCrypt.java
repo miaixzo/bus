@@ -48,7 +48,6 @@ import org.miaixz.bus.logger.Logger;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BCrypt {
 
@@ -226,7 +225,7 @@ public class BCrypt {
      * @param d   the byte array to encode
      * @param len the number of bytes to encode
      * @return base64-encoded string
-     * @exception IllegalArgumentException if the length is invalid
+     * @throws IllegalArgumentException if the length is invalid
      */
     private static String encode_base64(final byte[] d, final int len) throws IllegalArgumentException {
         int off = 0;

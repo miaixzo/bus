@@ -29,7 +29,6 @@ import org.miaixz.bus.image.metric.Connection;
  * Represents the ApplicationEntityInfo type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ApplicationEntityInfo implements Serializable {
 

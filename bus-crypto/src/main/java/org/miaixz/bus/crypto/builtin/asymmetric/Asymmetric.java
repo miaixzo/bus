@@ -40,7 +40,6 @@ import org.miaixz.bus.crypto.Keeper;
  *
  * @param <T> The type of this class.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
 

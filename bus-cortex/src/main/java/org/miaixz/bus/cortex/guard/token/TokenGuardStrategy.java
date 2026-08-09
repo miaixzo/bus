@@ -35,7 +35,6 @@ import org.miaixz.bus.cortex.guard.GuardStrategy;
  * reusable Cortex model.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TokenGuardStrategy implements GuardStrategy {
 

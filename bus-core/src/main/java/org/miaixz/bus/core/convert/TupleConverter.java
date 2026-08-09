@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.tuple.Tuple;
  * Converter for {@link Tuple} objects
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TupleConverter implements Converter {
 

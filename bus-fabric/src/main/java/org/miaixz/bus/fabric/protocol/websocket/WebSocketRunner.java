@@ -50,7 +50,6 @@ import org.miaixz.bus.logger.Logger;
  * Opens WebSocket sessions from an immutable exchange specification.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class WebSocketRunner {
 

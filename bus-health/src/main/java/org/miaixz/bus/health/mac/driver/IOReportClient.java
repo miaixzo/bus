@@ -47,7 +47,6 @@ import org.miaixz.bus.health.mac.jna.IOReport;
  * return sentinel values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class IOReportClient {
 
@@ -385,7 +384,6 @@ public final class IOReportClient {
      * Holds the merged state-residency map and the number of IOReport channels that contributed to it.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class ChannelStates {
 

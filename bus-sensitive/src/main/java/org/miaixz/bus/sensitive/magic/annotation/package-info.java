@@ -21,6 +21,5 @@
  * Provides annotations for configuring data desensitization and encryption.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.sensitive.magic.annotation;

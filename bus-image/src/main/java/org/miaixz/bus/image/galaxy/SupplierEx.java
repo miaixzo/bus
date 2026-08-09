@@ -25,7 +25,6 @@ package org.miaixz.bus.image.galaxy;
  * @param <T> the t type.
  * @param <E> the e type.
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface SupplierEx<T, E extends Exception> {

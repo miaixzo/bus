@@ -23,7 +23,6 @@ package org.miaixz.bus.fabric;
  * User callback contract for received session messages, failures, and close notifications.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Handler {
 

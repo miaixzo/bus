@@ -30,7 +30,6 @@ import java.util.Iterator;
  *
  * @param <E> the type of elements returned by this iterator
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EnumerationIterator<E> implements IterableIterator<E>, Serializable {
 

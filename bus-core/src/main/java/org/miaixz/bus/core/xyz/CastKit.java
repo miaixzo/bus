@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.Assert;
  * generic collections, maps, etc.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CastKit {
 

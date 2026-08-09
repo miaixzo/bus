@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * {@link #flush()} only when necessary.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GzipSink implements Sink {
 

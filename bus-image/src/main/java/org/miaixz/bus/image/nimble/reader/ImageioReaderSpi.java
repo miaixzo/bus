@@ -34,7 +34,6 @@ import org.miaixz.bus.image.galaxy.data.Implementation;
  * Represents the ImageioReaderSpi type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageioReaderSpi extends ImageReaderSpi {
 

@@ -25,7 +25,6 @@ import org.miaixz.bus.pay.Matcher;
  * UnionPay Cloud QuickPass APIs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum UnionPayApi implements Matcher {
 

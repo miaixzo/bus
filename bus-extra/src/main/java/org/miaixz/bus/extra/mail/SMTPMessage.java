@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  * sending emails. This class simplifies the process of setting headers, content, and attachments.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SMTPMessage extends MimeMessage {
 

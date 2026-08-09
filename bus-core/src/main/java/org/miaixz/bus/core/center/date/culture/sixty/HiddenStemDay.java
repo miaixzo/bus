@@ -26,7 +26,6 @@ import org.miaixz.bus.core.center.date.culture.Replenish;
  * {@link HiddenStem} with a day index.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HiddenStemDay extends Replenish {
 

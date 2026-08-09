@@ -47,7 +47,6 @@ import org.miaixz.bus.core.lang.reflect.Invoker;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface BeanDesc extends Serializable {
 

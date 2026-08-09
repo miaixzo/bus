@@ -22,6 +22,5 @@
  * implemented to enhance the functionality of the target object.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.lang.wrapper;

@@ -42,7 +42,6 @@ import org.miaixz.bus.core.lang.copier.Copier;
  *
  * @param <T> The type of the target object.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BeanCopier<T> implements Copier<T>, Serializable {
 

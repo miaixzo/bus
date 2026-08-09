@@ -52,7 +52,6 @@ import reactor.util.annotation.NonNull;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class VortexHandler {
 
@@ -123,7 +122,7 @@ public class VortexHandler {
                         "Request context is null: clientIp=N/A, method={}, path={}, event=CONTEXT_ERROR",
                         method,
                         path);
-                throw new ValidateException(ErrorCode._116000);
+                throw new ValidateException(ErrorCode._100710);
             }
             final String ip = context.getX_request_ip();
             ServerWebExchange exchange = request.exchange();
@@ -165,7 +164,7 @@ public class VortexHandler {
                         method,
                         path,
                         protocol);
-                throw new ValidateException(ErrorCode._116005);
+                throw new ValidateException(ErrorCode._116000);
             }
 
             Router<ServerRequest, ?> router = routers.get(protocol);

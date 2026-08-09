@@ -63,7 +63,6 @@ import org.miaixz.bus.starter.annotation.EnableStorage;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(value = { StorageProperties.class })
 @Configuration(proxyBeanMethods = false)

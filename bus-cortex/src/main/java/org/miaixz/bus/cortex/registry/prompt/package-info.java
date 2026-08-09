@@ -25,6 +25,5 @@
  * coordinates optional durable persistence, cache projection, and watch notifications for prompt definitions.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.registry.prompt;

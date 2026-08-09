@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.dict.mitra_object_document_1_0;
  * Represents the PrivateTag type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PrivateTag {
 

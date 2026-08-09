@@ -39,7 +39,6 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsZone;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsNotifyHandler {
 
@@ -147,7 +146,6 @@ public final class DnsNotifyHandler {
     /**
      * Snapshot refresh operation invoked after NOTIFY validation succeeds.
      *
-     * @since Java 21+
      */
     @FunctionalInterface
     public interface RefreshAction {

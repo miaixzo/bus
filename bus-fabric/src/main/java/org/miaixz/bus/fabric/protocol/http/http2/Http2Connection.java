@@ -56,7 +56,6 @@ import org.miaixz.bus.logger.Logger;
  * HTTP/2 connection with stream registry and frame IO.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Http2Connection implements AutoCloseable {
 

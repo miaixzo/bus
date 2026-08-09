@@ -37,7 +37,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Unified authorization response class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

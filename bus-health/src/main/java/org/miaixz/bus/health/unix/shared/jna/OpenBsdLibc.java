@@ -29,7 +29,6 @@ import com.sun.jna.Structure.FieldOrder;
  * into the JNA project.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface OpenBsdLibc extends CLibrary {
 
@@ -221,7 +220,6 @@ public interface OpenBsdLibc extends CLibrary {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "numbufs", "numbufpages", "numdirtypages", "numcleanpages", "pendingwrites", "pendingreads",
             "numwrites", "numreads", "cachehits", "busymapped", "dmapages", "highpages", "delwribufs", "kvaslots",
@@ -321,7 +319,6 @@ public interface OpenBsdLibc extends CLibrary {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Timeval extends Structure {

@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Pinyin engine interface. Implementations of this interface provide specific Pinyin conversion functionalities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface PinyinProvider extends Provider {
 

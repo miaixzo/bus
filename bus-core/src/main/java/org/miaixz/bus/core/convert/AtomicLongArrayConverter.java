@@ -26,7 +26,6 @@ import java.util.concurrent.atomic.AtomicLongArray;
  * Converts an object to an {@link AtomicLongArray}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AtomicLongArrayConverter extends AbstractConverter {
 

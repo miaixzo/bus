@@ -26,7 +26,6 @@ import java.lang.reflect.Type;
  * {@link Type} interface to allow it to be used in contexts where a type is expected.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NullType implements Type {
 

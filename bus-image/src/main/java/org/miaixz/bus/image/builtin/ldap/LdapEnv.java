@@ -28,7 +28,6 @@ import javax.naming.Context;
  * Represents the LdapEnv type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LdapEnv extends Hashtable<String, Object> {
 

@@ -38,7 +38,6 @@ import org.miaixz.bus.logger.Logger;
  * Maps {@link ResultSet} data to Java objects.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Mapping {
 

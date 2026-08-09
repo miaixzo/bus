@@ -40,7 +40,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Teambition login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TeambitionProvider extends AbstractProvider {
 

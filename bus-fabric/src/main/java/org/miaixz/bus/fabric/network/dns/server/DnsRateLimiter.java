@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Per-client fixed-window DNS query rate limiter used before resolution.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class DnsRateLimiter {
 
@@ -91,7 +90,6 @@ final class DnsRateLimiter {
      * Per-client fixed-window counter.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class Counter {
 

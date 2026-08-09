@@ -26,7 +26,6 @@ package org.miaixz.bus.spring;
  * the same scope more than once has no effect.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ContextScope implements AutoCloseable {
 

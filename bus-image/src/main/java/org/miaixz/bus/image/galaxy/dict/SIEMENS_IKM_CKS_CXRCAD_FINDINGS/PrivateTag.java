@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_IKM_CKS_CXRCAD_FINDINGS;
  * Represents the PrivateTag type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PrivateTag {
 

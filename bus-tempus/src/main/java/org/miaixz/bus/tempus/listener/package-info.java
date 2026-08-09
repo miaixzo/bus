@@ -21,6 +21,5 @@
  * Provides listener interfaces and implementations for cron task execution events.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.tempus.listener;

@@ -27,7 +27,6 @@ import java.util.Objects;
  * @param name           stable stage name used as the metrics tag
  * @param durationMillis stage duration in milliseconds
  * @author Kimi Liu
- * @since Java 21+
  */
 public record StartupStage(String name, long durationMillis) {
 

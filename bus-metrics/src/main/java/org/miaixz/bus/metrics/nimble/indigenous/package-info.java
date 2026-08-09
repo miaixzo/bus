@@ -23,6 +23,5 @@
  * NativeSloTracker, TDigest, and NativeProvider (the default SPI impl).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.metrics.nimble.indigenous;

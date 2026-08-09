@@ -41,7 +41,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Taobao login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TaobaoProvider extends AbstractProvider {
 

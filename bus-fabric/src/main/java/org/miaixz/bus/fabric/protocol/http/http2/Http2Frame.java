@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * Immutable HTTP/2 frame value.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Http2Frame implements AutoCloseable {
 

@@ -34,7 +34,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractFirmware;
  * Firmware information from dmidecode
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class FreeBsdFirmware extends AbstractFirmware {

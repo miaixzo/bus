@@ -28,7 +28,6 @@ import org.miaixz.bus.core.xyz.CompareKit;
  *
  * @param <T> The type of the node's identifier.
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Node<T> extends Comparable<Node<T>>, Serializable {
 

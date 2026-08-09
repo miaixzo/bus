@@ -23,7 +23,6 @@ package org.miaixz.bus.image.metric;
  * Represents the Compatible type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Compatible {
 

@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * Session-local SSE reconnect controller updated by server retry directives.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class SseRetry {
 

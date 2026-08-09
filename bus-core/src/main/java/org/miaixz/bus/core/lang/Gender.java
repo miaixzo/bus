@@ -28,7 +28,6 @@ import lombok.Getter;
  * Enumeration for gender-related information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @AllArgsConstructor

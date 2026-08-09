@@ -67,7 +67,6 @@ import org.miaixz.bus.core.xyz.*;
  * scanning order follows the order in which they are returned by {@link Class#getInterfaces()}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HierarchicalAnnotatedElements implements AnnotatedElement, Iterable<AnnotatedElement> {
 

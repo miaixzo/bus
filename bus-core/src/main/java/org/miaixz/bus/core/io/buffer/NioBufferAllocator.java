@@ -26,7 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Allocates heap or direct NIO byte buffers with a bounded idle cache.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class NioBufferAllocator implements AutoCloseable {
 

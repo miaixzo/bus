@@ -27,7 +27,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * Decoded TSIG pseudo-record carried by a DNS query.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsTsigRecord {
 

@@ -35,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
  * The gitlab request class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GitlabRequest {
 

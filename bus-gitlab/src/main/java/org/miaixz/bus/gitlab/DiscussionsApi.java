@@ -38,7 +38,6 @@ import org.miaixz.bus.gitlab.support.ISO8601;
  * <a href="https://docs.gitlab.com/ee/api/discussions.html">Discussions API at GitLab</a> for more information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DiscussionsApi extends AbstractApi {
 

@@ -33,7 +33,6 @@ import org.miaixz.bus.starter.i18n.I18nConfiguration;
  * localized messages.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

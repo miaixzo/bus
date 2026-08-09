@@ -76,7 +76,6 @@ import org.miaixz.bus.notify.nimble.yunpian.YunpianSmsProvider;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NotifyService implements AutoCloseable {
 

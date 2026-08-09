@@ -27,7 +27,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Represents an exception that occurs during application launch or initialization.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LaunchException extends UncheckedException {
 

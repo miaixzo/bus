@@ -27,7 +27,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Date and time units, each unit is based on milliseconds.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Chrono {
 

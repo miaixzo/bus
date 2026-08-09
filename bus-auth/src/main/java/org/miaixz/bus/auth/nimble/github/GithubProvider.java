@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  * Github login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GithubProvider extends AbstractProvider {
 

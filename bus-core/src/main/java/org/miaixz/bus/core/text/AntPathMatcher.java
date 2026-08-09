@@ -56,7 +56,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * <strong>Note:</strong> Both the pattern and the path must be either both absolute or both relative.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AntPathMatcher {
 
@@ -666,7 +665,6 @@ public class AntPathMatcher {
      * A class for matching a string against a single Ant-style pattern.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     protected static class AntPathStringMatcher {
 
@@ -807,7 +805,6 @@ public class AntPathMatcher {
      * A comparator for sorting Ant-style patterns by specificity.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     protected static class AntPatternComparator implements Comparator<String> {
 
@@ -899,7 +896,6 @@ public class AntPathMatcher {
          * A class to hold information about a pattern's specificity.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         private static class PatternInfo {
 
@@ -1058,7 +1054,6 @@ public class AntPathMatcher {
      * A simple cache for patterns that depend on the configured path separator.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class PathSeparatorPatternCache {
 

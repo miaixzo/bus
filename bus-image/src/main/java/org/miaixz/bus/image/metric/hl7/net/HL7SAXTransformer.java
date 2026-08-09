@@ -43,7 +43,6 @@ import org.miaixz.bus.image.metric.hl7.HL7Parser;
  * Represents the HL7SAXTransformer type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HL7SAXTransformer {
 

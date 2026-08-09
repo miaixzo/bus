@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.reflect.ClassMember;
  * Inspects Java class modifiers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ModifierKit {
 

@@ -27,7 +27,6 @@ import java.io.RandomAccessFile;
  * Represents the RAFInputStreamAdapter type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RAFInputStreamAdapter extends InputStream {
 

@@ -35,7 +35,6 @@ import org.miaixz.bus.core.data.CIN10;
  * "http://www.mca.gov.cn/article/sj/xzqh/2020/20201201.html">http://www.mca.gov.cn/article/sj/xzqh/2020/20201201.html</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CitizenIdKit {
 

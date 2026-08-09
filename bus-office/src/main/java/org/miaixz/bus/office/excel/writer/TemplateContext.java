@@ -40,7 +40,6 @@ import org.miaixz.bus.office.excel.cell.VirtualCell;
  * Template context, which records the cells where variables are located in the template.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TemplateContext {
 

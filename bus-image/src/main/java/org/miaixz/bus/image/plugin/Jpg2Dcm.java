@@ -53,7 +53,6 @@ import org.miaixz.bus.logger.Logger;
  * encapsulated in the Pixel Data element.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Jpg2Dcm {
 
@@ -301,7 +300,6 @@ public class Jpg2Dcm {
      * An enumeration of supported content types for encapsulation.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum ContentType {
 
@@ -409,7 +407,6 @@ public class Jpg2Dcm {
      * A file visitor to recursively find and convert media files in a directory.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class Jpg2DcmFileVisitor extends SimpleFileVisitor<Path> {
 

@@ -33,7 +33,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * FTP client implementations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Ftp extends Closeable {
 

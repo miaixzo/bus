@@ -30,7 +30,6 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  * manipulate it, implementing {@link CharSequence} and {@link Iterable} for character iteration.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CharArray implements CharSequence, Iterable<Character> {
 

@@ -31,7 +31,6 @@ import org.miaixz.bus.image.metric.net.KeycloakClient;
  * Description of a Web Application provided by {@link Device}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WebApplication {
 
@@ -497,7 +496,6 @@ public class WebApplication {
      * Defines the ServiceClass values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ServiceClass {
         /**

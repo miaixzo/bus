@@ -42,7 +42,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * Supports SQL extension by processing {@link SqlWrapper} annotations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SchemaSqlScriptBuilder implements SqlScriptWrapper {
 

@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.exception.TerminateException;
  * SAX-based Excel row handler.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface RowHandler {

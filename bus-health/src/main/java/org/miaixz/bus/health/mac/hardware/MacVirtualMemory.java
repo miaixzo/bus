@@ -40,7 +40,6 @@ import org.miaixz.bus.logger.Logger;
  * Memory obtained by host_statistics (vm_stat) and sysctl.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class MacVirtualMemory extends AbstractVirtualMemory {

@@ -33,7 +33,6 @@ import org.miaixz.bus.health.unix.freebsd.BsdSysctlKit;
  * Memory obtained by sysctl vm.stats
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class FreeBsdGlobalMemory extends AbstractGlobalMemory {

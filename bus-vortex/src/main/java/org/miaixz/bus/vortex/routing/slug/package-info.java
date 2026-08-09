@@ -24,6 +24,5 @@
  * forward requests to the resulting downstream URI.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.vortex.routing.slug;

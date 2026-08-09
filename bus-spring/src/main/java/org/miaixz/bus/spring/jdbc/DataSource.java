@@ -33,7 +33,6 @@ import java.lang.annotation.Target;
  * failure.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

@@ -36,7 +36,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The notification service class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class NotificationService implements Serializable {
 
@@ -738,7 +737,6 @@ public abstract class NotificationService implements Serializable {
      * The branches to be notified enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum BranchesToBeNotified {
 

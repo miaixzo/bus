@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class JdbcRunner {
 
@@ -217,7 +216,6 @@ class JdbcRunner {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class SingleConnectionSource implements DataSource {
 

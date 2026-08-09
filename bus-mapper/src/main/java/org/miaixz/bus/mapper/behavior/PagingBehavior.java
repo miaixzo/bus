@@ -25,7 +25,6 @@ import org.miaixz.bus.mapper.feature.paging.Pageable;
  * Paging behavior exposed by a database dialect.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface PagingBehavior {
 

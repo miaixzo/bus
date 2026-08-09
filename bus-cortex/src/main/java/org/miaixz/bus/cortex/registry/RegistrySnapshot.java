@@ -31,7 +31,6 @@ import org.miaixz.bus.cortex.Type;
  * Snapshot payload used by vortex full and incremental synchronization.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

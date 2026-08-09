@@ -24,6 +24,5 @@
  * and {@code _count} lines.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.metrics.nimble.prometheus;

@@ -25,7 +25,6 @@ import java.awt.image.*;
  * Represents the LookupTable type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class LookupTable {
 

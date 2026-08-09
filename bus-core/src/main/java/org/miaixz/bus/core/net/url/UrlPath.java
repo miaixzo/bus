@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Represents the path component of a URL.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UrlPath {
 

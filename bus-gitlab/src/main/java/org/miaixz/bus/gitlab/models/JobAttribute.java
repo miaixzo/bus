@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The job attribute class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JobAttribute implements Serializable {
 

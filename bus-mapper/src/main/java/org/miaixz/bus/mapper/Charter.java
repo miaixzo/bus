@@ -26,7 +26,6 @@ import lombok.experimental.Accessors;
  * Mapper charter definitions shared by behavior contracts, schema initialization, and dialect SQL generation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Charter {
 
@@ -41,7 +40,6 @@ public final class Charter {
      * Operation type group.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Group {
 
@@ -71,7 +69,6 @@ public final class Charter {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Accessors(fluent = true)
@@ -252,7 +249,6 @@ public final class Charter {
      * Entity schema initialization mode.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Schema {
 
@@ -287,7 +283,6 @@ public final class Charter {
      * Common column modification shapes used by concrete dialects.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Modify {
 
@@ -322,7 +317,6 @@ public final class Charter {
      * Risk level for a schema change.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Risk {
 
@@ -347,7 +341,6 @@ public final class Charter {
      * Handler operation type used by mapper handler indexing.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Handler {
 
@@ -381,7 +374,6 @@ public final class Charter {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     public enum Isolation {

@@ -23,7 +23,6 @@ package org.miaixz.bus.fabric;
  * Common contract for immutable Fabric policies.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Policy {
 

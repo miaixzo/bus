@@ -26,7 +26,6 @@ import org.miaixz.bus.core.net.Protocol;
  * Immutable protocol-neutral message snapshot shared across fabric chains.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Message {
 

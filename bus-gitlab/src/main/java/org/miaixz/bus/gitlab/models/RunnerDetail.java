@@ -33,7 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The runner detail class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RunnerDetail extends Runner {
 
@@ -59,7 +58,6 @@ public class RunnerDetail extends Runner {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum RunnerAccessLevel {
 

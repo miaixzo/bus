@@ -37,12 +37,11 @@ import java.lang.annotation.Target;
  *   {@code @Target({FIELD, PARAMETER, METHOD})}
  *   public @interface Red {}
  * </pre>
- *
+ * <p>
  * This {@code @Red} annotation could then be used to request the injection of a specific "red" implementation of a
  * service. This concept is similar to {@code jakarta.inject.Qualifier}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)

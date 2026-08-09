@@ -21,6 +21,5 @@
  * Provides implementations for image CAPTCHA generation and verification.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.extra.captcha;

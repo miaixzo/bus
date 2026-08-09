@@ -47,7 +47,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @param ping    WebSocket and Socket keep-alive interval; zero disables it
  * @param close   positive TLS close_notify, WebSocket Close, and graceful-close deadline
  * @author Kimi Liu
- * @since Java 21+
  */
 public record Timeout(Duration connect, Duration read, Duration write, Duration call, Duration ping, Duration close) {
 
@@ -232,7 +231,6 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
      * Builder for immutable time policies.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

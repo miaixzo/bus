@@ -27,7 +27,6 @@ import org.miaixz.bus.cortex.setting.item.Item;
  * Fail-fast adapter used by spec-backed setting sources whose concrete integration is not implemented yet.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StoredContentSourceAdapter implements ItemSourceAdapter {
 

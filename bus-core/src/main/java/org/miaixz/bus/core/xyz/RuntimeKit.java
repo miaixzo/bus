@@ -36,7 +36,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * Executes executing system commands.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RuntimeKit {
 

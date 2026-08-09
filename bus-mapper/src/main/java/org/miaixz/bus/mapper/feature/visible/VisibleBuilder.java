@@ -45,7 +45,6 @@ import org.miaixz.bus.logger.Logger;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class VisibleBuilder {
 
@@ -524,7 +523,6 @@ public class VisibleBuilder {
      * Table information holder.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class TableInfo {
 

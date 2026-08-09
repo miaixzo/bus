@@ -23,7 +23,6 @@ package org.miaixz.bus.image.builtin.hp;
  * Hanging Protocol sorting operation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum SortingOperation {
 

@@ -37,7 +37,6 @@ import org.miaixz.bus.health.mac.jna.CoreGraphics;
  * Queries desktop windows on macOS.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class WindowInfo {

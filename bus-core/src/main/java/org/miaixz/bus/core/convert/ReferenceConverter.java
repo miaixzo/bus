@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.TypeKit;
  * Converter for {@link Reference} objects.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ReferenceConverter extends AbstractConverter {
 

@@ -21,6 +21,5 @@
  * Provides encapsulation for reading resources from the ClassPath and files.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.io.resource;

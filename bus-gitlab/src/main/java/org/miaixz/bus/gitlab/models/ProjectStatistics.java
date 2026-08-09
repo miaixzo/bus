@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * be called with parameter statistics=true which is only allowed for GitLab admins.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProjectStatistics implements Serializable {
 

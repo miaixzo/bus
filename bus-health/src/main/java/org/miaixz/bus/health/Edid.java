@@ -37,7 +37,6 @@ import org.miaixz.bus.logger.Logger;
  * Extended display identification data (EDID) parsing and construction.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Edid {

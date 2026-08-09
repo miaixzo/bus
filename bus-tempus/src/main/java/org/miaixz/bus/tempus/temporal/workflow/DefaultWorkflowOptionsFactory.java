@@ -35,7 +35,6 @@ import io.temporal.worker.tuning.PollerBehaviorSimpleMaximum;
  * Builds Temporal SDK workflow, activity, worker, and worker factory options from {@link WorkflowBindingOptions}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DefaultWorkflowOptionsFactory implements WorkflowOptionsFactory {
 

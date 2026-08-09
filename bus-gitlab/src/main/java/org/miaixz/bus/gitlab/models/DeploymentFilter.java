@@ -34,7 +34,6 @@ import org.miaixz.bus.gitlab.support.ISO8601;
  * The deployment filter class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DeploymentFilter implements Serializable {
 

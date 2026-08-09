@@ -26,7 +26,6 @@ import org.miaixz.bus.core.center.date.Culture;
  * An abstract base class for traditional cultural elements, such as festivals or holidays.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class Tradition implements Culture {
 

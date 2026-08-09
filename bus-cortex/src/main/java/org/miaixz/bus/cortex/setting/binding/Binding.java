@@ -29,7 +29,6 @@ import org.miaixz.bus.core.basic.entity.Namespace;
  * Relation row between one setting resource and an application or profile target.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

@@ -36,7 +36,6 @@ import org.miaixz.bus.fabric.network.tls.TlsPolicy;
  * Immutable upstream DNS server used by forwarding resolution.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsUpstream {
 

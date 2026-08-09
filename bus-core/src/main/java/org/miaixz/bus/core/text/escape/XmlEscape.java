@@ -41,7 +41,6 @@ import org.miaixz.bus.core.text.replacer.ReplacerChain;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class XmlEscape extends ReplacerChain {
 

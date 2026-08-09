@@ -26,7 +26,6 @@ import java.io.Serializable;
  * The email class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Email implements Serializable {
 

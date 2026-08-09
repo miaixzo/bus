@@ -26,7 +26,6 @@ import java.io.Serializable;
  * The custom attribute class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CustomAttribute implements Serializable {
 

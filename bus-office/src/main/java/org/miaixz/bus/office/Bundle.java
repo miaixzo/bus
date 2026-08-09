@@ -32,7 +32,6 @@ import lombok.Setter;
  * Shared bundle models used to describe segment input, codecs, and paged output.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Bundle {
 
@@ -45,7 +44,6 @@ public final class Bundle {
      *
      * @param <T> item type
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface Codec<T> {
 
@@ -78,7 +76,6 @@ public final class Bundle {
      * @param attributes   optional segment attributes
      * @param items        ordered items
      * @author Kimi Liu
-     * @since Java 21+
      */
     public record Segment<T>(int segmentIndex, String segmentName, Map<String, String> attributes, List<T> items) {
 
@@ -89,7 +86,6 @@ public final class Bundle {
      *
      * @param <T> item type
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter

@@ -41,7 +41,6 @@ import org.miaixz.bus.logger.Logger;
  * MacNetworkParams class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class MacNetworkParams extends AbstractNetworkParams {

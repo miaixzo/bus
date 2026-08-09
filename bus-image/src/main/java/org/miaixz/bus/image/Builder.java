@@ -66,7 +66,6 @@ import org.miaixz.bus.logger.Logger;
  * functions.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Builder {
 

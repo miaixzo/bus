@@ -29,7 +29,6 @@ import org.miaixz.bus.validate.nimble.TrueMatcher;
  * Validates that the annotated boolean value is {@code true}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

@@ -22,6 +22,5 @@
  * ByteBuddy to generate dynamic proxies that integrate with the limiter module's various strategies.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.limiter.proxy;

@@ -40,7 +40,6 @@ import org.miaixz.bus.core.xyz.ThreadKit;
  * Asynchronous network conduit contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Conduit extends AutoCloseable {
 

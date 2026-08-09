@@ -23,7 +23,6 @@ package org.miaixz.bus.cortex.version;
  * Version lifecycle status.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum VersionStatus {
 
@@ -42,9 +41,7 @@ public enum VersionStatus {
     /**
      * Version has been removed from service and must not be used.
      */
-    DISABLED
-
-    ;
+    DISABLED;
 
     /**
      * Returns whether the version may still serve traffic.

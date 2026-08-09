@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.ZipKit;
  * Wrapper for {@link ZipFile} resources.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ZipFileResource implements ZipResource {
 

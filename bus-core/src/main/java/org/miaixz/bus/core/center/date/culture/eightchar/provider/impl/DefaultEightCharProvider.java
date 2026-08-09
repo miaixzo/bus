@@ -28,7 +28,6 @@ import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
  * the late Zi hour (子时) to be the next day.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DefaultEightCharProvider implements EightCharProvider {
 

@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.Assert;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RadixKit {
 

@@ -73,7 +73,6 @@ import org.miaixz.bus.mapper.feature.visible.VisibleConfig;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Context extends org.miaixz.bus.core.Context {
 
@@ -246,7 +245,6 @@ public class Context extends org.miaixz.bus.core.Context {
      * Unified mapper configuration holder.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -297,7 +295,6 @@ public class Context extends org.miaixz.bus.core.Context {
          * Fluent builder for MapperConfig.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         public static class Builder {
 

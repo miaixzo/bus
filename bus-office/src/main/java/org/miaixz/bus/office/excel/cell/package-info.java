@@ -21,6 +21,5 @@
  * Provides classes related to Excel cells.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.office.excel.cell;

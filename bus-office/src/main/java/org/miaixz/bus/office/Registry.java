@@ -32,7 +32,6 @@ import org.miaixz.bus.logger.Logger;
  * Registry for supported office-related components and services.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Registry implements AutoCloseable {
 

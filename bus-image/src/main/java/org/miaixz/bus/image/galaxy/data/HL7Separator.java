@@ -26,7 +26,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * methods for escaping and unescaping strings according to HL7 rules.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum HL7Separator {
 

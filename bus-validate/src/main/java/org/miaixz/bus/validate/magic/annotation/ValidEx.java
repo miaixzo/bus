@@ -46,7 +46,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * If none of the above are defined, a default {@link ValidateException} will be thrown.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

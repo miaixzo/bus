@@ -27,7 +27,6 @@ import org.opencv.core.Size;
  * memory size calculation through ImageSize.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface PlanarImage extends ImageSize, AutoCloseable {
 

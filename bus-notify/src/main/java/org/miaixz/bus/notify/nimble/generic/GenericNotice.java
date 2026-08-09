@@ -37,7 +37,6 @@ import org.miaixz.bus.notify.magic.Notice;
  * Represents the notice for generic email messages.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

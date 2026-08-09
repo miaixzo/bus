@@ -28,7 +28,6 @@ package org.miaixz.bus.core.center.set;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SetValidator {
 

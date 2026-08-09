@@ -34,7 +34,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Immutable limiter starter properties, isolated from the mutable core context.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

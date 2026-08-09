@@ -32,7 +32,6 @@ import java.lang.annotation.*;
  * constraints.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

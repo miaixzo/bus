@@ -26,7 +26,7 @@ import org.miaixz.bus.core.xyz.RandomKit;
 
 /**
  * NanoId, a small, secure, URL-friendly unique string ID generator.
- *
+ * <p>
  * Features:
  * <ul>
  * <li><b>Secure:</b> It uses a cryptographically strong random API and guarantees proper symbol distribution.</li>
@@ -39,7 +39,6 @@ import org.miaixz.bus.core.xyz.RandomKit;
  * <a href="https://github.com/ai/nanoid">https://github.com/ai/nanoid</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NanoId {
 

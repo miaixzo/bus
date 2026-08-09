@@ -22,6 +22,5 @@
  * system, data masking, etc.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.data;

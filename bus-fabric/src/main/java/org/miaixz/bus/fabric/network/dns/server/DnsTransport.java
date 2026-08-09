@@ -25,7 +25,6 @@ import org.miaixz.bus.core.net.Protocol;
  * DNS server listener transport.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum DnsTransport {
 

@@ -30,7 +30,6 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  * {@link #clearCaches()} method must be manually called to clear the cache.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FieldReflect {
 

@@ -31,7 +31,6 @@ import java.lang.annotation.Target;
  * scope.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)

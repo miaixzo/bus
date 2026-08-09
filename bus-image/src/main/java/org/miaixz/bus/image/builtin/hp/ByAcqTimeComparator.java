@@ -29,7 +29,6 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  * Sorts images by acquisition/content time.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ByAcqTimeComparator implements HpComparator {
 

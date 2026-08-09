@@ -38,7 +38,6 @@ import org.miaixz.bus.health.windows.RegistryKit;
  * The installed apps data class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class InstalledAppsData {
 

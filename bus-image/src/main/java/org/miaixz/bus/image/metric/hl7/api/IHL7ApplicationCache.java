@@ -26,7 +26,6 @@ import org.miaixz.bus.image.metric.hl7.net.HL7Application;
  * Defines the IHL7ApplicationCache contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface IHL7ApplicationCache {
 

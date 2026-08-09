@@ -33,7 +33,6 @@ import org.miaixz.bus.logger.magic.AbstractProvider;
  * A logger provider implementation that wraps an {@link org.apache.commons.logging.Log} instance.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CommonsLoggingProvider extends AbstractProvider {
 

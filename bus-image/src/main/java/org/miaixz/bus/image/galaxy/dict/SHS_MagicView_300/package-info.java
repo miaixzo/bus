@@ -21,6 +21,5 @@
  * UID Dictionary from SHS_MagicView_300
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SHS_MagicView_300;

@@ -25,7 +25,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Parsed User-Agent classification.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class UserAgent {
 

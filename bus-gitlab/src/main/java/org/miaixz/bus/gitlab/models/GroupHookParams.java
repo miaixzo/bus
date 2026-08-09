@@ -26,7 +26,6 @@ import java.io.Serializable;
  * The group hook params class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GroupHookParams implements Serializable {
 

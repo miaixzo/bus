@@ -40,7 +40,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @param port   explicit effective port from 1 through 65535
  * @param path   normalized absolute path
  * @author Kimi Liu
- * @since Java 21+
  */
 public record Address(String scheme, String host, int port, String path) {
 

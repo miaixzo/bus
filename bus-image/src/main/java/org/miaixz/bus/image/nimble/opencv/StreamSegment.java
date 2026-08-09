@@ -39,7 +39,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the StreamSegment type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class StreamSegment {
 

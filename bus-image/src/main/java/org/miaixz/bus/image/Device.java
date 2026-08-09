@@ -58,7 +58,6 @@ import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
  * certificate management.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Device implements Serializable {
 

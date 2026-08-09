@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * of multiple communication protocols.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @AllArgsConstructor

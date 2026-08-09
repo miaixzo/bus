@@ -27,7 +27,6 @@ import jakarta.mail.PasswordAuthentication;
  * {@link Authenticator} and is used to supply credentials to the mail server.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MailAuthenticator extends Authenticator {
 

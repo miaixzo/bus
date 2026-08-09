@@ -38,7 +38,6 @@ import org.miaixz.bus.core.lang.Keys;
  * containing the application version and a deterministic application-name fallback.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SpringEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 

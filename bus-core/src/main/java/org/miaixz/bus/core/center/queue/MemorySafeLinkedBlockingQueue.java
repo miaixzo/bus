@@ -38,7 +38,6 @@ import org.miaixz.bus.core.xyz.RuntimeKit;
  *
  * @param <E> The type of elements held in this collection.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue<E> {
 
@@ -88,7 +87,6 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
      *
      * @param <E> The element type.
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class MemoryChecker<E> implements PredicateX<E> {
 
@@ -124,7 +122,6 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
      * `Runtime.getRuntime().freeMemory()` on every single queue operation.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class FreeMemoryCalculator extends SimpleScheduler<Long> {
 

@@ -21,6 +21,5 @@
  * Provides Apache logging facade adapter packages for Commons Logging and Log4j.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.logger.nimble.apache;

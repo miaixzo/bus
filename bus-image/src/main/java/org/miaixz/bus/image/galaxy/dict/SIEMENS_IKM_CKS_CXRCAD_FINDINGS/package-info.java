@@ -21,6 +21,5 @@
  * UID Dictionary from SIEMENS_IKM_CKS_CXRCAD_FINDINGS
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_IKM_CKS_CXRCAD_FINDINGS;

@@ -23,7 +23,6 @@ package org.miaixz.bus.shade.safety.algorithm;
  * Represents an asymmetric encryption key, providing access to both the public and private key components.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface AsymmetricKey extends Key {
 

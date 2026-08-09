@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
  * The email checker class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EmailChecker {
 

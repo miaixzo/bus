@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  * A class for executing commands on the command line and returning the results.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Executor {

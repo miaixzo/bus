@@ -28,7 +28,6 @@ import org.miaixz.bus.health.unix.shared.driver.NetStat;
  * Common implementations for IP Stats
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractInternetProtocolStats implements InternetProtocolStats {
 

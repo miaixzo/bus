@@ -30,7 +30,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The comment class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Comment implements Serializable {
 

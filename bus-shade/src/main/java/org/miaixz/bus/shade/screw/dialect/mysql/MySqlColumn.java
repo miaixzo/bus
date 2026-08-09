@@ -29,7 +29,6 @@ import org.miaixz.bus.shade.screw.metadata.Column;
  * Represents column information for a MySQL database table.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

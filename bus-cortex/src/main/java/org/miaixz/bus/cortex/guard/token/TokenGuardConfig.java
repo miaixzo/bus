@@ -31,7 +31,6 @@ import org.miaixz.bus.cortex.Builder;
  * Token guard configuration shared by asset or namespace-level security policy.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

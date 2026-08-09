@@ -56,7 +56,6 @@ import org.miaixz.bus.logger.Logger;
  * Certificate related toolkit. This class provides utilities for handling and building X.509 certificates.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

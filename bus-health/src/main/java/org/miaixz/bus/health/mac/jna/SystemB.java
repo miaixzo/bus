@@ -34,7 +34,6 @@ import org.miaixz.bus.health.unix.shared.jna.CLibrary;
  * JNA project.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
 
@@ -75,7 +74,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      * JNA wrapper for the rusage structure.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "ru_utime_sec", "ru_utime_usec", "ru_stime_sec", "ru_stime_usec", "ru_maxrss", "ru_ixrss", "ru_idrss",
             "ru_isrss", "ru_minflt", "ru_majflt", "ru_nswap", "ru_inblock", "ru_oublock", "ru_msgsnd", "ru_msgrcv",
@@ -277,14 +275,13 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      * <p>
      * This class maps to the native macOS utmpx structure representing an entry in the user accounting database: {@code
      * struct utmpx {
-     *     char ut_user[UTX_USERSIZE];
-     *     char ut_id[UTX_IDSIZE];
-     *     char ut_line[UTX_LINESIZE]; pid_t ut_pid; short ut_type; struct timeval ut_tv; char ut_host[UTX_HOSTSIZE];
+     * char ut_user[UTX_USERSIZE];
+     * char ut_id[UTX_IDSIZE];
+     * char ut_line[UTX_LINESIZE]; pid_t ut_pid; short ut_type; struct timeval ut_tv; char ut_host[UTX_HOSTSIZE];
      * char ut_pad[16]; }; }
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "ut_user", "ut_id", "ut_line", "ut_pid", "ut_type", "ut_tv", "ut_host", "ut_pad" })
     class MacUtmpx extends Structure {
@@ -345,7 +342,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "proc_fd", "proc_fdtype" })
     class ProcFdInfo extends Structure {
@@ -376,7 +372,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "insi_fport", "insi_lport", "insi_gencnt", "insi_flags", "insi_flow", "insi_vflag", "insi_ip_ttl",
             "rfu_1", "insi_faddr", "insi_laddr", "insi_v4", "insi_v6" })
@@ -458,7 +453,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "tcpsi_ini", "tcpsi_state", "tcpsi_timer", "tcpsi_mss", "tcpsi_flags", "rfu_1", "tcpsi_tp" })
     class TcpSockInfo extends Structure {
@@ -514,7 +508,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "soi_stat", "soi_so", "soi_pcb", "soi_type", "soi_protocol", "soi_family", "soi_options",
             "soi_linger", "soi_state", "soi_qlen", "soi_incqlen", "soi_qlimit", "soi_timeo", "soi_error", "soi_oobmark",
@@ -637,7 +630,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "fi_openflags", "fi_status", "fi_offset", "fi_type", "fi_guardflags" })
     class ProcFileInfo extends Structure {
@@ -683,7 +675,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "pfi", "psi" })
     class SocketFdInfo extends Structure implements AutoCloseable {
@@ -722,7 +713,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class Pri extends Union {
 

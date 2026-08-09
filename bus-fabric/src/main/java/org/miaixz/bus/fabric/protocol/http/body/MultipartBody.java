@@ -50,7 +50,6 @@ import org.miaixz.bus.fabric.codec.body.RequestBody;
  * HTTP multipart/form-data body.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class MultipartBody implements RequestBody {
 
@@ -274,7 +273,6 @@ public final class MultipartBody implements RequestBody {
      * Multipart body part.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Part {
 
@@ -433,7 +431,6 @@ public final class MultipartBody implements RequestBody {
      * Builder for multipart bodies.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

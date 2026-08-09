@@ -38,6 +38,5 @@
  * integration code can bind to assembled registries and curator services.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex;

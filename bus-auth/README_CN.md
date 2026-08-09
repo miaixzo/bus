@@ -8,9 +8,11 @@
 
 ## 📖 项目简介
 
-**Bus Auth** 是一个企业级身份验证和授权框架，旨在简化与第三方身份提供程序的集成。它提供统一的 API 来实现 OAuth2、SAML、LDAP 和自定义身份验证协议，支持全球 **40+** 主流平台。
+**Bus Auth** 是一个企业级身份验证和授权框架，旨在简化与第三方身份提供程序的集成。它提供统一的 API 来实现 OAuth2、SAML、LDAP
+和自定义身份验证协议，支持全球 **40+** 主流平台。
 
-该框架抽象了协议复杂性，使开发人员能够专注于业务逻辑而非身份验证实现细节。无论是社交登录、企业 SSO 还是自定义身份提供程序，Bus Auth 都提供一致、类型安全和可扩展的方法。
+该框架抽象了协议复杂性，使开发人员能够专注于业务逻辑而非身份验证实现细节。无论是社交登录、企业 SSO 还是自定义身份提供程序，Bus
+Auth 都提供一致、类型安全和可扩展的方法。
 
 -----
 
@@ -25,31 +27,35 @@
 
 ### 🔐 安全优先
 
-| 功能 | 描述 |
-| :--- | :--- |
-| **PKCE 支持** | 符合 RFC 7636 的代码交换证明密钥，用于移动/SPA 应用 |
-| **状态验证**：内置 CSRF 保护，带状态参数验证 |
-| **令牌管理**：安全令牌存储、刷新和撤销 |
+| 功能                                            | 描述                                                |
+|:------------------------------------------------|:----------------------------------------------------|
+| **PKCE 支持**                                   | 符合 RFC 7636 的代码交换证明密钥，用于移动/SPA 应用 |
+| **状态验证**：内置 CSRF 保护，带状态参数验证    |
+| **令牌管理**：安全令牌存储、刷新和撤销          |
 | **签名验证**：OAuth1.0a 的 HMAC-SHA256 签名支持 |
-| **缓存集成**：分布式状态缓存支持 |
+| **缓存集成**：分布式状态缓存支持                |
 
 ### 🌍 平台覆盖
 
 **社交平台**（15+）
+
 - GitHub、Google、Facebook、Twitter、LinkedIn、Microsoft
 - 微信、QQ、微博、抖音、TikTok
 - Apple、Amazon、Slack、Line、VK
 
 **企业平台**（10+）
+
 - 钉钉、飞书、Lark、企业微信
 - Okta、GitLab、Gitee、Teambition
 - 华为、阿里云、百度云
 
 **电商平台**（8+）
+
 - 支付宝、淘宝、京东、美团、饿了么
 - 酷家乐、小米、小红书
 
 **国内平台**（中国）
+
 - 喜马拉雅、人人、开源中国、Coding、Programmer
 - Stack Overflow、Pinterest、Figma
 
@@ -82,11 +88,11 @@
 ```java
 // 创建身份验证上下文
 Context context = Context.builder()
-    .clientId("your_client_id")
-    .clientSecret("your_client_secret")
-    .redirectUri("https://yourapp.com/callback")
-    .scopes(Arrays.asList("user", "repo"))
-    .build();
+                .clientId("your_client_id")
+                .clientSecret("your_client_secret")
+                .redirectUri("https://yourapp.com/callback")
+                .scopes(Arrays.asList("user", "repo"))
+                .build();
 ```
 
 #### 2. 创建身份验证提供程序
@@ -97,9 +103,9 @@ Provider github = new GithubProvider(context);
 
 // 方法 2：使用 Authorizer 构建器（推荐）
 Provider github = Authorizer.builder()
-    .source("GITHUB")
-    .context(context)
-    .build();
+        .source("GITHUB")
+        .context(context)
+        .build();
 ```
 
 #### 3. 生成授权 URL
@@ -121,21 +127,23 @@ String authUrl = message.getData();
 ```java
 // 提取回调参数
 Callback callback = Callback.builder()
-    .code(request.getParameter("code"))
-    .state(request.getParameter("state"))
-    .build();
+                .code(request.getParameter("code"))
+                .state(request.getParameter("state"))
+                .build();
 
 // 执行身份验证
 Message result = github.authorize(callback);
 
-if (result.isSuccess()) {
-    Claims claims = result.getData(Claims.class);
-    String uuid = claims.getUuid();
-    String username = claims.getUsername();
-    String email = claims.getEmail();
+if(result.
 
-    // 登录用户或创建账户
-    // 存储 claims.getToken() 用于未来的 API 调用
+isSuccess()){
+Claims claims = result.getData(Claims.class);
+String uuid = claims.getUuid();
+String username = claims.getUsername();
+String email = claims.getEmail();
+
+// 登录用户或创建账户
+// 存储 claims.getToken() 用于未来的 API 调用
 }
 ```
 
@@ -148,10 +156,10 @@ if (result.isSuccess()) {
 ```java
 // 配置
 Context context = Context.builder()
-    .clientId("github_client_id")
-    .clientSecret("github_client_secret")
-    .redirectUri("http://localhost:8080/auth/github/callback")
-    .build();
+                .clientId("github_client_id")
+                .clientSecret("github_client_secret")
+                .redirectUri("http://localhost:8080/auth/github/callback")
+                .build();
 
 Provider github = new GithubProvider(context);
 
@@ -169,9 +177,9 @@ public void githubLogin(HttpServletResponse response) throws IOException {
 @GetMapping("/auth/github/callback")
 public Message githubCallback(@RequestParam String code, @RequestParam String state) {
     Callback callback = Callback.builder()
-        .code(code)
-        .state(state)
-        .build();
+            .code(code)
+            .state(state)
+            .build();
 
     Message result = github.authorize(callback);
 
@@ -189,11 +197,11 @@ public Message githubCallback(@RequestParam String code, @RequestParam String st
 ```java
 // 企业微信需要额外的 agentId
 Context context = Context.builder()
-    .clientId("corp_id")
-    .clientSecret("corp_secret")
-    .unionId("agent_id")
-    .redirectUri("https://yourapp.com/callback/wechat")
-    .build();
+                .clientId("corp_id")
+                .clientSecret("corp_secret")
+                .unionId("agent_id")
+                .redirectUri("https://yourapp.com/callback/wechat")
+                .build();
 
 Provider wechatWork = new WeChatEeWebProvider(context);
 
@@ -207,11 +215,11 @@ Claims user = result.getData(Claims.class);
 ```java
 // 启用 PKCE 模式
 Context context = Context.builder()
-    .clientId("client_id")
-    .clientSecret("")  // 公共客户端无客户端密钥
-    .redirectUri("myapp://callback")
-    .pkce(true)  // 启用 PKCE
-    .build();
+                .clientId("client_id")
+                .clientSecret("")  // 公共客户端无客户端密钥
+                .redirectUri("myapp://callback")
+                .pkce(true)  // 启用 PKCE
+                .build();
 
 Provider google = new GoogleProvider(context);
 
@@ -220,7 +228,9 @@ String codeVerifier = Builder.codeVerifier();
 String codeChallenge = Builder.codeChallenge("S256", codeVerifier);
 
 // 存储 codeVerifier 供稍后使用
-cache.set(state, codeVerifier, 10, TimeUnit.MINUTES);
+cache.
+
+set(state, codeVerifier, 10,TimeUnit.MINUTES);
 
 // 在授权 URL 中包含 code_challenge
 ```
@@ -258,10 +268,14 @@ public class CustomProvider extends AbstractProvider {
 // 方法 2：使用 Registry 和自定义 Complex
 Complex customComplex = new Complex() {
     @Override
-    public String getName() { return "CUSTOM"; }
+    public String getName() {
+        return "CUSTOM";
+    }
 
     @Override
-    public Protocol getProtocol() { return Protocol.OIDC; }
+    public Protocol getProtocol() {
+        return Protocol.OIDC;
+    }
 
     @Override
     public Class<? extends AbstractProvider> getTargetClass() {
@@ -275,10 +289,10 @@ Complex customComplex = new Complex() {
 };
 
 Provider provider = Authorizer.builder()
-    .source("CUSTOM")
-    .context(context)
-    .complex(customComplex)
-    .build();
+        .source("CUSTOM")
+        .context(context)
+        .complex(customComplex)
+        .build();
 ```
 
 ### 5. 令牌管理
@@ -364,17 +378,25 @@ Provider github = new GithubProvider(context, cache);
 ```java
 // 覆盖默认端点
 Map<Endpoint, String> customEndpoints = new HashMap<>();
-customEndpoints.put(Endpoint.AUTHORIZE, "https://custom.auth.com/authorize");
-customEndpoints.put(Endpoint.TOKEN, "https://custom.auth.com/token");
-customEndpoints.put(Endpoint.USERINFO, "https://custom.auth.com/userinfo");
-customEndpoints.put(Endpoint.REFRESH, "https://custom.auth.com/refresh");
+customEndpoints.
+
+put(Endpoint.AUTHORIZE, "https://custom.auth.com/authorize");
+customEndpoints.
+
+put(Endpoint.TOKEN, "https://custom.auth.com/token");
+customEndpoints.
+
+put(Endpoint.USERINFO, "https://custom.auth.com/userinfo");
+customEndpoints.
+
+put(Endpoint.REFRESH, "https://custom.auth.com/refresh");
 
 Context context = Context.builder()
-    .clientId("client_id")
-    .clientSecret("client_secret")
-    .redirectUri("https://yourapp.com/callback")
-    .endpoint(customEndpoints)  // 自定义端点
-    .build();
+        .clientId("client_id")
+        .clientSecret("client_secret")
+        .redirectUri("https://yourapp.com/callback")
+        .endpoint(customEndpoints)  // 自定义端点
+        .build();
 ```
 
 -----
@@ -383,37 +405,37 @@ Context context = Context.builder()
 
 ### 上下文参数
 
-| 参数 | 类型 | 必需 | 描述 |
-| :--- | :--- | :--- | :--- |
-| `clientId` | String | ✅ | OAuth2 客户端 ID 或 API 密钥 |
-| `clientSecret` | String | ✅ | OAuth2 客户端密钥 |
-| `unionId` | String | ❌ | 平台特定标识符（例如，微信 agentId） |
-| `extId` | String | ❌ | 扩展标识符 |
-| `deviceId` | String | ❌ | 某些平台的设备 ID |
-| `type` | String | ❌ | 平台特定类型 |
-| `flag` | boolean | ❌ | 平台特定标志 |
-| `pkce` | boolean | ❌ | 启用 PKCE 模式（默认：false） |
-| `prefix` | String | ❌ | 域前缀（用于 Okta、Coding） |
-| `redirectUri` | String | ✅ | OAuth2 回调 URL |
-| `scopes` | List<String> | ❌ | OAuth2 作用域（权限） |
-| `ignoreState` | boolean | ❌ | 跳过状态验证（不推荐） |
-| `ignoreRedirectUri` | boolean | ❌ | 跳过重定向 URI 验证 |
-| `kid` | String | ❌ | Apple 密钥 ID |
-| `teamId` | String | ❌ | Apple 团队 ID |
-| `loginType` | String | ❌ | 企业微信登录类型 |
-| `lang` | String | ❌ | 语言代码（默认：zh） |
-| `extension` | String | ❌ | 扩展属性 |
-| `endpoint` | Map<Endpoint, String> | ❌ | 自定义 OAuth 端点 |
+| 参数                | 类型                  | 必需 | 描述                                 |
+|:--------------------|:----------------------|:-----|:-------------------------------------|
+| `clientId`          | String                | ✅   | OAuth2 客户端 ID 或 API 密钥         |
+| `clientSecret`      | String                | ✅   | OAuth2 客户端密钥                    |
+| `unionId`           | String                | ❌   | 平台特定标识符（例如，微信 agentId） |
+| `extId`             | String                | ❌   | 扩展标识符                           |
+| `deviceId`          | String                | ❌   | 某些平台的设备 ID                    |
+| `type`              | String                | ❌   | 平台特定类型                         |
+| `flag`              | boolean               | ❌   | 平台特定标志                         |
+| `pkce`              | boolean               | ❌   | 启用 PKCE 模式（默认：false）        |
+| `prefix`            | String                | ❌   | 域前缀（用于 Okta、Coding）          |
+| `redirectUri`       | String                | ✅   | OAuth2 回调 URL                      |
+| `scopes`            | List<String>          | ❌   | OAuth2 作用域（权限）                |
+| `ignoreState`       | boolean               | ❌   | 跳过状态验证（不推荐）               |
+| `ignoreRedirectUri` | boolean               | ❌   | 跳过重定向 URI 验证                  |
+| `kid`               | String                | ❌   | Apple 密钥 ID                        |
+| `teamId`            | String                | ❌   | Apple 团队 ID                        |
+| `loginType`         | String                | ❌   | 企业微信登录类型                     |
+| `lang`              | String                | ❌   | 语言代码（默认：zh）                 |
+| `extension`         | String                | ❌   | 扩展属性                             |
+| `endpoint`          | Map<Endpoint, String> | ❌   | 自定义 OAuth 端点                    |
 
 ### 支持的端点
 
-| 端点 | 描述 |
-| :--- | :--- |
-| `AUTHORIZE` | 授权端点 URL |
-| `TOKEN` | 令牌端点 URL |
-| `USERINFO` | 用户信息端点 URL |
-| `REFRESH` | 令牌刷新端点 URL |
-| `REVOKE` | 令牌撤销端点 URL |
+| 端点        | 描述             |
+|:------------|:-----------------|
+| `AUTHORIZE` | 授权端点 URL     |
+| `TOKEN`     | 令牌端点 URL     |
+| `USERINFO`  | 用户信息端点 URL |
+| `REFRESH`   | 令牌刷新端点 URL |
+| `REVOKE`    | 令牌撤销端点 URL |
 
 ### 提供程序注册表
 
@@ -429,9 +451,9 @@ Registry.DINGTALK
 
 // 与 Authorizer 一起使用
 Provider provider = Authorizer.builder()
-    .source(Registry.GITHUB.getName())
-    .context(context)
-    .build();
+        .source(Registry.GITHUB.getName())
+        .context(context)
+        .build();
 ```
 
 -----
@@ -445,11 +467,11 @@ Provider provider = Authorizer.builder()
 // 可以为特定需求自定义作用域
 
 Context context = Context.builder()
-    .clientId("client_id")
-    .clientSecret("client_secret")
-    .redirectUri("https://yourapp.com/callback")
-    .scopes(Arrays.asList("read", "write", "email"))  // 自定义作用域
-    .build();
+        .clientId("client_id")
+        .clientSecret("client_secret")
+        .redirectUri("https://yourapp.com/callback")
+        .scopes(Arrays.asList("read", "write", "email"))  // 自定义作用域
+        .build();
 ```
 
 ### 2. 状态验证
@@ -459,11 +481,11 @@ Context context = Context.builder()
 // 禁用（生产环境不推荐）：
 
 Context context = Context.builder()
-    .clientId("client_id")
-    .clientSecret("client_secret")
-    .redirectUri("https://yourapp.com/callback")
-    .ignoreState(true)  // ⚠️ 禁用状态验证
-    .build();
+        .clientId("client_id")
+        .clientSecret("client_secret")
+        .redirectUri("https://yourapp.com/callback")
+        .ignoreState(true)  // ⚠️ 禁用状态验证
+        .build();
 ```
 
 ### 3. 自定义用户信息映射
@@ -481,14 +503,14 @@ public class CustomGithubProvider extends GithubProvider {
         // 自定义映射逻辑
         Map<String, Object> rawData = response.getData();
         Claims claims = Claims.builder()
-            .uuid(rawData.get("id").toString())
-            .username(rawData.get("login").toString())
-            .email(rawData.get("email").toString())
-            .avatar(rawData.get("avatar_url").toString())
-            .source("GITHUB")
-            .token(authorization)
-            .rawJson(JsonKit.toJsonString(rawData))
-            .build();
+                .uuid(rawData.get("id").toString())
+                .username(rawData.get("login").toString())
+                .email(rawData.get("email").toString())
+                .avatar(rawData.get("avatar_url").toString())
+                .source("GITHUB")
+                .token(authorization)
+                .rawJson(JsonKit.toJsonString(rawData))
+                .build();
 
         return Message.success(claims);
     }
@@ -531,13 +553,13 @@ try {
 ```java
 // ❌ 不推荐
 Context context = Context.builder()
-    .redirectUri("http://yourapp.com/callback")
-    .build();
+                .redirectUri("http://yourapp.com/callback")
+                .build();
 
 // ✅ 推荐
 Context context = Context.builder()
-    .redirectUri("https://yourapp.com/callback")
-    .build();
+        .redirectUri("https://yourapp.com/callback")
+        .build();
 ```
 
 ### 2. 启用状态验证
@@ -545,8 +567,8 @@ Context context = Context.builder()
 ```java
 // ✅ 始终在生产环境启用状态验证
 Context context = Context.builder()
-    .ignoreState(false)  // 默认：false
-    .build();
+                .ignoreState(false)  // 默认：false
+                .build();
 ```
 
 ### 3. 使用分布式缓存
@@ -667,6 +689,7 @@ String codeChallenge = Builder.codeChallenge("S256", codeVerifier);
 ### Q3: 如何为 Spring Boot 应用实现"使用 GitHub 登录"？
 
 ```java
+
 @Controller
 public class AuthController {
 
@@ -684,8 +707,8 @@ public class AuthController {
 
     @GetMapping("/auth/github/callback")
     public String callback(@RequestParam String code,
-                          @RequestParam String state,
-                          HttpSession session) {
+                           @RequestParam String state,
+                           HttpSession session) {
         // 验证状态
         String savedState = (String) session.getAttribute("oauth_state");
         if (!state.equals(savedState)) {
@@ -694,9 +717,9 @@ public class AuthController {
 
         // 身份验证
         Callback callback = Callback.builder()
-            .code(code)
-            .state(state)
-            .build();
+                .code(code)
+                .state(state)
+                .build();
 
         Message result = githubProvider.authorize(callback);
         Claims user = result.getData(Claims.class);
@@ -734,10 +757,10 @@ Context getContextForRequest(HttpServletRequest request) {
     String redirectUri = determineRedirectUri(request);
 
     return Context.builder()
-        .clientId(clientId)
-        .clientSecret(clientSecret)
-        .redirectUri(redirectUri)
-        .build();
+            .clientId(clientId)
+            .clientSecret(clientSecret)
+            .redirectUri(redirectUri)
+            .build();
 }
 ```
 
@@ -780,6 +803,7 @@ public void callApi(Claims user) {
 ### Q8: 支持哪些提供程序？
 
 Bus Auth 支持 **40+** 提供程序，包括：
+
 - 社交：GitHub、Google、Facebook、Twitter、LinkedIn、Microsoft、Apple
 - 中国：微信、QQ、微博、抖音、钉钉、飞书
 - 企业：Okta、GitLab、Gitee、企业微信
@@ -789,10 +813,10 @@ Bus Auth 支持 **40+** 提供程序，包括：
 
 ## 🔄 版本兼容性
 
-| Bus Auth 版本 | JDK 版本 | Spring Boot | 说明 |
-| :--- | :--- | :--- | :--- |
-| 8.x | 17+ | 3.x | 当前稳定版本 |
-| 7.x | 11+ | 2.x | 旧版本 |
+| Bus Auth 版本 | JDK 版本 | Spring Boot | 说明         |
+|:--------------|:---------|:------------|:-------------|
+| 8.x           | 17+      | 3.x         | 当前稳定版本 |
+| 7.x           | 11+      | 2.x         | 旧版本       |
 
 -----
 
@@ -811,23 +835,27 @@ Bus Auth 支持 **40+** 提供程序，包括：
 ## 📊 支持的提供程序
 
 ### 社交登录
+
 - GitHub、GitLab、Gitee
 - Google、Facebook、Twitter、LinkedIn、Microsoft
 - Apple、Amazon、Slack、Line、VK
 - Stack Overflow、Pinterest、Figma
 
 ### 中国平台
+
 - 微信（公众号、开放平台、小程序、企业）
 - QQ、微博、抖音、今日头条
 - 钉钉、飞书、百度、小米
 - 支付宝、淘宝、京东、美团
 
 ### 企业
+
 - Okta、GitLab、Coding
 - 企业微信
 - 阿里云、华为云
 
 ### 国内（中国）
+
 - 喜马拉雅、人人、开源中国
 - 酷家乐、程序员客栈、小红书
 - Teambition、饿了么

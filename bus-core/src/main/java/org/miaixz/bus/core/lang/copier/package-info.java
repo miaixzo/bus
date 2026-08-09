@@ -22,6 +22,5 @@
  * operations can be achieved, such as copying between files, streams, and buffers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.lang.copier;

@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Recommended and prohibited activities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Taboo extends Samsara {
 

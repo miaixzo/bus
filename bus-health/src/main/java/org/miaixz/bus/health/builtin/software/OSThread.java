@@ -27,7 +27,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Represents a Thread/Task on the operating system.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface OSThread {
 
@@ -172,7 +171,6 @@ public interface OSThread {
      * Constants which may be used to filter Thread lists
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     final class ThreadFiltering {
 

@@ -29,7 +29,6 @@ import java.io.Serializable;
  * allowed_to_unprotect values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AllowedTo implements Serializable {
 

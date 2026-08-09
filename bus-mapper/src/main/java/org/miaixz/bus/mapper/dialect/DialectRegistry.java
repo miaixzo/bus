@@ -77,7 +77,6 @@ import org.miaixz.bus.logger.Logger;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DialectRegistry {
 

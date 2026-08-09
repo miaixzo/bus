@@ -32,7 +32,6 @@ import org.miaixz.bus.fabric.network.tls.context.TlsContext;
  * @param context  TLS engine context
  * @param settings immutable handshake settings
  * @author Kimi Liu
- * @since Java 21+
  */
 public record TlsPolicy(TlsContext context, TlsSettings settings) implements Policy {
 

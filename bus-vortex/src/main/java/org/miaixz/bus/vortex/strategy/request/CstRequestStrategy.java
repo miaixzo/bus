@@ -36,7 +36,6 @@ import reactor.core.publisher.Mono;
  * explicit CST chain composition.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.FIRST)
 public class CstRequestStrategy extends RequestStrategy {

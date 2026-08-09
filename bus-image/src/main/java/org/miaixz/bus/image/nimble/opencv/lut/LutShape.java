@@ -42,7 +42,6 @@ import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
  * content, ignoring explanation differences.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class LutShape {
 
@@ -78,7 +77,6 @@ public final class LutShape {
      * for specialized imaging needs.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Function {
 

@@ -21,6 +21,5 @@
  * Provides utilities for string placeholder processing, including variable replacement and parsing.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.text.placeholder;

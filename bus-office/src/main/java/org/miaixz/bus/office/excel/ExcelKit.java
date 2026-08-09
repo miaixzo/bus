@@ -49,7 +49,6 @@ import org.miaixz.bus.office.excel.writer.ExcelWriter;
  * WPS/Excel is not related to the index, and there may be hidden sheets.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ExcelKit {
 

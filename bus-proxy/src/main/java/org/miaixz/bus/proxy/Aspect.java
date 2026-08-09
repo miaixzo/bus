@@ -26,7 +26,6 @@ import java.lang.reflect.Method;
  * (advice) before, after, and upon exception of a method invocation on a target object.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Aspect {
 

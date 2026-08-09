@@ -28,7 +28,6 @@ import java.util.Map;
  * class acts as a facade, providing static methods for common JSON serialization and deserialization tasks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JsonKit {
 

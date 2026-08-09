@@ -28,7 +28,6 @@ import org.miaixz.bus.core.xyz.CompareKit;
  *
  * @see Long
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MutableLong extends Number implements Comparable<MutableLong>, Mutable<Number> {
 

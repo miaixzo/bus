@@ -60,7 +60,6 @@ import org.miaixz.bus.logger.Logger;
  * TCP server with a fixed backlog and handler-based accept loop.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class TcpServer implements AutoCloseable {
 
@@ -894,7 +893,6 @@ public final class TcpServer implements AutoCloseable {
      * Internal no-operation listener.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum NoopListener implements Listener<Object> {
 

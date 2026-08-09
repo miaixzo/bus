@@ -25,7 +25,6 @@ import java.util.Calendar;
  * Enumeration for various parts of a date, corresponding to {@link Calendar} fields.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Various {
 

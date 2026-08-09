@@ -21,6 +21,5 @@
  * UID Dictionary from SPI_P_XSB_VISUB_Release_1
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SPI_P_XSB_VISUB_Release_1;

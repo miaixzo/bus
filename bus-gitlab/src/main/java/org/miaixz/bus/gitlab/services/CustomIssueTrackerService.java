@@ -27,7 +27,6 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  * The custom issue tracker service class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CustomIssueTrackerService extends NotificationService {
 

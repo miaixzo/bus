@@ -33,7 +33,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * customize MappedStatements.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Registry {
 

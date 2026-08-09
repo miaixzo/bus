@@ -23,7 +23,6 @@ package org.miaixz.bus.image.metric.net;
  * Represents the PDVType type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PDVType {
 

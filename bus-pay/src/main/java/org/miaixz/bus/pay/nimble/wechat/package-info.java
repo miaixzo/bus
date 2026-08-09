@@ -21,6 +21,5 @@
  * This package contains the implementation for the WeChat Pay provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.pay.nimble.wechat;

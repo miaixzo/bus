@@ -33,7 +33,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Immutable opt-in controller route-prefix properties.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Validated
 @ConfigurationProperties(prefix = "bus.wrapper.route-prefix")

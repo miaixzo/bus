@@ -50,7 +50,6 @@ import org.miaixz.bus.mapper.Charter;
  *
  * @param <T> The type of the object being handled.
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface MapperHandler<T> extends Handler<T> {
 

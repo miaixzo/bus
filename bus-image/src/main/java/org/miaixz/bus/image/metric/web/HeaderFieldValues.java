@@ -33,7 +33,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Parser for HTTP header field values with parameters and quoted strings.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HeaderFieldValues {
 
@@ -131,7 +130,6 @@ public final class HeaderFieldValues {
      * Represents the FieldValueParser type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class FieldValueParser {
 

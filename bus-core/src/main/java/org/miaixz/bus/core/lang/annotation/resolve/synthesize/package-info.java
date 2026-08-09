@@ -22,6 +22,5 @@
  * and related processors and selectors.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.lang.annotation.resolve.synthesize;

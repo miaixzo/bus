@@ -21,6 +21,5 @@
  * Reusable Spring MVC HTTP message converters. This package must not select starter features.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.spring.web.converter;

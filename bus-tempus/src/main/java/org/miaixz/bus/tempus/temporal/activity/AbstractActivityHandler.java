@@ -49,7 +49,6 @@ import io.temporal.failure.CanceledFailure;
  * @param <R> the activity input type
  * @param <C> the activity context type
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractActivityHandler<R, C>
         implements ActivityContextFactory<R, C>, ActivityExecutorResolver<R, C>, ActivityResultSerializer {

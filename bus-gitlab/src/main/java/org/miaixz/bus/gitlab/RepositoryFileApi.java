@@ -45,7 +45,6 @@ import org.miaixz.bus.logger.Logger;
  * information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RepositoryFileApi extends AbstractApi {
 
@@ -72,7 +71,6 @@ public class RepositoryFileApi extends AbstractApi {
      * @param filePath        (required) - Full path to the file. Ex. lib/class.rb
      * @param ref             (required) - The name of branch, tag or commit
      * @return an Optional instance with the specified RepositoryFile as a value
-     * @since GitLab-11.1.0
      */
     public Optional<RepositoryFile> getOptionalFileInfo(Object projectIdOrPath, String filePath, String ref) {
         try {
@@ -95,7 +93,6 @@ public class RepositoryFileApi extends AbstractApi {
      * @param ref             (required) - The name of branch, tag or commit
      * @return a RepositoryFile instance with the file info
      * @throws RelevantException if any exception occurs
-     * @since GitLab-11.1.0
      */
     public RepositoryFile getFileInfo(Object projectIdOrPath, String filePath, String ref) throws RelevantException {
 

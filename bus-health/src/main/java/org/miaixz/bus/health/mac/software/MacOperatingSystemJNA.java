@@ -42,7 +42,6 @@ import org.miaixz.bus.health.mac.driver.WindowInfo;
  * marketed by Apple Inc. since 2001. It is the primary operating system for Apple's Mac computers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class MacOperatingSystemJNA extends MacOperatingSystem {

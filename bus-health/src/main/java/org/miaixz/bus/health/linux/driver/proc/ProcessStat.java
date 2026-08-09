@@ -37,7 +37,6 @@ import org.miaixz.bus.health.linux.ProcPath;
  * Reads process statistics from {@code /proc/[pid]/stat}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class ProcessStat {
@@ -235,7 +234,6 @@ public final class ProcessStat {
      * Enum corresponding to the fields in the output of {@code /proc/[pid]/stat}
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PidStat {
         /**
@@ -502,7 +500,6 @@ public final class ProcessStat {
      * Enum corresponding to the fields in the output of {@code /proc/[pid]/statm}
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PidStatM {
         /**

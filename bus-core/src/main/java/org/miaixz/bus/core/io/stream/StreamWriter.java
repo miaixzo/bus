@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * character sequences to an output stream, with an option to close the stream after writing.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StreamWriter {
 

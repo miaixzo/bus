@@ -28,7 +28,6 @@ import java.util.Objects;
  * An {@link InputStream} that counts the number of bytes read.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CountingInputStream extends FilterInputStream {
 

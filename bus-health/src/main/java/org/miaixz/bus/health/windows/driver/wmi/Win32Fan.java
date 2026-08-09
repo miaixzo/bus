@@ -31,7 +31,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * Queries WMI class {@code Win32_Fan}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Win32Fan {
@@ -62,7 +61,6 @@ public final class Win32Fan {
      * Fan speed property.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum SpeedProperty {
         /**

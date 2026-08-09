@@ -26,7 +26,6 @@ import com.sun.jna.Native;
  * into the JNA project.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface CoreFoundation extends com.sun.jna.platform.mac.CoreFoundation {
 
@@ -51,7 +50,6 @@ public interface CoreFoundation extends com.sun.jna.platform.mac.CoreFoundation 
      * {@link CFDateFormatterStyle#index} for the expected integer value corresponding to the C-style enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum CFDateFormatterStyle {
 

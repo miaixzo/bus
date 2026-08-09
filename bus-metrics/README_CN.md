@@ -8,7 +8,8 @@
 
 ## 📖 项目介绍
 
-**Bus Metrics** 是 bus 框架的指标模块。它不止于简单的计数器/计时器采集，还提供基数爆炸防护、应用内 EWMA 速率计算、SLA 违约回调、SLO 错误预算追踪，以及 AI/LLM 原生可观测性——这些都是 Micrometer 和 Dropwizard Metrics 所不具备的能力。
+**Bus Metrics** 是 bus 框架的指标模块。它不止于简单的计数器/计时器采集，还提供基数爆炸防护、应用内 EWMA 速率计算、SLA
+违约回调、SLO 错误预算追踪，以及 AI/LLM 原生可观测性——这些都是 Micrometer 和 Dropwizard Metrics 所不具备的能力。
 
 - **基数守卫**：防止 userId/traceId/URI 等高基数 Tag 导致 OOM——Micrometer 生产事故的最常见原因
 - **应用内速率**：`Meter` 直接在应用内提供 1m/5m/15m EWMA 速率（req/s），无需 PromQL
@@ -24,15 +25,16 @@
 
 ### 🛡️ CardinalityGuard — OOM 防护
 
-Micrometer 最常见的生产事故：userId/traceId/URI 误用为 Tag 导致 `ConcurrentHashMap` 无限增长、OOM。`CardinalityGuard` 在所有 Tag 数组进入注册表之前统一拦截。
+Micrometer 最常见的生产事故：userId/traceId/URI 误用为 Tag 导致 `ConcurrentHashMap` 无限增长、OOM。`CardinalityGuard` 在所有
+Tag 数组进入注册表之前统一拦截。
 
 三种策略，通过 sealed interface `CardinalityPolicy` 实现：
 
-| 策略 | 行为 |
-|:---|:---|
-| `firstN(n)` | 接受前 N 个不同值；超出后替换为 `__overflow__` |
-| `topN(n)` | 保留出现频率最高的 N 个值（Count-Min Sketch 近似）；低频值替换为 `__other__` |
-| `deny()` | 完全禁止此 Tag key，直接丢弃 |
+| 策略        | 行为                                                                         |
+|:------------|:-----------------------------------------------------------------------------|
+| `firstN(n)` | 接受前 N 个不同值；超出后替换为 `__overflow__`                               |
+| `topN(n)`   | 保留出现频率最高的 N 个值（Count-Min Sketch 近似）；低频值替换为 `__other__` |
+| `deny()`    | 完全禁止此 Tag key，直接丢弃                                                 |
 
 YAML 配置驱动，代码零改动：
 
@@ -55,7 +57,8 @@ bus:
 
 ### ⚡ Meter — 应用内 EWMA 速率
 
-Micrometer 只暴露累计 count/sum，req/s 必须靠外部 PromQL 计算。`Meter` 内嵌 EWMA 速率计算（算法与 Linux kernel load average 和 Dropwizard Metrics 完全一致），支持应用内自适应限流和熔断决策。
+Micrometer 只暴露累计 count/sum，req/s 必须靠外部 PromQL 计算。`Meter` 内嵌 EWMA 速率计算（算法与 Linux kernel load average
+和 Dropwizard Metrics 完全一致），支持应用内自适应限流和熔断决策。
 
 ```java
 Meter qps = Metrics.meter("http.requests", "method", "GET");
@@ -76,15 +79,16 @@ if (rp.errorRate() > 0.05) {
 
 EWMA 参数（每 5 秒 tick 一次）：
 
-| 窗口 | Alpha |
-|:---|:---|
-| 1 分钟 | `exp(-5/60)` = 0.9200 |
-| 5 分钟 | `exp(-5/300)` = 0.9835 |
+| 窗口    | Alpha                  |
+|:--------|:-----------------------|
+| 1 分钟  | `exp(-5/60)` = 0.9200  |
+| 5 分钟  | `exp(-5/300)` = 0.9835 |
 | 15 分钟 | `exp(-5/900)` = 0.9945 |
 
 ### 🔔 Timer.onViolation — SLA 违约回调
 
-目前唯一具备此 API 的 Java 指标库。Micrometer 的 `.sla(Duration...)` 仅记录桶数，无任何回调机制，告警强依赖外部 Alertmanager。
+目前唯一具备此 API 的 Java 指标库。Micrometer 的 `.sla(Duration...)` 仅记录桶数，无任何回调机制，告警强依赖外部
+Alertmanager。
 
 ```java
 Metrics.timer("checkout.api")
@@ -148,26 +152,26 @@ stream.onError(s::error);
 
 一次 `stop()` 自动记录 6 个指标：
 
-| 指标名 | 类型 | 标签 | 说明 |
-|:---|:---|:---|:---|
-| `llm.call.duration` | Timer | model, provider, operation, finish_reason | 全程延迟 |
-| `llm.call.ttft` | Timer | model, provider | 首 Token 延迟 |
-| `llm.call.itl` | Timer | model, provider | Token 间延迟 |
-| `llm.tokens` | Counter | model, provider, type=input\|output | Token 消耗 |
-| `llm.cost` | Counter | model, provider | 估算费用（USD） |
-| `llm.errors` | Counter | model, provider, error_type | 错误计数 |
+| 指标名              | 类型    | 标签                                      | 说明            |
+|:--------------------|:--------|:------------------------------------------|:----------------|
+| `llm.call.duration` | Timer   | model, provider, operation, finish_reason | 全程延迟        |
+| `llm.call.ttft`     | Timer   | model, provider                           | 首 Token 延迟   |
+| `llm.call.itl`      | Timer   | model, provider                           | Token 间延迟    |
+| `llm.tokens`        | Counter | model, provider, type=input\|output       | Token 消耗      |
+| `llm.cost`          | Counter | model, provider                           | 估算费用（USD） |
+| `llm.errors`        | Counter | model, provider, error_type               | 错误计数        |
 
 ### 🎯 T-Digest 精确尾部百分位
 
 `NativeProvider` 自实现 T-Digest（约 200 行，零依赖）：
 
-| | 固定 12 桶 | T-Digest |
-|:---|:---|:---|
-| P99 误差 | ~20% | < 1% |
-| P99.9 误差 | > 50% | < 0.5% |
-| 内存 | 96 bytes | ~300 bytes |
-| 跨实例合并 | 不支持 | 支持 |
-| 依赖 | 无 | 无（自实现） |
+|            | 固定 12 桶 | T-Digest     |
+|:-----------|:-----------|:-------------|
+| P99 误差   | ~20%       | < 1%         |
+| P99.9 误差 | > 50%      | < 0.5%       |
+| 内存       | 96 bytes   | ~300 bytes   |
+| 跨实例合并 | 不支持     | 支持         |
+| 依赖       | 无         | 无（自实现） |
 
 -----
 
@@ -232,30 +236,31 @@ LlmSample s = Metrics.llmTimer("ai.chat")
 
 #### JVM 指标（`JvmMetrics`）
 
-| 指标 | 类型 | 标签 |
-|:---|:---|:---|
-| `jvm.memory.used` | Gauge | area=heap\|nonheap |
-| `jvm.memory.max` | Gauge | area=heap\|nonheap |
-| `jvm.gc.pause` | Timer | gc=gcName |
-| `jvm.threads.live` | Gauge | — |
-| `jvm.threads.peak` | Gauge | — |
+| 指标               | 类型  | 标签               |
+|:-------------------|:------|:-------------------|
+| `jvm.memory.used`  | Gauge | area=heap\|nonheap |
+| `jvm.memory.max`   | Gauge | area=heap\|nonheap |
+| `jvm.gc.pause`     | Timer | gc=gcName          |
+| `jvm.threads.live` | Gauge | —                  |
+| `jvm.threads.peak` | Gauge | —                  |
 
 #### 系统指标（`SystemMetrics`）
 
-| 指标 | 类型 |
-|:---|:---|
-| `system.cpu.load` | Gauge |
+| 指标               | 类型  |
+|:-------------------|:------|
+| `system.cpu.load`  | Gauge |
 | `process.cpu.load` | Gauge |
-| `process.uptime` | Gauge |
+| `process.uptime`   | Gauge |
 
 #### HTTP 指标（`HttpMetrics`）
 
-Servlet Filter，自动埋点所有 HTTP 请求。URI 模板化（`/user/123` → `/user/{id}`）通过 bus-starter 中的 `HttpMetricsInterceptor` 实现（Spring MVC）。
+Servlet Filter，自动埋点所有 HTTP 请求。URI 模板化（`/user/123` → `/user/{id}`）通过 bus-starter 中的
+`HttpMetricsInterceptor` 实现（Spring MVC）。
 
-| 指标 | 类型 | 标签 |
-|:---|:---|:---|
-| `http.server.requests` | Timer | method, uri, status, exception |
-| `http.server.requests.rate` | Meter | method, uri, status |
+| 指标                        | 类型  | 标签                           |
+|:----------------------------|:------|:-------------------------------|
+| `http.server.requests`      | Timer | method, uri, status, exception |
+| `http.server.requests.rate` | Meter | method, uri, status            |
 
 #### 缓存指标（`CacheMetrics`）
 
@@ -275,17 +280,18 @@ StartupMetrics.record(1250, List.of(
         new StartupStage("components", 930)));
 ```
 
-| 指标 | 类型 | 标签 |
-|:---|:---|:---|
-| `application.startup.count` | Counter | — |
-| `application.startup.duration` | Timer | — |
-| `application.startup.stage.duration` | Timer | stage |
+| 指标                                 | 类型    | 标签  |
+|:-------------------------------------|:--------|:------|
+| `application.startup.count`          | Counter | —     |
+| `application.startup.duration`       | Timer   | —     |
+| `application.startup.stage.duration` | Timer   | stage |
 
 各框架集成只负责采集自身生命周期耗时，并转换为这个通用模型。
 
 ### Prometheus 导出
 
-`PrometheusExporter` 输出标准 Prometheus text 0.0.4 格式。bus-starter 中的 `MetricsEndpoint` 提供 `/metricz` 端点直接响应 scrape 请求。
+`PrometheusExporter` 输出标准 Prometheus text 0.0.4 格式。bus-starter 中的 `MetricsEndpoint` 提供 `/metricz` 端点直接响应
+scrape 请求。
 
 ```
 # TYPE http_server_requests_seconds histogram
@@ -307,7 +313,8 @@ slo_compliance_ratio{slo="checkout.latency",target="0.999"} 0.9987
 
 ### 与 bus-cortex 联动（CortexExporter）
 
-定期将本实例指标快照推送到 bus-cortex（CacheX key：`metrics:{namespace}:{serviceId}:{metricName}`）。Cortex 汇聚所有实例数据，提供集群级 `/metricz`。
+定期将本实例指标快照推送到 bus-cortex（CacheX key：`metrics:{namespace}:{serviceId}:{metricName}`）。Cortex 汇聚所有实例数据，提供集群级
+`/metricz`。
 
 ```yaml
 bus:
@@ -393,20 +400,20 @@ bus:
 
 ### 配置属性说明
 
-| 属性 | 类型 | 默认值 | 说明 |
-|:---|:---|:---|:---|
-| `bus.metrics.enabled` | boolean | `false` | 启用指标集成 |
-| `bus.metrics.provider` | String | `native` | 后端实现：`native` 或 `micrometer` |
-| `bus.metrics.jvm` | boolean | `true` | 启用 JVM 指标 |
-| `bus.metrics.system` | boolean | `true` | 启用系统指标 |
-| `bus.metrics.http` | boolean | `true` | 启用 HTTP 指标 |
-| `bus.metrics.endpoint` | boolean | `true` | 启用 `/metricz` 端点 |
-| `bus.metrics.path` | String | `/metricz` | 端点路径 |
-| `bus.metrics.startup.enabled` | boolean | `false` | 采集并发布 Spring Boot 启动指标 |
-| `bus.metrics.cardinality.default-max` | int | `100` | 默认基数上限 |
-| `bus.metrics.cardinality.deny-list` | List | — | 永远禁止的 Tag key |
-| `bus.metrics.cortex.enabled` | boolean | `false` | 启用 CortexExporter |
-| `bus.metrics.cortex.interval-seconds` | int | `15` | 推送间隔 |
+| 属性                                  | 类型    | 默认值     | 说明                               |
+|:--------------------------------------|:--------|:-----------|:-----------------------------------|
+| `bus.metrics.enabled`                 | boolean | `false`    | 启用指标集成                       |
+| `bus.metrics.provider`                | String  | `native`   | 后端实现：`native` 或 `micrometer` |
+| `bus.metrics.jvm`                     | boolean | `true`     | 启用 JVM 指标                      |
+| `bus.metrics.system`                  | boolean | `true`     | 启用系统指标                       |
+| `bus.metrics.http`                    | boolean | `true`     | 启用 HTTP 指标                     |
+| `bus.metrics.endpoint`                | boolean | `true`     | 启用 `/metricz` 端点               |
+| `bus.metrics.path`                    | String  | `/metricz` | 端点路径                           |
+| `bus.metrics.startup.enabled`         | boolean | `false`    | 采集并发布 Spring Boot 启动指标    |
+| `bus.metrics.cardinality.default-max` | int     | `100`      | 默认基数上限                       |
+| `bus.metrics.cardinality.deny-list`   | List    | —          | 永远禁止的 Tag key                 |
+| `bus.metrics.cortex.enabled`          | boolean | `false`    | 启用 CortexExporter                |
+| `bus.metrics.cortex.interval-seconds` | int     | `15`       | 推送间隔                           |
 
 -----
 
@@ -443,26 +450,26 @@ PrometheusExporter  CortexExporter  OpenTelemetryProvider
 
 ## 🆚 与竞品对比
 
-| 能力 | Micrometer | Dropwizard | bus-metrics |
-|:---|:---|:---|:---|
-| 多后端适配 | ✅ 30+ | ✅ | ✅ Prometheus/OTLP/Cortex |
-| 基数守卫（防 OOM） | ❌ | ❌ | ✅ |
-| 应用内速率（req/s） | ❌ | ✅ Meter | ✅ |
-| SLA 违约回调 | ❌ | ❌ | ✅ |
-| SLO 追踪 + 错误预算 | ❌ | ❌ | ✅ |
-| T-Digest 精确百分位 | ✅ HDR Histogram | ✅ 外部依赖 | ✅ 零依赖自实现 |
-| 跨实例百分位合并 | ❌（client percentile） | ❌ | ✅（histogram bucket） |
-| LLM/AI 专用指标 | ❌ | ❌ | ✅ TTFT/ITL/Token/Cost |
-| bus 生态联动 | ❌ | ❌ | ✅ cortex/vortex/tempus |
-| 零依赖运行 | ❌ 需 registry impl | ❌ | ✅ NativeProvider |
+| 能力                | Micrometer              | Dropwizard  | bus-metrics               |
+|:--------------------|:------------------------|:------------|:--------------------------|
+| 多后端适配          | ✅ 30+                  | ✅          | ✅ Prometheus/OTLP/Cortex |
+| 基数守卫（防 OOM）  | ❌                      | ❌          | ✅                        |
+| 应用内速率（req/s） | ❌                      | ✅ Meter    | ✅                        |
+| SLA 违约回调        | ❌                      | ❌          | ✅                        |
+| SLO 追踪 + 错误预算 | ❌                      | ❌          | ✅                        |
+| T-Digest 精确百分位 | ✅ HDR Histogram        | ✅ 外部依赖 | ✅ 零依赖自实现           |
+| 跨实例百分位合并    | ❌（client percentile） | ❌          | ✅（histogram bucket）    |
+| LLM/AI 专用指标     | ❌                      | ❌          | ✅ TTFT/ITL/Token/Cost    |
+| bus 生态联动        | ❌                      | ❌          | ✅ cortex/vortex/tempus   |
+| 零依赖运行          | ❌ 需 registry impl     | ❌          | ✅ NativeProvider         |
 
 -----
 
 ## 🔄 版本兼容性
 
 | Bus Metrics 版本 | Spring Boot 版本 | JDK 版本 |
-|:---|:---|:---|
-| 8.x | 3.x+ | 17+ |
+|:-----------------|:-----------------|:---------|
+| 8.x              | 3.x+             | 17+      |
 
 -----
 

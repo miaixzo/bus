@@ -41,7 +41,6 @@ import io.temporal.common.converter.DataConverterException;
  * JSON processing remains delegated to the application-wide {@link JsonProvider}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class JsonPayloadConverter implements InvocationHandler {
 

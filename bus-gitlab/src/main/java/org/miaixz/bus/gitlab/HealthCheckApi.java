@@ -33,7 +33,6 @@ import org.miaixz.bus.logger.Logger;
  * The health check API class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HealthCheckApi extends AbstractApi {
 

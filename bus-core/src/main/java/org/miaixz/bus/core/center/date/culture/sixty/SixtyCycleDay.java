@@ -36,7 +36,6 @@ import org.miaixz.bus.core.center.date.culture.star.twentyeight.TwentyEightStar;
  * the month changes at the beginning of a solar term. This class extends {@link Loops} for cyclical operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SixtyCycleDay extends Loops {
 

@@ -46,7 +46,6 @@ import reactor.core.publisher.Mono;
  * @see Limiter
  * @see LimiterRegistry
  * @author Kimi Liu
- * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.FOURTH)
 public class LimiterStrategy extends AbstractStrategy {

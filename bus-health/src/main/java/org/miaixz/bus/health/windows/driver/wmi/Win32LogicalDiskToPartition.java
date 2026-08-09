@@ -29,7 +29,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * Queries WMI class {@code Win32_LogicalDiskToPartition}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Win32LogicalDiskToPartition {
@@ -62,7 +61,6 @@ public final class Win32LogicalDiskToPartition {
      * Links disk drives to partitions
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum DiskToPartitionProperty {
         /**

@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The remote mirror class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RemoteMirror implements Serializable {
 

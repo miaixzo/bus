@@ -45,7 +45,6 @@ import reactor.core.publisher.Mono;
  * to {@code RestQualifierStrategy}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.SECOND)
 public class RestVettingStrategy extends VettingStrategy {

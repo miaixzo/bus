@@ -25,7 +25,6 @@ package org.miaixz.bus.core.text.placeholder.segment;
  * For example, "?", "{}", "$$$".
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SingleSegment extends AbstractSegment {
 

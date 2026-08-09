@@ -40,7 +40,6 @@ import org.miaixz.bus.logger.Logger;
  * OSChina login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class OschinaProvider extends AbstractProvider {
 

@@ -39,7 +39,6 @@ import org.miaixz.bus.extra.compress.CompressBuilder;
  * 7zip format archiver wrapper.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SevenZArchiver implements Archiver {
 

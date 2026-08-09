@@ -48,7 +48,6 @@ import org.miaixz.bus.logger.Logger;
  * It handles the initialization of executor services and the binding of network connections.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

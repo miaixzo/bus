@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * {@code new TableNameParser(sql).tables()}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class TableNameParser {
 
@@ -214,7 +213,6 @@ public final class TableNameParser {
      * Visitor interface for table names.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface TableNameVisitor {
 
@@ -479,7 +477,6 @@ public final class TableNameParser {
      * Represents an SQL token.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     public static class SqlToken implements Comparable<SqlToken> {

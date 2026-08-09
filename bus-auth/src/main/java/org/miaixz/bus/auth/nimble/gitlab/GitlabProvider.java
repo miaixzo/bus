@@ -41,7 +41,6 @@ import org.miaixz.bus.logger.Logger;
  * GitLab login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GitlabProvider extends AbstractProvider {
 

@@ -36,7 +36,6 @@ import java.lang.annotation.Target;
  * between beans.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)

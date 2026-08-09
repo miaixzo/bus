@@ -38,7 +38,6 @@ import org.miaixz.bus.core.lang.reflect.creator.AdaptiveObjectCreator;
  * Creates, partitions, and transforms lists.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ListKit {
 

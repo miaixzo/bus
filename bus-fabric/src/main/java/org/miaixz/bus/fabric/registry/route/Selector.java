@@ -36,7 +36,6 @@ import org.miaixz.bus.fabric.observe.event.FabricEvent;
  * Route candidate selector that defers failed routes behind fresh candidates.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Selector {
 

@@ -37,7 +37,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * </ol>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Luhn {
 

@@ -76,7 +76,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * be overridden, and caches the final attribute values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GenericSynthesizedAggregateAnnotation extends AbstractAnnotationSynthesizer<List<Annotation>>
         implements SynthesizedAggregateAnnotation {
@@ -321,7 +320,6 @@ public class GenericSynthesizedAggregateAnnotation extends AbstractAnnotationSyn
      * all related annotations in the hierarchical structure of {@link #source}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class MetaAnnotation extends GenericSynthesizedAnnotation<Annotation, Annotation> {
 

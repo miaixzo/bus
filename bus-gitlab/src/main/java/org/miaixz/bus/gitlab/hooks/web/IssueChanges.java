@@ -25,7 +25,6 @@ import java.util.Date;
  * The issue changes class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IssueChanges extends EventChanges {
 

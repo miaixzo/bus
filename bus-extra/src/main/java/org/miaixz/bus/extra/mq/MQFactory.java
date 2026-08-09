@@ -30,7 +30,6 @@ import org.miaixz.bus.logger.Logger;
  * explicit configuration.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MQFactory {
 

@@ -29,7 +29,6 @@ import org.miaixz.bus.core.xyz.*;
  * an assertion. This class is commonly used for parameter checking.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Assert {
 

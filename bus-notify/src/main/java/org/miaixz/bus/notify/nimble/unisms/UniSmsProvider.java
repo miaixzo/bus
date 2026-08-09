@@ -42,7 +42,6 @@ import org.miaixz.bus.notify.nimble.AbstractProvider;
  * Uni SMS service provider implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
 

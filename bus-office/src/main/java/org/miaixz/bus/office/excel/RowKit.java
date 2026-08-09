@@ -42,7 +42,6 @@ import org.miaixz.bus.office.excel.style.StyleSet;
  * Reads and modifies rows in Excel sheets.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RowKit {
 

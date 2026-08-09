@@ -36,7 +36,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The constants interface.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Constants {
 
@@ -84,7 +83,6 @@ public interface Constants {
      * Used to specify the type of authentication token.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum TokenType {
         /**
@@ -110,7 +108,6 @@ public interface Constants {
      * Enum to specify encoding of file contents.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Encoding {
 
@@ -165,7 +162,6 @@ public interface Constants {
      * Enum to use for ordering the results of various API calls.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum SortOrder {
 
@@ -220,7 +216,6 @@ public interface Constants {
      * Enum to use for ordering the results of getEpics().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum EpicOrderBy {
 
@@ -275,7 +270,6 @@ public interface Constants {
      * Enum to use for ordering the results of getIssues().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum IssueOrderBy {
 
@@ -330,7 +324,6 @@ public interface Constants {
      * Enum to use for ordering the results of getPackages().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PackageOrderBy {
 
@@ -398,7 +391,6 @@ public interface Constants {
      * Enum to use for filtering the results of getPackages().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PackageStatus {
 
@@ -457,7 +449,6 @@ public interface Constants {
      * Enum to use for ordering the results of getProjects().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ProjectOrderBy {
 
@@ -529,7 +520,6 @@ public interface Constants {
      * Enum to use for ordering the results of getPipelines().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PipelineOrderBy {
 
@@ -597,7 +587,6 @@ public interface Constants {
      * Enum to use for ordering the results of getMergeRequests().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum MergeRequestOrderBy {
 
@@ -653,7 +642,6 @@ public interface Constants {
      * Enum to use for ordering the results of getGroups() and getSubGroups().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum GroupOrderBy {
 
@@ -716,7 +704,6 @@ public interface Constants {
      * Enum to use for ordering the results of getTags().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum TagOrderBy {
 
@@ -771,7 +758,6 @@ public interface Constants {
      * Enum to use for ordering the results of getDeployments.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static enum DeploymentOrderBy {
 
@@ -839,7 +825,6 @@ public interface Constants {
      * Enum to use for ordering the results of getContibutors().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ContributorOrderBy {
 
@@ -899,7 +884,6 @@ public interface Constants {
      * Enum to use for specifying the scope when calling getPipelines().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PipelineScope {
 
@@ -966,7 +950,6 @@ public interface Constants {
      * Enum to use for specifying the source when calling getPipelines().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PipelineSource {
 
@@ -1058,7 +1041,6 @@ public interface Constants {
      * Enum to use for specifying the scope when calling getJobs().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum JobScope {
 
@@ -1141,7 +1123,6 @@ public interface Constants {
      * Enum to use for specifying the scope when calling the various get issue methods.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum IssueScope {
 
@@ -1200,7 +1181,6 @@ public interface Constants {
      * Enum to use for specifying the scope for getMergeRequests methods.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum MergeRequestScope {
 
@@ -1260,7 +1240,6 @@ public interface Constants {
      * Enum to use for querying the state of a MergeRequest
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum MergeRequestState {
 
@@ -1328,7 +1307,6 @@ public interface Constants {
      * Enum to use for specifying the scope of the search attribute when calling getMergeRequests().
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum MergeRequestSearchIn {
 
@@ -1384,7 +1362,6 @@ public interface Constants {
      * Enum to use for specifying the state of a merge request or issue update.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum StateEvent {
 
@@ -1439,7 +1416,6 @@ public interface Constants {
      * Enum to used to store the state of an issue.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum IssueState {
 
@@ -1498,7 +1474,6 @@ public interface Constants {
      * The milestone state enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum MilestoneState {
 
@@ -1562,7 +1537,6 @@ public interface Constants {
      * Enum to use for specifying the event action_type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ActionType {
 
@@ -1677,7 +1651,6 @@ public interface Constants {
      * Enum to use for specifying the event target_type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum TargetType {
 
@@ -1753,7 +1726,6 @@ public interface Constants {
      * Enum to use for specifying the line type for a commit comment.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum LineType {
 
@@ -1808,7 +1780,6 @@ public interface Constants {
      * Enum to specify the state of an ImpersonationToken.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ImpersonationState {
 
@@ -1868,7 +1839,6 @@ public interface Constants {
      * Enum to specify the format of a downloaded archive.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ArchiveFormat {
 
@@ -1957,7 +1927,6 @@ public interface Constants {
      * Enum for the various Commit build status values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum CommitBuildState {
 
@@ -2029,7 +1998,6 @@ public interface Constants {
      * Enum for the various Application scope values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ApplicationScope {
 
@@ -2165,7 +2133,6 @@ public interface Constants {
      * Enum to use for specifying the state when doing a getTodos() with the TodosApi.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum TodoState {
 
@@ -2220,7 +2187,6 @@ public interface Constants {
      * Enum to use for specifying the type when doing a getTodos() with the TodosApi.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum TodoType {
 
@@ -2276,7 +2242,6 @@ public interface Constants {
      * Enum to use for specifying the deploy token scope.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum DeployTokenScope {
 
@@ -2352,7 +2317,6 @@ public interface Constants {
      * Enum to use for specifying the action when doing a getTodos() with the TodosApi.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum TodoAction {
 
@@ -2427,7 +2391,6 @@ public interface Constants {
      * Enum for the build_git_strategy of the project instance.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum SquashOption {
 
@@ -2490,7 +2453,6 @@ public interface Constants {
      * The project feature visibility access level enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ProjectFeatureVisibilityAccessLevel {
 
@@ -2554,7 +2516,6 @@ public interface Constants {
      * Enum to use for specifying the status of a deployment.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum DeploymentStatus {
 
@@ -2622,7 +2583,6 @@ public interface Constants {
      * The auto cancel pending pipelines enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum AutoCancelPendingPipelines {
 
@@ -2678,7 +2638,6 @@ public interface Constants {
      * Enum to use for specifying the project token scope.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ProjectAccessTokenScope {
 
@@ -2770,7 +2729,6 @@ public interface Constants {
      * Enum for the search scope when doing a globalSearch() with the SearchApi.
      *
      * @author Kimi Liu
-     * @since Java 21+
      * @param <T> the value type
      */
     public static class SearchScope<T> {
@@ -2890,7 +2848,6 @@ public interface Constants {
      * Enum for the build_git_strategy of the project instance.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum BuildGitStrategy {
 
@@ -2946,7 +2903,6 @@ public interface Constants {
      * The auto devops deploy strategy enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum AutoDevopsDeployStrategy {
 
@@ -3006,7 +2962,6 @@ public interface Constants {
      * Enum to use for specifying the Event scope.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum EventScope {
 
@@ -3054,7 +3009,6 @@ public interface Constants {
      * Constant to specify the project_creation_level for the group.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ProjectCreationLevel {
 
@@ -3114,7 +3068,6 @@ public interface Constants {
      * Constant to specify the subgroup_creation_level for the group.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum SubgroupCreationLevel {
 
@@ -3170,7 +3123,6 @@ public interface Constants {
      * The default branch protection level enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum DefaultBranchProtectionLevel {
 
@@ -3219,7 +3171,6 @@ public interface Constants {
      * Enum for the search scope when doing a groupSearch() with the SearchApi.
      *
      * @author Kimi Liu
-     * @since Java 21+
      * @param <T> the value type
      */
     public static class GroupSearchScope<T> {
@@ -3344,7 +3295,6 @@ public interface Constants {
      * Enum for the search scope when doing a projectSearch() with the SearchApi.
      *
      * @author Kimi Liu
-     * @since Java 21+
      * @param <T> the value type
      */
     public static class ProjectSearchScope<T> {

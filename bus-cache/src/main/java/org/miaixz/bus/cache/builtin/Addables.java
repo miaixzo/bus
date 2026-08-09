@@ -34,7 +34,6 @@ import org.miaixz.bus.core.xyz.CollKit;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Addables {
 
@@ -112,7 +111,6 @@ public class Addables {
      *
      * @param <T> The type of the object being built.
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface Addable<T> {
 
@@ -146,7 +144,6 @@ public class Addables {
      * An {@link Addable} implementation for building arrays.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class ArrayAddable implements Addable<Object[]> {
 
@@ -198,7 +195,6 @@ public class Addables {
      * An {@link Addable} implementation for building collections.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class CollectionAddable implements Addable<Collection> {
 
@@ -255,7 +251,6 @@ public class Addables {
      * An {@link Addable} implementation for building maps.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class MapAddable implements Addable<Map> {
 

@@ -40,7 +40,6 @@ import org.miaixz.bus.logger.Logger;
  * interaction.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Modality {
 

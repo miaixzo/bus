@@ -21,6 +21,5 @@
  * UID Dictionary from POLYTRON_SMS_2_5
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.POLYTRON_SMS_2_5;

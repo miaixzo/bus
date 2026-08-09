@@ -27,7 +27,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * The abstract event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractEvent implements Event {
 

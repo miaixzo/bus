@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Matches User-Agent values against shared platform classifiers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class PlatformMatcher {
 

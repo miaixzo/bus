@@ -26,7 +26,6 @@ import java.util.Optional;
  * Converter for {@link Optional} objects
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class OptionalConverter extends AbstractConverter {
 

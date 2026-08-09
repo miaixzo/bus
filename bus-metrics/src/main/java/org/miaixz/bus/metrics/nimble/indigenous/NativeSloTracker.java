@@ -32,7 +32,6 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  * Native SloTracker implementation backed by {@link ErrorBudget}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NativeSloTracker implements SloTracker {
 
@@ -64,7 +63,6 @@ public class NativeSloTracker implements SloTracker {
      * @param tags             optional tag filters
      * @param budget           the error budget tracking instance
      * @author Kimi Liu
-     * @since Java 21+
      */
     private record SloDefinition(String timerOrMeterName, boolean isLatency, long thresholdMs, double maxErrorRatio,
             double target, Tag[] tags, ErrorBudget budget) {

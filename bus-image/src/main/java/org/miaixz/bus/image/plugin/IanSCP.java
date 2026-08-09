@@ -39,7 +39,6 @@ import org.miaixz.bus.logger.Logger;
  * SOP Class. It listens for N-CREATE-RQ messages and, if configured, stores the notification attributes to a file.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IanSCP extends Device {
 

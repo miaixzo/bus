@@ -37,7 +37,6 @@ import org.miaixz.bus.health.Parsing;
  * Queries logged in users.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Who {

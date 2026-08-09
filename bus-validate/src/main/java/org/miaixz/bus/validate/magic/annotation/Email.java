@@ -29,7 +29,6 @@ import org.miaixz.bus.validate.nimble.EmailMatcher;
  * Validates that the annotated string is a valid email address.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

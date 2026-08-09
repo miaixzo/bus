@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_EVIDENCE_DOCUMENT_DATA;
  * Represents the PrivateTag type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PrivateTag {
 

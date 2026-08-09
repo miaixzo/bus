@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.Assert;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FunctionFilter extends AbstractFilter {
 

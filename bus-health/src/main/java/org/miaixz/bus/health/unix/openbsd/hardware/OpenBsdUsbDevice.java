@@ -32,7 +32,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
  * OpenBsd Usb Device
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public class OpenBsdUsbDevice extends AbstractUsbDevice {

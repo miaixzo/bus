@@ -31,7 +31,6 @@ import org.miaixz.bus.tempus.Scheduler;
  * if they match
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MatchCrontab extends Repertoire {
 

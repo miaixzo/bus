@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Common methods for entities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

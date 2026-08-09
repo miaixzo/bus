@@ -31,7 +31,6 @@ import org.miaixz.bus.pay.magic.Voucher;
  * Represents the request parameters for JD Pay.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

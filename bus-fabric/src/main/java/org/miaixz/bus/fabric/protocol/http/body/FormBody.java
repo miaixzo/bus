@@ -45,7 +45,6 @@ import org.miaixz.bus.fabric.codec.body.RequestBody;
  * Immutable application/x-www-form-urlencoded body.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class FormBody implements RequestBody {
 
@@ -298,7 +297,6 @@ public final class FormBody implements RequestBody {
      * Form body builder.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

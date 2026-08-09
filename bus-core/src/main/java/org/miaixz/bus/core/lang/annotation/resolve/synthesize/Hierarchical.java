@@ -42,7 +42,6 @@ import java.util.Comparator;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Hierarchical extends Comparable<Hierarchical> {
 
@@ -91,7 +90,6 @@ public interface Hierarchical extends Comparable<Hierarchical> {
      * Selector interface for choosing the most appropriate {@link Hierarchical} object from two candidates.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FunctionalInterface
     interface Selector {
@@ -130,7 +128,6 @@ public interface Hierarchical extends Comparable<Hierarchical> {
          * Selector that returns the object closer to root; prefers old object on equal distance.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         class NearestAndOldestPrioritySelector implements Selector {
 
@@ -155,7 +152,6 @@ public interface Hierarchical extends Comparable<Hierarchical> {
          * Selector that returns the object closer to root; prefers new object on equal distance.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         class NearestAndNewestPrioritySelector implements Selector {
 
@@ -180,7 +176,6 @@ public interface Hierarchical extends Comparable<Hierarchical> {
          * Selector that returns the object farther from root; prefers old object on equal distance.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         class FarthestAndOldestPrioritySelector implements Selector {
 
@@ -205,7 +200,6 @@ public interface Hierarchical extends Comparable<Hierarchical> {
          * Selector that returns the object farther from root; prefers new object on equal distance.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         class FarthestAndNewestPrioritySelector implements Selector {
 

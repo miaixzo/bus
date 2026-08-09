@@ -31,7 +31,6 @@ import org.miaixz.bus.core.io.file.PathResolve;
  * traversal and copying process.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CopyVisitor extends SimpleFileVisitor<Path> {
 

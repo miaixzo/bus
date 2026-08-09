@@ -31,7 +31,6 @@ import org.miaixz.bus.fabric.Headers;
  * does not depend on response, connection-pool, or body lifecycle code.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class Http1Parser {
 

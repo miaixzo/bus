@@ -26,7 +26,6 @@ import org.miaixz.bus.storage.Context;
  * client.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GoogleCsProvider extends GenericS3Provider {
 

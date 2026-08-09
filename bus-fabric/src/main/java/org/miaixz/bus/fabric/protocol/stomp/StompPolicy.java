@@ -32,7 +32,6 @@ import org.miaixz.bus.fabric.Policy;
  * @param clientSendHeartbeat    minimum interval at which the client can send heartbeats
  * @param clientReceiveHeartbeat desired interval at which the client receives heartbeats
  * @author Kimi Liu
- * @since Java 21+
  */
 public record StompPolicy(Duration clientSendHeartbeat, Duration clientReceiveHeartbeat) implements Policy {
 

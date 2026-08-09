@@ -29,7 +29,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractVirtualMemory;
  * Memory obtained by perfstat_memory_total_t
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class AixVirtualMemory extends AbstractVirtualMemory {

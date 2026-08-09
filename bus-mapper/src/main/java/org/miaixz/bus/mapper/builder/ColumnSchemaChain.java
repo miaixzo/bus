@@ -32,7 +32,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * to sequentially process fields and determine their corresponding database column metadata.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ColumnSchemaChain implements ColumnSchemaBuilder.Chain {
 

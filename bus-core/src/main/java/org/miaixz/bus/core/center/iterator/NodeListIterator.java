@@ -33,7 +33,6 @@ import org.miaixz.bus.core.lang.Assert;
  *
  * @see NodeList
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NodeListIterator implements ResettableIterator<Node> {
 

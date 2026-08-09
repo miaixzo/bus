@@ -22,6 +22,5 @@
  * <a href="https://github.com/DanielYWoo/fast-object-pool">https://github.com/DanielYWoo/fast-object-pool</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.lang.pool.partition;

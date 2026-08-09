@@ -28,7 +28,6 @@ import org.miaixz.bus.cortex.Type;
  * Internal registry refresh or rebuild scope.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

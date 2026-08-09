@@ -26,7 +26,6 @@ import java.io.Serial;
  * <a href="https://docs.gitlab.com/ee/api/repositories.html#contributors">Contributors at GitLab</a>.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Contributor extends AbstractUser<Contributor> {
 

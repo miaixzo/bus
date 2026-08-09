@@ -29,7 +29,6 @@ import org.miaixz.bus.image.nimble.geometry.Vector3;
  * Sorts images along the normal axis derived from Image Orientation Patient.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class AlongAxisComparator implements HpComparator {
 

@@ -21,6 +21,5 @@
  * Decodes the related value.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.nimble.codec;

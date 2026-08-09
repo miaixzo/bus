@@ -28,7 +28,6 @@ import org.miaixz.bus.setting.nimble.ini.IniElement;
  * {@link IniElement}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Format extends Closeable {
 

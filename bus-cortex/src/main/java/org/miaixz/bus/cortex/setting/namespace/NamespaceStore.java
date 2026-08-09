@@ -29,7 +29,6 @@ import org.miaixz.bus.cortex.Trait;
  * Directory contract for {@code setting.namespace}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface NamespaceStore {
 

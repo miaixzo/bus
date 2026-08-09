@@ -30,7 +30,6 @@ import org.miaixz.bus.core.io.resource.Resource;
  * recursion, and filtering logic.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class PatternLoader extends DelegateLoader implements Loader {
 

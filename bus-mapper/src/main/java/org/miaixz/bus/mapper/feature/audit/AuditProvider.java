@@ -135,7 +135,6 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface AuditProvider extends MapperProvider<AuditConfig> {
 

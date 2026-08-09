@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.models.Constants.StateEvent;
  * This class provides the form parameters for creating and updating merge requests.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MergeRequestParams implements Serializable {
 

@@ -38,7 +38,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Immutable URL value object with centralized parsing and query encoding.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class UnoUrl {
 
@@ -1060,7 +1059,6 @@ public final class UnoUrl {
      * URL builder.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

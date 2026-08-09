@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The health check status enum.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum HealthCheckStatus {
 

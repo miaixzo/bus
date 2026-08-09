@@ -35,7 +35,6 @@ import org.miaixz.bus.fabric.protocol.websocket.WebSocketX;
  * Protocol-neutral fabric entry point backed by one shared context.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Fabric {
 
@@ -274,7 +273,6 @@ public final class Fabric {
      * Holder managed by {@link Instances} for the default runtime Context.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class DefaultRuntime {
 

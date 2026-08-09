@@ -21,6 +21,5 @@
  * Provides various lock implementations and utilities for concurrent programming.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.lang.thread.lock;

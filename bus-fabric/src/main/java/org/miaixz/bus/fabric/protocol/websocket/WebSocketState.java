@@ -26,7 +26,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * Network-I/O-free WebSocket protocol state shared by reader and writer coordination.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class WebSocketState {
 

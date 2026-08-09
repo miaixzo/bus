@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The package type enum.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum PackageType {
 

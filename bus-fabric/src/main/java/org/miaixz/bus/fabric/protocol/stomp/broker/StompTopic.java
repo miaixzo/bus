@@ -33,7 +33,6 @@ import org.miaixz.bus.fabric.protocol.stomp.StompMessage;
  * @param id          non-blank subscription identifier, defaulted from the destination when omitted
  * @param destination exact or wildcard STOMP destination pattern
  * @author Kimi Liu
- * @since Java 21+
  */
 public record StompTopic(String id, String destination) {
 

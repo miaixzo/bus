@@ -45,7 +45,6 @@ import org.miaixz.bus.pay.nimble.paypal.entity.AccessToken;
  * PayPal API provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PaypalProvider extends AbstractProvider<Voucher, Context> {
 

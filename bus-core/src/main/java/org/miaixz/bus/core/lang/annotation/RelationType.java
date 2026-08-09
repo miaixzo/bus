@@ -40,7 +40,6 @@ import org.miaixz.bus.core.lang.annotation.resolve.synthesize.SynthesizedAggrega
  * </ol>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum RelationType {
 

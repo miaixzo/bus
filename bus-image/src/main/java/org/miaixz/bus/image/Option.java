@@ -30,7 +30,6 @@ import org.miaixz.bus.image.metric.Connection;
  * Represents configurable options for a DICOM connection or request.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

@@ -32,7 +32,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * Synchronized ready and running queues for dispatch handles.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DispatchQueue implements AutoCloseable {
 

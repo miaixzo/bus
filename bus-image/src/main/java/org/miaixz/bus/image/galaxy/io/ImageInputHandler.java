@@ -30,7 +30,6 @@ import org.miaixz.bus.image.galaxy.data.Sequence;
  * define how different parts of an image dataset are processed.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ImageInputHandler {
 

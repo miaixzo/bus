@@ -33,7 +33,6 @@ import org.miaixz.bus.image.Builder;
  * and delimiters.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum StringValueType implements ValueType {
 

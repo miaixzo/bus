@@ -35,7 +35,6 @@ import org.miaixz.bus.pay.nimble.wechat.entity.Receiver;
  * finishing profit sharing.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

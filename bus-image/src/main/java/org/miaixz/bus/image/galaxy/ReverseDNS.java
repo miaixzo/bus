@@ -27,7 +27,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the ReverseDNS type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ReverseDNS {
 

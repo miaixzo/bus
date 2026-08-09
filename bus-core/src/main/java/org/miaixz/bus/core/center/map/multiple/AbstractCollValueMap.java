@@ -42,7 +42,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * @see SetValueMap
  * @see ListValueMap
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collection<V>>
         implements MultipleValueMap<K, V> {

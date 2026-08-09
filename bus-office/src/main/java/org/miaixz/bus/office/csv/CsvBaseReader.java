@@ -39,7 +39,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * reads of different data after a single construction. Inspired by FastCSV.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CsvBaseReader implements Serializable {
 

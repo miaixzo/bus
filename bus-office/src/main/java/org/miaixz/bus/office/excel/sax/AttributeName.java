@@ -25,7 +25,6 @@ import org.xml.sax.Attributes;
  * Enumeration of attribute names used in Excel XML for SAX parsing.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum AttributeName {
 

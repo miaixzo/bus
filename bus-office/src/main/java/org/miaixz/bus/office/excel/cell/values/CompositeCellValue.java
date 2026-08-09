@@ -31,7 +31,6 @@ import org.miaixz.bus.office.excel.cell.editors.CellEditor;
  * Composite cell value, used to read different values based on the cell type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CompositeCellValue implements CellValue<Object> {
 

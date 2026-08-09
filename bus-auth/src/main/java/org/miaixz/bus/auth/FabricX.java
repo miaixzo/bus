@@ -33,7 +33,6 @@ import org.miaixz.bus.fabric.Payload;
  * Fabric-backed HTTP support for authorization providers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class FabricX {
 

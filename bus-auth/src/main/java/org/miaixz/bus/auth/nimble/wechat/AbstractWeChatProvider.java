@@ -31,7 +31,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Abstract base class for WeChat login providers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractWeChatProvider extends AbstractProvider {
 

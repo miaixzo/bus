@@ -32,7 +32,6 @@ import org.miaixz.bus.core.Version;
  * Represents the NativeJ2kImageWriterSpi type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NativeJ2kImageWriterSpi extends ImageWriterSpi {
 

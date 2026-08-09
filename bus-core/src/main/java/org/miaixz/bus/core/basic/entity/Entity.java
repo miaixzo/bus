@@ -38,7 +38,6 @@ import org.miaixz.bus.core.xyz.FieldKit;
  * Represents a base entity with a primary key.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

@@ -31,7 +31,6 @@ import org.miaixz.bus.crypto.Builder;
  * Implementations can enforce naming conventions or identifier composition rules for workflows.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface WorkflowIdGenerator {
 

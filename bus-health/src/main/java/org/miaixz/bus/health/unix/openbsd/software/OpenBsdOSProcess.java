@@ -49,7 +49,6 @@ import org.miaixz.bus.logger.Logger;
  * OSProcess implementation
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class OpenBsdOSProcess extends AbstractOSProcess {
@@ -823,7 +822,6 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
      * Package-private for use by OpenBsdOSThread
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum PsThreadColumns {
         TID, STATE, ETIME, CPUTIME, NIVCSW, NVCSW, MAJFLT, MINFLT, PRI, ARGS

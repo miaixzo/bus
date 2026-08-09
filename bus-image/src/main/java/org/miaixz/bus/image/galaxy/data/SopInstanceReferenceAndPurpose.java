@@ -27,7 +27,6 @@ import org.miaixz.bus.image.Tag;
  * SOP instance reference with a coded purpose.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SopInstanceReferenceAndPurpose extends SopInstanceReference {
 

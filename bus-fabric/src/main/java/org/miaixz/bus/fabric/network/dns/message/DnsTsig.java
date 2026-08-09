@@ -40,7 +40,6 @@ import org.miaixz.bus.fabric.network.dns.server.DnsTsigKey;
  * TSIG verification and response-signing utilities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsTsig {
 

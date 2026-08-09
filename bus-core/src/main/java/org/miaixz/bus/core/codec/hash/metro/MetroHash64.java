@@ -36,7 +36,6 @@ import org.miaixz.bus.core.codec.hash.Hash64;
  * Ported from: <a href="https://github.com/postamar/java-metrohash/">https://github.com/postamar/java-metrohash/</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MetroHash64 extends AbstractMetroHash<MetroHash64> implements Hash64<byte[]> {
 

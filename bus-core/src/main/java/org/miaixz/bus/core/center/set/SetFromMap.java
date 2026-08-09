@@ -34,7 +34,6 @@ import java.util.stream.Stream;
  *
  * @param <E> The type of elements in the set.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SetFromMap<E> extends AbstractSet<E> implements Serializable {
 

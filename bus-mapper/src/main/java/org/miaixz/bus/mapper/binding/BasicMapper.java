@@ -45,7 +45,6 @@ import org.miaixz.bus.mapper.provider.FunctionProvider;
  * @param <T> The type of the entity class.
  * @param <I> The type of the primary key.
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface BasicMapper<T, I extends Serializable> extends EntityMapper<T, I>, ConditionMapper<T, Condition<T>>,
         CursorMapper<T, Condition<T>>, ListMapper<T>, BatchMapper<T> {

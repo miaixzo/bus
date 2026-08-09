@@ -45,7 +45,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SyncFinisher implements Closeable {
 
@@ -289,7 +288,6 @@ public class SyncFinisher implements Closeable {
      * simultaneously with other workers.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public abstract class Worker implements Runnable {
 

@@ -31,7 +31,6 @@ import org.miaixz.bus.fabric.Clock;
  * Runtime-clock based stopwatch.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class StopWatch {
 

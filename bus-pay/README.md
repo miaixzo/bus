@@ -8,9 +8,12 @@
 
 ## 📖 Project Introduction
 
-**Bus Pay** is an enterprise-level payment integration framework that provides a **unified API** for multiple third-party payment platforms. It abstracts away the complexities of individual payment gateway SDKs, making payment integration "So easy!" for developers.
+**Bus Pay** is an enterprise-level payment integration framework that provides a **unified API** for multiple
+third-party payment platforms. It abstracts away the complexities of individual payment gateway SDKs, making payment
+integration "So easy!" for developers.
 
-This library supports mainstream payment gateways including **Alipay**, **WeChat Pay**, **UnionPay**, **PayPal**, **QQ Pay**, and **JD Pay**, enabling you to integrate all major payment methods with minimal code changes.
+This library supports mainstream payment gateways including **Alipay**, **WeChat Pay**, **UnionPay**, **PayPal**, **QQ
+Pay**, and **JD Pay**, enabling you to integrate all major payment methods with minimal code changes.
 
 -----
 
@@ -32,36 +35,36 @@ This library supports mainstream payment gateways including **Alipay**, **WeChat
 
 ### ⚡ Rich Payment Capabilities
 
-| Feature | Support | Description |
-| :--- | :--- | :--- |
-| **Payment Creation** | ✅ | APP, WAP, Web, QR Code, Scan, Mini Program |
-| **Order Query** | ✅ | Query order status by transaction ID |
-| **Refund Processing** | ✅ | Full and partial refund support |
-| **Refund Query** | ✅ | Query refund status and details |
-| **Cancel Payment** | ✅ | Cancel pending transactions |
-| **Close Order** | ✅ | Close unpaid orders |
-| **Transfer/Remit** | ✅ | Single and batch transfers |
-| **Bill Download** | ✅ | Download transaction statements |
-| **Notify Verification** | ✅ | Automatic callback signature verification |
+| Feature                 | Support | Description                                |
+|:------------------------|:--------|:-------------------------------------------|
+| **Payment Creation**    | ✅      | APP, WAP, Web, QR Code, Scan, Mini Program |
+| **Order Query**         | ✅      | Query order status by transaction ID       |
+| **Refund Processing**   | ✅      | Full and partial refund support            |
+| **Refund Query**        | ✅      | Query refund status and details            |
+| **Cancel Payment**      | ✅      | Cancel pending transactions                |
+| **Close Order**         | ✅      | Close unpaid orders                        |
+| **Transfer/Remit**      | ✅      | Single and batch transfers                 |
+| **Bill Download**       | ✅      | Download transaction statements            |
+| **Notify Verification** | ✅      | Automatic callback signature verification  |
 
 ### 🌍 Supported Payment Providers
 
 #### **Chinese Payment Gateways**
 
-| Provider | Status | Features |
-| :--- | :--- | :--- |
-| **Alipay** | ✅ Full Support | APP, WAP, Web, QR, Transfer, Refund |
-| **WeChat Pay** | ✅ Full Support | APP, JSAPI, H5, Native, Mini Program |
-| **QQ Pay (Tenpay)** | ✅ Full Support | Similar to WeChat Pay features |
-| **JD Pay** | ✅ Full Support | APP, WAP, Web payment |
-| **UnionPay** | ✅ Full Support | Online and offline payment |
+| Provider            | Status          | Features                             |
+|:--------------------|:----------------|:-------------------------------------|
+| **Alipay**          | ✅ Full Support | APP, WAP, Web, QR, Transfer, Refund  |
+| **WeChat Pay**      | ✅ Full Support | APP, JSAPI, H5, Native, Mini Program |
+| **QQ Pay (Tenpay)** | ✅ Full Support | Similar to WeChat Pay features       |
+| **JD Pay**          | ✅ Full Support | APP, WAP, Web payment                |
+| **UnionPay**        | ✅ Full Support | Online and offline payment           |
 
 #### **International Payment Gateways**
 
-| Provider | Status | Features |
-| :--- | :--- | :--- |
-| **PayPal** | ✅ Full Support | REST API v2, Web checkout |
-| **Other Providers** | 🚧 Roadmap | Stripe, Square, etc. |
+| Provider            | Status          | Features                  |
+|:--------------------|:----------------|:--------------------------|
+| **PayPal**          | ✅ Full Support | REST API v2, Web checkout |
+| **Other Providers** | 🚧 Roadmap      | Stripe, Square, etc.      |
 
 ### 🛠️ Advanced Features
 
@@ -392,20 +395,20 @@ String approveUrl = (String) result.get("approve_link");
 
 ### Context Configuration
 
-| Parameter | Type | Required | Description |
-| :--- | :--- | :--- | :--- |
-| `appId` | String | ✅ | Application ID (appid on each platform) |
-| `appKey` | String | ❌ | API key or apiKey (platform-specific) |
-| `appSecret` | String | ❌ | Application secret (appSecret) |
-| `privateKey` | String | ❌ | Merchant private key (for signing) |
-| `publicKey` | String | ❌ | Platform public key (for verification) |
-| `mchId` | String | ❌ | Merchant ID (WeChat Pay, UnionPay) |
-| `partnerKey` | String | ❌ | Partner key (service provider mode) |
-| `p12` | String | ❌ | P12 certificate content |
-| `certPath` | String | ❌ | Certificate file path |
-| `certMode` | String | ❌ | Whether to use certificate mode |
-| `domain` | String | ❌ | Application domain for callbacks |
-| `exParams` | Object | ❌ | Extra parameters |
+| Parameter    | Type   | Required | Description                             |
+|:-------------|:-------|:---------|:----------------------------------------|
+| `appId`      | String | ✅       | Application ID (appid on each platform) |
+| `appKey`     | String | ❌       | API key or apiKey (platform-specific)   |
+| `appSecret`  | String | ❌       | Application secret (appSecret)          |
+| `privateKey` | String | ❌       | Merchant private key (for signing)      |
+| `publicKey`  | String | ❌       | Platform public key (for verification)  |
+| `mchId`      | String | ❌       | Merchant ID (WeChat Pay, UnionPay)      |
+| `partnerKey` | String | ❌       | Partner key (service provider mode)     |
+| `p12`        | String | ❌       | P12 certificate content                 |
+| `certPath`   | String | ❌       | Certificate file path                   |
+| `certMode`   | String | ❌       | Whether to use certificate mode         |
+| `domain`     | String | ❌       | Application domain for callbacks        |
+| `exParams`   | Object | ❌       | Extra parameters                        |
 
 ### Registry Enum (Payment Platforms)
 
@@ -673,23 +676,23 @@ String billContent = wechatPay.downloadBill(model);
 
 ### Q8: Common error codes and solutions
 
-| Error Code | Description | Solution |
-| :--- | :--- | :--- |
-| `INVALID_APP_ID` | Invalid application ID | Check appId configuration |
-| `INVALID_SIGNATURE` | Signature verification failed | Verify privateKey/publicKey |
-| `OUT_TRADE_NO_USED` | Order number already used | Use unique order numbers |
-| `NOT_ENOUGH_BALANCE` | Insufficient balance | Check account balance |
-| `TRADE_CLOSED` | Order closed | Recreate payment |
-| `SYSTEM_ERROR` | System error | Retry the request |
+| Error Code           | Description                   | Solution                    |
+|:---------------------|:------------------------------|:----------------------------|
+| `INVALID_APP_ID`     | Invalid application ID        | Check appId configuration   |
+| `INVALID_SIGNATURE`  | Signature verification failed | Verify privateKey/publicKey |
+| `OUT_TRADE_NO_USED`  | Order number already used     | Use unique order numbers    |
+| `NOT_ENOUGH_BALANCE` | Insufficient balance          | Check account balance       |
+| `TRADE_CLOSED`       | Order closed                  | Recreate payment            |
+| `SYSTEM_ERROR`       | System error                  | Retry the request           |
 
 -----
 
 ## 🔄 Version Compatibility
 
 | Bus Pay Version | JDK Version | Spring Boot Version |
-| :--- | :--- | :--- |
-| 8.x | 17+ | 3.x+ |
-| 7.x | 11+ | 2.x+ |
+|:----------------|:------------|:--------------------|
+| 8.x             | 17+         | 3.x+                |
+| 7.x             | 11+         | 2.x+                |
 
 -----
 

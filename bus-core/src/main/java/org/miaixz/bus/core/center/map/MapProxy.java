@@ -47,7 +47,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * objects.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, InvocationHandler, Serializable {
 

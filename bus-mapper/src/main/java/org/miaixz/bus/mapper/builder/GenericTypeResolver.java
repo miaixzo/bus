@@ -39,7 +39,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * https://github.com/mybatis/mybatis-3
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GenericTypeResolver {
 
@@ -581,7 +580,6 @@ public class GenericTypeResolver {
      * is used to hold resolved generic type arguments.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     public static class ParameterizedTypes implements ParameterizedType {
@@ -632,7 +630,6 @@ public class GenericTypeResolver {
      * used to hold resolved wildcard bounds.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     public static class WildcardTypes implements WildcardType {
@@ -667,7 +664,6 @@ public class GenericTypeResolver {
      * is used to hold a resolved generic component type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     public static class GenericArrayTypes implements GenericArrayType {

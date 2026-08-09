@@ -35,7 +35,6 @@ import org.miaixz.bus.fabric.Builder;
  * Fixed-length frame codec.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class FixedCodec implements FrameCodec {
 

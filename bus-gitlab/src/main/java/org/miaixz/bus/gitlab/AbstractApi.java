@@ -42,7 +42,6 @@ import org.miaixz.bus.logger.Logger;
  * put() that are re-used by all the sub-classes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractApi implements Constants {
 

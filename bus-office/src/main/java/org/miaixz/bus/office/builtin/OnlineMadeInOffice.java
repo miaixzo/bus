@@ -27,7 +27,6 @@ import org.miaixz.bus.office.Context;
  * Represents the default behavior for online conversion tasks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class OnlineMadeInOffice extends AbstractOffice {
 

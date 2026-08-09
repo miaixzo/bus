@@ -60,7 +60,6 @@ import reactor.util.annotation.NonNull;
  * exists.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ErrorsHandler implements WebExceptionHandler {
 
@@ -227,7 +226,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                     method,
                     path,
                     dataBufferLimitException.getClass().getSimpleName());
-            return Message.builder().errcode(ErrorCode._116009.getKey()).errmsg(ErrorCode._116009.getValue()).build();
+            return Message.builder().errcode(ErrorCode._100531.getKey()).errmsg(ErrorCode._100531.getValue()).build();
         }
 
         ResponseStatusException rse = findCause(ex, ResponseStatusException.class);
@@ -290,7 +289,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                     responseException.getClass().getSimpleName(),
                     root == null ? null : root.getClass().getName(),
                     root == null ? null : root.getMessage());
-            return Message.builder().errcode(ErrorCode._116000.getKey()).errmsg(ErrorCode._116000.getValue()).build();
+            return Message.builder().errcode(ErrorCode._100710.getKey()).errmsg(ErrorCode._100710.getValue()).build();
         }
 
         UnknownHostException unknownHostException = findCause(ex, UnknownHostException.class);
@@ -324,7 +323,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                     webClientError.getClass().getSimpleName(),
                     root == null ? null : root.getClass().getName(),
                     root == null ? null : root.getMessage());
-            return Message.builder().errcode(ErrorCode._116000.getKey()).errmsg(ErrorCode._116000.getValue()).build();
+            return Message.builder().errcode(ErrorCode._100710.getKey()).errmsg(ErrorCode._100710.getValue()).build();
         }
 
         Logger.error(
@@ -363,7 +362,6 @@ public class ErrorsHandler implements WebExceptionHandler {
      * Represents a standardized message structure for API responses, typically used for error messages.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter

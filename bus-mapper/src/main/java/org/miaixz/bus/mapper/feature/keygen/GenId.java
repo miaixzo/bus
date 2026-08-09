@@ -27,7 +27,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  *
  * @param <T> The type of the primary key value.
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface GenId<T> {
 
@@ -44,7 +43,6 @@ public interface GenId<T> {
      * Default null implementation, throws an {@link UnsupportedOperationException}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class NULL implements GenId<Object> {
 

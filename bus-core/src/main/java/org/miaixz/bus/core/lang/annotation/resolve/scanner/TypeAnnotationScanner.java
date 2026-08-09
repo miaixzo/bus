@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.SetKit;
  * Scans annotations on {@link Class} elements, with support for traversing superclass and interface hierarchies.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TypeAnnotationScanner extends AbstractTypeAnnotationScanner<TypeAnnotationScanner>
         implements AnnotationScanner {
@@ -121,7 +120,6 @@ public class TypeAnnotationScanner extends AbstractTypeAnnotationScanner<TypeAnn
      * Converts a JDK proxy class to its original proxied class, if applicable.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class JdkProxyClassConverter implements UnaryOperatorX<Class<?>> {
 

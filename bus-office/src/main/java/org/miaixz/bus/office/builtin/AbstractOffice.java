@@ -23,7 +23,6 @@ package org.miaixz.bus.office.builtin;
  * Base class for all office task implementations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractOffice implements MadeInOffice {
 

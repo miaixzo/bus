@@ -26,7 +26,6 @@ import org.miaixz.bus.image.galaxy.data.Code;
  * used to specify the scope over which certain accumulated values or measurements apply.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ScopeOfAccumulation {
 

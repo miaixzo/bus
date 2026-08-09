@@ -43,7 +43,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * This configuration is enabled by default and can be disabled with {@code bus.context.task.enabled=false}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ TaskDecorator.class, ThreadPoolTaskExecutorCustomizer.class })

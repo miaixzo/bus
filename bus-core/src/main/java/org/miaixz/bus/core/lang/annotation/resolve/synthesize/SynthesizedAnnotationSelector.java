@@ -24,7 +24,6 @@ package org.miaixz.bus.core.lang.annotation.resolve.synthesize;
  * to filter the most appropriate annotation from a set of same-type annotations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface SynthesizedAnnotationSelector {
@@ -63,7 +62,6 @@ public interface SynthesizedAnnotationSelector {
      * Selector that returns the annotation closer to the root; prefers the old annotation on equal distance.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class NearestAndOldestPrioritySelector implements SynthesizedAnnotationSelector {
 
@@ -87,7 +85,6 @@ public interface SynthesizedAnnotationSelector {
      * Selector that returns the annotation closer to the root; prefers the new annotation on equal distance.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class NearestAndNewestPrioritySelector implements SynthesizedAnnotationSelector {
 
@@ -111,7 +108,6 @@ public interface SynthesizedAnnotationSelector {
      * Selector that returns the annotation farther from the root; prefers the old annotation on equal distance.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class FarthestAndOldestPrioritySelector implements SynthesizedAnnotationSelector {
 
@@ -135,7 +131,6 @@ public interface SynthesizedAnnotationSelector {
      * Selector that returns the annotation farther from the root; prefers the new annotation on equal distance.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class FarthestAndNewestPrioritySelector implements SynthesizedAnnotationSelector {
 

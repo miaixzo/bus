@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.exception.DateException;
  * series of formatting rules.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DatePattern {
 
@@ -355,7 +354,6 @@ public class DatePattern {
      * An interface for a single formatting rule.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface Rule {
 
@@ -381,7 +379,6 @@ public class DatePattern {
      * An extension of {@link Rule} for formatting numeric fields.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface NumberRule extends Rule {
 
@@ -400,7 +397,6 @@ public class DatePattern {
      * A rule to output a literal character.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class CharacterLiteral implements Rule {
 
@@ -441,7 +437,6 @@ public class DatePattern {
      * A rule to output a literal string.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class StringLiteral implements Rule {
 
@@ -482,7 +477,6 @@ public class DatePattern {
      * A rule to output a text field from a set of values (e.g., month name, day of the week).
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class TextField implements Rule {
 
@@ -532,7 +526,6 @@ public class DatePattern {
      * A rule for formatting a number field without padding.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class UnpaddedNumberField implements NumberRule {
 
@@ -592,7 +585,6 @@ public class DatePattern {
      * A rule for formatting the month field without padding (1-12).
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class UnpaddedMonthField implements NumberRule {
 
@@ -650,7 +642,6 @@ public class DatePattern {
      * A rule for formatting a number field with padding.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class PaddedNumberField implements NumberRule {
 
@@ -709,7 +700,6 @@ public class DatePattern {
      * A rule for formatting a number field with two digits.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class TwoDigitNumberField implements NumberRule {
 
@@ -767,7 +757,6 @@ public class DatePattern {
      * A rule for formatting the year with two digits.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class TwoDigitYearField implements NumberRule {
 
@@ -821,7 +810,6 @@ public class DatePattern {
      * A rule for formatting the month with two digits (01-12).
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class TwoDigitMonthField implements NumberRule {
 
@@ -875,7 +863,6 @@ public class DatePattern {
      * A rule for formatting the hour in 12-hour format (1-12).
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class TwelveHourField implements NumberRule {
 
@@ -933,7 +920,6 @@ public class DatePattern {
      * A rule for formatting the hour in 24-hour format (1-24).
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class TwentyFourHourField implements NumberRule {
 
@@ -991,7 +977,6 @@ public class DatePattern {
      * A rule for formatting the day of the week as a number (1=Monday...7=Sunday).
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class DayInWeekField implements NumberRule {
 
@@ -1046,7 +1031,6 @@ public class DatePattern {
      * A rule for formatting the week-based year.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class WeekYear implements NumberRule {
 
@@ -1104,7 +1088,6 @@ public class DatePattern {
      * A rule for formatting the timezone name.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class TimeZoneNameRule implements Rule {
 
@@ -1156,7 +1139,6 @@ public class DatePattern {
      * A rule for formatting the timezone as a numeric offset (e.g., +/-HHMM or +/-HH:mm).
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class TimeZoneNumberRule implements Rule {
 
@@ -1212,7 +1194,6 @@ public class DatePattern {
      * A rule for formatting the timezone in ISO 8601 format.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class Iso8601_Rule implements Rule {
 
@@ -1285,7 +1266,6 @@ public class DatePattern {
      * A composite key for caching timezone display names.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class TimeZoneDisplayKey {
 

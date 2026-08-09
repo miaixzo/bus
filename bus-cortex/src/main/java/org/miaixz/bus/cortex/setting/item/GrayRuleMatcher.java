@@ -28,7 +28,6 @@ import org.miaixz.bus.logger.Logger;
  * Gray rule matcher.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GrayRuleMatcher {
 

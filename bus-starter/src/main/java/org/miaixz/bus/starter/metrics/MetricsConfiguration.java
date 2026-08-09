@@ -52,7 +52,6 @@ import io.micrometer.core.instrument.MeterRegistry;
  * hardware-accurate). Otherwise falls back to {@link JvmMetrics} and {@link SystemMetrics} (JVM MXBean-backed).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(MetricsProperties.class)
 @Configuration(proxyBeanMethods = false)
@@ -137,8 +136,8 @@ public class MetricsConfiguration {
     /**
      * Creates the metrics scrape endpoint.
      *
-     * @return metrics endpoint
      * @param provider provider instance
+     * @return metrics endpoint
      */
     @Bean
     @ConditionalOnBean(Provider.class)

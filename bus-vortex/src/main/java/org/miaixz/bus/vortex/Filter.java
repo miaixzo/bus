@@ -31,7 +31,6 @@ import org.springframework.web.server.WebFilter;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Filter extends WebFilter {
 

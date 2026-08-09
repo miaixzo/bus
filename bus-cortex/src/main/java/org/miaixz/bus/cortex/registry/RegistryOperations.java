@@ -29,7 +29,6 @@ import org.miaixz.bus.cortex.Type;
  * Controlled registry operations exposed to pluggable strategies.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface RegistryOperations {
 

@@ -30,7 +30,6 @@ import org.miaixz.bus.core.xyz.FileKit;
  *
  * @param <T> The type of the implementing object, used for method chaining (returning {@code this}).
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ExcelSaxReader<T> {
 

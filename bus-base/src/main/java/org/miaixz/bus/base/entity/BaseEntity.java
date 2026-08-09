@@ -33,7 +33,6 @@ import org.miaixz.bus.core.basic.entity.Tracer;
  * nonce, search parameters, and pagination information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

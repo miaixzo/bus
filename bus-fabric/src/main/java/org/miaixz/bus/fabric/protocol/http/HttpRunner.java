@@ -64,7 +64,6 @@ import org.miaixz.bus.logger.Logger;
  * Executes an immutable HTTP exchange specification through the HTTP chain.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpRunner {
 
@@ -659,7 +658,6 @@ public final class HttpRunner {
      * Immutable context-scoped HTTP execution pipeline.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class Pipeline {
 

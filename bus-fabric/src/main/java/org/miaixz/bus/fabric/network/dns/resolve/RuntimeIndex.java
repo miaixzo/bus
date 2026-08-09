@@ -47,7 +47,6 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsZone;
  * Immutable runtime lookup index compiled from a DNS snapshot.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class RuntimeIndex {
 
@@ -517,7 +516,6 @@ public final class RuntimeIndex {
      * Compiled DNS view index.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class ViewIndex {
 

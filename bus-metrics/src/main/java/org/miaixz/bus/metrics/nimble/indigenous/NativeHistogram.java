@@ -31,7 +31,6 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  * Histogram backed by T-Digest for accurate quantile estimation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NativeHistogram implements Histogram {
 

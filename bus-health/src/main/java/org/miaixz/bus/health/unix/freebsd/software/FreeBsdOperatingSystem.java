@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  * permissively licensed BSD systems.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
@@ -368,14 +367,10 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         return new FreeBsdNetworkParams();
     }
 
-    /*
-     * Package-private for use by FreeBsdOSProcess
-     */
     /**
      * The PsKeywords enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum PsKeywords {
         STATE, PID, PPID, USER, UID, GROUP, GID, NLWP, PRI, VSZ, RSS, ETIMES, SYSTIME, TIME, COMM, MAJFLT, MINFLT,

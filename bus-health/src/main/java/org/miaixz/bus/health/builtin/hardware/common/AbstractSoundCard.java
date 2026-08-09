@@ -26,7 +26,6 @@ import org.miaixz.bus.health.builtin.hardware.SoundCard;
  * An abstract Sound Card
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public abstract class AbstractSoundCard implements SoundCard {

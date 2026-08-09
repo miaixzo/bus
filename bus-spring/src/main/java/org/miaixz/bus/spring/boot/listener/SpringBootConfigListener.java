@@ -38,7 +38,6 @@ import org.miaixz.bus.spring.boot.environment.EnvironmentKeys;
  * source during the environment preparation phase.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SpringBootConfigListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent>, Ordered {
 

@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.exception.NotFoundException;
  * @param <C> the configuration type
  * @param <T> the cached value type
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class ConfigurationCache<C, T> {
 
@@ -123,7 +122,6 @@ public abstract class ConfigurationCache<C, T> {
      *
      * @param <T> the t type.
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class CacheEntry<T> {
 

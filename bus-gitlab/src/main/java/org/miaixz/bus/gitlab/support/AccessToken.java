@@ -55,7 +55,6 @@ import org.miaixz.bus.logger.Logger;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class AccessToken {
 
@@ -70,7 +69,6 @@ public final class AccessToken {
      * This enum defines the available scopes for a personal access token.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Scope {
 

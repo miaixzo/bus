@@ -38,7 +38,6 @@ import org.miaixz.bus.core.net.tls.TlsVersion;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Builder {
 

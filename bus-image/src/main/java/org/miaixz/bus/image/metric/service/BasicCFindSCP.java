@@ -31,7 +31,6 @@ import org.miaixz.bus.image.metric.pdu.PresentationContext;
  * Represents the BasicCFindSCP type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BasicCFindSCP extends AbstractImageService {
 

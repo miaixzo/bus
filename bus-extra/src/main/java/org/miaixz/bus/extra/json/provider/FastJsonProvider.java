@@ -40,7 +40,6 @@ import org.miaixz.bus.extra.json.JsonWriteOptions;
  * provides JSON serialization and deserialization functionalities using Fastjson2.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FastJsonProvider extends AbstractJsonProvider {
 

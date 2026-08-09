@@ -32,7 +32,6 @@ import org.miaixz.bus.notify.magic.Notice;
  * Notice for Tencent Cloud notification services.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

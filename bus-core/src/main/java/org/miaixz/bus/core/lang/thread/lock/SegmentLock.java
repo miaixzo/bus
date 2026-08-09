@@ -59,9 +59,7 @@ import org.miaixz.bus.core.xyz.ListKit;
  *
  * @param <L> The type of the lock or synchronization primitive managed by the segments (e.g., {@link Lock},
  *            {@link Semaphore}, {@link ReadWriteLock}).
- *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class SegmentLock<L> {
 
@@ -261,7 +259,6 @@ public abstract class SegmentLock<L> {
      * strong reference to themselves to prevent premature garbage collection.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class WeakSafeReadWriteLock implements ReadWriteLock {
 
@@ -301,7 +298,6 @@ public abstract class SegmentLock<L> {
      * {@link WeakSafeReadWriteLock} to prevent premature garbage collection.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class WeakSafeLock implements java.util.concurrent.locks.Lock {
 
@@ -387,7 +383,6 @@ public abstract class SegmentLock<L> {
      * {@link WeakSafeReadWriteLock} to prevent premature garbage collection.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class WeakSafeCondition implements Condition {
 
@@ -493,7 +488,6 @@ public abstract class SegmentLock<L> {
      *
      * @param <L> The type of the lock or synchronization primitive.
      * @author Kimi Liu
-     * @since Java 21+
      */
     private abstract static class PowerOfTwoSegmentLock<L> extends SegmentLock<L> {
 
@@ -544,7 +538,6 @@ public abstract class SegmentLock<L> {
      *
      * @param <L> The type of the lock or synchronization primitive.
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class CompactSegmentLock<L> extends PowerOfTwoSegmentLock<L> {
 
@@ -598,7 +591,6 @@ public abstract class SegmentLock<L> {
      *
      * @param <L> The type of the lock or synchronization primitive.
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class SmallLazySegmentLock<L> extends PowerOfTwoSegmentLock<L> {
 
@@ -678,7 +670,6 @@ public abstract class SegmentLock<L> {
          *
          * @param <L> The type of the referent.
          * @author Kimi Liu
-         * @since Java 21+
          */
         private static final class ArrayReference<L> extends WeakReference<L> {
 
@@ -706,7 +697,6 @@ public abstract class SegmentLock<L> {
      *
      * @param <L> The type of the lock or synchronization primitive.
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class LargeLazySegmentLock<L> extends PowerOfTwoSegmentLock<L> {
 
@@ -765,7 +755,6 @@ public abstract class SegmentLock<L> {
      * Padding lock used to reduce cache-line interference.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class PaddedLock extends ReentrantLock {
 
@@ -790,7 +779,6 @@ public abstract class SegmentLock<L> {
      * improve performance in some multi-threaded applications.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class PaddedSemaphore extends Semaphore {
 

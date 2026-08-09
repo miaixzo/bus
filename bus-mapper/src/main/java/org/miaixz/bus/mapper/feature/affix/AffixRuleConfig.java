@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.Assert;
  * table to receive only one side when required.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @SuperBuilder

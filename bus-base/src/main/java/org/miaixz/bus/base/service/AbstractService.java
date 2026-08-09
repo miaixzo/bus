@@ -69,7 +69,6 @@ import org.miaixz.bus.mapper.feature.paging.PageContext;
  * @param <I> the type of the primary key, must implement {@link Serializable}
  * @param <M> the mapper type, must extend {@link SharedMapper}
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractService<T, I extends Serializable, M extends SharedMapper<T, I>>
         implements SharedService<T, I> {

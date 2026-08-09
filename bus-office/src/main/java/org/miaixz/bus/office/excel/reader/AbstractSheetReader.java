@@ -27,7 +27,6 @@ import org.apache.poi.ss.util.CellRangeAddress;
  *
  * @param <T> The type of data to read.
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractSheetReader<T> implements SheetReader<T> {
 

@@ -23,7 +23,6 @@ package org.miaixz.bus.core.io.buffer;
  * Represents a leased NIO byte buffer that can be returned to its owning allocator.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class NioBuffer implements AutoCloseable {
 

@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The merge request diff class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MergeRequestDiff extends MergeRequestVersion {
 

@@ -25,7 +25,6 @@ import org.miaixz.bus.cortex.builtin.batch.BatchOperation;
  * Optional batch lookup hook for resolving existing registry assets before per-entry mutation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface RegistryBatchResolver {
 

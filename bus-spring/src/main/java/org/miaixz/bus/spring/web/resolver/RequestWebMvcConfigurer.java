@@ -29,7 +29,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * Registers the unified application request-object argument resolver.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RequestWebMvcConfigurer implements WebMvcConfigurer {
 

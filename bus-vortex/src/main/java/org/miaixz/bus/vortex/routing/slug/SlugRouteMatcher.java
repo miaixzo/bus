@@ -42,7 +42,6 @@ import org.miaixz.bus.vortex.registry.AssetsRegistry;
  * Matches public slug requests to one registry asset and target template.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SlugRouteMatcher {
 

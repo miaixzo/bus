@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The team member system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TeamMemberSystemHookEvent extends AbstractSystemHookEvent {
 

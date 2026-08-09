@@ -28,7 +28,6 @@ import java.util.Collection;
  *
  * @param <E> The type of elements maintained by this collection.
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface BoundedCollection<E> extends Collection<E> {
 

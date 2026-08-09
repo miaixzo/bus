@@ -27,6 +27,5 @@
  * UPDATE), eliminating the need for manual field management and ensuring consistent audit data.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.mapper.feature.populate;

@@ -54,7 +54,6 @@ import org.miaixz.bus.crypto.Padding;
  * This class is implemented based on BouncyCastle.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FPE implements Serializable {
 
@@ -180,7 +179,6 @@ public class FPE implements Serializable {
      * FPE Mode. FPE includes two modes: FF1 and FF3 (FF2 is deprecated). Both are based on a Feistel network structure.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum FPEMode {
 

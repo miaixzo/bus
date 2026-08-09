@@ -29,7 +29,6 @@ import org.miaixz.bus.validate.nimble.PhoneMatcher;
  * Validates that the annotated string is a valid landline phone number.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

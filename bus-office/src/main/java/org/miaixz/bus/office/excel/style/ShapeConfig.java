@@ -30,7 +30,6 @@ import org.apache.poi.sl.usermodel.ShapeType;
  * color, fill color, etc.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ShapeConfig implements Serializable {
 

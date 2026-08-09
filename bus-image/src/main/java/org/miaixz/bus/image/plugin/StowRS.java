@@ -70,7 +70,6 @@ import org.miaixz.bus.logger.Logger;
  * to a STOW-RS server.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StowRS {
 
@@ -1270,7 +1269,6 @@ public class StowRS {
      * An enumeration of supported file content types for encapsulation.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum FileContentType {
 
@@ -1474,7 +1472,6 @@ public class StowRS {
      * An enumeration to handle parsing of different compressed pixel data formats.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum CompressedPixelData {
 
@@ -1559,7 +1556,6 @@ public class StowRS {
      * A functional interface for consuming a file path, allowing for exceptions.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     interface StowRSFileConsumer<Path> {
 
@@ -1577,7 +1573,6 @@ public class StowRS {
      * A functional interface for applying a function to a file path, allowing for exceptions.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     interface StowRSFileFunction<Path> {
 
@@ -1595,7 +1590,6 @@ public class StowRS {
      * A container class representing a chunk of data to be sent in a single STOW-RS request.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     static class StowChunk {
 
@@ -1681,7 +1675,6 @@ public class StowRS {
      * A container class for information about a bulk data file.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     static class StowRSBulkdata {
 
@@ -1767,7 +1760,6 @@ public class StowRS {
      * A file visitor for traversing directories and applying a function to each file.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     static class StowRSFileVisitor extends SimpleFileVisitor<Path> {
 

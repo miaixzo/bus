@@ -47,38 +47,38 @@ For automatic Spring MVC and logging integration, use `bus-starter` together wit
 
 ## Core model
 
-| Type | Responsibility |
-|---|---|
-| `Builder` | Static entry point and processing mode/direction constants. |
-| `Provider<T>` | Traverses and processes an object, optionally cloning it first. |
-| `Context` | Carries the current object, field, annotations, and processing state. |
-| `Filter` | Selects and applies field rules during traversal. |
-| `Registry` | Holds built-in masking providers and resolves annotation strategies. |
-| `StrategyProvider` | SPI for a masking transformation. |
-| `ConditionProvider` | SPI deciding whether a rule applies to the current context. |
-| `Sanitizer` | `bus-logger` operator for structured log values. |
+| Type                | Responsibility                                                        |
+|---------------------|-----------------------------------------------------------------------|
+| `Builder`           | Static entry point and processing mode/direction constants.           |
+| `Provider<T>`       | Traverses and processes an object, optionally cloning it first.       |
+| `Context`           | Carries the current object, field, annotations, and processing state. |
+| `Filter`            | Selects and applies field rules during traversal.                     |
+| `Registry`          | Holds built-in masking providers and resolves annotation strategies.  |
+| `StrategyProvider`  | SPI for a masking transformation.                                     |
+| `ConditionProvider` | SPI deciding whether a rule applies to the current context.           |
+| `Sanitizer`         | `bus-logger` operator for structured log values.                      |
 
 ## Protection annotations
 
-| Annotation | Scope | Purpose |
-|---|---|---|
+| Annotation   | Scope                    | Purpose                                                                                          |
+|--------------|--------------------------|--------------------------------------------------------------------------------------------------|
 | `@Sensitive` | Type or processing entry | Selects masking/security mode, direction, included fields, skipped fields, and nested traversal. |
-| `@Shield` | Field | Declares one masking rule and its visible-prefix/suffix behavior. |
-| `@NShield` | Field | Groups multiple `@Shield` rules and optional include/filter expressions. |
-| `@Privacy` | Field | Selects security processing such as encryption or decryption. |
-| `@Strategy` | Annotation type | Associates a custom annotation with a strategy provider. |
-| `@Condition` | Annotation type | Marks conditional protection metadata. |
-| `@Entry` | Annotation type | Marks a protection entry annotation. |
+| `@Shield`    | Field                    | Declares one masking rule and its visible-prefix/suffix behavior.                                |
+| `@NShield`   | Field                    | Groups multiple `@Shield` rules and optional include/filter expressions.                         |
+| `@Privacy`   | Field                    | Selects security processing such as encryption or decryption.                                    |
+| `@Strategy`  | Annotation type          | Associates a custom annotation with a strategy provider.                                         |
+| `@Condition` | Annotation type          | Marks conditional protection metadata.                                                           |
+| `@Entry`     | Annotation type          | Marks a protection entry annotation.                                                             |
 
 ### `@Sensitive` options
 
-| Attribute | Default | Meaning |
-|---|---|---|
-| `value` | `Builder.ALL` | Processing capability: masking, security, both, or neither. |
-| `stage` | `Builder.ALL` | Processing direction such as input or output. |
-| `field` | empty | Explicit field inclusion list. |
-| `skip` | empty | Fields excluded from processing. |
-| `inside` | `true` | Whether nested values are traversed. |
+| Attribute | Default       | Meaning                                                     |
+|-----------|---------------|-------------------------------------------------------------|
+| `value`   | `Builder.ALL` | Processing capability: masking, security, both, or neither. |
+| `stage`   | `Builder.ALL` | Processing direction such as input or output.               |
+| `field`   | empty         | Explicit field inclusion list.                              |
+| `skip`    | empty         | Fields excluded from processing.                            |
+| `inside`  | `true`        | Whether nested values are traversed.                        |
 
 Processing constants are:
 
@@ -92,17 +92,17 @@ Processing constants are:
 
 ### `@Shield` options
 
-| Attribute | Default | Meaning |
-|---|---|---|
-| `type` | `EnumValue.Masking.NONE` | Built-in masking strategy. |
-| `mode` | `EnumValue.Mode.MIDDLE` | Visible/masked placement mode. |
-| `shadow` | `*` | Replacement character or text. |
-| `fixedHeaderSize` | `0` | Fixed visible prefix length. |
-| `fixedTailorSize` | `3` | Fixed visible suffix length. |
-| `autoFixedPart` | `true` | Allows strategy-specific automatic visible lengths. |
-| `condition` | `ConditionProvider.class` | Optional runtime condition. |
-| `strategy` | `DafaultProvider.class` | Optional custom strategy implementation. |
-| `key` / `field` | empty | Rule-specific lookup metadata. |
+| Attribute         | Default                   | Meaning                                             |
+|-------------------|---------------------------|-----------------------------------------------------|
+| `type`            | `EnumValue.Masking.NONE`  | Built-in masking strategy.                          |
+| `mode`            | `EnumValue.Mode.MIDDLE`   | Visible/masked placement mode.                      |
+| `shadow`          | `*`                       | Replacement character or text.                      |
+| `fixedHeaderSize` | `0`                       | Fixed visible prefix length.                        |
+| `fixedTailorSize` | `3`                       | Fixed visible suffix length.                        |
+| `autoFixedPart`   | `true`                    | Allows strategy-specific automatic visible lengths. |
+| `condition`       | `ConditionProvider.class` | Optional runtime condition.                         |
+| `strategy`        | `DafaultProvider.class`   | Optional custom strategy implementation.            |
+| `key` / `field`   | empty                     | Rule-specific lookup metadata.                      |
 
 ## Quick start
 
@@ -163,20 +163,20 @@ Normal domain code should prefer annotations on the protected model and the simp
 
 `Registry` initializes these `EnumValue.Masking` strategies:
 
-| Masking value | Provider | Typical data |
-|---|---|---|
-| `ADDRESS` | `AddressProvider` | Postal address. |
-| `BANK_CARD` | `BandCardProvider` | Bank card number. |
-| `CITIZENID` | `CitizenIdProvider` | Citizen identity number. |
-| `CNAPS_CODE` | `CnapsProvider` | Bank routing code. |
-| `DEFAUL` | `DafaultProvider` | General-purpose masking. |
-| `EMAIL` | `EmailProvider` | Email address. |
-| `MOBILE` | `MobileProvider` | Mobile number. |
-| `NAME` | `NameProvider` | Person name. |
-| `NONE` | `NoneProvider` | No masking. |
-| `PASSWORD` | `PasswordProvider` | Password or secret text. |
-| `PAY_SIGN_NO` | `CardProvider` | Payment signing identifier. |
-| `PHONE` | `PhoneProvider` | Telephone number. |
+| Masking value | Provider            | Typical data                |
+|---------------|---------------------|-----------------------------|
+| `ADDRESS`     | `AddressProvider`   | Postal address.             |
+| `BANK_CARD`   | `BandCardProvider`  | Bank card number.           |
+| `CITIZENID`   | `CitizenIdProvider` | Citizen identity number.    |
+| `CNAPS_CODE`  | `CnapsProvider`     | Bank routing code.          |
+| `DEFAUL`      | `DafaultProvider`   | General-purpose masking.    |
+| `EMAIL`       | `EmailProvider`     | Email address.              |
+| `MOBILE`      | `MobileProvider`    | Mobile number.              |
+| `NAME`        | `NameProvider`      | Person name.                |
+| `NONE`        | `NoneProvider`      | No masking.                 |
+| `PASSWORD`    | `PasswordProvider`  | Password or secret text.    |
+| `PAY_SIGN_NO` | `CardProvider`      | Payment signing identifier. |
+| `PHONE`       | `PhoneProvider`     | Telephone number.           |
 
 The exact visible characters depend on the selected strategy and the `@Shield` options. Do not assume every strategy
 uses the same prefix and suffix lengths.
@@ -259,9 +259,9 @@ Object protectedToken = sanitizer.sanitize("accessToken", token);
 boolean protectedKey = sanitizer.isSensitive("Authorization");
 ```
 
-Protected scalar values become `Sanitizer.REDACTED`, currently `[REDACTED]`. Maps, iterables, and object arrays are copied
-and sanitized recursively to a fixed safety depth. Arbitrary application objects are not reflected over, preventing
-unexpected graph traversal, lazy loading, and side effects.
+Protected scalar values become `Sanitizer.REDACTED`, currently `[REDACTED]`. Maps, iterables, and object arrays are
+copied and sanitized recursively to a fixed safety depth. Arbitrary application objects are not reflected over,
+preventing unexpected graph traversal, lazy loading, and side effects.
 
 For complete log events, key names are inferred from assignments immediately before provider placeholders:
 
@@ -306,11 +306,11 @@ material must come from a protected external configuration source and must never
 
 ## Package layout
 
-| Package | Content |
-|---|---|
-| `org.miaixz.bus.sensitive` | Processing entry points, traversal state, registry, and sanitizer. |
-| `org.miaixz.bus.sensitive.magic.annotation` | Protection annotations and meta-annotations. |
-| `org.miaixz.bus.sensitive.nimble` | Strategy contracts and built-in providers. |
+| Package                                     | Content                                                            |
+|---------------------------------------------|--------------------------------------------------------------------|
+| `org.miaixz.bus.sensitive`                  | Processing entry points, traversal state, registry, and sanitizer. |
+| `org.miaixz.bus.sensitive.magic.annotation` | Protection annotations and meta-annotations.                       |
+| `org.miaixz.bus.sensitive.nimble`           | Strategy contracts and built-in providers.                         |
 
 All three packages are exported by the JPMS module. Spring-specific packages are intentionally absent.
 

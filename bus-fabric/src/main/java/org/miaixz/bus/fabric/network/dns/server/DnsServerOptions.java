@@ -38,7 +38,6 @@ import org.miaixz.bus.fabric.network.tls.TlsPolicy;
  * Immutable DNS server startup options.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsServerOptions {
 

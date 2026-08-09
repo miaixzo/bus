@@ -35,7 +35,6 @@ import org.miaixz.bus.image.nimble.opencv.lut.ByteLut;
  * Creates and transforms BGR byte lookup tables.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ByteLutCollection {
 

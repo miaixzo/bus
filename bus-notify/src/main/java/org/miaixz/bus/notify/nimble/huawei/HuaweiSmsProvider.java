@@ -43,7 +43,6 @@ import org.miaixz.bus.notify.nimble.AbstractProvider;
  * Huawei Cloud SMS service provider implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HuaweiSmsProvider extends AbstractProvider<HuaweiNotice, Context> {
 

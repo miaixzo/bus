@@ -21,6 +21,5 @@
  * UID Dictionary from SIEMENS_MEDCOM_HEADER2
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MEDCOM_HEADER2;

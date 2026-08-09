@@ -25,7 +25,6 @@ import org.miaixz.bus.pay.Matcher;
  * WeChat Pay V3 API interfaces related to basic payments.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum BasePayApi implements Matcher {
 

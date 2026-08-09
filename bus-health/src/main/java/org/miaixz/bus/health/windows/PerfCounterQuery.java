@@ -38,7 +38,6 @@ import org.miaixz.bus.logger.Logger;
  * Enables queries of Performance Counters using wild cards to filter instances
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class PerfCounterQuery {
@@ -254,7 +253,6 @@ public final class PerfCounterQuery {
      * Contract for Counter Property Enums
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface PdhCounterProperty {
 

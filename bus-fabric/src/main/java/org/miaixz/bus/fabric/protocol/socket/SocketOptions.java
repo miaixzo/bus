@@ -48,7 +48,6 @@ import org.miaixz.bus.fabric.network.tls.TlsPolicy;
  * @param idleTimeout      non-negative operation-time idle timeout; zero disables enforcement
  * @param kcpWireVersion   KCP wire-format version, either {@code 1} or {@code 2}
  * @author Kimi Liu
- * @since Java 21+
  */
 public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChunkCount, int backlog, int ioThreads,
         Map<SocketOption<?>, Object> socketOptions, boolean retainReadBuffer, Duration idleTimeout,

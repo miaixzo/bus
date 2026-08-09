@@ -42,7 +42,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PostgreSql extends AbstractDialect {
 

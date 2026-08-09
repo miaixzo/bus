@@ -42,7 +42,6 @@ import org.miaixz.bus.logger.Logger;
  * Meituan login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MeituanProvider extends AbstractProvider {
 

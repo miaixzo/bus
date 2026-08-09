@@ -34,7 +34,6 @@ import org.miaixz.bus.core.xyz.ThreadKit;
  * support.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum GlobalPruneTimer {
 

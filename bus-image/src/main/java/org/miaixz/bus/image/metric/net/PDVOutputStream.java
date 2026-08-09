@@ -27,7 +27,6 @@ import java.io.OutputStream;
  * Represents the PDVOutputStream type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class PDVOutputStream extends OutputStream {
 

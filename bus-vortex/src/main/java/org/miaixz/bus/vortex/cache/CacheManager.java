@@ -53,7 +53,6 @@ import org.miaixz.bus.vortex.nimble.CacheStats;
  * @param <K> cache key type
  * @param <V> cache value type
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CacheManager<K, V> {
 

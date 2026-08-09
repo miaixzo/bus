@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The repository file class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RepositoryFile implements Serializable {
 

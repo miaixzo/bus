@@ -35,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the Overlays type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Overlays {
 

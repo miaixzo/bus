@@ -25,7 +25,6 @@ import java.io.Serial;
  * Implements the CRC16-ANSI (Cyclic Redundancy Check) algorithm.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CRC16Ansi extends CRC16Checksum {
 

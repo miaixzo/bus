@@ -36,7 +36,6 @@ import org.miaixz.bus.crypto.Builder;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Decryptor {
 

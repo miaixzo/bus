@@ -38,7 +38,6 @@ import org.miaixz.bus.logger.Logger;
  * Queries NetStat on macOS.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class NetStat {
@@ -134,7 +133,6 @@ public final class NetStat {
      * Class to encapsulate network interface data for method return.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Immutable
     public static class IFdata {

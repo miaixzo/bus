@@ -45,7 +45,6 @@ import org.miaixz.bus.starter.annotation.EnableDubbo;
  * Registers Dubbo service scanning for both annotation-based and property-based Starter activation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DubboScannerRegistrar implements ImportBeanDefinitionRegistrar, EnvironmentAware {
 

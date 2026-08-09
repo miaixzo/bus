@@ -34,7 +34,6 @@ import org.miaixz.bus.core.xyz.FieldKit;
  * Creates, reads, and modifies Excel sheets.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SheetKit {
 

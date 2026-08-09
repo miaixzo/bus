@@ -45,7 +45,6 @@ import org.miaixz.bus.validate.magic.annotation.Valid;
  * @param <T>       the entity type
  * @param <Service> the service type, which must extend {@link BaseService}
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BaseController<T, Service extends BaseService<T>> extends Controller {
 

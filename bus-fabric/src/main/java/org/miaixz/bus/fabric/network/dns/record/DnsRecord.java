@@ -36,7 +36,6 @@ import org.miaixz.bus.fabric.network.dns.message.DnsName;
  * Immutable DNS resource record with pre-encoded RDATA bytes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsRecord {
 

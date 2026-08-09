@@ -26,7 +26,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the TrimISO2020Coercion type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TrimISO2020Coercion implements AttributesCoercion {
 

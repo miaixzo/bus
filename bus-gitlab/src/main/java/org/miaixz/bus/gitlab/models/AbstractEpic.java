@@ -43,7 +43,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
  *
  * @param <E> the concrete epic model type
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
@@ -143,7 +142,6 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
      * The epic state enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum EpicState {
 

@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * SQL column type descriptor.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

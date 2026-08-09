@@ -41,7 +41,6 @@ import org.miaixz.bus.logger.Logger;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BCCipher implements Cipher, Wrapper<Object> {
 
@@ -287,7 +286,6 @@ public class BCCipher implements Cipher, Wrapper<Object> {
      * A wrapper for BouncyCastle's {@link CipherParameters}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class BCParameters implements Parameters {
 

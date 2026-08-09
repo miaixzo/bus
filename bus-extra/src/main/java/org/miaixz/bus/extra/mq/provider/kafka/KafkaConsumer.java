@@ -40,7 +40,6 @@ import org.miaixz.bus.logger.Logger;
  * Kafka {@link ConsumerRecord}s.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class KafkaConsumer implements Consumer {
 

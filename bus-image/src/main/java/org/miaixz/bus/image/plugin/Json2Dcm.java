@@ -41,7 +41,6 @@ import org.miaixz.bus.image.metric.json.JSONReader;
  * information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Json2Dcm {
 

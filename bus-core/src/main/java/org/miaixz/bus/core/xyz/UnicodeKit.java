@@ -23,7 +23,6 @@ package org.miaixz.bus.core.xyz;
  * Converts between Unicode-escaped strings and normal strings.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UnicodeKit {
 

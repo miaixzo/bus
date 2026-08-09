@@ -26,7 +26,6 @@ import org.miaixz.bus.storage.Context;
  * using an S3-compatible client.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class QiniuOssProvider extends GenericS3Provider {
 

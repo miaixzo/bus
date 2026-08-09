@@ -25,7 +25,6 @@ import java.awt.color.ColorSpace;
  * Represents the CIELabColorSpace type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CIELabColorSpace extends ColorSpace {
 
@@ -188,7 +187,6 @@ public class CIELabColorSpace extends ColorSpace {
      * Represents the LazyHolder type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class LazyHolder {
 

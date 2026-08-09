@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * This class is used to filter Groups when getting lists of groups.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GroupFilter implements Serializable {
 

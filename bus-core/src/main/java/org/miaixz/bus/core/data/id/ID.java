@@ -36,7 +36,6 @@ import org.miaixz.bus.core.net.ip.IPv4;
  * <a href="http://calvin1978.blogcn.com/articles/uuid.html">http://calvin1978.blogcn.com/articles/uuid.html</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ID {
 

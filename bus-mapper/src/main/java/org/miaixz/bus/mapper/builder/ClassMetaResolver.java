@@ -34,7 +34,6 @@ import org.miaixz.bus.mapper.Order;
  * can be replaced via SPI (Service Provider Interface).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ClassMetaResolver extends Order {
 
@@ -96,7 +95,6 @@ public interface ClassMetaResolver extends Order {
      * Represents a combination of a Mapper interface and a method, used as a cache key.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class MapperTypeMethod {
 
@@ -164,7 +162,6 @@ public interface ClassMetaResolver extends Order {
      * Manages instances of entity class finders.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class ClassFinderInstance {
 
@@ -188,7 +185,6 @@ public interface ClassMetaResolver extends Order {
          * Initialization-on-demand holder idiom.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         private static class ClassMetaResolverHolder {
 

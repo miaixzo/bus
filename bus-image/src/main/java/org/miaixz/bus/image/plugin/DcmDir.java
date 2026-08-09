@@ -49,7 +49,6 @@ import org.miaixz.bus.logger.Logger;
  * removing references to DICOM files, listing directory records, and compacting the DICOMDIR file.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DcmDir {
 
@@ -680,7 +679,6 @@ public class DcmDir {
      * A simple CSV parser to convert lines of a CSV file into DICOM attributes.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     static class CSVParser {
 

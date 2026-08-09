@@ -36,7 +36,6 @@ import org.miaixz.bus.core.net.MediaType;
  * Pass-through response wrapper that retains at most a configured number of diagnostic bytes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CachedBodyResponseWrapper extends HttpServletResponseWrapper {
 

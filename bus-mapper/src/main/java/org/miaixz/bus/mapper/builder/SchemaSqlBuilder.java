@@ -37,7 +37,6 @@ import org.miaixz.bus.mapper.parsing.SqlScriptWrapper;
  * An annotation-based {@link SqlScriptWrapper} that provides SQL script wrapping functionality based on annotations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 public abstract class SchemaSqlBuilder implements SqlScriptWrapper {

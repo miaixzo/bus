@@ -44,7 +44,6 @@ import org.miaixz.bus.logger.Logger;
  * Xiaomi (Mi) login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MiProvider extends AbstractProvider {
 

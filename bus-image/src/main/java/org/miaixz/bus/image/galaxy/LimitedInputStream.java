@@ -28,7 +28,6 @@ import java.util.Objects;
  * Represents the LimitedInputStream type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class LimitedInputStream extends FilterInputStream {
 

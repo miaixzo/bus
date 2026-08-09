@@ -31,7 +31,6 @@ import java.util.function.LongSupplier;
  * Emergency pressure rejects every new request. Recovery uses lower thresholds to avoid admission oscillation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class MemoryPressure implements AutoCloseable {
 

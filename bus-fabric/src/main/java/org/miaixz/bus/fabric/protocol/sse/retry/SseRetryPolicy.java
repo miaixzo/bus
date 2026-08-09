@@ -34,7 +34,6 @@ import org.miaixz.bus.fabric.Policy;
  * @param initialDelay initial reconnect delay
  * @param maxDelay     maximum reconnect delay
  * @author Kimi Liu
- * @since Java 21+
  */
 public record SseRetryPolicy(Duration initialDelay, Duration maxDelay) implements Policy {
 

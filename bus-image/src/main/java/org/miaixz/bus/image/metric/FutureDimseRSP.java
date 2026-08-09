@@ -30,7 +30,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the FutureDimseRSP type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
 
@@ -209,7 +208,6 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
      * Represents the Entry type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class Entry {
 

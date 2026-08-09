@@ -33,7 +33,6 @@ import org.miaixz.bus.starter.cors.CorsConfiguration;
  * {@code bus.cors} prefix.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

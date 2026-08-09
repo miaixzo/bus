@@ -21,6 +21,5 @@
  * Provides classes for file I/O operations, including file copying, reading, writing, and line processing.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.io.file;

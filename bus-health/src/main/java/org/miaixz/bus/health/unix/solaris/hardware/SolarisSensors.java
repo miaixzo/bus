@@ -32,7 +32,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
  * Sensors from prtpicl
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class SolarisSensors extends AbstractSensors {

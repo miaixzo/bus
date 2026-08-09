@@ -25,7 +25,6 @@ import org.miaixz.bus.office.excel.ExcelConfig;
  * Excel read configuration.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ExcelReadConfig extends ExcelConfig {
 
@@ -105,7 +104,6 @@ public class ExcelReadConfig extends ExcelConfig {
      * Read mode enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ReadMode {
         /**

@@ -33,7 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The import status class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImportStatus implements Serializable {
 
@@ -44,7 +43,6 @@ public class ImportStatus implements Serializable {
      * Enum representing the status of the import.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Status {
 

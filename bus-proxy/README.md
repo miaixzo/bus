@@ -8,14 +8,19 @@
 
 ## 📖 Project Introduction
 
-**Bus Proxy** provides a simplified and powerful approach to working with dynamic proxies in Java. It encapsulates JDK dynamic proxy functionality, making it easy to implement AOP (Aspect-Oriented Programming) patterns without requiring an IoC container.
+**Bus Proxy** provides a simplified and powerful approach to working with dynamic proxies in Java. It encapsulates JDK
+dynamic proxy functionality, making it easy to implement AOP (Aspect-Oriented Programming) patterns without requiring an
+IoC container.
 
-The proxy design pattern allows you to provide a "surrogate or placeholder for another object to control access to it." Proxies can be used in various ways:
+The proxy design pattern allows you to provide a "surrogate or placeholder for another object to control access to it."
+Proxies can be used in various ways:
 
-* **Lazy Initialization**: Proxy acts as a stand-in for the actual implementation, instantiating it only when absolutely necessary
+* **Lazy Initialization**: Proxy acts as a stand-in for the actual implementation, instantiating it only when absolutely
+  necessary
 * **Security**: Proxy objects can verify that the user has the permissions required to execute a method (like EJB)
 * **Logging**: Proxy can log every method call, providing valuable debugging information
-* **Performance Monitoring**: Proxy can log each method call to a performance monitor, allowing system administrators to see which parts of the system might be bogged down
+* **Performance Monitoring**: Proxy can log each method call to a performance monitor, allowing system administrators to
+  see which parts of the system might be bogged down
 
 -----
 
@@ -274,6 +279,7 @@ UserService proxy = Builder.proxy(UserServiceImpl.class)
 ```
 
 Output:
+
 ```
 Method [getUserName] executed in [5] ms
 ```
@@ -369,12 +375,15 @@ public class ReturnValueAspect implements Aspect {
 
 When creating a dynamic proxy object named `$Proxy0`:
 
-1. **Generate Class**: Dynamically generate a class that implements the specified interfaces based on the passed `interfaces`
+1. **Generate Class**: Dynamically generate a class that implements the specified interfaces based on the passed
+   `interfaces`
 2. **Load Class**: Use the passed `classloader` to load the generated class into the JVM (i.e., load `$Proxy0` class)
 3. **Create Instance**: Call the `$Proxy0(InvocationHandler)` constructor to create the `$Proxy0` object
-4. **Implement Methods**: Iterate through all interface methods and generate implementations. These implementations essentially invoke the target object's methods via reflection
+4. **Implement Methods**: Iterate through all interface methods and generate implementations. These implementations
+   essentially invoke the target object's methods via reflection
 5. **Return Proxy**: Return the `$Proxy0` instance to the client
-6. **Method Invocation**: When calling methods on the proxy class, it's equivalent to calling `InvocationHandler.invoke(Object, Method, Object[])`
+6. **Method Invocation**: When calling methods on the proxy class, it's equivalent to calling
+   `InvocationHandler.invoke(Object, Method, Object[])`
 
 ### Invocation Flow
 
@@ -567,10 +576,10 @@ public class DebugAspect extends SimpleAspect {
 
 ## 🔄 Version Compatibility
 
-| Bus Proxy Version | JDK Version | Spring Version | Status |
-| :--- | :--- | :--- | :--- |
-| **8.x** | 17+ | 6.x (optional) | Current |
-| 7.x | 11+ | 5.x (optional) | Maintenance |
+| Bus Proxy Version | JDK Version | Spring Version | Status      |
+|:------------------|:------------|:---------------|:------------|
+| **8.x**           | 17+         | 6.x (optional) | Current     |
+| 7.x               | 11+         | 5.x (optional) | Maintenance |
 
 -----
 

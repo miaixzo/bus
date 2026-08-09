@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Represents the CIELab type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CIELab {
 

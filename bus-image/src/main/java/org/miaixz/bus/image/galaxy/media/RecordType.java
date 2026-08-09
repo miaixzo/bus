@@ -25,7 +25,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Defines the RecordType values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum RecordType {
 

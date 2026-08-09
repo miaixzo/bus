@@ -30,7 +30,6 @@ import org.miaixz.bus.shade.safety.Launcher;
  * encrypted Spring Boot JARs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BootJarLauncher extends JarLauncher {
 

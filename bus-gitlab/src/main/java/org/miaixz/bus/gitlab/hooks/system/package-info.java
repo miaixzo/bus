@@ -24,6 +24,5 @@
  * the GitLab instance level.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.gitlab.hooks.system;

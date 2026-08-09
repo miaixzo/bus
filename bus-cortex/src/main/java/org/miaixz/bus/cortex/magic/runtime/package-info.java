@@ -21,6 +21,5 @@
  * Runtime lifecycle and diagnostics contracts shared by Cortex infrastructure components.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.magic.runtime;

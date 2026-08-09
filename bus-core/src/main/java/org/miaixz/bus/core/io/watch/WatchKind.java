@@ -34,7 +34,6 @@ import java.nio.file.WatchEvent;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum WatchKind {
 

@@ -41,7 +41,6 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  * Supports {@link #onViolation} SLA breach callbacks — a capability absent from all existing Java metrics libraries.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NativeTimer implements Timer {
 
@@ -305,7 +304,6 @@ public class NativeTimer implements Timer {
      * @param checkEvery     fire the check once every N recordings
      * @param callback       the callback to invoke on violation
      * @author Kimi Liu
-     * @since Java 21+
      */
     private record ViolationSpec(double percentile, long thresholdNanos, int checkEvery,
             ConsumerX<ViolationEvent> callback) {

@@ -36,7 +36,6 @@ import org.miaixz.bus.notify.magic.Notice;
  * @param <T> The type of {@link Notice} this provider handles.
  * @param <K> The type of {@link Context} this provider uses.
  * @author Kimi Liu
- * @since Java 21+
  */
 @AllArgsConstructor
 public abstract class AbstractProvider<T extends Notice, K extends Context> implements Provider<T> {

@@ -55,7 +55,6 @@ import io.temporal.worker.tuning.PollerBehaviorAutoscaling;
  * disconnected runtimes, and releases resources during shutdown.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
 

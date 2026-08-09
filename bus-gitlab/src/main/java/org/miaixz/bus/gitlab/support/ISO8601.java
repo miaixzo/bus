@@ -40,7 +40,6 @@ import org.miaixz.bus.core.lang.ZoneId;
  * This class provides methods for parsing and formatting ISO8601 formatted dates.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ISO8601 {
 
@@ -217,7 +216,6 @@ public class ISO8601 {
      * The safe date formatter class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class SafeDateFormatter {
 

@@ -35,7 +35,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  *
  * @param <U> the concrete user model type
  * @author Kimi Liu
- * @since Java 21+
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter

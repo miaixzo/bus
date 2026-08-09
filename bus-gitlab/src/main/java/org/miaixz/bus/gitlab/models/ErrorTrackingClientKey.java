@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The error tracking client key class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ErrorTrackingClientKey implements Serializable {
 

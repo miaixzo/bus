@@ -43,7 +43,6 @@ import org.miaixz.bus.health.unix.aix.driver.Lspv;
  * AIX hard disk implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class AixHWDiskStore extends AbstractHWDiskStore {

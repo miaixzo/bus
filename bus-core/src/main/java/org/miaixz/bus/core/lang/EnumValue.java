@@ -35,7 +35,6 @@ import org.miaixz.bus.core.center.map.BiMap;
  *
  * @param <E> The type of the enum implementing this interface.
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface EnumValue<E extends EnumValue<E>> extends Enumers {
 
@@ -43,7 +42,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for action types.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @AllArgsConstructor
@@ -92,7 +90,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for text alignment options.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @AllArgsConstructor
@@ -116,7 +113,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for append modes.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum Append {
 
@@ -136,7 +132,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for load balancing strategies.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @AllArgsConstructor
@@ -160,7 +155,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for comparison operators.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @AllArgsConstructor
@@ -207,7 +201,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for request credential types.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum Credential {
         /**
@@ -225,7 +218,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for gradient directions.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @AllArgsConstructor
@@ -253,7 +245,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration of desensitization types.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @AllArgsConstructor
@@ -362,7 +353,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Defines the masking mode for desensitization.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @AllArgsConstructor
@@ -386,7 +376,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for Java reflection modifiers.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @AllArgsConstructor
@@ -490,7 +479,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @AllArgsConstructor
@@ -629,7 +617,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for parameter sources in a request.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum Params {
         /**
@@ -672,7 +659,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for strategy patterns.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @AllArgsConstructor
@@ -746,7 +732,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for probe statuses, often used in health checks or traffic management.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @AllArgsConstructor
@@ -780,7 +765,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for sorting orders.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @AllArgsConstructor
@@ -840,7 +824,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for switch states.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum Switch {
         /**
@@ -859,7 +842,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for image thumbnail scaling methods.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @AllArgsConstructor
@@ -897,7 +879,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enum of basic variable types. Basic type enums include primitive types and wrapper types.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum Type {
 
@@ -1050,7 +1031,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * Enumeration for image zooming/scaling modes.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @AllArgsConstructor

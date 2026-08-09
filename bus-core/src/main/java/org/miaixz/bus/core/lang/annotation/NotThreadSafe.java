@@ -36,7 +36,6 @@ import java.lang.annotation.*;
  * bugs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

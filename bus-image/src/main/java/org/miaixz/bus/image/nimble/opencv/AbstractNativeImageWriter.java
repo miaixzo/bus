@@ -45,7 +45,6 @@ import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
  * Base class for native OpenCV DICOM image writers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 abstract class AbstractNativeImageWriter extends ImageWriter {
 

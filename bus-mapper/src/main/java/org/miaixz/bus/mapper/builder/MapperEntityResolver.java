@@ -31,7 +31,6 @@ import org.miaixz.bus.mapper.binding.basic.ClassMapper;
  * {@link ClassMapper} contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class MapperEntityResolver {
 

@@ -69,7 +69,6 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BoxProvider extends AbstractProvider {
 
@@ -148,18 +147,18 @@ public class BoxProvider extends AbstractProvider {
     public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
                         .build();
             }
             Map<String, Object> metadata = resolveFileMetadata(bucket, objectKey);
             if (metadata == null) {
-                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
             return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(toBlob(bucket, objectKey, metadata, null)).build();
         } catch (Exception e) {
-            Errors error = StringKit.containsIgnoreCase(e.getMessage(), "404") ? ErrorCode._113010 : ErrorCode._113012;
+            Errors error = StringKit.containsIgnoreCase(e.getMessage(), "404") ? ErrorCode._113008 : ErrorCode._113010;
             Logger.error(
                     false,
                     "Storage",
@@ -208,12 +207,12 @@ public class BoxProvider extends AbstractProvider {
     public Message<Blob> streamKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
                         .build();
             }
             Map<String, Object> metadata = resolveFileMetadata(bucket, objectKey);
             if (metadata == null) {
-                return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
 
@@ -231,7 +230,7 @@ public class BoxProvider extends AbstractProvider {
             return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(toBlob(bucket, objectKey, metadata, stream(response))).build();
         } catch (Exception e) {
-            Errors error = StringKit.containsIgnoreCase(e.getMessage(), "404") ? ErrorCode._113010 : ErrorCode._113012;
+            Errors error = StringKit.containsIgnoreCase(e.getMessage(), "404") ? ErrorCode._113008 : ErrorCode._113010;
             Logger.error(
                     false,
                     "Storage",
@@ -259,8 +258,8 @@ public class BoxProvider extends AbstractProvider {
         try {
             String fileId = findFileByName(fileName, bucket);
             if (fileId == null) {
-                return Message.<byte[]>builder().errcode(ErrorCode._113003.getKey())
-                        .errmsg(ErrorCode._113003.getValue()).build();
+                return Message.<byte[]>builder().errcode(ErrorCode._100405.getKey())
+                        .errmsg(ErrorCode._100405.getValue()).build();
             }
 
             String url = API_BASE + "/files/" + fileId + "/content";
@@ -316,7 +315,7 @@ public class BoxProvider extends AbstractProvider {
         try {
             String fileId = findFileByName(fileName, bucket);
             if (fileId == null) {
-                return Message.<Void>builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
+                return Message.<Void>builder().errcode(ErrorCode._100405.getKey()).errmsg(ErrorCode._100405.getValue())
                         .build();
             }
 
@@ -446,7 +445,7 @@ public class BoxProvider extends AbstractProvider {
         try {
             String fileId = findFileByName(oldName, bucket);
             if (fileId == null) {
-                return Message.<Void>builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
+                return Message.<Void>builder().errcode(ErrorCode._100405.getKey()).errmsg(ErrorCode._100405.getValue())
                         .build();
             }
 
@@ -667,7 +666,7 @@ public class BoxProvider extends AbstractProvider {
         try {
             String fileId = findFileByName(fileName, bucket);
             if (fileId == null) {
-                return Message.<Void>builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
+                return Message.<Void>builder().errcode(ErrorCode._100405.getKey()).errmsg(ErrorCode._100405.getValue())
                         .build();
             }
 
@@ -813,12 +812,12 @@ public class BoxProvider extends AbstractProvider {
      */
     private Errors toError(int code) {
         if (code == 401 || code == 403) {
-            return ErrorCode._113009;
+            return ErrorCode._113007;
         }
         if (code == 404) {
-            return ErrorCode._113010;
+            return ErrorCode._113008;
         }
-        return ErrorCode._113012;
+        return ErrorCode._113010;
     }
 
     /**

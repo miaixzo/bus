@@ -32,7 +32,6 @@ import org.miaixz.bus.core.Version;
  * Represents the NativeJPEGImageReaderSpi type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NativeJPEGImageReaderSpi extends ImageReaderSpi {
 

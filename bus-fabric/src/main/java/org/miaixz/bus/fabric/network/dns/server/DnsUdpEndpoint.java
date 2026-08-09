@@ -45,7 +45,6 @@ import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
  * DNS-over-UDP endpoint backed by dedicated datagram receive loops.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsUdpEndpoint implements AutoCloseable, Lifecycle {
 
@@ -304,7 +303,6 @@ public final class DnsUdpEndpoint implements AutoCloseable, Lifecycle {
      * DNS UDP query handler.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface QueryHandler {
 

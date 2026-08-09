@@ -42,7 +42,6 @@ import org.miaixz.bus.image.galaxy.data.VR;
  * and a descriptive name. It provides methods to retrieve, add, and remove anatomic region codes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AnatomicRegion {
 
@@ -57,7 +56,6 @@ public class AnatomicRegion {
      * Provides metadata for an anatomic category.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface CategoryBuilder {
 
@@ -88,7 +86,6 @@ public class AnatomicRegion {
      * Represents a custom anatomic category.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class OtherCategory implements CategoryBuilder {
 
@@ -188,7 +185,6 @@ public class AnatomicRegion {
      * Defines standard DICOM anatomic categories.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Category implements CategoryBuilder {
 

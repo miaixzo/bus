@@ -28,7 +28,6 @@ import org.miaixz.bus.image.Builder;
  * Represents the IdentityRQ type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IdentityRQ {
 

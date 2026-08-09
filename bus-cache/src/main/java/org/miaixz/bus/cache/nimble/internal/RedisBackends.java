@@ -41,7 +41,6 @@ import redis.clients.jedis.JedisPoolConfig;
  * Redis backend builder isolated from {@link Factory} so Jedis is loaded only when a Redis backend is selected.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class RedisBackends {
 

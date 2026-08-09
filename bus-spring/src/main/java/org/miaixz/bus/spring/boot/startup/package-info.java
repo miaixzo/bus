@@ -21,6 +21,5 @@
  * Spring Boot startup lifecycle measurement and reporting. This package must not contain Starter feature activation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.spring.boot.startup;

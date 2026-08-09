@@ -34,7 +34,6 @@ import org.miaixz.bus.validate.magic.annotation.IntRange;
  * Validator for the {@link IntRange} annotation, checking if a numeric value is within a specified integer range.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IntRangeMatcher implements Matcher<Object, IntRange> {
 

@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The container expiration policy class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ContainerExpirationPolicy implements Serializable {
 

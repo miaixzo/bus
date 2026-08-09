@@ -23,7 +23,6 @@ package org.miaixz.bus.logger;
  * Defines the logging levels.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Level {
 

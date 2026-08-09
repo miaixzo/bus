@@ -32,7 +32,6 @@ import org.miaixz.bus.starter.sensitive.SensitiveConfiguration;
  * and response advice when the application uses Servlet MVC.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

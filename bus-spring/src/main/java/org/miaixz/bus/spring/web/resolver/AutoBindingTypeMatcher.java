@@ -43,7 +43,6 @@ import org.springframework.web.bind.annotation.RequestPart;
  * Declares the type boundary for automatic application request-object binding.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AutoBindingTypeMatcher {
 

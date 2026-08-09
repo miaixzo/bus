@@ -32,7 +32,6 @@ import org.miaixz.bus.fabric.Address;
  * @param protocol bus-core protocol
  * @param address  itinerary address
  * @author Kimi Liu
- * @since Java 21+
  */
 public record Itinerary(Protocol protocol, Address address) {
 

@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.ZipKit;
  * for JAR entries.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JarResource extends UrlResource {
 

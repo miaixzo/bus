@@ -42,7 +42,6 @@ import org.miaixz.bus.vortex.magic.Parameter;
  * {@link PrimaryFilter} and shared across all components via the Reactor context.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 public class Context extends Tracer {

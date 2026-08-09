@@ -37,7 +37,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractComputerSystem;
  * Hardware data obtained from lsattr
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class AixComputerSystem extends AbstractComputerSystem {
@@ -193,7 +192,6 @@ final class AixComputerSystem extends AbstractComputerSystem {
      * The LsattrStrings class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class LsattrStrings {
 

@@ -8,7 +8,8 @@
 
 ## 📖 项目介绍
 
-**Bus Notify** 是基于 Spring Boot 的多渠道通知服务,支持不同渠道之间的负载均衡。它为通过短信、邮件、语音、推送通知等各种服务提供商发送通知提供统一的 API。
+**Bus Notify** 是基于 Spring Boot 的多渠道通知服务,支持不同渠道之间的负载均衡。它为通过短信、邮件、语音、推送通知等各种服务提供商发送通知提供统一的
+API。
 
 -----
 
@@ -25,30 +26,30 @@
 
 #### 短信提供商
 
-| 提供商 | 类型 | 状态 |
-|:---|:---|:---:|
-| [阿里云](https://www.aliyun.com/product/sms) | 短信/语音/邮件 | [ √ ] |
-| [百度云](https://cloud.baidu.com/product/sms.html) | 短信 | [ √ ] |
-| [容联云](https://www.yuntongxun.com/sms/note-inform) | 短信 | [ √ ] |
-| [天翼云](https://www.ctyun.cn/products/10020341) | 短信 | [ √ ] |
-| [腾讯云](https://cloud.tencent.com/product/sms) | 短信 | [ √ ] |
-| [华为云](https://www.huaweicloud.com/product/msgsms.html) | 短信 | [ √ ] |
-| [京东云](https://www.jdcloud.com/cn/products/text-message) | 短信 | [ √ ] |
-| [七牛云](https://www.qiniu.com/products/sms) | 短信 | [ √ ] |
-| [网易云信](https://netease.im/sms) | 短信 | [ √ ] |
-| [又拍云](https://www.upyun.com/products/sms) | 短信 | [ √ ] |
-| [亿美软通](https://www.emay.cn/article949.html) | 短信 | [ √ ] |
-| [助通](https://www.ztinfo.cn/products/sms) | 短信 | [ √ ] |
-| [UniSMS](https://unisms.apistd.com/) | 短信 | [ √ ] |
-| [云片](https://www.yunpian.com/product/domestic-sms) | 短信 | [ √ ] |
+| 提供商                                                     | 类型           | 状态  |
+|:-----------------------------------------------------------|:---------------|:-----:|
+| [阿里云](https://www.aliyun.com/product/sms)               | 短信/语音/邮件 | [ √ ] |
+| [百度云](https://cloud.baidu.com/product/sms.html)         | 短信           | [ √ ] |
+| [容联云](https://www.yuntongxun.com/sms/note-inform)       | 短信           | [ √ ] |
+| [天翼云](https://www.ctyun.cn/products/10020341)           | 短信           | [ √ ] |
+| [腾讯云](https://cloud.tencent.com/product/sms)            | 短信           | [ √ ] |
+| [华为云](https://www.huaweicloud.com/product/msgsms.html)  | 短信           | [ √ ] |
+| [京东云](https://www.jdcloud.com/cn/products/text-message) | 短信           | [ √ ] |
+| [七牛云](https://www.qiniu.com/products/sms)               | 短信           | [ √ ] |
+| [网易云信](https://netease.im/sms)                         | 短信           | [ √ ] |
+| [又拍云](https://www.upyun.com/products/sms)               | 短信           | [ √ ] |
+| [亿美软通](https://www.emay.cn/article949.html)            | 短信           | [ √ ] |
+| [助通](https://www.ztinfo.cn/products/sms)                 | 短信           | [ √ ] |
+| [UniSMS](https://unisms.apistd.com/)                       | 短信           | [ √ ] |
+| [云片](https://www.yunpian.com/product/domestic-sms)       | 短信           | [ √ ] |
 
 #### 推送通知提供商
 
-| 提供商 | 类型 | 状态 |
-|:---|:---|:---:|
-| [微信](https://mp.weixin.qq.com/) | 小程序/企业微信/模板消息/微信客服 | [ √ ] |
-| [钉钉](https://open.dingtalk.com/document/orgapp/api-overview) | 推送 | [ √ ] |
-| [极光推送](https://docs.jiguang.cn/jpush) | 推送 | [ √ ] |
+| 提供商                                                         | 类型                              | 状态  |
+|:---------------------------------------------------------------|:----------------------------------|:-----:|
+| [微信](https://mp.weixin.qq.com/)                              | 小程序/企业微信/模板消息/微信客服 | [ √ ] |
+| [钉钉](https://open.dingtalk.com/document/orgapp/api-overview) | 推送                              | [ √ ] |
+| [极光推送](https://docs.jiguang.cn/jpush)                      | 推送                              | [ √ ] |
 
 -----
 
@@ -154,39 +155,39 @@ public void sendPush(String userId, String message) {
 
 ### 阿里云短信配置
 
-| 属性 | 必需 | 描述 |
-|:---|:---:|:---|
-| access-key-id | ✓ | 阿里云访问密钥 ID |
-| access-key-secret | ✓ | 阿里云访问密钥密码 |
-| sign-name | ✓ | 短信签名名称 |
-| region-id | ✗ | 区域 ID(默认: cn-hangzhou)|
-| endpoint | ✗ | API 端点 |
+| 属性              | 必需 | 描述                       |
+|:------------------|:----:|:---------------------------|
+| access-key-id     |  ✓  | 阿里云访问密钥 ID          |
+| access-key-secret |  ✓  | 阿里云访问密钥密码         |
+| sign-name         |  ✓  | 短信签名名称               |
+| region-id         |  ✗  | 区域 ID(默认: cn-hangzhou) |
+| endpoint          |  ✗  | API 端点                   |
 
 ### 腾讯云短信配置
 
-| 属性 | 必需 | 描述 |
-|:---|:---:|:---|
-| secret-id | ✓ | 腾讯云密钥 ID |
-| secret-key | ✓ | 腾讯云密钥密码 |
-| region | ✗ | 区域(默认: ap-guangzhou)|
-| app-id | ✓ | 短信应用 ID |
-| sign-name | ✓ | 短信签名名称 |
+| 属性       | 必需 | 描述                     |
+|:-----------|:----:|:-------------------------|
+| secret-id  |  ✓  | 腾讯云密钥 ID            |
+| secret-key |  ✓  | 腾讯云密钥密码           |
+| region     |  ✗  | 区域(默认: ap-guangzhou) |
+| app-id     |  ✓  | 短信应用 ID              |
+| sign-name  |  ✓  | 短信签名名称             |
 
 ### 微信配置
 
-| 属性 | 必需 | 描述 |
-|:---|:---:|:---|
-| app-id | ✓ | 微信应用 ID |
-| app-secret | ✓ | 微信应用密码 |
-| agent-id | ✓ | 企业微信代理 ID |
+| 属性       | 必需 | 描述            |
+|:-----------|:----:|:----------------|
+| app-id     |  ✓  | 微信应用 ID     |
+| app-secret |  ✓  | 微信应用密码    |
+| agent-id   |  ✓  | 企业微信代理 ID |
 
 ### 钉钉配置
 
-| 属性 | 必需 | 描述 |
-|:---|:---:|:---|
-| app-key | ✓ | 钉钉应用密钥 |
-| app-secret | ✓ | 钉钉应用密码 |
-| agent-id | ✓ | 代理 ID |
+| 属性       | 必需 | 描述         |
+|:-----------|:----:|:-------------|
+| app-key    |  ✓  | 钉钉应用密钥 |
+| app-secret |  ✓  | 钉钉应用密码 |
+| agent-id   |  ✓  | 代理 ID      |
 
 -----
 
@@ -417,9 +418,9 @@ extend:
 ## 🔄 版本兼容性
 
 | Bus Notify 版本 | Spring Boot 版本 | JDK 版本 |
-|:---|:---|:---|
-| 8.x | 3.x+ | 17+ |
-| 7.x | 2.x+ | 11+ |
+|:----------------|:-----------------|:---------|
+| 8.x             | 3.x+             | 17+      |
+| 7.x             | 2.x+             | 11+      |
 
 -----
 

@@ -27,7 +27,6 @@ import org.miaixz.bus.cortex.guard.GuardStrategy;
  * Adapts the setting relation enforcer into the shared Cortex guard chain.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SettingEnforcerGuardStrategy implements GuardStrategy {
 

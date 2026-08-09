@@ -28,7 +28,6 @@ import org.miaixz.bus.image.nimble.geometry.Vector3;
  * Selects images by patient image plane.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ImagePlaneSelector {
 

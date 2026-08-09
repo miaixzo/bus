@@ -28,7 +28,6 @@ import org.miaixz.bus.validate.magic.annotation.False;
  * Validator for the {@link False} annotation. Checks if a Boolean value is {@code false}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FalseMatcher implements Matcher<Boolean, False> {
 

@@ -22,6 +22,5 @@
  * peeking. Implementations read directly into segment-backed buffers to minimize intermediate allocations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.io.source;

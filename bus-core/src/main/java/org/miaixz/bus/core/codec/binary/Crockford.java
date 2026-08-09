@@ -39,7 +39,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * @see <a href="http://www.ietf.org/rfc/rfc4648.txt">RFC 4648</a>
  * @see <a href="http://www.crockford.com/wrmg/base32.html">Douglas Crockford's Base32 Encoding</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Crockford {
 

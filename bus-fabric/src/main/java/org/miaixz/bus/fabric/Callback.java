@@ -24,7 +24,6 @@ package org.miaixz.bus.fabric;
  *
  * @param <T> callback value type
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Callback<T> {
 

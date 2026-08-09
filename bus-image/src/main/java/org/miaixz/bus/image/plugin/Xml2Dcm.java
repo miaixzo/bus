@@ -40,7 +40,6 @@ import org.miaixz.bus.image.galaxy.io.*;
  * written to an output stream.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Xml2Dcm {
 

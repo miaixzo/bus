@@ -48,7 +48,6 @@ import org.miaixz.bus.logger.Logger;
  * Huawei login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HuaweiProvider extends AbstractProvider {
 

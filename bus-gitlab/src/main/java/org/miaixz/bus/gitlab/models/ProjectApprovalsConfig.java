@@ -28,7 +28,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * The project approvals config class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProjectApprovalsConfig implements Serializable {
 

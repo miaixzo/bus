@@ -21,6 +21,5 @@
  * UID Dictionary from GEIIS_PACS
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.GEIIS_PACS;

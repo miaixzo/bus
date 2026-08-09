@@ -51,7 +51,6 @@ import org.miaixz.bus.pay.magic.Message;
  * Builds and signs WeChat Pay requests.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WechatPayBuilder {
 

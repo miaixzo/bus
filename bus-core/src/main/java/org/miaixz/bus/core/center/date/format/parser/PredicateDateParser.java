@@ -26,7 +26,6 @@ import org.miaixz.bus.core.center.function.PredicateX;
  * Implementations should provide the matching logic in the {@link #test(Object)} method.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface PredicateDateParser extends DateParser, PredicateX<CharSequence> {
 

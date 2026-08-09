@@ -57,7 +57,6 @@ import org.miaixz.bus.logger.Logger;
  * directory.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StoreSCP {
 

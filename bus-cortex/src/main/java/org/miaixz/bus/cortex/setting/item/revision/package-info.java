@@ -21,6 +21,5 @@
  * Provides setting item revision snapshots and storage abstractions for historical configuration state.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.setting.item.revision;

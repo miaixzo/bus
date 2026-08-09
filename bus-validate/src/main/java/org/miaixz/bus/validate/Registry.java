@@ -32,7 +32,6 @@ import org.miaixz.bus.validate.nimble.*;
  * singleton pattern to ensure a single registry throughout the application.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Registry {
 

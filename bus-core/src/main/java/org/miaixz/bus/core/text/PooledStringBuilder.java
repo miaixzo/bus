@@ -53,7 +53,6 @@ import java.io.IOException;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class PooledStringBuilder implements Appendable, CharSequence, AutoCloseable {
 

@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.ThreadKit;
  * based on the subscriber's preference.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SimpleEventPublisher implements EventPublisher {
 

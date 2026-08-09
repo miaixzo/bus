@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The wiki page event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WikiPageEvent extends AbstractEvent {
 
@@ -155,7 +154,6 @@ public class WikiPageEvent extends AbstractEvent {
      * The wiki class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Wiki {
 
@@ -282,7 +280,6 @@ public class WikiPageEvent extends AbstractEvent {
      * The object attributes class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class ObjectAttributes {
 

@@ -29,7 +29,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * GitLab access levels.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum AccessLevel {
 

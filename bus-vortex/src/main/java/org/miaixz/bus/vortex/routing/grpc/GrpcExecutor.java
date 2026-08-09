@@ -63,7 +63,6 @@ import reactor.core.publisher.Mono;
  * Generic type parameters: {@code Executor<String, ServerResponse>}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GrpcExecutor extends Coordinator<String, ServerResponse> {
 

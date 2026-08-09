@@ -55,12 +55,11 @@ import org.miaixz.bus.core.xyz.*;
  *     com.example.Service1
  *     com.example.Service2
  * </pre>
- *
+ * <p>
  * Services can be retrieved by their index using the {@link #getService(int)} method.
  *
  * @param <S> The type of the service.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
 

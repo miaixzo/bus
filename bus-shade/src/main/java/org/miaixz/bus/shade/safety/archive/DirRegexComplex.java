@@ -30,7 +30,6 @@ import org.miaixz.bus.shade.safety.complex.RegexComplex;
  * extends {@link RegexComplex} and provides a way to apply regex patterns to file names.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DirRegexComplex extends RegexComplex<File> implements Complex<File> {
 

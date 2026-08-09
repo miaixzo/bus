@@ -45,7 +45,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * VK login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class VKProvider extends AbstractProvider {
 

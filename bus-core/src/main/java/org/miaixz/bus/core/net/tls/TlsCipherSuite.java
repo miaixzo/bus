@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * TLS cipher suite name mapper using JSSE Java-name semantics.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class TlsCipherSuite {
 

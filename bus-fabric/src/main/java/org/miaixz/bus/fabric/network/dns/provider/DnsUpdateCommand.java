@@ -40,7 +40,6 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsUpdateCommand {
 
@@ -350,7 +349,6 @@ public final class DnsUpdateCommand {
      * RFC 2136 prerequisite categories.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PrerequisiteKind {
 
@@ -380,7 +378,6 @@ public final class DnsUpdateCommand {
      * RFC 2136 update operation categories.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum UpdateKind {
 
@@ -410,7 +407,6 @@ public final class DnsUpdateCommand {
      * Structured RFC 2136 prerequisite entry.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Prerequisite {
 
@@ -501,7 +497,6 @@ public final class DnsUpdateCommand {
      * Structured RFC 2136 update section entry.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Update {
 

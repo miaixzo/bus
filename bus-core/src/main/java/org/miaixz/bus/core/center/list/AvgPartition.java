@@ -41,7 +41,6 @@ import org.miaixz.bus.core.lang.Assert;
  *
  * @param <T> The type of elements in the list.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AvgPartition<T> extends Partition<T> {
 

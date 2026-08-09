@@ -36,7 +36,6 @@ import org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatNetInterface;
  * AIXNetworks class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class AixNetworkIF extends AbstractNetworkIF {

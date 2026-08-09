@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * @param message the message.
  * @param level   the level.
  * @author Kimi Liu
- * @since Java 21+
  */
 public record ViewerMessage(String title, String message, Level level) {
 
@@ -176,7 +175,6 @@ public record ViewerMessage(String title, String message, Level level) {
      * Defines the Level values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Level {
 

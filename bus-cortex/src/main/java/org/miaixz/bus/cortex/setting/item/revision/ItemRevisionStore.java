@@ -29,7 +29,6 @@ import org.miaixz.bus.cortex.Trait;
  * History store abstraction for {@code setting.item.revision} snapshots.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ItemRevisionStore {
 

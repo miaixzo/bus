@@ -39,7 +39,6 @@ import org.miaixz.bus.core.lang.reflect.lookup.MethodLookupFactory;
  * workaround for both JDK 8 and JDK 9+.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LookupKit {
 

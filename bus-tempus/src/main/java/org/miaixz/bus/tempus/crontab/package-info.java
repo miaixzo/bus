@@ -22,6 +22,5 @@
  * reflection-based tasks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.tempus.crontab;

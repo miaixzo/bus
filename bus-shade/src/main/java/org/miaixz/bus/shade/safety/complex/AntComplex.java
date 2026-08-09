@@ -29,7 +29,6 @@ import org.miaixz.bus.shade.safety.Complex;
  *
  * @param <E> The type of entry to be filtered.
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AntComplex<E> extends RegexComplex<E> implements Complex<E> {
 

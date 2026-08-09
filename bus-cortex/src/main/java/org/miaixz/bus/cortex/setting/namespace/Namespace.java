@@ -31,7 +31,6 @@ import org.miaixz.bus.cortex.Type;
  * Namespace directory entry for the setting domain.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

@@ -31,7 +31,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Matching is performed by checking the corresponding index in the array.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BoolArrayMatcher implements PartMatcher {
 

@@ -41,7 +41,6 @@ import org.miaixz.bus.image.galaxy.data.VR;
  * Represents the BufferedImages type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BufferedImages {
 

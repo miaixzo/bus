@@ -28,7 +28,6 @@ import org.miaixz.bus.image.nimble.codec.mp4.MP4FileType;
  * Defines the XPEGParser contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface XPEGParser {
 

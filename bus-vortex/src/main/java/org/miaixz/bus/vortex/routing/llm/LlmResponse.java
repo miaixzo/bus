@@ -33,7 +33,6 @@ import lombok.experimental.SuperBuilder;
  * camelCase conversion.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
@@ -82,7 +81,6 @@ public class LlmResponse {
      * Represents a single completion choice.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -116,7 +114,6 @@ public class LlmResponse {
      * Represents a message in the response.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -145,7 +142,6 @@ public class LlmResponse {
      * Token usage stastics.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter

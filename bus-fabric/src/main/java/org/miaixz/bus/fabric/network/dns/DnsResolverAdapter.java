@@ -31,7 +31,6 @@ import org.miaixz.bus.core.xyz.NetKit;
  * Adapter that exposes host lookup callbacks as current DNS resolver contracts.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsResolverAdapter implements Resolver {
 

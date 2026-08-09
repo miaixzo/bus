@@ -35,7 +35,6 @@ import org.miaixz.bus.core.io.resource.Resource;
  * resource is null, the file is considered non-existent.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class VirtualFile extends File {
 

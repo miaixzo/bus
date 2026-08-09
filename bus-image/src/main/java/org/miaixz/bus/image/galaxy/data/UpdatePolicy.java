@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.data;
  * Defines the UpdatePolicy values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum UpdatePolicy {
     /**

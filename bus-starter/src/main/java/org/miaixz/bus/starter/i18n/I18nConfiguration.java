@@ -38,7 +38,6 @@ import org.miaixz.bus.starter.annotation.EnableI18n;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(value = { I18nProperties.class })
 @Configuration(proxyBeanMethods = false)

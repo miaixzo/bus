@@ -35,7 +35,6 @@ import org.miaixz.bus.cortex.setting.item.ItemBindingProjection;
  * Lightweight runtime overlay publisher outside the revision-tracked curator write path.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RuntimeItemOverlayService {
 

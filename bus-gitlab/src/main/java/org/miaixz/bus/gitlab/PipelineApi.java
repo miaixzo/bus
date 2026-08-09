@@ -43,7 +43,6 @@ import org.miaixz.bus.gitlab.models.*;
  * <a href="https://docs.gitlab.com/ee/api/pipeline_triggers.html">Pipeline Triggers API</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PipelineApi extends AbstractApi implements Constants {
 
@@ -448,7 +447,6 @@ public class PipelineApi extends AbstractApi implements Constants {
          * The create pipeline form class.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         class CreatePipelineForm {
 

@@ -34,7 +34,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Structured audit logger backed by CacheX.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AuditLogger {
 

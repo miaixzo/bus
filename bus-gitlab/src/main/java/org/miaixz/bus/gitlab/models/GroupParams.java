@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.models.Constants.SubgroupCreationLevel;
  * call to the GitLab API.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GroupParams implements Serializable {
 

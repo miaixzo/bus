@@ -29,7 +29,6 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
  *
  * @see Runnable
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface RunnableX extends Runnable, Serializable {

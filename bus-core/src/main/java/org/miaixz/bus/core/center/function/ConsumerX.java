@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
  * @param <T> The type of the input argument to the operation.
  * @see Consumer
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface ConsumerX<T> extends Consumer<T>, Serializable {

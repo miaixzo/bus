@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The position class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Position implements Serializable {
 
@@ -43,7 +42,6 @@ public class Position implements Serializable {
      * The position type enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static enum PositionType {
 

@@ -26,7 +26,6 @@ package org.miaixz.bus.image.nimble.mpr;
  * @param y the y.
  * @param z the z.
  * @author Kimi Liu
- * @since Java 21+
  */
 public record VolumeSize(int x, int y, int z) {
 

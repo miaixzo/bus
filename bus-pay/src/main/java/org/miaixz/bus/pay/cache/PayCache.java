@@ -29,7 +29,6 @@ import org.miaixz.bus.cache.nimble.MemoryCache;
  * Default cache implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum PayCache implements CacheX<String, Object> {
 

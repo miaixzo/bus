@@ -77,7 +77,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel {
 
@@ -3051,7 +3050,6 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * }</pre>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class UnsafeCursor implements Closeable {
 

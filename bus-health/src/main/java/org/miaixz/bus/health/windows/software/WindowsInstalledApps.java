@@ -28,7 +28,6 @@ import org.miaixz.bus.health.windows.driver.registry.InstalledAppsData;
  * The windows installed apps class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class WindowsInstalledApps {
 

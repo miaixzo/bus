@@ -27,7 +27,6 @@ import org.miaixz.bus.image.metric.Connection;
  * Defines the ConnectionMonitor contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ConnectionMonitor {
 

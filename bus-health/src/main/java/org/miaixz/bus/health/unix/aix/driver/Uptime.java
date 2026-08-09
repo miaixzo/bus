@@ -30,7 +30,6 @@ import org.miaixz.bus.health.Parsing;
  * Queries up time.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Uptime {

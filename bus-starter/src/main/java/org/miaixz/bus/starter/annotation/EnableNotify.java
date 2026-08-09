@@ -32,7 +32,6 @@ import org.miaixz.bus.starter.notify.NotifyConfiguration;
  * instant messaging (e.g., DingTalk, WeChat).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

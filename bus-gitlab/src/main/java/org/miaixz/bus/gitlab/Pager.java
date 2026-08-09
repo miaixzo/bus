@@ -66,7 +66,6 @@ import tools.jackson.databind.ObjectMapper;
  *
  * @param <T> the GitLab4J type contained in the List.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Pager<T> implements Iterator<List<T>>, Constants {
 

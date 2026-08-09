@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.*;
  *
  * @see TypeAnnotationScanner
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MetaAnnotationScanner implements AnnotationScanner {
 

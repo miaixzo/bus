@@ -57,7 +57,6 @@ import org.miaixz.bus.setting.nimble.props.Props;
  * Note: The {@code store} methods do not preserve comments.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Setting extends AbstractSetting implements Map<String, String> {
 

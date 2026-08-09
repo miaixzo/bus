@@ -25,7 +25,6 @@ import java.util.Arrays;
  * Short-backed MPR volume.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class VolumeShort extends Volume<Short> {
 

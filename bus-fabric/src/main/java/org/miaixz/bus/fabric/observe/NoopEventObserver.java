@@ -27,7 +27,6 @@ import org.miaixz.bus.fabric.observe.event.FabricEvent;
  * No-operation event observer.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class NoopEventObserver implements EventObserver {
 

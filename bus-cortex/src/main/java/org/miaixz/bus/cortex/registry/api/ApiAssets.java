@@ -44,7 +44,6 @@ import org.miaixz.bus.logger.Logger;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @SuperBuilder
 public class ApiAssets extends Assets {
@@ -212,7 +211,6 @@ public class ApiAssets extends Assets {
      * API-specific metadata payload stored directly in the raw asset metadata JSON payload.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter

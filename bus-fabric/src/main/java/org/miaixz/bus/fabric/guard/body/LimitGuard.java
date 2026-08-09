@@ -32,7 +32,6 @@ import org.miaixz.bus.fabric.guard.GuardRule;
  * Body length guard rule.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class LimitGuard implements GuardRule {
 

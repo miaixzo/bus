@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The external status check result class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ExternalStatusCheckResult implements Serializable {
 

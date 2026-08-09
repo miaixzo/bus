@@ -67,7 +67,6 @@ import org.miaixz.bus.starter.annotation.EnableAuth;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(value = { AuthProperties.class })
 @Configuration(proxyBeanMethods = false)

@@ -40,7 +40,6 @@ import org.miaixz.bus.cortex.Type;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Setter
 @Getter

@@ -26,7 +26,6 @@ import org.miaixz.bus.validate.Context;
  *
  * @param <T> The type of the object to be validated.
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface Validator<T> {

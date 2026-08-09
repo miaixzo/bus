@@ -25,7 +25,6 @@ package org.miaixz.bus.core.text.placeholder.segment;
  * For example, "{name}", "#{data}".
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NamedSegment extends AbstractSegment {
 

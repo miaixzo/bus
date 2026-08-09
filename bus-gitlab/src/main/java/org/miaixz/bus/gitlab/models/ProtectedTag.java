@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The protected tag class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProtectedTag implements Serializable {
 
@@ -40,7 +39,6 @@ public class ProtectedTag implements Serializable {
      * The create access level class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class CreateAccessLevel implements Serializable {
 

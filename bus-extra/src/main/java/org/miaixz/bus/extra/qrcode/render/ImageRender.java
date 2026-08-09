@@ -34,7 +34,6 @@ import org.miaixz.bus.extra.qrcode.QrConfig;
  * QR code image renderer.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageRender implements BitMatrixRender {
 

@@ -8,7 +8,8 @@
 
 ## 📖 Project Introduction
 
-**Bus Base** is the foundational module of the Bus framework, providing common utilities, shared configurations, and base functionality used across all other Bus modules. It serves as the building block for the entire ecosystem.
+**Bus Base** is the foundational module of the Bus framework, providing common utilities, shared configurations, and
+base functionality used across all other Bus modules. It serves as the building block for the entire ecosystem.
 
 -----
 
@@ -36,7 +37,8 @@
 
 ### Automatic Inclusion
 
-**Note**: This module is typically included automatically as a transitive dependency when using other Bus modules. You usually don't need to add it explicitly.
+**Note**: This module is typically included automatically as a transitive dependency when using other Bus modules. You
+usually don't need to add it explicitly.
 
 -----
 
@@ -78,9 +80,9 @@
 ## 🔄 Version Compatibility
 
 | Bus Base Version | Spring Boot Version | JDK Version |
-|:---|:---|:---|
-| 8.x | 3.x+ | 17+ |
-| 7.x | 2.x+ | 11+ |
+|:-----------------|:--------------------|:------------|
+| 8.x              | 3.x+                | 17+         |
+| 7.x              | 2.x+                | 11+         |
 
 -----
 

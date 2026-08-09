@@ -45,7 +45,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Alipay login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AlipayProvider extends AbstractProvider {
 
@@ -83,11 +82,11 @@ public class AlipayProvider extends AbstractProvider {
         Checker.check(context, Registry.ALIPAY);
 
         if (!StringKit.isNotEmpty(context.getUnionId())) {
-            throw new AuthorizedException(ErrorCode._110002.getKey(), Registry.ALIPAY);
+            throw new AuthorizedException(ErrorCode._100100.getKey(), Registry.ALIPAY);
         }
 
         if (Protocol.isLocalHost(context.getRedirectUri())) {
-            throw new AuthorizedException(ErrorCode._110005.getKey(), Registry.ALIPAY);
+            throw new AuthorizedException(ErrorCode._110003.getKey(), Registry.ALIPAY);
         }
     }
 
@@ -100,7 +99,7 @@ public class AlipayProvider extends AbstractProvider {
     @Override
     protected void validate(Callback callback) {
         if (StringKit.isEmpty(callback.getAuth_code())) {
-            throw new AuthorizedException(ErrorCode._110007.getKey(), complex);
+            throw new AuthorizedException(ErrorCode._110005.getKey(), complex);
         }
     }
 

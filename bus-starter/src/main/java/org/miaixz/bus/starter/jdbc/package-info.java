@@ -23,6 +23,5 @@
  * route scope remain in {@code org.miaixz.bus.spring.jdbc}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.starter.jdbc;

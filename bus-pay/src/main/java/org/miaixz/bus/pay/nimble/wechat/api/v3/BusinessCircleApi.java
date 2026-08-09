@@ -25,7 +25,6 @@ import org.miaixz.bus.pay.Matcher;
  * WeChat Pay V3 API interfaces for smart business circles.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum BusinessCircleApi implements Matcher {
 

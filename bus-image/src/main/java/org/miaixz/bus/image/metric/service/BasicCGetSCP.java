@@ -32,7 +32,6 @@ import org.miaixz.bus.image.metric.pdu.PresentationContext;
  * Represents the BasicCGetSCP type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BasicCGetSCP extends AbstractImageService {
 

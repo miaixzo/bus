@@ -38,7 +38,6 @@ import org.miaixz.bus.logger.Logger;
  * Connection-independent logic for locating macOS SMC sensor keys by index.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class SmcKeyIndex {

@@ -44,7 +44,6 @@ import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
  * of resources within encrypted Spring Boot JARs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BootURLHandler extends Handler {
 

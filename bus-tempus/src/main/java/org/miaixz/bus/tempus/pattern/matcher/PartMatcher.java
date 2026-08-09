@@ -26,7 +26,6 @@ import org.miaixz.bus.core.center.function.PredicateX;
  * value (like a minute or an hour) matches the constraints of a specific cron field.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface PartMatcher extends PredicateX<Integer> {
 

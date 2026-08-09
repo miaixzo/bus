@@ -33,7 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The note class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Note implements Serializable {
 
@@ -44,7 +43,6 @@ public class Note implements Serializable {
      * Enum to use for ordering the results.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static enum OrderBy {
 
@@ -102,7 +100,6 @@ public class Note implements Serializable {
      * The noteable type enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static enum NoteableType {
 
@@ -170,7 +167,6 @@ public class Note implements Serializable {
      * The type enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static enum Type {
 

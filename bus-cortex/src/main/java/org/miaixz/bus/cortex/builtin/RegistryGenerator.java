@@ -46,7 +46,6 @@ import org.miaixz.bus.cortex.registry.RegistryIdentity;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RegistryGenerator implements Keying<RegistrySpec> {
 

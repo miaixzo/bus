@@ -39,7 +39,6 @@ import org.miaixz.bus.crypto.Keeper;
  * Certificate chain cleaner backed by a trusted root index.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class CertificateChainCleaner {
 

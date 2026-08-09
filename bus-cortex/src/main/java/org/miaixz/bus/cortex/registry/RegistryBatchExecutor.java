@@ -26,7 +26,6 @@ import org.miaixz.bus.cortex.builtin.batch.BatchResult;
  * Pluggable registry batch execution strategy.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface RegistryBatchExecutor {
 

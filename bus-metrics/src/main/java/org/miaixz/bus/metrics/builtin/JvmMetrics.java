@@ -33,7 +33,6 @@ import org.miaixz.bus.metrics.Metrics;
  * Registers standard JVM metrics: memory, GC pause, thread counts.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JvmMetrics {
 

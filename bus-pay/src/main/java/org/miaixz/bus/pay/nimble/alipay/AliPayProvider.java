@@ -47,7 +47,6 @@ import org.miaixz.bus.pay.nimble.AbstractProvider;
  * Alipay payment related interfaces
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AliPayProvider extends AbstractProvider<Voucher, Context> {
 

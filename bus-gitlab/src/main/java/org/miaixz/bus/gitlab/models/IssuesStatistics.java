@@ -30,7 +30,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The issues statistics class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IssuesStatistics implements Serializable {
 
@@ -85,7 +84,6 @@ public class IssuesStatistics implements Serializable {
      * The statistics class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Statistics implements Serializable {
 
@@ -120,7 +118,6 @@ public class IssuesStatistics implements Serializable {
      * The counts class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Counts implements Serializable {
 

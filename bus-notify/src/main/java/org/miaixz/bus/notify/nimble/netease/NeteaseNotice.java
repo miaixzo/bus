@@ -30,7 +30,6 @@ import org.miaixz.bus.notify.magic.Notice;
  * Notice for NetEase Cloud SMS service.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

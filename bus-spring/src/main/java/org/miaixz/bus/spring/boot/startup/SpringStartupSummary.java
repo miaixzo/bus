@@ -30,7 +30,6 @@ import java.util.Objects;
  * @param applicationBootTime        startup timestamp in milliseconds since the epoch
  * @param stageStats                 ordered Spring startup stages
  * @author Kimi Liu
- * @since Java 21+
  */
 public record SpringStartupSummary(String appName, long applicationBootElapsedTime, long applicationBootTime,
         List<Stage> stageStats) {
@@ -53,15 +52,25 @@ public record SpringStartupSummary(String appName, long applicationBootElapsedTi
      */
     public record Stage(String name, long durationMillis) {
 
-        /** JVM startup before Bus startup collection is activated. */
+        /**
+         * JVM startup before Bus startup collection is activated.
+         */
         public static final String JVM_STARTING = "JvmStartingStage";
-        /** Spring environment preparation. */
+        /**
+         * Spring environment preparation.
+         */
         public static final String ENVIRONMENT_PREPARE = "EnvironmentPrepareStage";
-        /** Application-context preparation. */
+        /**
+         * Application-context preparation.
+         */
         public static final String APPLICATION_CONTEXT_PREPARE = "ApplicationContextPrepareStage";
-        /** Application-context loading. */
+        /**
+         * Application-context loading.
+         */
         public static final String APPLICATION_CONTEXT_LOAD = "ApplicationContextLoadStage";
-        /** Application-context refresh. */
+        /**
+         * Application-context refresh.
+         */
         public static final String APPLICATION_CONTEXT_REFRESH = "ApplicationContextRefreshStage";
 
         /**

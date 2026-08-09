@@ -54,7 +54,6 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
  * UDP datagram channel backed by a JDK datagram channel.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class UdpChannel implements Lifecycle, AutoCloseable {
 

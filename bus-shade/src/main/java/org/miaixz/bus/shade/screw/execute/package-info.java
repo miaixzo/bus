@@ -21,6 +21,5 @@
  * Provides classes for document generation and execution.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.shade.screw.execute;

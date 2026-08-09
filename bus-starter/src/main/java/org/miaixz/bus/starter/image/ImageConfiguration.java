@@ -46,7 +46,6 @@ import org.miaixz.bus.starter.annotation.EnableImage;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(value = { ImageProperties.class })
 @Configuration(proxyBeanMethods = false)

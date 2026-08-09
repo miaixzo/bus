@@ -27,7 +27,6 @@ import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
  * Represents the MemoryStreamSegment type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MemoryStreamSegment extends StreamSegment {
 

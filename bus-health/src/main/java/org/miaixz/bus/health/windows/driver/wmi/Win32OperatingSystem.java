@@ -31,7 +31,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * Queries WMI class {@code Win32_OperatingSystem}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Win32OperatingSystem {
@@ -62,7 +61,6 @@ public final class Win32OperatingSystem {
      * Operating System properties
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum OSVersionProperty {
         /**

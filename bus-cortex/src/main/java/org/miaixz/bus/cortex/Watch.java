@@ -30,7 +30,6 @@ import lombok.experimental.SuperBuilder;
  *
  * @param <T> watched value type
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

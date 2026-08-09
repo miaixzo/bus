@@ -34,7 +34,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  *
  * @param <G> the concrete group model type
  * @author Kimi Liu
- * @since Java 21+
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter

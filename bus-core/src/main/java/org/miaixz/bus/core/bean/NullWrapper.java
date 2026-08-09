@@ -26,7 +26,6 @@ package org.miaixz.bus.core.bean;
  *
  * @param <T> The type corresponding to the {@code null} value.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NullWrapper<T> {
 

@@ -52,7 +52,6 @@ import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
  * Socket session lease backed by the shared connection pool.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class SocketLease {
 

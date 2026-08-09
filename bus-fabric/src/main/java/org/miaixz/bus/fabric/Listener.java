@@ -24,7 +24,6 @@ package org.miaixz.bus.fabric;
  *
  * @param <T> lifecycle source type
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Listener<T> {
 

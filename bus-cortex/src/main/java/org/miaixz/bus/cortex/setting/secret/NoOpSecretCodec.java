@@ -23,7 +23,6 @@ package org.miaixz.bus.cortex.setting.secret;
  * Default secret codec that leaves values unchanged.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NoOpSecretCodec implements SecretCodec {
 

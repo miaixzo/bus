@@ -26,7 +26,6 @@ package org.miaixz.bus.image.nimble;
  * adjustment, color mapping, and other pixel-wise transformations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ShortLookupTable extends LookupTable {
 

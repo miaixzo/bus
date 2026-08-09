@@ -41,7 +41,6 @@ import org.miaixz.bus.core.xyz.*;
  * For example, "{1}", "{name}", "#{data}"
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NamedPlaceholderString extends StringTemplate {
 
@@ -581,7 +580,6 @@ public class NamedPlaceholderString extends StringTemplate {
      * Builder for {@link NamedPlaceholderString}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Builder extends AbstractBuilder<Builder, NamedPlaceholderString> {
 

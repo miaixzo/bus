@@ -43,7 +43,6 @@ import org.miaixz.bus.notify.nimble.AbstractProvider;
  * DingTalk notification service provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Setter
 public class DingTalkProvider extends AbstractProvider<DingTalkNotice, Context> {

@@ -34,7 +34,6 @@ import org.miaixz.bus.health.builtin.software.common.AbstractInternetProtocolSta
  * Internet Protocol Stats implementation
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats {

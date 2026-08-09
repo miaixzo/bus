@@ -35,7 +35,6 @@ import org.miaixz.bus.gitlab.models.MergeRequest;
  * https://docs.gitlab.com/ee/api/deployments.html
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DeploymentsApi extends AbstractApi {
 

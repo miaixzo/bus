@@ -23,7 +23,6 @@ package org.miaixz.bus.logger.magic.level;
  * This interface defines methods for logging at the DEBUG level.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Debug {
 

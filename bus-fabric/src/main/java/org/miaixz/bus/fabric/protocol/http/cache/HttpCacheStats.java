@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @param writeAbortCount   cache body write abort count
  * @param writeFailureCount cache write failure count
  * @author Kimi Liu
- * @since Java 21+
  */
 public record HttpCacheStats(long requestCount, long networkCount, long hitCount, long missCount, long corruptionCount,
         long writeSuccessCount, long writeAbortCount, long writeFailureCount) {

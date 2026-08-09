@@ -31,7 +31,6 @@ import java.util.Objects;
  * @param segmentLengths   the segment lengths.
  * @param imageDescriptor  the image descriptor.
  * @author Kimi Liu
- * @since Java 21+
  */
 public record ExtendSegmentedInputImageStream(
 

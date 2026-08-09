@@ -34,7 +34,6 @@ import org.miaixz.bus.health.builtin.hardware.HWPartition;
  * Queries geom part list
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class GeomPartList {

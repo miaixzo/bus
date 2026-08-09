@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * its content to be held in memory and the original stream to be closed.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SyncInputStream extends FilterInputStream {
 

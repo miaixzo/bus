@@ -47,7 +47,6 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  * HTTP bridge stage that prepares protocol headers and decodes bridge responses.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpBridge implements HttpStage {
 

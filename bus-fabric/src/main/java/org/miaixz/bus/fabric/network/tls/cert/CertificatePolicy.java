@@ -45,7 +45,6 @@ import org.miaixz.bus.fabric.Policy;
  * TLS certificate validation policy with trust manager, hostname, and pin checks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class CertificatePolicy implements Policy {
 
@@ -541,7 +540,6 @@ public final class CertificatePolicy implements Policy {
      * Builder for certificate policies.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

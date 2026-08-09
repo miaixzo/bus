@@ -45,7 +45,6 @@ import org.miaixz.bus.core.xyz.PatternKit;
  * @see RSAJWTSigner
  * @see ECDSAJWTSigner
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JWTSignerBuilder {
 

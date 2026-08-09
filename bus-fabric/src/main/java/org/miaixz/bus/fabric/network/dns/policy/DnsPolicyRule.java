@@ -39,7 +39,6 @@ import org.miaixz.bus.fabric.network.dns.zone.CidrBlock;
  * Immutable DNS policy rule evaluated before resolution or forwarding.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsPolicyRule {
 
@@ -47,7 +46,6 @@ public final class DnsPolicyRule {
      * Rule match mode.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Mode {
 
@@ -77,7 +75,6 @@ public final class DnsPolicyRule {
      * Policy action.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Action {
 

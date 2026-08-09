@@ -36,7 +36,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * XML SAX reader for parsing XML documents.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class XmlSaxReader {
 

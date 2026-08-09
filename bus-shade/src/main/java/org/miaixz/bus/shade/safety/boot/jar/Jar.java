@@ -34,7 +34,6 @@ import org.miaixz.bus.shade.safety.provider.JdkEncryptorProvider;
  * Encrypts and decrypts standard JAR packages.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Jar {
 

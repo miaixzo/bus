@@ -31,7 +31,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * Queries WMI class {@code Win32_PhysicalMemory}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Win32PhysicalMemory {
@@ -74,7 +73,6 @@ public final class Win32PhysicalMemory {
      * Physical Memory properties for Win10 and later.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PhysicalMemoryProperty {
         /**
@@ -112,7 +110,6 @@ public final class Win32PhysicalMemory {
      * Physical Memory properties for Win8 and earlier.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum PhysicalMemoryPropertyWin8 {
         /**

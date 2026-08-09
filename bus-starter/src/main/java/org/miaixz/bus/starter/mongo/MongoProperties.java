@@ -37,7 +37,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Immutable properties used only by Bus Mongo client-settings customizers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

@@ -26,7 +26,6 @@ import org.miaixz.bus.image.UID;
  * Represents the CommonExtended type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CommonExtended {
 

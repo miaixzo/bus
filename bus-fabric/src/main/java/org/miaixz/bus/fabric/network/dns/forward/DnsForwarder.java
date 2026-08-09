@@ -57,7 +57,6 @@ import org.miaixz.bus.fabric.network.tls.TlsSettings;
  * DNS forwarder that sends wire-format queries to configured upstream servers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsForwarder {
 

@@ -31,7 +31,6 @@ import java.util.Set;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CacheKeys {
 

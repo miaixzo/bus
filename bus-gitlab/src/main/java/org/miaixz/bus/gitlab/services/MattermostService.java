@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  * The mattermost service class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MattermostService extends NotificationService {
 

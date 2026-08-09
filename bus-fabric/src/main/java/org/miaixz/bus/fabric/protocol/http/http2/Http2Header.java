@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @param value  non-null field value without NUL, carriage-return, or line-feed characters
  * @param pseudo whether {@code name} begins with a colon; derived by the canonical constructor
  * @author Kimi Liu
- * @since Java 21+
  */
 public record Http2Header(String name, String value, boolean pseudo) {
 

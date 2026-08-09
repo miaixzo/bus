@@ -40,7 +40,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * service by dynamically configuring OIDC service endpoints in {@link Context}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class OIDCProvider extends AbstractProvider {
 

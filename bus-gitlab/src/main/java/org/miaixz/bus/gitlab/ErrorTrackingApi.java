@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.models.ErrorTrackingClientKey;
  * <a href="https://docs.gitlab.com/api/error_tracking/">GitLab Error tracking API Documentation</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ErrorTrackingApi extends AbstractApi {
 

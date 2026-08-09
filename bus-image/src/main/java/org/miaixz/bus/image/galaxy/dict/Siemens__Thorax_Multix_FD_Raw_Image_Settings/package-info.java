@@ -21,6 +21,5 @@
  * UID Dictionary from Siemens__Thorax_Multix_FD_Raw_Image_Settings
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Raw_Image_Settings;

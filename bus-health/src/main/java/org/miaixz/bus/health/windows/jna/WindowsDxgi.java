@@ -62,7 +62,6 @@ import org.miaixz.bus.logger.Logger;
  * This class should be considered non-API as it may be removed if/when its code is incorporated into the JNA project.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class WindowsDxgi {
 
@@ -95,7 +94,6 @@ public final class WindowsDxgi {
      * Minimal binding to {@code dxgi.dll} just to call {@code CreateDXGIFactory}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private interface DxgiLib extends StdCallLibrary {
 
@@ -119,6 +117,7 @@ public final class WindowsDxgi {
      * The DXGI_AVAILABLE constant.
      */
     private static final boolean DXGI_AVAILABLE;
+
     static {
         boolean available = false;
         try {
@@ -154,7 +153,6 @@ public final class WindowsDxgi {
      * </ul>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FieldOrder({ "Description", "VendorId", "DeviceId", "SubSysId", "Revision", "DedicatedVideoMemory",
             "DedicatedSystemMemory", "SharedSystemMemory", "AdapterLuidLowPart", "AdapterLuidHighPart" })
@@ -243,7 +241,6 @@ public final class WindowsDxgi {
      * </pre>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class DxgiAdapter extends COMInvoker {
 
@@ -299,7 +296,6 @@ public final class WindowsDxgi {
      * </pre>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class DxgiFactory extends COMInvoker {
 

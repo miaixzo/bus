@@ -31,7 +31,6 @@ import lombok.experimental.SuperBuilder;
  * Model for the Initiate Batch Transfer API.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

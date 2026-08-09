@@ -27,7 +27,6 @@ import java.io.Serializable;
  * @param <T> the entity type
  * @param <I> the type of the primary key, which must implement {@link Serializable} interface
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Mapper<T, I extends Serializable> extends org.miaixz.bus.mapper.Mapper<T, I> {
 

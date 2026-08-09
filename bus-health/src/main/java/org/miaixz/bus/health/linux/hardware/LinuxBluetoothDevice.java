@@ -43,7 +43,6 @@ import org.miaixz.bus.health.linux.SysPath;
  * {@code /var/lib/bluetooth/<adapter-mac>/<device-mac>/info}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public final class LinuxBluetoothDevice extends AbstractBluetoothDevice {

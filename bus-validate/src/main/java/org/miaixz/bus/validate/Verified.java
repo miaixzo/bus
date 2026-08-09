@@ -45,7 +45,6 @@ import org.miaixz.bus.validate.magic.annotation.*;
  * any validation annotations marked on the class will not be executed.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

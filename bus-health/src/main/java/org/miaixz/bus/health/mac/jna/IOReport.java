@@ -35,7 +35,6 @@ import com.sun.jna.ptr.PointerByReference;
  * These are non-public APIs. Mappings are provided for OSHI internal use only and should not be considered stable.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface IOReport extends Library {
 
@@ -48,7 +47,6 @@ public interface IOReport extends Library {
      * Opaque handle returned by {@link #IOReportCreateSubscription}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class IOReportSubscriptionRef extends CFTypeRef {
 

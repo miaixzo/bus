@@ -39,7 +39,6 @@ import org.miaixz.bus.fabric.Builder;
  * Stateful delimiter-based line frame codec that retains incomplete input between decode calls.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class LineCodec implements FrameCodec {
 

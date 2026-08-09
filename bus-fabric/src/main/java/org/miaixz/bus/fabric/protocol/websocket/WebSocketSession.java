@@ -68,7 +68,6 @@ import org.miaixz.bus.logger.Logger;
  * Open WebSocket session that owns frame ordering, message aggregation, control handling, and terminal notification.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class WebSocketSession implements Session {
 

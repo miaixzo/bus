@@ -28,7 +28,6 @@ import javax.crypto.Cipher;
  * Names for Java Cryptography Architecture</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Algorithm {
 
@@ -303,9 +302,7 @@ public enum Algorithm {
      *
      * @see <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Cipher"> Cipher
      *      section in Standard Names for Java Cryptography Architecture</a>
-     *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Mode {
         /**
@@ -352,7 +349,6 @@ public enum Algorithm {
      * Enumeration for Cipher operation types.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Type {
 

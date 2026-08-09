@@ -35,7 +35,6 @@ import org.miaixz.bus.fabric.Builder;
  * @param data  event data allowing line feeds, defaulted to empty text when null
  * @param retry non-negative reconnection delay, or null when absent
  * @author Kimi Liu
- * @since Java 21+
  */
 public record SseEvent(String id, String event, String data, Duration retry) {
 

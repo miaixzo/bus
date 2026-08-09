@@ -40,7 +40,6 @@ import org.miaixz.bus.logger.Logger;
  * The mac installed apps class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class MacInstalledApps {
 

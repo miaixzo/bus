@@ -39,7 +39,6 @@ import org.miaixz.bus.logger.Logger;
  * The commit action class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CommitAction implements Serializable {
 
@@ -350,7 +349,6 @@ public class CommitAction implements Serializable {
      * The action enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Action {
 

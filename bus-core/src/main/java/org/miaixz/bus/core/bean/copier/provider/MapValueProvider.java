@@ -30,7 +30,6 @@ import org.miaixz.bus.core.convert.Convert;
  * source of properties for bean copying is a map.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MapValueProvider implements ValueProvider<String> {
 

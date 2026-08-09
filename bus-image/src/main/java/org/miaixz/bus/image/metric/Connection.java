@@ -47,7 +47,6 @@ import org.miaixz.bus.logger.Logger;
  * selection takes place during association negotiation based on the called and calling AE-titles.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Connection implements Serializable {
 
@@ -1747,7 +1746,6 @@ public class Connection implements Serializable {
      * Defines the Protocol values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Protocol {
 
@@ -1809,7 +1807,6 @@ public class Connection implements Serializable {
      * Defines the EndpointIdentificationAlgorithm values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum EndpointIdentificationAlgorithm {
         /**
@@ -1827,7 +1824,6 @@ public class Connection implements Serializable {
      * Represents the HTTPResponse type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class HTTPResponse extends ByteArrayOutputStream {
 

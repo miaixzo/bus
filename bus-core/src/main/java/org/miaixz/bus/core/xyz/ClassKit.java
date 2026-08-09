@@ -46,7 +46,6 @@ import org.miaixz.bus.core.text.CharsBacker;
  * Inspects and loads Java classes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ClassKit {
 

@@ -28,7 +28,6 @@ import org.miaixz.bus.core.center.date.culture.parts.MonthParts;
  * Represents a month in the Gregorian calendar.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SolarMonth extends MonthParts {
 

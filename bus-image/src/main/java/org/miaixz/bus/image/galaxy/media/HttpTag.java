@@ -30,7 +30,6 @@ import org.miaixz.bus.core.net.Http;
  * Immutable HTTP header used by DICOM web access configuration.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpTag {
 

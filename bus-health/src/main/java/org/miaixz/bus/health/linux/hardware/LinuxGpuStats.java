@@ -41,7 +41,6 @@ import org.miaixz.bus.health.builtin.hardware.GpuTicks;
  * returns -1.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class LinuxGpuStats implements GpuStats {

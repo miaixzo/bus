@@ -33,7 +33,6 @@ import lombok.experimental.SuperBuilder;
  * configuration parameters required for authentication processes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

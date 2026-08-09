@@ -28,7 +28,6 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  * Represents the PixelAspectRatio type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PixelAspectRatio {
 

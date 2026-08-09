@@ -37,7 +37,6 @@ import reactor.core.publisher.Mono;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.MIN_VALUE)
 public class AccessHandler extends AbstractHandler {

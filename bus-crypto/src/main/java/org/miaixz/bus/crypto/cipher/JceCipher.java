@@ -40,7 +40,6 @@ import org.miaixz.bus.logger.Logger;
  * handling of JCE (Java Cryptography Extension) ciphers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cipher {
 
@@ -292,7 +291,6 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
      * algorithm parameter specification, and secure random generator required for initializing a JCE cipher.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class JceParameters implements Parameters {
 

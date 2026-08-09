@@ -39,7 +39,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LogicalProvider extends BasicProvider {
 
@@ -642,7 +641,6 @@ public class LogicalProvider extends BasicProvider {
      * An SQL script interface that adds logical deletion conditions.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private interface LogicalSqlScript extends SqlScript {
 

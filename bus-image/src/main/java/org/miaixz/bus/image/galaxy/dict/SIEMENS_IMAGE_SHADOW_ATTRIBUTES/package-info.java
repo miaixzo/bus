@@ -21,6 +21,5 @@
  * UID Dictionary from SIEMENS_IMAGE_SHADOW_ATTRIBUTES
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_IMAGE_SHADOW_ATTRIBUTES;

@@ -26,7 +26,6 @@ import java.util.UUID;
  * Converter for UUID objects
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UUIDConverter extends AbstractConverter {
 

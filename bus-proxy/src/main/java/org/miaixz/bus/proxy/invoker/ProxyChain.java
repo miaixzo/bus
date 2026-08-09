@@ -24,7 +24,6 @@ package org.miaixz.bus.proxy.invoker;
  * capabilities, such as accessing parameter names and proceeding with modified arguments.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ProxyChain extends Invocation {
 

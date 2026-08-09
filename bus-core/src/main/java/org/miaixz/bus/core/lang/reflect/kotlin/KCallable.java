@@ -31,7 +31,6 @@ import org.miaixz.bus.core.xyz.MethodKit;
  * with Kotlin callable entities (classes, methods, constructors) via reflection.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class KCallable {
 

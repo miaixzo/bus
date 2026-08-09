@@ -21,6 +21,5 @@
  * Provides information about Software and OS on FreeBSD
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.health.unix.freebsd.software;

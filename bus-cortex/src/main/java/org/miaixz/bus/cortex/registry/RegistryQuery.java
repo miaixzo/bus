@@ -32,7 +32,6 @@ import org.miaixz.bus.cortex.builtin.Selector;
  * Internal registry query scope converted from the public {@code Vector} compatibility entry point.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

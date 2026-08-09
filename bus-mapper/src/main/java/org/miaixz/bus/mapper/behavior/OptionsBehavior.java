@@ -34,7 +34,6 @@ import org.miaixz.bus.mapper.Charter.Group;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface OptionsBehavior extends UpsertBehavior {
 

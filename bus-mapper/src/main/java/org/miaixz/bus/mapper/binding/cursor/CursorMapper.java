@@ -37,7 +37,6 @@ import org.miaixz.bus.mapper.provider.EntityProvider;
  *            Condition object.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface CursorMapper<T, E> {
 

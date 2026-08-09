@@ -43,7 +43,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  *
  * @param <E> the type of elements returned by this iterator
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CopiedIterator<E> implements IterableIterator<E>, Serializable {
 

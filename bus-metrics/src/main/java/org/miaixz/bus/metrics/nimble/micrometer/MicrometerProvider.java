@@ -46,7 +46,6 @@ import io.micrometer.core.instrument.Tags;
  * registry. Meter (EWMA rates) and LlmTimer are implemented locally since Micrometer has no equivalent.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MicrometerProvider implements Provider {
 

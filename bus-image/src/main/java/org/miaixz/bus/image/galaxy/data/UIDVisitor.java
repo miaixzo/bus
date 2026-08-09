@@ -25,7 +25,6 @@ import java.util.Map;
  * Represents the UIDVisitor type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UIDVisitor implements Visitor {
 

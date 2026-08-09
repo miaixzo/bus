@@ -37,7 +37,6 @@ import org.miaixz.bus.logger.Logger;
  * DICOM files. It can process individual files or entire directories recursively.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Dcm2Pdf {
 
@@ -127,7 +126,6 @@ public class Dcm2Pdf {
      * An enumeration of supported encapsulated file types, mapping SOP Class UIDs to file extensions.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum FileType {
 
@@ -222,7 +220,6 @@ public class Dcm2Pdf {
      * A {@link SimpleFileVisitor} that walks a file tree and converts DICOM files containing encapsulated documents.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class Dcm2PdfFileVisitor extends SimpleFileVisitor<Path> {
 

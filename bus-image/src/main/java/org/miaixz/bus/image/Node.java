@@ -35,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
  * hostname, and port. This class is immutable.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

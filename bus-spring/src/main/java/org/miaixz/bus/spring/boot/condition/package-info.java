@@ -22,6 +22,5 @@
  * activation with configurable property names and missing-property defaults.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.spring.boot.condition;

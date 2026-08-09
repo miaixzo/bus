@@ -21,6 +21,5 @@
  * UID Dictionary from AMI_ImageTransform_01
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.AMI_ImageTransform_01;

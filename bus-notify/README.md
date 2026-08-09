@@ -8,7 +8,9 @@
 
 ## 📖 Project Introduction
 
-**Bus Notify** is a multi-channel notification service based on Spring Boot, supporting load balancing across different channels. It provides a unified API for sending notifications through various service providers including SMS, email, voice, push notifications, and more.
+**Bus Notify** is a multi-channel notification service based on Spring Boot, supporting load balancing across different
+channels. It provides a unified API for sending notifications through various service providers including SMS, email,
+voice, push notifications, and more.
 
 ![](https://img.shields.io/maven-central/v/net.guerlab.sms/guerlab-sms-server-starter.svg)
 [![Build Status](https://travis-ci.org/guerlab-net/guerlab-sms.svg?branch=master)](https://travis-ci.org/guerlab-net/guerlab-sms)
@@ -29,30 +31,30 @@
 
 #### SMS Providers
 
-| Provider | Type | Status |
-|:---|:---|:---:|
-| [Aliyun](https://www.aliyun.com/product/sms) | SMS/Voice/Email | [ √ ] |
-| [Baidu Cloud](https://cloud.baidu.com/product/sms.html) | SMS | [ √ ] |
-| [RongCloud](https://www.yuntongxun.com/sms/note-inform) | SMS | [ √ ] |
-| [Tianyi Cloud](https://www.ctyun.cn/products/10020341) | SMS | [ √ ] |
-| [Tencent Cloud](https://cloud.tencent.com/product/sms) | SMS | [ √ ] |
-| [Huawei Cloud](https://www.huaweicloud.com/product/msgsms.html) | SMS | [ √ ] |
-| [JD Cloud](https://www.jdcloud.com/cn/products/text-message) | SMS | [ √ ] |
-| [Qiniu Cloud](https://www.qiniu.com/products/sms) | SMS | [ √ ] |
-| [Netease IM](https://netease.im/sms) | SMS | [ √ ] |
-| [Upyun](https://www.upyun.com/products/sms) | SMS | [ √ ] |
-| [Emay](https://www.emay.cn/article949.html) | SMS | [ √ ] |
-| [Zhutong](https://www.ztinfo.cn/products/sms) | SMS | [ √ ] |
-| [UniSMS](https://unisms.apistd.com/) | SMS | [ √ ] |
-| [Yunpian](https://www.yunpian.com/product/domestic-sms) | SMS | [ √ ] |
+| Provider                                                        | Type            | Status |
+|:----------------------------------------------------------------|:----------------|:------:|
+| [Aliyun](https://www.aliyun.com/product/sms)                    | SMS/Voice/Email | [ √ ]  |
+| [Baidu Cloud](https://cloud.baidu.com/product/sms.html)         | SMS             | [ √ ]  |
+| [RongCloud](https://www.yuntongxun.com/sms/note-inform)         | SMS             | [ √ ]  |
+| [Tianyi Cloud](https://www.ctyun.cn/products/10020341)          | SMS             | [ √ ]  |
+| [Tencent Cloud](https://cloud.tencent.com/product/sms)          | SMS             | [ √ ]  |
+| [Huawei Cloud](https://www.huaweicloud.com/product/msgsms.html) | SMS             | [ √ ]  |
+| [JD Cloud](https://www.jdcloud.com/cn/products/text-message)    | SMS             | [ √ ]  |
+| [Qiniu Cloud](https://www.qiniu.com/products/sms)               | SMS             | [ √ ]  |
+| [Netease IM](https://netease.im/sms)                            | SMS             | [ √ ]  |
+| [Upyun](https://www.upyun.com/products/sms)                     | SMS             | [ √ ]  |
+| [Emay](https://www.emay.cn/article949.html)                     | SMS             | [ √ ]  |
+| [Zhutong](https://www.ztinfo.cn/products/sms)                   | SMS             | [ √ ]  |
+| [UniSMS](https://unisms.apistd.com/)                            | SMS             | [ √ ]  |
+| [Yunpian](https://www.yunpian.com/product/domestic-sms)         | SMS             | [ √ ]  |
 
 #### Push Notification Providers
 
-| Provider | Type | Status |
-|:---|:---|:---:|
-| [WeChat](https://mp.weixin.qq.com/) | Mini Program/Enterprise WeChat/Template Message/WeChat Customer Service | [ √ ] |
-| [DingTalk](https://open.dingtalk.com/document/orgapp/api-overview) | Push | [ √ ] |
-| [JPush](https://docs.jiguang.cn/jpush) | Push | [ √ ] |
+| Provider                                                           | Type                                                                    | Status |
+|:-------------------------------------------------------------------|:------------------------------------------------------------------------|:------:|
+| [WeChat](https://mp.weixin.qq.com/)                                | Mini Program/Enterprise WeChat/Template Message/WeChat Customer Service | [ √ ]  |
+| [DingTalk](https://open.dingtalk.com/document/orgapp/api-overview) | Push                                                                    | [ √ ]  |
+| [JPush](https://docs.jiguang.cn/jpush)                             | Push                                                                    | [ √ ]  |
 
 -----
 
@@ -158,39 +160,39 @@ public void sendPush(String userId, String message) {
 
 ### Aliyun SMS Configuration
 
-| Property | Required | Description |
-|:---|:---:|:---|
-| access-key-id | ✓ | Aliyun Access Key ID |
-| access-key-secret | ✓ | Aliyun Access Key Secret |
-| sign-name | ✓ | SMS signature name |
-| region-id | ✗ | Region ID (default: cn-hangzhou) |
-| endpoint | ✗ | API endpoint |
+| Property          | Required | Description                      |
+|:------------------|:--------:|:---------------------------------|
+| access-key-id     |    ✓    | Aliyun Access Key ID             |
+| access-key-secret |    ✓    | Aliyun Access Key Secret         |
+| sign-name         |    ✓    | SMS signature name               |
+| region-id         |    ✗    | Region ID (default: cn-hangzhou) |
+| endpoint          |    ✗    | API endpoint                     |
 
 ### Tencent Cloud SMS Configuration
 
-| Property | Required | Description |
-|:---|:---:|:---|
-| secret-id | ✓ | Tencent Cloud Secret ID |
-| secret-key | ✓ | Tencent Cloud Secret Key |
-| region | ✗ | Region (default: ap-guangzhou) |
-| app-id | ✓ | SMS application ID |
-| sign-name | ✓ | SMS signature name |
+| Property   | Required | Description                    |
+|:-----------|:--------:|:-------------------------------|
+| secret-id  |    ✓    | Tencent Cloud Secret ID        |
+| secret-key |    ✓    | Tencent Cloud Secret Key       |
+| region     |    ✗    | Region (default: ap-guangzhou) |
+| app-id     |    ✓    | SMS application ID             |
+| sign-name  |    ✓    | SMS signature name             |
 
 ### WeChat Configuration
 
-| Property | Required | Description |
-|:---|:---:|:---|
-| app-id | ✓ | WeChat App ID |
-| app-secret | ✓ | WeChat App Secret |
-| agent-id | ✓ | Enterprise WeChat Agent ID |
+| Property   | Required | Description                |
+|:-----------|:--------:|:---------------------------|
+| app-id     |    ✓    | WeChat App ID              |
+| app-secret |    ✓    | WeChat App Secret          |
+| agent-id   |    ✓    | Enterprise WeChat Agent ID |
 
 ### DingTalk Configuration
 
-| Property | Required | Description |
-|:---|:---:|:---|
-| app-key | ✓ | DingTalk App Key |
-| app-secret | ✓ | DingTalk App Secret |
-| agent-id | ✓ | Agent ID |
+| Property   | Required | Description         |
+|:-----------|:--------:|:--------------------|
+| app-key    |    ✓    | DingTalk App Key    |
+| app-secret |    ✓    | DingTalk App Secret |
+| agent-id   |    ✓    | Agent ID            |
 
 -----
 
@@ -421,9 +423,9 @@ extend:
 ## 🔄 Version Compatibility
 
 | Bus Notify Version | Spring Boot Version | JDK Version |
-|:---|:---|:---|
-| 8.x | 3.x+ | 17+ |
-| 7.x | 2.x+ | 11+ |
+|:-------------------|:--------------------|:------------|
+| 8.x                | 3.x+                | 17+         |
+| 7.x                | 2.x+                | 11+         |
 
 -----
 

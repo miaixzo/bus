@@ -36,7 +36,6 @@ import org.miaixz.bus.core.lang.Normal;
  * declared topmost will take effect.</b>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Link(type = RelationType.ALIAS_FOR)

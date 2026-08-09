@@ -49,7 +49,6 @@ import org.miaixz.bus.fabric.protocol.stomp.calls.StompCall;
  * Immutable STOMP exchange.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class StompX {
 
@@ -318,7 +317,6 @@ public final class StompX {
      * STOMP exchange builder.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

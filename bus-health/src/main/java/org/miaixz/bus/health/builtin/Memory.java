@@ -29,7 +29,6 @@ import lombok.Setter;
  * System Memory Information
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

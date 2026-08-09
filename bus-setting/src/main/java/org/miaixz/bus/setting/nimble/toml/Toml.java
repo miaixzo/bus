@@ -31,7 +31,6 @@ import org.miaixz.bus.logger.Logger;
  * A class providing static methods for reading and writing TOML data.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Toml {
 

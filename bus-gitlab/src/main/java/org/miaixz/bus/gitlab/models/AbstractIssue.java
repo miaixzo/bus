@@ -42,7 +42,6 @@ import tools.jackson.databind.node.ValueNode;
  * The abstract issue class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
@@ -188,7 +187,6 @@ public abstract class AbstractIssue implements Serializable {
      * The task completion status class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter

@@ -37,7 +37,6 @@ import org.miaixz.bus.shade.screw.metadata.Table;
  * {@link InternalException} to indicate that the functionality is not yet implemented.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class H2DataBaseQuery extends AbstractDatabaseQuery {
 

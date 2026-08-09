@@ -25,7 +25,6 @@ import java.util.Iterator;
  * Protocol-neutral cache storage contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface CacheStore extends AutoCloseable {
 

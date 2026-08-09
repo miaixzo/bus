@@ -29,7 +29,6 @@ import java.util.Objects;
  * Relative time range for prior selection.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class RelativeTime {
 
@@ -173,7 +172,6 @@ public final class RelativeTime {
      * Defines the Units values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Units {
 

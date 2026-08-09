@@ -45,7 +45,6 @@ import org.miaixz.bus.logger.Logger;
  * comprehensive DICOM data processing.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageInputStream extends FilterInputStream implements ImageInputHandler, BulkDataCreator {
 
@@ -1841,7 +1840,6 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      * Defines the IncludeBulkData values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum IncludeBulkData {
         /**

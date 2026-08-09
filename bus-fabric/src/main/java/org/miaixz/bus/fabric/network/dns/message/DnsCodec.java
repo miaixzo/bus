@@ -38,7 +38,6 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
  * DNS wire-format decoder and encoder.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsCodec {
 
@@ -1128,7 +1127,6 @@ public final class DnsCodec {
      * Decoded question state with the next parser offset.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class QuestionState {
 
@@ -1159,7 +1157,6 @@ public final class DnsCodec {
      * Decoded record section state with the next parser offset.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class RecordSectionState {
 
@@ -1190,7 +1187,6 @@ public final class DnsCodec {
      * Decoded resource-record state with the next parser offset.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class ResourceRecordState {
 
@@ -1221,7 +1217,6 @@ public final class DnsCodec {
      * Decoded character-string state with the next parser offset.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class CharacterStringState {
 
@@ -1252,7 +1247,6 @@ public final class DnsCodec {
      * Decoded EDNS state extracted from a query.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class EdnsState {
 
@@ -1321,7 +1315,6 @@ public final class DnsCodec {
      * Decoded Dynamic Update command state.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class UpdateCommandState {
 
@@ -1352,7 +1345,6 @@ public final class DnsCodec {
      * Decoded IXFR authority state extracted from a query.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class IxfrState {
 

@@ -35,7 +35,6 @@ import org.miaixz.bus.validate.magic.annotation.Compare;
  * containing bean, not the field value itself, to access the other field for comparison.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CompareMatcher implements Matcher<Object, Compare> {
 

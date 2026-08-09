@@ -34,7 +34,6 @@ import org.miaixz.bus.logger.Logger;
  * thread-safe. Project homepage: <a href="https://github.com/mayabot/mynlp/">https://github.com/mayabot/mynlp/</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MynlpProvider implements NLPProvider {
 

@@ -31,7 +31,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
  * The milestone class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Milestone implements Serializable {
 

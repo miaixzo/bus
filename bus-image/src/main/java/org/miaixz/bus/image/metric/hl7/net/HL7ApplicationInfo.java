@@ -29,7 +29,6 @@ import org.miaixz.bus.image.metric.Connection;
  * Represents the HL7ApplicationInfo type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HL7ApplicationInfo implements Serializable {
 

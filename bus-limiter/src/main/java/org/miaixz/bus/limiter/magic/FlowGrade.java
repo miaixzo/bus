@@ -27,7 +27,6 @@ import lombok.Getter;
  * dimension of limiting, such as by thread or by QPS.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @AllArgsConstructor

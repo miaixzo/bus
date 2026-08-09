@@ -41,7 +41,6 @@ import org.miaixz.bus.logger.Logger;
  * Alipay configuration and class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AliPayBuilder {
 

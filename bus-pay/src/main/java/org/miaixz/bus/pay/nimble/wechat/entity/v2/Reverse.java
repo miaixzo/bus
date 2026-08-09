@@ -31,7 +31,6 @@ import org.miaixz.bus.pay.magic.Voucher;
  * Reverse order model. Supports: general payment order reversal, face payment order reversal.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

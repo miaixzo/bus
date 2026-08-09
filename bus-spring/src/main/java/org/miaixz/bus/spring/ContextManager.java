@@ -28,7 +28,6 @@ import org.miaixz.bus.core.xyz.ThreadKit;
  * retaining an empty object on pooled threads.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ContextManager {
 

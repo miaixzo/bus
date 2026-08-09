@@ -28,7 +28,6 @@ import org.miaixz.bus.image.nimble.geometry.Vector3;
  *
  * @param <T> numeric sample type
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract sealed class Volume<T extends Number>
         permits VolumeByte, VolumeDouble, VolumeFloat, VolumeInt, VolumeShort {

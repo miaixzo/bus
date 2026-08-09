@@ -29,7 +29,6 @@ import java.util.concurrent.Executor;
  *
  * @param <T> The type of object this handler deals with, though it is not directly used in the default methods.
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Handler<T> extends Order, Serializable {
 

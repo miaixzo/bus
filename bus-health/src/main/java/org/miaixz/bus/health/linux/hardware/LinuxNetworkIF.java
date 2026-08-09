@@ -42,7 +42,6 @@ import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
  * LinuxNetworks class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class LinuxNetworkIF extends AbstractNetworkIF {

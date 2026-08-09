@@ -31,7 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * This class is used to filter Projects when getting lists of projects for a specified user.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProjectFilter implements Serializable {
 
@@ -385,7 +384,6 @@ public class ProjectFilter implements Serializable {
     /**
      * Limit projects where the wiki checksum calculation has failed.
      *
-     * @since GitLab 11.2
      * @param wikiChecksumFailed if true, limit projects where the wiki checksum calculation has failed
      * @return the reference to this ProjectFilter instance
      */
@@ -407,7 +405,6 @@ public class ProjectFilter implements Serializable {
     /**
      * Limit projects where the repository checksum calculation has failed.
      *
-     * @since GitLab 11.2
      * @param repositoryChecksumFailed if true, limit projects where the repository checksum calculation has failed
      * @return the reference to this ProjectFilter instance
      */

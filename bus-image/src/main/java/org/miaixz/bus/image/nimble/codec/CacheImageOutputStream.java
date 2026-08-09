@@ -31,7 +31,6 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
  * Represents the CacheImageOutputStream type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class CacheImageOutputStream extends MemoryCacheImageOutputStream implements BytesWithImageImageDescriptor {
 
@@ -119,7 +118,6 @@ final class CacheImageOutputStream extends MemoryCacheImageOutputStream implemen
      * Represents the ExtFilterOutputStream type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class ExtFilterOutputStream extends FilterOutputStream {
 

@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * Raw byte codec that maps each inbound buffer to one frame.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class RawCodec implements FrameCodec {
 

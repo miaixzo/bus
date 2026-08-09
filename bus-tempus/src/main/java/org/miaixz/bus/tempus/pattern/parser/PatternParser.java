@@ -35,7 +35,6 @@ import org.miaixz.bus.tempus.pattern.matcher.PatternMatcher;
  * A parser for cron expressions that converts a cron string into a list of {@link PatternMatcher} objects.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PatternParser {
 

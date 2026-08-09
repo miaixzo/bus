@@ -33,7 +33,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * Provider Interface) to extend the logic for creating column information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ColumnSchemaBuilder extends Order {
 
@@ -58,7 +57,6 @@ public interface ColumnSchemaBuilder extends Order {
      * A factory chain interface for invoking column information creation logic in a chained manner.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     interface Chain {
 

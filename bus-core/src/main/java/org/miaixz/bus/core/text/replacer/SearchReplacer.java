@@ -30,7 +30,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * unchanged.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SearchReplacer extends StringReplacer {
 

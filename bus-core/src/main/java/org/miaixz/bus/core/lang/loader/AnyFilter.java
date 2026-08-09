@@ -28,7 +28,6 @@ import java.util.Collection;
  * {@code false}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AnyFilter extends MixFilter implements Filter {
 

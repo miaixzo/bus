@@ -37,7 +37,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface HttpStage {
 

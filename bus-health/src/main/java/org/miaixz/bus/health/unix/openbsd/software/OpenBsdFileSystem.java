@@ -42,7 +42,6 @@ import org.miaixz.bus.health.unix.openbsd.OpenBsdSysctlKit;
  * file system or other implementation specific means of file storage.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class OpenBsdFileSystem extends AbstractFileSystem {
@@ -182,7 +181,6 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
         return fsList;
     }
 
-    // Called by OpenBsdOSFileStore
     /**
      * Returns the file store matching.
      *

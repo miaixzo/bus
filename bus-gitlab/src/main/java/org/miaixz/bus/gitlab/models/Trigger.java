@@ -27,7 +27,6 @@ import java.util.Date;
  * The trigger class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Trigger implements Serializable {
 

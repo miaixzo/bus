@@ -37,7 +37,6 @@ import org.miaixz.bus.notify.nimble.AbstractProvider;
  * Yunpian SMS service provider implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class YunpianSmsProvider extends AbstractProvider<YunpianNotice, Context> {
 

@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.IteratorKit;
  *
  * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">ConcurrentLinkedHashMap Project</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Weighers {
 
@@ -181,7 +180,6 @@ public final class Weighers {
      * An {@link EntryWeigher} implementation that assigns a weight of 1 to every entry.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum SingletonEntryWeigher implements EntryWeigher<Object, Object> {
 
@@ -208,7 +206,6 @@ public final class Weighers {
      * A {@link Weigher} implementation that assigns a weight of 1 to every value.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum SingletonWeigher implements Weigher<Object> {
 
@@ -234,7 +231,6 @@ public final class Weighers {
      * A {@link Weigher} implementation for byte arrays, where the weight is the length of the array.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum ByteArrayWeigher implements Weigher<byte[]> {
 
@@ -260,7 +256,6 @@ public final class Weighers {
      * A {@link Weigher} implementation for {@link Iterable} objects, where the weight is the number of elements.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum IterableWeigher implements Weigher<Iterable<?>> {
 
@@ -289,7 +284,6 @@ public final class Weighers {
      * A {@link Weigher} implementation for {@link Collection} objects, where the weight is the number of elements.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum CollectionWeigher implements Weigher<Collection<?>> {
 
@@ -315,7 +309,6 @@ public final class Weighers {
      * A {@link Weigher} implementation for {@link List} objects, where the weight is the number of elements.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum ListWeigher implements Weigher<List<?>> {
 
@@ -341,7 +334,6 @@ public final class Weighers {
      * A {@link Weigher} implementation for {@link Set} objects, where the weight is the number of elements.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum SetWeigher implements Weigher<Set<?>> {
 
@@ -367,7 +359,6 @@ public final class Weighers {
      * A {@link Weigher} implementation for {@link Map} objects, where the weight is the number of entries.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum MapWeigher implements Weigher<Map<?, ?>> {
 
@@ -395,7 +386,6 @@ public final class Weighers {
      * @param <K> The type of keys.
      * @param <V> The type of values.
      * @author Kimi Liu
-     * @since Java 21+
      */
     static final class EntryWeigherView<K, V> implements EntryWeigher<K, V>, Serializable {
 

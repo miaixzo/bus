@@ -42,7 +42,6 @@ import org.miaixz.bus.health.linux.SysPath;
  * Sensors from WMI or Open Hardware Monitor
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class LinuxSensors extends AbstractSensors {
@@ -254,9 +253,6 @@ final class LinuxSensors extends AbstractSensors {
         }
     }
 
-    /*
-     * Iterate over all hwmon* directories and look for sensor files, e.g., /sys/class/hwmon/hwmon0/temp1_input
-     */
     /**
      * Handles the populate sensors map from hwmon operation.
      */
@@ -313,6 +309,7 @@ final class LinuxSensors extends AbstractSensors {
     /*
      * Iterate over all thermal_zone* directories and look for sensor files, e.g., /sys/class/thermal/thermal_zone0/temp
      */
+
     /**
      * Handles the populate sensors map from thermal zone operation.
      */

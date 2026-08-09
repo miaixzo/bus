@@ -48,7 +48,6 @@ import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
  * Represents a day in the Gregorian calendar.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SolarDay extends DayParts {
 

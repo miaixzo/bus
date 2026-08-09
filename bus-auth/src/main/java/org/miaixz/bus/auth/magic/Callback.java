@@ -34,7 +34,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * phase of an authentication flow.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

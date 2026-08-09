@@ -33,7 +33,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @param payload immutable snapshot of the frame bytes
  * @param length  byte count, always equal to {@code payload.size()}
  * @author Kimi Liu
- * @since Java 21+
  */
 public record Frame(ByteString payload, int length) {
 

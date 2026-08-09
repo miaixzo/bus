@@ -50,7 +50,6 @@ import org.miaixz.bus.core.lang.annotation.resolve.processor.SynthesizedAnnotati
  * original annotation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface AnnotationSynthesizer {
 

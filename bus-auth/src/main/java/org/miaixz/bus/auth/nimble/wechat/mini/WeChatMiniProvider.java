@@ -40,7 +40,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * WeChat Mini Program authorization login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WeChatMiniProvider extends AbstractProvider {
 
@@ -138,7 +137,6 @@ public class WeChatMiniProvider extends AbstractProvider {
      * Data class representing the response from WeChat Mini Program's jscode2session API.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Data
     private static class JSCode2SessionResponse {

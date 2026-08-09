@@ -21,6 +21,5 @@
  * Provides classes for parsing and analyzing entity and SQL metadata.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.mapper.parsing;

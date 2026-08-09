@@ -36,7 +36,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractSoundCard;
  * Sound card data obtained via AppleHDA kext.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class MacSoundCard extends AbstractSoundCard {

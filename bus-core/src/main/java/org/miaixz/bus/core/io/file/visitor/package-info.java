@@ -23,6 +23,5 @@
  * traversal and manipulation tasks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.io.file.visitor;

@@ -27,7 +27,6 @@ import java.util.Map;
  * Immutable value object describing store traits with enum-backed keys.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Suite {
 

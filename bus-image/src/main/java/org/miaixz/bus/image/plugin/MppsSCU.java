@@ -48,7 +48,6 @@ import org.miaixz.bus.image.metric.pdu.PresentationContext;
  * Provider (SCP).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MppsSCU {
 
@@ -727,7 +726,6 @@ public class MppsSCU {
      * A factory for creating DIMSE response handlers for MPPS N-CREATE and N-SET operations.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface RSPHandlerFactory {
 
@@ -752,7 +750,6 @@ public class MppsSCU {
      * A simple container class to hold an MPPS dataset along with its SOP Instance UID.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class MppsWithIUID {
 

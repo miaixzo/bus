@@ -25,7 +25,6 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsSnapshot;
  * External provider that supplies complete DNS runtime snapshots.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface DnsSnapshotProvider {
 

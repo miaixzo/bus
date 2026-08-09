@@ -28,7 +28,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * Wraps {@link org.apache.poi.ss.extractor.ExcelExtractor} with workbook extraction operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ExcelExtractor {
 

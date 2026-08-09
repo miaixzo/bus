@@ -21,7 +21,6 @@
  * bus.mapper
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 module bus.mapper {
 

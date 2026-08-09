@@ -32,7 +32,6 @@ import org.miaixz.bus.core.Lifecycle;
  * management APIs to be consumed by a UI dashboard.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

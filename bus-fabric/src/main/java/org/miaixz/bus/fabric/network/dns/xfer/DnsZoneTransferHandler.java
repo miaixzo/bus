@@ -47,7 +47,6 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsZoneMode;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsZoneTransferHandler {
 

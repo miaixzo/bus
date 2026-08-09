@@ -8,9 +8,12 @@
 
 ## 📖 Project Introduction
 
-**Bus Office** is an enterprise-level office document processing framework based on Apache POI. It provides comprehensive support for **Excel, Word, PDF, CSV, and OFD** formats, designed to simplify document operations and improve development efficiency.
+**Bus Office** is an enterprise-level office document processing framework based on Apache POI. It provides
+comprehensive support for **Excel, Word, PDF, CSV, and OFD** formats, designed to simplify document operations and
+improve development efficiency.
 
-The framework encapsulates the complexity of POI operations while providing powerful features like SAX-based streaming for large files, template-based generation, and style customization.
+The framework encapsulates the complexity of POI operations while providing powerful features like SAX-based streaming
+for large files, template-based generation, and style customization.
 
 -----
 
@@ -26,13 +29,14 @@ The framework encapsulates the complexity of POI operations while providing powe
 
 ### 📄 Excel Processing
 
-| Feature | Description |
-| :--- | :--- |
-| **Read Operations** | Support for reading as List, Map, Bean, or custom row handlers |
-| **Write Operations** | Standard writer for small files, BigWriter for large datasets |
-| **SAX Parsing** | Memory-efficient streaming for Excel '03 and '07 formats |
-| **Cell Styles** | Predefined style sets with customizable fonts, colors, borders |
-| **Data Validation** | Dropdown lists, number validation, date constraints |
+| Feature              | Description                                                    |
+|:---------------------|:---------------------------------------------------------------|
+| **Read Operations**  | Support for reading as List, Map, Bean, or custom row handlers |
+| **Write Operations** | Standard writer for small files, BigWriter for large datasets  |
+| **SAX Parsing**      | Memory-efficient streaming for Excel '03 and '07 formats       |
+| **Cell Styles**      | Predefined style sets with customizable fonts, colors, borders |
+| **Data Validation**  | Dropdown lists, number validation, date constraints            |
+
 * **Formula Support**: Read and write Excel formulas
 * **Merged Cells**: Handle merged regions automatically
 * **Pictures**: Insert images into Excel files
@@ -58,6 +62,7 @@ The framework encapsulates the complexity of POI operations while providing powe
 ### 📋 OFD/PDF Processing
 
 Based on the OFDRW library, providing:
+
 * **OFD to PDF Conversion**: Convert OFD documents to PDF format
 * **OFD to Images**: Export OFD pages as JPG, PNG, GIF, BMP, SVG
 * **OFD to HTML**: Convert OFD to HTML for web display
@@ -79,6 +84,7 @@ Based on the OFDRW library, providing:
 ```
 
 **Note**: This module has optional dependencies on:
+
 - `poi-ooxml` (version 5.4.1) - for Excel and Word processing
 - `ofdrw-full` (version 2.3.7) - for OFD/PDF processing
 
@@ -388,78 +394,78 @@ get("output.ofd"),
 
 #### ExcelKit
 
-| Method | Description |
-| :--- | :--- |
-| `getReader()` | Get Excel reader for standard operations |
-| `getReader(path, sheetIndex)` | Get reader for specific sheet |
-| `getWriter()` | Get standard Excel writer |
-| `getBigWriter()` | Get writer for large files |
-| `readBySax()` | Read using SAX for memory efficiency |
+| Method                        | Description                              |
+|:------------------------------|:-----------------------------------------|
+| `getReader()`                 | Get Excel reader for standard operations |
+| `getReader(path, sheetIndex)` | Get reader for specific sheet            |
+| `getWriter()`                 | Get standard Excel writer                |
+| `getBigWriter()`              | Get writer for large files               |
+| `readBySax()`                 | Read using SAX for memory efficiency     |
 
 #### ExcelReader
 
-| Method | Description |
-| :--- | :--- |
-| `read()` | Read all data as List of Lists |
-| `readAsMap()` | Read as List of Maps (header-based) |
-| `readAll(Class)` | Read as List of Beans |
+| Method                  | Description                            |
+|:------------------------|:---------------------------------------|
+| `read()`                | Read all data as List of Lists         |
+| `readAsMap()`           | Read as List of Maps (header-based)    |
+| `readAll(Class)`        | Read as List of Beans                  |
 | `read(rowCount, Class)` | Read specified number of rows as beans |
 
 #### ExcelWriter
 
-| Method | Description |
-| :--- | :--- |
-| `write(rows)` | Write List of Lists |
-| `write(bean)` | Write single bean |
-| `writeRow(row)` | Write a single row |
-| `merge(cells)` | Merge cell regions |
-| `setStyleSet()` | Set cell styles |
-| `flush(file)` | Write to file |
-| `flush(stream)` | Write to stream |
+| Method          | Description         |
+|:----------------|:--------------------|
+| `write(rows)`   | Write List of Lists |
+| `write(bean)`   | Write single bean   |
+| `writeRow(row)` | Write a single row  |
+| `merge(cells)`  | Merge cell regions  |
+| `setStyleSet()` | Set cell styles     |
+| `flush(file)`   | Write to file       |
+| `flush(stream)` | Write to stream     |
 
 ### Word API
 
 #### DocxKit
 
-| Method | Description |
-| :--- | :--- |
-| `getWriter()` | Create new Word writer |
-| `getWriter(file)` | Create writer for target file |
-| `create(file)` | Create or open XWPFDocument |
+| Method              | Description                   |
+|:--------------------|:------------------------------|
+| `getWriter()`       | Create new Word writer        |
+| `getWriter(file)`   | Create writer for target file |
+| `create(file)`      | Create or open XWPFDocument   |
 | `getType(fileName)` | Get image type from file name |
 
 #### Word07Writer
 
-| Method | Description |
-| :--- | :--- |
-| `addText(text)` | Add plain text paragraph |
-| `addText(text, style)` | Add styled text |
-| `addTable(widths)` | Add table with column widths |
-| `addPicture(file, width, height)` | Insert image |
-| `flush(file)` | Write to file |
+| Method                            | Description                  |
+|:----------------------------------|:-----------------------------|
+| `addText(text)`                   | Add plain text paragraph     |
+| `addText(text, style)`            | Add styled text              |
+| `addTable(widths)`                | Add table with column widths |
+| `addPicture(file, width, height)` | Insert image                 |
+| `flush(file)`                     | Write to file                |
 
 ### CSV API
 
 #### CsvKit
 
-| Method | Description |
-| :--- | :--- |
-| `getReader()` | Get CSV reader |
-| `getWriter(path, charset)` | Get CSV writer |
+| Method                      | Description                   |
+|:----------------------------|:------------------------------|
+| `getReader()`               | Get CSV reader                |
+| `getWriter(path, charset)`  | Get CSV writer                |
 | `getReader(reader, config)` | Get reader with custom config |
 
 ### OFD API
 
 #### DocConverter
 
-| Method | Description |
-| :--- | :--- |
-| `pdfToOfd(src, target)` | Convert PDF to OFD |
-| `odfToPdf(src, target)` | Convert OFD to PDF |
+| Method                            | Description           |
+|:----------------------------------|:----------------------|
+| `pdfToOfd(src, target)`           | Convert PDF to OFD    |
+| `odfToPdf(src, target)`           | Convert OFD to PDF    |
 | `odfToImage(src, dir, type, ppm)` | Convert OFD to images |
-| `odfToHtml(src, target)` | Convert OFD to HTML |
-| `odfToText(src, target)` | Convert OFD to text |
-| `imgToOfd(target, images)` | Convert images to OFD |
+| `odfToHtml(src, target)`          | Convert OFD to HTML   |
+| `odfToText(src, target)`          | Convert OFD to text   |
+| `imgToOfd(target, images)`        | Convert images to OFD |
 
 -----
 
@@ -706,9 +712,9 @@ CsvWriteConfig config = CsvWriteConfig.builder()
 ## 🔄 Version Compatibility
 
 | Bus Office Version | POI Version | OFDRW Version | JDK Version |
-| :--- | :--- | :--- | :--- |
-| 8.x | 5.4.1 | 2.3.7 | 17+ |
-| 7.x | 5.2.x | 2.1.x | 11+ |
+|:-------------------|:------------|:--------------|:------------|
+| 8.x                | 5.4.1       | 2.3.7         | 17+         |
+| 7.x                | 5.2.x       | 2.1.x         | 11+         |
 
 -----
 

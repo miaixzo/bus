@@ -21,6 +21,5 @@
  * Provides DB2-specific database dialect support.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.shade.screw.dialect.db2;

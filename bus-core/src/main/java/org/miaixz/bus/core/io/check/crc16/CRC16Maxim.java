@@ -27,7 +27,6 @@ import java.io.Serial;
  * with 0xFFFF. Note: 0xA001 is the bit-reversed representation of 0x8005.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CRC16Maxim extends CRC16Checksum {
 

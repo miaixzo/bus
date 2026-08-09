@@ -28,7 +28,6 @@ import org.miaixz.bus.core.codec.No128;
  *
  * @param <T> The type of the object for which the hash is to be computed.
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface Hash128<T> extends Encoder<T, Number> {

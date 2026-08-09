@@ -30,7 +30,6 @@ import java.util.Set;
  * with caution in performance-critical applications.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StackTraceCaller implements Caller, Serializable {
 

@@ -41,7 +41,6 @@ import java.lang.annotation.*;
  * handled differently.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

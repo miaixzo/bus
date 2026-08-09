@@ -28,7 +28,6 @@ import org.miaixz.bus.spring.ContextBuilder;
  * Adapts the authenticated application context to Mapper tenant isolation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ContextTenantProvider implements TenantProvider {
 

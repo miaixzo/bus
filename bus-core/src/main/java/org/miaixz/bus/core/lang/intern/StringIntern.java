@@ -25,7 +25,6 @@ package org.miaixz.bus.core.lang.intern;
  * method.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StringIntern implements Intern<String> {
 

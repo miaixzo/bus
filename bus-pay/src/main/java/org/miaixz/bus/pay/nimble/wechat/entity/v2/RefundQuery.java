@@ -31,7 +31,6 @@ import org.miaixz.bus.pay.magic.Voucher;
  * Refund Query model. Supports: general interface refund query, face payment refund query, deposit refund query.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

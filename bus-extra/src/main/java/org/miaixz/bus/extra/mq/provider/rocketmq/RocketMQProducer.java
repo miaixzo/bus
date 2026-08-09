@@ -34,7 +34,6 @@ import org.miaixz.bus.logger.Logger;
  * objects into RocketMQ {@link org.apache.rocketmq.common.message.Message} objects for transmission.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RocketMQProducer implements Producer {
 

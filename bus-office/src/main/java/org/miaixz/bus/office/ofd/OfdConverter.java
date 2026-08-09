@@ -44,7 +44,6 @@ import org.miaixz.bus.logger.Logger;
  * Documentation</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class OfdConverter {
 

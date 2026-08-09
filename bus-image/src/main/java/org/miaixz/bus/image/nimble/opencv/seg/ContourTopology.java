@@ -31,7 +31,6 @@ import org.opencv.core.Point;
  * hierarchical structure of contours in image processing.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ContourTopology {
 

@@ -30,7 +30,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * The system hook event interface.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, visible = true, property = "event_name")
 @JsonSubTypes({
@@ -116,7 +115,6 @@ public interface SystemHookEvent extends Serializable {
  * The create project system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class CreateProjectSystemHookEvent extends ProjectSystemHookEvent {
 
@@ -129,7 +127,6 @@ class CreateProjectSystemHookEvent extends ProjectSystemHookEvent {
  * The destroy project system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class DestroyProjectSystemHookEvent extends ProjectSystemHookEvent {
 
@@ -142,7 +139,6 @@ class DestroyProjectSystemHookEvent extends ProjectSystemHookEvent {
  * The rename project system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class RenameProjectSystemHookEvent extends ProjectSystemHookEvent {
 
@@ -155,7 +151,6 @@ class RenameProjectSystemHookEvent extends ProjectSystemHookEvent {
  * The transfer project system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class TransferProjectSystemHookEvent extends ProjectSystemHookEvent {
 
@@ -168,7 +163,6 @@ class TransferProjectSystemHookEvent extends ProjectSystemHookEvent {
  * The update project system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class UpdateProjectSystemHookEvent extends ProjectSystemHookEvent {
 
@@ -181,7 +175,6 @@ class UpdateProjectSystemHookEvent extends ProjectSystemHookEvent {
  * The new team member system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class NewTeamMemberSystemHookEvent extends TeamMemberSystemHookEvent {
 
@@ -194,7 +187,6 @@ class NewTeamMemberSystemHookEvent extends TeamMemberSystemHookEvent {
  * The remove team member system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class RemoveTeamMemberSystemHookEvent extends TeamMemberSystemHookEvent {
 
@@ -207,7 +199,6 @@ class RemoveTeamMemberSystemHookEvent extends TeamMemberSystemHookEvent {
  * The create user system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class CreateUserSystemHookEvent extends UserSystemHookEvent {
 
@@ -220,7 +211,6 @@ class CreateUserSystemHookEvent extends UserSystemHookEvent {
  * The destroy user system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class DestroyUserSystemHookEvent extends UserSystemHookEvent {
 
@@ -233,7 +223,6 @@ class DestroyUserSystemHookEvent extends UserSystemHookEvent {
  * The rename user system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class RenameUserSystemHookEvent extends UserSystemHookEvent {
 
@@ -246,7 +235,6 @@ class RenameUserSystemHookEvent extends UserSystemHookEvent {
  * The user failed login system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class UserFailedLoginSystemHookEvent extends UserSystemHookEvent {
 
@@ -259,7 +247,6 @@ class UserFailedLoginSystemHookEvent extends UserSystemHookEvent {
  * The create key system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class CreateKeySystemHookEvent extends KeySystemHookEvent {
 
@@ -272,7 +259,6 @@ class CreateKeySystemHookEvent extends KeySystemHookEvent {
  * The destroy key system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class DestroyKeySystemHookEvent extends KeySystemHookEvent {
 
@@ -285,7 +271,6 @@ class DestroyKeySystemHookEvent extends KeySystemHookEvent {
  * The create group system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class CreateGroupSystemHookEvent extends GroupSystemHookEvent {
 
@@ -298,7 +283,6 @@ class CreateGroupSystemHookEvent extends GroupSystemHookEvent {
  * The destroy group system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class DestroyGroupSystemHookEvent extends GroupSystemHookEvent {
 
@@ -311,7 +295,6 @@ class DestroyGroupSystemHookEvent extends GroupSystemHookEvent {
  * The rename group system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class RenameGroupSystemHookEvent extends GroupSystemHookEvent {
 
@@ -324,7 +307,6 @@ class RenameGroupSystemHookEvent extends GroupSystemHookEvent {
  * The new group member system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class NewGroupMemberSystemHookEvent extends GroupMemberSystemHookEvent {
 
@@ -337,7 +319,6 @@ class NewGroupMemberSystemHookEvent extends GroupMemberSystemHookEvent {
  * The remove group member system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class RemoveGroupMemberSystemHookEvent extends GroupMemberSystemHookEvent {
 

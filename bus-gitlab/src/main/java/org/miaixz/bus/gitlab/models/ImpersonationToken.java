@@ -36,7 +36,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
  * The impersonation token class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImpersonationToken implements Serializable {
 
@@ -201,7 +200,6 @@ public class ImpersonationToken implements Serializable {
      * Enum to specify the scope of an ImpersonationToken.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Scope {
 

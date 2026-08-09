@@ -27,7 +27,6 @@ import org.miaixz.bus.tempus.Repertoire;
  * Task table factory class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CrontabFactory {
 

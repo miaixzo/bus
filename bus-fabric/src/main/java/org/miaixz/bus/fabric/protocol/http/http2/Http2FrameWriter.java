@@ -37,7 +37,6 @@ import org.miaixz.bus.fabric.Builder;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class Http2FrameWriter implements AutoCloseable {
 

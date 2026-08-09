@@ -37,7 +37,6 @@ import org.miaixz.bus.image.galaxy.data.Sequence;
  * Represents the ICCProfile type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ICCProfile {
 
@@ -111,7 +110,6 @@ public final class ICCProfile {
      * Defines the Option values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Option {
 
@@ -256,7 +254,6 @@ public final class ICCProfile {
      * Defines the ColorSpaceFactory contract.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FunctionalInterface
     public interface ColorSpaceFactory {

@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit;
  * for wrapping an existing timeout and potentially changing its behavior or for providing a mutable timeout reference.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AssignTimeout extends Timeout {
 

@@ -44,7 +44,6 @@ import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
  * @param origin           the overlay origin [row, column] (1-based)
  * @param data             the overlay pixel data
  * @author Kimi Liu
- * @since Java 21+
  */
 public record OverlayData(int groupOffset, int rows, int columns, int imageFrameOrigin, int framesInOverlay,
         int[] origin, byte[] data) {

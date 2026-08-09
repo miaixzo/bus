@@ -46,7 +46,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Registry for API service definitions and runtime instances.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Registry<ApiAssets> {
 

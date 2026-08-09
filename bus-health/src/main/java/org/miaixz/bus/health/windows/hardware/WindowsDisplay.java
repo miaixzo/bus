@@ -35,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
  * A Display
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class WindowsDisplay extends AbstractDisplay {

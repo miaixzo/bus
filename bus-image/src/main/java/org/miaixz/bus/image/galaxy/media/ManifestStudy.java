@@ -40,7 +40,6 @@ import org.miaixz.bus.image.Tag;
  * Study entry in a DICOM manifest.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ManifestStudy implements ManifestXml, Comparable<ManifestStudy> {
 

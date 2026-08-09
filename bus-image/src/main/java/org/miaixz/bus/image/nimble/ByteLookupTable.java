@@ -26,7 +26,6 @@ package org.miaixz.bus.image.nimble;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ByteLookupTable extends LookupTable {
 

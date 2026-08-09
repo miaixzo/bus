@@ -25,7 +25,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
  * Event source facade backed by the current SSE session model.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface EventSource {
 
@@ -45,7 +44,6 @@ public interface EventSource {
      * Factory contract for event source instances.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     interface Factory {
 

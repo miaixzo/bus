@@ -27,7 +27,6 @@ import java.util.TimeZone;
  * Defines the SequenceValueType values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 enum SequenceValueType implements ValueType {
 

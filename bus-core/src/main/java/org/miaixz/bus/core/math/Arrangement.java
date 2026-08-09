@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Arrangement implements Serializable {
 
@@ -244,7 +243,6 @@ public class Arrangement implements Serializable {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class ArrangementIterator implements Iterator<String[]> {
 

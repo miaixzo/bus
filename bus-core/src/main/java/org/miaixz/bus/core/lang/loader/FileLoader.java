@@ -36,7 +36,6 @@ import org.miaixz.bus.core.net.url.UrlDecoder;
  * A resource loader for files within a file system directory.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FileLoader extends ResourceLoader implements Loader {
 
@@ -104,7 +103,6 @@ public class FileLoader extends ResourceLoader implements Loader {
      * An {@link Enumeration} implementation for iterating over resources within a file system directory.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class Enumerator extends ResourceEnumerator implements Enumeration<Resource> {
 

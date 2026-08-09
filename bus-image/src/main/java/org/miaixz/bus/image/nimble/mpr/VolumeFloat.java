@@ -25,7 +25,6 @@ import java.util.Arrays;
  * Float-backed MPR volume.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class VolumeFloat extends Volume<Float> {
 

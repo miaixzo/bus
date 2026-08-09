@@ -37,7 +37,6 @@ import org.miaixz.bus.health.builtin.software.OSDesktopWindow;
  * Queries X11 windows.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Xwininfo {

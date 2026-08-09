@@ -25,7 +25,6 @@ import java.nio.ByteBuffer;
  * Represents the MP4FileType type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MP4FileType {
 

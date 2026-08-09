@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @see <a href="http://www.uni-koeln.de/phil-fak/phonetik/Lehre/MA-Arbeiten/magister_wilz.pdf">Martin Wilz</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Phonem implements FuzzyString {
 

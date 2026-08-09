@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractBanner implements Banner {
 

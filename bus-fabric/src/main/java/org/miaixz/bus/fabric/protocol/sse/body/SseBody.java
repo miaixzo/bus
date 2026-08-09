@@ -39,7 +39,6 @@ import org.miaixz.bus.fabric.protocol.sse.event.SseReader;
  * SSE response body representing a {@code text/event-stream} payload.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class SseBody implements ResponseBody, ProgressBody {
 

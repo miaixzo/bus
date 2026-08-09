@@ -37,7 +37,6 @@ import org.miaixz.bus.core.basic.entity.Namespace;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

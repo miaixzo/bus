@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The time stats class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TimeStats implements Serializable {
 

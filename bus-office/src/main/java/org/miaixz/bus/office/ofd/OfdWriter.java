@@ -38,7 +38,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * OFD file generator.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class OfdWriter implements Serializable, Closeable {
 

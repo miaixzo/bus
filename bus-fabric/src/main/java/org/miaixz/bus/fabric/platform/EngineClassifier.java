@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Browser engine classifier parsed from a User-Agent value.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class EngineClassifier {
 

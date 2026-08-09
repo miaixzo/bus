@@ -49,7 +49,6 @@ import org.miaixz.bus.logger.Logger;
  * GraphicsCard instances.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class NvmlKit {
@@ -62,7 +61,6 @@ public final class NvmlKit {
      * The Holder class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class Holder {
 

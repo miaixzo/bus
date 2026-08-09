@@ -32,7 +32,6 @@ import org.miaixz.bus.logger.Logger;
  * Owns closeable resources and releases them in reverse registration order.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ResourceScope implements AutoCloseable {
 

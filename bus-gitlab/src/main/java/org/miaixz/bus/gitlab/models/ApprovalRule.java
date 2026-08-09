@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The approval rule class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ApprovalRule implements Serializable {
 

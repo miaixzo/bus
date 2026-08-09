@@ -29,7 +29,6 @@ import org.miaixz.bus.sensitive.Sanitizer;
  * Binds one application-context-scoped sanitizer to the logger executor for the context lifecycle.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SensitiveBinding implements AutoCloseable {
 

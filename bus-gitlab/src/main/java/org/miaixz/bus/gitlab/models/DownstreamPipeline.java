@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The downstream pipeline class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DownstreamPipeline implements Serializable {
 

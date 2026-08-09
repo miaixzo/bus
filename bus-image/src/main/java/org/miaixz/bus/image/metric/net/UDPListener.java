@@ -30,7 +30,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the UDPListener type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UDPListener implements Listener {
 

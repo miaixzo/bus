@@ -28,7 +28,6 @@ import org.miaixz.bus.core.io.source.BufferSource;
  * A selector that stores byte string candidates for fast {@link BufferSource#select} matching.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ByteSelector extends AbstractList<ByteString> implements RandomAccess {
 

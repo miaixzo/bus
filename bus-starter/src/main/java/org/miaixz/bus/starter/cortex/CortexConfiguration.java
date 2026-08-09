@@ -95,7 +95,6 @@ import org.miaixz.bus.starter.annotation.EnableCortex;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(CortexProperties.class)
 @Configuration(proxyBeanMethods = false)
@@ -711,7 +710,6 @@ public class CortexConfiguration {
      *
      * @param <T> target asset subtype
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class TypedRegistryStore<T extends Assets> implements RegistryStore<T> {
 

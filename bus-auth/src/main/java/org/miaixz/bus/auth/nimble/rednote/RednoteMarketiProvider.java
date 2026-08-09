@@ -41,7 +41,6 @@ import org.miaixz.bus.logger.Logger;
  * Xiaohongshu Commercial Platform login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RednoteMarketiProvider extends AbstractProvider {
 

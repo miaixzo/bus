@@ -24,6 +24,5 @@
  * issues, merge requests, pipelines, and other resources returned by the GitLab API.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.gitlab.models;

@@ -37,7 +37,6 @@ import org.miaixz.bus.starter.mapper.MapperConfiguration;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

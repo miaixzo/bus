@@ -27,7 +27,6 @@ import java.io.Serializable;
  * before they cross the FTP abstraction boundary.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FtpEntry implements Serializable {
 

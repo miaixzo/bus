@@ -28,7 +28,6 @@ import java.util.TimeZone;
  * Abstract base class for date information, providing date format, time zone, and locale information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SimpleDatePrinter implements DatePrinter, Serializable {
 

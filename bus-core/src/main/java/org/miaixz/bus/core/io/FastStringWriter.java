@@ -26,7 +26,6 @@ import java.io.Writer;
  * {@link java.io.StringWriter} that offers better performance for single-threaded operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class FastStringWriter extends Writer {
 

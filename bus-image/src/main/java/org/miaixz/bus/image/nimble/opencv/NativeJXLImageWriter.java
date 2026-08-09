@@ -34,7 +34,6 @@ import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
  * Native OpenCV JPEG XL image writer.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NativeJXLImageWriter extends AbstractNativeImageWriter {
 

@@ -21,6 +21,5 @@
  * Provides information about Software and OS on Solaris
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.health.unix.solaris.software;

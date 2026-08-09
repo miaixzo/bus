@@ -27,7 +27,6 @@ import java.util.TimeZone;
  * Defines the ValueType contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 interface ValueType {
 

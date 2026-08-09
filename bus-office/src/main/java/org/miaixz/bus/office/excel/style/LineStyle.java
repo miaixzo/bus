@@ -26,7 +26,6 @@ import org.apache.poi.hssf.usermodel.HSSFShape;
  *
  * @see HSSFShape
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum LineStyle {
 

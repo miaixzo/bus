@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The uploaded by user class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UploadedByUser implements Serializable {
 

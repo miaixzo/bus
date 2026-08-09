@@ -37,7 +37,6 @@ import org.miaixz.bus.logger.Logger;
  * Decodes the related value. Provides DICOM processing details.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SpecificCharacterSet {
 
@@ -445,7 +444,6 @@ public class SpecificCharacterSet {
      * Codec enumeration defining various character sets supported in DICOM
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum Codec {
 
@@ -823,7 +821,6 @@ public class SpecificCharacterSet {
      * G0/G1 Character Set Range Enumeration
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum G0G1 {
         /**
@@ -845,7 +842,6 @@ public class SpecificCharacterSet {
      * Encoder class for encoding characters into bytes
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class Encoder {
 
@@ -946,7 +942,6 @@ public class SpecificCharacterSet {
      * Provides DICOM processing details.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class ISO2022 extends SpecificCharacterSet {
 

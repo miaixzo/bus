@@ -27,7 +27,6 @@ import org.miaixz.bus.image.galaxy.data.VR;
  * Represents the PrivateElementDictionary type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PrivateElementDictionary extends ElementDictionary {
 

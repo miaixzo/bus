@@ -43,7 +43,6 @@ import org.miaixz.bus.pay.nimble.wechat.WechatPayProvider;
  * dynamic registration and retrieval of payment providers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PayService implements AutoCloseable {
 

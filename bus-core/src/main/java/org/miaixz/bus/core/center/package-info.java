@@ -24,6 +24,5 @@
  * performance by offering efficient and reusable solutions for a wide range of applications.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.center;

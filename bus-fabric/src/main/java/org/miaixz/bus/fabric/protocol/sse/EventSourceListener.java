@@ -25,7 +25,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  * Listener for event source lifecycle and event callbacks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class EventSourceListener {
 

@@ -40,7 +40,6 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  * EventSource factory backed by {@link SseX}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class EventSourceFactory implements EventSource.Factory, AutoCloseable {
 

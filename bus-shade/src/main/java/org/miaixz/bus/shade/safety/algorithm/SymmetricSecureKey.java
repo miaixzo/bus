@@ -26,7 +26,6 @@ import java.io.Serial;
  * holds the secret key and initialization vector (IV) for symmetric encryption schemes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class SymmetricSecureKey extends SecureKey implements SymmetricKey {
 

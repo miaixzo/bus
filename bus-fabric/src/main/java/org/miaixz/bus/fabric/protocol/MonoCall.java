@@ -52,7 +52,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  *
  * @param <T> result type
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class MonoCall<T> implements Call<T> {
 

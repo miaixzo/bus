@@ -27,7 +27,6 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  * Defines the DimseRSP contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface DimseRSP {
 

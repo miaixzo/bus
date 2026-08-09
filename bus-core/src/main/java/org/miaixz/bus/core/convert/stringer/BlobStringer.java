@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * Converts a {@link Blob} to a String.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BlobStringer implements FunctionX<Object, String> {
 

@@ -27,7 +27,6 @@ import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
  * {@link Loops} for cyclical operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Fortune extends Loops {
 

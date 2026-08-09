@@ -39,7 +39,6 @@ import org.miaixz.bus.core.net.url.UrlEncoder;
  * A resource loader for JAR files.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JarLoader extends ResourceLoader implements Loader {
 
@@ -110,7 +109,6 @@ public class JarLoader extends ResourceLoader implements Loader {
      * An {@link Enumeration} implementation for iterating over resources within a JAR file.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class Enumerator extends ResourceEnumerator implements Enumeration<Resource> {
 

@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The application class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Application implements Serializable {
 

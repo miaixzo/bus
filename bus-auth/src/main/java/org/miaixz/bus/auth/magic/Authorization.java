@@ -32,7 +32,6 @@ import lombok.experimental.SuperBuilder;
  * during the authentication process.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

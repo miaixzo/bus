@@ -23,7 +23,6 @@ package org.miaixz.bus.fabric.network.dns.forward;
  * Transport used when forwarding DNS queries to an upstream server.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum DnsUpstreamTransport {
 

@@ -36,7 +36,6 @@ import org.miaixz.bus.starter.annotation.EnableNotify;
  * message notification services.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(value = { NotifyProperties.class })
 @Configuration(proxyBeanMethods = false)

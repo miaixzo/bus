@@ -37,7 +37,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Immutable Cortex starter configuration.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

@@ -41,7 +41,6 @@ import reactor.core.publisher.Flux;
  * The relay never aggregates response data and therefore preserves downstream backpressure.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class StreamingRelay {
 

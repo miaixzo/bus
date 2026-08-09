@@ -39,7 +39,6 @@ import org.miaixz.bus.starter.annotation.EnableSensitive;
  * configuration creates request and response advice only for Spring MVC applications.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(value = { SensitiveProperties.class })
 @Configuration(proxyBeanMethods = false)

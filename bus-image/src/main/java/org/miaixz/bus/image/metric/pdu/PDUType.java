@@ -23,7 +23,6 @@ package org.miaixz.bus.image.metric.pdu;
  * Represents the PDUType type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class PDUType {
 

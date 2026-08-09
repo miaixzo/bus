@@ -40,7 +40,6 @@ import org.miaixz.bus.fabric.codec.body.ProgressBody;
  * WebSocket message body that preserves text or binary message kind.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class WebSocketBody implements MessageBody, ProgressBody {
 

@@ -28,7 +28,6 @@ import org.miaixz.bus.fabric.Timeout;
  * Protocol-neutral connector contract for opening network connections.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Connector extends AutoCloseable {
 

@@ -30,7 +30,6 @@ import org.miaixz.bus.core.lang.Normal;
  * This class holds all necessary connection parameters and settings for storage providers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

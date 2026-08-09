@@ -41,7 +41,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TenantBuilder {
 

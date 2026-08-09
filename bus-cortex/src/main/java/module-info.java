@@ -25,7 +25,6 @@
  * CacheX abstraction (Memory/Redis/JDBC).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 module bus.cortex {
 

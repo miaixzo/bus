@@ -45,7 +45,6 @@ import org.miaixz.bus.logger.Logger;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AuditBuilder {
 

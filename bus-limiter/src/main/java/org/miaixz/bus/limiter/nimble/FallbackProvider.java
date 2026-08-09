@@ -36,7 +36,6 @@ import org.miaixz.bus.logger.Logger;
  * invoking a fallback method when the primary method execution is blocked or fails due to limiting rules.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FallbackProvider implements Provider {
 

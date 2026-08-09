@@ -25,7 +25,6 @@ import org.springframework.core.env.Environment;
  * Resolves placeholders from a supplied Spring environment.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DefaultPlaceholderBinder implements PlaceholderBinder {
 

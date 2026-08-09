@@ -29,7 +29,6 @@ import org.miaixz.bus.notify.magic.Notice;
  * Notice for China Telecom Cloud (CTYUN) SMS service.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

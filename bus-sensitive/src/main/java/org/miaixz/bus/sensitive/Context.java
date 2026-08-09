@@ -34,7 +34,6 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
  * field, and annotations being processed.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

@@ -29,7 +29,6 @@ import org.miaixz.bus.starter.pay.PayConfiguration;
  * Enables payment configuration regardless of the value assigned to {@code bus.pay.enabled}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

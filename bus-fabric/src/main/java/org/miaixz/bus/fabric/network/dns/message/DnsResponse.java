@@ -28,7 +28,6 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecord;
  * DNS response model used by the wire encoder.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsResponse {
 

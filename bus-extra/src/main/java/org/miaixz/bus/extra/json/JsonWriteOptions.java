@@ -28,7 +28,6 @@ import java.util.Objects;
  * @param writeNulls     whether null-valued properties should be written
  * @param propertyFilter annotation-aware callback controlling property inclusion
  * @author Kimi Liu
- * @since Java 21+
  */
 public record JsonWriteOptions(String dateFormat, boolean writeNulls, JsonPropertyFilter propertyFilter) {
 

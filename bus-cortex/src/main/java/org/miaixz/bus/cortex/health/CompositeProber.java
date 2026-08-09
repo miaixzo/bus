@@ -29,7 +29,6 @@ import org.miaixz.bus.cortex.Status;
  * Composite prober that aggregates multiple probers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CompositeProber implements Prober {
 

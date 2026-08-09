@@ -34,7 +34,6 @@ import org.miaixz.bus.health.builtin.hardware.HWPartition;
  * Queries iostat
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Prtvtoc {

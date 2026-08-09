@@ -41,7 +41,6 @@ import org.miaixz.bus.gitlab.models.*;
  * @see <a href="https://docs.gitlab.com/ee/api/epics.html">GitLab Epics API Documentaion</a>
  * @see <a href="https://docs.gitlab.com/ee/api/epic_issues.html">GitLab Epic Issues API Documentation</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EpicsApi extends AbstractApi {
 

@@ -21,6 +21,5 @@
  * Provides custom stream implementations for handling encrypted JARs, including streams that prevent closing.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.shade.safety.streams;

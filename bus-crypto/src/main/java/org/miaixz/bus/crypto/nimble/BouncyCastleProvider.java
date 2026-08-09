@@ -28,7 +28,6 @@ package org.miaixz.bus.crypto.nimble;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface BouncyCastleProvider {
 

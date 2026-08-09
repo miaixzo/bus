@@ -28,7 +28,6 @@ import org.miaixz.bus.logger.Logger;
  * @param scheduler the scheduler managing task execution
  * @param millis    the current time in milliseconds to check for task matches
  * @author Kimi Liu
- * @since Java 21+
  */
 public record Launcher(Scheduler scheduler, long millis) implements Runnable {
 

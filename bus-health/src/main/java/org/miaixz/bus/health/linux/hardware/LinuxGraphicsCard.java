@@ -43,7 +43,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstraction
  * Graphics card info obtained by lshw
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class LinuxGraphicsCard extends AbstractGraphicsCard {
@@ -76,7 +75,6 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
      * Parsed graphics card attributes used to construct graphics card instances.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     static final class Attrs {
 
@@ -261,7 +259,6 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         return cardList;
     }
 
-    // Faster, use as primary
     /**
      * Returns the graphics cards from lspci.
      *
@@ -403,6 +400,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
     }
 
     // Slower, use as backup
+
     /**
      * Returns the graphics cards from lshw.
      *

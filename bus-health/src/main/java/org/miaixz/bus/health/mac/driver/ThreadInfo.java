@@ -36,7 +36,6 @@ import org.miaixz.bus.health.builtin.software.OSProcess;
  * Queries threads for a process on macOS.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class ThreadInfo {
@@ -87,7 +86,6 @@ public final class ThreadInfo {
      * Class to encapsulate mach thread information.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Immutable
     public static class ThreadStats {

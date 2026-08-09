@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The changelog payload class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ChangelogPayload implements Serializable {
 

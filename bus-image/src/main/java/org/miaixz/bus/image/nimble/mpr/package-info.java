@@ -21,6 +21,5 @@
  * Multi-planar reconstruction and intensity projection primitives.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.nimble.mpr;

@@ -42,7 +42,6 @@ import org.miaixz.bus.logger.Logger;
  *
  * @see <a href="https://docs.gitlab.com/ce/api/users.html">Users API at GitLab</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UserApi extends AbstractApi {
 
@@ -1527,7 +1526,6 @@ public class UserApi extends AbstractApi {
      * @param userId the ID of the user to get the memberships for
      * @return the list of memberships of the given user
      * @throws RelevantException if any exception occurs
-     * @since GitLab 12.8
      */
     public List<Membership> getMemberships(Long userId) throws RelevantException {
         return getMemberships(userId, getDefaultPerPage()).all();
@@ -1546,7 +1544,6 @@ public class UserApi extends AbstractApi {
      * @param itemsPerPage the number of Membership instances that will be fetched per page
      * @return a Pager of user's memberships
      * @throws RelevantException if any exception occurs
-     * @since GitLab 12.8
      */
     public Pager<Membership> getMemberships(Long userId, int itemsPerPage) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm();
@@ -1578,7 +1575,6 @@ public class UserApi extends AbstractApi {
      *
      * @param userId the ID of the user to activate
      * @throws RelevantException if any exception occurs.
-     * @since GitLab 12.4
      */
     public void activateUser(Long userId) throws RelevantException {
         if (userId == null) {
@@ -1596,7 +1592,6 @@ public class UserApi extends AbstractApi {
      *
      * @param userId the ID of the user to deactivate
      * @throws RelevantException if any exception occurs.
-     * @since GitLab 12.4
      */
     public void deactivateUser(Long userId) throws RelevantException {
         if (userId == null) {

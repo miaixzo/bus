@@ -29,7 +29,6 @@ import org.miaixz.bus.shade.safety.complex.AntComplex;
  * extends {@link AntComplex} and provides a way to apply Ant patterns to file names.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DirAntComplex extends AntComplex<File> implements Complex<File> {
 

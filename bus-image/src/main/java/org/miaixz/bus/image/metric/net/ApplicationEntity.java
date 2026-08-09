@@ -42,7 +42,6 @@ import org.miaixz.bus.logger.Logger;
  * Provides DICOM processing details. Provides DICOM processing details.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ApplicationEntity implements Serializable {
 

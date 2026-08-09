@@ -29,7 +29,6 @@ import java.util.*;
  * manipulation while supporting hierarchical structures through child segments.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Segment extends ArrayList<Point2D> {
 

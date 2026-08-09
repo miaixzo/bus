@@ -25,7 +25,6 @@ import java.io.Serial;
  * The author class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Author extends AbstractUser<Author> {
 

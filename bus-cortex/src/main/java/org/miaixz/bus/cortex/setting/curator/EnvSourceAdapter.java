@@ -26,7 +26,6 @@ import org.miaixz.bus.cortex.setting.item.Item;
  * Environment-variable resolver.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EnvSourceAdapter implements ItemSourceAdapter {
 

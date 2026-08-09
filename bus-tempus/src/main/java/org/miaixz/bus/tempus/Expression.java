@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.DateKit;
  * complex time combinations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Expression implements Serializable, Cloneable {
 
@@ -1697,7 +1696,6 @@ public final class Expression implements Serializable, Cloneable {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class ValueSet {
 

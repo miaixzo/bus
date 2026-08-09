@@ -30,7 +30,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The deployment class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Deployment implements Serializable {
 

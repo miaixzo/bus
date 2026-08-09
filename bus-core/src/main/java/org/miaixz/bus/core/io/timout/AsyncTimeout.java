@@ -35,7 +35,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * timeouts where they are not natively supported, such as for blocking socket operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AsyncTimeout extends Timeout {
 
@@ -167,7 +166,7 @@ public class AsyncTimeout extends Timeout {
             long startNanos = System.nanoTime();
             AsyncTimeout.class.wait(IDLE_TIMEOUT_MILLIS);
             return head.next == null && (System.nanoTime() - startNanos) >= IDLE_TIMEOUT_NANOS ? head // Idle timeout
-                                                                                                      // passed
+                    // passed
                     : null; // Something has changed
         }
 
@@ -463,7 +462,6 @@ public class AsyncTimeout extends Timeout {
      * when their timeout expires.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class Watchdog extends Thread {
 

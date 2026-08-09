@@ -42,7 +42,6 @@ import org.miaixz.bus.health.linux.driver.proc.ProcessStat;
  * Internet Protocol Stats implementation
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
@@ -73,7 +72,6 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
      * The TcpStat enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum TcpStat {
         RtoAlgorithm, RtoMin, RtoMax, MaxConn, ActiveOpens, PassiveOpens, AttemptFails, EstabResets, CurrEstab, InSegs,
@@ -85,7 +83,6 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
      * The UdpStat enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum UdpStat {
         OutDatagrams, InDatagrams, NoPorts, InErrors, RcvbufErrors, SndbufErrors, InCsumErrors, IgnoredMulti, MemErrors;

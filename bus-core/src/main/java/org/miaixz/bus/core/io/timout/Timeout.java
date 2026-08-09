@@ -30,7 +30,6 @@ import java.util.concurrent.TimeUnit;
  * should be retried later. If writing to a sink times out, the same rule applies: close the sink and retry later.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Timeout {
 

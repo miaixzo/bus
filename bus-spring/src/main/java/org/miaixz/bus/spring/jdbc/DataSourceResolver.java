@@ -41,7 +41,6 @@ import org.miaixz.bus.logger.Logger;
  * routes. Prefix ordering and default pool selection remain responsibilities of the consuming integration.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DataSourceResolver {
 

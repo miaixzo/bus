@@ -39,7 +39,6 @@ import org.miaixz.bus.health.unix.freebsd.driver.disk.GeomPartList;
  * FreeBSD hard disk implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {

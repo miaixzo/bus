@@ -31,7 +31,6 @@ import org.miaixz.bus.image.nimble.ImageMetaData;
  * Represents the ImageFileInputStream type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageFileInputStream extends ImageInputStream implements ImageReaderDescriptor {
 

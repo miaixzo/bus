@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The artifact class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Artifact implements Serializable {
 
@@ -139,7 +138,6 @@ public class Artifact implements Serializable {
      * The file type enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum FileType {
 

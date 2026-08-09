@@ -26,7 +26,6 @@ import java.util.Objects;
  * Utilities for resolving DICOM image orientation from direction cosine vectors.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ImageOrientation {
 
@@ -46,7 +45,6 @@ public final class ImageOrientation {
      * Anatomical planes.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Plan {
 
@@ -282,7 +280,6 @@ public final class ImageOrientation {
      * Defines the ColorPairType values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum ColorPairType {
         /**

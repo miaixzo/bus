@@ -40,7 +40,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * methods for reading various data types and performing operations like searching and skipping bytes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RealSource implements BufferSource {
 

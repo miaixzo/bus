@@ -27,7 +27,6 @@ import java.io.Serial;
  * 0x0000. Note: 0xA001 is the bit-reversed representation of 0x8005.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CRC16IBM extends CRC16Checksum {
 

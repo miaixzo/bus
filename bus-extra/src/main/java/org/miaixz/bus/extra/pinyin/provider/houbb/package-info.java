@@ -36,6 +36,5 @@
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.extra.pinyin.provider.houbb;

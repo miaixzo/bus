@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JPinyinProvider implements PinyinProvider {
 
@@ -61,7 +60,7 @@ public class JPinyinProvider implements PinyinProvider {
     /**
      * Gets the pinyin of a single character. This method is designed to be overridden by subclasses for custom pinyin
      * conversion.
-     *
+     * <p>
      * and returns the first result. Subclasses may override to add custom conversion logic.
      *
      * @param c    The character to convert.
@@ -77,7 +76,7 @@ public class JPinyinProvider implements PinyinProvider {
 
     /**
      * Gets the pinyin of a string. This method is designed to be overridden by subclasses for custom pinyin conversion.
-     *
+     * <p>
      * Subclasses may override to add custom conversion logic or error handling.
      *
      * @param str       The string to convert.

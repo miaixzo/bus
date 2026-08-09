@@ -27,7 +27,6 @@ import java.util.function.IntBinaryOperator;
  * Fork/join pixel copy task used by MPR slice extraction.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class CopyPixelsTask extends RecursiveAction {
 

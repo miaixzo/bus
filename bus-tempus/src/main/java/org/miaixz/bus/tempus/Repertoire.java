@@ -39,7 +39,6 @@ import org.miaixz.bus.tempus.pattern.CronPattern;
  * executes the corresponding task. Read-write locks are used to ensure thread safety for adding and removing tasks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class Repertoire implements Serializable {
 

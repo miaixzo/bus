@@ -21,6 +21,5 @@
  * Provides SqlServer-specific dialect implementations for database metadata retrieval.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.shade.screw.dialect.sqlserver;

@@ -39,7 +39,6 @@ import org.miaixz.bus.image.Tag;
  * Patient entry in a DICOM manifest.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ManifestPatient implements ManifestXml, Comparable<ManifestPatient> {
 

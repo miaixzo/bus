@@ -21,6 +21,5 @@
  * This package contains the specific API endpoints for JD Pay.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.pay.nimble.jdpay.api;

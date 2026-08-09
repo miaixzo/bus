@@ -41,7 +41,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Proginn (Programmer's Inn) login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProginnProvider extends AbstractProvider {
 

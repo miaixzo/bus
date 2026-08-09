@@ -26,6 +26,5 @@
  * it can evolve into release-publishing workflows.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.version;

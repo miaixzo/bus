@@ -32,7 +32,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Immutable bounded request and response body-cache options.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

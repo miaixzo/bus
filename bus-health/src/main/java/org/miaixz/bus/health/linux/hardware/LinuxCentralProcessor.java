@@ -60,7 +60,6 @@ import org.miaixz.bus.logger.Logger;
  * A CPU as defined in Linux /proc.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class LinuxCentralProcessor extends AbstractCentralProcessor {

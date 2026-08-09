@@ -42,7 +42,6 @@ import org.miaixz.bus.fabric.runtime.resource.ResourceScope;
  * Internal lifecycle scope that owns state, cancellation, resources, listener callbacks, and observation events.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class LifecycleScope {
 
@@ -675,7 +674,6 @@ public final class LifecycleScope {
      * Internal no-operation listener.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum NoopListener implements Listener<Object> {
 

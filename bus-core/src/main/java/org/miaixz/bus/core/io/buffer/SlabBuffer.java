@@ -31,7 +31,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * Fixed-size slab that leases reusable {@link SliceBuffer} views from one backing {@link ByteBuffer}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class SlabBuffer {
 

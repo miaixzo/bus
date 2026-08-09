@@ -30,7 +30,6 @@ import org.miaixz.bus.cortex.Trait;
  * Durable store contract for setting binding rows.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface BindingStore {
 

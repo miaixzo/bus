@@ -32,7 +32,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the AbstractImageService type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractImageService implements ImageService {
 

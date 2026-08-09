@@ -39,7 +39,6 @@ import org.miaixz.bus.core.xyz.*;
  * getter interfaces for retrieving typed and grouped values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractSetting
         implements TypeGetter<CharSequence>, GroupedTypeGetter<CharSequence, CharSequence>, Serializable {

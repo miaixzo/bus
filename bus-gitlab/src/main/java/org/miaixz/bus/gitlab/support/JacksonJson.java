@@ -47,7 +47,6 @@ import tools.jackson.databind.type.CollectionType;
  * Jackson JSON Configuration and class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Produces(MediaType.APPLICATION_JSON)
 public class JacksonJson implements ContextResolver<ObjectMapper> {
@@ -286,7 +285,6 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * JsonSerializer for serializing dates s yyyy-mm-dd in UTC timezone.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class DateOnlySerializer extends ValueSerializer<Date> {
 
@@ -311,7 +309,6 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * JsonSerializer for serializing ISO8601 formatted dates.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class JsonDateSerializer extends ValueSerializer<Date> {
 
@@ -336,7 +333,6 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * JsonDeserializer for deserializing ISO8601 formatted dates.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class JsonDateDeserializer extends ValueDeserializer<Date> {
 
@@ -372,7 +368,6 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * Serializer for the odd User instances in the "approved_by" array in the merge_request JSON.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class UserListSerializer extends ValueSerializer<List<User>> {
 
@@ -405,7 +400,6 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * Deserializer for the odd User instances in the "approved_by" array in the merge_request JSON.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class UserListDeserializer extends ValueDeserializer<List<User>> {
 
@@ -465,7 +459,6 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * Holds the lazily initialized, thread-safe JacksonJson singleton.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class JacksonJsonInstanceHolder {
 

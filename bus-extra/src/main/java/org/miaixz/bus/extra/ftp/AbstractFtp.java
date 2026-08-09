@@ -36,7 +36,6 @@ import org.miaixz.bus.logger.Logger;
  * implementations, handling tasks like path existence checks, directory creation, and robust file downloading.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractFtp implements Ftp {
 

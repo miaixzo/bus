@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_OCS_BEAM_DISPLAY_INFO;
  * Represents the PrivateTag type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PrivateTag {
 

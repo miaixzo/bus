@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  *
  * @param <T> the t type.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTask {
 
@@ -510,7 +509,6 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
      * Represents the CStoreRSPHandler type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private final class CStoreRSPHandler extends DimseRSPHandler {
 

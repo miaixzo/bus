@@ -25,7 +25,6 @@ package org.miaixz.bus.core.center.map.concurrent;
  *
  * @param <V> The type of the value to be weighed.
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Weigher<V> {
 

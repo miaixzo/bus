@@ -28,7 +28,6 @@ import org.miaixz.bus.core.center.function.SupplierX;
  * properties, and comments.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class INI {
 

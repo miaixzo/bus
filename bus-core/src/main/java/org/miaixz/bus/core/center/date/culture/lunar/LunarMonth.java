@@ -37,7 +37,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Represents a month in the Lunar calendar.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LunarMonth extends MonthParts {
 

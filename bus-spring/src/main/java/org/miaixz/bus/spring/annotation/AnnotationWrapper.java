@@ -33,7 +33,6 @@ import org.springframework.util.Assert;
  *
  * @param <A> The type of the annotation being wrapped.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AnnotationWrapper<A extends Annotation> {
 

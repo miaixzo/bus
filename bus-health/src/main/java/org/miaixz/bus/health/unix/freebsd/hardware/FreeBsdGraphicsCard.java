@@ -37,7 +37,6 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstraction
  * Graphics Card info obtained from pciconf
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class FreeBsdGraphicsCard extends AbstractGraphicsCard {

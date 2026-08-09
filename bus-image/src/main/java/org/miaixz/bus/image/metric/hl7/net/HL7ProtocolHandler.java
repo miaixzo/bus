@@ -35,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
  * Defines the HL7ProtocolHandler values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum HL7ProtocolHandler implements TCPProtocolHandler {
 
@@ -59,7 +58,6 @@ public enum HL7ProtocolHandler implements TCPProtocolHandler {
      * Represents the HL7Receiver type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class HL7Receiver implements Runnable {
 

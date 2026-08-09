@@ -25,7 +25,6 @@ import java.util.Objects;
  * Wrapper class for a process that redirects its output and error streams.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Expense {
 

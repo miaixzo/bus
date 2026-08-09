@@ -61,7 +61,6 @@ import org.miaixz.bus.cache.Collector;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CacheMetricsAdapter implements Collector {
 

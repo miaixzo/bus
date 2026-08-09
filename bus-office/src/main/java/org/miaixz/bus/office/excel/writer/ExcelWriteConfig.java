@@ -37,7 +37,6 @@ import org.miaixz.bus.office.excel.ExcelConfig;
  * Excel write configuration.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ExcelWriteConfig extends ExcelConfig {
 

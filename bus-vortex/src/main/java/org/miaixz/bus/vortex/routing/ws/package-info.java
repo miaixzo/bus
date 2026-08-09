@@ -27,6 +27,5 @@
  * The corresponding {@link org.miaixz.bus.vortex.routing.WsRouter} delegates routing logic to this executor.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.vortex.routing.ws;

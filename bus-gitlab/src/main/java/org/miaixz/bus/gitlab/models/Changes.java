@@ -31,7 +31,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The changes class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Changes implements Serializable {
 

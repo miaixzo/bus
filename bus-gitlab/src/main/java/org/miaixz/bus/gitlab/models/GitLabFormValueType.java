@@ -23,7 +23,6 @@ package org.miaixz.bus.gitlab.models;
  * The Git lab form value type enum.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum GitLabFormValueType {
     /**

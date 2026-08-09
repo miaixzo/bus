@@ -28,7 +28,6 @@ import org.miaixz.bus.cortex.registry.api.ApiAssets;
  * Converts cortex API definitions to gateway assets.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ApiAssetsConverter {
 

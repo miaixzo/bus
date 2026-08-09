@@ -26,7 +26,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Converts between integers and Roman numerals.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RomanNumberFormatter {
 

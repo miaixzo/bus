@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.tuple.Pair;
  * averages in 5-second intervals.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class LoadAverage {

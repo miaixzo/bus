@@ -32,7 +32,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * Queries WMI class {@code Win32_LogicalDisk}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Win32LogicalDisk {
@@ -87,7 +86,6 @@ public final class Win32LogicalDisk {
      * Logical disk properties.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum LogicalDiskProperty {
         /**

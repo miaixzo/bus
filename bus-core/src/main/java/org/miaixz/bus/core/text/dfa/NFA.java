@@ -26,7 +26,6 @@ import java.util.*;
  * Aho-Corasick automaton for efficient searching of multiple keywords in a text.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NFA {
 
@@ -194,7 +193,6 @@ public class NFA {
      * Represents a node in the Aho-Corasick tree.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class Node {
 

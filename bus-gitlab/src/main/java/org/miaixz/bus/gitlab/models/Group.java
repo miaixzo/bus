@@ -34,7 +34,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
  * The group class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Group extends AbstractGroup<Group> {
 
@@ -50,7 +49,6 @@ public class Group extends AbstractGroup<Group> {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public class Statistics {
 

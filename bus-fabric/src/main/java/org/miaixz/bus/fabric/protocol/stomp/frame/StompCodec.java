@@ -42,7 +42,6 @@ import org.miaixz.bus.fabric.Payload;
  * Stateful STOMP frame codec supporting content-length and NUL terminators.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class StompCodec {
 

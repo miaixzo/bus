@@ -40,7 +40,6 @@ import org.miaixz.bus.logger.Logger;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Module {
 
@@ -253,7 +252,6 @@ public class Module {
      * </p>
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class ModuleHolder {
 

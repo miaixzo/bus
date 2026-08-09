@@ -42,7 +42,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * This class is used to filter issues when getting lists of them.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IssueFilter implements Serializable {
 
@@ -858,7 +857,6 @@ public class IssueFilter implements Serializable {
      * The issue field enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum IssueField {
 

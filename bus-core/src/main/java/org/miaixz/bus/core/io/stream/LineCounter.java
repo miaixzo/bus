@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * separators at the end of the stream. It implements {@link Closeable} to ensure proper resource management.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LineCounter implements Closeable {
 

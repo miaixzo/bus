@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.ListKit;
  * constructor.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RegisterDateParser implements DateParser, Serializable {
 

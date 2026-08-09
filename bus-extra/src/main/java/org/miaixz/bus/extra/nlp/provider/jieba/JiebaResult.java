@@ -34,7 +34,6 @@ import org.miaixz.bus.extra.nlp.NLPWord;
  * <a href="https://github.com/huaban/jieba-analysis">https://github.com/huaban/jieba-analysis</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JiebaResult implements NLPResult {
 

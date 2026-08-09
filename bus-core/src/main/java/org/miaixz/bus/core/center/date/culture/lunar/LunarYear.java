@@ -33,7 +33,6 @@ import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
  * Represents a year in the Lunar calendar.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LunarYear extends YearParts {
 

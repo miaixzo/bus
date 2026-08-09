@@ -22,6 +22,5 @@
  * encodings such as Base32, Base58, and Base62.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.codec.binary.encoder;

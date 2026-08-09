@@ -45,7 +45,6 @@ import org.miaixz.bus.logger.Logger;
  * Lightweight KCP packet endpoint over UDP sessions.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class KcpNetwork implements AutoCloseable {
 

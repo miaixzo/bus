@@ -37,7 +37,6 @@ import org.miaixz.bus.logger.Logger;
  * queues within RabbitMQ.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RabbitMQProducer implements Producer {
 

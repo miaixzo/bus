@@ -33,7 +33,6 @@ import org.miaixz.bus.health.builtin.TID;
  * Read-only Spring Boot health indicator for explicitly selected Bus system details.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SystemHealthIndicator implements HealthIndicator {
 

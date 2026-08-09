@@ -37,7 +37,6 @@ import io.temporal.workflow.Workflow;
  *
  * @param <R> workflow request type
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DynamicWorkflowHandler<R> implements DynamicWorkflow, DynamicSignalHandler {
 

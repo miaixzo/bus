@@ -45,7 +45,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StringJoiner implements Appendable, Serializable {
 
@@ -490,7 +489,6 @@ public class StringJoiner implements Appendable, Serializable {
      * Defines the strategy for handling null elements.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum NullMode {
         /**

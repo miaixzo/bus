@@ -38,7 +38,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpHeaders;
  * Immutable Cache-Control header snapshot.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpCacheControl {
 

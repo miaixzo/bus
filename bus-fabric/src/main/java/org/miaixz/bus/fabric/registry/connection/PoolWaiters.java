@@ -31,7 +31,6 @@ import org.miaixz.bus.fabric.network.Destination;
  * lock and therefore does not change contention characteristics.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class PoolWaiters implements Iterable<PoolWaiters.Waiter> {
 

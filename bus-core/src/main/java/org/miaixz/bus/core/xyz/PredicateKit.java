@@ -27,7 +27,6 @@ import org.miaixz.bus.core.center.function.PredicateX;
  * Creates and combines predicates.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PredicateKit {
 

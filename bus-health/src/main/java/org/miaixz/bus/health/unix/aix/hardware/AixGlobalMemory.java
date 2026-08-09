@@ -39,7 +39,6 @@ import org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatMemory;
  * Memory obtained by perfstat_memory_total_t
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class AixGlobalMemory extends AbstractGlobalMemory {

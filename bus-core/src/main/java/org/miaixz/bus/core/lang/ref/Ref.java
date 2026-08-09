@@ -25,7 +25,6 @@ package org.miaixz.bus.core.lang.ref;
  *
  * @param <T> the type of the referenced object
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface Ref<T> {

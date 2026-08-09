@@ -24,7 +24,6 @@ package org.miaixz.bus.core.lang.selector;
  *
  * @param <T> the type of the object to select
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface Selector<T> {

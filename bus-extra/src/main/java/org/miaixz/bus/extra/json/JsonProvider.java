@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * to be used interchangeably.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface JsonProvider extends Provider {
 

@@ -26,7 +26,6 @@ import java.awt.Color;
  * 256-value mappings for red, green, and blue channels.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum ColorLut {
 
@@ -120,7 +119,6 @@ public enum ColorLut {
      * Channel indices for BGR format.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum Channel {
 
@@ -162,7 +160,6 @@ public enum ColorLut {
 
     }
 
-    // Static factory methods for LUT creation
     /**
      * Creates the flag LUT.
      *

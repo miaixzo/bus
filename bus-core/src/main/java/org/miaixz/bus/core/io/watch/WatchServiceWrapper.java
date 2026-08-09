@@ -42,7 +42,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WatchServiceWrapper extends SimpleWrapper<WatchService> implements WatchService, Serializable {
 
@@ -208,10 +207,10 @@ public class WatchServiceWrapper extends SimpleWrapper<WatchService> implements 
      * @param watchable The object to register for monitoring.
      * @return The {@link WatchKey} representing the registration, or {@code null} if registration failed (e.g., due to
      *         permissions).
-     * @see Watchable#register(WatchService, WatchEvent.Kind[])
-     * @see Watchable#register(WatchService, WatchEvent.Kind[], WatchEvent.Modifier...)
      * @throws InternalException If an {@link IOException} (other than {@link AccessDeniedException}) occurs during
      *                           registration.
+     * @see Watchable#register(WatchService, WatchEvent.Kind[])
+     * @see Watchable#register(WatchService, WatchEvent.Kind[], WatchEvent.Modifier...)
      */
     public WatchKey register(final Watchable watchable) {
         final WatchEvent.Kind<?>[] kinds = ArrayKit.defaultIfEmpty(this.events, WatchKind.ALL);

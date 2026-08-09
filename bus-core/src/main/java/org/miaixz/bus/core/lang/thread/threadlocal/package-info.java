@@ -21,6 +21,5 @@
  * Provides utilities and implementations related to ThreadLocal variables.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.lang.thread.threadlocal;

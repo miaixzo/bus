@@ -34,7 +34,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * forms without requiring any transport-specific dependency.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class WorkflowEndpointParser {
 

@@ -58,7 +58,6 @@ import reactor.core.publisher.Mono;
  * need custom asset matching.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.THIRD)
 public class QualifierStrategy extends AbstractStrategy {
@@ -271,7 +270,7 @@ public class QualifierStrategy extends AbstractStrategy {
                     "Invalid policy value: strategy=qualifier, clientIp={}, policy={}, allowedRange=0..3",
                     context.getX_request_ip(),
                     policy);
-            return Mono.error(new ValidateException(ErrorCode._116002));
+            return Mono.error(new ValidateException(ErrorCode._100160));
         }
 
         if (Consts.ZERO.equals(policy)) {
@@ -291,7 +290,7 @@ public class QualifierStrategy extends AbstractStrategy {
                     "Required credential missing: strategy=qualifier, clientIp={}, policy={}",
                     context.getX_request_ip(),
                     policy);
-            return Mono.error(new ValidateException(ErrorCode._116002));
+            return Mono.error(new ValidateException(ErrorCode._100160));
         }
 
         return this.provider.authorize(

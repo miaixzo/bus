@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  * access.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Cortex {
 
@@ -579,7 +578,6 @@ public final class Cortex {
      * Lifecycle handle for a specific facade runtime.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class RuntimeHandle implements AutoCloseable {
 
@@ -627,7 +625,6 @@ public final class Cortex {
      * Immutable runtime bundle exposed by the static facade.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Runtime {
 

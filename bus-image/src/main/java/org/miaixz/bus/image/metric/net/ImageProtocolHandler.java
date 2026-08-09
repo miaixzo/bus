@@ -29,7 +29,6 @@ import org.miaixz.bus.image.metric.Connection;
  * Defines the ImageProtocolHandler values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum ImageProtocolHandler implements TCPProtocolHandler {
 

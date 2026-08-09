@@ -61,7 +61,6 @@ import org.miaixz.bus.core.xyz.PredicateKit;
  * @see ElementAnnotationScanner
  * @see CompositeAnnotationScanner
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface AnnotationScanner {
 

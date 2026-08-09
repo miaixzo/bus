@@ -45,7 +45,6 @@ import org.miaixz.bus.health.builtin.TID;
  * Coordinates application availability queries and state changes with explicitly allowed Bus Health details.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class HealthService {
 

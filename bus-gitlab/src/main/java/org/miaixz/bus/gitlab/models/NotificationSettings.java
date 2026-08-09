@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The notification settings class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NotificationSettings implements Serializable {
 
@@ -117,7 +116,6 @@ public class NotificationSettings implements Serializable {
      * Notification level
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static enum Level {
 
@@ -188,7 +186,6 @@ public class NotificationSettings implements Serializable {
      * The events class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Events implements Serializable {
 

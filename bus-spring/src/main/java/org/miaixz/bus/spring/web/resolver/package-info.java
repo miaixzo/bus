@@ -21,6 +21,5 @@
  * Reusable controller argument resolution and request-object binding. This package must not contain feature activation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.spring.web.resolver;

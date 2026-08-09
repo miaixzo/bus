@@ -21,6 +21,5 @@
  * Caching support for payment-related data.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.pay.cache;

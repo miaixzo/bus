@@ -34,7 +34,6 @@ import org.miaixz.bus.starter.cortex.CortexConfiguration;
  * Then configure {@code bus.cortex.server-addr} in {@code application.yml}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Inherited
 @Documented

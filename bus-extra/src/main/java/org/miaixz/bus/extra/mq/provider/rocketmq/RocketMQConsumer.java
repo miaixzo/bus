@@ -41,7 +41,6 @@ import org.miaixz.bus.logger.Logger;
  * RocketMQ {@link MessageExt} objects.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RocketMQConsumer implements Consumer {
 

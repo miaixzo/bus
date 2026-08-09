@@ -30,7 +30,6 @@ import org.miaixz.bus.sensitive.nimble.StrategyProvider;
  * that meets its conditions will be executed.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Target(ElementType.ANNOTATION_TYPE)

@@ -36,7 +36,6 @@ import org.miaixz.bus.logger.Logger;
  * A CPU.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public abstract class AbstractCentralProcessor implements CentralProcessor {

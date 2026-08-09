@@ -29,7 +29,6 @@ import org.miaixz.bus.validate.magic.annotation.IPAddress;
  * Validator for the {@link IPAddress} annotation, checking if a string is a valid IP address (either IPv4 or IPv6).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IPAddressMatcher implements Matcher<Object, IPAddress> {
 

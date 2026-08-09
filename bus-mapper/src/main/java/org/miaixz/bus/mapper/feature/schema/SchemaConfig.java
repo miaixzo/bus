@@ -35,7 +35,6 @@ import org.miaixz.bus.mapper.Charter.Schema;
  * Entity schema initialization configuration.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

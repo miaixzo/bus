@@ -31,7 +31,6 @@ import org.miaixz.bus.fabric.Options;
  * The single policy-resolution boundary shared by every outbound protocol.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ProxyPolicyResolver {
 

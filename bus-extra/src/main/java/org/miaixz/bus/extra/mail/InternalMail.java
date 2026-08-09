@@ -40,7 +40,6 @@ import org.miaixz.bus.logger.Logger;
  * not intended for public use and provides methods for the mail API.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class InternalMail {
 

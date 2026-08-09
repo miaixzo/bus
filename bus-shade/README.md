@@ -2,11 +2,14 @@
 
 ## 📖 Project Introduction
 
-bus-shade is a powerful Java toolkit that provides comprehensive JAR encryption and code generation capabilities. It offers secure encryption for Spring Boot JAR files to protect your source code and bytecode from decompilation, along with automated code generation utilities to accelerate development.
+bus-shade is a powerful Java toolkit that provides comprehensive JAR encryption and code generation capabilities. It
+offers secure encryption for Spring Boot JAR files to protect your source code and bytecode from decompilation, along
+with automated code generation utilities to accelerate development.
 
 ## ✨ Core Features
 
 ### JAR Encryption
+
 - **Zero Code Intrusion**: Encrypt compiled JAR packages without modifying source code
 - **In-Memory Decryption**: Complete in-memory decryption prevents source code and bytecode leakage
 - **Algorithm Support**: Supports all JDK built-in encryption algorithms (AES, DES, etc.)
@@ -16,6 +19,7 @@ bus-shade is a powerful Java toolkit that provides comprehensive JAR encryption 
 - **Dependency Encryption**: Support for encrypting dependencies in WEB-INF/lib or BOOT-INF/lib
 
 ### Code Generation
+
 - **Lombok Integration**: Seamless integration with Lombok annotations
 - **Swagger Support**: Automatic API documentation generation
 - **MyBatis Integration**: Auto-generate Entity, Mapper, Service, and Controller classes
@@ -23,6 +27,7 @@ bus-shade is a powerful Java toolkit that provides comprehensive JAR encryption 
 - **RESTful APIs**: Auto-generated CRUD operations with Swagger integration
 
 ### Database Documentation
+
 - **Auto-Generation**: Generate comprehensive database design documentation
 - **Multiple Formats**: Support for HTML and other document formats
 - **Flexible Configuration**: Filter tables by name, prefix, or suffix
@@ -114,13 +119,13 @@ Boot.encrypt(
 
 ### Startup Parameters
 
-| Parameter | Description | Default | Example |
-|:---|:---|:---|:---|
-| --xjar.password | Password | Required | forest |
-| --xjar.algorithm | Key Algorithm | AES | AES, DES |
-| --xjar.keysize | Key Size | 128 | 128, 256 |
-| --xjar.ivsize | Vector Size | 128 | 128 |
-| --xjar.keyfile | Key File Path | ./forest.key | /path/to/key.key |
+| Parameter        | Description   | Default      | Example          |
+|:-----------------|:--------------|:-------------|:-----------------|
+| --xjar.password  | Password      | Required     | forest           |
+| --xjar.algorithm | Key Algorithm | AES          | AES, DES         |
+| --xjar.keysize   | Key Size      | 128          | 128, 256         |
+| --xjar.ivsize    | Vector Size   | 128          | 128              |
+| --xjar.keyfile   | Key File Path | ./forest.key | /path/to/key.key |
 
 ### Key File Format
 
@@ -136,13 +141,13 @@ hold: false
 
 **Parameter Description**:
 
-| Parameter | Description | Default | Notes |
-|:---|:---|:---|:---|
-| password | Password String | Required | Any string |
-| algorithm | Key Algorithm | AES | All JDK built-in algorithms supported |
-| keysize | Key Size | 128 | Depends on algorithm |
-| ivsize | Vector Size | 128 | Depends on algorithm |
-| hold | Retain Key File | false | Auto-delete after reading if not true/1/yes/y |
+| Parameter | Description     | Default  | Notes                                         |
+|:----------|:----------------|:---------|:----------------------------------------------|
+| password  | Password String | Required | Any string                                    |
+| algorithm | Key Algorithm   | AES      | All JDK built-in algorithms supported         |
+| keysize   | Key Size        | 128      | Depends on algorithm                          |
+| ivsize    | Vector Size     | 128      | Depends on algorithm                          |
+| hold      | Retain Key File | false    | Auto-delete after reading if not true/1/yes/y |
 
 ### Maven Plugin Configuration
 
@@ -230,7 +235,8 @@ XEntryFilter not = Builder.not(
 
 ### 3. Static Resource Handling
 
-⚠️ **Important**: Static files should be excluded from encryption as they expand in size when encrypted, causing browser Content-Length mismatches.
+⚠️ **Important**: Static files should be excluded from encryption as they expand in size when encrypted, causing browser
+Content-Length mismatches.
 
 ```java
 // Exclude static resources
@@ -277,6 +283,7 @@ public static final boolean IS_HUMP = false;
 ### Q: Why does my encrypted JAR fail to start?
 
 A: Check that:
+
 1. The password is correct
 2. The algorithm and key sizes match those used during encryption
 3. You're using the correct startup parameters
@@ -300,7 +307,8 @@ nohup java -jar app.jar --xjar.keyfile=/path/to/key.key
 
 ### Q: Is Danger Mode safe?
 
-A: No! Danger Mode stores the encryption key in MANIFEST.MF, making it recoverable. Only use it for internal/testing environments.
+A: No! Danger Mode stores the encryption key in MANIFEST.MF, making it recoverable. Only use it for internal/testing
+environments.
 
 ### Q: Why are static resources not loading after encryption?
 

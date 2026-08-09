@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The Git lab ci template class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GitLabCiTemplate implements Serializable {
 

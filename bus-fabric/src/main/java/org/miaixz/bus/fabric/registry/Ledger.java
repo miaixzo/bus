@@ -34,7 +34,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @param <T> type of value stored in each binding
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Ledger<T> {
 
@@ -104,7 +103,6 @@ public interface Ledger<T> {
  *
  * @param <T> type of value stored in each binding
  * @author Kimi Liu
- * @since Java 21+
  */
 final class DefaultLedger<T> implements Ledger<T> {
 

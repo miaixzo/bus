@@ -40,7 +40,6 @@ import org.miaixz.bus.fabric.codec.body.RequestBody;
  * SOAP envelope body for HTTP requests.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class SoapBody implements RequestBody {
 
@@ -304,7 +303,6 @@ public final class SoapBody implements RequestBody {
      * SOAP envelope builder.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class Builder {
 

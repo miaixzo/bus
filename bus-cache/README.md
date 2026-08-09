@@ -8,9 +8,12 @@
 
 ## 📖 Project Introduction
 
-**Bus Cache** is an enterprise-level caching framework that provides a unified caching abstraction supporting multiple storage implementations. It offers seamless integration with various cache providers while maintaining a consistent API, enabling developers to switch between different caching technologies without code changes.
+**Bus Cache** is an enterprise-level caching framework that provides a unified caching abstraction supporting multiple
+storage implementations. It offers seamless integration with various cache providers while maintaining a consistent API,
+enabling developers to switch between different caching technologies without code changes.
 
-The framework features declarative caching through annotations, automatic cache key generation, cache penetration prevention, and comprehensive metrics monitoring.
+The framework features declarative caching through annotations, automatic cache key generation, cache penetration
+prevention, and comprehensive metrics monitoring.
 
 -----
 
@@ -25,15 +28,15 @@ The framework features declarative caching through annotations, automatic cache 
 
 ### ⚡ Multiple Cache Implementations
 
-| Implementation | Use Case | Performance |
-| :--- | :--- | :--- |
-| **MemoryCache** | Local in-memory caching | $\text{Latency } < 1\text{ms}$ |
-| **CaffeineCache** | High-performance local cache | Hit Rate $> 95\%$ |
-| **GuavaCache** | Guava-based local cache | Hit Rate $> 90\%$ |
-| **RedisCache** | Distributed single-node Redis | Network Latency |
-| **RedisClusterCache** | Distributed Redis Cluster | Network Latency |
-| **MemcachedCache** | Memcached distributed cache | Network Latency |
-| **NoOpCache** | Testing/No-op cache | N/A |
+| Implementation        | Use Case                      | Performance                    |
+|:----------------------|:------------------------------|:-------------------------------|
+| **MemoryCache**       | Local in-memory caching       | $\text{Latency } < 1\text{ms}$ |
+| **CaffeineCache**     | High-performance local cache  | Hit Rate $> 95\%$              |
+| **GuavaCache**        | Guava-based local cache       | Hit Rate $> 90\%$              |
+| **RedisCache**        | Distributed single-node Redis | Network Latency                |
+| **RedisClusterCache** | Distributed Redis Cluster     | Network Latency                |
+| **MemcachedCache**    | Memcached distributed cache   | Network Latency                |
+| **NoOpCache**         | Testing/No-op cache           | N/A                            |
 
 ### 🚀 Declarative Caching
 
@@ -83,17 +86,17 @@ The framework features declarative caching through annotations, automatic cache 
 
 `CacheProperties` (`bus.cache.*`) supports the following fields:
 
-| Property | Type | Description |
-| :--- | :--- | :--- |
-| `type` | `String` | Fully-qualified class name of the `Collector` implementation |
-| `prefix` | `String` | Global cache key prefix applied to all keys |
-| `timeout` | `String` | Default expiration timeout (e.g. `"3600000"`, mainly used by Redis) |
-| `provider.url` | `String` | JDBC URL for database-backed Collector (MySQL, H2, SQLite, etc.) |
-| `provider.username` | `String` | Database username |
-| `provider.password` | `String` | Database password |
+| Property            | Type     | Description                                                         |
+|:--------------------|:---------|:--------------------------------------------------------------------|
+| `type`              | `String` | Fully-qualified class name of the `Collector` implementation        |
+| `prefix`            | `String` | Global cache key prefix applied to all keys                         |
+| `timeout`           | `String` | Default expiration timeout (e.g. `"3600000"`, mainly used by Redis) |
+| `provider.url`      | `String` | JDBC URL for database-backed Collector (MySQL, H2, SQLite, etc.)    |
+| `provider.username` | `String` | Database username                                                   |
+| `provider.password` | `String` | Database password                                                   |
 
-Cache instances (`MemoryCache`, `CaffeineCache`, `RedisCache`, etc.) are **interface types** and must
-be registered as Spring Beans — they cannot be bound from YAML.
+Cache instances (`MemoryCache`, `CaffeineCache`, `RedisCache`, etc.) are **interface types** and must be registered as
+Spring Beans — they cannot be bound from YAML.
 
 **Example: in-memory collector (no persistence)**
 
@@ -383,8 +386,8 @@ public class RedisCacheConfig {
 }
 ```
 
-`RedisCache` implements `AutoCloseable`.  Call `close()` (or use try-with-resources) to return all
-pool connections.  The `@PreDestroy` annotation ensures automatic shutdown in Spring containers.
+`RedisCache` implements `AutoCloseable`. Call `close()` (or use try-with-resources) to return all pool connections. The
+`@PreDestroy` annotation ensures automatic shutdown in Spring containers.
 
 #### Redis Cluster
 
@@ -428,6 +431,7 @@ cache.write("global:config", config, CacheExpire.FOREVER);
 ```
 
 All implementations honour this contract:
+
 - `MemoryCache` — entry is never evicted by TTL checks
 - `RedisCache` / `RedisClusterCache` — issues a plain `SET` without `PX`
 - `MemcachedCache` — falls back to Memcached's maximum TTL of 30 days (protocol limitation)
@@ -473,7 +477,7 @@ Retrieve all entries whose key begins with a given prefix:
 Map<String, Object> items = cache.scan("product:category:electronics:");
 ```
 
-> **Note**: For `RedisClusterCache`, cross-shard scan is not fully supported.  See the cluster
+> **Note**: For `RedisClusterCache`, cross-shard scan is not fully supported. See the cluster
 > scan limitation note above.
 
 ### 6. Cache Statistics and Monitoring
@@ -780,7 +784,7 @@ public Object getData(String type, String id) {
 ### 7. Always Close Cache Resources
 
 All cache implementations that hold external connections (`RedisCache`, `RedisClusterCache`,
-`MemcachedCache`) implement `AutoCloseable`.  Release resources when they are no longer needed:
+`MemcachedCache`) implement `AutoCloseable`. Release resources when they are no longer needed:
 
 ```java
 // ✅ Spring beans: @PreDestroy is triggered automatically — no manual close() required
@@ -1001,9 +1005,9 @@ public class CacheWarmupService implements ApplicationRunner {
 ## 🔄 Version Compatibility
 
 | Bus Cache Version | JDK Version | Spring Boot Version |
-| :--- | :--- | :--- |
-| 8.x | 17+ | 3.x+ |
-| 7.x | 11+ | 2.x+ |
+|:------------------|:------------|:--------------------|
+| 8.x               | 17+         | 3.x+                |
+| 7.x               | 11+         | 2.x+                |
 
 -----
 
@@ -1011,13 +1015,13 @@ public class CacheWarmupService implements ApplicationRunner {
 
 Based on benchmark tests (10,000 operations):
 
-| Cache Implementation | Avg Latency | Throughput | Hit Rate |
-| :--- | :--- | :--- | :--- |
-| **MemoryCache** | $0.5\text{ms}$ | $20,000\text{ ops/s}$ | $95\%$ |
-| **CaffeineCache** | $0.3\text{ms}$ | $33,000\text{ ops/s}$ | $98\%$ |
-| **GuavaCache** | $0.6\text{ms}$ | $16,000\text{ ops/s}$ | $92\%$ |
-| **RedisCache** | $2.5\text{ms}$ | $4,000\text{ ops/s}$ | N/A |
-| **MemcachedCache** | $2.0\text{ms}$ | $5,000\text{ ops/s}$ | N/A |
+| Cache Implementation | Avg Latency    | Throughput            | Hit Rate |
+|:---------------------|:---------------|:----------------------|:---------|
+| **MemoryCache**      | $0.5\text{ms}$ | $20,000\text{ ops/s}$ | $95\%$   |
+| **CaffeineCache**    | $0.3\text{ms}$ | $33,000\text{ ops/s}$ | $98\%$   |
+| **GuavaCache**       | $0.6\text{ms}$ | $16,000\text{ ops/s}$ | $92\%$   |
+| **RedisCache**       | $2.5\text{ms}$ | $4,000\text{ ops/s}$  | N/A      |
+| **MemcachedCache**   | $2.0\text{ms}$ | $5,000\text{ ops/s}$  | N/A      |
 
 -----
 
@@ -1025,30 +1029,30 @@ Based on benchmark tests (10,000 operations):
 
 ### MemoryCache Properties
 
-| Property | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `maximumSize` | `long` | `1000` | Maximum number of entries |
-| `expireAfterWrite` | `long` | `180000` | TTL in milliseconds |
-| `expireAfterAccess` | `long` | `0` | TTI in milliseconds (0 = disabled) |
-| `initialCapacity` | `int` | `16` | Initial map capacity |
+| Property            | Type   | Default  | Description                        |
+|:--------------------|:-------|:---------|:-----------------------------------|
+| `maximumSize`       | `long` | `1000`   | Maximum number of entries          |
+| `expireAfterWrite`  | `long` | `180000` | TTL in milliseconds                |
+| `expireAfterAccess` | `long` | `0`      | TTI in milliseconds (0 = disabled) |
+| `initialCapacity`   | `int`  | `16`     | Initial map capacity               |
 
 ### CaffeineCache Properties
 
-| Property | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `maximumSize` | `long` | `1000` | Maximum number of entries |
-| `expireAfterWrite` | `long` | - | TTL in milliseconds |
-| `expireAfterAccess` | `long` | - | TTI in milliseconds |
-| `initialCapacity` | `int` | - | Initial map capacity |
+| Property            | Type   | Default | Description               |
+|:--------------------|:-------|:--------|:--------------------------|
+| `maximumSize`       | `long` | `1000`  | Maximum number of entries |
+| `expireAfterWrite`  | `long` | -       | TTL in milliseconds       |
+| `expireAfterAccess` | `long` | -       | TTI in milliseconds       |
+| `initialCapacity`   | `int`  | -       | Initial map capacity      |
 
 ### RedisCache Properties
 
-| Property | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `host` | `String` | `localhost` | Redis server host |
-| `port` | `int` | `6379` | Redis server port |
-| `timeout` | `int` | `2000` | Connection timeout (ms) |
-| `serializer` | `BaseSerializer` | `Hessian2Serializer` | Value serializer |
+| Property     | Type             | Default              | Description             |
+|:-------------|:-----------------|:---------------------|:------------------------|
+| `host`       | `String`         | `localhost`          | Redis server host       |
+| `port`       | `int`            | `6379`               | Redis server port       |
+| `timeout`    | `int`            | `2000`               | Connection timeout (ms) |
+| `serializer` | `BaseSerializer` | `Hessian2Serializer` | Value serializer        |
 
 -----
 

@@ -77,7 +77,6 @@ import org.miaixz.bus.tempus.pattern.parser.PatternParser;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CronPattern {
 

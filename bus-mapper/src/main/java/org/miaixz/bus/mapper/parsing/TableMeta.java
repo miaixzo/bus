@@ -54,7 +54,6 @@ import org.miaixz.bus.mapper.builder.GenericTypeResolver;
  * Represents the metadata of an entity table, recording the relationship between an entity and its corresponding table.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

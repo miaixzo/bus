@@ -31,7 +31,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * Queries Open Hardware Monitor WMI data for Sensors
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class OhmSensor {
@@ -85,7 +84,6 @@ public final class OhmSensor {
      * Sensor value property
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ValueProperty {
         /**

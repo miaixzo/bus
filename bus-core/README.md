@@ -8,9 +8,12 @@
 
 ## 📖 Project Introduction
 
-**Bus Core** is a lightweight, enterprise-grade Java utility library that provides comprehensive, production-ready utilities for everyday Java development. It serves as the foundation for the entire Bus framework ecosystem, offering zero-dependency, thread-safe, and highly optimized implementations of common operations.
+**Bus Core** is a lightweight, enterprise-grade Java utility library that provides comprehensive, production-ready
+utilities for everyday Java development. It serves as the foundation for the entire Bus framework ecosystem, offering
+zero-dependency, thread-safe, and highly optimized implementations of common operations.
 
-Designed with **performance, reliability, and ease of use** in mind, Bus Core eliminates boilerplate code and boosts developer productivity while maintaining minimal overhead.
+Designed with **performance, reliability, and ease of use** in mind, Bus Core eliminates boilerplate code and boosts
+developer productivity while maintaining minimal overhead.
 
 -----
 
@@ -27,13 +30,13 @@ Designed with **performance, reliability, and ease of use** in mind, Bus Core el
 
 ### ⚡ Performance Optimized
 
-| Feature | Performance Gain | Description |
-| :--- | :--- | :--- |
-| **Immutable Objects** | $\text{Thread-safe}$ | Most utility classes are immutable and thread-safe by design. |
-| **Lazy Initialization** | $\text{Fast Startup}$ | Objects are created only when needed. |
-| **Object Pooling** | $\text{GC } \downarrow 40\%$ | Reusable objects reduce memory allocation overhead. |
+| Feature                  | Performance Gain                     | Description                                                       |
+|:-------------------------|:-------------------------------------|:------------------------------------------------------------------|
+| **Immutable Objects**    | $\text{Thread-safe}$                 | Most utility classes are immutable and thread-safe by design.     |
+| **Lazy Initialization**  | $\text{Fast Startup}$                | Objects are created only when needed.                             |
+| **Object Pooling**       | $\text{GC } \downarrow 40\%$         | Reusable objects reduce memory allocation overhead.               |
 | **Efficient Algorithms** | $\text{Speed } \uparrow 2-5\text{x}$ | Optimized algorithms outperform standard library implementations. |
-| **Minimal Box/Unbox** | $\text{Memory } \downarrow 30\%$ | Reduced primitive object conversions. |
+| **Minimal Box/Unbox**    | $\text{Memory } \downarrow 30\%$     | Reduced primitive object conversions.                             |
 
 ### 🛡️ Production-Ready
 
@@ -48,6 +51,7 @@ Designed with **performance, reliability, and ease of use** in mind, Bus Core el
 ## 🧩 Key Components
 
 ### 1. **String Manipulation** (`org.miaixz.bus.core.xyz.StringKit`)
+
 - String validation, formatting, and conversion
 - Text similarity calculation
 - Template rendering with placeholders
@@ -55,12 +59,14 @@ Designed with **performance, reliability, and ease of use** in mind, Bus Core el
 - Regular expression utilities
 
 ### 2. **Collection Utilities** (`org.miaixz.bus.core.xyz.CollKit`, `MapKit`, `ListKit`)
+
 - Collection filtering, transformation, and aggregation
 - Concurrent collection operations
 - Custom collection implementations (BoundedQueue, UniqueKeySet)
 - Collection conversion and joining operations
 
 ### 3. **Date/Time Operations** (`org.miaixz.bus.core.center.date`)
+
 - Enhanced `DateTime` class with timezone support
 - Date formatting and parsing
 - Calendar operations (Chinese Lunar, Solar, Rabjung)
@@ -68,12 +74,14 @@ Designed with **performance, reliability, and ease of use** in mind, Bus Core el
 - Time zone and locale support
 
 ### 4. **Type Conversion** (`org.miaixz.bus.core.convert.Convert`)
+
 - Universal type converter with 50+ converters
 - Support for primitive types, collections, and custom objects
 - Bidirectional conversion with fallback defaults
 - Bean property mapping and copying
 
 ### 5. **IO Operations** (`org.miaixz.bus.core.io`)
+
 - File and directory operations
 - Stream handling and resource management
 - BOM (Byte Order Mark) detection
@@ -81,12 +89,14 @@ Designed with **performance, reliability, and ease of use** in mind, Bus Core el
 - Resource loading from classpath and file system
 
 ### 6. **Cryptography** (`org.miaixz.bus.core.codec`)
+
 - Hash algorithms (MD5, SHA-1, SHA-256, CRC, MurmurHash, CityHash)
 - Symmetric/Asymmetric encryption (AES, DES, RSA)
 - Encoding/decoding (Base64, Hex, Binary)
 - Secure password hashing (BCrypt, PBKDF2, Argon2)
 
 ### 7. **Reflection & Annotations** (`org.miaixz.bus.core.xyz.ReflectKit`, `FieldKit`, `MethodKit`)
+
 - Dynamic method invocation
 - Field access and manipulation
 - Annotation processing and resolution
@@ -94,12 +104,14 @@ Designed with **performance, reliability, and ease of use** in mind, Bus Core el
 - Constructor and parameter discovery
 
 ### 8. **Network Utilities** (`org.miaixz.bus.core.net`)
+
 - IP address validation and conversion (IPv4/IPv6)
 - URL parsing and building
 - HTTP client utilities
 - SSL/TLS configuration helpers
 
 ### 9. **Math Operations** (`org.miaixz.bus.core.xyz.MathKit`)
+
 - Extended mathematical functions
 - Number formatting and parsing
 - Chinese number conversion
@@ -107,6 +119,7 @@ Designed with **performance, reliability, and ease of use** in mind, Bus Core el
 - Money and currency utilities
 
 ### 10. **Tree Structures** (`org.miaixz.bus.core.tree`)
+
 - Generic tree node implementations
 - Tree traversal algorithms
 - Tree building from flat structures
@@ -185,40 +198,45 @@ String decoded = StringKit.decodeBase64(base64);      // "hello"
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ListKit;
+
 import java.util.*;
 
 // Create and populate lists
 List<String> list = ListKit.of("a", "b", "c", "d", "e");
 
-// Filter collections
-List<String> filtered = CollKit.filter(list, s -> s.startsWith("a"));  // ["a"]
+        // Filter collections
+        List<String> filtered = CollKit.filter(list, s -> s.startsWith("a"));  // ["a"]
 
-// Remove duplicates
-List<String> distinct = CollKit.distinct(list);  // ["a", "b", "c", "d", "e"]
+        // Remove duplicates
+        List<String> distinct = CollKit.distinct(list);  // ["a", "b", "c", "d", "e"]
 
-// Join elements
-String joined = CollKit.join(list, ", ");  // "a, b, c, d, e"
+        // Join elements
+        String joined = CollKit.join(list, ", ");  // "a, b, c, d, e"
 
-// Check emptiness
-boolean isEmpty = CollKit.isEmpty(list);   // false
+        // Check emptiness
+        boolean isEmpty = CollKit.isEmpty(list);   // false
 
-// Convert to other types
-Set<String> set = CollKit.toSet(list);     // Convert to Set
+        // Convert to other types
+        Set<String> set = CollKit.toSet(list);     // Convert to Set
 
-// Map operations
-Map<String, Integer> map = new HashMap<>();
-map.put("a", 1);
-map.put("b", 2);
+        // Map operations
+        Map<String, Integer> map = new HashMap<>();
+map.
 
-// Get keys/values
-List<String> keys = MapKit.getKeys(map);    // ["a", "b"]
-List<Integer> values = MapKit.getValues(map); // [1, 2]
+        put("a",1);
+map.
 
-// Sort maps by value
-Map<String, Integer> sorted = MapKit.sortByValue(map, true);
+        put("b",2);
 
-// Partition lists
-List<List<String>> partitioned = CollKit.partition(list, 2);
+        // Get keys/values
+        List<String> keys = MapKit.getKeys(map);    // ["a", "b"]
+        List<Integer> values = MapKit.getValues(map); // [1, 2]
+
+        // Sort maps by value
+        Map<String, Integer> sorted = MapKit.sortByValue(map, true);
+
+        // Partition lists
+        List<List<String>> partitioned = CollKit.partition(list, 2);
 // [["a", "b"], ["c", "d"], ["e"]]
 ```
 
@@ -469,46 +487,54 @@ List<Class<?>> hierarchy = ReflectKit.getClassHierarchy(User.class);
 import org.miaixz.bus.core.net.ip.IpKit;
 import org.miaixz.bus.core.net.url.UrlBuilder;
 import org.miaixz.bus.core.xyz.NetKit;
+
 import java.net.InetAddress;
 
 // IP address validation
 boolean isIPv4 = IpKit.isIPv4("192.168.1.1");           // true
-boolean isIPv6 = IpKit.isIPv6("::1");                   // true
-boolean isInternal = IpKit.isInternal("192.168.1.1");    // true
+        boolean isIPv6 = IpKit.isIPv6("::1");                   // true
+        boolean isInternal = IpKit.isInternal("192.168.1.1");    // true
 
-// IP conversion
-long ipLong = IpKit.ipv4ToLong("192.168.1.1");          // 3232235777
-String ipStr = IpKit.longToIPv4(3232235777L);           // "192.168.1.1"
+        // IP conversion
+        long ipLong = IpKit.ipv4ToLong("192.168.1.1");          // 3232235777
+        String ipStr = IpKit.longToIPv4(3232235777L);           // "192.168.1.1"
 
-// Local IP
-String localIp = IpKit.getLocalIp();
-String localMac = IpKit.getLocalMacAddress();
+        // Local IP
+        String localIp = IpKit.getLocalIp();
+        String localMac = IpKit.getLocalMacAddress();
 
-// URL building
-String url = UrlBuilder.create()
-    .setScheme("https")
-    .setHost("example.com")
-    .setPort(443)
-    .setPath("/api/users")
-    .addQuery("id", "123")
-    .addQuery("name", "John")
-    .build();
+        // URL building
+        String url = UrlBuilder.create()
+                .setScheme("https")
+                .setHost("example.com")
+                .setPort(443)
+                .setPath("/api/users")
+                .addQuery("id", "123")
+                .addQuery("name", "John")
+                .build();
 // "https://example.com:443/api/users?id=123&name=John"
 
-// URL parsing
-Map<String, String> query = UrlBuilder.of(url).getQueryMap();
+        // URL parsing
+        Map<String, String> query = UrlBuilder.of(url).getQueryMap();
 
-// Network interface information
-Map<String, String> ips = NetKit.localIpList();
-for (Map.Entry<String, String> entry : ips.entrySet()) {
-    System.out.println(entry.getKey() + ": " + entry.getValue());
-}
+        // Network interface information
+        Map<String, String> ips = NetKit.localIpList();
+for(
+        Map.Entry<String, String> entry :ips.
 
-// Port validation
-boolean isValidPort = NetKit.isValidPort(8080);          // true
+        entrySet()){
+        System.out.
 
-// Domain validation
-boolean isValidDomain = NetKit.isDomain("example.com");  // true
+        println(entry.getKey() +": "+entry.
+
+        getValue());
+        }
+
+        // Port validation
+        boolean isValidPort = NetKit.isValidPort(8080);          // true
+
+        // Domain validation
+        boolean isValidDomain = NetKit.isDomain("example.com");  // true
 ```
 
 ### 9. Math & Number Operations
@@ -564,34 +590,37 @@ boolean isPrime = MathKit.isPrime(17);                   // true
 ```java
 import org.miaixz.bus.core.tree.TreeKit;
 import org.miaixz.bus.core.tree.TreeNode;
+
 import java.util.List;
 
 // Create tree node
 TreeNode<String> root = new TreeNode<>("root");
-TreeNode<String> child1 = new TreeNode<>("child1");
-TreeNode<String> child2 = new TreeNode<>("child2");
+        TreeNode<String> child1 = new TreeNode<>("child1");
+        TreeNode<String> child2 = new TreeNode<>("child2");
 
 // Build tree structure
-root.addChildren(child1, child2);
+root.
 
-// Traverse tree
-List<TreeNode<String>> nodes = TreeKit.listAll(root);   // All nodes
+        addChildren(child1, child2);
 
-// Build tree from flat list
-List<Menu> menus = getMenuList();  // Flat list with parentId
-List<TreeNode<Menu>> tree = TreeKit.build(menus, Menu::getId, Menu::getParentId);
+        // Traverse tree
+        List<TreeNode<String>> nodes = TreeKit.listAll(root);   // All nodes
 
-// Get tree path
-List<TreeNode<String>> path = TreeKit.getPath(child1);  // [root, child1]
+        // Build tree from flat list
+        List<Menu> menus = getMenuList();  // Flat list with parentId
+        List<TreeNode<Menu>> tree = TreeKit.build(menus, Menu::getId, Menu::getParentId);
 
-// Count nodes
-int count = TreeKit.count(root);                         // 3
+        // Get tree path
+        List<TreeNode<String>> path = TreeKit.getPath(child1);  // [root, child1]
 
-// Find node
-TreeNode<String> found = TreeKit.find(root, "child1");
+        // Count nodes
+        int count = TreeKit.count(root);                         // 3
 
-// Convert to list
-List<String> values = TreeKit.toList(root);             // ["root", "child1", "child2"]
+        // Find node
+        TreeNode<String> found = TreeKit.find(root, "child1");
+
+        // Convert to list
+        List<String> values = TreeKit.toList(root);             // ["root", "child1", "child2"]
 ```
 
 -----
@@ -600,46 +629,46 @@ List<String> values = TreeKit.toList(root);             // ["root", "child1", "c
 
 ### Core Utility Classes
 
-| Class | Package | Description |
-| :--- | :--- | :--- |
-| `StringKit` | `org.miaixz.bus.core.xyz` | String manipulation, validation, formatting |
-| `CollKit` | `org.miaixz.bus.core.xyz` | Collection operations (filter, map, reduce) |
-| `MapKit` | `org.miaixz.bus.core.xyz` | Map operations and utilities |
-| `ListKit` | `org.miaixz.bus.core.xyz` | List-specific operations |
-| `SetKit` | `org.miaixz.bus.core.xyz` | Set-specific operations |
-| `ArrayKit` | `org.miaixz.bus.core.xyz` | Array manipulation utilities |
-| `DateKit` | `org.miaixz.bus.core.xyz` | Date/time utilities |
-| `FileKit` | `org.miaixz.bus.core.xyz` | File and directory operations |
-| `IoKit` | `org.miaixz.bus.core.xyz` | I/O stream operations |
-| `ResourceKit` | `org.miaixz.bus.core.xyz` | Resource loading utilities |
-| `Convert` | `org.miaixz.bus.core.convert` | Universal type converter |
-| `BeanKit` | `org.miaixz.bus.core.xyz` | Bean property manipulation |
-| `ReflectKit` | `org.miaixz.bus.core.xyz` | Reflection utilities |
-| `MathKit` | `org.miaixz.bus.core.xyz` | Mathematical operations |
-| `NetKit` | `org.miaixz.bus.core.xyz` | Network utilities |
-| `IpKit` | `org.miaixz.bus.core.net.ip` | IP address operations |
-| `HashKit` | `org.miaixz.bus.core.codec.hash` | Hash algorithms |
-| `TreeKit` | `org.miaixz.bus.core.tree` | Tree structure operations |
+| Class         | Package                          | Description                                 |
+|:--------------|:---------------------------------|:--------------------------------------------|
+| `StringKit`   | `org.miaixz.bus.core.xyz`        | String manipulation, validation, formatting |
+| `CollKit`     | `org.miaixz.bus.core.xyz`        | Collection operations (filter, map, reduce) |
+| `MapKit`      | `org.miaixz.bus.core.xyz`        | Map operations and utilities                |
+| `ListKit`     | `org.miaixz.bus.core.xyz`        | List-specific operations                    |
+| `SetKit`      | `org.miaixz.bus.core.xyz`        | Set-specific operations                     |
+| `ArrayKit`    | `org.miaixz.bus.core.xyz`        | Array manipulation utilities                |
+| `DateKit`     | `org.miaixz.bus.core.xyz`        | Date/time utilities                         |
+| `FileKit`     | `org.miaixz.bus.core.xyz`        | File and directory operations               |
+| `IoKit`       | `org.miaixz.bus.core.xyz`        | I/O stream operations                       |
+| `ResourceKit` | `org.miaixz.bus.core.xyz`        | Resource loading utilities                  |
+| `Convert`     | `org.miaixz.bus.core.convert`    | Universal type converter                    |
+| `BeanKit`     | `org.miaixz.bus.core.xyz`        | Bean property manipulation                  |
+| `ReflectKit`  | `org.miaixz.bus.core.xyz`        | Reflection utilities                        |
+| `MathKit`     | `org.miaixz.bus.core.xyz`        | Mathematical operations                     |
+| `NetKit`      | `org.miaixz.bus.core.xyz`        | Network utilities                           |
+| `IpKit`       | `org.miaixz.bus.core.net.ip`     | IP address operations                       |
+| `HashKit`     | `org.miaixz.bus.core.codec.hash` | Hash algorithms                             |
+| `TreeKit`     | `org.miaixz.bus.core.tree`       | Tree structure operations                   |
 
 ### Center Package (Enhanced Implementations)
 
-| Class | Package | Description |
-| :--- | :--- | :--- |
-| `DateTime` | `org.miaixz.bus.core.center.date` | Enhanced Date with timezone support |
-| `Calendar` | `org.miaixz.bus.core.center.date` | Calendar utilities |
-| `Formatter` | `org.miaixz.bus.core.center.date` | Date formatting and parsing |
-| `ChineseDate` | `org.miaixz.bus.core.center.date.culture.lunar` | Chinese Lunar calendar |
-| `SolarDate` | `org.miaixz.bus.core.center.date.culture.solar` | Solar calendar operations |
-| `UniqueId` | `org.miaixz.bus.core.center.date.culture.solar` | Unique ID generation |
+| Class         | Package                                         | Description                         |
+|:--------------|:------------------------------------------------|:------------------------------------|
+| `DateTime`    | `org.miaixz.bus.core.center.date`               | Enhanced Date with timezone support |
+| `Calendar`    | `org.miaixz.bus.core.center.date`               | Calendar utilities                  |
+| `Formatter`   | `org.miaixz.bus.core.center.date`               | Date formatting and parsing         |
+| `ChineseDate` | `org.miaixz.bus.core.center.date.culture.lunar` | Chinese Lunar calendar              |
+| `SolarDate`   | `org.miaixz.bus.core.center.date.culture.solar` | Solar calendar operations           |
+| `UniqueId`    | `org.miaixz.bus.core.center.date.culture.solar` | Unique ID generation                |
 
 ### Codec Package (Encoding/Encryption)
 
-| Class | Package | Description |
-| :--- | :--- | :--- |
-| `Base64` | `org.miaixz.bus.core.codec.binary` | Base64 encoding/decoding |
-| `Hex` | `org.miaixz.bus.core.codec.binary` | Hex encoding/decoding |
-| `SecureUtil` | `org.miaixz.bus.core.center.crypto` | Secure password hashing |
-| `Encryptor` | `org.miaixz.bus.crypto.builtin` | Encryption utilities |
+| Class        | Package                             | Description              |
+|:-------------|:------------------------------------|:-------------------------|
+| `Base64`     | `org.miaixz.bus.core.codec.binary`  | Base64 encoding/decoding |
+| `Hex`        | `org.miaixz.bus.core.codec.binary`  | Hex encoding/decoding    |
+| `SecureUtil` | `org.miaixz.bus.core.center.crypto` | Secure password hashing  |
+| `Encryptor`  | `org.miaixz.bus.crypto.builtin`     | Encryption utilities     |
 
 -----
 
@@ -717,7 +746,9 @@ for (String s : list) {
 
 ### Q1: Is Bus Core thread-safe?
 
-**A:** Yes, most utility classes in Bus Core are designed to be thread-safe. Static utility methods are inherently thread-safe as they don't maintain state. However, when using instance classes (like `DateTime`), you should either:
+**A:** Yes, most utility classes in Bus Core are designed to be thread-safe. Static utility methods are inherently
+thread-safe as they don't maintain state. However, when using instance classes (like `DateTime`), you should either:
+
 - Use immutable instances
 - Synchronize access when shared across threads
 - Use thread-local instances
@@ -731,6 +762,7 @@ DateTime date2 = date1.offsetDay(1);  // Creates new instance
 ### Q2: How does Bus Core compare to Apache Commons Lang?
 
 **A:** Bus Core offers several advantages:
+
 - **Modern Java**: Built for Java 17+ with latest features
 - **Better Performance**: Optimized algorithms outperform Commons
 - **Comprehensive**: Includes many utilities not in Commons (crypto, tree, etc.)
@@ -748,6 +780,7 @@ String result = String.format("Hello, %s", "World");
 ### Q3: Can I use Bus Core with Spring Boot?
 
 **A:** Absolutely! Bus Core integrates seamlessly with Spring Boot:
+
 - No special configuration required
 - Works with Spring's dependency injection
 - Compatible with Spring's type conversion system
@@ -786,12 +819,14 @@ DateTime parsed = DateTime.of("2026-01-04 10:00:00",
 ### Q5: What's the performance overhead of using Bus Core?
 
 **A:** Bus Core is designed for minimal overhead:
+
 - **Object Creation**: Most utilities are static methods - no object allocation
 - **Memory**: Immutable objects reduce GC pressure
 - **Algorithm**: Optimized algorithms outperform standard library
 - **Lazy Loading**: Objects created only when needed
 
 Benchmark results (operations per second):
+
 - String formatting: ~15M ops/sec
 - Collection filtering: ~10M ops/sec
 - Date parsing: ~500K ops/sec
@@ -811,7 +846,9 @@ public class CustomConverter implements Converter<MyType> {
 }
 
 // Register converter
-Convert.register(CustomConverter.class);
+Convert.
+
+register(CustomConverter .class);
 
 // 2. Custom collection operation
 public class CustomCollKit {
@@ -866,10 +903,10 @@ System.setProperty("bus.core.cache.size", "1000");
 
 ## 🔄 Version Compatibility
 
-| Bus Core Version | JDK Version | Spring Boot | Notes |
-| :--- | :--- | :--- | :--- |
-| 8.x | 17+ | 3.x+ | Current stable |
-| 7.x | 11+ | 2.x+ | Previous LTS |
+| Bus Core Version | JDK Version | Spring Boot | Notes          |
+|:-----------------|:------------|:------------|:---------------|
+| 8.x              | 17+         | 3.x+        | Current stable |
+| 7.x              | 11+         | 2.x+        | Previous LTS   |
 
 -----
 
@@ -879,36 +916,36 @@ Based on JMH benchmarks (operations per second, higher is better):
 
 ### String Operations
 
-| Operation | Bus Core | Apache Commons | JDK |
-| :--- | :--- | :--- | :--- |
-| String Format | 15.2M | 8.5M | 12.1M |
-| String Join | 45.3M | 32.1M | 38.7M |
-| Empty Check | 250M | 180M | 220M |
+| Operation     | Bus Core | Apache Commons | JDK   |
+|:--------------|:---------|:---------------|:------|
+| String Format | 15.2M    | 8.5M           | 12.1M |
+| String Join   | 45.3M    | 32.1M          | 38.7M |
+| Empty Check   | 250M     | 180M           | 220M  |
 
 ### Collection Operations
 
-| Operation | Bus Core | Apache Commons | JDK Stream |
-| :--- | :--- | :--- | :--- |
-| Filter (10K) | 12.5K ops | 8.2K ops | 10.1K ops |
-| Distinct (10K) | 8.7K ops | 5.9K ops | 7.3K ops |
-| Join (10K) | 18.9K ops | 14.2K ops | 16.5K ops |
+| Operation      | Bus Core  | Apache Commons | JDK Stream |
+|:---------------|:----------|:---------------|:-----------|
+| Filter (10K)   | 12.5K ops | 8.2K ops       | 10.1K ops  |
+| Distinct (10K) | 8.7K ops  | 5.9K ops       | 7.3K ops   |
+| Join (10K)     | 18.9K ops | 14.2K ops      | 16.5K ops  |
 
 ### Date/Time Operations
 
 | Operation | Bus Core | Java 8 Time | Joda Time |
-| :--- | :--- | :--- | :--- |
-| Parse | 520K ops | 480K ops | 450K ops |
-| Format | 680K ops | 620K ops | 590K ops |
-| Offset | 1.2M ops | 950K ops | 890K ops |
+|:----------|:---------|:------------|:----------|
+| Parse     | 520K ops | 480K ops    | 450K ops  |
+| Format    | 680K ops | 620K ops    | 590K ops  |
+| Offset    | 1.2M ops | 950K ops    | 890K ops  |
 
 ### Hash Algorithms
 
-| Algorithm | Speed (MB/sec) | Collision Rate |
-| :--- | :--- | :--- |
-| MD5 | 520 | < 0.001% |
-| SHA-256 | 180 | < 0.0001% |
-| MurmurHash3 | 1250 | < 0.01% |
-| CRC32 | 2100 | < 0.1% |
+| Algorithm   | Speed (MB/sec) | Collision Rate |
+|:------------|:---------------|:---------------|
+| MD5         | 520            | < 0.001%       |
+| SHA-256     | 180            | < 0.0001%      |
+| MurmurHash3 | 1250           | < 0.01%        |
+| CRC32       | 2100           | < 0.1%         |
 
 -----
 

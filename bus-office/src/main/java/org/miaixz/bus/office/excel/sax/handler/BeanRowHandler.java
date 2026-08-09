@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.ListKit;
  *
  * @param <T> The type of the result Bean.
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class BeanRowHandler<T> extends AbstractRowHandler<T> {
 

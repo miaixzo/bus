@@ -38,7 +38,6 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  * comprehensive view.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CombinationAnnotatedElement implements AnnotatedElement, Serializable {
 

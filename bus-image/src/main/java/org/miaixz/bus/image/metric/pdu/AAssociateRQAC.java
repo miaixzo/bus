@@ -33,7 +33,6 @@ import org.miaixz.bus.image.metric.Connection;
  * Represents the AAssociateRQAC type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AAssociateRQAC {
 

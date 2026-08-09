@@ -30,7 +30,6 @@ import org.miaixz.bus.core.lang.Normal;
  * purpose to {@code jakarta.inject.Named}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Binding
 @Retention(RetentionPolicy.RUNTIME)
@@ -50,7 +49,6 @@ public @interface Named {
      * runtime.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class Names implements Named, Serializable {
 

@@ -35,7 +35,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * PowerPoint PPTX document generator.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PptWriter implements Closeable {
 

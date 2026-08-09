@@ -28,7 +28,6 @@ import org.miaixz.bus.image.metric.DataWriter;
  * Represents the InputStreamDataWriter type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class InputStreamDataWriter implements DataWriter {
 

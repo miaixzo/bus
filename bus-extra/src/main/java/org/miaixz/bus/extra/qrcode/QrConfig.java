@@ -36,7 +36,6 @@ import org.miaixz.bus.extra.image.ImageKit;
  * QR code configuration.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class QrConfig {
 

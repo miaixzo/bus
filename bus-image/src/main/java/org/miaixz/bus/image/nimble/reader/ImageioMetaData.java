@@ -30,7 +30,6 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  * Represents the ImageioMetaData type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageioMetaData extends IIOMetadata {
 

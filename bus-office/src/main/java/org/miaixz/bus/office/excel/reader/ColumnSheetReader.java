@@ -32,7 +32,6 @@ import org.miaixz.bus.office.excel.cell.editors.CellEditor;
  * Reads a single column from an Excel sheet.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ColumnSheetReader extends AbstractSheetReader<List<Object>> {
 

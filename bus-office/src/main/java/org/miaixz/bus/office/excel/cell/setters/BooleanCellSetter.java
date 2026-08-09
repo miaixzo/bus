@@ -25,7 +25,6 @@ import org.apache.poi.ss.usermodel.Cell;
  * {@link CellSetter} for {@link Boolean} values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BooleanCellSetter implements CellSetter {
 

@@ -23,7 +23,6 @@ package org.miaixz.bus.core.lang.annotation.resolve.attribute;
  * Represents an object that can provide specific annotation attribute values from its implementing class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface AnnotationAttributeValueProvider {

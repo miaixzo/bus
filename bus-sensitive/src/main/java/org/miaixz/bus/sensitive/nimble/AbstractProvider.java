@@ -27,7 +27,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * patterns.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractProvider implements StrategyProvider {
 

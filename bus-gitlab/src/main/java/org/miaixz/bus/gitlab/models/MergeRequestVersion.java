@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The merge request version class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MergeRequestVersion implements Serializable {
 

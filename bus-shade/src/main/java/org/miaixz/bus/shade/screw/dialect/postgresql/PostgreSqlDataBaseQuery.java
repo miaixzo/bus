@@ -41,7 +41,6 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
  * PostgreSQL database query implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PostgreSqlDataBaseQuery extends AbstractDatabaseQuery {
 

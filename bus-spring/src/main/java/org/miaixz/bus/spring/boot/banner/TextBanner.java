@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * framework version information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TextBanner extends AbstractBanner {
 

@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  * Mac hard disk implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class MacHWDiskStore extends AbstractHWDiskStore {
@@ -607,7 +606,6 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
      * Enum to hold CFStringRef keys for DiskArbitration and IOKit lookups.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum CFKey {
 

@@ -33,7 +33,6 @@ import org.miaixz.bus.health.unix.shared.hardware.CupsPrinter;
  * Hardware Abstraction Layer for macOS.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {

@@ -21,6 +21,5 @@
  * UID Dictionary from QUASAR_INTERNAL_USE
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.QUASAR_INTERNAL_USE;

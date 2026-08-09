@@ -36,7 +36,6 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
  * Immutable DNS zone containing records for one origin.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsZone {
 

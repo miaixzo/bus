@@ -25,6 +25,5 @@
  * {@link org.miaixz.bus.core.center.map.concurrent.Weighers} class offers common implementations for these interfaces.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.center.map.concurrent;

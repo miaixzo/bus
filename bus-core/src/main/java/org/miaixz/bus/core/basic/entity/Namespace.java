@@ -29,7 +29,6 @@ import lombok.experimental.SuperBuilder;
  * Represents namespace information used to isolate resources, configuration, or data within the current context.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

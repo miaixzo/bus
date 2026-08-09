@@ -28,7 +28,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the Timeout type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Timeout implements Runnable {
 

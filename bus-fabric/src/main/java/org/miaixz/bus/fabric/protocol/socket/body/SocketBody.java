@@ -35,7 +35,6 @@ import org.miaixz.bus.fabric.codec.body.ProgressBody;
  * Socket message body backed by a protocol-neutral payload.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class SocketBody implements MessageBody, ProgressBody {
 

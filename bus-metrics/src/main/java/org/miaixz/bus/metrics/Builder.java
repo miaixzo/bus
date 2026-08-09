@@ -26,7 +26,6 @@ package org.miaixz.bus.metrics;
  * cardinality defaults so that all classes reference a single source of truth.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Builder {
 

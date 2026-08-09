@@ -31,7 +31,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Distributed tracing activation properties.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Validated

@@ -48,7 +48,6 @@ import org.miaixz.bus.core.xyz.*;
  * annotations, or superclasses/interfaces.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ClassScanner implements Serializable {
 

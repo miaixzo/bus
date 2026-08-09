@@ -34,7 +34,6 @@ import java.util.Objects;
  *
  * @param <T> the type of objects to be compared.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NullCompare<T> implements Comparator<T>, Serializable {
 

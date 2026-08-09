@@ -45,7 +45,6 @@ import org.miaixz.bus.office.excel.style.StyleSet;
  * Sheet data writer. This object only encapsulates writing data to a Sheet and does not flush to a file.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SheetDataWriter {
 

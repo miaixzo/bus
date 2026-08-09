@@ -33,7 +33,6 @@ import org.miaixz.bus.logger.Logger;
  * Applies Bus message converter registrars to Spring MVC.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JsonWebMvcConfigurer implements WebMvcConfigurer {
 

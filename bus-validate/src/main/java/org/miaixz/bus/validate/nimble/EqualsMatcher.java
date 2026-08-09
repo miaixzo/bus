@@ -30,7 +30,6 @@ import org.miaixz.bus.validate.magic.annotation.Equals;
  * Validator for checking if an object is equal to a specified value.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EqualsMatcher implements Matcher<Object, Equals> {
 

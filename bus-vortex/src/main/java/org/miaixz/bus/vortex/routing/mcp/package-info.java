@@ -31,6 +31,5 @@
  * gateway's normal response formatting after proxy execution.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.vortex.routing.mcp;

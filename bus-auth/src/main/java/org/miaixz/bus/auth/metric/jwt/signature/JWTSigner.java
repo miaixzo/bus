@@ -24,7 +24,6 @@ package org.miaixz.bus.auth.metric.jwt.signature;
  * algorithms.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface JWTSigner {
 

@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Command-line (console) methods. This class primarily encapsulates {@link System#out} and {@link System#err}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Console {
 
@@ -345,7 +344,6 @@ public class Console {
      * Prints tables to the console.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Table {
 

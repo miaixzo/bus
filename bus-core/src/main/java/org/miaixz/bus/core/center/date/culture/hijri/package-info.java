@@ -21,6 +21,5 @@
  * Provides classes for the tabular Hijri calendar.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.center.date.culture.hijri;

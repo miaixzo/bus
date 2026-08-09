@@ -34,7 +34,6 @@ import org.miaixz.bus.logger.Logger;
  * <a href="https://github.com/huaban/jieba-analysis">https://github.com/huaban/jieba-analysis</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JiebaProvider implements NLPProvider {
 

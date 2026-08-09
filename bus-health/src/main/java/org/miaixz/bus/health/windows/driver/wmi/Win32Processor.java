@@ -31,7 +31,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * Queries WMI class {@code Win32_Processor}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Win32Processor {
@@ -89,7 +88,6 @@ public final class Win32Processor {
      * Processor voltage properties.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum VoltProperty {
         /**
@@ -107,7 +105,6 @@ public final class Win32Processor {
      * Processor ID property
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ProcessorIdProperty {
         /**
@@ -121,7 +118,6 @@ public final class Win32Processor {
      * Processor bitness property
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum BitnessProperty {
         /**

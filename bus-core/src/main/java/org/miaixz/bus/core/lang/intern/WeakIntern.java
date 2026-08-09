@@ -31,7 +31,6 @@ import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
  *
  * @param <T> The type of the object to be interned.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WeakIntern<T> implements Intern<T> {
 

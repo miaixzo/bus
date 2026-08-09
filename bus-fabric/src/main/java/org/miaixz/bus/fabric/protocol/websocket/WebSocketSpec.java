@@ -43,7 +43,6 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @param handler  inbound message handler
  * @param listener session lifecycle listener
  * @author Kimi Liu
- * @since Java 21+
  */
 record WebSocketSpec(Context context, URI uri, Address address, Headers headers, Timeout timeout, ProxyPlan proxy,
         GuardRule guard, Filter filter, EventObserver observer, Handler handler,

@@ -25,7 +25,6 @@ import org.miaixz.bus.pay.Registry;
  * UnionPay Cloud QuickPass class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class UnionPayBuilder {
 

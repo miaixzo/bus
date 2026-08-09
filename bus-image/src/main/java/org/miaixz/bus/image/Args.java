@@ -47,7 +47,6 @@ import org.miaixz.bus.image.metric.pdu.IdentityRQ;
  * options.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

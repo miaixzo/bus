@@ -50,7 +50,6 @@ import reactor.core.publisher.Mono;
  * @see AbstractRegistry
  * @see Assets
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AssetsRegistry extends AbstractRegistry<Assets> {
 
@@ -609,7 +608,6 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
      * @param assets        matched route asset
      * @param remainingPath remaining path after the matched route prefix, or an empty string for an exact match
      * @author Kimi Liu
-     * @since Java 21+
      */
     public record RouteMatch(Assets assets, String remainingPath) {
 

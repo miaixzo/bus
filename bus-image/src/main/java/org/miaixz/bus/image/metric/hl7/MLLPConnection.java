@@ -31,7 +31,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the MLLPConnection type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MLLPConnection implements Closeable {
 

@@ -23,7 +23,6 @@ package org.miaixz.bus.core.math;
  * Represents states with bitwise operations. Parameters must be `even` and `greater than or equal to 0`.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BitStatus {
 

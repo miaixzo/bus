@@ -49,7 +49,6 @@ import org.miaixz.bus.logger.Logger;
  * sends storage commitment requests (N-ACTION) and handles the subsequent asynchronous results (N-EVENT-REPORT).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StgCmtSCU {
 

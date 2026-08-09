@@ -62,7 +62,6 @@ import org.miaixz.bus.logger.Logger;
  * DICOM node using C-STORE.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CGetForward implements AutoCloseable {
 
@@ -228,7 +227,6 @@ public class CGetForward implements AutoCloseable {
          * Custom exception to indicate an association abort.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         class AbortException extends IllegalStateException {
 
@@ -744,7 +742,6 @@ public class CGetForward implements AutoCloseable {
      * Enumeration of the DICOM Information Models for C-GET.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum InformationModel {
 

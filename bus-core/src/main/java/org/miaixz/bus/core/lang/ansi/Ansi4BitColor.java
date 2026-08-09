@@ -26,7 +26,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * terminal applications for text styling.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Ansi4BitColor implements AnsiElement {
 

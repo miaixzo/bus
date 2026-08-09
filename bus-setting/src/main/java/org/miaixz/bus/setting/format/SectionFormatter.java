@@ -30,7 +30,6 @@ import org.miaixz.bus.setting.nimble.ini.IniSectionService;
  * A formatter that parses a string value into an {@link IniSection} object.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SectionFormatter extends AbstractFormatter<IniSection> {
 

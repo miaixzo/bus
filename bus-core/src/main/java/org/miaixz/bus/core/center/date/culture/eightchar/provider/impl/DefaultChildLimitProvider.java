@@ -27,7 +27,6 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
  * Default implementation for calculating "Child Limit" (童限) information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DefaultChildLimitProvider extends AbstractChildLimitProvider {
 

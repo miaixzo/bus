@@ -40,7 +40,6 @@ import org.miaixz.bus.logger.Logger;
  * Idempotent response-body ownership bridge for one pooled HTTP connection lease.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class HttpConnectionLease {
 

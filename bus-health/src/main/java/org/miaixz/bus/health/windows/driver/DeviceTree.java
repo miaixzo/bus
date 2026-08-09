@@ -38,7 +38,6 @@ import org.miaixz.bus.health.builtin.jna.Struct;
  * Queries device interfaces via Config Manager Device Tree functions
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class DeviceTree {

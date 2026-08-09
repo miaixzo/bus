@@ -33,7 +33,6 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
  * Immutable externally supplied DNSSEC signing key snapshot.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsSigningKey {
 

@@ -31,7 +31,6 @@ import org.apache.poi.ss.usermodel.Cell;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface CellEditor {

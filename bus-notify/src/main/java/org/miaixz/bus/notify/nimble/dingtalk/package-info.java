@@ -21,6 +21,5 @@
  * Provides support for DingTalk messaging service.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.notify.nimble.dingtalk;

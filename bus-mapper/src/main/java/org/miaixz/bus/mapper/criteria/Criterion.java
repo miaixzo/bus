@@ -32,7 +32,6 @@ import org.miaixz.bus.mapper.parsing.ColumnMeta;
  * Represents a single SQL query condition unit.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

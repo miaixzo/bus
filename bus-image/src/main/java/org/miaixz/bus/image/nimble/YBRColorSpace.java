@@ -26,7 +26,6 @@ import java.io.Serial;
  * Represents the YBRColorSpace type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class YBRColorSpace extends ColorSpace {
 

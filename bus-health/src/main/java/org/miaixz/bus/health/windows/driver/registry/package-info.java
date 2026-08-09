@@ -21,6 +21,5 @@
  * Provides functions to query data in Windows Registry
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.health.windows.driver.registry;

@@ -23,6 +23,5 @@
  * <a href="https://github.com/vdurmont/emoji-java">https://github.com/vdurmont/emoji-java</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.extra.emoji;

@@ -34,7 +34,6 @@ import org.miaixz.bus.gitlab.support.ISO8601;
  *
  * @see <a href="https://docs.gitlab.com/ce/api/personal_access_tokens.html">Personal access token API at GitLab</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PersonalAccessTokenApi extends AbstractApi {
 

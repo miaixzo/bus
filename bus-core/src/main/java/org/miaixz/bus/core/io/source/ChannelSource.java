@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * A {@link Source} implementation that reads from a {@link ReadableByteChannel} into writable buffer segments.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ChannelSource implements Source {
 

@@ -46,7 +46,6 @@ import org.miaixz.bus.core.xyz.ZoneKit;
  *
  * @see FastDatePrinter
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FastDateParser extends SimpleDatePrinter implements PositionDateParser {
 
@@ -535,7 +534,6 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * Interface for date field parsing strategies.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     interface Strategy {
 
@@ -566,7 +564,6 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * Class to store parsing strategy and field width.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class StrategyAndWidth {
 
@@ -612,7 +609,6 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * Strategy for parsing a single field.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static abstract class PatternStrategy implements Strategy {
 
@@ -681,7 +677,6 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * Strategy for copying static or quoted fields in the format pattern.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class CopyQuotedStrategy implements Strategy {
 
@@ -737,7 +732,6 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * Strategy for parsing text fields (case-insensitive).
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class CaseInsensitiveTextStrategy extends PatternStrategy {
 
@@ -793,7 +787,6 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * Strategy for parsing number fields.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class NumberStrategy implements Strategy {
 
@@ -910,7 +903,6 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * Strategy for parsing time zone fields.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     static class TimeZoneStrategy extends PatternStrategy {
 
@@ -1014,7 +1006,6 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
          * Time zone information class.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         private static class TzInfo {
 
@@ -1047,7 +1038,6 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * Strategy for parsing ISO 8601 time zone formats.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static class ISO8601TimeZoneStrategy extends PatternStrategy {
 
@@ -1114,7 +1104,6 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * Strategy parser for parsing format strings.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private class StrategyParser {
 

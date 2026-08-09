@@ -35,7 +35,6 @@ import org.miaixz.bus.health.unix.shared.jna.OpenBsdLibc;
  * Memory obtained by sysctl vm.stats
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class OpenBsdGlobalMemory extends AbstractGlobalMemory {

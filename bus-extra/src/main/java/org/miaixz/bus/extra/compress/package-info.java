@@ -27,6 +27,5 @@
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.extra.compress;

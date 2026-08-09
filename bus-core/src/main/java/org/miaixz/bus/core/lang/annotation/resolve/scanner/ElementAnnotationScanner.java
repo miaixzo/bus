@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.PredicateKit;
  * Scans annotations on an {@link AnnotatedElement} without supporting hierarchy traversal.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ElementAnnotationScanner implements AnnotationScanner {
 

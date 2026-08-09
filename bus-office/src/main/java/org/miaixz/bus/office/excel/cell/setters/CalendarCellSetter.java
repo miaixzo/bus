@@ -27,7 +27,6 @@ import org.apache.poi.ss.usermodel.Cell;
  * {@link CellSetter} for {@link Calendar} values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CalendarCellSetter implements CellSetter {
 

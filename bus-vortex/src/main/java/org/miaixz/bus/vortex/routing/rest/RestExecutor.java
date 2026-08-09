@@ -75,7 +75,6 @@ import reactor.core.publisher.Mono;
  * Generic type parameters: {@code Executor<ServerRequest, ServerResponse>}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
 

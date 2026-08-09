@@ -40,7 +40,6 @@ import java.io.Serializable;
  *
  * @param <T> the type of objects managed by this pool
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ObjectPool<T> extends Closeable, Serializable {
 

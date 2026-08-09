@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy.dict.Philips_US_Imaging_DD_042;
  * Represents the PrivateTag type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PrivateTag {
 

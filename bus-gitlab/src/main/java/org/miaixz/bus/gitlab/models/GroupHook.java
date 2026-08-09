@@ -27,7 +27,6 @@ import java.util.Date;
  * The group hook class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GroupHook implements Serializable {
 

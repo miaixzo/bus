@@ -73,7 +73,6 @@ import org.miaixz.bus.tempus.pattern.CronPattern;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Scheduler implements Serializable {
 

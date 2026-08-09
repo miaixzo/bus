@@ -36,7 +36,6 @@ import org.miaixz.bus.logger.Logger;
  *
  * @param <T> item type
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Broker<T> {
 
@@ -89,7 +88,6 @@ public interface Broker<T> {
      *
      * @param <T> item type
      * @author Kimi Liu
-     * @since Java 21+
      */
     class FileBroker<T> implements Broker<T> {
 
@@ -626,7 +624,6 @@ public interface Broker<T> {
          *
          * @param <T> item type
          * @author Kimi Liu
-         * @since Java 21+
          */
         public static final class Session<T> {
 
@@ -807,7 +804,6 @@ public interface Broker<T> {
          * Mutable session segment state.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         private static final class SessionSegmentState {
 

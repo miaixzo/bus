@@ -36,7 +36,6 @@ import org.miaixz.bus.fabric.protocol.Cookie;
  * Parses and formats HTTP cookies with the shared immutable {@link Cookie} value.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpCookie {
 

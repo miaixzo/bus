@@ -32,7 +32,6 @@ import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
  * Queries Thread Information performance counter
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class ThreadInformation {
@@ -90,7 +89,6 @@ public final class ThreadInformation {
      * Thread performance counters
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ThreadPerformanceProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
 

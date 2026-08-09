@@ -35,7 +35,6 @@ import org.miaixz.bus.extra.image.ImageKit;
  * CAPTCHA provider that uses interfering lines.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LineProvider extends AbstractProvider {
 

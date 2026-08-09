@@ -39,7 +39,6 @@ import org.miaixz.bus.health.windows.driver.DeviceTree;
  * Windows Usb Device
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public class WindowsUsbDevice extends AbstractUsbDevice {

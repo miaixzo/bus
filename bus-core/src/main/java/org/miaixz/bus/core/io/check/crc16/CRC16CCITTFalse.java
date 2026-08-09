@@ -27,7 +27,6 @@ import java.io.Serial;
  * XORed with 0x0000.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CRC16CCITTFalse extends CRC16Checksum {
 

@@ -35,7 +35,6 @@ import org.miaixz.bus.health.unix.shared.jna.CLibrary;
  * Queries logged in users on macOS.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Who {

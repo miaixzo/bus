@@ -24,7 +24,6 @@ package org.miaixz.bus.gitlab.hooks.system;
  * GitLab server.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface SystemHookListener extends java.util.EventListener {
 

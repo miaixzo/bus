@@ -22,6 +22,5 @@
  * constructing SQL statements based on entity metadata and conditions.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.mapper.provider;

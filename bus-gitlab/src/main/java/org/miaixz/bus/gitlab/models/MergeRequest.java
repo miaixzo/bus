@@ -33,7 +33,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
  * The merge request class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MergeRequest implements Serializable {
 

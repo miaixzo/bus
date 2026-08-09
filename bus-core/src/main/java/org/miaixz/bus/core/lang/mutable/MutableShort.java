@@ -28,7 +28,6 @@ import org.miaixz.bus.core.xyz.CompareKit;
  *
  * @see Short
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MutableShort extends Number implements Comparable<MutableShort>, Mutable<Number> {
 

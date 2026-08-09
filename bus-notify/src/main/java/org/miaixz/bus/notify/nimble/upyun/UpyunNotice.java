@@ -33,7 +33,6 @@ import org.miaixz.bus.notify.magic.Notice;
  * Notice for Upyun SMS service.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
@@ -61,7 +60,6 @@ public class UpyunNotice extends Notice {
      * Represents the result of sending an SMS to a mobile number.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter

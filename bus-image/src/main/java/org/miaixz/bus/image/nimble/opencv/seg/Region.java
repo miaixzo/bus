@@ -44,7 +44,6 @@ import org.miaixz.bus.image.nimble.opencv.PlanarImage;
  * constituent segments using the shoelace formula.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Region {
 
@@ -193,7 +192,6 @@ public class Region {
         return numberOfPixels > UNINITIALIZED_PIXEL_COUNT;
     }
 
-    // Static factory methods for building segments from binary images
     /**
      * Builds the segment list.
      *

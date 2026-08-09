@@ -23,7 +23,6 @@ package org.miaixz.bus.cortex.setting.delivery;
  * Minimal publisher contract used by runtime setting overlays.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface RuntimeItemOverlayPublisher {
 

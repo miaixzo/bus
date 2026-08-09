@@ -26,7 +26,6 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * temporarily moves rarely accessed information to a disk or other storage device.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public interface VirtualMemory {

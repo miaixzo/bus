@@ -21,6 +21,5 @@
  * UID Dictionary from DL_INTERNAL_USE
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.DL_INTERNAL_USE;

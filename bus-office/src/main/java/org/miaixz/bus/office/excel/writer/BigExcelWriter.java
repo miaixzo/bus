@@ -41,7 +41,6 @@ import org.miaixz.bus.office.excel.WorkbookKit;
  * that point.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BigExcelWriter extends ExcelWriter {
 

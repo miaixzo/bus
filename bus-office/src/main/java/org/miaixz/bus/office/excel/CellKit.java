@@ -37,7 +37,6 @@ import org.miaixz.bus.office.excel.style.StyleSet;
  * Reads and modifies cells in Excel tables.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CellKit {
 

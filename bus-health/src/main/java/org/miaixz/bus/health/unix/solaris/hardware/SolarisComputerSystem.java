@@ -39,7 +39,6 @@ import org.miaixz.bus.health.unix.shared.hardware.UnixBaseboard;
  * Hardware data obtained from smbios.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class SolarisComputerSystem extends AbstractComputerSystem {
@@ -232,7 +231,6 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
      * The SmbType enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum SmbType {
         /**
@@ -254,7 +252,6 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
      * The SmbiosStrings class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class SmbiosStrings {
 

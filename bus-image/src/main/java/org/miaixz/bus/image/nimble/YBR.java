@@ -23,7 +23,6 @@ package org.miaixz.bus.image.nimble;
  * Defines the YBR values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum YBR {
 

@@ -42,7 +42,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the ImageWriterFactory type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageWriterFactory implements Serializable {
 
@@ -307,7 +306,6 @@ public class ImageWriterFactory implements Serializable {
      * Represents the ImageWriterParam type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class ImageWriterParam implements Serializable {
 

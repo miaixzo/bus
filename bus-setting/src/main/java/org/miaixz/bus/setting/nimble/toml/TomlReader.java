@@ -41,7 +41,6 @@ import org.miaixz.bus.logger.Logger;
  * This class supports a lenient bare key syntax in addition to the standard {@code A-Za-z0-9_-} characters.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TomlReader {
 

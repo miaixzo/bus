@@ -35,7 +35,6 @@ import org.miaixz.bus.fabric.Builder;
  * @param weight             priority weight in the HTTP/2 public range 1..256
  * @param exclusive          true when the dependency is exclusive
  * @author Kimi Liu
- * @since Java 21+
  */
 public record Http2Priority(int dependencyStreamId, int weight, boolean exclusive) {
 

@@ -42,7 +42,6 @@ import org.miaixz.bus.extra.json.JsonWriteOptions;
  * Spring HTTP converter backed by the application-wide Bus JSON provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JsonMessageConverter implements MessageConverterRegistrar {
 

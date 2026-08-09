@@ -33,7 +33,6 @@ import org.miaixz.bus.core.lang.Normal;
  * property is evaluated only as the secondary activation source.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

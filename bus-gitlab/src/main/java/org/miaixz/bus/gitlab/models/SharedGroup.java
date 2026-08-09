@@ -31,7 +31,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
  * The shared group class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SharedGroup implements Serializable {
 

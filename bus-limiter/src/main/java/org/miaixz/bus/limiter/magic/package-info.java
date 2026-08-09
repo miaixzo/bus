@@ -22,6 +22,5 @@
  * fundamental building blocks for implementing various flow control mechanisms within the limiter module.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.limiter.magic;

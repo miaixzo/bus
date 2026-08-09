@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The markdown class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Markdown implements Serializable {
 

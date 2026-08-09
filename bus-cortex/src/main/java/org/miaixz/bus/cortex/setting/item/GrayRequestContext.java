@@ -30,7 +30,6 @@ import lombok.experimental.SuperBuilder;
  * Request context used by gray rule matching.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

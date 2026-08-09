@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  * lifecycle, including dynamic negotiation of presentation contexts and automatic closure of idle connections.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StreamSCU {
 
@@ -786,7 +785,6 @@ public class StreamSCU {
      * A factory for creating DIMSE response handlers.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FunctionalInterface
     public interface RSPHandlerFactory {

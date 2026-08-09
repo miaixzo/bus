@@ -54,7 +54,6 @@ import org.miaixz.bus.limiter.proxy.ByteBuddyProxy;
  * {@link Downgrade}, the bean is wrapped in a ByteBuddy proxy to enforce the specified strategies.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LimiterScanner implements InstantiationAwareBeanPostProcessor {
 

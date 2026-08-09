@@ -36,7 +36,6 @@ import org.miaixz.bus.logger.Logger;
  * client configurations and provides access to Kafka producers and consumers.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class KafkaProvider implements MQProvider {
 

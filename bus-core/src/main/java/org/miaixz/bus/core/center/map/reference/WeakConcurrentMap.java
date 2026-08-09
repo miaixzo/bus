@@ -36,7 +36,6 @@ import org.miaixz.bus.core.lang.ref.WeakObject;
  * @param <K> The type of keys in the map.
  * @param <V> The type of values in the map.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WeakConcurrentMap<K, V> extends ReferenceConcurrentMap<K, V> {
 

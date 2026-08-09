@@ -45,7 +45,6 @@ import org.miaixz.bus.shade.safety.provider.JdkEncryptorProvider;
  * arguments and manifest attributes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Launcher {
 

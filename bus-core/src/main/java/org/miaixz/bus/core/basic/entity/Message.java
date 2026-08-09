@@ -36,7 +36,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
  *
  * @param <T> the response payload type
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

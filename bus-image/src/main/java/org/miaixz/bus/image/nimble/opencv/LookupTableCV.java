@@ -39,7 +39,6 @@ import org.opencv.core.Mat;
  * @see DataBufferUShort
  * @see DataBufferShort
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class LookupTableCV {
 
@@ -578,6 +577,7 @@ public final class LookupTableCV {
     }
 
     // Expand channels methods
+
     /**
      * Executes the expand channels byte to byte operation.
      *
@@ -649,6 +649,7 @@ public final class LookupTableCV {
     }
 
     // Process per band methods
+
     /**
      * Processes the per band byte to byte.
      *
@@ -762,7 +763,6 @@ public final class LookupTableCV {
      * @param byteData  the byte data.
      * @param shortData the short data.
      * @author Kimi Liu
-     * @since Java 21+
      */
     private record LutContext(int numBands, int channels, int[] offsets, byte[][] byteData, short[][] shortData) {
 

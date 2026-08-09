@@ -23,7 +23,6 @@ package org.miaixz.bus.gitlab.models;
  * The Git lab form value class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GitLabFormValue {
 

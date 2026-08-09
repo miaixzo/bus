@@ -21,6 +21,5 @@
  * Provides DICOM UID dictionary packages grouped by vendor and private dictionary source.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict;

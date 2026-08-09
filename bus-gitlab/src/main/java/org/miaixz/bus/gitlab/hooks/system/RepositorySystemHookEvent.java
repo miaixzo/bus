@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The repository system hook event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RepositorySystemHookEvent extends AbstractSystemHookEvent {
 

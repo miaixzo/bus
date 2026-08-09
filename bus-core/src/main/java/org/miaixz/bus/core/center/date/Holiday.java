@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Legal holidays (since 2001-12-29)
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Holiday extends Loops {
 

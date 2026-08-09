@@ -30,7 +30,6 @@ import org.miaixz.bus.core.center.date.culture.minor.PengZuEarthBranch;
  * extends {@link Samsara} to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EarthBranch extends Samsara {
 

@@ -59,7 +59,6 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsTrustAnchor;
  * DNSSEC chain validator from configured trust anchors to a decoded response RRSet.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsDnssecChainValidator {
 
@@ -1237,7 +1236,6 @@ public final class DnsDnssecChainValidator {
      * Parsed RRSIG RDATA fields used for cryptographic validation.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class SignatureFields {
 

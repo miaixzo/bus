@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  * each user to track and enforce limits.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RequestProvider implements Provider {
 

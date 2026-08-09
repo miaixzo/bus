@@ -76,7 +76,6 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MegaProvider extends AbstractProvider {
 
@@ -238,8 +237,8 @@ public class MegaProvider extends AbstractProvider {
             // Find file by name
             String fileHandle = findFileByName(fileName, bucket);
             if (fileHandle == null) {
-                return Message.<byte[]>builder().errcode(ErrorCode._113003.getKey())
-                        .errmsg(ErrorCode._113003.getValue()).build();
+                return Message.<byte[]>builder().errcode(ErrorCode._100405.getKey())
+                        .errmsg(ErrorCode._100405.getValue()).build();
             }
 
             // Get download URL
@@ -451,7 +450,7 @@ public class MegaProvider extends AbstractProvider {
 
             String fileHandle = findFileByName(oldName, bucket);
             if (fileHandle == null) {
-                return Message.<Void>builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
+                return Message.<Void>builder().errcode(ErrorCode._100405.getKey()).errmsg(ErrorCode._100405.getValue())
                         .build();
             }
 
@@ -683,7 +682,7 @@ public class MegaProvider extends AbstractProvider {
 
             String fileHandle = findFileByName(fileName, bucket);
             if (fileHandle == null) {
-                return Message.<Void>builder().errcode(ErrorCode._113003.getKey()).errmsg(ErrorCode._113003.getValue())
+                return Message.<Void>builder().errcode(ErrorCode._100405.getKey()).errmsg(ErrorCode._100405.getValue())
                         .build();
             }
 

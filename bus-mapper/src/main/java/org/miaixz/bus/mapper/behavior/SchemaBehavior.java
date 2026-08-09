@@ -37,7 +37,6 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * Schema behavior exposed by a database dialect.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface SchemaBehavior {
 

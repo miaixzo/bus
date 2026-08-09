@@ -27,7 +27,6 @@ import javax.imageio.ImageWriteParam;
  * Represents the J2kImageWriteParam type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class J2kImageWriteParam extends ImageWriteParam {
 

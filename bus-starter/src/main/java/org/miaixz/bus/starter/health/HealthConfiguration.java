@@ -42,7 +42,6 @@ import org.miaixz.bus.starter.annotation.EnableHealth;
  * Spring Boot's in-memory liveness and readiness states without requiring Actuator.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(value = { HealthProperties.class })
 @Configuration(proxyBeanMethods = false)

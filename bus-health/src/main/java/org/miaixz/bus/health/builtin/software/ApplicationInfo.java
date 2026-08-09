@@ -30,7 +30,6 @@ import java.util.Objects;
  * additional information map.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ApplicationInfo {
 

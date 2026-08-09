@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * An ANT-style path resource loader. This loader supports ANT-style path expressions for loading resources.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AntLoader extends PatternLoader implements Loader {
 

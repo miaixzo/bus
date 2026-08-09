@@ -33,7 +33,6 @@ import lombok.experimental.SuperBuilder;
  * file storage operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

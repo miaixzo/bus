@@ -45,7 +45,6 @@ import org.miaixz.bus.proxy.invoker.ProxyChain;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Complex {
 

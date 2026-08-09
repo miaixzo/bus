@@ -39,7 +39,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * This class is used to filter Groups when getting lists of epics.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EpicFilter implements Serializable {
 
@@ -281,7 +280,6 @@ public class EpicFilter implements Serializable {
      * The epic field enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum EpicField {
 

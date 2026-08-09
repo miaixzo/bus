@@ -30,7 +30,6 @@ import org.miaixz.bus.gitlab.models.MarkdownRequest;
  * This class provides an entry point to all the GitLab API markdown calls.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MarkdownApi extends AbstractApi {
 
@@ -54,7 +53,6 @@ public class MarkdownApi extends AbstractApi {
      * @param text text to be transformed
      * @return a Markdown instance with transformed info
      * @throws RelevantException if any exception occurs
-     * @since GitLab 11.0
      */
     public Markdown getMarkdown(String text) throws RelevantException {
 
@@ -75,7 +73,6 @@ public class MarkdownApi extends AbstractApi {
      * @param markdownRequest a request of markdown transformation
      * @return a Markdown instance with transformed info
      * @throws RelevantException if any exception occurs
-     * @since GitLab 11.0
      */
     public Markdown getMarkdown(MarkdownRequest markdownRequest) throws RelevantException {
 

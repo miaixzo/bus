@@ -55,7 +55,6 @@ import org.miaixz.bus.core.xyz.CollKit;
  * @param <T> The type of {@link AnnotationMapping}.
  * @see RepeatableAnnotationCollector
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotation>>
         implements AnnotatedElement, Iterable<T> {
@@ -321,7 +320,6 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
      * hierarchy of annotations stemming from a single root annotation.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class Aggregation {
 

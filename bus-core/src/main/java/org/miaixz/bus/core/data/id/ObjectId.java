@@ -41,12 +41,11 @@ import org.miaixz.bus.core.xyz.StringKit;
  *     | Timestamp | Random Number | Auto-incrementing Counter |
  *     |   4 bytes |   4 bytes     |    4 bytes                |
  * </pre>
- *
+ * <p>
  * Reference: <a href=
  * "https://github.com/mongodb/mongo-java-driver/blob/master/bson/src/main/org/bson/types/ObjectId.java">ObjectId</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ObjectId {
 

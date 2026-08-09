@@ -45,7 +45,6 @@ import org.miaixz.bus.logger.Logger;
  * Centralizes PDH counter setup so applications can add, query, and remove counters.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class PerfDataKit {
@@ -240,7 +239,6 @@ public final class PerfDataKit {
      * Encapsulates the three string components of a performance counter
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Immutable
     public static final class PerfCounter {

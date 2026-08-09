@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The badge class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Badge implements Serializable {
 
@@ -202,7 +201,6 @@ public class Badge implements Serializable {
      * The badge kind enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum BadgeKind {
 

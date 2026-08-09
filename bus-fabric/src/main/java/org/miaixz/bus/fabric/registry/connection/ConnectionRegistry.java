@@ -41,7 +41,6 @@ import org.miaixz.bus.fabric.observe.metrics.FabricMeter.Counter;
  * Thread-safe registry for active network connections.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ConnectionRegistry implements AutoCloseable {
 

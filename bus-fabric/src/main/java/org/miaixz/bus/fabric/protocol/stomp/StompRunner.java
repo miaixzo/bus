@@ -55,7 +55,6 @@ import org.miaixz.bus.logger.Logger;
  * Opens STOMP sessions from an immutable STOMP exchange specification.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class StompRunner {
 

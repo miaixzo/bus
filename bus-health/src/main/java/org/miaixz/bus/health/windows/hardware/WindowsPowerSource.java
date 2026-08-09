@@ -44,7 +44,6 @@ import org.miaixz.bus.health.windows.jna.PowrProf;
  * A Power Source
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class WindowsPowerSource extends AbstractPowerSource {

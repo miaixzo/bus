@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  *
  * @param <E> the concrete epic model type
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

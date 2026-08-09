@@ -24,6 +24,5 @@
  * Access Protocol) operations, such as user photo management.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.metric.ldap;

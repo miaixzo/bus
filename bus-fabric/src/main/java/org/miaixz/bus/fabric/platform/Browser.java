@@ -32,7 +32,6 @@ import org.miaixz.bus.fabric.Builder;
  * Browser classifier parsed from a User-Agent value.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Browser {
 

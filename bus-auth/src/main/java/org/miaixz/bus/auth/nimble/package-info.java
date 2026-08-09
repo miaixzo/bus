@@ -21,6 +21,5 @@
  * Core components, all authorized logins are based on the {@code provider} implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.auth.nimble;

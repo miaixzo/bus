@@ -36,7 +36,6 @@ import org.miaixz.bus.image.metric.net.ApplicationEntity;
  * configuration.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DcmLdap implements Closeable {
 

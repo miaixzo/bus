@@ -44,7 +44,6 @@ import org.miaixz.bus.core.lang.mutable.MutableObject;
  * @param <K> The type of keys.
  * @param <V> The type of values.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SieveCache<K, V> extends LockedCache<K, V> {
 
@@ -302,10 +301,9 @@ public class SieveCache<K, V> extends LockedCache<K, V> {
     /**
      * Cache object wrapper extending {@link CacheObject} to include SIEVE-specific attributes.
      *
-     * @author Kimi Liu
-     * @since Java 21+
      * @param <K> the value type
      * @param <V> the value type
+     * @author Kimi Liu
      */
     private static class SieveCacheObject<K, V> extends CacheObject<K, V> {
 

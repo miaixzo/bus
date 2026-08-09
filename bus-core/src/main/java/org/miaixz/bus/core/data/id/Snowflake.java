@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.RandomKit;
  * Sign bit (1bit) - Relative timestamp (41bit) - Data center ID (5bit) - Machine ID (5bit) - Sequence number (12bit)
  * (0) - (0000000000 0000000000 0000000000 0000000000 0) - (00000) - (00000) - (000000000000)
  * </pre>
- *
+ * <p>
  * The first bit is unused (the sign bit indicates a positive number). The next 41 bits are the timestamp in
  * milliseconds (41 bits can be used for 69 years). Then there are 5 bits for the datacenterId and 5 bits for the
  * workerId (10 bits can support up to 1024 nodes). The last 12 bits are a counter within the millisecond (a 12-bit
@@ -46,7 +46,6 @@ import org.miaixz.bus.core.xyz.RandomKit;
  * whether the length is 18 or 19, see: https://blog.csdn.net/unifirst/article/details/80408050
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Snowflake implements Serializable {
 

@@ -37,7 +37,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * an {@link Inflater} to perform the decompression, writing the decompressed data to a {@link Buffer}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class InflaterSource implements Source {
 
@@ -170,7 +169,7 @@ public final class InflaterSource implements Source {
         releaseInflatedBytes();
         if (inflater.getRemaining() != 0)
             throw new IllegalStateException(Symbol.QUESTION_MARK); // Should not happen if releaseInflatedBytes is
-                                                                   // called correctly.
+        // called correctly.
 
         // If there are compressed bytes in the source, assign them to the inflater.
         if (source.exhausted()) {

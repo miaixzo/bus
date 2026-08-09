@@ -32,7 +32,6 @@ import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
  * cyclical operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SixtyCycleMonth extends Loops {
 

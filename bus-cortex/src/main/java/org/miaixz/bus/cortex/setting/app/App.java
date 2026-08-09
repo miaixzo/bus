@@ -35,7 +35,6 @@ import org.miaixz.bus.cortex.Type;
  * Application directory entry for the setting domain.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

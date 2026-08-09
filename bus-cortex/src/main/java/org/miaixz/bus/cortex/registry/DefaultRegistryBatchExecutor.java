@@ -33,7 +33,6 @@ import org.miaixz.bus.logger.Logger;
  * Default registry batch executor preserving the historical per-entry behavior.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DefaultRegistryBatchExecutor implements RegistryBatchExecutor {
 

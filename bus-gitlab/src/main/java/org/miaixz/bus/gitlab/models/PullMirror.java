@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * Pull mirror configuration and status for a project.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PullMirror implements Serializable {
 

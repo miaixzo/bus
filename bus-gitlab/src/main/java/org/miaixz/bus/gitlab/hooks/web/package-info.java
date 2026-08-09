@@ -24,6 +24,5 @@
  * events, merge request events, pipeline events, and more.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.gitlab.hooks.web;

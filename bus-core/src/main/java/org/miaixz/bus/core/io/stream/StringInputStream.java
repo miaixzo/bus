@@ -30,7 +30,6 @@ import org.miaixz.bus.core.xyz.ByteKit;
  * a byte stream using a specified character set.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StringInputStream extends ByteArrayInputStream {
 

@@ -30,7 +30,6 @@ import org.miaixz.bus.core.center.date.culture.Week;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class WeekParts extends MonthParts {
 

@@ -31,7 +31,6 @@ import org.miaixz.bus.notify.magic.Notice;
  * Notice for DingTalk notification messages.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

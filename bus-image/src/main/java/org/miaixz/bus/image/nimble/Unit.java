@@ -35,7 +35,6 @@ import org.miaixz.bus.core.center.function.PredicateX;
  * display labels instead of desktop resource bundles.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Unit {
 
@@ -402,7 +401,6 @@ public enum Unit {
      * Defines the UnitSystem values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum UnitSystem {
 

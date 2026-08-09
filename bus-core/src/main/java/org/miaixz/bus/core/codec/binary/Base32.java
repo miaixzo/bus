@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @see Base32Provider
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Base32 {
 

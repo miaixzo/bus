@@ -34,7 +34,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Immutable CORS configuration properties.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Validated
 @ConfigurationProperties(GeniusBuilder.CORS)

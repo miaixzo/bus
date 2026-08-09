@@ -34,7 +34,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
  * Configures response wrapping advice.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(ResponseAdviceProperties.class)

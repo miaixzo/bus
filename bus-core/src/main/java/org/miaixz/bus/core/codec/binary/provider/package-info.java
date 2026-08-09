@@ -22,6 +22,5 @@
  * binary-to-text and text-to-binary encoding schemes, such as Base16, Base32, Base58, and Base62.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.codec.binary.provider;

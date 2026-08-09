@@ -29,7 +29,6 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
  * Defines the Value contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Value {
 

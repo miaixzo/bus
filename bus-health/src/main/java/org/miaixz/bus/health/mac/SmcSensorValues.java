@@ -25,7 +25,6 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * Interprets values reported by macOS SMC sensor keys.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class SmcSensorValues {

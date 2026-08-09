@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  * The slack service class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SlackService extends NotificationService {
 

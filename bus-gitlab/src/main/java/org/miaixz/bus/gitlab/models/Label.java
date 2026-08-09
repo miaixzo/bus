@@ -30,7 +30,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The label class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Label implements Serializable {
 

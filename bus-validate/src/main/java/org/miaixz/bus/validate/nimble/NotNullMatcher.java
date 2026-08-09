@@ -28,7 +28,6 @@ import org.miaixz.bus.validate.magic.annotation.NotNull;
  * Validator for the {@link NotNull} annotation. Checks if an object is not null.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NotNullMatcher implements Matcher<Object, NotNull> {
 

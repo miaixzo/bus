@@ -23,7 +23,6 @@ package org.miaixz.bus.image.nimble.codec.jpeg;
  * Represents the JPEG type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JPEG {
 

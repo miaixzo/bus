@@ -21,6 +21,5 @@
  * This package contains the specific API endpoints for the Tenpay (QQ Wallet) payment provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.pay.nimble.tenpay.api;

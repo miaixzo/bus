@@ -35,7 +35,6 @@ import org.miaixz.bus.core.xyz.RecordKit;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BeanDescFactory {
 

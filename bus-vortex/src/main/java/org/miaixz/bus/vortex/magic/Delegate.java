@@ -37,7 +37,6 @@ import org.miaixz.bus.core.basic.normal.Consts;
  *
  * @see org.miaixz.bus.vortex.provider.AuthorizeProvider
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

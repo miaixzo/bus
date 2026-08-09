@@ -36,7 +36,6 @@ import org.miaixz.bus.logger.Operator;
  * Redacts structured sensitive values from logger arguments while preserving provider-side formatting.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class Sanitizer implements Operator {
 

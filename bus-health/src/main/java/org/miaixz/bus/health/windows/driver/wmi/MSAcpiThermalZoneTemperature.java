@@ -31,7 +31,6 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * Queries WMI class {@code MSAcpi_ThermalZoneTemperature}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class MSAcpiThermalZoneTemperature {
@@ -68,7 +67,6 @@ public final class MSAcpiThermalZoneTemperature {
      * Current temperature property.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum TemperatureProperty {
         /**

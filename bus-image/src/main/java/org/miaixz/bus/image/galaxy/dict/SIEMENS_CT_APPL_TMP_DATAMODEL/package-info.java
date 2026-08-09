@@ -21,6 +21,5 @@
  * UID Dictionary from SIEMENS_CT_APPL_TMP_DATAMODEL
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_CT_APPL_TMP_DATAMODEL;

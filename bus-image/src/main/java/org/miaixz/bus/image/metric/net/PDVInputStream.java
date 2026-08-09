@@ -29,7 +29,6 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  * Represents the PDVInputStream type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class PDVInputStream extends InputStream {
 

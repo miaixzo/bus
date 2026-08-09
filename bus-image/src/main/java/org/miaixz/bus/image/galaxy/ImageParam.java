@@ -30,7 +30,6 @@ import org.miaixz.bus.image.galaxy.data.ElementDictionary;
  * encapsulate information about a specific data element within an image.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageParam {
 

@@ -24,7 +24,6 @@ package org.miaixz.bus.mapper;
  * when a compatible mapper scanner is configured with this marker interface.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Marker {
 

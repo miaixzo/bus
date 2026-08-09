@@ -42,7 +42,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * This class is used to filter merge requests when getting lists of them.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MergeRequestFilter implements Serializable {
 
@@ -973,7 +972,6 @@ public class MergeRequestFilter implements Serializable {
      * The merge request field enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum MergeRequestField {
 

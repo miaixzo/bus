@@ -42,7 +42,6 @@ import org.miaixz.bus.logger.Logger;
  * execution of a {@link GetSCU} instance.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CGet {
 

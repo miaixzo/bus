@@ -35,7 +35,6 @@ import org.miaixz.bus.office.excel.cell.values.FormulaCellValue;
  * values and styles on a virtual cell will not take effect in the actual workbook.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class VirtualCell extends CellBase {
 

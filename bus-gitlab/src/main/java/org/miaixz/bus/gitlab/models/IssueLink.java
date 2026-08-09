@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The issue link class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IssueLink implements Serializable {
 

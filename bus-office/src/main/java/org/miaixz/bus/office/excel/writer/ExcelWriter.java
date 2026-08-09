@@ -62,7 +62,6 @@ import org.miaixz.bus.office.excel.style.StyleSet;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
 

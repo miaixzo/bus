@@ -31,7 +31,6 @@ import org.miaixz.bus.pay.magic.Voucher;
  * UnionPay Cloud QuickPass - Get UserID for JS Pay model.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

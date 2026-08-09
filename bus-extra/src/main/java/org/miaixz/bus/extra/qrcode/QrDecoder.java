@@ -35,7 +35,6 @@ import org.miaixz.bus.extra.image.ImageKit;
  * QR code (barcode, etc.) decoder.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class QrDecoder implements Decoder<Image, String> {
 

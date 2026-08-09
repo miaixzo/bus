@@ -23,7 +23,6 @@ package org.miaixz.bus.fabric.codec.body;
  * Marker contract for message-oriented protocol bodies.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface MessageBody extends Body {
 

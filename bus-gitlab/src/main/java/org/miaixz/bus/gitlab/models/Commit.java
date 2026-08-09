@@ -30,7 +30,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The commit class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Commit implements Serializable {
 

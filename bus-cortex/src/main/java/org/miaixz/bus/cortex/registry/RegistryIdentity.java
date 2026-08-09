@@ -32,7 +32,6 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class RegistryIdentity {
 

@@ -23,7 +23,6 @@ package org.miaixz.bus.cortex.magic.runtime;
  * Common diagnostics contract for Cortex runtime components.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface CortexDiagnostics {
 

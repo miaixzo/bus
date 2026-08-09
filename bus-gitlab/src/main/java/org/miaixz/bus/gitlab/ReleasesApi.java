@@ -34,7 +34,6 @@ import org.miaixz.bus.gitlab.models.ReleaseParams;
  *
  * @see <a href="https://docs.gitlab.com/ce/api/releases">Releases API at GitLab</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ReleasesApi extends AbstractApi {
 

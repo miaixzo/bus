@@ -25,6 +25,5 @@
  * before the request enters the Vortex authorization provider chain.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.guard.token;

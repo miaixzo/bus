@@ -23,7 +23,6 @@ package org.miaixz.bus.shade.screw.metadata;
  * Represents a column in a database table.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Column {
 

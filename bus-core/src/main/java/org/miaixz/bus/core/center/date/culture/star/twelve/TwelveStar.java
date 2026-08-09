@@ -27,7 +27,6 @@ import org.miaixz.bus.core.center.date.culture.Samsara;
  * entities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TwelveStar extends Samsara {
 

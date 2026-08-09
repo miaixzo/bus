@@ -29,7 +29,6 @@ import org.miaixz.bus.notify.magic.Notice;
  * Notice for WeChat messaging services.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

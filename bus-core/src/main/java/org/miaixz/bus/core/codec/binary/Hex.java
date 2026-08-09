@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @see Base16Provider
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Hex {
 

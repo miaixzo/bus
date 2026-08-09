@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * Memcached).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class KetamaHash implements Hash64<byte[]>, Hash32<byte[]> {
 

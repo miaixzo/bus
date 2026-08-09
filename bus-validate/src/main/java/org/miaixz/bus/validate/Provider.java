@@ -42,7 +42,6 @@ import org.miaixz.bus.validate.magic.annotation.Complex;
  * methods for the validation process.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Provider {
 

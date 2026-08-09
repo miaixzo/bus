@@ -32,7 +32,6 @@ import org.miaixz.bus.fabric.Message;
  * Immutable ordered guard rule chain.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class GuardChain implements GuardRule {
 

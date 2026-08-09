@@ -43,7 +43,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * @see Calendar#DECEMBER
  * @see Calendar#UNDECIMBER
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Month {
 

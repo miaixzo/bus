@@ -35,7 +35,6 @@ import reactor.core.publisher.Mono;
  * @param <I> The input type to be serialized
  * @param <O> The output type produced by the serialization
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Provider<I, O> {
 

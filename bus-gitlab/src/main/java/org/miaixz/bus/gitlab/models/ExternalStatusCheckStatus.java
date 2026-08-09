@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The external status check status class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ExternalStatusCheckStatus implements Serializable {
 
@@ -48,7 +47,6 @@ public class ExternalStatusCheckStatus implements Serializable {
      * The status enum.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Status {
 

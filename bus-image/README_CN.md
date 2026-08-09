@@ -8,11 +8,14 @@
 
 ## 项目介绍
 
-**Bus Image** 是一个企业级医学影像和 DICOM（医学数字成像与通信）处理框架，专为医疗应用设计。它全面支持医学影像数据处理、DICOM 协议操作、影像转码和医疗数据管理。
+**Bus Image** 是一个企业级医学影像和 DICOM（医学数字成像与通信）处理框架，专为医疗应用设计。它全面支持医学影像数据处理、DICOM
+协议操作、影像转码和医疗数据管理。
 
-该框架以性能和可靠性为核心，处理医学影像工作流的复杂需求，包括 DICOM 数据解析、影像格式转换、协议操作（C-STORE、C-MOVE、C-FIND 等）以及符合医疗影像标准。
+该框架以性能和可靠性为核心，处理医学影像工作流的复杂需求，包括 DICOM 数据解析、影像格式转换、协议操作（C-STORE、C-MOVE、C-FIND
+等）以及符合医疗影像标准。
 
 **核心能力:**
+
 - 完整的 DICOM 标准实现（符合 DICOM PS3.10）
 - 医学影像读取、写入和转码
 - 支持多种模态（CT、MR、US、XA 等）
@@ -28,6 +31,7 @@
 ### DICOM 数据处理
 
 **数据结构与解析**
+
 - 完整的 DICOM 数据模型实现（属性、标签、VR）
 - 支持所有标准 DICOM 值表示
 - 高效的二进制数据编码/解码
@@ -35,12 +39,14 @@
 - 私有标签和创建者支持
 
 **影像格式支持**
+
 - **原生格式**: 显式 VR 小端序、隐式 VR 小端序、显式 VR 大端序
 - **压缩格式**: JPEG（基线、扩展、无损）、JPEG 2000、JPEG-LS、RLE
 - **视频格式**: MPEG2、MPEG4、H.265 (HEVC)
 - **特殊格式**: 封装 PDF、STL、OBJ、MTL 模型
 
 **元数据管理**
+
 - 3000+ 标准 DICOM 标签字典
 - 私有标签解析和处理
 - DICOM IOD（信息对象定义）验证
@@ -50,6 +56,7 @@
 ### 医学影像处理
 
 **影像读写**
+
 ```java
 // 读取 DICOM 影像
 ImageReader reader = new ImageReader();
@@ -62,6 +69,7 @@ writer.write(file, attrs, image);
 ```
 
 **影像转码**
+
 - 传输语法转换
 - 压缩/解压缩
 - 色彩空间转换（RGB、YCbCr、CIELAB）
@@ -69,6 +77,7 @@ writer.write(file, attrs, image);
 - 多帧影像处理
 
 **影像增强**
+
 - 窗宽/窗位调整（VOI LUT）
 - 色彩查找表应用
 - 像素填充和叠加处理
@@ -76,6 +85,7 @@ writer.write(file, attrs, image);
 - 像素纵横比校正
 
 **高级渲染**
+
 - 表现 LUT（灰度、彩色）
 - ICC 色彩配置文件管理
 - 叠加渲染（图形、ROI）
@@ -85,6 +95,7 @@ writer.write(file, attrs, image);
 ### DICOM 网络协议
 
 **DIMSE 操作**
+
 ```java
 // C-STORE SCU - 存储 DICOM 影像
 StoreSCU storeSCU = new StoreSCU();
@@ -103,6 +114,7 @@ moveSCU.move(keys);
 ```
 
 **关联管理**
+
 - 应用实体（AE）标题协商
 - 表现上下文选择
 - 扩展协商支持
@@ -110,6 +122,7 @@ moveSCU.move(keys);
 - 超时和重试处理
 
 **数据转换**
+
 - DICOM 到 JSON
 - DICOM 到 XML
 - HL7 集成
@@ -120,26 +133,26 @@ moveSCU.move(keys);
 
 支持 **18+** 种医学影像模态：
 
-| 模态 | 描述 |
-| :--- | :--- |
-| **CT** | 计算机断层扫描 |
-| **MR** | 磁共振成像 |
-| **US** | 超声成像 |
-| **XA** | X 射线血管造影 |
-| **RF** | X 射线透视 |
-| **DX** | 数字 X 射线摄影 |
-| **MG** | 乳腺钼靶摄影 |
-| **PT** | 正电子发射断层扫描 |
-| **NM** | 核医学 |
-| **SC** | 次级捕获 |
-| **CR** | 计算机X射线摄影 |
-| **IO** | 口内X射线摄影 |
-| **ECG** | 心电图 |
-| **EPS** | 心脏电生理 |
-| **HD** | 血液动力学波形 |
-| **OP** | 眼科摄影 |
-| **XC** | 外部相机摄影 |
-| **GM** | 普通显微镜 |
+| 模态    | 描述               |
+|:--------|:-------------------|
+| **CT**  | 计算机断层扫描     |
+| **MR**  | 磁共振成像         |
+| **US**  | 超声成像           |
+| **XA**  | X 射线血管造影     |
+| **RF**  | X 射线透视         |
+| **DX**  | 数字 X 射线摄影    |
+| **MG**  | 乳腺钼靶摄影       |
+| **PT**  | 正电子发射断层扫描 |
+| **NM**  | 核医学             |
+| **SC**  | 次级捕获           |
+| **CR**  | 计算机X射线摄影    |
+| **IO**  | 口内X射线摄影      |
+| **ECG** | 心电图             |
+| **EPS** | 心脏电生理         |
+| **HD**  | 血液动力学波形     |
+| **OP**  | 眼科摄影           |
+| **XC**  | 外部相机摄影       |
+| **GM**  | 普通显微镜         |
 
 -----
 
@@ -425,6 +438,7 @@ List<String> ids = hl7Pix.query("PATIENT_ID_123");
 ### 核心类
 
 #### Builder
+
 提供静态辅助方法的实用类，用于常见操作。
 
 ```java
@@ -443,6 +457,7 @@ Builder.prepareToWriteFile(file);
 ```
 
 #### Format
+
 从 DICOM 属性创建字符串的格式化器，支持模式替换。
 
 ```java
@@ -460,6 +475,7 @@ String result = format.format(attrs);
 ```
 
 #### Tag
+
 DICOM 标签常量和工具（3000+ 预定义标签）。
 
 ```java
@@ -477,6 +493,7 @@ int[] tags = Tag.toTags(pathString);
 ```
 
 #### UID
+
 DICOM UID（唯一标识符）常量和生成。
 
 ```java
@@ -495,6 +512,7 @@ String seriesUID = UID.createSeriesUID();
 ### 数据结构
 
 #### Attributes
+
 主要的 DICOM 数据集容器。
 
 ```java
@@ -520,6 +538,7 @@ seq.add(item);
 ```
 
 #### VR (值表示)
+
 DICOM VR 类型。
 
 ```java
@@ -548,6 +567,7 @@ VR.UT  // 无限文本
 ### 影像处理
 
 #### ImageReader
+
 从 DICOM 文件读取医学影像。
 
 ```java
@@ -563,6 +583,7 @@ BufferedImage image = reader.readImage(file, param);
 ```
 
 #### ImageWriter
+
 将医学影像写入 DICOM 文件。
 
 ```java
@@ -578,6 +599,7 @@ writer.write(file, attrs, image, param);
 ```
 
 #### RGBImageVoiLUT
+
 用于窗位调整的 VOI LUT（感兴趣值）处理器。
 
 ```java
@@ -592,6 +614,7 @@ BufferedImage result = voiLut.lookup(image);
 ### 网络协议
 
 #### Device
+
 DICOM 网络设备配置。
 
 ```java
@@ -614,6 +637,7 @@ device.addApplicationEntity(ae);
 ```
 
 #### Association
+
 DICOM 关联管理。
 
 ```java
@@ -634,6 +658,7 @@ as.release();
 ### 实用类
 
 #### Editors
+
 用于修改 DICOM 属性的函数式接口。
 
 ```java
@@ -646,6 +671,7 @@ editor.apply(attrs, context);
 ```
 
 #### Dimse
+
 DICOM 消息服务元素常量。
 
 ```java
@@ -657,6 +683,7 @@ Dimse.C_ECHO_RQ
 ```
 
 #### Status
+
 DICOM 状态码。
 
 ```java
@@ -854,33 +881,36 @@ String charset = attrs.getSpecificCharacterSet();
 
 ## 版本兼容性
 
-| Bus Image 版本 | JDK 版本 | DICOM 标准 |
-| :--- | :--- | :--- |
-| 8.x | 17+ | DICOM PS3.10 2024a |
-| 7.x | 11+ | DICOM PS3.10 2023b |
+| Bus Image 版本 | JDK 版本 | DICOM 标准         |
+|:---------------|:---------|:-------------------|
+| 8.x            | 17+      | DICOM PS3.10 2024a |
+| 7.x            | 11+      | DICOM PS3.10 2023b |
 
 -----
 
 ## 性能考虑
 
 ### 内存使用
+
 - 大型 DICOM 文件（>100MB）需要足够的堆空间
 - 推荐: 对于典型工作负载使用 `-Xmx2g`
 - 多帧影像可能需要额外内存
 
 ### I/O 性能
+
 - 对文件操作使用缓冲流
 - 对于高吞吐量场景考虑 SSD 存储
 - 网络操作受益于连接池
 
 ### 压缩性能
-| 格式 | 压缩比 | 速度 | 质量 |
-| :--- | :--- | :--- | :--- |
-| RLE | 2:1 | 非常快 | 无损 |
-| JPEG 无损 | 3:1 | 快 | 无损 |
-| JPEG 2000 无损 | 3:1 | 中等 | 无损 |
-| JPEG 基线 | 10:1 | 快 | 有损 |
-| JPEG 2000 | 20:1 | 中等 | 有损 |
+
+| 格式           | 压缩比 | 速度   | 质量 |
+|:---------------|:-------|:-------|:-----|
+| RLE            | 2:1    | 非常快 | 无损 |
+| JPEG 无损      | 3:1    | 快     | 无损 |
+| JPEG 2000 无损 | 3:1    | 中等   | 无损 |
+| JPEG 基线      | 10:1   | 快     | 有损 |
+| JPEG 2000      | 20:1   | 中等   | 有损 |
 
 -----
 
@@ -903,5 +933,6 @@ String charset = attrs.getSpecificCharacterSet();
 ## 支持
 
 如有问题、错误报告或功能请求：
+
 - GitHub Issues: https://github.com/818000/bus/issues
-**Bus Image** - 赋能医疗影像应用
+  **Bus Image** - 赋能医疗影像应用

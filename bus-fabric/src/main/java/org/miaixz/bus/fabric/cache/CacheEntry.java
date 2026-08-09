@@ -30,7 +30,6 @@ import org.miaixz.bus.fabric.Payload;
  * @param metadata protocol metadata
  * @param payload  body payload
  * @author Kimi Liu
- * @since Java 21+
  */
 public record CacheEntry(Headers metadata, Payload payload) {
 

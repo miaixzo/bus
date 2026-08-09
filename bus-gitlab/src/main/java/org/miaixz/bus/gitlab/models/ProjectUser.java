@@ -25,7 +25,6 @@ import java.io.Serial;
  * The project user class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProjectUser extends AbstractUser<ProjectUser> {
 

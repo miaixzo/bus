@@ -35,7 +35,6 @@ import org.miaixz.bus.image.nimble.extend.ImageReaderExtension;
  * Represents the JsonImageReaderConfiguration type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JsonImageReaderConfiguration extends JsonConfigurationExtension {
 

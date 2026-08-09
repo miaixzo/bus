@@ -45,7 +45,6 @@ import org.miaixz.bus.office.excel.writer.ExcelWriter;
  * Excel reader for reading Excel workbooks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
 

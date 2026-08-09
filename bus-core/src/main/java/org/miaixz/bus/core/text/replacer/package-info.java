@@ -21,6 +21,5 @@
  * Provides abstract classes and implementations for text replacement operations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.text.replacer;

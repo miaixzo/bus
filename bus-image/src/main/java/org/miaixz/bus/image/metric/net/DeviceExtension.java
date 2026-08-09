@@ -29,7 +29,6 @@ import org.miaixz.bus.image.metric.Connection;
  * Represents the DeviceExtension type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DeviceExtension implements Serializable {
 

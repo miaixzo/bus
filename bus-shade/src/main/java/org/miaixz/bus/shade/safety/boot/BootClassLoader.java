@@ -40,7 +40,6 @@ import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
  * resource loading to apply decryption using provided {@link DecryptorProvider} and {@link Key}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BootClassLoader extends LaunchedClassLoader {
 
@@ -175,7 +174,6 @@ public class BootClassLoader extends LaunchedClassLoader {
      * An internal enumeration wrapper that applies the custom {@link BootURLHandler} to each URL.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private class XBootEnumeration implements Enumeration<URL> {
 

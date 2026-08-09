@@ -40,7 +40,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the VoiLutModule type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class VoiLutModule {
 
@@ -77,10 +76,9 @@ public class VoiLutModule {
     /**
      * VOI LUT Module
      *
+     * @param dcm the dcm value
      * @see <a href="http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.12.html">C.11.2 VOI LUT
      *      Module</a>
-     *
-     * @param dcm the dcm value
      */
     public VoiLutModule(Attributes dcm) {
         this.windowCenter = Collections.emptyList();

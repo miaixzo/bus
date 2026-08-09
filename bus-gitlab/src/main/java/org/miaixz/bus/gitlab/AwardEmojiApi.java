@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.models.AwardEmoji;
  *
  * @see <a href="https://docs.gitlab.com/ce/api/award_emoji.html">GitLab Award Emoji API Documentaion</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AwardEmojiApi extends AbstractApi {
 

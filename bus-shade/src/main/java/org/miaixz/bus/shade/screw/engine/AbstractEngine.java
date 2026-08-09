@@ -36,7 +36,6 @@ import org.miaixz.bus.shade.screw.Builder;
  * managing output files.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

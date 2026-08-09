@@ -29,7 +29,6 @@ import org.miaixz.bus.logger.Logger;
  * document conversions. The provided office manager must be started for this converter to be used.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LocalOfficeProvider extends AbstractProvider {
 

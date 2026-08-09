@@ -35,7 +35,6 @@ import org.miaixz.bus.core.xyz.FileKit;
  * Reads, creates, and modifies Word documents (DOCX).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WordKit {
 

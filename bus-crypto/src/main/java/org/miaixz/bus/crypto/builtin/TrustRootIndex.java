@@ -37,7 +37,6 @@ import org.miaixz.bus.crypto.Keeper;
  * In-memory trusted root lookup keyed by subject principal.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class TrustRootIndex {
 

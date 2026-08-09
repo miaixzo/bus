@@ -31,7 +31,6 @@ import org.miaixz.bus.fabric.Address;
  * Immutable DNS listener endpoint.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsEndpoint {
 

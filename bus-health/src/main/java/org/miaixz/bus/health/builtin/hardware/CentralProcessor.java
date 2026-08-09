@@ -45,7 +45,6 @@ import org.miaixz.bus.health.builtin.software.OSThread;
  * Operating System sees, which may include hyperthreaded cores.)
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public interface CentralProcessor {
@@ -361,7 +360,6 @@ public interface CentralProcessor {
      * arrays.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     enum TickType {
 
@@ -429,7 +427,6 @@ public interface CentralProcessor {
      * logical groupings such as NUMA Nodes and Processor groups, useful for identifying processor topology.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Immutable
     class LogicalProcessor {
@@ -570,7 +567,6 @@ public interface CentralProcessor {
      * hybrid/modular processors.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Immutable
     class PhysicalProcessor {
@@ -703,7 +699,6 @@ public interface CentralProcessor {
      * A class representing CPU Cache Memory.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Immutable
     class ProcessorCache {
@@ -853,7 +848,6 @@ public interface CentralProcessor {
          * The type of cache.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         public enum Type {
 
@@ -896,7 +890,6 @@ public interface CentralProcessor {
      * information (also called the signature of a CPU)
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Immutable
     final class ProcessorIdentifier {

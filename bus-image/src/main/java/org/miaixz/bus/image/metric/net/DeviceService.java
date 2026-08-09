@@ -29,7 +29,6 @@ import org.miaixz.bus.image.Device;
  * Represents the DeviceService type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DeviceService implements DeviceServiceInterface {
 

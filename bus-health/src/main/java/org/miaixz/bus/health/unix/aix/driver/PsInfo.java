@@ -38,7 +38,6 @@ import org.miaixz.bus.logger.Logger;
  * Queries /proc/psinfo
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class PsInfo {

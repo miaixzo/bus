@@ -37,7 +37,6 @@ import org.miaixz.bus.core.xyz.ThreadKit;
  * directly to the wrapped {@link Watcher} without delay.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DelayWatcher implements Watcher {
 

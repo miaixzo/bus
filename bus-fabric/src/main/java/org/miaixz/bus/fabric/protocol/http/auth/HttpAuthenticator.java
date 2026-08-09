@@ -33,7 +33,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  * HTTP authenticator strategy for origin and proxy challenges.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface HttpAuthenticator {

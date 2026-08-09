@@ -27,7 +27,6 @@ import org.miaixz.bus.image.metric.net.ApplicationEntity;
  * Represents the JsonConfigurationExtension type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JsonConfigurationExtension {
 

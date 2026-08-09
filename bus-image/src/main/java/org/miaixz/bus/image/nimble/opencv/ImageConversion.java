@@ -63,7 +63,6 @@ import org.opencv.imgproc.Imgproc;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ImageConversion {
 

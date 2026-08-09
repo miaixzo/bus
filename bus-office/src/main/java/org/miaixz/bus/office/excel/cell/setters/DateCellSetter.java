@@ -27,7 +27,6 @@ import org.apache.poi.ss.usermodel.Cell;
  * {@link CellSetter} for {@link Date} values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DateCellSetter implements CellSetter {
 

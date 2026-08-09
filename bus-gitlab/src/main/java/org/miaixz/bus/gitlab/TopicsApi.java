@@ -35,7 +35,6 @@ import org.miaixz.bus.gitlab.models.TopicParams;
  * The topics API class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TopicsApi extends AbstractApi {
 

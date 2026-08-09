@@ -67,7 +67,6 @@ import org.miaixz.bus.fabric.protocol.http.http2.Http2Header;
  * it delegates every DNS message to a caller-provided resolver.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsDohServer implements AutoCloseable, Lifecycle {
 
@@ -1021,7 +1020,6 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
      * DNS resolver callback used by the DoH transport.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @FunctionalInterface
     public interface Resolver {
@@ -1041,7 +1039,6 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
      * Parsed HTTP/1.1 request line.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class Http1RequestLine {
 
@@ -1086,7 +1083,6 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
      * HTTP/2 frame header.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class Http2FrameHeader {
 
@@ -1155,7 +1151,6 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
      * Mutable HTTP/2 request state.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private static final class Http2RequestState {
 

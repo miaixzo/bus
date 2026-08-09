@@ -23,7 +23,6 @@ package org.miaixz.bus.mapper.parsing;
  * An interface for SQL scripts that supports a simplified writing style.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface EasySqlScript extends SqlScript {
 

@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The registry repository class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RegistryRepository implements Serializable {
 

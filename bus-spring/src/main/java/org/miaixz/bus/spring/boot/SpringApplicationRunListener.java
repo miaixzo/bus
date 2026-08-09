@@ -45,7 +45,6 @@ import org.miaixz.bus.spring.boot.startup.SpringStartupSummary.Stage;
  * Collects startup statistics after the environment explicitly enables the feature.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SpringApplicationRunListener implements org.springframework.boot.SpringApplicationRunListener, Ordered {
 

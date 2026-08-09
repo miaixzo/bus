@@ -40,7 +40,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * Cache-backed {@code setting.item.revision} store.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CacheItemRevisionStore implements ItemRevisionStore {
 

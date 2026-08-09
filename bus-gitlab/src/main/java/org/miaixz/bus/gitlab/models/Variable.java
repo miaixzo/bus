@@ -36,7 +36,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The variable class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Variable implements Serializable {
 
@@ -227,7 +226,6 @@ public class Variable implements Serializable {
      * Enum for the various Commit build status values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Type {
 

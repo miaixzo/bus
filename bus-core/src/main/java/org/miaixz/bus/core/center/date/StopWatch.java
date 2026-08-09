@@ -57,7 +57,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * }</pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StopWatch {
 
@@ -470,7 +469,6 @@ public class StopWatch {
      * Represents information about a single task, including its name and elapsed time.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static final class TaskInfo {
 

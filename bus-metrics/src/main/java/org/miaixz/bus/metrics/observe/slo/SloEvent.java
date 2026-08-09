@@ -31,7 +31,6 @@ import java.time.Instant;
  * @param burnRate        current burn rate relative to the allowed error rate
  * @param detectedAt      wall-clock instant at which the event was detected
  * @author Kimi Liu
- * @since Java 21+
  */
 public record SloEvent(String sloName, double target, double compliance, double budgetRemaining, double burnRate,
         Instant detectedAt) {

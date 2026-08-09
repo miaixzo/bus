@@ -50,7 +50,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * access tokens and user information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TwitterProvider extends AbstractProvider {
 

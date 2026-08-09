@@ -26,7 +26,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
  * Storage error codes, ranging from 113xxx.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
@@ -38,83 +37,64 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
     }
 
     /**
-     * File upload failed.
-     */
-    public static final Errors _113000 = ErrorRegistry.builder().key("113000").value("File upload failed").build();
-
-    /**
      * Directory already exists.
      */
-    public static final Errors _113001 = ErrorRegistry.builder().key("113001").value("Directory already exists")
-            .build();
+    public static final Errors _113000 = ErrorRegistry.register("113000", "Directory already exists");
 
     /**
      * Directory does not exist.
      */
-    public static final Errors _113002 = ErrorRegistry.builder().key("113002").value("Directory does not exist")
-            .build();
-
-    /**
-     * File does not exist.
-     */
-    public static final Errors _113003 = ErrorRegistry.builder().key("113003").value("File does not exist").build();
+    public static final Errors _113001 = ErrorRegistry.register("113001", "Directory does not exist");
 
     /**
      * File already exists.
      */
-    public static final Errors _113004 = ErrorRegistry.builder().key("113004").value("File already exists").build();
+    public static final Errors _113002 = ErrorRegistry.register("113002", "File already exists");
 
     /**
      * Failed to get directory.
      */
-    public static final Errors _113005 = ErrorRegistry.builder().key("113005").value("Failed to get directory").build();
+    public static final Errors _113003 = ErrorRegistry.register("113003", "Failed to get directory");
 
     /**
      * Failed to calculate file MD5.
      */
-    public static final Errors _113006 = ErrorRegistry.builder().key("113006").value("Failed to calculate file MD5")
-            .build();
+    public static final Errors _113004 = ErrorRegistry.register("113004", "Failed to calculate file MD5");
 
     /**
      * Storage service configuration error, please check.
      */
-    public static final Errors _113007 = ErrorRegistry.builder().key("113007")
-            .value("Storage service configuration error, please check").build();
+    public static final Errors _113005 = ErrorRegistry
+            .register("113005", "Storage service configuration error, please check");
 
     /**
-     * Storage endpoint is invalid.
+     * Storage endpoint invalid.
      */
-    public static final Errors _113008 = ErrorRegistry.builder().key("113008").value("Storage endpoint invalid")
-            .build();
+    public static final Errors _113006 = ErrorRegistry.register("113006", "Storage endpoint invalid");
 
     /**
      * Storage authentication failed.
      */
-    public static final Errors _113009 = ErrorRegistry.builder().key("113009").value("Storage authentication failed")
-            .build();
+    public static final Errors _113007 = ErrorRegistry.register("113007", "Storage authentication failed");
 
     /**
      * Storage object does not exist.
      */
-    public static final Errors _113010 = ErrorRegistry.builder().key("113010").value("Storage object does not exist")
-            .build();
+    public static final Errors _113008 = ErrorRegistry.register("113008", "Storage object does not exist");
 
     /**
      * Storage bucket does not exist.
      */
-    public static final Errors _113011 = ErrorRegistry.builder().key("113011").value("Storage bucket does not exist")
-            .build();
+    public static final Errors _113009 = ErrorRegistry.register("113009", "Storage bucket does not exist");
 
     /**
      * Storage stream operation failed.
      */
-    public static final Errors _113012 = ErrorRegistry.builder().key("113012").value("Storage stream operation failed")
-            .build();
+    public static final Errors _113010 = ErrorRegistry.register("113010", "Storage stream operation failed");
 
     /**
-     * Storage operation is not supported.
+     * This storage operation is not supported.
      */
-    public static final Errors _113013 = ErrorRegistry.builder().key("113013").value("Storage operation not supported")
-            .build();
+    public static final Errors _113011 = ErrorRegistry.register("113011", "This storage operation is not supported");
 
 }

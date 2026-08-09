@@ -39,7 +39,6 @@ import org.miaixz.bus.health.linux.driver.Sysfs;
  * Firmware data obtained by sysfs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 final class LinuxFirmware extends AbstractFirmware {
@@ -245,7 +244,6 @@ final class LinuxFirmware extends AbstractFirmware {
      * The VcGenCmdStrings class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     static final class VcGenCmdStrings {
 

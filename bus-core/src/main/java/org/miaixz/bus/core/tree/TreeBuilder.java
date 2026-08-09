@@ -37,7 +37,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  *
  * @param <E> The type of the node identifier.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TreeBuilder<E> implements Builder<MapTree<E>> {
 

@@ -35,7 +35,6 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
  * Festival definition with encoded rule data.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Festival extends Loops {
 

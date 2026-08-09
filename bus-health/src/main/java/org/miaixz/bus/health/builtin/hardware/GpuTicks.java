@@ -42,7 +42,6 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  * but the {@code dTotal > 0} guard in the usage formula handles both cases correctly.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public final class GpuTicks {

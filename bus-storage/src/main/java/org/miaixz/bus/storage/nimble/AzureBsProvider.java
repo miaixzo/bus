@@ -26,7 +26,6 @@ import org.miaixz.bus.storage.Context;
  * {@link GenericS3Provider} to offer Azure Blob Storage-specific configurations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AzureBsProvider extends GenericS3Provider {
 

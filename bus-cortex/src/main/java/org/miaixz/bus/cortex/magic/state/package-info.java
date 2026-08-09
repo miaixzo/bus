@@ -26,6 +26,5 @@
  * source, operator, duration, and instance identity fields that describe one transition.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.magic.state;

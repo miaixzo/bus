@@ -30,7 +30,6 @@ import org.miaixz.bus.health.Formats;
  * disk.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public class HWPartition {

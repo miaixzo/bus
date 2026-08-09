@@ -23,7 +23,6 @@ package org.miaixz.bus.image.galaxy;
  * Defines the ProgressStatus values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum ProgressStatus {
     /**

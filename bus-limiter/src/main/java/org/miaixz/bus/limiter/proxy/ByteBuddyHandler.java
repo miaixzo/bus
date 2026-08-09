@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  * strategies like downgrade, hotspot, and request limiting.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ByteBuddyHandler implements InvocationHandler {
 

@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  *      API</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GroupApi extends AbstractApi {
 
@@ -244,7 +243,6 @@ public class GroupApi extends AbstractApi {
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
      * @return a List&lt;Group&gt; containing the group's sub-groups
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.3.0
      */
     public List<Group> getSubGroups(Object groupIdOrPath) throws RelevantException {
         return (getSubGroups(groupIdOrPath, getDefaultPerPage()).all());
@@ -261,7 +259,6 @@ public class GroupApi extends AbstractApi {
      * @param itemsPerPage  the number of Group instances that will be fetched per page
      * @return a Pager containing matching Group instances
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.3.0
      */
     public Pager<Group> getSubGroups(Object groupIdOrPath, int itemsPerPage) throws RelevantException {
         return (new Pager<Group>(this, Group.class, itemsPerPage, null, "groups", getGroupIdOrPath(groupIdOrPath),
@@ -278,7 +275,6 @@ public class GroupApi extends AbstractApi {
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
      * @return a Stream&lt;Group&gt; containing the group's sub-groups
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.3.0
      */
     public Stream<Group> getSubGroupsStream(Object groupIdOrPath) throws RelevantException {
         return (getSubGroups(groupIdOrPath, getDefaultPerPage()).stream());
@@ -301,7 +297,6 @@ public class GroupApi extends AbstractApi {
      * @param owned         limit to groups owned by the current user
      * @return a List&lt;Group&gt; of the matching subgroups
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.3.0
      */
     public List<Group> getSubGroups(
             Object groupIdOrPath,
@@ -343,7 +338,6 @@ public class GroupApi extends AbstractApi {
      * @param perPage       the number of Group instances per page
      * @return a List&lt;Group&gt; of the matching subgroups
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.3.0
      */
     public List<Group> getSubGroups(
             Object groupIdOrPath,
@@ -388,7 +382,6 @@ public class GroupApi extends AbstractApi {
      * @param itemsPerPage  the number of Group instances that will be fetched per page
      * @return a Pager containing matching Group instances
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.3.0
      */
     public Pager<Group> getSubGroups(
             Object groupIdOrPath,
@@ -424,7 +417,6 @@ public class GroupApi extends AbstractApi {
      * @param owned         limit to groups owned by the current user
      * @return a Stream&lt;Group&gt; of the matching subgroups
      * @throws RelevantException if any exception occurs
-     * @since GitLab 10.3.0
      */
     public Stream<Group> getSubGroupsStream(
             Object groupIdOrPath,

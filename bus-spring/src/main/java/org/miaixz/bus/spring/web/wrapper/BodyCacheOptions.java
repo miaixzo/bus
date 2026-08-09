@@ -30,7 +30,6 @@ import org.miaixz.bus.core.net.MediaType;
  * Immutable request and response body-cache boundaries for one application context.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BodyCacheOptions {
 

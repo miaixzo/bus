@@ -23,7 +23,6 @@ package org.miaixz.bus.tempus.temporal.notifier;
  * Defines when callback notifications run relative to the Temporal activity completion handshake.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum NotificationMode {
 

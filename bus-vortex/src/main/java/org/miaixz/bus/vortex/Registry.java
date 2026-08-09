@@ -32,7 +32,6 @@ import reactor.core.publisher.Mono;
  *
  * @param <T> The type of objects to be stored in the registry.
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Registry<T> {
 

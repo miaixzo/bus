@@ -45,7 +45,6 @@ import org.miaixz.bus.pay.nimble.wechat.api.v2.*;
  * Provider for WeChat Pay APIs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
 
@@ -232,19 +231,13 @@ public class WechatPayProvider extends AbstractProvider<Voucher, Context> {
     /**
      * Executes the execution by protocol operation.
      *
-     * @return the result
-     *
      * @param complex  the complex value
-     *
      * @param params   the params value
-     *
      * @param certPath the cert path value
-     *
      * @param certPass the cert pass value
-     *
      * @param filePath the file path value
-     *
      * @param protocol the protocol value
+     * @return the result
      */
     public String executionByProtocol(
             Complex complex,

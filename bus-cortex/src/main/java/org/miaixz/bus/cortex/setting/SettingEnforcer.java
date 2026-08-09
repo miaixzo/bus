@@ -27,7 +27,6 @@ import org.miaixz.bus.cortex.setting.item.ItemScope;
  * Centralized enforcer for namespace/app/profile relationship validation within the setting domain.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface SettingEnforcer {
 

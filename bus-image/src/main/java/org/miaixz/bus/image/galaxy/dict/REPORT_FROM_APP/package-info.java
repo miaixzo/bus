@@ -21,6 +21,5 @@
  * UID Dictionary from REPORT_FROM_APP
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.image.galaxy.dict.REPORT_FROM_APP;

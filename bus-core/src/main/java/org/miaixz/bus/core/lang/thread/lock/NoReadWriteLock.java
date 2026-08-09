@@ -28,7 +28,6 @@ import java.util.concurrent.locks.ReadWriteLock;
  * return a singleton {@link NoLock} instance, effectively making all read and write operations non-blocking.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NoReadWriteLock implements ReadWriteLock {
 

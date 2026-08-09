@@ -31,7 +31,6 @@ import org.miaixz.bus.health.unix.shared.jna.SolarisLibc;
  * SolarisNetworkParams class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class SolarisNetworkParams extends AbstractNetworkParams {

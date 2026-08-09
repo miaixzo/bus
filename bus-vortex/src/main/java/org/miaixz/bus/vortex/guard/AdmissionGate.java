@@ -30,7 +30,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * an event-loop thread; saturation is reported by returning {@code null}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class AdmissionGate {
 

@@ -24,6 +24,5 @@
  * management of GitLab resources including projects, issues, merge requests, pipelines, and more.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.gitlab;

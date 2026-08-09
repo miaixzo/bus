@@ -32,7 +32,6 @@ import org.miaixz.bus.health.linux.ProcPath;
  * Reads CPU statistics from {@code /proc/stat}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class CpuStat {

@@ -43,7 +43,6 @@ import org.miaixz.bus.logger.Logger;
  * Facebook login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FacebookProvider extends AbstractProvider {
 
@@ -166,7 +165,7 @@ public class FacebookProvider extends AbstractProvider {
         super.validate(context);
         // Facebook's redirect uri must use the HTTPS protocol
         if (Registry.FACEBOOK == this.complex && !Protocol.isHttps(this.context.getRedirectUri())) {
-            throw new AuthorizedException(ErrorCode._110005.getKey(), this.complex);
+            throw new AuthorizedException(ErrorCode._110003.getKey(), this.complex);
         }
     }
 

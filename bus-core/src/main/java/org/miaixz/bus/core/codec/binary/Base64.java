@@ -39,7 +39,6 @@ import org.miaixz.bus.core.xyz.*;
  * URL-safe Base64 operations, following the specifications in RFC 4648.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Base64 {
 

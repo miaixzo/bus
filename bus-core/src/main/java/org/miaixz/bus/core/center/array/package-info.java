@@ -21,6 +21,5 @@
  * Provides array operations, including validation and primitive-array handling.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.center.array;

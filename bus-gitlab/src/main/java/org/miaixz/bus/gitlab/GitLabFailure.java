@@ -44,7 +44,6 @@ import tools.jackson.databind.JsonNode;
  * Creates global exceptions from GitLab API failures and resolves messages from error responses.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class GitLabFailure {
 

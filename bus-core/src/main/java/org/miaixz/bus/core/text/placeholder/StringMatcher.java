@@ -39,7 +39,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StringMatcher {
 

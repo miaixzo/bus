@@ -22,6 +22,5 @@
  * various cipher engines, including those from JCE (Java Cryptography Extension) and Bouncy Castle.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.crypto.cipher;

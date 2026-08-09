@@ -43,7 +43,6 @@ import org.miaixz.bus.health.builtin.software.OperatingSystem;
  * Collects local operating-system, hardware, process, JVM, and runtime health information.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Collector implements org.miaixz.bus.core.Provider {
 

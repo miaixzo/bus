@@ -31,7 +31,6 @@ import org.miaixz.bus.core.xyz.ThreadKit;
  *
  * @param <T> The type of the result returned by the scheduled job.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SimpleScheduler<T> {
 
@@ -87,7 +86,6 @@ public class SimpleScheduler<T> {
      *
      * @param <T> The type of the result produced by the job.
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface Job<T> extends Runnable {
 

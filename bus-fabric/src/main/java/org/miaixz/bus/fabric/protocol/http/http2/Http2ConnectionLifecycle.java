@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.exception.StatefulException;
  * contract.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class Http2ConnectionLifecycle implements Lifecycle {
 

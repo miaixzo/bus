@@ -26,7 +26,6 @@ import org.miaixz.bus.core.lang.loader.LazyFunLoader;
  * Creates securely configured SAX parser factories.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SAXParserFactory {
 

@@ -37,7 +37,6 @@ import org.miaixz.bus.cortex.magic.watch.WatchManager;
  * Compatibility adapter exposing version records through the legacy registry-shaped facade.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class VersionRegistry implements Registry<VersionAssets> {
 

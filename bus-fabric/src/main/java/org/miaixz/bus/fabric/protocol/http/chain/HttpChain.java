@@ -40,7 +40,6 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpChain {
 

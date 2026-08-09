@@ -38,7 +38,6 @@ import org.miaixz.bus.shade.screw.metadata.*;
  * Abstract base class for data processing.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractProcess implements Process {
 

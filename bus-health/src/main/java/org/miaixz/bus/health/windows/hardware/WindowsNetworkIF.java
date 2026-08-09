@@ -38,7 +38,6 @@ import org.miaixz.bus.logger.Logger;
  * WindowsNetworks class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class WindowsNetworkIF extends AbstractNetworkIF {

@@ -38,8 +38,8 @@ server earlier than version 11.0, it is highly recommended that you either updat
 of this library that was released around the same time as the version of GitLab you are using.
 
 **NOTICE**:
-As of GitLab 11.0 support for the GitLab API v3 has been removed from the GitLab server (
-see https://about.gitlab.com/2018/06/01/api-v3-removal-impending/). Support for GitLab API v3 will be removed from this
+As of GitLab 11.0 support for the GitLab API v3 has been removed from the GitLab server
+(see https://about.gitlab.com/2018/06/01/api-v3-removal-impending/). Support for GitLab API v3 will be removed from this
 library sometime in 2019. If you are utilizing the v3 support, please update your code to use GitLab API v4.
 
 ---
@@ -143,8 +143,8 @@ Map<String, Object> ntlmProxyConfig = ProxyClientConfig.createNtlmProxyClientCon
 GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.com", "YOUR_PERSONAL_ACCESS_TOKEN", null, ntlmProxyConfig);
 ```
 
-See the Javadoc on the GitLabApi class for a complete list of methods accepting the proxy configuration (
-clientConfiguration parameter)
+See the Javadoc on the GitLabApi class for a complete list of methods accepting the proxy configuration
+(clientConfiguration parameter)
 
 ---
 
@@ -159,8 +159,8 @@ GitLabApi gitLabApi = new GitLabApi(ApiVersion.V3, "http://your.gitlab.server.co
 ```
 
 **NOTICE**:
-As of GitLab 11.0 support for the GitLab API v3 has been removed from the GitLab server (
-see https://about.gitlab.com/2018/06/01/api-v3-removal-impending/). Support for GitLab API v3 will be removed from this
+As of GitLab 11.0 support for the GitLab API v3 has been removed from the GitLab server
+(see https://about.gitlab.com/2018/06/01/api-v3-removal-impending/). Support for GitLab API v3 will be removed from this
 library sometime in 2019. If you are utilizing the v3 support, please update your code to use GitLab API v4.
 
 ---
@@ -225,12 +225,12 @@ Java 8 Stream. The Stream returning methods use the following naming convention:
 
 **IMPORTANT**
 The built-in methods that return a Stream do so using ___eager evaluation___, meaning all items are pre-fetched from the
-GitLab server and a Stream is returned which will stream those items.  **Eager evaluation does NOT support parallel
+GitLab server and a Stream is returned which will stream those items. **Eager evaluation does NOT support parallel
 reading of data from ther server, it does however allow for parallel processing of the Stream post data fetch.**
 
-To stream using ___lazy evaluation___, use the GitLab-API methods that return a```Pager``` instance, and then call
-the```lazyStream()``` method on the```Pager``` instance to create a lazy evaluation Stream. The Stream utilizes
-the```Pager``` instance to page through the available items. **A lazy Stream does NOT support parallel operations or
+To stream using ___lazy evaluation___, use the GitLab-API methods that return a```Pager``` instance, and then call the
+```lazyStream()``` method on the```Pager``` instance to create a lazy evaluation Stream. The Stream utilizes the
+```Pager``` instance to page through the available items. **A lazy Stream does NOT support parallel operations or
 skipping.**
 
 #### **Eager evaluation condition usage:**

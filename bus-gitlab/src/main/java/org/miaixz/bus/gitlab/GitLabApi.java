@@ -41,7 +41,6 @@ import org.miaixz.bus.logger.Logger;
  * class for each concern.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GitLabApi implements AutoCloseable {
 
@@ -392,7 +391,6 @@ public class GitLabApi implements AutoCloseable {
          * The OAuth 2 API class.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         class Oauth2Api extends AbstractApi {
 
@@ -998,7 +996,6 @@ public class GitLabApi implements AutoCloseable {
          * The version API class.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         class VersionApi extends AbstractApi {
 
@@ -2042,7 +2039,6 @@ public class GitLabApi implements AutoCloseable {
      * Specifies the version of the GitLab API to communicate with.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ApiVersion {
 

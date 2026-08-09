@@ -31,7 +31,6 @@ import org.miaixz.bus.logger.Logger;
  * Represents the PersonName type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PersonName {
 
@@ -367,7 +366,6 @@ public class PersonName {
      * Defines the Component values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Component {
         /**
@@ -397,7 +395,6 @@ public class PersonName {
      * Defines the Group values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum Group {
         /**

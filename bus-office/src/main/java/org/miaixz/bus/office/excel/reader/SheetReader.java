@@ -27,7 +27,6 @@ import org.apache.poi.ss.usermodel.Sheet;
  *
  * @param <T> The type of data to be read.
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface SheetReader<T> {

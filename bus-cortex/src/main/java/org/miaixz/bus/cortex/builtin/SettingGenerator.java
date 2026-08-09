@@ -40,7 +40,6 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SettingGenerator implements Keying<SettingSpec> {
 

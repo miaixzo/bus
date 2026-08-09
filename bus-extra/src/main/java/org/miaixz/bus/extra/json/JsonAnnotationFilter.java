@@ -38,7 +38,6 @@ import org.miaixz.bus.core.xyz.BeanKit;
  * filter makes the final decision.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class JsonAnnotationFilter implements JsonPropertyFilter {
 

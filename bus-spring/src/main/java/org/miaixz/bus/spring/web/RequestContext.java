@@ -47,7 +47,6 @@ import org.miaixz.bus.spring.web.wrapper.CachedBodyRequestWrapper;
  * Servlet request values scoped and cached exclusively through the current request.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RequestContext {
 

@@ -64,7 +64,6 @@ import org.miaixz.bus.logger.Logger;
  * A CPU, representing all of a system's processors. It may contain multiple individual Physical and Logical processors.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class WindowsCentralProcessor extends AbstractCentralProcessor {

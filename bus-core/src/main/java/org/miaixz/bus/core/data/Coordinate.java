@@ -37,7 +37,6 @@ import java.util.Objects;
  * <a href="https://github.com/JourWon/coordinate-transform">https://github.com/JourWon/coordinate-transform</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Coordinate {
 
@@ -250,7 +249,6 @@ public class Coordinate {
      * Represents a point with longitude and latitude.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Point implements Serializable {
 

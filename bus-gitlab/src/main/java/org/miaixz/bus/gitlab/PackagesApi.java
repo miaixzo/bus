@@ -40,7 +40,6 @@ import org.miaixz.bus.gitlab.models.PackageFilter;
  * NOTE: This API is not available in the Community edition of GitLab.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PackagesApi extends AbstractApi {
 

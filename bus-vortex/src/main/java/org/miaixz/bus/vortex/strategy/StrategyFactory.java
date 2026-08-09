@@ -52,7 +52,6 @@ import org.miaixz.bus.vortex.strategy.vetting.RestVettingStrategy;
  * avoiding repeated computations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class StrategyFactory {
 
@@ -360,7 +359,6 @@ public class StrategyFactory {
      * @param pathMatcher    request path matcher
      * @param strategyFilter strategy filter for the route chain
      * @author Kimi Liu
-     * @since Java 21+
      */
     private record ChainSpec(String route, PredicateX<String> pathMatcher, PredicateX<Strategy> strategyFilter) {
 

@@ -35,7 +35,6 @@ import org.miaixz.bus.shade.safety.provider.JdkEncryptorProvider;
  * project's own resources and dependency JARs.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Boot {
 

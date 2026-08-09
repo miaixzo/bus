@@ -26,7 +26,6 @@ import java.util.Currency;
  * Converter for currency {@link Currency} objects
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CurrencyConverter extends AbstractConverter {
 

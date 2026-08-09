@@ -30,7 +30,6 @@ import org.miaixz.bus.gitlab.models.Constants.SortOrder;
  * This class is used to filter Projects when getting lists of projects for a specified group.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PackageFilter implements Serializable {
 

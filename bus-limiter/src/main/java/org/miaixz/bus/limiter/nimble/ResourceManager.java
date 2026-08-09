@@ -33,7 +33,6 @@ import org.miaixz.bus.limiter.magic.annotation.Limiting;
  * state of various resources, applying {@link Limiting} rules to control access and prevent overload.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ResourceManager {
 
@@ -138,7 +137,6 @@ public class ResourceManager {
      * allowance.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     static class Protection {
 

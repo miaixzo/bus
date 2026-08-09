@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  * and QR code login for third-party websites.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractDingtalkProvider extends AbstractProvider {
 

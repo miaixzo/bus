@@ -41,7 +41,6 @@ import org.miaixz.bus.image.galaxy.data.Value;
  * Default DICOM attribute editor used by bus-image.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DefaultEditors implements Editors {
 

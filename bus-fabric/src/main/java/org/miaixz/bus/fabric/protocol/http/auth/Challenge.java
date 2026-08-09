@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @param realm      optional realm
  * @param parameters ordered parameters
  * @author Kimi Liu
- * @since Java 21+
  */
 public record Challenge(String scheme, String realm, Map<String, String> parameters) {
 

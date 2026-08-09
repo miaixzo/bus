@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
  * The label event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LabelEvent implements Serializable {
 
@@ -43,7 +42,6 @@ public class LabelEvent implements Serializable {
      * Enum to use for specifying the label event resource type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ResourceType {
 

@@ -25,7 +25,6 @@ import org.miaixz.bus.image.Device;
  * Represents the KeycloakClient type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class KeycloakClient {
 
@@ -333,7 +332,6 @@ public class KeycloakClient {
      * Defines the GrantType values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum GrantType {
         /**

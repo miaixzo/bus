@@ -34,7 +34,6 @@ import org.miaixz.bus.cortex.Watch;
  *
  * @param <T> watched value type
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

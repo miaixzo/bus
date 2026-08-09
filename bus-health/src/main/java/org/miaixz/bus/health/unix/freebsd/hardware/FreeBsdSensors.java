@@ -34,16 +34,10 @@ import org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc;
  * Sensors from coretemp
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 final class FreeBsdSensors extends AbstractSensors {
 
-    /*
-     * If user has loaded coretemp module via kldload coretemp, sysctl call will return temperature
-     *
-     * @return Temperature if successful, otherwise NaN
-     */
     /**
      * Queries the kldload coretemp.
      *

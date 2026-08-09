@@ -25,7 +25,6 @@ package org.miaixz.bus.core.lang.annotation.resolve.attribute;
  * first.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AliasedAnnotationAttribute extends AbstractWrappedAnnotationAttribute {
 

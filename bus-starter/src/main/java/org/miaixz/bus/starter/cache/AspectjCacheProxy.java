@@ -44,7 +44,6 @@ import org.miaixz.bus.proxy.invoker.InvocationInvoker;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Aspect
 public class AspectjCacheProxy {

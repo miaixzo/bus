@@ -31,7 +31,6 @@ import io.temporal.worker.WorkerOptions;
  * Temporal SDK builders to publisher or subscriber code.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface WorkflowOptionsFactory {
 

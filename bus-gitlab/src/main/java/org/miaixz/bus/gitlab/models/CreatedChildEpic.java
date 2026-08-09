@@ -27,7 +27,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The created child epic class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CreatedChildEpic extends AbstractMinimalEpic<CreatedChildEpic> {
 

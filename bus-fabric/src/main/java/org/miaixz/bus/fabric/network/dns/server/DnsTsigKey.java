@@ -29,7 +29,6 @@ import org.miaixz.bus.fabric.network.dns.message.DnsName;
  * Immutable TSIG shared-secret key used to authenticate DNS messages.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsTsigKey {
 
@@ -295,9 +294,7 @@ public final class DnsTsigKey {
      * @param name           canonical TSIG algorithm DNS name
      * @param macAlgorithm   Java Cryptography Architecture MAC algorithm name
      * @param macLengthBytes maximum MAC bytes carried on the wire
-     *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private record Algorithm(String name, String macAlgorithm, int macLengthBytes) {
     }

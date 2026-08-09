@@ -32,7 +32,6 @@ import org.miaixz.bus.core.Version;
  * ImageIO writer SPI for native JPEG XL encoding.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NativeJXLImageWriterSpi extends ImageWriterSpi {
 

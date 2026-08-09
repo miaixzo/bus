@@ -33,7 +33,6 @@ import org.miaixz.bus.logger.Logger;
  * providing a unified interface for rendering templates.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FreemarkerTemplate implements Template, Serializable {
 
@@ -68,7 +67,7 @@ public class FreemarkerTemplate implements Template, Serializable {
     /**
      * Renders the template with the given data model to a writer. This method is designed to be overridden by
      * subclasses for custom rendering logic.
-     *
+     * <p>
      * Subclasses may override to add pre/post-processing or error handling.
      *
      * @param bindingMap The data model to bind to the template.
@@ -119,7 +118,7 @@ public class FreemarkerTemplate implements Template, Serializable {
     /**
      * Renders the template with the given data model to an output stream. This method is designed to be overridden by
      * subclasses for custom rendering logic.
-     *
+     * <p>
      * using the template's encoding and delegates to the render method. Subclasses may override to add custom stream
      * handling.
      *

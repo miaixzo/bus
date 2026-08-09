@@ -38,7 +38,6 @@ import org.miaixz.bus.image.metric.json.JsonConfigurationExtension;
  * Represents the JsonHL7Configuration type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JsonHL7Configuration extends JsonConfigurationExtension {
 

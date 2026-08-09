@@ -32,7 +32,6 @@ import org.miaixz.bus.core.center.function.FunctionX;
  * @param <K> The type of keys in the map.
  * @param <V> The type of values in the map.
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FunctionKeyMap<K, V> extends CustomKeyMap<K, V> {
 

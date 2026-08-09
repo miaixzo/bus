@@ -25,7 +25,6 @@ import org.miaixz.bus.core.center.date.culture.Element;
  * Represents the Five Elements in the Tibetan calendar.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RabjungElement extends Element {
 

@@ -28,7 +28,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Converts a number of a floating-point type into its English representation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EnglishNumberFormatter {
 
@@ -152,7 +151,7 @@ public class EnglishNumberFormatter {
             if (!"000".equals(a[i])) {
                 if (i != 0) {
                     lm.insert(0, transThree(a[i]) + Symbol.SPACE + parseMore(i) + Symbol.SPACE); // Add thousand,
-                                                                                                 // million, billion.
+                    // million, billion.
                 } else {
                     lm = new StringBuilder(transThree(a[i]));
                 }

@@ -54,7 +54,6 @@ import org.miaixz.bus.pay.magic.Voucher;
  * @param <T> The type of the global object, extending {@link Voucher}.
  * @param <K> The type of the context object, extending {@link Context}.
  * @author Kimi Liu
- * @since Java 21+
  */
 public abstract class AbstractProvider<T extends Voucher, K extends Context> implements Provider<T> {
 
@@ -118,7 +117,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     "Payment provider initialization rejected: provider={}, reason={}",
                     getClass().getSimpleName(),
                     "unsupportedConfiguration");
-            throw new PaymentException(ErrorCode._PARAMETER_INCOMPLETE);
+            throw new PaymentException(ErrorCode._100100);
         }
         // Verify the legitimacy of the configuration
         Checker.checkConfig(this.context, complex);

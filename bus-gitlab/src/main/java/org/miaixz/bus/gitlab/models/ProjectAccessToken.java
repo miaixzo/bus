@@ -32,7 +32,6 @@ import tools.jackson.databind.annotation.JsonSerialize;
  * The project access token class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ProjectAccessToken implements Serializable {
 

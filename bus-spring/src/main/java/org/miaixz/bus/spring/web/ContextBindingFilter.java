@@ -43,7 +43,6 @@ import org.miaixz.bus.spring.ContextState;
  * Installs and restores an immutable runtime Context for every Servlet dispatch.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ContextBindingFilter implements Filter {
 

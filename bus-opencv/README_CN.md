@@ -114,7 +114,7 @@ import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
 
 public class FaceDetectionExample {
-    
+
     public void detectFaces(String imagePath) {
         // 加载图像
         Mat image = Imgcodecs.imread(imagePath);
@@ -137,7 +137,7 @@ public class FaceDetectionExample {
         // 保存结果
         Imgcodecs.imwrite("faces_detected.jpg", image);
     }
-    
+
 }
 ```
 

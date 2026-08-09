@@ -41,7 +41,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Parses date and time values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Resolver extends Converter {
 

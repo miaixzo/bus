@@ -37,7 +37,6 @@ import org.miaixz.bus.tempus.pattern.Part;
  * </pre>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PatternMatcher {
 

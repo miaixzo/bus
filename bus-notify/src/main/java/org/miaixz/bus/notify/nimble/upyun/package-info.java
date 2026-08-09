@@ -21,6 +21,5 @@
  * Provides support for Upyun SMS service.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.notify.nimble.upyun;

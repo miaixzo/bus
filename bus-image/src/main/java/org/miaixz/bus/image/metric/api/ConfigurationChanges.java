@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * Represents the ConfigurationChanges type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ConfigurationChanges {
 
@@ -183,7 +182,6 @@ public class ConfigurationChanges {
      * Defines the ChangeType values.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public enum ChangeType {
         /**
@@ -205,7 +203,6 @@ public class ConfigurationChanges {
      * Represents the ModifiedAttribute type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class ModifiedAttribute {
 
@@ -299,7 +296,6 @@ public class ConfigurationChanges {
      * Represents the ModifiedObject type.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class ModifiedObject {
 

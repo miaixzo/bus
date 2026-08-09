@@ -30,7 +30,6 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  *
  * @param <T> the type of elements returned by this iterator
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IteratorChain<T> implements Iterator<T>, Chain<Iterator<T>, IteratorChain<T>> {
 

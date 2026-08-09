@@ -58,7 +58,6 @@ import org.miaixz.bus.image.galaxy.data.DatePrecision;
  * DT).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Format extends java.text.Format {
 
@@ -1421,7 +1420,6 @@ public class Format extends java.text.Format {
      * Defines the various formatting types supported by the pattern language.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private enum Type {
 
@@ -1752,7 +1750,6 @@ public class Format extends java.text.Format {
      * An operator for extracting a slice (substring) from a string.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private class Slice implements UnaryOperatorX<String> {
 

@@ -35,7 +35,6 @@ import org.miaixz.bus.spring.web.resolver.BindingDefaults;
  * package patterns: {@code *} matches one package segment and {@code **} matches zero or more package segments.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 class JsonTypeMatcher {
 

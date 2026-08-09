@@ -28,7 +28,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The gpg signature class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class GpgSignature implements Serializable {
 

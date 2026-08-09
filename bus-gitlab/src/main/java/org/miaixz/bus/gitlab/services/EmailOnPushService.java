@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
  * The email on push service class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EmailOnPushService extends NotificationService {
 

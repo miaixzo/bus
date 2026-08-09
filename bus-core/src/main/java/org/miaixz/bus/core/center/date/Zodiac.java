@@ -29,7 +29,6 @@ import org.miaixz.bus.core.xyz.EnumKit;
  * Enumeration for zodiacs (zodiac signs).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum Zodiac {
 

@@ -21,6 +21,5 @@
  * Spring Boot banner rendering support. This package must remain independent of bus-starter features.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.spring.boot.banner;

@@ -22,6 +22,5 @@
  * customizable cell value settings.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.office.excel.cell.setters;

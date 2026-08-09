@@ -33,7 +33,6 @@ import org.miaixz.bus.gitlab.models.License;
  *
  * @see <a href="https://docs.gitlab.com/ce/api/license.html">License API</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LicenseApi extends AbstractApi {
 

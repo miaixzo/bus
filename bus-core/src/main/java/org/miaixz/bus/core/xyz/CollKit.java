@@ -56,7 +56,6 @@ import org.miaixz.bus.core.text.CharsBacker;
  * Creates, transforms, and inspects collections and iterable values.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CollKit extends CollectionStream {
 

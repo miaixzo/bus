@@ -25,7 +25,6 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsSnapshot;
  * Listener notified when DNS runtime snapshots are accepted, rejected, or rolled back.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface DnsSnapshotListener {
 

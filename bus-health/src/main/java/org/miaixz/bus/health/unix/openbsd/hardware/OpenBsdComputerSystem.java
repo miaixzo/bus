@@ -34,7 +34,6 @@ import org.miaixz.bus.health.unix.shared.hardware.UnixBaseboard;
  * OpenBSD ComputerSystem implementation
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Immutable
 public class OpenBsdComputerSystem extends AbstractComputerSystem {

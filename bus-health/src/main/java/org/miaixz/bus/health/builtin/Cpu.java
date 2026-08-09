@@ -29,7 +29,6 @@ import lombok.Setter;
  * CPU Information
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

@@ -23,7 +23,6 @@ package org.miaixz.bus.office.excel.reader;
  * Listener for streaming read lifecycle callbacks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface ExcelReadListener {
 

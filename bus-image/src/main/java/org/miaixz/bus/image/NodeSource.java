@@ -25,7 +25,6 @@ import java.util.List;
  * Source of DICOM nodes that are discovered or provided as a named group.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface NodeSource {
 

@@ -27,7 +27,6 @@ import org.miaixz.bus.office.Context;
  * Represents the default behavior for local conversion tasks.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class LocalMadeInOffice extends AbstractOffice {
 

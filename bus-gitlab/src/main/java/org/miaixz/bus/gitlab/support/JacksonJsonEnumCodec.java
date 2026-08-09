@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @param <E> the enum type
  * @author Kimi Liu
- * @since Java 21+
  */
 public class JacksonJsonEnumCodec<E extends Enum<E>> {
 

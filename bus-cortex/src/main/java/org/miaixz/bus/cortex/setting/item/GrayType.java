@@ -23,7 +23,6 @@ package org.miaixz.bus.cortex.setting.item;
  * Gray release rule type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum GrayType {
     /**

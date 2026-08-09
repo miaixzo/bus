@@ -27,7 +27,6 @@ import org.miaixz.bus.mapper.behavior.SchemaBehavior;
  * Database dialect interface providing database-specific pagination, UPSERT, and schema capabilities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Dialect extends PagingBehavior, OptionsBehavior, SchemaBehavior {
 

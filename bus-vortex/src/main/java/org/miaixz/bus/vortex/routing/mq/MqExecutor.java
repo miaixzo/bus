@@ -69,7 +69,6 @@ import reactor.core.scheduler.Schedulers;
  * Generic type parameters: {@code Executor<String, ServerResponse>}
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MqExecutor extends Coordinator<String, ServerResponse> {
 

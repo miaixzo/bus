@@ -26,7 +26,6 @@ import org.miaixz.bus.logger.Logger;
  * Converts string-based {@code setting.item.revision} numbers at storage boundaries.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class ItemRevisionNumbers {
 

@@ -27,7 +27,6 @@ import org.miaixz.bus.core.center.function.FunctionX;
  * IniElement, like {@code sections, properties, comments}. they all can be like {@link String} .
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface IniElement extends CharSequence, java.io.Serializable {
 

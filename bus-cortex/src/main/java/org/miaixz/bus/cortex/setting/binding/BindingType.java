@@ -23,7 +23,6 @@ package org.miaixz.bus.cortex.setting.binding;
  * Binding targets supported by setting resource binding rows.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum BindingType {
 

@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * {@link Wrapper} to provide access to the underlying session object and {@link Closeable} for resource management.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Session extends Wrapper<Object>, Closeable {
 

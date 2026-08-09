@@ -29,7 +29,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @param certificates certificate snapshot
  * @author Kimi Liu
- * @since Java 21+
  */
 public record CertificateChain(List<Certificate> certificates) {
 

@@ -41,7 +41,6 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
  * MySQL database query implementation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MySqlDataBaseQuery extends AbstractDatabaseQuery {
 

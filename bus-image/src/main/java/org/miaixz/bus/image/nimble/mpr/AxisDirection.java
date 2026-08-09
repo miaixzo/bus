@@ -27,7 +27,6 @@ import org.miaixz.bus.image.nimble.geometry.Vector3;
  * Patient-space axis mapping for canonical MPR planes.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum AxisDirection {
 

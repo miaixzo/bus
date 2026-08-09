@@ -32,7 +32,6 @@ import org.miaixz.bus.gitlab.models.Key;
  * See: <a href="https://docs.gitlab.com/ee/api/keys.html">GitLab Key API Documentaion</a>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class KeysApi extends AbstractApi {
 

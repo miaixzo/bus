@@ -27,7 +27,6 @@ import org.miaixz.bus.core.lang.Assert;
  * Client certificate authentication mode for TLS engines.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum TlsClientAuth {
 

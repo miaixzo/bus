@@ -47,7 +47,6 @@ package org.miaixz.bus.image.nimble.opencv.lut;
  * @param bitsOutput         the number of bits in the output pixel values (1-32)
  * @param inversePaddingMLUT whether to inverse padding for modality LUT
  * @author Kimi Liu
- * @since Java 21+
  */
 public record LutParameters(double intercept, double slope, boolean applyPadding, Integer paddingMinValue,
         Integer paddingMaxValue, int bitsStored, boolean signed, boolean outputSigned, int bitsOutput,

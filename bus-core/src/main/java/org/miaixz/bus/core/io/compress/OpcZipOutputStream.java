@@ -31,7 +31,6 @@ import java.util.zip.ZipOutputStream;
  * Excel compatible ZIP64 OutputStream implementation. Based on: https://github.com/rzymek/opczip
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class OpcZipOutputStream extends ZipOutputStream {
 

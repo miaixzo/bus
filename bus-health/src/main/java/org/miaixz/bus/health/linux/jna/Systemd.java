@@ -31,7 +31,6 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * incorporated into the JNA project.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public interface Systemd extends Library {

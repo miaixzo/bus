@@ -32,7 +32,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * class extends {@link Samsara} to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TwentyEightStar extends Samsara {
 

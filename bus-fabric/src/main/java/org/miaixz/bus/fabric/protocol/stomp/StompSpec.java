@@ -48,7 +48,6 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @param handler     inbound message handler
  * @param listener    session lifecycle listener
  * @author Kimi Liu
- * @since Java 21+
  */
 record StompSpec(Context context, URI uri, Address address, Headers headers, Timeout timeout, StompPolicy policy,
         ProxyPlan proxy, String destination, String login, String passcode, GuardRule guard, Filter filter,

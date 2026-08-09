@@ -30,7 +30,6 @@ import lombok.Setter;
  * name, and Java type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

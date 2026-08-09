@@ -61,7 +61,6 @@ import org.miaixz.bus.core.center.function.PredicateX;
  * @see BoundType
  * @see BoundedRange
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Bound<T extends Comparable<? super T>> extends PredicateX<T>, Comparable<Bound<T>> {
 

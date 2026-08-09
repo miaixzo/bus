@@ -46,7 +46,6 @@ import org.miaixz.bus.logger.Logger;
  * class provides convenient methods for configuring and starting an embedded FTP server.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SimpleFtpServer {
 

@@ -34,7 +34,6 @@ import org.miaixz.bus.core.lang.Normal;
  * Defines shared archive models and low-level binary archive access.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Archive {
 
@@ -51,7 +50,6 @@ public class Archive {
      * @param previewRows preview row limit stored with the handle
      * @param segments    archived segments
      * @author Kimi Liu
-     * @since Java 21+
      */
     public record Manifest(String handleId, long createdAt, long expiresAt, int previewRows, List<Segment> segments)
             implements Serializable {
@@ -68,7 +66,6 @@ public class Archive {
      * @param indexFileName segment index file name
      * @param attributes    optional segment attributes
      * @author Kimi Liu
-     * @since Java 21+
      */
     public record Segment(int segmentIndex, String segmentName, long totalRecords, String dataFileName,
             String indexFileName, Map<String, String> attributes) implements Serializable {
@@ -109,7 +106,6 @@ public class Archive {
      * @param attributes   optional segment attributes
      * @param items        page items
      * @author Kimi Liu
-     * @since Java 21+
      */
     public record Slice(int segmentIndex, String segmentName, long totalRecords, int pageNo, int pageSize,
             Map<String, String> attributes, List<Record> items) {
@@ -122,7 +118,6 @@ public class Archive {
      * @param recordIndex logical record index
      * @param payload     serialized payload
      * @author Kimi Liu
-     * @since Java 21+
      */
     public record Record(long recordIndex, byte[] payload) {
 
@@ -132,7 +127,6 @@ public class Archive {
      * Binary archive writer used to persist segment data and the manifest.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Writer implements AutoCloseable {
 
@@ -444,7 +438,6 @@ public class Archive {
          * Mutable state for a segment being written.
          *
          * @author Kimi Liu
-         * @since Java 21+
          */
         private static final class SegmentState {
 
@@ -528,7 +521,6 @@ public class Archive {
      * Binary archive reader used to load the manifest and slices from disk.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class Reader {
 

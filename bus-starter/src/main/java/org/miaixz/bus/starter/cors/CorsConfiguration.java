@@ -42,7 +42,6 @@ import org.miaixz.bus.starter.annotation.EnableCors;
  * the properties defined in {@link CorsProperties}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @EnableConfigurationProperties(value = { CorsProperties.class })
 @Configuration(proxyBeanMethods = false)

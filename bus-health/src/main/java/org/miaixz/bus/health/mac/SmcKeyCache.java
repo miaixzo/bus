@@ -31,7 +31,6 @@ import org.miaixz.bus.logger.Logger;
  * Caches macOS SMC keys after configuration lookup or runtime discovery.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class SmcKeyCache {

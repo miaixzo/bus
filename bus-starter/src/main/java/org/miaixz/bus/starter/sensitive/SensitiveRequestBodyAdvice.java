@@ -45,7 +45,6 @@ import org.miaixz.bus.sensitive.magic.annotation.Sensitive;
  * specifically effective for {@code @RequestBody} annotated parameters.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SensitiveRequestBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice {
@@ -187,7 +186,6 @@ public class SensitiveRequestBodyAdvice extends BaseAdvice
      * A custom {@link HttpInputMessage} that wraps the original message and provides a decrypted body stream.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class InputMessage implements HttpInputMessage {
 

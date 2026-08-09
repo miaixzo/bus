@@ -27,7 +27,6 @@ import org.miaixz.bus.fabric.observe.event.FabricEvent;
  * Observer contract for fabric lifecycle events.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface EventObserver {
 

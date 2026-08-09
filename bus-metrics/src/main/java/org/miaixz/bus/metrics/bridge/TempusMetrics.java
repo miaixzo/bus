@@ -29,7 +29,6 @@ import org.miaixz.bus.metrics.Metrics;
  * tracking.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class TempusMetrics {
 

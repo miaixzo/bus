@@ -40,7 +40,6 @@ import org.miaixz.bus.logger.Logger;
  * DL (Definite Length).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ASN1 {
 
@@ -148,8 +147,8 @@ public class ASN1 {
      *
      * @param in The {@link InputStream} containing the ASN.1 data.
      * @return The string representation of the {@link ASN1Object}.
-     * @see ASN1Dump#dumpAsString(Object)
      * @throws InternalException if an I/O error occurs during decoding.
+     * @see ASN1Dump#dumpAsString(Object)
      */
     public static String getDumpString(final InputStream in) {
         return ASN1Dump.dumpAsString(decode(in));

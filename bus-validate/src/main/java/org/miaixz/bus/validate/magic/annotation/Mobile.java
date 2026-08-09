@@ -29,7 +29,6 @@ import org.miaixz.bus.validate.nimble.MobileMatcher;
  * Validates that the annotated string is a valid mobile phone number.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

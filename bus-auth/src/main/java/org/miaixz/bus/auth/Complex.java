@@ -40,7 +40,6 @@ import org.miaixz.bus.core.net.Protocol;
  * {@link Registry} enum.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Complex {
 

@@ -27,7 +27,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The issue epic class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class IssueEpic extends AbstractMinimalEpic<IssueEpic> {
 

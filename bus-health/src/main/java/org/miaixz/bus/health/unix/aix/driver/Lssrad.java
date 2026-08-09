@@ -35,7 +35,6 @@ import org.miaixz.bus.health.Parsing;
  * Queries lssrad
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class Lssrad {

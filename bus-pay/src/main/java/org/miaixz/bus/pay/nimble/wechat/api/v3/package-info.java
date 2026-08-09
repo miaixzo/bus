@@ -21,6 +21,5 @@
  * This package contains the V3 API definitions for WeChat Pay.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.pay.nimble.wechat.api.v3;

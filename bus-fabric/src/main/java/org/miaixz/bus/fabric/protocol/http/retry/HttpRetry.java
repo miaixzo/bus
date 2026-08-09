@@ -42,7 +42,6 @@ import org.miaixz.bus.logger.Logger;
  * HTTP retry and redirect stage.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class HttpRetry implements HttpStage {
 

@@ -32,7 +32,6 @@ import org.miaixz.bus.health.unix.shared.hardware.UnixDisplay;
  * OpenBsdHardwareAbstractionLayer class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class OpenBsdHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {

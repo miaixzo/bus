@@ -32,7 +32,6 @@ import org.miaixz.bus.shade.safety.Builder;
  * prefix from the entry name to make it compatible with standard JAR resource loading mechanisms.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BootJarArchiveEntry extends JarArchiveEntry {
 

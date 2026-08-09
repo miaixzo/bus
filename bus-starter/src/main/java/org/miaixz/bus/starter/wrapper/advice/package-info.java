@@ -21,6 +21,5 @@
  * Starter activation and properties for response-envelope advice.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.starter.wrapper.advice;

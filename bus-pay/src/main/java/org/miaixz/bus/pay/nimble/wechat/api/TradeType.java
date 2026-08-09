@@ -23,7 +23,6 @@ package org.miaixz.bus.pay.nimble.wechat.api;
  * Payment methods for WeChat Pay.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum TradeType {
 

@@ -27,7 +27,6 @@ import org.miaixz.bus.fabric.observe.event.FabricEvent;
  * Observer wrapper that prevents observation failures from escaping.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 final class SafeEventObserver implements EventObserver {
 

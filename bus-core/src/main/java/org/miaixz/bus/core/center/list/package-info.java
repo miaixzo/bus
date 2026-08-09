@@ -21,6 +21,5 @@
  * Provides classes for list partitioning, segmentation, and other list-related utilities.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.core.center.list;

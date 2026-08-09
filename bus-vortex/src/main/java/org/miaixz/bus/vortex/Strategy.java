@@ -36,7 +36,6 @@ import reactor.core.publisher.Mono;
  * {@link org.miaixz.bus.vortex.filter.PrimaryFilter}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Strategy {
 
@@ -72,7 +71,7 @@ public interface Strategy {
      *     return chain.apply(exchange);
      * });
      * }</pre>
-     *
+     * <p>
      * After completing its work, the strategy **must** call {@code chain.apply(exchange)} to delegate control to the
      * next strategy in the chain. Failure to do so will halt the request processing.
      *
@@ -91,7 +90,6 @@ public interface Strategy {
      * back to the main Spring WebFlux {@code WebFilterChain}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     interface Chain {
 

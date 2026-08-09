@@ -32,7 +32,6 @@ import lombok.experimental.SuperBuilder;
  * Model for the individual certificate information within the platform certificates download response.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

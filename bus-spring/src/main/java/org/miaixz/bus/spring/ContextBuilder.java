@@ -37,7 +37,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Instance facade for framework-neutral authenticated context state.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ContextBuilder {
 

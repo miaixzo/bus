@@ -40,7 +40,6 @@ import org.miaixz.bus.core.lang.Symbol;
  * referenced schemas.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Json2Rst {
 

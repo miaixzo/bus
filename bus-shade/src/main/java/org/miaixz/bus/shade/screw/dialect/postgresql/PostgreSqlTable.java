@@ -29,7 +29,6 @@ import org.miaixz.bus.shade.screw.metadata.Table;
  * Represents table information for a PostgreSQL database.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

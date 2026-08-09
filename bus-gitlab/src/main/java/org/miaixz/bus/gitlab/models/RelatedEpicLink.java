@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The related epic link class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RelatedEpicLink implements Serializable {
 

@@ -21,6 +21,5 @@
  * This package provides an implementation of the logging facade for Apache Commons Logging.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.logger.nimble.apache.commons;

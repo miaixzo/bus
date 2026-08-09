@@ -37,7 +37,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * the stream is closed.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class FastByteArrayOutputStream extends OutputStream {
 

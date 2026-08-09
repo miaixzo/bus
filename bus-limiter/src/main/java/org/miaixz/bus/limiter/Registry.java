@@ -36,7 +36,6 @@ import org.miaixz.bus.logger.Logger;
  * This class interacts with Sentinel's {@link FlowRuleManager} to configure flow control rules dynamically.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Registry {
 

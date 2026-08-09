@@ -37,7 +37,6 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * @see TenantHandler
  * @see MapperProvider
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface TenantProvider extends MapperProvider<TenantConfig> {

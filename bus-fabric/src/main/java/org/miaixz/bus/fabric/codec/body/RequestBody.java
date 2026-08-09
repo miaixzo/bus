@@ -23,7 +23,6 @@ package org.miaixz.bus.fabric.codec.body;
  * Marker contract for bodies sent by a client or server request.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface RequestBody extends Body {
 

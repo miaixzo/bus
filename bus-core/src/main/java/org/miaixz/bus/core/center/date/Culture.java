@@ -23,7 +23,6 @@ package org.miaixz.bus.core.center.date;
  * Represents a cultural or regional aspect of a calendar system.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Culture extends Almanac {
 

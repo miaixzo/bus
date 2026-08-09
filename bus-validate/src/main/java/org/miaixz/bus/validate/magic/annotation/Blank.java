@@ -30,7 +30,6 @@ import org.miaixz.bus.validate.nimble.BlankMatcher;
  * whitespace characters.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

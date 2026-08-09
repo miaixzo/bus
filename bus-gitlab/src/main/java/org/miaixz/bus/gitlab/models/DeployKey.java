@@ -29,7 +29,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The deploy key class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class DeployKey implements Serializable {
 

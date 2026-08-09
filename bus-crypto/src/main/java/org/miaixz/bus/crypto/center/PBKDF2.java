@@ -32,7 +32,6 @@ import org.miaixz.bus.crypto.Keeper;
  * https://blog.csdn.net/huoji555/article/details/83659687
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PBKDF2 {
 

@@ -40,7 +40,6 @@ import org.miaixz.bus.health.unix.shared.driver.Xwininfo;
  * </p>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public interface OperatingSystem {
@@ -51,7 +50,6 @@ public interface OperatingSystem {
      * {@link #getDescendantProcesses(int, PredicateX, Comparator, int)}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     final class ProcessFiltering {
 
@@ -95,7 +93,6 @@ public interface OperatingSystem {
      * {@link #getDescendantProcesses(int, PredicateX, Comparator, int)}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     final class ProcessSorting {
 
@@ -451,7 +448,6 @@ public interface OperatingSystem {
      * A class representing the Operating System version details.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Immutable
     class OSVersionInfo {

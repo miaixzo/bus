@@ -42,7 +42,6 @@ import org.miaixz.bus.extra.json.JsonKit;
  * QQ login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class QqProvider extends AbstractProvider {
 

@@ -41,7 +41,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * wrapped and replaced with {@link ForceAliasedAnnotationAttribute}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class AliasAnnotationPostProcessor implements SynthesizedAnnotationPostProcessor {
 

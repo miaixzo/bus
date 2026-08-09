@@ -47,7 +47,6 @@ import org.miaixz.bus.logger.Logger;
  * Ele.me login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ElemeProvider extends AbstractProvider {
 

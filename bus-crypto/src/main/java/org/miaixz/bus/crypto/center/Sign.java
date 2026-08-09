@@ -45,7 +45,6 @@ import org.miaixz.bus.logger.Logger;
  * Signature wrapper class for {@link Signature}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class Sign extends Asymmetric<Sign> {
 

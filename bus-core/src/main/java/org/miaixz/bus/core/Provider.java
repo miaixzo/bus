@@ -27,7 +27,6 @@ import java.io.Serializable;
  *
  * @param <T> The type of object this provider produces or handles.
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Provider<T> extends Serializable {
 

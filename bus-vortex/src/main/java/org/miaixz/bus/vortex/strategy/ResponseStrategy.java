@@ -46,7 +46,6 @@ import reactor.core.publisher.Mono;
  * format specified in the request context (e.g., XML).
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.FIFTH)
 public class ResponseStrategy extends AbstractStrategy {

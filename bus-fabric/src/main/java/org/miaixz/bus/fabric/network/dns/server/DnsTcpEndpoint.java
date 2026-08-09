@@ -50,7 +50,6 @@ import org.miaixz.bus.fabric.protocol.socket.SocketOptions;
  * DNS-over-TCP endpoint backed by the shared AIO server infrastructure.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DnsTcpEndpoint implements AutoCloseable, Lifecycle {
 
@@ -489,7 +488,6 @@ public final class DnsTcpEndpoint implements AutoCloseable, Lifecycle {
     /**
      * DNS TCP request handler.
      *
-     * @since Java 21+
      */
     @FunctionalInterface
     public interface QueryHandler {
@@ -509,7 +507,6 @@ public final class DnsTcpEndpoint implements AutoCloseable, Lifecycle {
      * AIO-backed input with a small unread buffer for PROXY protocol probing.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     private final class PrefetchedInput {
 

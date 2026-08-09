@@ -39,7 +39,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * CSV file reader, inspired by FastCSV.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class CsvReader extends CsvBaseReader implements Iterable<CsvRow>, Closeable {
 

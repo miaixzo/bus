@@ -53,7 +53,6 @@ import org.miaixz.bus.logger.Logger;
  * first released on September 17, 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public class LinuxOperatingSystem extends AbstractOperatingSystem {

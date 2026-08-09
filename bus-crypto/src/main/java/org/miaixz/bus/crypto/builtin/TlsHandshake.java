@@ -31,7 +31,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @param cipher   negotiated cipher
  * @param peer     peer certificate chain
  * @author Kimi Liu
- * @since Java 21+
  */
 public record TlsHandshake(String protocol, String cipher, CertificateChain peer) {
 

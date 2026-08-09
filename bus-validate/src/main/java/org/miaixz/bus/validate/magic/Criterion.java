@@ -39,7 +39,6 @@ import org.miaixz.bus.core.xyz.MapKit;
  * single validation rule, holding all necessary information for the validation process.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

@@ -39,7 +39,6 @@ import org.miaixz.bus.core.xyz.MethodKit;
  * A collector for repeatable annotations, used to extract contained repeatable annotations from a given annotation.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface RepeatableAnnotationCollector {
 
@@ -69,7 +68,7 @@ public interface RepeatableAnnotationCollector {
      * {@literal @}Repeatable(Annotations.class)
      * {@literal @}interface Item {}
      * </code></pre>
-     *
+     * <p>
      * Parsing any {@code Annotations} object will yield the {@code Item} annotation objects contained within its
      * {@code value} attribute.
      *
@@ -107,7 +106,7 @@ public interface RepeatableAnnotationCollector {
      * 	Item2[] items2() default {};
      * }
      * </code></pre>
-     *
+     * <p>
      * Parsing any {@code MyAnnotations} object will yield {@code Item1} annotation objects from the {@code items1}
      * attribute, and {@code Item2} annotation objects from the {@code items2} attribute.
      *
@@ -182,7 +181,6 @@ public interface RepeatableAnnotationCollector {
      * A no-op implementation of {@code RepeatableAnnotationCollector} that returns only the original annotation.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class None implements RepeatableAnnotationCollector {
 
@@ -250,7 +248,6 @@ public interface RepeatableAnnotationCollector {
      * traversing and filtering annotations.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     abstract class AbstractCollector implements RepeatableAnnotationCollector {
 
@@ -391,7 +388,6 @@ public interface RepeatableAnnotationCollector {
      * component type of that array is itself annotated with {@link Repeatable}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class Standard extends AbstractCollector {
 
@@ -479,7 +475,6 @@ public interface RepeatableAnnotationCollector {
      * predicate. The collector will return all repeatable annotations from all matching attributes.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class Condition extends AbstractCollector {
 
@@ -520,7 +515,6 @@ public interface RepeatableAnnotationCollector {
      * all such matching attributes.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     class Full extends AbstractCollector {
 

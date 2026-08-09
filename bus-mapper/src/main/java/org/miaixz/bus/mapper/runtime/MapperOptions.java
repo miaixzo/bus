@@ -40,7 +40,6 @@ import org.miaixz.bus.mapper.Charter.Schema;
  * application context concerns so it can live inside {@code bus-mapper}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
@@ -240,7 +239,6 @@ public class MapperOptions {
      * These options are consumed by the mapper plugin factory when creating the operation safety handler.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -269,7 +267,6 @@ public class MapperOptions {
      * Pagination options with datasource-scope compatible fields.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -309,7 +306,6 @@ public class MapperOptions {
      * Physical identifier validation options.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -336,7 +332,6 @@ public class MapperOptions {
      * supplied by a {@code TenantProvider}.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -392,7 +387,6 @@ public class MapperOptions {
      * These options control the mapper audit handler when no provider-specific audit configuration is supplied.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -443,7 +437,6 @@ public class MapperOptions {
      * These options control the mapper populate handler when no provider-specific populate configuration is supplied.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -489,7 +482,6 @@ public class MapperOptions {
      * These options control the mapper visible handler when no provider-specific visible configuration is supplied.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -520,7 +512,6 @@ public class MapperOptions {
      * These options control table prefix and suffix handling when no provider-specific configuration is supplied.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
@@ -538,10 +529,14 @@ public class MapperOptions {
          */
         private boolean enabled = true;
 
-        /** Prefix value and its independently ignored tables. */
+        /**
+         * Prefix value and its independently ignored tables.
+         */
         private AffixPartOptions prefix;
 
-        /** Suffix value and its independently ignored tables. */
+        /**
+         * Suffix value and its independently ignored tables.
+         */
         private AffixPartOptions suffix;
 
     }
@@ -550,21 +545,26 @@ public class MapperOptions {
      * One side of an affix configuration.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter
     public static class AffixPartOptions {
 
-        /** Creates an empty affix-side configuration. */
+        /**
+         * Creates an empty affix-side configuration.
+         */
         public AffixPartOptions() {
             // No initialization required.
         }
 
-        /** Text applied to the corresponding side of a table name. */
+        /**
+         * Text applied to the corresponding side of a table name.
+         */
         private String value;
 
-        /** Logical table names excluded only from this side. */
+        /**
+         * Logical table names excluded only from this side.
+         */
         private String ignore;
 
     }
@@ -576,7 +576,6 @@ public class MapperOptions {
      * datasource lookup stay outside this class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @Setter

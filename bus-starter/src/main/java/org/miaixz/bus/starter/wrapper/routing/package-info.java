@@ -21,6 +21,5 @@
  * Starter activation for controller route-prefix handling.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.starter.wrapper.routing;

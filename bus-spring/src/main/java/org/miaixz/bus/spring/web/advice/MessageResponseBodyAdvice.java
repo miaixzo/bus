@@ -36,7 +36,6 @@ import org.miaixz.bus.core.basic.entity.Message;
  * Wraps ordinary response bodies in a {@link Message} while leaving transport-specific responses untouched.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class MessageResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 

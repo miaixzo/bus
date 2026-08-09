@@ -37,7 +37,6 @@ import org.miaixz.bus.spring.web.wrapper.CachedBodyRequestWrapper;
  * Records a bounded, value-free request lifecycle audit entry.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class SentinelRequestHandler implements HandlerInterceptor {
 

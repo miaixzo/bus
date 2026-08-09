@@ -28,6 +28,5 @@
  * delegates that do not support the target instance, and returns the first failure or a combined success result.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus.cortex.health;

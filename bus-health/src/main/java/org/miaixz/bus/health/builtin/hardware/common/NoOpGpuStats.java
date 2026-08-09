@@ -34,7 +34,6 @@ import org.miaixz.bus.health.builtin.hardware.GpuTicks;
  * all getters throw {@link IllegalStateException}. {@link #close()} is idempotent.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @ThreadSafe
 public final class NoOpGpuStats implements GpuStats {

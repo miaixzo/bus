@@ -38,7 +38,6 @@ import org.miaixz.bus.gitlab.models.BoardList;
  *
  * @see <a href="https://docs.gitlab.com/ce/api/boards.html">GitLab Issue Boards API Documentaion</a>
  * @author Kimi Liu
- * @since Java 21+
  */
 public class BoardsApi extends AbstractApi {
 

@@ -8,7 +8,9 @@
 
 ## 📖 Project Introduction
 
-**Bus BOM** (Bill of Materials) is a Maven POM module that provides centralized dependency management for all Bus framework modules. It ensures version consistency across your project by managing all Bus library dependencies in one place.
+**Bus BOM** (Bill of Materials) is a Maven POM module that provides centralized dependency management for all Bus
+framework modules. It ensures version consistency across your project by managing all Bus library dependencies in one
+place.
 
 -----
 
@@ -157,6 +159,7 @@ The Bus BOM manages versions for all Bus framework modules:
 ### 1. Always Use BOM
 
 **Recommended**:
+
 ```xml
 <dependency>
     <groupId>org.miaixz</groupId>
@@ -166,6 +169,7 @@ The Bus BOM manages versions for all Bus framework modules:
 ```
 
 **Not Recommended**:
+
 ```xml
 <dependency>
     <groupId>org.miaixz</groupId>
@@ -254,9 +258,9 @@ If a dependency is not found:
 ## 🔄 Version Compatibility
 
 | Bus BOM Version | Spring Boot Version | JDK Version |
-|:----------------|:--------------------|:---|
-| 8.x             | 4.x+                | 17+ |
-| 6.x             | 2.x+                | 11+ |
+|:----------------|:--------------------|:------------|
+| 8.x             | 4.x+                | 17+         |
+| 6.x             | 2.x+                | 11+         |
 
 -----
 

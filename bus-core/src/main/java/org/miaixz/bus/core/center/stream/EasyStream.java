@@ -67,7 +67,7 @@ import org.miaixz.bus.core.xyz.*;
  *
  * <p>
  * Sequential Streams and Parallel Streams
- *
+ * <p>
  * Streams are divided into two types: <em>sequential streams</em> and <em>parallel streams</em>:
  * <ul>
  * <li>Sequential Streams: All operations on the stream are performed by the current thread.</li>
@@ -79,7 +79,6 @@ import org.miaixz.bus.core.xyz.*;
  * @param <T> the type of the elements in the stream
  * @see java.util.stream.Stream
  * @author Kimi Liu
- * @since Java 21+
  */
 public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
 
@@ -494,7 +493,6 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
      *
      * @param <T> the type of the elements
      * @author Kimi Liu
-     * @since Java 21+
      */
     public interface Builder<T> extends Consumer<T>, org.miaixz.bus.core.Builder<EasyStream<T>> {
 

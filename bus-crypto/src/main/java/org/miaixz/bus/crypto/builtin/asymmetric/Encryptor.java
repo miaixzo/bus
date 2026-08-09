@@ -37,7 +37,6 @@ import org.miaixz.bus.core.xyz.IoKit;
  * </ul>
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public interface Encryptor {
 

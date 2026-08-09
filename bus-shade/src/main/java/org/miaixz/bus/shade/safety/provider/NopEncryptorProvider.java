@@ -29,7 +29,6 @@ import org.miaixz.bus.shade.safety.algorithm.Key;
  * without modification.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class NopEncryptorProvider implements EncryptorProvider {
 

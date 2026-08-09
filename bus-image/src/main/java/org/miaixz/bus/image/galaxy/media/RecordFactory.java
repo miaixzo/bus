@@ -42,7 +42,6 @@ import org.miaixz.bus.image.galaxy.io.SAXParserFactoryHolder;
  * Represents the RecordFactory type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class RecordFactory {
 

@@ -28,7 +28,6 @@ import lombok.Setter;
  * Internal registry watch scope with watch-only controls separated from query criteria.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter

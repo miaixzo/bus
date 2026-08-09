@@ -64,7 +64,6 @@ import reactor.core.publisher.Mono;
  * and final downstream parameter cleanup.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.THIRD)
 public class McpQualifierStrategy extends QualifierStrategy {

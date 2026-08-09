@@ -35,7 +35,6 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  * Bridge from JDK {@link Authenticator} to {@link HttpAuthenticator}.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class JavaAuthenticatorBridge implements HttpAuthenticator {
 

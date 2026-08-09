@@ -35,7 +35,6 @@ import org.miaixz.bus.fabric.runtime.Activity;
  * Cancellable handle for a queued or running activity.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public final class DispatchHandle implements Lifecycle {
 

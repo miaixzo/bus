@@ -33,7 +33,6 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * The pipeline event class.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class PipelineEvent extends AbstractEvent {
 
@@ -234,7 +233,6 @@ public class PipelineEvent extends AbstractEvent {
      * The object attributes class.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     public static class ObjectAttributes {
 

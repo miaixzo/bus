@@ -27,7 +27,6 @@ import lombok.ToString;
  * Builder for constructing notification messages or configurations.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @Getter
 @Setter
@@ -44,7 +43,6 @@ public class Builder {
      * Defines the type of cache to be used for notification services.
      *
      * @author Kimi Liu
-     * @since Java 21+
      */
     @Getter
     @ToString

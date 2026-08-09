@@ -32,7 +32,6 @@ import org.miaixz.bus.core.net.url.UrlEncoder;
  * WeChat Enterprise web login provider.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class WeChatEeWebProvider extends AbstractWeChatEeProvider {
 

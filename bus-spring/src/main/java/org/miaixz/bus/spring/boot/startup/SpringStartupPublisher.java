@@ -23,7 +23,6 @@ package org.miaixz.bus.spring.boot.startup;
  * Publishes one completed Spring Boot startup summary.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @FunctionalInterface
 public interface SpringStartupPublisher {

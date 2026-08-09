@@ -57,7 +57,6 @@ import reactor.core.scheduler.Schedulers;
  * Qualifies public slug forwarding requests.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.THIRD)
 public class SlugQualifierStrategy extends QualifierStrategy {

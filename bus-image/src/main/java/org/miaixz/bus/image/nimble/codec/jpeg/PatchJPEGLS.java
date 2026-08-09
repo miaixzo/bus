@@ -35,7 +35,6 @@ package org.miaixz.bus.image.nimble.codec.jpeg;
  * to make correct JPEG-LS streams (created by other encoders) readable by JAI-ImageIO.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public enum PatchJPEGLS {
 

@@ -35,7 +35,6 @@ import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
  * Represents the ImageMetaData type.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 public class ImageMetaData extends IIOMetadata {
 
