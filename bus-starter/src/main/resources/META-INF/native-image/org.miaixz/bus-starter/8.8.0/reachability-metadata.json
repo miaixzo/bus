@@ -1314,7 +1314,21 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.spring.web.routing.RoutePrefixProperties"
+            "org.miaixz.bus.starter.wrapper.routing.RoutePrefixProperties"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.wrapper.routing.RoutePrefixProperties",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "java.util.List",
+            "boolean"
           ]
         }
       ]

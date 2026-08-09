@@ -28,7 +28,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.miaixz.bus.spring.web.routing.RoutePrefixHandlerMapping;
-import org.miaixz.bus.spring.web.routing.RoutePrefixProperties;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
@@ -65,7 +64,7 @@ public class RoutePrefixConfiguration {
     @Bean
     @ConditionalOnMissingBean(RoutePrefixHandlerMapping.class)
     public RoutePrefixHandlerMapping routePrefixHandlerMapping() {
-        return new RoutePrefixHandlerMapping(this.properties);
+        return new RoutePrefixHandlerMapping(this.properties.toOptions());
     }
 
 }
