@@ -174,7 +174,6 @@ Spring Boot 无缝集成。
             <groupId>org.miaixz</groupId>
             <artifactId>bus-storage</artifactId>
         </dependency>
-
     </dependencies>
 </project>
 ```

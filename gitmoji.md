@@ -2,9 +2,7 @@
 
 Source / 来源: [gitmoji](https://github.com/carloscuesta/gitmoji/blob/master/packages/gitmojis/src/gitmojis.json)
 
-`SemVer` uses the value from upstream. `-` means no SemVer value is specified.
-
-`SemVer` 使用上游数据中的值。`-` 表示上游未指定 SemVer 值。
+`SemVer` uses the value from upstream. / 使用上游数据中的值。 `-` means no SemVer value is specified. / 表示上游未指定 SemVer 值。
 
 | Emoji | Code                          | Name                        | SemVer | English Description                                           | 中文描述                                 |
 |-------|-------------------------------|-----------------------------|--------|---------------------------------------------------------------|------------------------------------------|

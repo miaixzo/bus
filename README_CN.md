@@ -101,7 +101,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-all</artifactId>
-    <version>x.x.x</version>
+    <version>8.x.x</version>
 </dependency>
 ```
 
@@ -111,7 +111,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-xxx</artifactId>
-    <version>x.x.x</version>
+    <version>8.x.x</version>
 </dependency>
 ```
 

@@ -149,7 +149,7 @@ jobs:
 
   github-release:
     name: Create GitHub Release
-    needs: [build, publish]
+    needs: [ build, publish ]
     if: ${{ github.ref_type == 'tag' && needs.publish.result == 'success' }}
     permissions:
       contents: write

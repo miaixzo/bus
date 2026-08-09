@@ -143,6 +143,7 @@ public class FaceDetectionExample {
 
 ```java
 public class ImageFilterExample {
+    
     public void applyFilters(String inputPath) {
         Mat image = Imgcodecs.imread(inputPath);
 
@@ -154,6 +155,7 @@ public class ImageFilterExample {
         // Display or save results
         // ...
     }
+    
 }
 ```
 

@@ -76,6 +76,7 @@ import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
 public class ImageExample {
+    
     public void processImage(String inputPath, String outputPath) {
         // 加载图像
         Mat image = Imgcodecs.imread(inputPath);
@@ -98,6 +99,7 @@ public class ImageExample {
         blurred.release();
         edges.release();
     }
+    
 }
 ```
 
@@ -145,6 +147,7 @@ public class FaceDetectionExample {
 
 ```java
 public class ImageFilterExample {
+    
     public void applyFilters(String inputPath) {
         Mat image = Imgcodecs.imread(inputPath);
 
@@ -156,6 +159,7 @@ public class ImageFilterExample {
         // 显示或保存结果
         // ...
     }
+    
 }
 ```
 
@@ -166,6 +170,7 @@ import org.miaixz.bus.opengl.VideoCapture;
 import org.miaixz.bus.opengl.VideoWriter;
 
 public class VideoExample {
+    
     public void processVideo(String inputPath, String outputPath) {
         // 打开视频文件
         VideoCapture capture = new VideoCapture(inputPath);
@@ -197,6 +202,7 @@ public class VideoExample {
         capture.release();
         writer.release();
     }
+    
 }
 ```
 

@@ -61,7 +61,7 @@
 ## Gradle 使用
 
 ```gradle
-implementation "org.miaixz:bus-all:x.x.x"
+implementation "org.miaixz:bus-all:8.x.x"
 ```
 
 配合 BOM 使用：
@@ -69,7 +69,7 @@ implementation "org.miaixz:bus-all:x.x.x"
 ```gradle
 dependencyManagement {
     imports {
-        mavenBom "org.miaixz:bus-bom:x.x.x"
+        mavenBom "org.miaixz:bus-bom:8.x.x"
     }
 }
 

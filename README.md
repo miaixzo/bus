@@ -107,7 +107,7 @@ Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-all</artifactId>
-    <version>x.x.x</version>
+    <version>8.x.x</version>
 </dependency>
 ```
 
@@ -117,7 +117,7 @@ Or use a single component
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-xxx</artifactId>
-    <version>x.x.x</version>
+    <version>8.x.x</version>
 </dependency>
 ```
 

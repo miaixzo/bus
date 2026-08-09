@@ -63,7 +63,7 @@ When the project already imports `bus-bom`, the version can be omitted:
 ## Gradle Usage
 
 ```gradle
-implementation "org.miaixz:bus-all:x.x.x"
+implementation "org.miaixz:bus-all:8.x.x"
 ```
 
 With the BOM:
@@ -71,7 +71,7 @@ With the BOM:
 ```gradle
 dependencyManagement {
     imports {
-        mavenBom "org.miaixz:bus-bom:x.x.x"
+        mavenBom "org.miaixz:bus-bom:8.x.x"
     }
 }
 

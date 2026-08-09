@@ -174,7 +174,6 @@ Then declare only the modules you need — no version tags required:
             <groupId>org.miaixz</groupId>
             <artifactId>bus-storage</artifactId>
         </dependency>
-
     </dependencies>
 </project>
 ```
