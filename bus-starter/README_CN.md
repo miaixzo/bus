@@ -1,9 +1,28 @@
 # bus-starter
 
-`bus-starter` 是 Bus 的 Spring Boot 启动与功能装配层，负责发现资源、条件化功能配置、属性绑定、默认 Bean 和 生命周期集成。可复用
-Spring 机制保留在 `bus-spring`，业务算法保留在各自所属 Bus 组件。
+`bus-starter` 是 Bus 的 Spring Boot 启动和功能组装层。它集中配置发现，
+`bus.*` 属性绑定、条件功能激活、默认 Bean 注册、第三方客户端生命周期以及
+Spring AOT 兼容性。可重复使用的弹簧机制保留在 `bus-spring` 中；商业算法仍然属于他们自己
+Bus模块。
 
-## 依赖
+## 责任边界
+
+Starter 负责：
+
+- Spring Boot配置发现；
+- 默认启用的共享上下文基础设施；
+- 选择加入产品功能配置；
+- 经验证的不可变配置属性；
+- 条件 Bean 和应用程序覆盖点；
+- 第三方客户端/服务的创建和销毁；
+- 通过配置选择的 MVC 建议、过滤器、解析器和转换器；
+- 特定功能的 AOT 和本机映像集成。
+
+Starter 不能替代底层模块。它不能吸收可重复使用的 Spring 力学
+`bus-spring`、`bus-sensitive` 的屏蔽算法、`bus-logger` 的日志记录行为或来自 `bus-logger` 的域功能
+其他Bus组件。
+
+## 依赖关系
 
 ```xml
 <dependency>
@@ -13,68 +32,126 @@ Spring 机制保留在 `bus-spring`，业务算法保留在各自所属 Bus 组�
 </dependency>
 ```
 
+为应用程序选择的每个功能添加所属的Bus模块和所需的第三方库。选修的
+库受到类路径条件的保护，因此它们的缺失不会阻止不相关的 Starter 基础设施
+加载中。
+
 ## 启动模型
 
-Spring Boot 通过唯一的 `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`
-发现 Starter Configuration。根 Package 包含：
+Spring Boot 通过以下方式发现候选人：
 
-- `GeniusBuilder`：统一定义 `bus.*` 配置前缀常量。
-- `GeniusStarter`：装配共享 Spring Bean 访问和运行时上下文基础设施。
+```text
+META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+```
 
-根 Package 不对外导出。JPMS 只导出 `org.miaixz.bus.starter.annotation`；Configuration、Properties 和实现 Package 仅定向开放给
-Spring 基础设施。
+早期启动侦听器和环境处理器通过 Starter 拥有的单一注册
+`META-INF/spring.factories` 文件。 `bus-spring` 提供了可重用的实现，但没有发布竞争的
+发现资源。
 
-### 默认开启的基础设施
+根包包含两个主要类：
 
-| Configuration       | 默认状态              | 关闭属性                                         | 职责                                                                                               |
-|---------------------|-----------------------|--------------------------------------------------|----------------------------------------------------------------------------------------------------|
-| `GeniusStarter`     | 开启                  | 无                                               | 注册 `SpringBuilder`、Bean 服务、`ContextManager`、`ContextBuilder` 和 `ContextDecorator`。        |
-| `TaskConfiguration` | Task 相关类存在时开启 | `bus.context.task.enabled=false`                 | 在 Spring Boot TaskExecutor 中传播运行时上下文。                                                   |
-| `WebConfiguration`  | Servlet 应用中开启    | `bus.context.web.enabled=false` 只关闭上下文绑定 | 注册共享 `RequestContext`，并按条件为 Request、Async、Error Dispatch 注册 `ContextBindingFilter`。 |
+| 类型 | 责任 |
+|-----------------|-----------------------------------------------------------------------------------------------------|
+| `GeniusBuilder` | 所有 `bus.*` 配置前缀的权威编译时常量。                        |
+| `GeniusStarter` | 注册共享 Spring Bean 服务和应用程序上下文拥有的运行时上下文基础结构。 |
 
-这三个基础 Configuration 与产品功能不同。产品功能采用固定优先级：显式 `@EnableXxx` 始终启用对应功能， 即使
-`bus.<feature>.enabled=false` 也不能关闭它；未声明注解时，只有配置项为 `true` 才启用；两者都不存在时 保持禁用。
+因此，根包仍然有意义且非空。
 
-## 功能启用
+## 默认启用的基础设施
 
-| 功能      | 最高优先级注解     | 次级配置项                                      | 主要集成内容                        |
-|-----------|--------------------|-------------------------------------------------|-------------------------------------|
-| Auth      | `@EnableAuth`      | `bus.auth.enabled=true`                         | `bus-auth`                          |
-| Cache     | `@EnableCache`     | `bus.cache.enabled=true`                        | `bus-cache`                         |
-| CORS      | `@EnableCors`      | `bus.cors.enabled=true`                         | Servlet MVC                         |
-| Cortex    | `@EnableCortex`    | `bus.cortex.enabled=true`                       | `bus-cortex`                        |
-| Dubbo     | `@EnableDubbo`     | `bus.dubbo.enabled=true`                        | Apache Dubbo                        |
-| Elastic   | `@EnableElastic`   | `bus.elastic.enabled=true`                      | Elasticsearch REST Client           |
-| Fabric    | `@EnableFabric`    | `bus.fabric.enabled=true`                       | TCP、WebSocket 和 DNS Service       |
-| Health    | `@EnableHealth`    | `bus.health.enabled=true`                       | Health Indicator 和 Availability    |
-| I18n      | `@EnableI18n`      | `bus.i18n.enabled=true`                         | MessageSource 和 i18n Adapter       |
-| Image     | `@EnableImage`     | `bus.image.enabled=true`                        | Image 和 DICOM 集成                 |
-| JDBC      | `@EnableJdbc`      | `bus.datasource.url` 或 `spring.datasource.url` | 动态 DataSource 路由                |
-| JSON      | `@EnableJson`      | `bus.json.enabled=true`                         | ApplicationContext 级 JSON Provider |
-| Limiter   | `@EnableLimiter`   | `bus.limiter.enabled=true`                      | Limiter 扫描和 Service              |
-| Mapper    | `@EnableMapper`    | `bus.mapper.enabled=true`                       | MyBatis、Tenant、Plugin 和 AOT      |
-| Metrics   | `@EnableMetrics`   | `bus.metrics.enabled=true`                      | Metrics Provider 和 Endpoint        |
-| Mongo     | `@EnableMongo`     | `bus.mongo.enabled=true`                        | Mongo ClientSettings Customizer     |
-| Notify    | `@EnableNotify`    | `bus.notify.enabled=true`                       | Notify Registry 和 Service          |
-| Office    | `@EnableOffice`    | `bus.office.enabled=true`                       | 文档转换和预览                      |
-| Pay       | `@EnablePay`       | `bus.pay.enabled=true`                          | Pay Registry 和 Service             |
-| Sensitive | `@EnableSensitive` | `bus.sensitive.enabled=true`                    | 日志脱敏和 MVC Body Advice          |
-| Storage   | `@EnableStorage`   | `bus.storage.enabled=true`                      | Storage Registry 和 Service         |
-| Tempus    | `@EnableTempus`    | `bus.tempus.enabled=true`                       | Temporal Client、Worker 和生命周期  |
-| Tracer    | `@EnableTracer`    | `bus.tracer.enabled=true`                       | 分布式 Tracer                       |
-| Validate  | `@EnableValidate`  | `bus.validate.enabled=true`                     | 方法校验和 Advice                   |
-| Vortex    | `@EnableVortex`    | `bus.vortex.enabled=true`                       | 路由网关和 Asset 生命周期           |
-| Wrapper   | `@EnableWrapper`   | `bus.wrapper.enabled=true`                      | 五项独立 MVC 能力                   |
-| ZooKeeper | `@EnableZookeeper` | `bus.zookeeper.enabled=true`                    | Apache Curator Client               |
+多个功能所需的基础设施是独立于产品功能启用的：
 
-注解直接 Import 功能 Configuration。`bus-spring` 提供的统一 `@ConditionalOnEnabled` 规则优先接受显式注解， 只有未发现注解时才把
-`bus.<feature>.enabled` 作为次级启用来源。两条启用路径始终落到同一个功能 Configuration，不会产生第二套实现。
+| 配置 | 默认值 | 禁用属性 | 职责 |
+|---------------------|--------------------------------------|-------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| `GeniusStarter` | 已启用 | 无 | 注册 Bean 服务、环境/提供者服务、运行时上下文和任务装饰器。                                |
+| `TaskConfiguration` | 当引导任务类存在时启用 | `bus.context.task.enabled=false` | 组成有序任务装饰器并传播运行时上下文。                                                            |
+| `WebConfiguration` | 为 Servlet 应用程序启用 | `bus.context.web.enabled=false` 仅禁用绑定 | 注册共享 `RequestContext` 并有条件地注册请求、异步和错误调度的上下文绑定。 |
 
-启用 JSON 集成后，`JsonConfiguration` 选择唯一的 `JsonProvider`，`JsonBinding` 将同一实例绑定给 `JsonKit`、 缓存请求体解析及其他共享静态
-JSON 调用；Spring 上下文关闭时只解除当前 Binding 持有的 Provider。Classpath 中同时存在多个 JSON 引擎时，必须将
-`bus.json.provider` 设置为 `fastjson`、`gson` 或 `jackson`；`AUTO` 只接受 唯一可用引擎。
+`GeniusStarter` 提供可替换的默认值：
+
+- `SpringContext`；
+- `BeanProvider`；
+- `BeanRegistry`；
+- `BeanMetadata`；
+- `EnvironmentResolver`；
+- `ProviderRegistry`；
+- `ContextManager`；
+- `ContextBuilder`；
+- `SpringBuilder`；
+- `ContextDecorator`。
+
+每个都使用具体的 `@ConditionalOnMissingBean` 合约。应用程序可以替换一项服务而不替换其他服务
+整个基础设施图。
+
+### 上下文传播默认值
+
+`TaskConfiguration` 对所有 `TaskDecorator` Bean 进行排序，删除重复实例，确保有一个 `ContextDecorator`，并且
+在 Spring Boot 任务执行器上安装复合装饰器。 `WebConfiguration`始终提供可更换的
+`RequestContext` Servlet 应用程序中的 Bean 并在以下位置注册 `ContextBindingFilter`
+除非禁用绑定，否则将调度 `REQUEST`、`ASYNC` 和 `ERROR` 的 `Ordered.HIGHEST_PRECEDENCE + 10`。
+
+```yaml
+bus:
+  context:
+    task:
+      enabled: true
+    web:
+      enabled: true
+```
+
+当存在所需的运行时类时，两个交换机都默认为 `true`。
+
+## 功能激活模型
+
+产品功能使用一种确定性激活顺序：显式 `@EnableXxx` 注释始终启用其功能，
+包括`bus.<feature>.enabled=false`时；如果没有注释，该功能仅在其启用时启用
+`bus.<feature>.enabled` 属性为 `true`。如果两个激活源都不存在，则该功能保持禁用状态。
+
+| 特征 | 导入注释 | 属性 | 主要职责 |
+|-----------|--------------------|-------------------------------------------------|---------------------------------------------------------------|
+| Auth | `@EnableAuth` | `bus.auth.enabled` | 身份验证服务和方法解析。                 |
+| 缓存 | `@EnableCache` | `bus.cache.enabled` | 缓存提供程序组件和 AspectJ 代理支持。            |
+| CORS | `@EnableCors` | `bus.cors.enabled` | 已验证的 Servlet MVC CORS 策略。                            |
+| Cortex | `@EnableCortex` | `bus.cortex.enabled` | Cortex 注册表和集成组件。                     |
+| Dubbo | `@EnableDubbo` | `bus.dubbo.enabled` | Apache Dubbo 集成。                                     |
+| Elastic | `@EnableElastic` | `bus.elastic.enabled` | Elasticsearch REST 客户端生命周期。                          |
+| 结构 | `@EnableFabric` | `bus.fabric.enabled` | TCP、WebSocket 和 DNS 服务生命周期。                    |
+| 运行状况 | `@EnableHealth` | `bus.health.enabled` | 系统运行状况和可用性集成。                   |
+| I18n | `@EnableI18n` | `bus.i18n.enabled` | 消息源和Bus i18n 适配器。                          |
+| 图像 | `@EnableImage` | `bus.image.enabled` | 图像和 DICOM 提供程序集成。                         |
+| JDBC | `@EnableJdbc` | `bus.datasource.url` 或 `spring.datasource.url` | 已验证动态数据源和路由。                   |
+| JSON | `@EnableJson` | `bus.json.enabled` | 应用程序上下文 JSON 提供程序选择。                  |
+| 限制器 | `@EnableLimiter` | `bus.limiter.enabled` | 限制器扫描和服务注册。                    |
+| 映射器 | `@EnableMapper` | `bus.mapper.enabled` | MyBatis 映射器扫描、插件、租户上下文和 AOT。    |
+| 指标 | `@EnableMetrics` | `bus.metrics.enabled` | 指标提供程序和端点。                               |
+| Mongo | `@EnableMongo` | `bus.mongo.enabled` | Mongo客户端设置定制。                          |
+| 通知 | `@EnableNotify` | `bus.notify.enabled` | 通知注册表和服务生命周期。                  |
+| 办公室 | `@EnableOffice` | `bus.office.enabled` | 文档转换和预览服务。                      |
+| 支付 | `@EnablePay` | `bus.pay.enabled` | 支付登记和服务。                                 |
+| 敏感 | `@EnableSensitive` | `bus.sensitive.enabled` | 注册脱敏器生命周期和可选的 MVC Body Advice。     |
+| 存储 | `@EnableStorage` | `bus.storage.enabled` | 存储提供程序、注册表、缓存和服务。              |
+| Tempus | `@EnableTempus` | `bus.tempus.enabled` | 临时客户端、工作人员和生命周期。                     |
+| 跟踪器 | `@EnableTracer` | `bus.tracer.enabled` | 分布式跟踪集成。                              |
+| 验证 | `@EnableValidate` | `bus.validate.enabled` | 方法验证和异常建议。                       |
+| Vortex | `@EnableVortex` | `bus.vortex.enabled` | 反应式路由网关和资产生命周期。                 |
+| 包装器 | `@EnableWrapper` | `bus.wrapper.enabled` | MVC 绑定、转换器、缓存、建议和路由前缀。 |
+| ZooKeeper | `@EnableZookeeper` | `bus.zookeeper.enabled` | Apache Curator 客户端生命周期。                              |
+
+每个注释直接导入功能配置。共享的 `@ConditionalOnEnabled` 规则来自
+在将 `bus.<feature>.enabled` 评估为辅助来源之前，`bus-spring` 接受该显式注释。两个都
+因此，激活路径可以达到相同的功能配置，而无需创建并行实现。
+
+启用 JSON 集成后，`JsonConfiguration` 选择一个 `JsonProvider`，而 `JsonBinding` 则安装该确切的
+`JsonKit`、缓存的请求正文解析和其他共享静态 JSON 使用者的提供者。关闭 Spring 上下文
+仅删除该绑定所拥有的提供者。如果存在多个 JSON 引擎，请设置
+`bus.json.provider=fastjson`、`gson` 或 `jackson`； `AUTO` 仅接受一种可用引擎。
+
+## 快速开始
 
 ```java
+import org.miaixz.bus.starter.annotation.EnableJson;
+import org.miaixz.bus.starter.annotation.EnableSensitive;
+
 @SpringBootApplication
 @EnableJson
 @EnableSensitive
@@ -83,6 +160,7 @@ public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
+
 }
 ```
 
@@ -94,14 +172,93 @@ bus:
     enabled: true
 ```
 
-可选依赖通过 Class 条件保护，缺失时不会阻止共享 Starter 基础设施启动。默认 Bean 使用具体类型的
-`@ConditionalOnMissingBean`，应用提供相同 Bean 类型即可完成替换。
+注释使选定的集成在应用程序代码中明确显示。匹配的属性会激活它们。
+
+## 配置原则
+
+所有功能前缀均来自`GeniusBuilder`；不要在另一个模块中重复前缀常量。配置
+属性在绑定或 Bean 创建期间验证无效组合，并防御性地复制可变集合或
+必要时使用数组。
+
+通用规则：
+
+- 每个产品功能都有一个`enabled`开关；
+- 可选依赖项使用类条件；
+- 应用程序覆盖使用具体的 Bean 类型或记录的 Bean 名称；
+- 诊断 `toString()` 输出中排除秘密；
+- 在支持的情况下超时使用 `Duration`；
+- 长期运行的客户端和服务声明显式销毁回调；
+- 当上下文关闭时，上下文拥有的全局注册被释放。
+
+## CORS
+
+```yaml
+bus:
+  cors:
+    enabled: true
+    path: "/api/**"
+    allowed-origins:
+      - "https://console.example.com"
+    allowed-headers:
+      - "Authorization"
+      - "Content-Type"
+    allowed-methods:
+      - "GET"
+      - "POST"
+    exposed-headers:
+      - "X-Request-Id"
+    allow-credentials: true
+    max-age: 30m
+```
+
+通配符来源不能与凭据组合。数组是防御性复制的。默认值包括 GET、POST、PUT、
+选项和删除，而该功能本身在明确启用之前保持禁用状态。
+
+## 敏感数据
+
+```yaml
+bus:
+  sensitive:
+    enabled: true
+    debug: false
+```
+
+启用后，传输中立路径始终可用：
+
+```text
+Sanitizer -> SensitiveBinding -> bus-logger Executor
+```
+
+当拥有的应用程序上下文关闭时，`SensitiveBinding` 取消注册其清理程序。在 Servlet MVC 应用程序中，
+嵌套的 `SensitiveConfiguration.ServletConfiguration` 还提供请求解密和响应
+加密或屏蔽建议。没有单独的`SensitiveWebConfiguration`。
+
+加密密钥必须来自受保护的外部配置源。诊断输出掩盖了关键材料。
+
+## Elasticsearch
+
+```yaml
+bus:
+  elastic:
+    enabled: true
+    hosts: "127.0.0.1:9200"
+    schema: "http"
+    connect-timeout: 6s
+    socket-timeout: 60s
+    connection-request-timeout: 6s
+    max-connect-total: 2000
+    max-connect-per-route: 500
+```
+
+每个主机必须包含 `1..65535` 范围内的有效端口。超时和连接限制必须为正数，并且
+每条路线的限制不能超过总限制。
 
 ## Fabric 与 DNS
 
-`bus.fabric.enabled=true` 或 `@EnableFabric` 启用 Fabric 父功能，显式注解的优先级高于配置项。父功能启用后， TCP Socket
-默认开启；WebSocket 与 DNS 仍是子功能，必须分别配置 `enabled=true`。DNS 由
-`FabricConfiguration` 统一导入，因此 `bus.fabric.dns.enabled=true` 不会形成第二条独立的 Fabric 启动入口。
+`bus.fabric.enabled=true` 或 `@EnableFabric` 激活 Fabric 父级集成。显式注释有
+优先于财产。父级激活后默认启用 TCP 套接字支持； WebSocket 和 DNS
+保留子功能并需要自己的 `enabled=true` 属性。 DNS 是故意导入的
+`FabricConfiguration`，因此`bus.fabric.dns.enabled=true`无法创建第二个独立的Fabric入口点。
 
 ```yaml
 bus:
@@ -127,34 +284,25 @@ bus:
       rate-limit-per-second: 0
 ```
 
-应用必须提供唯一的 `DnsSnapshotProvider`，DNS 区域与快照的所有权仍属于应用。可选的
-`DnsSnapshotListener`、`DnsDynamicUpdateSink`、`DnsTsigKey` 和 `TlsPolicy` Bean 分别扩展快照通知、动态更新、 TSIG 校验和
-DoT。Starter 只创建并随 Spring 上下文关闭运行期 `DnsServer`；管理、数据库访问与持久化均不属于 Starter 职责。
+申请时需提供一张`DnsSnapshotProvider`；它仍然是 DNS 区域和快照的所有者。选修的
+`DnsSnapshotListener`、`DnsDynamicUpdateSink`、`DnsTsigKey` 和 `TlsPolicy` beans 扩展了生命周期通知，
+分别是动态更新、TSIG 验证和 DoT。 Starter 仅拥有运行时 `DnsServer` bean 并将其关闭
+与 Spring 上下文相关。 DNS 管理、数据库访问和持久性均位于 Starter 之外。
 
-## JDBC 与多数据源路由
+## JDBC
 
-JDBC 在连接池类存在时由 Starter 自动装配；设置 `bus.datasource.enabled=false` 可以关闭自动装配，但显式
-`@EnableJdbc` 的优先级最高，此时仍会启用 JDBC。数据源定义入口为 `bus.datasource` 和
-`spring.datasource`。两套结构完全一致，都是根节点主库加 `multi` 附加库。只要 `bus.datasource` 声明了 URL，就整组使用 Bus
-配置并忽略 `spring.datasource`，禁止跨前缀混合属性。
-
-根节点的 `name` 是默认路由键，`multi` 中每项的 `name` 是 Service 切换键；名称必须非空且全组唯一。
-`type` 可以省略，默认使用 Hikari：
-
-JDBC 职责固定拆分。可复用的 `DataSourceResolver`、`DataSourceDefinition`、`DataSourceMapping`、
-`DataSourceFactory`、`DynamicDataSource`、`DataSourceHolder` 和 `AspectjJdbcProxy` 全部位于 `bus-spring` 的
-`org.miaixz.bus.spring.jdbc`。Starter 的 JDBC Package 只保留负责 Bean 装配的 `JdbcConfiguration`，以及定义 Bus 优先于
-Spring 的前缀顺序和 Hikari 默认实现的 `JdbcDescriptor`。两个配置前缀共用同一 解析路径。JDBC 不引用 Mapper；启用 Mapper 时，由
-Mapper 自己提供 `DataSourceListener`，同步初始化和运行期 增删的数据源方言。路由 Bean 对配置创建的连接池负责：替换或删除路由时关闭已无引用的连接池，Spring
-上下文关闭时对其余连接池各关闭一次。
+当池类可用时，Starter 会自动组装 JDBC。将 `bus.datasource.enabled=false` 设置为
+禁用自动组装；显式的 `@EnableJdbc` 始终具有更高的优先级，并且仍然启用 JDBC。数据源
+定义使用 `bus.datasource` 或 `spring.datasource`，并且两者都使用相同的根主加 `multi` 结构。他们
+永远不会合并：`bus.datasource` URL 选择完整的Bus组并覆盖 `spring.datasource`。
 
 ```yaml
 bus:
   datasource:
-    name: primary
-    url: jdbc:mysql://127.0.0.1:3306/primary
+    name: master
+    url: jdbc:mysql://127.0.0.1:3306/app
     username: app
-    password: ${DB_PASSWORD}
+    password: ${APP_DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 20
@@ -168,87 +316,185 @@ bus:
           maximum-pool-size: 10
 ```
 
-Service 使用 `@DataSource` 选择根节点或 `multi` 中的 `name`。方法注解覆盖类注解，嵌套调用 结束后恢复父级路由，异常场景也会恢复：
+JDBC 职责是固定的。可重复使用 `DataSourceResolver`、`DataSourceDefinition`、`DataSourceMapping`、
+`DataSourceFactory`、`DynamicDataSource`、`DataSourceHolder` 和 `AspectjJdbcProxy` 位于 `bus-spring` 下
+`org.miaixz.bus.spring.jdbc`。 Starter包只保留了`JdbcConfiguration`，它组装了Beans，并且
+`JdbcDescriptor`，定义了 Bus-before-Spring 前缀顺序和 Hikari 默认值。两个前缀使用相同的
+解析器路径。根 `name` 是默认路由，每个 `multi` 条目都提供一条附加路由。名称必须是
+在整个组中非空白且唯一。 JDBC 从不引用Mapper。当Mapper启用时，它自己的
+`DataSourceListener` 同步初始和运行时路由更改的方言状态。路由 Bean 拥有每个池
+根据这些定义创建：替换或删除路由会关闭未引用池和应用程序上下文
+shutdown 仅关闭每个剩余池一次。
+
+服务方法选择带有 `@DataSource` 的命名数据源。方法注释会覆盖其类注释，并且
+嵌套调用在返回或失败时恢复确切的父路由：
 
 ```java
 import org.miaixz.bus.spring.jdbc.DataSource;
 
 @Service
-public class ParserService {
+public class OrderService {
 
     @DataSource("archive")
     @Transactional
-    public void parse() {
+    public void createOrder() {
         // Mapper operations use archive.
     }
 
 }
 ```
 
-`@EnableMapper` 未声明扫描包时，默认扫描注解所在应用类的 Package；配置启用时先读取
-`bus.mapper.base-package`，仍未配置则在 Spring Boot 应用 Package 中只扫描显式 `@Mapper` 接口。无法确定
-扫描范围时直接终止启动，不再静默得到零个 Mapper。数据源方言提供器绑定到所属 MyBatis `Configuration`， 多个 Spring
-上下文之间不会覆盖彼此的路由状态。
+路由必须在事务通知获得连接之前发生。将`@DataSource`放在外部调用的服务上
+事务边界，或通过另一个 Spring bean 代理调用路由的内部操作。自调用通过
+`this` 绕过 AOP，已经活动的外部事务无法更改其获取的连接。动态路由是
+不是分布式事务机制。租户或路由信息必须来自受信任的运行时上下文，而不是
+比请求控制的模型字段。
 
-切换必须发生在事务取得连接之前，因此 `@DataSource` 应与 `@Transactional` 放在同一个对外 Service 方法， 或放在由另一个
-Spring Bean 代理调用的内层方法。类内部通过 `this` 自调用不会经过 AOP，也不能在已经开始的
-外层事务中切换连接；需要跨库事务时必须使用明确的分布式事务方案，不能依赖线程路由实现原子提交。
+## Mapper
 
-## 敏感数据集成
+映射器集成涵盖：
 
-当 `bus.sensitive.enabled=true` 时，`SensitiveConfiguration` 始终创建与传输协议无关的日志保护：
+- 确定性映射器类路径扫描；
+- `MapperFactoryBean`和扫描仪注册；
+- XML/资源位置解析；
+- 有序的插件构建；
+- 来自 `ContextBuilder` 的租户身份；
+- 租户例外建议；
+- AOT Bean 工厂初始化和运行时提示。
 
-```text
-Sanitizer -> SensitiveBinding -> bus-logger Executor
-```
-
-ApplicationContext 关闭时，`SensitiveBinding` 会解除 Sanitizer 注册。Servlet MVC 应用中，嵌套的
-`SensitiveConfiguration.ServletConfiguration` 还会提供请求解密和响应加密或脱敏 Advice，不存在独立的
-`SensitiveWebConfiguration`。
+业务代码不得通过请求绑定覆盖租户身份。自定义映射器插件应该使用
+记录提供程序和拦截器扩展点，而不是在启动后修改 Starter 注册表。
+当未提供包属性时，`@EnableMapper` 扫描其声明包。属性激活用途
+`bus.mapper.base-package`；当它也不存在时，Spring Boot 应用程序包将被扫描以查找显式的
+`@Mapper` 接口。未解析的扫描范围会导致启动失败，而不是静默注册任何映射器。方言是
+绑定到所属的 MyBatis `Configuration`，因此两个应用程序上下文不能覆盖彼此的路由提供者。
 
 ## Wrapper 能力
 
-`bus.wrapper.enabled=true` 激活聚合 Wrapper Configuration，子功能开关如下：
+`bus.wrapper.enabled=true` 激活聚合包装器配置。子特征保持独立
+受控：
 
-| 能力               | 属性                                     | Wrapper 开启后的默认值 |
-|--------------------|------------------------------------------|------------------------|
-| RequestObject 绑定 | `bus.wrapper.request-binding.enabled`    | `true`                 |
-| Message Converter  | `bus.wrapper.message-converters.enabled` | `true`                 |
-| 有界 Body Cache    | `bus.wrapper.body-cache.enabled`         | `false`                |
-| Response Advice    | `bus.wrapper.response-advice.enabled`    | `false`                |
-| Route Prefix       | `bus.wrapper.route-prefix.enabled`       | `false`                |
+| 能力 | 属性 | 启用 Wrapper 后的默认值 |
+|------------------------|------------------------------------------|----------------------------------|
+| 请求对象绑定 | `bus.wrapper.request-binding.enabled` | `true` |
+| 消息转换器 | `bus.wrapper.message-converters.enabled` | `true` |
+| 有界主体缓存 | `bus.wrapper.body-cache.enabled` | `false` |
+| 回复建议 | `bus.wrapper.response-advice.enabled` | `false` |
+| 路由前缀 | `bus.wrapper.route-prefix.enabled` | `false` |
 
-Body Cache 的 Request 和 Response 默认上限均为 1 MiB。Multipart 缓存和 Response 缓存仍需显式开启。
+```yaml
+bus:
+  wrapper:
+    enabled: true
+    request-binding:
+      enabled: true
+    message-converters:
+      enabled: true
+      type-policy: application
+      allowed-types:
+        - com.example.shared.dto.**
+        - com.example.shared.dto1.**
+    body-cache:
+      enabled: false
+    response-advice:
+      enabled: false
+    route-prefix:
+      enabled: false
+```
 
-## 安全与生命周期默认值
+消息转换器目标类型策略是：
 
-- Tenant 身份来自认证运行时上下文，请求输入不能覆盖。
-- RequestObject 绑定必须使用 `@RequestObject` 显式启用，并排除框架类型和简单标量。
-- Body Cache 始终有容量边界，默认不缓存 Multipart。
-- Sensitive 配置的 `toString()` 诊断不会暴露 Key。
-- 第三方 Client 和长期运行 Service 声明明确的初始化与销毁回调。
-- Context 所属 Registry、Operator 和 Worker 会在 ApplicationContext 关闭时释放。
+- `framework`：允许Bus框架类型、内置标量/容器类型和显式规则；
+- `application`：还发现 Spring Boot 应用程序包，并且是默认值；
+- `all`：允许每种目标类型，并且只能在受信任的环境中使用。
 
-## Native Image
+`allowed-types` 接受精确的类名，`*` 接受一个包段，`**` 接受任意数量的包段。
+兼容性属性 `auto-type` 接受逗号分隔规则； `auto-type: "**"` 还明确允许每个
+目标类型。对于新应用，首选 `allowed-types`。
 
-Spring AOT 会生成大部分 Configuration 和 Bean 反射提示，因此仓库中的 Reachability Metadata 只保留兼容所需
-的精确构造函数和动态发现入口。禁止以下宽泛授权：
+请求对象绑定需要 `@RequestObject`，排除框架和简单标量类型，并且不允许请求
+输入以替换受信任的租户上下文。正文缓存是有限的；多部分和响应诊断缓存仍然存在
+选择加入。
 
-- `allDeclaredConstructors` 和 `allPublicConstructors`
-- `allDeclaredMethods` 和 `allPublicMethods`
-- `allDeclaredFields` 和 `allPublicFields`
+## 客户端和服务生命周期
 
-Abarth Metadata 审计会根据当前 Class 文件解析所有配置的类型、构造函数、方法和字段，并在重新引入宽泛授权 时直接失败。
+Starter 拥有其创建的客户端和长期运行服务的生命周期：
+
+| 功能 | 生命周期示例 |
+|------------------------------|-------------------------------------------------------|
+| 弹性 | REST 传输/客户端关闭。                          |
+| Fabric | TCP 和 WebSocket 服务启动/停止。                 |
+| 通知、办公、支付、存储 | 注册表/服务创建和上下文清理。        |
+| Tempus | 客户端、工人工厂、工人和关闭。        |
+| Vortex | 路由器图、服务器启动/停止和资产生命周期。 |
+| ZooKeeper | Curator 客户端启动/关闭。                           |
+
+除非替换合同另有规定，否则应用程序提供的替换 Bean 拥有自己的生命周期。
+
+## Bean 覆盖规则
+
+优先替换具体产品合同：
+
+```java
+@Bean
+StorageService customStorageService(...) {
+    return new StorageService(...);
+}
+```
+
+不依赖于业务代码中的配置实现类。配置和属性包已打开
+到 Spring 进行框架访问，但不导出为通用 JPMS API。仅有的
+`org.miaixz.bus.starter.annotation` 已导出。
+
+## 包结构
+
+| 包装组 | 内容 |
+|------------------|---------------------------------------------------------------------------------|
+| 根 | 共享启动基础结构和属性前缀常量。                    |
+| `annotation` | 公共 `@Enable*` 注释。                                                  |
+| `context` | 默认任务和 Servlet 上下文传播。                                   |
+| 功能包 | 一项功能的配置、属性、服务和生命周期协作者。 |
+| `wrapper.*` | 独立控制的 MVC 包装器功能。                              |
+
+没有 `internal` 软件包。功能实现类型保留在当前的功能包中。
+
+## 安全默认值
+
+- 产品功能可供选择。
+- 有凭据的 CORS 拒绝通配符来源。
+- 属性诊断不会暴露敏感密钥和凭据。
+- 请求绑定不会从用户输入中获取经过身份验证的租户身份。
+- 缓存的主体有明确的边界，并且多部分缓存是可选的。
+- 日志清理归 `bus-sensitive` 所有，而不是 `bus-logger`。
+- 每个应用程序上下文的上下文状态是隔离的，并在异步执行后恢复。
+- 第三方资源与所属 Spring 上下文关闭。
+
+## Native Image 与 AOT
+
+Spring AOT 生成大多数配置和 Bean 反射提示。因此，签入的可达性元数据仅列出
+精确的构造函数和动态访问的成员。条目和嵌套成员列表按 A-Z 排序。
+
+禁止以下广泛的赠款：
+
+- `allDeclaredConstructors` 和 `allPublicConstructors`；
+- `allDeclaredMethods` 和 `allPublicMethods`；
+- `allDeclaredFields` 和 `allPublicFields`。
+
+Abarth 元数据审计根据以下内容解析每个配置的类、构造函数、方法、字段、代理和资源
+当前的运行时模型并且还强制执行排序。
 
 ## 迁移规则
 
-- 统一使用 `XxxConfiguration`，禁止恢复已删除的 `XxxAutoConfiguration`。
-- 运行时传播统一使用 `ContextState`、`ContextScope` 和 `ContextDecorator`。
-- Starter 配置前缀统一使用 `GeniusBuilder`。
-- 业务代码不得导入未导出的 Starter 实现 Package。
-- 按 Bean 类型覆盖默认实现，不依赖 Configuration 实现类。
+- 使用`XxxConfiguration`；已删除的 `XxxAutoConfiguration` 名称不得返回。
+- 使用 `ContextState`、`ContextScope` 和 `ContextDecorator` 进行运行时传播。
+- 使用 `GeniusBuilder` 作为 Starter 属性前缀。
+- 将可重用机制保留在 `bus-spring` 中，并将域行为保留在所属Bus模块中。
+- 不要在 Starter 下引入 `internal` 包。
+- 按 Bean 类型或记录的 Bean 名称覆盖默认值。
+- 保持 `AutoConfiguration.imports`、`spring.factories`、模块描述符和可达性元数据与类保持一致
+重命名。
 
 ## 验证边界
 
-Bus 不承载也不运行测试。Starter 集成、生命周期、Module Path、AOT、Metadata 和 Native Image 测试均位于 相邻的 Abarth 仓库。Bus
-构建必须显式跳过测试。
+Bus包含且不运行任何测试。入门集成、绑定、生命周期、模块路径、元数据、AOT 和本机映像
+测试保存在同级 Abarth 存储库中。Bus 构建必须明确跳过测试。
