@@ -21,6 +21,5 @@
  * Version (Application/Service Bus) is a foundational framework and service suite.
  *
  * @author Kimi Liu
- * @since Java 21+
  */
 package org.miaixz.bus;

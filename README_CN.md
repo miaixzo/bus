@@ -36,56 +36,53 @@ Bus (企业级应用/服务总线) 是一个基础框架、服务套件；基于
 
 目标期望能努力打造一套从 基础框架 - 分布式微服务架构 - 持续集成 - 自动化部署 -系统监测等，快速实现业务需求的全栈式技术解决方案。
 
-
 ### ✨ 版本选择
 
 Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 
-| Java    | Maven                                                                       | 主要特点                                                                   |
-|---------|-----------------------------------------------------------------------------|------------------------------------------------------------------------|
-| Java 8  | [bus-all:5.x](https://central.sonatype.com/artifact/org.aoju/bus-all/5.9.9) | Compiled with java 8                                                   |
-| Java 17 | [bus-all:6.x](https://central.sonatype.com/artifact/org.aoju/bus-all/6.6.1) | Compiled with java 17, uses Jakarta EE, compatible with java 11, 17    |
+| Java    | Maven                                                                       | 主要特点                                                                     |
+|---------|-----------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| Java 8  | [bus-all:5.x](https://central.sonatype.com/artifact/org.aoju/bus-all/5.9.9) | Compiled with java 8                                                         |
+| Java 17 | [bus-all:6.x](https://central.sonatype.com/artifact/org.aoju/bus-all/6.6.1) | Compiled with java 17, uses Jakarta EE, compatible with java 11, 17          |
 | Java 21 | [bus-all:8.x](https://central.sonatype.com/artifact/org.miaixz/bus-all)     | Compiled with java 21 by JDK 25, uses Jakarta EE, compatible with java 21-25 |
-
 
 ### ✨ 组件信息
 
-| 完成 | 模块                             | 描述信息                                           |
-|------|--------------------------------|------------------------------------------------|
-| [√]  | [bus-all](bus-all)             | 微服务全量聚合模块，包含所有业务组件及通用功能                        |
+| 完成 | 模块                           | 描述信息                                                                  |
+|------|--------------------------------|---------------------------------------------------------------------------|
+| [√]  | [bus-all](bus-all)             | 微服务全量聚合模块，包含所有业务组件及通用功能                            |
 | [√]  | [bus-auth](bus-auth)           | 统一认证中心，支持OIDC/OAuth2/SAML等协议，集成国内外15+主流第三方登录平台 |
-| [√]  | [bus-base](bus-base)           | 基础架构层，提供实体/服务/控制器基类及通用业务接口                     |
-| [√]  | [bus-bom](bus-bom)             | 依赖管理模块，统一版本控制，支持按需加载组件                         |
-| [√]  | [bus-cache](bus-cache)         | 分布式缓存服务，支持Redis/Memcached/Hessian等多级缓存方案       |
-| [√]  | [bus-core](bus-core)           | 核心工具库，包含并发/反射/日期/集合等20+常用工具类                   |
-| [√]  | [bus-cortex](bus-cortex)       | 统一注册与配置中心，支持API/MCP/Prompt注册、健康探测及命名空间隔离       |
-| [√]  | [bus-crypto](bus-crypto)       | 加密解密组件，支持AES/DES/SM4/MD5等算法及国密套件               |
-| [√]  | [bus-extra](bus-extra)         | 扩展功能包，集成FTP/二维码/MQ/文件处理等外围服务                   |
-| [√]  | [bus-gitlab](bus-gitlab)       | GitLab深度集成，提供CI/CD/仓库/问题等全生命周期管理               |
-| [√]  | [bus-health](bus-health)       | 健康监控中心，实时采集JVM/OS/容器/中间件监控指标                   |
-| [√]  | [bus-fabric](bus-fabric)       | 统一 HTTP 客户端与 TCP/UDP/WebSocket 通信框架                 |
-| [√]  | [bus-image](bus-image)         | 图像处理引擎，支持格式转换/缩略图生成/OCR识别等功能                   |
-| [√]  | [bus-limiter](bus-limiter)     | 高性能限流组件，支持令牌桶/滑动窗口/分布式限流策略                     |
-| [√]  | [bus-logger](bus-logger)       | 日志增强模块，支持动态日志级别/链路追踪ID/敏感数据过滤                  |
-| [√]  | [bus-mapper](bus-mapper)       | MyBatis增强工具，提供代码生成/多租户/逻辑删除等扩展功能               |
-| [√]  | [bus-metrics](bus-metrics)     | 生产级指标框架，支持基数守卫/EWMA速率/SLO追踪/LLM可观测性            |
-| [√]  | [bus-notify](bus-notify)       | 多通道通知中心，支持邮件/短信/钉钉/企业微信等推送方式                   |
-| [√]  | [bus-office](bus-office)       | Office文档处理引擎，基于POI实现Excel/Word/PPT操作           |
-| [√]  | [bus-opencv](bus-opencv)       | 计算机视觉库，封装OpenCV提供图像识别/人脸检测/视频分析能力              |
-| [√]  | [bus-parent](bus-parent)       | 父级POM，统一管理依赖版本/构建配置/编码规范                       |
-| [√]  | [bus-pay](bus-pay)             | 支付聚合服务，集成微信/支付宝/银联等20+支付渠道                     |
-| [√]  | [bus-proxy](bus-proxy)         | 动态代理工具，简化JDK/CGLIB代理实现                         |
-| [√]  | [bus-sensitive](bus-sensitive) | 敏感数据脱敏，提供注解式/规则式数据遮蔽方案                         |
-| [√]  | [bus-setting](bus-setting)     | 配置管理工具，支持多环境配置/动态刷新/加密存储                       |
-| [√]  | [bus-shade](bus-shade)         | 代码生成器，一键生成Entity/Service/Mapper等基础代码           |
-| [√]  | [bus-spring](bus-spring)       | Spring 与 Spring Boot 通用集成基础设施                       |
-| [√]  | [bus-starter](bus-starter)     | SpringBoot启动器，自动装配核心组件及配置                      |
-| [√]  | [bus-storage](bus-storage)     | 对象存储服务，支持阿里云OSS/腾讯云COS/MinIO等存储方案              |
-| [√]  | [bus-tempus](bus-tempus)       | 分布式任务调度，支持CRON表达式及集群任务协调                       |
-| [×]  | [bus-tracer](bus-tracer)       | 分布式链路追踪，集成Zipkin/Pinpoint实现全链路监控（开发中）          |
-| [√]  | [bus-validate](bus-validate)   | 参数校验框架，扩展JSR-303注解支持自定义校验规则                    |
-| [√]  | [bus-vortex](bus-vortex)       | 响应式网关，基于WebFlux构建的高性能API网关                     |
-
+| [√]  | [bus-base](bus-base)           | 基础架构层，提供实体/服务/控制器基类及通用业务接口                        |
+| [√]  | [bus-bom](bus-bom)             | 依赖管理模块，统一版本控制，支持按需加载组件                              |
+| [√]  | [bus-cache](bus-cache)         | 分布式缓存服务，支持Redis/Memcached/Hessian等多级缓存方案                 |
+| [√]  | [bus-core](bus-core)           | 核心工具库，包含并发/反射/日期/集合等20+常用工具类                        |
+| [√]  | [bus-cortex](bus-cortex)       | 统一注册与配置中心，支持API/MCP/Prompt注册、健康探测及命名空间隔离        |
+| [√]  | [bus-crypto](bus-crypto)       | 加密解密组件，支持AES/DES/SM4/MD5等算法及国密套件                         |
+| [√]  | [bus-extra](bus-extra)         | 扩展功能包，集成FTP/二维码/MQ/文件处理等外围服务                          |
+| [√]  | [bus-gitlab](bus-gitlab)       | GitLab深度集成，提供CI/CD/仓库/问题等全生命周期管理                       |
+| [√]  | [bus-health](bus-health)       | 健康监控中心，实时采集JVM/OS/容器/中间件监控指标                          |
+| [√]  | [bus-fabric](bus-fabric)       | 统一 HTTP 客户端与 TCP/UDP/WebSocket 通信框架                             |
+| [√]  | [bus-image](bus-image)         | 图像处理引擎，支持格式转换/缩略图生成/OCR识别等功能                       |
+| [√]  | [bus-limiter](bus-limiter)     | 高性能限流组件，支持令牌桶/滑动窗口/分布式限流策略                        |
+| [√]  | [bus-logger](bus-logger)       | 日志增强模块，支持动态日志级别/链路追踪ID/敏感数据过滤                    |
+| [√]  | [bus-mapper](bus-mapper)       | MyBatis增强工具，提供代码生成/多租户/逻辑删除等扩展功能                   |
+| [√]  | [bus-metrics](bus-metrics)     | 生产级指标框架，支持基数守卫/EWMA速率/SLO追踪/LLM可观测性                 |
+| [√]  | [bus-notify](bus-notify)       | 多通道通知中心，支持邮件/短信/钉钉/企业微信等推送方式                     |
+| [√]  | [bus-office](bus-office)       | Office文档处理引擎，基于POI实现Excel/Word/PPT操作                         |
+| [√]  | [bus-opencv](bus-opencv)       | 计算机视觉库，封装OpenCV提供图像识别/人脸检测/视频分析能力                |
+| [√]  | [bus-parent](bus-parent)       | 父级POM，统一管理依赖版本/构建配置/编码规范                               |
+| [√]  | [bus-pay](bus-pay)             | 支付聚合服务，集成微信/支付宝/银联等20+支付渠道                           |
+| [√]  | [bus-proxy](bus-proxy)         | 动态代理工具，简化JDK/CGLIB代理实现                                       |
+| [√]  | [bus-sensitive](bus-sensitive) | 敏感数据脱敏，提供注解式/规则式数据遮蔽方案                               |
+| [√]  | [bus-setting](bus-setting)     | 配置管理工具，支持多环境配置/动态刷新/加密存储                            |
+| [√]  | [bus-shade](bus-shade)         | 代码生成器，一键生成Entity/Service/Mapper等基础代码                       |
+| [√]  | [bus-spring](bus-spring)       | Spring 与 Spring Boot 通用集成基础设施                                    |
+| [√]  | [bus-starter](bus-starter)     | SpringBoot启动器，自动装配核心组件及配置                                  |
+| [√]  | [bus-storage](bus-storage)     | 对象存储服务，支持阿里云OSS/腾讯云COS/MinIO等存储方案                     |
+| [√]  | [bus-tempus](bus-tempus)       | 分布式任务调度，支持CRON表达式及集群任务协调                              |
+| [×]  | [bus-tracer](bus-tracer)       | 分布式链路追踪，集成Zipkin/Pinpoint实现全链路监控（开发中）               |
+| [√]  | [bus-validate](bus-validate)   | 参数校验框架，扩展JSR-303注解支持自定义校验规则                           |
+| [√]  | [bus-vortex](bus-vortex)       | 响应式网关，基于WebFlux构建的高性能API网关                                |
 
 ### ✨ 功能概述
 
@@ -95,7 +92,6 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 2. 详细说明以及使用姿势请参考每个模块下README介绍
 
 3. Spring Boot 4.1 迁移说明见 [docs/Spring-Boot-4.1-Migration.md](docs/Spring-Boot-4.1-Migration.md)。
-
 
 ### ✨ 安装使用
 
@@ -134,7 +130,6 @@ implementation 'org.miaixz:bus-all:x.x.x'
 > 注意
 > Bus项目支持Java 17+，对Android平台部分模块没有测试，不能保证所有工具类或工具方法可用。
 
-
 ### ✨ 意见建议
 
 All kinds of contributions (enhancements, new features, documentation & code improvements, issues & bugs reporting) are
@@ -142,13 +137,11 @@ welcome.
 
 欢迎各种形式的贡献，包括但不限于优化，添加功能，文档 & 代码的改进，问题和 BUG 的报告。
 
-
 ### ✨ 设计理念
 
 源码永远是最好的教程，善于读源码和DEBUG朋友掌握完全是轻而易举的事。源码是作者设计理念最直观的展现，这也是开源的魅力所在。
 "Talk is cheap, Show me the code."
 ，开源让技术难题的探讨变得更加务实，在您看完源码后心中对它都会有一个定论。在作者看来，Bus切切实实降低了开发学习门槛，也保障了服务的高性能、高可用。如果读者朋友对源码中某些部分的设计存在疑虑，也欢迎与作者保持沟通。
-
 
 ### ✨ 项目状态
 
