@@ -235,7 +235,7 @@ scheduler.start();
 
 ### 5. 配置文件调度
 
-创建 `tempus/tempus.setting`:
+创建 `config/tempus.setting`：
 
 ```properties
 # 使用 class.method 语法调度任务

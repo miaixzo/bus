@@ -97,7 +97,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 
 #### Maven
 
-```
+```xml
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-all</artifactId>
@@ -107,7 +107,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 
 或者单独使用某个组件
 
-```
+```xml
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-xxx</artifactId>
@@ -117,11 +117,11 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 
 #### Gradle
 
-```
+```groovy
 implementation 'org.miaixz:bus-all:x.x.x'
 ```
 
-#### Downlad
+#### Download
 
 点击以下任一链接，下载`bus-*-x.x.x.jar`即可：
 

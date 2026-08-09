@@ -444,6 +444,27 @@ String code = totp.generate("secret-key");
 boolean valid = totp.verify("secret-key", code);
 ```
 
+### 9. 高级配置
+
+#### 使用自定义 Provider
+
+```java
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+// 添加 BouncyCastle Provider
+Builder.addProvider(new BouncyCastleProvider());
+
+// 之后所有加密操作均可使用 BC 算法
+AES aes = Builder.aes();
+```
+
+#### 禁用自定义 Provider
+
+```java
+// 仅使用 JDK 默认 Provider
+Builder.disableCustomProvider();
+```
+
 -----
 
 ## 📋 算法参考
