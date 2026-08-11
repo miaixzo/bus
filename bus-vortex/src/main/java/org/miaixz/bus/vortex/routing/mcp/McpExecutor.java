@@ -630,8 +630,8 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * Handles an atomic MCP response under the bounded response-byte budget.
      * <p>
      * This path mirrors REST buffering behavior by consuming the downstream response body inside the WebClient exchange
-     * before the {@link ServerResponse} is returned. Content-Length is mandatory and the exact logical-byte lease is
-     * retained until the gateway response write terminates.
+     * before the {@link ServerResponse} is returned. Known lengths reserve their exact size; unknown lengths reserve
+     * the configured response maximum. The logical-byte lease is retained until the gateway response write terminates.
      *
      * @param bodySpec The request body specification.
      * @param context  qualified MCP request context
@@ -676,13 +676,13 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     }
 
                     long declaredLength = responseEntity.getHeaders().getContentLength();
-                    if (declaredLength < 0
-                            || declaredLength > Math.toIntExact(Holder.get().getMaxBufferedResponseSize())) {
+                    if (declaredLength > Math.toIntExact(Holder.get().getMaxBufferedResponseSize())) {
                         return Octets.discard(bodyFlux).then(
                                 Mono.error(
                                         new DataBufferLimitException(
-                                                "Atomic MCP response requires Content-Length in range 0.."
-                                                        + Math.toIntExact(Holder.get().getMaxBufferedResponseSize()))));
+                                                "Atomic MCP response exceeds buffered limit of "
+                                                        + Math.toIntExact(Holder.get().getMaxBufferedResponseSize())
+                                                        + " bytes")));
                     }
                     return Octets.readForRelay(
                             bodyFlux,
@@ -690,15 +690,17 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                             Holder.responseBufferBudget(),
                             declaredLength).flatMap(bufferedBody -> {
                                 int bodyLength = bufferedBody.length();
-                                if (bodyLength != declaredLength) {
+                                if (declaredLength >= 0 && bodyLength != declaredLength) {
                                     bufferedBody.close();
                                     return Mono.error(
                                             new DataBufferLimitException(
                                                     "Atomic MCP response length mismatch: declared=" + declaredLength
                                                             + ", actual=" + bodyLength));
                                 }
-                                return responseBuilder.contentLength(bodyLength)
-                                        .body(BodyInserters.fromDataBuffers(Octets.chunksAndClose(bufferedBody)));
+                                return Octets.own(
+                                        responseBuilder.contentLength(bodyLength)
+                                                .body(BodyInserters.fromDataBuffers(Octets.chunks(bufferedBody))),
+                                        bufferedBody);
                             });
                 })
                 .doOnSubscribe(

@@ -293,7 +293,7 @@ public final class AsyncByteBudget implements AutoCloseable {
         /**
          * Exact logical bytes charged to the budget.
          */
-        private final long bytes;
+        private long bytes;
 
         /**
          * Ensures capacity is returned only once.
@@ -316,8 +316,34 @@ public final class AsyncByteBudget implements AutoCloseable {
          *
          * @return exact logical bytes owned by this lease
          */
-        public long bytes() {
+        public synchronized long bytes() {
             return this.bytes;
+        }
+
+        /**
+         * Returns capacity that is no longer needed while retaining ownership of the remaining bytes.
+         * <p>
+         * Unknown-length bodies reserve their maximum permitted size before subscribing to the source. Once the
+         * actual size is known, this operation releases the unused portion without opening a window in which buffered
+         * bytes are unaccounted for. A closed lease cannot be resized.
+         *
+         * @param retainedBytes exact capacity that must remain owned by this lease
+         */
+        public void shrinkTo(long retainedBytes) {
+            long releasedBytes;
+            synchronized (this) {
+                if (this.closed.get()) {
+                    throw new IllegalStateException("closed byte-budget lease cannot be resized");
+                }
+                if (retainedBytes < 0 || retainedBytes > this.bytes) {
+                    throw new IllegalArgumentException("retainedBytes must be in 0.." + this.bytes);
+                }
+                releasedBytes = this.bytes - retainedBytes;
+                this.bytes = retainedBytes;
+            }
+            if (releasedBytes > 0) {
+                this.budget.release(releasedBytes);
+            }
         }
 
         /**
@@ -325,8 +351,15 @@ public final class AsyncByteBudget implements AutoCloseable {
          */
         @Override
         public void close() {
-            if (this.closed.compareAndSet(false, true) && this.bytes > 0) {
-                this.budget.release(this.bytes);
+            long releasedBytes = 0;
+            synchronized (this) {
+                if (this.closed.compareAndSet(false, true)) {
+                    releasedBytes = this.bytes;
+                    this.bytes = 0;
+                }
+            }
+            if (releasedBytes > 0) {
+                this.budget.release(releasedBytes);
             }
         }
     }
