@@ -250,7 +250,11 @@ public class VortexHandler {
 
                 return router.route(request).timeout(Duration.ofSeconds(routeTimeoutSeconds(assets, request)))
                         .cast(ServerResponse.class)
-                        .flatMap(response -> executePostHandlers(exchange, router, response, null).thenReturn(response))
+                        .flatMap(
+                                response -> executePostHandlers(exchange, router, response, null).thenReturn(response)
+                                        .doOnError(error -> Octets.closeOwnedResponse(response))
+                                        .doOnCancel(() -> Octets.closeOwnedResponse(response)))
+                        .doOnDiscard(ServerResponse.class, Octets::closeOwnedResponse)
                         .doOnSuccess(serverResponse -> {
                             long duration = System.currentTimeMillis() - context.getTimestamp();
                             Logger.info(

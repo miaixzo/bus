@@ -76,9 +76,9 @@ public class LlmExecutor extends Coordinator {
     /**
      * Executes an LLM request under bounded request and streaming capacity.
      * <p>
-     * The JSON request requires Content-Length and retains its exact logical-byte lease while the parsed request model
-     * is live. Streaming responses additionally own a realtime-stream permit through completion, failure or client
-     * cancellation.
+     * The JSON request may use Content-Length or chunked transfer encoding and retains its logical-byte lease while the
+     * parsed request model is live. Streaming responses additionally own a realtime-stream permit through completion,
+     * failure or client cancellation.
      *
      * @param context The request context containing Assets, model name, and request body.
      * @param args    Additional arguments (not used for LLM requests).
