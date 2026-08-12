@@ -22,13 +22,14 @@ package org.miaixz.bus.auth.metric.jwt;
 import java.io.Serial;
 import java.io.Serializable;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.ProtocolException;
 
 /**
  * JWT Claims authentication class for storing and processing JWT header or payload data.
@@ -42,19 +43,73 @@ import org.miaixz.bus.core.lang.Symbol;
 public class Claims implements Serializable {
 
     /**
+     * Serialization version identifier.
+     */
+    @Serial
+    private static final long serialVersionUID = 2852289137231L;
+    /**
+     * Claims data storage, using Map to save key-value pairs.
+     */
+    private Map<String, Object> claims;
+
+    /**
      * Constructs a new Claims instance.
      */
     public Claims() {
         // No initialization required.
     }
 
-    @Serial
-    private static final long serialVersionUID = 2852289137231L;
+    /**
+     * Recursively copies one supported JSON claim value into an immutable representation.
+     *
+     * @param value claim value
+     * @return immutable or intrinsically immutable claim value
+     */
+    private static Object copy(final Object value) {
+        if (value == null || value instanceof String || value instanceof Boolean) {
+            return value;
+        }
+        if (value instanceof Double && !Double.isFinite((Double) value)
+                || value instanceof Float && !Float.isFinite((Float) value)) {
+            reject();
+        }
+        if (value instanceof Number) {
+            return value;
+        }
+        if (value instanceof Map<?, ?>) {
+            final LinkedHashMap<String, Object> result = new LinkedHashMap<>();
+            for (final Map.Entry<?, ?> entry : ((Map<?, ?>) value).entrySet()) {
+                if (!(entry.getKey() instanceof String)) {
+                    reject();
+                }
+                result.put((String) entry.getKey(), copy(entry.getValue()));
+            }
+            return Collections.unmodifiableMap(result);
+        }
+        if (value instanceof Collection<?>) {
+            final List<Object> result = new ArrayList<>(((Collection<?>) value).size());
+            for (final Object item : (Collection<?>) value) {
+                result.add(copy(item));
+            }
+            return Collections.unmodifiableList(result);
+        }
+        if (value instanceof Object[]) {
+            final List<Object> result = new ArrayList<>(((Object[]) value).length);
+            for (final Object item : (Object[]) value) {
+                result.add(copy(item));
+            }
+            return Collections.unmodifiableList(result);
+        }
+        reject();
+        return null;
+    }
 
     /**
-     * Claims data storage, using Map to save key-value pairs.
+     * Rejects an unsupported or incorrectly typed claim value.
      */
-    private Map<String, Object> claims;
+    private static void reject() {
+        throw new ProtocolException(ErrorCode._100533);
+    }
 
     /**
      * Sets a Claims property.
@@ -64,7 +119,6 @@ public class Claims implements Serializable {
      *
      * @param name  the property name, cannot be null
      * @param value the property value
-     * @throws IllegalArgumentException if the property name is null
      */
     public void setClaim(final String name, final Object value) {
         Assert.notNull(name, "Name must be not null!");
@@ -114,6 +168,102 @@ public class Claims implements Serializable {
     }
 
     /**
+     * Returns a recursively immutable snapshot for hardened protocol processing.
+     *
+     * @return immutable claim snapshot
+     */
+    public Map<String, Object> snapshot() {
+        init();
+        final LinkedHashMap<String, Object> result = new LinkedHashMap<>();
+        for (final Map.Entry<String, Object> entry : claims.entrySet()) {
+            result.put(entry.getKey(), copy(entry.getValue()));
+        }
+        return Collections.unmodifiableMap(result);
+    }
+
+    /**
+     * Reads one optional non-blank string without coercion.
+     *
+     * @param name claim name
+     * @return optional exact string
+     */
+    public Optional<String> string(final String name) {
+        final Object value = getClaim(name);
+        if (value == null) {
+            return Optional.empty();
+        }
+        if (!(value instanceof String) || ((String) value).isBlank()) {
+            reject();
+        }
+        return Optional.of((String) value);
+    }
+
+    /**
+     * Reads one optional integral long value without floating-point truncation.
+     *
+     * @param name claim name
+     * @return optional integral value
+     */
+    public Optional<Long> integer(final String name) {
+        final Object value = getClaim(name);
+        if (value == null) {
+            return Optional.empty();
+        }
+        if (!(value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long)) {
+            reject();
+        }
+        return Optional.of(((Number) value).longValue());
+    }
+
+    /**
+     * Reads one optional Boolean without coercion.
+     *
+     * @param name claim name
+     * @return optional Boolean
+     */
+    public Optional<Boolean> bool(final String name) {
+        final Object value = getClaim(name);
+        if (value == null) {
+            return Optional.empty();
+        }
+        if (!(value instanceof Boolean)) {
+            reject();
+        }
+        return Optional.of((Boolean) value);
+    }
+
+    /**
+     * Reads one string or non-empty string collection as an immutable list.
+     *
+     * @param name claim name
+     * @return immutable string values
+     */
+    public List<String> strings(final String name) {
+        final Object value = getClaim(name);
+        if (value == null) {
+            return List.of();
+        }
+        if (value instanceof String && !((String) value).isBlank()) {
+            return List.of((String) value);
+        }
+        if (!(value instanceof Collection<?>)) {
+            reject();
+        }
+        final Collection<?> values = (Collection<?>) value;
+        if (values.isEmpty()) {
+            reject();
+        }
+        final List<String> result = new ArrayList<>(values.size());
+        for (final Object item : values) {
+            if (!(item instanceof String) || ((String) item).isBlank()) {
+                reject();
+            }
+            result.add((String) item);
+        }
+        return List.copyOf(result);
+    }
+
+    /**
      * Parses a Base64-encoded JSON string and stores it as Claims.
      * <p>
      * Parses the JSON string after Base64 decoding into key-value pairs and stores them in the internal Map.
@@ -121,7 +271,6 @@ public class Claims implements Serializable {
      *
      * @param tokenPart the Base64-encoded JSON string
      * @param charset   the character encoding
-     * @throws IllegalArgumentException if the JSON format is incorrect
      */
     public void parse(final String tokenPart, final Charset charset) {
         String decoded = Base64.decodeString(tokenPart, charset);
@@ -159,7 +308,6 @@ public class Claims implements Serializable {
      *
      * @param json the JSON string
      * @return the parsed Map
-     * @throws IllegalArgumentException if the JSON format is incorrect
      */
     private Map<String, Object> parseJsonString(String json) {
         Map<String, Object> result = new HashMap<>();

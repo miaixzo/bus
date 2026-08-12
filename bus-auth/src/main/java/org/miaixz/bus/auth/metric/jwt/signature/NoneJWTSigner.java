@@ -19,20 +19,30 @@
 */
 package org.miaixz.bus.auth.metric.jwt.signature;
 
+import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.lang.exception.JWTException;
 
 /**
- * JWT signer for unsigned JWTs.
+ * Compatibility sentinel for the permanently disabled unsigned JWT algorithm.
  * <p>
- * Implements the {@link JWTSigner} interface for scenarios where JWTs do not require signature verification (algorithm
- * identifier is "none"). This signer returns an empty signature and verifies if the provided signature is empty.
+ * The type and its existing fields remain available for binary compatibility. It can neither create nor validate an
+ * unsigned token.
  * </p>
  *
- * @see JWTSigner
  * @author Kimi Liu
+ * @see JWTSigner
  */
 public class NoneJWTSigner implements JWTSigner {
+
+    /**
+     * Registered JOSE identifier retained for rejection and compatibility checks.
+     */
+    public static final String ID_NONE = Normal.NONE;
+    /**
+     * Compatibility singleton for the disabled algorithm.
+     */
+    public static NoneJWTSigner NONE = new NoneJWTSigner();
 
     /**
      * Constructs a new {@code NoneJWTSigner} instance.
@@ -42,48 +52,32 @@ public class NoneJWTSigner implements JWTSigner {
     }
 
     /**
-     * Algorithm identifier for no signature, with a value of "none".
-     */
-    public static final String ID_NONE = Normal.NONE;
-
-    /**
-     * Singleton instance of the signer for unsigned JWTs.
-     */
-    public static NoneJWTSigner NONE = new NoneJWTSigner();
-
-    /**
-     * Generates a JWT signature.
-     * <p>
-     * For the "none" algorithm, an empty string is returned as the signature.
-     * </p>
+     * Rejects every unsigned JWT signing attempt with a stable shared error.
      *
-     * @param headerBase64  Base64 encoded JWT header
-     * @param payloadBase64 Base64 encoded JWT payload
-     * @return an empty string as the signature
+     * @param headerBase64  ignored encoded header
+     * @param payloadBase64 ignored encoded payload
+     * @return no value because unsigned signing is disabled
      */
     @Override
     public String sign(final String headerBase64, final String payloadBase64) {
-        return Normal.EMPTY;
+        throw new JWTException(ErrorCode._100532, "Unsigned JWT signing is disabled");
     }
 
     /**
-     * Verifies the JWT signature.
-     * <p>
-     * Checks if the provided signature is an empty string, indicating successful verification for unsigned JWTs.
-     * </p>
+     * Rejects every unsigned JWT verification attempt.
      *
-     * @param headerBase64  Base64 encoded JWT header
-     * @param payloadBase64 Base64 encoded JWT payload
-     * @param signBase64    Base64 encoded signature to be verified
-     * @return true if the signature is empty, false otherwise
+     * @param headerBase64  ignored encoded header
+     * @param payloadBase64 ignored encoded payload
+     * @param signBase64    ignored signature input
+     * @return always {@code false}
      */
     @Override
     public boolean verify(final String headerBase64, final String payloadBase64, final String signBase64) {
-        return StringKit.isEmpty(signBase64);
+        return false;
     }
 
     /**
-     * Retrieves the signing algorithm identifier.
+     * Returns the disabled JOSE algorithm identifier for compatibility detection.
      *
      * @return the algorithm identifier "none"
      */

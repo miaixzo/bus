@@ -18,7 +18,13 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides JWT (JSON Web Token) signature encapsulation.
+ * Provides the fixed JWT/JWS signer allowlist: HS256, RS256, PS256, ES256, and EdDSA with Ed25519.
+ * <p>
+ * Signers bind an algorithm and key at construction time, accept exact pre-encoded compact segments, emit canonical
+ * unpadded Base64url, and separate private signing use from public verification use. HMAC and asymmetric execution
+ * reuse bus-crypto, JCA names come from bus-core {@code Algorithm}, ES256 owns strict DER conversion, and the retained
+ * {@code none} compatibility type always fails closed. This package never resolves keys or trusts a token algorithm.
+ * </p>
  *
  * @author Kimi Liu
  */

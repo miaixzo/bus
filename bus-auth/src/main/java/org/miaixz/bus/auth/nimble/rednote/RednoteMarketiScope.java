@@ -75,4 +75,5 @@ public enum RednoteMarketiScope implements AuthorizeScope {
         this.description = description;
         this.isDefault = isDefault;
     }
+
 }

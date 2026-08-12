@@ -22,8 +22,11 @@ package org.miaixz.bus.auth.metric.jwt;
 import java.util.Date;
 
 /**
- * Interface for registering standard JWT (JSON Web Token) claims (Payload). This interface defines common claims used
- * in JWT payloads and provides default methods for setting them.
+ * Maps the registered JWT claim names defined by RFC 7519 to the existing payload mutation contract.
+ * <p>
+ * This interface contains protocol registration values only. Cryptographic algorithms, implementation errors, and
+ * process-wide registries belong to their owning Bus components and must not be declared here.
+ * </p>
  *
  * @param <T> the type of the class implementing this interface
  * @author Kimi Liu
@@ -31,39 +34,37 @@ import java.util.Date;
 public interface JWTRegister<T extends JWTRegister<T>> {
 
     /**
-     * The "iss" (issuer) claim identifies the principal that issued the JWT.
+     * Registered name of the issuer claim.
      */
     String ISSUER = "iss";
 
     /**
-     * The "sub" (subject) claim identifies the principal that is the subject of the JWT.
+     * Registered name of the subject claim.
      */
     String SUBJECT = "sub";
 
     /**
-     * The "aud" (audience) claim identifies the recipients that the JWT is intended for.
+     * Registered name of the audience claim.
      */
     String AUDIENCE = "aud";
 
     /**
-     * The "exp" (expiration time) claim identifies the expiration time on or after which the JWT MUST NOT be accepted
-     * for processing. This expiration time must be after the issued at time.
+     * Registered name of the expiration-time claim.
      */
     String EXPIRES_AT = "exp";
 
     /**
-     * The "nbf" (not before) claim identifies the time before which the JWT MUST NOT be accepted for processing.
+     * Registered name of the not-before claim.
      */
     String NOT_BEFORE = "nbf";
 
     /**
-     * The "iat" (issued at time) claim identifies the time at which the JWT was issued.
+     * Registered name of the issued-at claim.
      */
     String ISSUED_AT = "iat";
 
     /**
-     * The "jti" (JWT ID) claim provides a unique identifier for the JWT. Primarily used as a one-time token to prevent
-     * replay attacks.
+     * Registered name of the JWT identifier claim.
      */
     String JWT_ID = "jti";
 

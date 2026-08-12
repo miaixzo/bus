@@ -71,4 +71,5 @@ public enum LineScope implements AuthorizeScope {
         this.description = description;
         this.isDefault = isDefault;
     }
+
 }

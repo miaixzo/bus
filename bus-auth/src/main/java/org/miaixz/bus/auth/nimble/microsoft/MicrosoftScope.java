@@ -246,4 +246,5 @@ public enum MicrosoftScope implements AuthorizeScope {
         this.description = description;
         this.isDefault = isDefault;
     }
+
 }

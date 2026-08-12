@@ -86,4 +86,5 @@ public enum FigmaScope implements AuthorizeScope {
         this.description = description;
         this.isDefault = isDefault;
     }
+
 }

@@ -75,4 +75,5 @@ public enum StackoverflowScope implements AuthorizeScope {
         this.description = description;
         this.isDefault = isDefault;
     }
+
 }

@@ -177,4 +177,5 @@ public enum DouyinScope implements AuthorizeScope {
         this.description = description;
         this.isDefault = isDefault;
     }
+
 }

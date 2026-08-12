@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides standard JWT (JSON Web Token) protocol implementations.
+ * Implements bounded JWT/JWS compact creation, strict parsing, immutable claims, protected-header policy, ordered
+ * verification, and atomic replay admission.
+ * <p>
+ * This package owns JOSE and JWT protocol registration values. It depends on the public authentication runtime ports,
+ * shared JSON, state, security, and time facilities, bus-core constants and errors, bus-extra JSON, and signer types in
+ * the child package. It does not select cache, transport, JSON, clock, random, key, or persistence implementations and
+ * does not permit token input to choose a trusted algorithm or key.
+ * </p>
  *
  * @author Kimi Liu
  */

@@ -20,43 +20,49 @@
 package org.miaixz.bus.auth.metric.jwt.signature;
 
 /**
- * JWT Signer interface encapsulation. Implementations of this interface provide signing functionalities for different
- * algorithms.
+ * Compatibility contract for signing and verifying JWS compact input.
+ * <p>
+ * Implementations bind one trusted JOSE algorithm at construction time. A token header must never select or replace
+ * that algorithm. Signing requires signing-capable key material, while verification requires verification-capable key
+ * material. Implementations reject unsupported algorithms and unusable keys during construction or signing, and return
+ * {@code false} for a signature mismatch or malformed signature input.
+ * </p>
  *
  * @author Kimi Liu
  */
 public interface JWTSigner {
 
     /**
-     * Signs the JWT parts.
+     * Signs two already encoded JWS segments using the configured trusted algorithm and signing key.
      *
-     * @param headerBase64  Base64 representation of the JWT header JSON string
-     * @param payloadBase64 Base64 representation of the JWT payload JSON string
-     * @return the Base64 encoded signature result, which is the third part of the JWT
+     * @param headerBase64  unpadded Base64url representation of the JWT header
+     * @param payloadBase64 unpadded Base64url representation of the JWT payload
+     * @return unpadded Base64url signature segment
      */
     String sign(String headerBase64, String payloadBase64);
 
     /**
-     * Verifies the JWT signature.
+     * Verifies a signature over two already encoded JWS segments using the configured trusted algorithm and
+     * verification key.
      *
-     * @param headerBase64  Base64 representation of the JWT header JSON string
-     * @param payloadBase64 Base64 representation of the JWT payload JSON string
-     * @param signBase64    the Base64 representation of the signature to be verified
-     * @return true if the signature is consistent and valid, false otherwise
+     * @param headerBase64  unpadded Base64url representation of the JWT header
+     * @param payloadBase64 unpadded Base64url representation of the JWT payload
+     * @param signBase64    unpadded Base64url signature segment
+     * @return {@code true} only for an exact valid signature; otherwise {@code false}
      */
     boolean verify(String headerBase64, String payloadBase64, String signBase64);
 
     /**
-     * Retrieves the algorithm used for signing.
+     * Returns the immutable JCA algorithm bound to this signer.
      *
-     * @return the algorithm name
+     * @return configured JCA algorithm name
      */
     String getAlgorithm();
 
     /**
-     * Retrieves the algorithm ID, which is the shorthand form of the algorithm, e.g., HS256.
+     * Returns the exact JOSE algorithm identifier mapped from the configured JCA algorithm.
      *
-     * @return the algorithm ID
+     * @return configured JOSE algorithm identifier
      */
     default String getAlgorithmId() {
         return JWTSignerBuilder.getId(getAlgorithm());

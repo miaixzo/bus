@@ -18,7 +18,16 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides standard OIDC (OpenID Connect) protocol implementations.
+ * Implements the internal OpenID Connect protocol engine behind the exported {@link org.miaixz.bus.auth.metric.OIDC}
+ * provider and relying-party contracts.
+ * <p>
+ * This package depends in one direction on the exported OAuth 2.0 contracts, the hardened JWT verifier, shared strict
+ * JSON and URI validation, the atomic state store, and the HTTP transport port supplied by
+ * {@link org.miaixz.bus.auth.metric.AuthMetric.Runtime}. It does not import the internal OAuth engine package, expose
+ * web-framework response types, perform direct network access, or create a second JSON, JOSE, cache, or transport
+ * abstraction. Discovery, JSON Web Key Set, UserInfo, and logout endpoints are validated before the runtime transport
+ * is invoked. ID Token validation delegates signature, time, issuer, audience, and replay enforcement to the shared JWT
+ * pipeline before applying OpenID Connect nonce, authorized-party, and subject rules.
  *
  * @author Kimi Liu
  */

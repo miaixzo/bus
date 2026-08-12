@@ -71,4 +71,5 @@ public enum MiScope implements AuthorizeScope {
         this.description = description;
         this.isDefault = isDefault;
     }
+
 }

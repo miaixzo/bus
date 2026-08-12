@@ -66,4 +66,5 @@ public enum WeChatEeWebScope implements AuthorizeScope {
         this.description = description;
         this.isDefault = isDefault;
     }
+
 }

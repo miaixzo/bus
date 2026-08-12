@@ -87,4 +87,5 @@ public enum QqScope implements AuthorizeScope {
         this.description = description;
         this.isDefault = isDefault;
     }
+
 }
