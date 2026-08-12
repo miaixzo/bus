@@ -73,4 +73,5 @@ public enum AmazonScope implements AuthorizeScope {
         this.description = description;
         this.isDefault = isDefault;
     }
+
 }

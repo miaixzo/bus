@@ -124,4 +124,5 @@ public enum GitlabScope implements AuthorizeScope {
         this.description = description;
         this.isDefault = isDefault;
     }
+
 }

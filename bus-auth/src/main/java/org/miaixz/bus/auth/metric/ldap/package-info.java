@@ -18,7 +18,12 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides standard LDAP (Lightweight Directory Access Protocol) implementations.
+ * Implements the internal LDAP v3 protocol engine behind the exported {@link org.miaixz.bus.auth.metric.LDAP}
+ * contracts. Message, filter, control, and BER packages contain bounded wire models and codecs. The client owns one
+ * exclusive {@link org.miaixz.bus.auth.metric.AuthMetric.StreamSession}; the server owns one
+ * {@link org.miaixz.bus.auth.metric.AuthMetric.StreamServerBinding} and its managed sessions. Both use only stream
+ * ports supplied by {@link org.miaixz.bus.auth.metric.AuthMetric.Runtime}; direct sockets, JNDI, global TLS state,
+ * background threads, referral chasing, SASL, and persistent directory storage are outside this package.
  *
  * @author Kimi Liu
  */

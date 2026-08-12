@@ -23,159 +23,198 @@ import java.security.Key;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.interfaces.RSAKey;
 
 import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.center.Sign;
 
 /**
- * RSA asymmetric encryption JWT signer.
+ * RS256 and PS256 JWT signer backed by the Bus cryptographic signature implementation.
  * <p>
- * Implements the {@link JWTSigner} interface, using RSA algorithms (e.g., RS256, RS384, RS512) for JWT signing and
- * verification. Supports public key for signature verification and private key for signature generation. Default
- * encoding is UTF-8.
+ * A private RSA key enables signing and a public RSA key enables verification. The selected JCA algorithm is a trusted
+ * construction input and is limited to the two RSA algorithms allowed by the JWT profile.
  * </p>
  *
- * @see JWTSigner
  * @author Kimi Liu
+ * @see JWTSigner
  */
 public class RSAJWTSigner implements JWTSigner {
 
     /**
-     * The core implementation for RSA signing and verification.
+     * Bus cryptographic signature implementation.
      */
     private final Sign sign;
 
     /**
-     * The character encoding, default is UTF-8.
+     * Compatibility charset fixed to UTF-8.
      */
     private java.nio.charset.Charset charset = Charset.UTF_8;
 
     /**
-     * Constructor, initializes the RSA signer.
-     * <p>
-     * Initializes the signer based on the provided algorithm and key (public or private key). A public key is used for
-     * signature verification, and a private key is used for signature generation.
-     * </p>
+     * Creates an RS256 or PS256 signer with one RSA key.
      *
-     * @param algorithm the algorithm identifier (e.g., RS256, SHA256withRSA)
-     * @param key       the key ({@link PublicKey} or {@link PrivateKey})
-     * @throws IllegalArgumentException if the algorithm or key is invalid
+     * @param algorithm exact JCA algorithm name from {@link Algorithm}
+     * @param key       RSA public verification key or RSA private signing key
      */
     public RSAJWTSigner(final String algorithm, final Key key) {
-        // Extract public or private key
+        this(algorithm, key, false);
+    }
+
+    /**
+     * Creates an asymmetric signer for an approved subclass algorithm.
+     *
+     * @param algorithm         exact JCA algorithm name
+     * @param key               asymmetric public or private key
+     * @param subclassAlgorithm whether the subclass owns algorithm validation
+     */
+    protected RSAJWTSigner(final String algorithm, final Key key, final boolean subclassAlgorithm) {
+        requireAlgorithm(algorithm, subclassAlgorithm);
+        Assert.notNull(key, "Signer key must be not null!");
+        if (!subclassAlgorithm && !(key instanceof RSAKey)
+                || !(key instanceof PublicKey || key instanceof PrivateKey)) {
+            throw new IllegalArgumentException("An RSA public or private key is required");
+        }
         final PublicKey publicKey = key instanceof PublicKey ? (PublicKey) key : null;
         final PrivateKey privateKey = key instanceof PrivateKey ? (PrivateKey) key : null;
-        // Initialize the signer with a KeyPair
         this.sign = new Sign(algorithm, new KeyPair(publicKey, privateKey));
     }
 
     /**
-     * Constructor, initializes the RSA signer.
-     * <p>
-     * Initializes the signer using a key pair (containing both public and private keys).
-     * </p>
+     * Creates an RS256 or PS256 signer with an RSA key pair.
      *
-     * @param algorithm the algorithm identifier (e.g., RS256, SHA256withRSA)
-     * @param keyPair   the key pair (containing public and private keys)
-     * @throws IllegalArgumentException if the algorithm or key pair is invalid
+     * @param algorithm exact JCA algorithm name from {@link Algorithm}
+     * @param keyPair   RSA key pair containing at least one usable key
      */
     public RSAJWTSigner(final String algorithm, final KeyPair keyPair) {
-        // Initialize the signer with the KeyPair
+        this(algorithm, keyPair, false);
+    }
+
+    /**
+     * Creates an asymmetric signer for an approved subclass algorithm and key pair.
+     *
+     * @param algorithm         exact JCA algorithm name
+     * @param keyPair           asymmetric key pair
+     * @param subclassAlgorithm whether the subclass owns algorithm validation
+     */
+    protected RSAJWTSigner(final String algorithm, final KeyPair keyPair, final boolean subclassAlgorithm) {
+        requireAlgorithm(algorithm, subclassAlgorithm);
+        requireKeyPair(keyPair, subclassAlgorithm);
         this.sign = new Sign(algorithm, keyPair);
     }
 
     /**
-     * Sets the character encoding.
+     * Validates the fixed RSA algorithm profile unless a subclass owns validation.
      *
-     * @param charset the character encoding (e.g., UTF-8)
-     * @return this object, supporting method chaining
-     * @throws IllegalArgumentException if the charset is invalid
+     * @param algorithm         supplied JCA algorithm name
+     * @param subclassAlgorithm whether validation belongs to a subclass
+     */
+    private static void requireAlgorithm(final String algorithm, final boolean subclassAlgorithm) {
+        if (!subclassAlgorithm && !Algorithm.SHA256WITHRSA.getValue().equals(algorithm)
+                && !Algorithm.SHA256WITHRSA_PSS.getValue().equals(algorithm)) {
+            throw new IllegalArgumentException("Only RS256 and PS256 are supported");
+        }
+    }
+
+    /**
+     * Validates an asymmetric key pair and the RSA key family when required.
+     *
+     * @param keyPair           supplied key pair
+     * @param subclassAlgorithm whether key-family validation belongs to a subclass
+     */
+    private static void requireKeyPair(final KeyPair keyPair, final boolean subclassAlgorithm) {
+        Assert.notNull(keyPair, "Signer key pair must be not null!");
+        final PublicKey publicKey = keyPair.getPublic();
+        final PrivateKey privateKey = keyPair.getPrivate();
+        if (publicKey == null && privateKey == null) {
+            throw new IllegalArgumentException("Signer key pair must contain a key");
+        }
+        if (!subclassAlgorithm && (publicKey != null && !(publicKey instanceof RSAKey)
+                || privateKey != null && !(privateKey instanceof RSAKey))) {
+            throw new IllegalArgumentException("An RSA key pair is required");
+        }
+    }
+
+    /**
+     * Preserves the compatibility mutator while enforcing the JWS UTF-8 requirement.
+     *
+     * @param charset required UTF-8 charset
+     * @return this signer
      */
     public RSAJWTSigner setCharset(final java.nio.charset.Charset charset) {
+        if (!Charset.UTF_8.equals(charset)) {
+            throw new IllegalArgumentException("JWT signing requires UTF-8");
+        }
         this.charset = charset;
         return this;
     }
 
     /**
-     * Performs RSA signing on the JWT header and payload.
-     * <p>
-     * Concatenates the Base64 encoded header and payload in "header.payload" format, generates a signature using the
-     * RSA algorithm, and returns the Base64 encoded result.
-     * </p>
+     * Signs the exact compact signing input.
      *
-     * @param headerBase64  Base64 encoded JWT header
-     * @param payloadBase64 Base64 encoded JWT payload
-     * @return the Base64 encoded signature
-     * @throws IllegalStateException if the private key is unavailable
+     * @param headerBase64  unpadded Base64url header segment
+     * @param payloadBase64 unpadded Base64url payload segment
+     * @return unpadded Base64url signature
      */
     @Override
     public String sign(final String headerBase64, final String payloadBase64) {
-        // Concatenate header and payload in "header.payload" format
+        Assert.notNull(headerBase64, "JWT header segment must be not null!");
+        Assert.notNull(payloadBase64, "JWT payload segment must be not null!");
         final String data = StringKit.format("{}.{}", headerBase64, payloadBase64);
-        // Convert the string to a byte array and sign
-        byte[] signedData = sign(ByteKit.toBytes(data, charset));
-        // Return the Base64 URL-safe signature
-        return Base64.encodeUrlSafe(signedData);
+        return Base64.encodeUrlSafe(sign(ByteKit.toBytes(data, charset)));
     }
 
     /**
-     * Performs RSA signing on byte array data.
-     * <p>
-     * Generates a signature using the configured private key and algorithm.
-     * </p>
+     * Signs bytes with the configured private key.
      *
      * @param data the data to be signed
      * @return the signed byte array
-     * @throws IllegalStateException if the private key is unavailable
      */
     protected byte[] sign(final byte[] data) {
         return sign.sign(data);
     }
 
     /**
-     * Verifies the JWT signature.
-     * <p>
-     * Uses the public key to verify if the Base64 encoded signature matches the header and payload.
-     * </p>
+     * Verifies a compact signature with the configured public key.
      *
-     * @param headerBase64  Base64 encoded JWT header
-     * @param payloadBase64 Base64 encoded JWT payload
-     * @param signBase64    Base64 encoded signature to be verified
-     * @return true if the verification passes, false otherwise
-     * @throws IllegalStateException if the public key is unavailable
+     * @param headerBase64  unpadded Base64url header segment
+     * @param payloadBase64 unpadded Base64url payload segment
+     * @param signBase64    unpadded Base64url signature
+     * @return {@code true} only when the signature is valid
      */
     @Override
     public boolean verify(final String headerBase64, final String payloadBase64, final String signBase64) {
-        // Concatenate header and payload in "header.payload" format
-        byte[] data = ByteKit.toBytes(StringKit.format("{}.{}", headerBase64, payloadBase64), charset);
-        // Decode the Base64 signature
-        byte[] signed = Base64.decode(signBase64);
-        // Verify the signature
-        return verify(data, signed);
+        if (headerBase64 == null || payloadBase64 == null || signBase64 == null || signBase64.isEmpty()) {
+            return false;
+        }
+        try {
+            final byte[] data = ByteKit.toBytes(StringKit.format("{}.{}", headerBase64, payloadBase64), charset);
+            final byte[] signed = Base64.decode(signBase64);
+            return signBase64.equals(Base64.encodeUrlSafe(signed)) && verify(data, signed);
+        } catch (final RuntimeException ignored) {
+            return false;
+        }
     }
 
     /**
-     * Verifies the RSA signature of the data.
-     * <p>
-     * Uses the configured public key to verify the match between the data and the signature.
-     * </p>
+     * Verifies signature bytes with the configured public key.
      *
      * @param data   the data to be verified
      * @param signed the signed byte array
      * @return true if the verification passes, false otherwise
-     * @throws IllegalStateException if the public key is unavailable
      */
     protected boolean verify(final byte[] data, final byte[] signed) {
         return sign.verify(data, signed);
     }
 
     /**
-     * Retrieves the name of the signing algorithm.
+     * Returns the immutable JCA signature algorithm.
      *
-     * @return the algorithm name (e.g., SHA256withRSA)
+     * @return configured JCA algorithm name
      */
     @Override
     public String getAlgorithm() {

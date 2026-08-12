@@ -71,4 +71,5 @@ public enum KujialeScope implements AuthorizeScope {
         this.description = description;
         this.isDefault = isDefault;
     }
+
 }

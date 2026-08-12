@@ -84,4 +84,5 @@ public enum CodingScope implements AuthorizeScope {
         this.description = description;
         this.isDefault = isDefault;
     }
+
 }

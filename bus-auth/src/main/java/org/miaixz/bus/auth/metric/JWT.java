@@ -22,8 +22,11 @@ package org.miaixz.bus.auth.metric;
 import java.lang.reflect.Type;
 import java.security.Key;
 import java.security.KeyPair;
+import java.time.Duration;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.miaixz.bus.auth.metric.jwt.JWTHeader;
 import org.miaixz.bus.auth.metric.jwt.JWTPayload;
@@ -81,26 +84,6 @@ public class JWT implements JWTRegister<JWT> {
     private List<String> tokens;
 
     /**
-     * Creates an empty JWT object.
-     *
-     * @return a new JWT instance
-     */
-    public static JWT of() {
-        return new JWT();
-    }
-
-    /**
-     * Creates and parses a JWT object from a token string.
-     *
-     * @param token the JWT token string, in the format xxxx.yyyy.zzzz
-     * @return the parsed JWT instance
-     * @throws IllegalArgumentException if the token is blank or malformed
-     */
-    public static JWT of(final String token) {
-        return new JWT(token);
-    }
-
-    /**
      * Constructor, initializes an empty JWT object and sets the default charset to UTF-8.
      */
     public JWT() {
@@ -117,6 +100,62 @@ public class JWT implements JWTRegister<JWT> {
     public JWT(final String token) {
         this();
         parse(token);
+    }
+
+    /**
+     * Creates an empty JWT object.
+     *
+     * @return a new JWT instance
+     */
+    public static JWT of() {
+        return new JWT();
+    }
+
+    /**
+     * Creates and parses a JWT object from a token string.
+     *
+     * @param token the JWT token string, in the format xxxx.yyyy.zzzz
+     * @return the parsed JWT instance
+     */
+    public static JWT of(final String token) {
+        return new JWT(token);
+    }
+
+    /**
+     * Splits the JWT token string into three parts (header, payload, signature).
+     *
+     * @param token the JWT token string
+     * @return a List containing the three parts
+     */
+    public static List<String> splitToken(final String token) {
+        final List<String> tokens = StringKit.split(token, Symbol.DOT);
+        if (3 != tokens.size()) {
+            throw new JWTException("The token was expected 3 parts, but got {}.", tokens.size());
+        }
+        return tokens;
+    }
+
+    /**
+     * Creates the immutable trusted verification policy consumed by the hardened JWT verifier. The algorithm is
+     * selected by product configuration before token parsing; an incoming {@code alg} can only be compared with this
+     * value and can never select a signer or key.
+     *
+     * @param algorithm       trusted signing algorithm
+     * @param issuer          exact trusted issuer
+     * @param audiences       non-empty accepted audience set
+     * @param skew            non-negative clock tolerance
+     * @param maximumLifetime positive issued-at-to-expiration lifetime
+     * @param requireReplay   whether a non-blank jti must be atomically admitted once
+     * @return immutable trusted verification policy
+     */
+    public static VerificationPolicy trusted(
+            final TrustedAlgorithm algorithm,
+            final String issuer,
+            final Set<String> audiences,
+            final Duration skew,
+            final Duration maximumLifetime,
+            final boolean requireReplay) {
+        return new VerificationPolicy(algorithm, issuer, audiences, skew, maximumLifetime, requireReplay);
     }
 
     /**
@@ -194,6 +233,15 @@ public class JWT implements JWTRegister<JWT> {
     }
 
     /**
+     * Retrieves the currently used signer.
+     *
+     * @return the {@link JWTSigner} instance
+     */
+    public JWTSigner getSigner() {
+        return this.signer;
+    }
+
+    /**
      * Sets the signer.
      *
      * @param signer the signer to use
@@ -202,15 +250,6 @@ public class JWT implements JWTRegister<JWT> {
     public JWT setSigner(final JWTSigner signer) {
         this.signer = signer;
         return this;
-    }
-
-    /**
-     * Retrieves the currently used signer.
-     *
-     * @return the {@link JWTSigner} instance
-     */
-    public JWTSigner getSigner() {
-        return this.signer;
     }
 
     /**
@@ -361,7 +400,6 @@ public class JWT implements JWTRegister<JWT> {
      *
      * @param signer the signer to use
      * @return the JWT string
-     * @throws JWTException if the signer is null
      */
     public String sign(final JWTSigner signer) {
         Assert.notNull(signer, () -> new JWTException("No Signer provided!"));
@@ -418,7 +456,6 @@ public class JWT implements JWTRegister<JWT> {
      *
      * @param signer the signer to use; if null, it defaults to no-signature verification
      * @return true if the signature is valid, false otherwise
-     * @throws JWTException if there is no verifiable token
      */
     public boolean verify(JWTSigner signer) {
         if (null == signer) {
@@ -432,18 +469,129 @@ public class JWT implements JWTRegister<JWT> {
     }
 
     /**
-     * Splits the JWT token string into three parts (header, payload, signature).
-     *
-     * @param token the JWT token string
-     * @return a List containing the three parts
-     * @throws JWTException if the token format is incorrect (not three parts)
+     * Closed trusted JOSE algorithm allowlist. The enum contains no unsigned value and maps each product-selected value
+     * to its exact case-sensitive JOSE identifier.
      */
-    public static List<String> splitToken(final String token) {
-        final List<String> tokens = StringKit.split(token, Symbol.DOT);
-        if (3 != tokens.size()) {
-            throw new JWTException("The token was expected 3 parts, but got {}.", tokens.size());
+    public enum TrustedAlgorithm {
+
+        /**
+         * HMAC using SHA-256.
+         */
+        HS256("HS256"),
+
+        /**
+         * RSASSA-PKCS1-v1_5 using SHA-256.
+         */
+        RS256("RS256"),
+
+        /**
+         * RSASSA-PSS using SHA-256 and JOSE parameters.
+         */
+        PS256("PS256"),
+
+        /**
+         * ECDSA using P-256 and SHA-256.
+         */
+        ES256("ES256"),
+
+        /**
+         * EdDSA using Ed25519.
+         */
+        EDDSA("EdDSA");
+
+        /**
+         * Exact case-sensitive JOSE identifier.
+         */
+        private final String identifier;
+
+        /**
+         * Creates one trusted algorithm mapping.
+         *
+         * @param identifier JOSE identifier
+         */
+        TrustedAlgorithm(final String identifier) {
+            this.identifier = identifier;
         }
-        return tokens;
+
+        /**
+         * Resolves an exact trusted identifier without accepting aliases or {@code none}.
+         *
+         * @param identifier exact JOSE identifier
+         * @return trusted algorithm
+         */
+        public static TrustedAlgorithm resolve(final String identifier) {
+            final String value = Assert
+                    .notBlank(identifier, () -> new ValidateException("JWT algorithm must not be blank"));
+            for (final TrustedAlgorithm algorithm : values()) {
+                if (algorithm.identifier.equals(value)) {
+                    return algorithm;
+                }
+            }
+            throw new ValidateException("JWT algorithm is not trusted");
+        }
+
+        /**
+         * Returns the exact JOSE identifier.
+         *
+         * @return JOSE identifier
+         */
+        public String identifier() {
+            return identifier;
+        }
+    }
+
+    /**
+     * Immutable product-selected JWT verification policy.
+     *
+     * @param algorithm       trusted algorithm selected independently of token input
+     * @param issuer          exact expected issuer
+     * @param audiences       non-empty exact accepted audiences
+     * @param skew            non-negative clock tolerance
+     * @param maximumLifetime positive issued-at-to-expiration lifetime
+     * @param requireReplay   whether jti replay admission is mandatory
+     */
+    public record VerificationPolicy(TrustedAlgorithm algorithm, String issuer, Set<String> audiences, Duration skew,
+            Duration maximumLifetime, boolean requireReplay) {
+
+        /**
+         * Validates and snapshots one trusted policy.
+         *
+         * @param algorithm       trusted algorithm
+         * @param issuer          expected issuer
+         * @param audiences       accepted audiences
+         * @param skew            clock tolerance
+         * @param maximumLifetime maximum token lifetime
+         * @param requireReplay   replay requirement
+         */
+        public VerificationPolicy {
+            algorithm = Assert.notNull(algorithm, () -> new ValidateException("JWT algorithm must not be null"));
+            issuer = Assert.notBlank(issuer, () -> new ValidateException("JWT issuer must not be blank"));
+            final Set<String> source = Set
+                    .copyOf(Assert.notNull(audiences, () -> new ValidateException("JWT audiences must not be null")));
+            Assert.isTrue(!source.isEmpty(), () -> new ValidateException("JWT audiences must not be empty"));
+            final LinkedHashSet<String> checked = new LinkedHashSet<>();
+            for (final String audience : source) {
+                checked.add(Assert.notBlank(audience, () -> new ValidateException("JWT audience must not be blank")));
+            }
+            audiences = Set.copyOf(checked);
+            skew = Assert.notNull(skew, () -> new ValidateException("JWT clock skew must not be null"));
+            Assert.isTrue(!skew.isNegative(), () -> new ValidateException("JWT clock skew must not be negative"));
+            maximumLifetime = Assert
+                    .notNull(maximumLifetime, () -> new ValidateException("JWT maximum lifetime must not be null"));
+            Assert.isTrue(
+                    !maximumLifetime.isZero() && !maximumLifetime.isNegative(),
+                    () -> new ValidateException("JWT maximum lifetime must be positive"));
+        }
+
+        /**
+         * Returns a stable representation that omits issuer and audience configuration.
+         *
+         * @return redacted policy representation
+         */
+        @Override
+        public String toString() {
+            return "VerificationPolicy[algorithm=" + algorithm.identifier() + ",requireReplay=" + requireReplay + "]";
+        }
     }
 
 }

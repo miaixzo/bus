@@ -19,22 +19,45 @@
 */
 package org.miaixz.bus.auth.metric.jwt;
 
+import java.security.Key;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.metric.AuthMetric.Invocation;
+import org.miaixz.bus.auth.metric.AuthMetric.KeyMaterial;
+import org.miaixz.bus.auth.metric.AuthMetric.Runtime;
 import org.miaixz.bus.auth.metric.JWT;
+import org.miaixz.bus.auth.metric.JWT.TrustedAlgorithm;
+import org.miaixz.bus.auth.metric.JWT.VerificationPolicy;
 import org.miaixz.bus.auth.metric.jwt.signature.JWTSigner;
+import org.miaixz.bus.auth.metric.jwt.signature.JWTSignerBuilder;
 import org.miaixz.bus.auth.metric.jwt.signature.NoneJWTSigner;
+import org.miaixz.bus.auth.metric.shared.security.ReplayKey;
+import org.miaixz.bus.auth.metric.shared.state.StateEnvelopeCodec;
+import org.miaixz.bus.auth.metric.shared.validation.TimeValidator;
+import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.crypto.Keeper;
 
 /**
- * JWT data validator, used to verify the algorithm, signature, and time-based claims of a JWT.
+ * JWT verifier retaining compatibility validation and providing one hardened asynchronous verification pipeline.
  * <ul>
- * <li>Checks if the algorithm matches.</li>
- * <li>Checks if the signature is correct.</li>
- * <li>Checks if time-based claims (e.g., not expired, effective) are valid.</li>
+ * <li>Compact format, Base64url, and strict JSON parsing.</li>
+ * <li>Protected-header policy validation.</li>
+ * <li>Tenant-, use-, algorithm-, and key-ID-scoped candidate resolution.</li>
+ * <li>Signature verification before claim inspection.</li>
+ * <li>Issuer, audience, expiration, not-before, and issued-at validation.</li>
+ * <li>Atomic JWT ID replay admission.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -95,6 +118,183 @@ public class JWTVerifier {
      */
     public static boolean verify(final String token, final JWTSigner signer) {
         return JWT.of(token).verify(signer);
+    }
+
+    /**
+     * Executes the fixed hardened verification sequence without blocking a resolver or state stage.
+     *
+     * @param token      untrusted compact JWT
+     * @param policy     trusted product-selected verification policy
+     * @param invocation tenant-scoped operation context
+     * @param runtime    validated authentication runtime
+     * @return stage containing the immutable verified payload
+     */
+    public static CompletionStage<JWTPayload> verify(
+            final String token,
+            final VerificationPolicy policy,
+            final Invocation invocation,
+            final Runtime runtime) {
+        final VerificationPolicy trusted = Assert.notNull(policy, "JWT policy must be not null!");
+        final Invocation context = Assert.notNull(invocation, "Invocation must be not null!");
+        final Runtime ports = Assert.notNull(runtime, "Authentication runtime must be not null!");
+        final JWTParser.Parsed parsed = JWTParser.parse(token, ports.json(), ports.limits());
+        final JWTHeader header = parsed.header().validate(trusted.algorithm());
+        final Object keyIdValue = header.getClaim(JWTHeader.KEY_ID);
+        final String keyId = keyIdValue == null ? null : (String) keyIdValue;
+        final CompletionStage<List<KeyMaterial>> resolved = Assert.notNull(
+                ports.keys().resolve(context, "sig", trusted.algorithm().identifier(), keyId),
+                "Key resolver stage must be not null!");
+        return resolved.thenCompose(candidates -> {
+            verifySignature(parsed, trusted.algorithm(), keyId, candidates, ports.limits().maxParameters());
+            final JWTPayload payload = parsed.payload();
+            verifyClaims(payload, trusted, ports);
+            return admitReplay(payload, trusted, context, ports);
+        });
+    }
+
+    /**
+     * Verifies the signature against bounded, metadata-matching candidate keys.
+     *
+     * @param parsed            strict parsed token
+     * @param algorithm         trusted algorithm
+     * @param keyId             optional protected-header key identifier
+     * @param candidates        resolved key candidates
+     * @param maximumCandidates maximum accepted candidate count
+     */
+    private static void verifySignature(
+            final JWTParser.Parsed parsed,
+            final TrustedAlgorithm algorithm,
+            final String keyId,
+            final List<KeyMaterial> candidates,
+            final int maximumCandidates) {
+        if (candidates == null || candidates.isEmpty() || candidates.size() > maximumCandidates) {
+            invalidSignature();
+        }
+        boolean verified = false;
+        for (final KeyMaterial candidate : candidates) {
+            if (candidate == null || !"sig".equals(candidate.use())
+                    || !algorithm.identifier().equals(candidate.algorithm())
+                    || keyId != null && !keyId.equals(candidate.keyId())) {
+                continue;
+            }
+            try {
+                final JWTSigner signer = signer(algorithm, candidate.material());
+                verified |= signer.verify(parsed.headerSegment(), parsed.payloadSegment(), parsed.signatureSegment());
+            } catch (final RuntimeException ignored) {
+                // Invalid candidates do not prevent evaluation of another resolver-scoped candidate.
+            }
+        }
+        if (!verified) {
+            invalidSignature();
+        }
+    }
+
+    /**
+     * Builds one verification-only signer from encoded resolver material.
+     *
+     * @param algorithm trusted algorithm
+     * @param material  encoded key material or raw HMAC secret
+     * @return signer bound to the trusted algorithm
+     */
+    private static JWTSigner signer(final TrustedAlgorithm algorithm, final byte[] material) {
+        if (material == null || material.length == Normal._0) {
+            invalidSignature();
+        }
+        if (algorithm == TrustedAlgorithm.HS256) {
+            return JWTSignerBuilder.createSigner(algorithm.identifier(), material);
+        }
+        final String keyAlgorithm = switch (algorithm) {
+            case RS256, PS256 -> Algorithm.RSA.getValue();
+            case ES256 -> Algorithm.EC.getValue();
+            case EDDSA -> Algorithm.ED25519.getValue();
+            case HS256 -> throw new IllegalStateException("HMAC key material is not asymmetric");
+        };
+        final Key key = Keeper.generatePublicKey(keyAlgorithm, material);
+        return JWTSignerBuilder.createSigner(algorithm.identifier(), key);
+    }
+
+    /**
+     * Validates claims after successful signature verification.
+     *
+     * @param payload immutable payload
+     * @param policy  trusted verification policy
+     * @param runtime authentication runtime
+     */
+    private static void verifyClaims(final JWTPayload payload, final VerificationPolicy policy, final Runtime runtime) {
+        if (!payload.issuer().filter(policy.issuer()::equals).isPresent()) {
+            invalidToken();
+        }
+        final boolean audienceMatch = payload.audiences().stream().anyMatch(policy.audiences()::contains);
+        if (!audienceMatch) {
+            invalidToken();
+        }
+        final Instant issuedAt = payload.issuedAt().orElseThrow(JWTVerifier::tokenFailure);
+        final Instant expiresAt = payload.expiresAt().orElseThrow(JWTVerifier::tokenFailure);
+        final Instant notBefore = payload.notBefore().orElse(null);
+        new TimeValidator(runtime.clock(), policy.skew())
+                .validate(issuedAt, notBefore, expiresAt, policy.maximumLifetime());
+    }
+
+    /**
+     * Atomically admits the JWT identifier after every preceding verification step.
+     *
+     * @param payload    verified immutable payload
+     * @param policy     trusted verification policy
+     * @param invocation tenant-scoped operation context
+     * @param runtime    authentication runtime
+     * @return stage containing the verified payload
+     */
+    private static CompletionStage<JWTPayload> admitReplay(
+            final JWTPayload payload,
+            final VerificationPolicy policy,
+            final Invocation invocation,
+            final Runtime runtime) {
+        if (!policy.requireReplay()) {
+            return java.util.concurrent.CompletableFuture.completedFuture(payload);
+        }
+        final String identifier = payload.jwtId().orElseThrow(JWTVerifier::tokenFailure);
+        final Instant expiresAt = payload.expiresAt().orElseThrow(JWTVerifier::tokenFailure);
+        final Duration maximumTtl;
+        try {
+            maximumTtl = policy.maximumLifetime().plus(policy.skew());
+        } catch (final ArithmeticException failure) {
+            throw new ProtocolException(ErrorCode._100301.getKey(), ErrorCode._100301.getValue(), failure);
+        }
+        final Duration ttl = new TimeValidator(runtime.clock(), policy.skew()).ttl(expiresAt, maximumTtl);
+        final String key = ReplayKey.derive(invocation.tenantId(), "jwt", "jti", identifier);
+        final byte[] value = StateEnvelopeCodec.encode(new byte[] { Normal._1 });
+        final CompletionStage<Boolean> admitted = Assert.notNull(
+                runtime.states().putIfAbsent(invocation, key, value, ttl),
+                "State store stage must be not null!");
+        return admitted.thenApply(created -> {
+            if (!Boolean.TRUE.equals(created)) {
+                invalidToken();
+            }
+            return payload;
+        });
+    }
+
+    /**
+     * Creates a shared invalid-token failure for optional extraction.
+     *
+     * @return invalid-token failure
+     */
+    private static ProtocolException tokenFailure() {
+        return new ProtocolException(ErrorCode._100533);
+    }
+
+    /**
+     * Rejects an invalid token.
+     */
+    private static void invalidToken() {
+        throw tokenFailure();
+    }
+
+    /**
+     * Rejects an invalid signature.
+     */
+    private static void invalidSignature() {
+        throw new ProtocolException(ErrorCode._100532);
     }
 
     /**
@@ -235,8 +435,7 @@ public class JWTVerifier {
      *
      * @param signer the signer used for verification; if null, the JWT's own signer is used
      * @return the current {@link JWTVerifier} instance
-     * @throws ValidateException        if the algorithm does not match or the signature is invalid
-     * @throws IllegalArgumentException if no signer is provided and the JWT requires a signature
+     * @throws ValidateException if the algorithm does not match or the signature is invalid
      */
     public JWTVerifier validateAlgorithm(final JWTSigner signer) throws ValidateException {
         validateAlgorithm(this.jwt, signer);

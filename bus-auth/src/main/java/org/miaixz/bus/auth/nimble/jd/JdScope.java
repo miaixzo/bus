@@ -63,4 +63,5 @@ public enum JdScope implements AuthorizeScope {
         this.description = description;
         this.isDefault = isDefault;
     }
+
 }

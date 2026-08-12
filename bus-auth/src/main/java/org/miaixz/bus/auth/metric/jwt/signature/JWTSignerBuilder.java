@@ -21,428 +21,393 @@ package org.miaixz.bus.auth.metric.jwt.signature;
 
 import java.security.Key;
 import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.util.HashMap;
-import java.util.regex.Pattern;
+import java.util.Map;
 
-import org.miaixz.bus.core.center.map.BiMap;
+import javax.crypto.SecretKey;
+
+import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.core.xyz.PatternKit;
+import org.miaixz.bus.core.lang.exception.JWTException;
 
 /**
- * JWT Signer factory.
+ * Builds JWT signers from a fixed JOSE algorithm allowlist and trusted key material.
  * <p>
- * Provides functionality to create {@link JWTSigner} instances, supporting various signing algorithms (e.g., HMAC, RSA,
- * ECDSA). It uses a bidirectional mapping between JWT signing algorithm identifiers (e.g., HS256, RS256, ES256) and
- * Java standard algorithm names (e.g., HmacSHA256, SHA256withRSA).
+ * Only HS256, RS256, PS256, ES256, and EdDSA are enabled. All legacy factory signatures remain present, but factories
+ * for disabled algorithms fail closed. Algorithm identifiers are exact protocol values and never come from token input
+ * when selecting a key or signer.
  * </p>
  *
+ * @author Kimi Liu
  * @see JWTSigner
  * @see HMacJWTSigner
  * @see RSAJWTSigner
  * @see ECDSAJWTSigner
- * @author Kimi Liu
+ * @see EdDSAJWTSigner
  */
 public class JWTSignerBuilder {
 
     /**
-     * Constructs a new {@code JWTSignerBuilder} instance.
+     * JOSE identifier for HS256.
+     */
+    private static final String HS256 = "HS256";
+
+    /**
+     * JOSE identifier for RS256.
+     */
+    private static final String RS256 = "RS256";
+
+    /**
+     * JOSE identifier for PS256.
+     */
+    private static final String PS256 = "PS256";
+
+    /**
+     * JOSE identifier for ES256.
+     */
+    private static final String ES256 = "ES256";
+
+    /**
+     * JOSE identifier for EdDSA with Ed25519.
+     */
+    private static final String EDDSA = "EdDSA";
+
+    /**
+     * Exact allowed JOSE-to-JCA mapping.
+     */
+    private static final Map<String, String> ALGORITHMS = Map.of(
+            HS256,
+            Algorithm.HMACSHA256.getValue(),
+            RS256,
+            Algorithm.SHA256WITHRSA.getValue(),
+            PS256,
+            Algorithm.SHA256WITHRSA_PSS.getValue(),
+            ES256,
+            Algorithm.SHA256WITHECDSA.getValue(),
+            EDDSA,
+            Algorithm.ED25519.getValue());
+
+    /**
+     * Constructs a builder compatibility instance.
      */
     public JWTSignerBuilder() {
         // No initialization required.
     }
 
     /**
-     * Regular expression pattern to match ECDSA algorithm identifiers (e.g., ES256, ES384, ES512).
-     */
-    private static final Pattern ES_ALGORITHM_PATTERN = Pattern.compile("es\\d{3}", Pattern.CASE_INSENSITIVE);
-
-    /**
-     * Bidirectional map storing the correspondence between JWT signing algorithm identifiers (e.g., HS256) and Java
-     * standard algorithm names (e.g., HmacSHA256).
-     */
-    private static final BiMap<String, String> map = new BiMap<>(new HashMap<>() {
-
-        {
-            // Initialize HMAC algorithm mapping
-            put("HS256", Algorithm.HMACSHA256.getValue());
-            put("HS384", Algorithm.HMACSHA384.getValue());
-            put("HS512", Algorithm.HMACSHA512.getValue());
-            put("HMD5", Algorithm.HMACMD5.getValue());
-            put("HSHA1", Algorithm.HMACSHA1.getValue());
-            put("SM4CMAC", Algorithm.SM4CMAC.getValue());
-            // Initialize RSA algorithm mapping
-            put("RS256", Algorithm.SHA256WITHRSA.getValue());
-            put("RS384", Algorithm.SHA384WITHRSA.getValue());
-            put("RS512", Algorithm.SHA512WITHRSA.getValue());
-            // Initialize ECDSA algorithm mapping
-            put("ES256", Algorithm.SHA256WITHECDSA.getValue());
-            put("ES384", Algorithm.SHA384WITHECDSA.getValue());
-            put("ES512", Algorithm.SHA512WITHECDSA.getValue());
-            // Initialize RSA-PSS algorithm mapping
-            put("PS256", Algorithm.SHA256WITHRSA_PSS.getValue());
-            put("PS384", Algorithm.SHA384WITHRSA_PSS.getValue());
-            put("PS512", Algorithm.SHA512WITHRSA_PSS.getValue());
-            // Initialize other RSA algorithm mapping
-            put("RMD2", Algorithm.MD2WITHRSA.getValue());
-            put("RMD5", Algorithm.MD5WITHRSA.getValue());
-            put("RSHA1", Algorithm.SHA1WITHRSA.getValue());
-            // Initialize DSA algorithm mapping
-            put("DNONE", Algorithm.NONEWITHDSA.getValue());
-            put("DSHA1", Algorithm.SHA1WITHDSA.getValue());
-            // Initialize other ECDSA algorithm mapping
-            put("ENONE", Algorithm.NONEWITHECDSA.getValue());
-            put("ESHA1", Algorithm.SHA1WITHECDSA.getValue());
-        }
-    });
-
-    /**
-     * Creates a signer for unsigned JWTs.
+     * Rejects construction of an unsigned JWT signer.
      *
-     * @return a {@link JWTSigner} instance for no signature
+     * @return no signer because the algorithm is disabled
      */
     public static JWTSigner none() {
-        return NoneJWTSigner.NONE;
+        return unsupported();
     }
 
     /**
-     * Creates an HS256 (HmacSHA256) signer.
+     * Creates an HS256 signer.
      *
-     * @param key the secret key (byte array)
-     * @return an {@link HMacJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key symmetric secret bytes
+     * @return HS256 signer
      */
     public static JWTSigner hs256(final byte[] key) {
-        return createSigner("HS256", key);
+        return createSigner(HS256, key);
     }
 
     /**
-     * Creates an HS384 (HmacSHA384) signer.
+     * Rejects the disabled HS384 algorithm.
      *
-     * @param key the secret key (byte array)
-     * @return an {@link HMacJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key ignored legacy key
+     * @return no signer because the algorithm is disabled
      */
     public static JWTSigner hs384(final byte[] key) {
-        return createSigner("HS384", key);
+        return unsupported();
     }
 
     /**
-     * Creates an HS512 (HmacSHA512) signer.
+     * Rejects the disabled HS512 algorithm.
      *
-     * @param key the secret key (byte array)
-     * @return an {@link HMacJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key ignored legacy key
+     * @return no signer because the algorithm is disabled
      */
     public static JWTSigner hs512(final byte[] key) {
-        return createSigner("HS512", key);
+        return unsupported();
     }
 
     /**
-     * Creates an RS256 (SHA256withRSA) signer.
+     * Creates an RS256 signer.
      *
-     * @param key the key (public or private key)
-     * @return an {@link RSAJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key RSA public or private key
+     * @return RS256 signer
      */
     public static JWTSigner rs256(final Key key) {
-        return createSigner("RS256", key);
+        return createSigner(RS256, key);
     }
 
     /**
-     * Creates an RS384 (SHA384withRSA) signer.
+     * Creates a PS256 signer.
      *
-     * @param key the key (public or private key)
-     * @return an {@link RSAJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key RSA public or private key
+     * @return PS256 signer
+     */
+    public static JWTSigner ps256(final Key key) {
+        return createSigner(PS256, key);
+    }
+
+    /**
+     * Rejects the disabled RS384 algorithm.
+     *
+     * @param key ignored legacy key
+     * @return no signer because the algorithm is disabled
      */
     public static JWTSigner rs384(final Key key) {
-        return createSigner("RS384", key);
+        return unsupported();
     }
 
     /**
-     * Creates an RS512 (SHA512withRSA) signer.
+     * Rejects the disabled RS512 algorithm.
      *
-     * @param key the key (public or private key)
-     * @return an {@link RSAJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key ignored legacy key
+     * @return no signer because the algorithm is disabled
      */
     public static JWTSigner rs512(final Key key) {
-        return createSigner("RS512", key);
+        return unsupported();
     }
 
     /**
-     * Creates an ES256 (SHA256withECDSA) signer.
+     * Creates an ES256 signer.
      *
-     * @param key the key (public or private key)
-     * @return an {@link ECDSAJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key P-256 public or private key
+     * @return ES256 signer
      */
     public static JWTSigner es256(final Key key) {
-        return createSigner("ES256", key);
+        return createSigner(ES256, key);
     }
 
     /**
-     * Creates an ES384 (SHA384withECDSA) signer.
+     * Creates an EdDSA signer fixed to Ed25519.
      *
-     * @param key the key (public or private key)
-     * @return an {@link ECDSAJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key Ed25519 public or private key
+     * @return EdDSA signer
+     */
+    public static JWTSigner eddsa(final Key key) {
+        return createSigner(EDDSA, key);
+    }
+
+    /**
+     * Rejects the disabled ES384 algorithm.
+     *
+     * @param key ignored legacy key
+     * @return no signer because the algorithm is disabled
      */
     public static JWTSigner es384(final Key key) {
-        return createSigner("ES384", key);
+        return unsupported();
     }
 
     /**
-     * Creates an ES512 (SHA512withECDSA) signer.
+     * Rejects the disabled ES512 algorithm.
      *
-     * @param key the key (public or private key)
-     * @return an {@link ECDSAJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key ignored legacy key
+     * @return no signer because the algorithm is disabled
      */
     public static JWTSigner es512(final Key key) {
-        return createSigner("ES512", key);
+        return unsupported();
     }
 
     /**
-     * Creates an HMD5 (HmacMD5) signer.
+     * Rejects the disabled HMAC-MD5 algorithm.
      *
-     * @param key the key (public or private key)
-     * @return an {@link HMacJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key ignored legacy key
+     * @return no signer because the algorithm is disabled
      */
     public static JWTSigner hmd5(final Key key) {
-        return createSigner("HMD5", key);
+        return unsupported();
     }
 
     /**
-     * Creates an HSHA1 (HmacSHA1) signer.
+     * Rejects the disabled HMAC-SHA1 algorithm.
      *
-     * @param key the key (public or private key)
-     * @return an {@link HMacJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key ignored legacy key
+     * @return no signer because the algorithm is disabled
      */
     public static JWTSigner hsha1(final Key key) {
-        return createSigner("HSHA1", key);
+        return unsupported();
     }
 
     /**
-     * Creates an SM4CMAC signer.
+     * Rejects the disabled SM4-CMAC algorithm.
      *
-     * @param key the key (public or private key)
-     * @return an {@link HMacJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key ignored legacy key
+     * @return no signer because the algorithm is disabled
      */
     public static JWTSigner sm4cmac(final Key key) {
-        return createSigner("SM4CMAC", key);
+        return unsupported();
     }
 
     /**
-     * Creates an RMD2 (MD2withRSA) signer.
+     * Rejects the disabled RSA-MD2 algorithm.
      *
-     * @param key the key (public or private key)
-     * @return an {@link RSAJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key ignored legacy key
+     * @return no signer because the algorithm is disabled
      */
     public static JWTSigner rmd2(final Key key) {
-        return createSigner("RMD2", key);
+        return unsupported();
     }
 
     /**
-     * Creates an RMD5 (MD5withRSA) signer.
+     * Rejects the disabled RSA-MD5 algorithm.
      *
-     * @param key the key (public or private key)
-     * @return an {@link RSAJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key ignored legacy key
+     * @return no signer because the algorithm is disabled
      */
     public static JWTSigner rmd5(final Key key) {
-        return createSigner("RMD5", key);
+        return unsupported();
     }
 
     /**
-     * Creates an RSHA1 (SHA1withRSA) signer.
+     * Rejects the disabled RSA-SHA1 algorithm.
      *
-     * @param key the key (public or private key)
-     * @return an {@link RSAJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key ignored legacy key
+     * @return no signer because the algorithm is disabled
      */
     public static JWTSigner rsha1(final Key key) {
-        return createSigner("RSHA1", key);
+        return unsupported();
     }
 
     /**
-     * Creates a DNONE (NONEwithDSA) signer.
+     * Rejects the disabled raw DSA algorithm.
      *
-     * @param key the key (public or private key)
-     * @return an {@link RSAJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key ignored legacy key
+     * @return no signer because the algorithm is disabled
      */
     public static JWTSigner dnone(final Key key) {
-        return createSigner("DNONE", key);
+        return unsupported();
     }
 
     /**
-     * Creates a DSHA1 (SHA1withDSA) signer.
+     * Rejects the disabled DSA-SHA1 algorithm.
      *
-     * @param key the key (public or private key)
-     * @return an {@link RSAJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key ignored legacy key
+     * @return no signer because the algorithm is disabled
      */
     public static JWTSigner dsha1(final Key key) {
-        return createSigner("DSHA1", key);
+        return unsupported();
     }
 
     /**
-     * Creates an ENONE (NONEwithECDSA) signer.
+     * Rejects the disabled raw ECDSA algorithm.
      *
-     * @param key the key (public or private key)
-     * @return an {@link ECDSAJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key ignored legacy key
+     * @return no signer because the algorithm is disabled
      */
     public static JWTSigner enone(final Key key) {
-        return createSigner("ENONE", key);
+        return unsupported();
     }
 
     /**
-     * Creates an ESHA1 (SHA1withECDSA) signer.
+     * Rejects the disabled ECDSA-SHA1 algorithm.
      *
-     * @param key the key (public or private key)
-     * @return an {@link ECDSAJWTSigner} instance
-     * @throws IllegalArgumentException if the key is null
+     * @param key ignored legacy key
+     * @return no signer because the algorithm is disabled
      */
     public static JWTSigner esha1(final Key key) {
-        return createSigner("ESHA1", key);
+        return unsupported();
     }
 
     /**
-     * Creates a signer using a byte array key.
-     * <p>
-     * Creates an appropriate signer instance based on the algorithm ID (only supports HMAC algorithms).
-     * </p>
+     * Creates a signer for the only allowed byte-key algorithm.
      *
-     * @param algorithmId the algorithm ID (e.g., HS256, HS384, HS512)
-     * @param key         the secret key (byte array)
-     * @return a {@link JWTSigner} instance
-     * @throws IllegalArgumentException if the key is null or the algorithm ID is invalid
+     * @param algorithmId exact trusted JOSE algorithm identifier
+     * @param key         symmetric secret bytes
+     * @return HS256 signer
      */
     public static JWTSigner createSigner(final String algorithmId, final byte[] key) {
-        // Validate that the key is not null
         Assert.notNull(key, "Signer key must be not null!");
-        // Check if it's a no-signature algorithm
-        if (null == algorithmId || NoneJWTSigner.ID_NONE.equals(algorithmId)) {
-            return none();
+        if (!HS256.equals(algorithmId)) {
+            return unsupported();
         }
-        return new HMacJWTSigner(getAlgorithm(algorithmId), key);
+        return new HMacJWTSigner(Algorithm.HMACSHA256.getValue(), key);
     }
 
     /**
-     * Creates a signer using a key pair.
-     * <p>
-     * Creates an appropriate signer instance based on the algorithm ID (supports RSA or ECDSA algorithms).
-     * </p>
+     * Creates an allowed asymmetric signer from a trusted key pair.
      *
-     * @param algorithmId the algorithm ID (e.g., RS256, ES256)
-     * @param keyPair     the key pair (containing public and private keys)
-     * @return a {@link JWTSigner} instance
-     * @throws IllegalArgumentException if the key pair is null or the algorithm ID is invalid
+     * @param algorithmId exact trusted JOSE algorithm identifier
+     * @param keyPair     asymmetric key pair
+     * @return signer bound to the exact algorithm
      */
     public static JWTSigner createSigner(final String algorithmId, final KeyPair keyPair) {
-        // Validate that the key pair is not null
         Assert.notNull(keyPair, "Signer key pair must be not null!");
-        // Check if it's a no-signature algorithm
-        if (null == algorithmId || NoneJWTSigner.ID_NONE.equals(algorithmId)) {
-            return none();
+        if (algorithmId == null) {
+            return unsupported();
         }
-        // Get the Java standard algorithm name
-        final String algorithm = getAlgorithm(algorithmId);
-        // Check if it's an ECDSA algorithm
-        if (PatternKit.isMatch(ES_ALGORITHM_PATTERN, algorithmId)) {
-            return new ECDSAJWTSigner(algorithm, keyPair);
-        }
-        return new RSAJWTSigner(algorithm, keyPair);
+        return switch (algorithmId) {
+            case RS256 -> new RSAJWTSigner(Algorithm.SHA256WITHRSA.getValue(), keyPair);
+            case PS256 -> new RSAJWTSigner(Algorithm.SHA256WITHRSA_PSS.getValue(), keyPair);
+            case ES256 -> new ECDSAJWTSigner(Algorithm.SHA256WITHECDSA.getValue(), keyPair);
+            case EDDSA -> new EdDSAJWTSigner(keyPair);
+            default -> unsupported();
+        };
     }
 
     /**
-     * Creates a signer using a public or private key.
-     * <p>
-     * Creates an appropriate signer instance based on the algorithm ID and key type (supports HMAC, RSA, or ECDSA
-     * algorithms).
-     * </p>
+     * Creates an allowed signer from a trusted key and exact algorithm identifier.
      *
-     * @param algorithmId the algorithm ID (e.g., HS256, RS256, ES256)
-     * @param key         the key (public key, private key, or symmetric key)
-     * @return a {@link JWTSigner} instance
-     * @throws IllegalArgumentException if the key is null or the algorithm ID is invalid
+     * @param algorithmId exact trusted JOSE algorithm identifier
+     * @param key         trusted key material
+     * @return signer bound to the exact algorithm
      */
     public static JWTSigner createSigner(final String algorithmId, final Key key) {
-        // Validate that the key is not null
         Assert.notNull(key, "Signer key must be not null!");
-        // Check if it's a no-signature algorithm
-        if (null == algorithmId || NoneJWTSigner.ID_NONE.equals(algorithmId)) {
-            return NoneJWTSigner.NONE;
+        if (algorithmId == null) {
+            return unsupported();
         }
-        // Get the Java standard algorithm name
-        final String algorithm = getAlgorithm(algorithmId);
-        // Check if the key type is PublicKey or PrivateKey
-        if (key instanceof PrivateKey || key instanceof PublicKey) {
-            // Check if it's an ECDSA algorithm
-            if (PatternKit.isMatch(ES_ALGORITHM_PATTERN, algorithmId)) {
-                return new ECDSAJWTSigner(algorithm, key);
-            }
-            return new RSAJWTSigner(algorithm, key);
-        }
-        return new HMacJWTSigner(algorithm, key);
+        return switch (algorithmId) {
+            case HS256 -> key instanceof SecretKey ? new HMacJWTSigner(Algorithm.HMACSHA256.getValue(), key)
+                    : unsupported();
+            case RS256 -> new RSAJWTSigner(Algorithm.SHA256WITHRSA.getValue(), key);
+            case PS256 -> new RSAJWTSigner(Algorithm.SHA256WITHRSA_PSS.getValue(), key);
+            case ES256 -> new ECDSAJWTSigner(Algorithm.SHA256WITHECDSA.getValue(), key);
+            case EDDSA -> new EdDSAJWTSigner(key);
+            default -> unsupported();
+        };
     }
 
     /**
-     * Retrieves the algorithm name.
-     * <p>
-     * If the input is a JWT algorithm identifier (e.g., HS256), it returns the corresponding Java standard algorithm
-     * name (e.g., HmacSHA256); otherwise, it returns the input value itself.
-     * </p>
+     * Maps an exact allowed JOSE identifier to its JCA name while preserving the compatibility fallback.
      *
-     * @param idOrAlgorithm the algorithm ID or algorithm name
-     * @return the algorithm name
+     * @param idOrAlgorithm JOSE identifier or JCA algorithm name
+     * @return mapped JCA name, the original unknown value, or {@code null}
      */
     public static String getAlgorithm(final String idOrAlgorithm) {
-        return ObjectKit.defaultIfNull(getAlgorithmById(idOrAlgorithm), idOrAlgorithm);
+        return idOrAlgorithm == null ? null : ALGORITHMS.getOrDefault(idOrAlgorithm, idOrAlgorithm);
     }
 
     /**
-     * Retrieves the JWT algorithm identifier.
-     * <p>
-     * If the input is a Java standard algorithm name (e.g., HmacSHA256), it returns the corresponding JWT algorithm
-     * identifier (e.g., HS256); otherwise, it returns the input value itself.
-     * </p>
+     * Maps an allowed JCA name to its exact JOSE identifier while preserving the compatibility fallback.
      *
-     * @param idOrAlgorithm the algorithm ID or algorithm name
-     * @return the JWT algorithm identifier
+     * @param idOrAlgorithm JCA algorithm name or JOSE identifier
+     * @return mapped JOSE identifier, the original unknown value, or {@code null}
      */
     public static String getId(final String idOrAlgorithm) {
-        return ObjectKit.defaultIfNull(getIdByAlgorithm(idOrAlgorithm), idOrAlgorithm);
+        if (idOrAlgorithm == null) {
+            return null;
+        }
+        for (final Map.Entry<String, String> entry : ALGORITHMS.entrySet()) {
+            if (entry.getValue().equalsIgnoreCase(idOrAlgorithm)) {
+                return entry.getKey();
+            }
+        }
+        return idOrAlgorithm;
     }
 
     /**
-     * Retrieves the Java standard algorithm name based on the JWT algorithm identifier.
+     * Throws the stable failure used by every disabled or unknown algorithm entry point.
      *
-     * @param id the JWT algorithm identifier (e.g., HS256)
-     * @return the Java standard algorithm name (e.g., HmacSHA256), or null if not found
+     * @param <T> requested result type
+     * @return no value because the algorithm is rejected
      */
-    private static String getAlgorithmById(final String id) {
-        return map.get(id.toUpperCase());
-    }
-
-    /**
-     * Retrieves the JWT algorithm identifier based on the Java standard algorithm name.
-     *
-     * @param algorithm the Java standard algorithm name (e.g., HmacSHA256)
-     * @return the JWT algorithm identifier (e.g., HS256), or null if not found
-     */
-    private static String getIdByAlgorithm(final String algorithm) {
-        return map.getKey(algorithm);
+    private static <T> T unsupported() {
+        throw new JWTException(ErrorCode._100533, "Unsupported JWT signing algorithm");
     }
 
 }

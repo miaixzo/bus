@@ -72,4 +72,5 @@ public enum WechatMpScope implements AuthorizeScope {
         this.description = description;
         this.isDefault = isDefault;
     }
+
 }

@@ -21,16 +21,18 @@ package org.miaixz.bus.auth.metric.jwt.signature;
 
 import java.security.Key;
 
+import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.center.HMac;
 
 /**
- * HMAC algorithm JWT signer.
+ * HS256 JWT signer backed by the Bus cryptographic HMAC implementation.
  * <p>
- * Implements the {@link JWTSigner} interface, using HMAC algorithms (e.g., HS256, HS384, HS512) for JWT signing and
- * verification. Supports custom encoding, with UTF-8 as the default.
+ * The algorithm and key are trusted construction inputs. Compact JWS processing uses UTF-8 and unpadded Base64url
+ * exclusively.
  * </p>
  *
  * @author Kimi Liu
@@ -38,99 +40,109 @@ import org.miaixz.bus.crypto.center.HMac;
 public class HMacJWTSigner implements JWTSigner {
 
     /**
-     * The HMAC algorithm instance, used for performing signing and verification.
+     * Bus cryptographic primitive bound to HmacSHA256.
      */
     private final HMac hMac;
 
     /**
-     * The character encoding, default is UTF-8.
+     * Compatibility charset fixed to UTF-8.
      */
     private java.nio.charset.Charset charset = Charset.UTF_8;
 
     /**
-     * Constructor, initializes the HMAC signer.
+     * Creates an HS256 signer from raw secret material.
      *
-     * @param algorithm the HMAC algorithm (e.g., HS256, HS384, HS512)
-     * @param key       the secret key (byte array)
-     * @throws IllegalArgumentException if the algorithm or key is invalid
+     * @param algorithm exact HmacSHA256 JCA algorithm name
+     * @param key       non-null secret key material
      */
     public HMacJWTSigner(final String algorithm, final byte[] key) {
-        // Initialize the HMAC algorithm instance
-        this.hMac = new HMac(algorithm, key);
+        requireAlgorithm(algorithm);
+        Assert.notNull(key, "Signer key must be not null!");
+        this.hMac = new HMac(Algorithm.HMACSHA256, key.clone());
     }
 
     /**
-     * Constructor, initializes the HMAC signer.
+     * Creates an HS256 signer from a symmetric JCA key.
      *
-     * @param algorithm the HMAC algorithm (e.g., HS256, HS384, HS512)
-     * @param key       the secret key (Java security Key object)
-     * @throws IllegalArgumentException if the algorithm or key is invalid
+     * @param algorithm exact HmacSHA256 JCA algorithm name
+     * @param key       non-null symmetric key
      */
     public HMacJWTSigner(final String algorithm, final Key key) {
-        // Initialize the HMAC algorithm instance
-        this.hMac = new HMac(algorithm, key);
+        requireAlgorithm(algorithm);
+        Assert.notNull(key, "Signer key must be not null!");
+        this.hMac = new HMac(Algorithm.HMACSHA256, key);
     }
 
     /**
-     * Sets the character encoding.
+     * Enforces the only trusted HMAC algorithm allowed by this JWT profile.
      *
-     * @param charset the character encoding (e.g., UTF-8)
-     * @return this object, supporting method chaining
-     * @throws IllegalArgumentException if the encoding is invalid
+     * @param algorithm supplied JCA algorithm name
+     */
+    private static void requireAlgorithm(final String algorithm) {
+        if (!Algorithm.HMACSHA256.getValue().equals(algorithm)) {
+            throw new IllegalArgumentException("Only HS256 is supported");
+        }
+    }
+
+    /**
+     * Preserves the compatibility mutator while enforcing the JWS UTF-8 requirement.
+     *
+     * @param charset required UTF-8 charset
+     * @return this signer
      */
     public HMacJWTSigner setCharset(final java.nio.charset.Charset charset) {
-        // Update the character encoding
+        if (!Charset.UTF_8.equals(charset)) {
+            throw new IllegalArgumentException("JWT signing requires UTF-8");
+        }
         this.charset = charset;
         return this;
     }
 
     /**
-     * Performs HMAC signing on the JWT header and payload.
-     * <p>
-     * Concatenates the Base64 encoded header and payload in "header.payload" format, generates a Base64 signature using
-     * the HMAC algorithm.
-     * </p>
+     * Computes an HS256 MAC over the exact compact signing input.
      *
-     * @param headerBase64  Base64 encoded JWT header
-     * @param payloadBase64 Base64 encoded JWT payload
-     * @return the Base64 encoded signature
+     * @param headerBase64  unpadded Base64url header segment
+     * @param payloadBase64 unpadded Base64url payload segment
+     * @return unpadded Base64url MAC
      */
     @Override
     public String sign(final String headerBase64, final String payloadBase64) {
-        // Concatenate header and payload in "header.payload" format
-        String data = StringKit.format("{}.{}", headerBase64, payloadBase64);
-        // Generate Base64 signature using HMAC algorithm
-        return hMac.digestBase64(data, charset, true);
+        Assert.notNull(headerBase64, "JWT header segment must be not null!");
+        Assert.notNull(payloadBase64, "JWT payload segment must be not null!");
+        final String data = StringKit.format("{}.{}", headerBase64, payloadBase64);
+        return Base64.encodeUrlSafe(hMac.digest(data, charset));
     }
 
     /**
-     * Verifies the JWT signature.
-     * <p>
-     * Regenerates the signature for the header and payload using the HMAC algorithm and compares it with the provided
-     * signature.
-     * </p>
+     * Verifies an HS256 MAC by comparing decoded MAC bytes in constant time.
      *
-     * @param headerBase64  Base64 encoded JWT header
-     * @param payloadBase64 Base64 encoded JWT payload
-     * @param signBase64    Base64 encoded signature to be verified
-     * @return true if the verification passes, false otherwise
+     * @param headerBase64  unpadded Base64url header segment
+     * @param payloadBase64 unpadded Base64url payload segment
+     * @param signBase64    unpadded Base64url MAC
+     * @return {@code true} only when the MAC is valid
      */
     @Override
     public boolean verify(final String headerBase64, final String payloadBase64, final String signBase64) {
-        // Generate the expected signature
-        final String sign = sign(headerBase64, payloadBase64);
-        // Compare the expected signature with the provided signature
-        return hMac.verify(ByteKit.toBytes(sign, charset), ByteKit.toBytes(signBase64, charset));
+        if (headerBase64 == null || payloadBase64 == null || signBase64 == null || signBase64.isEmpty()) {
+            return false;
+        }
+        try {
+            final String data = StringKit.format("{}.{}", headerBase64, payloadBase64);
+            final byte[] expected = hMac.digest(data, charset);
+            final byte[] presented = Base64.decode(signBase64);
+            return signBase64.equals(Base64.encodeUrlSafe(presented)) && hMac.verify(expected, presented);
+        } catch (final RuntimeException ignored) {
+            return false;
+        }
     }
 
     /**
-     * Retrieves the name of the signing algorithm.
+     * Returns the fixed JCA algorithm name.
      *
-     * @return the algorithm name (e.g., HS256, HS384, HS512)
+     * @return HmacSHA256
      */
     @Override
     public String getAlgorithm() {
-        // Returns the HMAC algorithm name
         return this.hMac.getAlgorithm();
     }
 

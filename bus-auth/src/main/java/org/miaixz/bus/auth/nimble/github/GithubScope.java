@@ -217,4 +217,5 @@ public enum GithubScope implements AuthorizeScope {
         this.description = description;
         this.isDefault = isDefault;
     }
+
 }

@@ -70,4 +70,5 @@ public enum AppleScope implements AuthorizeScope {
         this.description = description;
         this.isDefault = isDefault;
     }
+
 }
