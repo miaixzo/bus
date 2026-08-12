@@ -1029,12 +1029,13 @@ Based on benchmark tests (10,000 operations):
 
 ### MemoryCache Properties
 
-| Property            | Type   | Default  | Description                        |
-|:--------------------|:-------|:---------|:-----------------------------------|
-| `maximumSize`       | `long` | `1000`   | Maximum number of entries          |
-| `expireAfterWrite`  | `long` | `180000` | TTL in milliseconds                |
-| `expireAfterAccess` | `long` | `0`      | TTI in milliseconds (0 = disabled) |
-| `initialCapacity`   | `int`  | `16`     | Initial map capacity               |
+| Property            | Type      | Default  | Description                        |
+|:--------------------|:----------|:---------|:-----------------------------------|
+| `maximumSize`       | `long`    | `1000`   | Maximum number of entries          |
+| `expireAfterWrite`  | `long`    | `180000` | TTL in milliseconds                |
+| `expireAfterAccess` | `long`    | `0`      | TTI in milliseconds (0 = disabled) |
+| `initialCapacity`   | `int`     | `16`     | Initial map capacity               |
+| `schedulePrune`     | `boolean` | `true`   | Enable periodic expiry pruning     |
 
 ### CaffeineCache Properties
 

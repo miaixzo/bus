@@ -22,6 +22,8 @@ package org.miaixz.bus.cache;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.MapKit;
@@ -38,7 +40,7 @@ import org.miaixz.bus.core.xyz.MapKit;
  * @param <V> the type of values
  * @author Kimi Liu
  */
-public interface CacheX<K, V> {
+public interface CacheX<K, V> extends AutoCloseable {
 
     /**
      * Reads a single object from the cache.
@@ -280,6 +282,73 @@ public interface CacheX<K, V> {
         }
         write(key, value, expire);
         return true;
+    }
+
+    /**
+     * Atomically stores a value when no unexpired value exists.
+     *
+     * @param key       cache key
+     * @param value     cache value
+     * @param ttlMillis positive time to live in milliseconds
+     * @return stage containing whether the value was inserted
+     */
+    default CompletionStage<Boolean> create(K key, V value, long ttlMillis) {
+        return CompletableFuture
+                .failedFuture(new UnsupportedOperationException("Atomic create is not supported by this cache"));
+    }
+
+    /**
+     * Reads one value asynchronously at the backend linearization point.
+     *
+     * @param key cache key
+     * @return stage containing the value or {@code null}
+     */
+    default CompletionStage<V> get(K key) {
+        return CompletableFuture
+                .failedFuture(new UnsupportedOperationException("Atomic get is not supported by this cache"));
+    }
+
+    /**
+     * Atomically reads and removes one unexpired value.
+     *
+     * @param key cache key
+     * @return stage containing the removed value or {@code null}
+     */
+    default CompletionStage<V> take(K key) {
+        return CompletableFuture
+                .failedFuture(new UnsupportedOperationException("Atomic take is not supported by this cache"));
+    }
+
+    /**
+     * Atomically replaces an unexpired value when it equals the expected value.
+     *
+     * @param key       cache key
+     * @param expected  expected current value
+     * @param update    replacement value
+     * @param ttlMillis positive replacement time to live in milliseconds
+     * @return stage containing whether the value was replaced
+     */
+    default CompletionStage<Boolean> replace(K key, V expected, V update, long ttlMillis) {
+        return CompletableFuture
+                .failedFuture(new UnsupportedOperationException("Atomic replace is not supported by this cache"));
+    }
+
+    /**
+     * Atomically removes one unexpired value.
+     *
+     * @param key cache key
+     * @return stage containing whether a value was removed
+     */
+    default CompletionStage<Boolean> delete(K key) {
+        return CompletableFuture
+                .failedFuture(new UnsupportedOperationException("Atomic delete is not supported by this cache"));
+    }
+
+    /**
+     * Releases resources owned by this cache. Implementations without owned resources require no close action.
+     */
+    @Override
+    default void close() {
     }
 
 }
