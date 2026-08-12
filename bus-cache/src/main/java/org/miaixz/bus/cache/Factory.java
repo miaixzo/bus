@@ -20,10 +20,13 @@
 package org.miaixz.bus.cache;
 
 import java.util.Arrays;
+import java.util.concurrent.Executor;
 
 import org.miaixz.bus.cache.nimble.*;
 import org.miaixz.bus.cache.nimble.internal.RedisBackends;
+import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -338,6 +341,31 @@ public class Factory {
      */
     private long expireMs(Options options) {
         return options.getExpire() > 0L ? options.getExpire() : DEFAULT_CACHE_EXPIRE_MS;
+    }
+
+    /**
+     * Initializes the only cache backends that prove the asynchronous atomic state contract. Backend selection is an
+     * exact match and never falls back to memory or the regular {@link CacheX} contract. The caller retains ownership
+     * of the executor and must close the returned cache before shutting that executor down.
+     *
+     * @param options  non-null cache options with an exact atomic backend type
+     * @param executor non-null caller-owned executor used by blocking Redis implementations
+     * @return memory, Redis, or Redis Cluster atomic byte cache
+     * @throws ProtocolException when the type is not {@code memory}, {@code redis}, or {@code redis-cluster}
+     */
+    public CacheX<String, byte[]> initialize(Options options, Executor executor) throws ProtocolException {
+        if (options == null) {
+            throw new IllegalArgumentException("options must not be null");
+        }
+        if (executor == null) {
+            throw new IllegalArgumentException("executor must not be null");
+        }
+        return switch (options.getType()) {
+            case "memory" -> new MemoryCache<>(System::currentTimeMillis);
+            case "redis" -> RedisBackends.redisCache(options, executor);
+            case "redis-cluster" -> RedisBackends.redisClusterCache(options, executor);
+            case null, default -> throw new ProtocolException(ErrorCode._100801);
+        };
     }
 
     /**

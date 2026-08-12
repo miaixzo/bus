@@ -20,6 +20,10 @@
 package org.miaixz.bus.cache.nimble;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Executor;
+import java.util.function.Supplier;
 
 import jakarta.annotation.PreDestroy;
 
@@ -28,11 +32,13 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Serializer;
 import org.miaixz.bus.cache.magic.CacheExpire;
 import org.miaixz.bus.cache.serialize.Hessian2Serializer;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.params.ScanParams;
+import redis.clients.jedis.params.SetParams;
 import redis.clients.jedis.resps.ScanResult;
 
 /**
@@ -60,6 +66,31 @@ public class RedisClusterCache<K, V> implements CacheX<K, V>, AutoCloseable {
     private final JedisCluster jedisCluster;
 
     /**
+     * Optional caller-owned executor that enables atomic asynchronous operations.
+     */
+    private final Executor executor;
+
+    /**
+     * Number of admitted asynchronous commands that have not completed.
+     */
+    private int inFlight;
+
+    /**
+     * Whether cluster shutdown has been submitted to the executor.
+     */
+    private boolean closeScheduled;
+
+    /**
+     * Shared asynchronous close completion, or {@code null} before close begins.
+     */
+    private CompletableFuture<Void> closeFuture;
+
+    /**
+     * Monitor guarding asynchronous admission and cluster shutdown.
+     */
+    private final Object lifecycle = new Object();
+
+    /**
      * Constructs a {@code RedisClusterCache} with a given Jedis cluster client and a default
      * {@link Hessian2Serializer}.
      *
@@ -76,8 +107,20 @@ public class RedisClusterCache<K, V> implements CacheX<K, V>, AutoCloseable {
      * @param serializer   The {@link Serializer} to use for value serialization.
      */
     public RedisClusterCache(JedisCluster jedisCluster, Serializer serializer) {
+        this(jedisCluster, serializer, null);
+    }
+
+    /**
+     * Constructs a Redis Cluster cache with atomic commands executed by a caller-owned executor.
+     *
+     * @param jedisCluster configured cluster client owned by this cache
+     * @param serializer   serializer used for values
+     * @param executor     caller-owned executor for blocking cluster commands
+     */
+    public RedisClusterCache(JedisCluster jedisCluster, Serializer serializer, Executor executor) {
         this.jedisCluster = jedisCluster;
         this.serializer = serializer;
+        this.executor = executor;
     }
 
     /**
@@ -265,6 +308,104 @@ public class RedisClusterCache<K, V> implements CacheX<K, V>, AutoCloseable {
     }
 
     /**
+     * Atomically creates a tagged cluster entry with NX and PX semantics.
+     *
+     * @param key       cache key containing one non-empty hash tag
+     * @param value     cache value
+     * @param ttlMillis positive time to live in milliseconds
+     * @return stage containing whether the entry was created
+     */
+    @Override
+    public CompletionStage<Boolean> create(K key, V value, long ttlMillis) {
+        if (executor == null) {
+            return CacheX.super.create(key, value, ttlMillis);
+        }
+        requirePositiveTtl(ttlMillis);
+        byte[] keyBytes = taggedKeyBytes(key);
+        byte[] valueBytes = serializer.serialize(copyValue(Objects.requireNonNull(value, "value")));
+        return submit(() -> jedisCluster.set(keyBytes, valueBytes, SetParams.setParams().nx().px(ttlMillis)) != null);
+    }
+
+    /**
+     * Reads and deserializes one tagged cluster entry.
+     *
+     * @param key cache key containing one non-empty hash tag
+     * @return stage containing a defensive value copy or {@code null}
+     */
+    @Override
+    public CompletionStage<V> get(K key) {
+        if (executor == null) {
+            return CacheX.super.get(key);
+        }
+        byte[] keyBytes = taggedKeyBytes(key);
+        return submit(() -> {
+            byte[] value = jedisCluster.get(keyBytes);
+            return value == null ? null : copyValue(serializer.deserialize(value));
+        });
+    }
+
+    /**
+     * Atomically reads, removes, and deserializes one tagged cluster entry.
+     *
+     * @param key cache key containing one non-empty hash tag
+     * @return stage containing the removed value or {@code null}
+     */
+    @Override
+    public CompletionStage<V> take(K key) {
+        if (executor == null) {
+            return CacheX.super.take(key);
+        }
+        byte[] keyBytes = taggedKeyBytes(key);
+        return submit(() -> {
+            byte[] value = jedisCluster.getDel(keyBytes);
+            return value == null ? null : copyValue(serializer.deserialize(value));
+        });
+    }
+
+    /**
+     * Atomically replaces a tagged cluster entry whose serialized value equals the expected value.
+     *
+     * @param key       cache key containing one non-empty hash tag
+     * @param expected  expected cache value
+     * @param update    replacement cache value
+     * @param ttlMillis positive replacement time to live in milliseconds
+     * @return stage containing whether the entry was replaced
+     */
+    @Override
+    public CompletionStage<Boolean> replace(K key, V expected, V update, long ttlMillis) {
+        if (executor == null) {
+            return CacheX.super.replace(key, expected, update, ttlMillis);
+        }
+        requirePositiveTtl(ttlMillis);
+        byte[] keyBytes = taggedKeyBytes(key);
+        byte[] expectedBytes = serializer.serialize(copyValue(Objects.requireNonNull(expected, "expected")));
+        byte[] updateBytes = serializer.serialize(copyValue(Objects.requireNonNull(update, "update")));
+        byte[] ttlBytes = Long.toString(ttlMillis).getBytes(Charset.US_ASCII);
+        return submit(() -> {
+            byte[] script = ("if redis.call('GET', KEYS[1]) == ARGV[1] then "
+                    + "redis.call('SET', KEYS[1], ARGV[2], 'PX', ARGV[3]); return 1 else return 0 end")
+                            .getBytes(Charset.UTF_8);
+            return Long.valueOf(1L).equals(
+                    jedisCluster.eval(script, List.of(keyBytes), List.of(expectedBytes, updateBytes, ttlBytes)));
+        });
+    }
+
+    /**
+     * Atomically deletes one tagged cluster entry.
+     *
+     * @param key cache key containing one non-empty hash tag
+     * @return stage containing whether an entry was deleted
+     */
+    @Override
+    public CompletionStage<Boolean> delete(K key) {
+        if (executor == null) {
+            return CacheX.super.delete(key);
+        }
+        byte[] keyBytes = taggedKeyBytes(key);
+        return submit(() -> jedisCluster.del(keyBytes) == 1L);
+    }
+
+    /**
      * Closes the {@link JedisCluster} connection, releasing all resources.
      * <p>
      * Annotated with {@link PreDestroy} so a DI container invokes it automatically on bean destruction. Also implements
@@ -274,9 +415,153 @@ public class RedisClusterCache<K, V> implements CacheX<K, V>, AutoCloseable {
     @PreDestroy
     @Override
     public void close() {
+        if (executor != null) {
+            beginClose().toCompletableFuture().join();
+            return;
+        }
         if (null != this.jedisCluster) {
             this.jedisCluster.close();
         }
+    }
+
+    /**
+     * Begins an idempotent close sequence for atomic mode.
+     *
+     * @return shared close completion
+     */
+    private CompletionStage<Void> beginClose() {
+        boolean schedule;
+        CompletableFuture<Void> result;
+        synchronized (lifecycle) {
+            if (closeFuture == null) {
+                closeFuture = new CompletableFuture<>();
+            }
+            result = closeFuture;
+            schedule = inFlight == 0 && !closeScheduled;
+            if (schedule) {
+                closeScheduled = true;
+            }
+        }
+        if (schedule) {
+            scheduleClose();
+        }
+        return result;
+    }
+
+    /**
+     * Submits one blocking cluster operation after lifecycle admission.
+     *
+     * @param command blocking cluster command
+     * @param <T>     result type
+     * @return independently completable operation stage
+     */
+    private <T> CompletionStage<T> submit(Supplier<T> command) {
+        CompletableFuture<T> result = new CompletableFuture<>();
+        synchronized (lifecycle) {
+            if (closeFuture != null) {
+                return CompletableFuture.failedFuture(new IllegalStateException("Atomic cache is closed"));
+            }
+            inFlight++;
+        }
+        try {
+            executor.execute(() -> {
+                T value = null;
+                Throwable failure = null;
+                try {
+                    value = command.get();
+                } catch (Throwable caught) {
+                    failure = caught;
+                }
+                finishOperation();
+                if (failure == null) {
+                    result.complete(value);
+                } else {
+                    result.completeExceptionally(failure);
+                }
+            });
+        } catch (Throwable failure) {
+            finishOperation();
+            result.completeExceptionally(failure);
+        }
+        return result;
+    }
+
+    /**
+     * Completes one admitted command and triggers deferred cluster shutdown.
+     */
+    private void finishOperation() {
+        boolean schedule;
+        synchronized (lifecycle) {
+            inFlight--;
+            schedule = inFlight == 0 && closeFuture != null && !closeScheduled;
+            if (schedule) {
+                closeScheduled = true;
+            }
+        }
+        if (schedule) {
+            scheduleClose();
+        }
+    }
+
+    /**
+     * Submits cluster shutdown without taking ownership of the caller's executor.
+     */
+    private void scheduleClose() {
+        try {
+            executor.execute(() -> {
+                try {
+                    jedisCluster.close();
+                    closeFuture.complete(null);
+                } catch (Throwable failure) {
+                    closeFuture.completeExceptionally(failure);
+                }
+            });
+        } catch (Throwable failure) {
+            closeFuture.completeExceptionally(failure);
+        }
+    }
+
+    /**
+     * Validates exactly one non-empty Redis hash tag and encodes the key as UTF-8.
+     *
+     * @param key cluster cache key
+     * @return validated UTF-8 key bytes
+     */
+    private static byte[] taggedKeyBytes(Object key) {
+        String text = Objects.requireNonNull(key, "key").toString();
+        int open = text.indexOf(Symbol.C_BRACE_LEFT);
+        int close = text.indexOf(Symbol.C_BRACE_RIGHT);
+        boolean valid = open >= 0 && close > open + 1 && open == text.lastIndexOf(Symbol.C_BRACE_LEFT)
+                && close == text.lastIndexOf(Symbol.C_BRACE_RIGHT);
+        if (!valid) {
+            throw new IllegalArgumentException("Redis Cluster key must contain exactly one non-empty hash tag");
+        }
+        return text.getBytes(Charset.UTF_8);
+    }
+
+    /**
+     * Validates the positive TTL required by atomic create and replace.
+     *
+     * @param ttlMillis time to live in milliseconds
+     */
+    private static void requirePositiveTtl(long ttlMillis) {
+        if (ttlMillis <= 0L) {
+            throw new IllegalArgumentException("ttlMillis must be greater than zero");
+        }
+    }
+
+    /**
+     * Copies mutable byte arrays while preserving other value types.
+     *
+     * @param value source value
+     * @param <T>   value type
+     * @return defensive byte-array copy or the original non-array value
+     */
+    private static <T> T copyValue(T value) {
+        if (value instanceof byte[] bytes) {
+            return (T) Arrays.copyOf(bytes, bytes.length);
+        }
+        return value;
     }
 
 }

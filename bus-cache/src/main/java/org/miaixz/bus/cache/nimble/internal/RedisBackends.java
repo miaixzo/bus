@@ -21,6 +21,7 @@ package org.miaixz.bus.cache.nimble.internal;
 
 import java.util.Arrays;
 import java.util.Set;
+import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.cache.CacheX;
@@ -28,10 +29,12 @@ import org.miaixz.bus.cache.Factory;
 import org.miaixz.bus.cache.Options;
 import org.miaixz.bus.cache.nimble.RedisCache;
 import org.miaixz.bus.cache.nimble.RedisClusterCache;
+import org.miaixz.bus.cache.serialize.Hessian2Serializer;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
+import redis.clients.jedis.DefaultJedisClientConfig;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPool;
@@ -107,6 +110,50 @@ public final class RedisBackends {
         CacheX<String, Object> cache = new RedisClusterCache<>(new JedisCluster(hostAndPorts));
         Logger.info(false, "Cache", "Redis cluster cache initialization completed: nodeCount={}", hostAndPorts.size());
         return cache;
+    }
+
+    /**
+     * Creates a single-node Redis atomic byte cache on the caller-owned blocking executor. This entry point keeps the
+     * concrete implementation and Jedis construction outside the regular factory path until Redis atomic mode is
+     * explicitly selected.
+     *
+     * @param options  cache and Redis connection options
+     * @param executor caller-owned executor for every blocking Jedis operation and close
+     * @return Redis atomic byte cache
+     */
+    public static CacheX<String, byte[]> redisCache(Options options, Executor executor) {
+        Options.Redis redis = redis(options);
+        JedisPoolConfig config = new JedisPoolConfig();
+        config.setMaxTotal(redis.getMaxActive());
+        config.setMaxIdle(redis.getMaxIdle());
+        config.setMinIdle(redis.getMinIdle());
+        JedisPool pool = new JedisPool(config, redis.getHost(), redis.getPort(), redis.getTimeout(),
+                redis.getPassword());
+        return new RedisCache<>(pool, new Hessian2Serializer(), executor);
+    }
+
+    /**
+     * Creates a Redis Cluster atomic byte cache on the caller-owned blocking executor. The cluster client and concrete
+     * implementation are loaded only when this explicit cluster entry point is invoked.
+     *
+     * @param options  cache and Redis Cluster connection options
+     * @param executor caller-owned executor for every blocking Jedis operation and close
+     * @return Redis Cluster atomic byte cache
+     */
+    public static CacheX<String, byte[]> redisClusterCache(Options options, Executor executor) {
+        Options.Redis redis = redis(options);
+        String nodes = StringKit.isNotBlank(redis.getNodes()) ? redis.getNodes() : options.getNodes();
+        if (StringKit.isBlank(nodes)) {
+            throw new IllegalArgumentException("cache.redis.nodes is required for redis-cluster cache");
+        }
+        Set<HostAndPort> hostAndPorts = Arrays.stream(nodes.split(Symbol.COMMA)).map(String::trim)
+                .filter(StringKit::isNotBlank).map(RedisBackends::hostAndPort).collect(Collectors.toUnmodifiableSet());
+        DefaultJedisClientConfig.Builder client = DefaultJedisClientConfig.builder().timeoutMillis(redis.getTimeout());
+        if (StringKit.isNotBlank(redis.getPassword())) {
+            client.password(redis.getPassword());
+        }
+        return new RedisClusterCache<>(new JedisCluster(hostAndPorts, client.build()), new Hessian2Serializer(),
+                executor);
     }
 
     /**
