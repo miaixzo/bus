@@ -315,7 +315,7 @@ public class MapperOptions {
          * Creates enabled-by-default identifier validation options.
          */
         public IdentifierOptions() {
-            // Default values are declared on the fields below.
+            // No initialization required.
         }
 
         /**
