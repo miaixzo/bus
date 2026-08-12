@@ -30,6 +30,7 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.UnoUrl;
+import org.miaixz.bus.fabric.guard.route.AddressPolicy;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.auth.HttpAuthenticator;
@@ -76,7 +77,6 @@ public final class HttpRetry implements HttpStage {
      * Creates a retry stage with an authenticator.
      *
      * @param authenticator non-null authenticator producing authorization follow-ups
-     * @throws ValidateException if {@code authenticator} is {@code null}
      */
     public HttpRetry(final HttpAuthenticator authenticator) {
         this(HttpRetryPolicy.defaults(), authenticator);
@@ -87,7 +87,6 @@ public final class HttpRetry implements HttpStage {
      *
      * @param policy        retry and redirect policy
      * @param authenticator authenticator producing authorization follow-ups
-     * @throws ValidateException if either collaborator is {@code null}
      */
     public HttpRetry(final HttpRetryPolicy policy, final HttpAuthenticator authenticator) {
         this.name = "http-retry";
@@ -101,8 +100,6 @@ public final class HttpRetry implements HttpStage {
      * @param request initial request to execute and potentially replay
      * @param chain   remaining exchange chain used for first and replayed attempts
      * @return terminal response with prior follow-up responses linked using empty bodies
-     * @throws ProtocolException if the configured follow-up limit is exceeded
-     * @throws ValidateException if the request or chain is {@code null}
      */
     @Override
     public HttpResponse execute(final HttpRequest request, final HttpChain chain) {
@@ -117,10 +114,11 @@ public final class HttpRetry implements HttpStage {
         final int replayIndex = next.index();
         while (true) {
             try {
+                current = addressPolicyAttempt(current);
                 final HttpChain attemptChain = first ? next : next.replayFrom(replayIndex);
                 first = false;
                 final HttpResponse response = attemptChain.proceed(current);
-                final HttpRequest followUp = followUp(response);
+                final HttpRequest followUp = inheritAddressPolicy(current, followUp(response));
                 if (followUp == null) {
                     if (debug && (attempt > Normal._0 || staleAttempts > Normal._0 || followUps > Normal._0)) {
                         Logger.debug(
@@ -213,7 +211,6 @@ public final class HttpRetry implements HttpStage {
      *
      * @param response response whose status and headers determine a follow-up
      * @return redirect or authentication request, or {@code null} when no follow-up is available
-     * @throws ValidateException if {@code response} is {@code null}
      */
     public HttpRequest followUp(final HttpResponse response) {
         final HttpResponse current = require(response, "HTTP response");
@@ -232,7 +229,6 @@ public final class HttpRetry implements HttpStage {
      * @param cause   structured exchange failure to classify
      * @param attempt zero-based retry attempt supplied to the policy
      * @return {@code true} when delivery state, failure reason, and retry policy permit another attempt
-     * @throws ValidateException if {@code cause} is {@code null}
      */
     public boolean recover(final Throwable cause, final int attempt) {
         final Throwable current = require(cause, "Failure cause");
@@ -427,13 +423,40 @@ public final class HttpRetry implements HttpStage {
     }
 
     /**
+     * Creates a fresh immutable request snapshot for every guarded network attempt. Replaying through the connect stage
+     * then performs a new DNS lookup and cannot retain a previous attempt's address conclusion.
+     *
+     * @param request request about to enter the replayable chain
+     * @return original unguarded request or a fresh guarded request snapshot
+     */
+    private static HttpRequest addressPolicyAttempt(final HttpRequest request) {
+        final AddressPolicy addressPolicy = request.tag(AddressPolicy.class);
+        return addressPolicy == null ? request : request.toBuilder().tag(AddressPolicy.class, addressPolicy).build();
+    }
+
+    /**
+     * Carries an installed address policy across redirect and authentication follow-ups without storing any DNS result
+     * or selected numeric address in the follow-up request.
+     *
+     * @param source   request whose explicit policy governs the exchange
+     * @param followUp candidate follow-up, possibly {@code null}
+     * @return policy-preserving follow-up or {@code null}
+     */
+    private static HttpRequest inheritAddressPolicy(final HttpRequest source, final HttpRequest followUp) {
+        if (followUp == null) {
+            return null;
+        }
+        final AddressPolicy addressPolicy = source.tag(AddressPolicy.class);
+        return addressPolicy == null ? followUp : followUp.toBuilder().tag(AddressPolicy.class, addressPolicy).build();
+    }
+
+    /**
      * Validates required references.
      *
      * @param value reference to validate
      * @param name  logical field name included in the validation error
      * @param <T>   reference type
      * @return validated non-null reference
-     * @throws ValidateException if {@code value} is {@code null}
      */
     private static <T> T require(final T value, final String name) {
         if (value == null) {

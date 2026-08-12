@@ -20,8 +20,10 @@
 package org.miaixz.bus.fabric.network.udp;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.DatagramChannel;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -168,6 +170,15 @@ public final class UdpChannel implements Lifecycle, AutoCloseable {
      * @return datagram future
      */
     public CompletableFuture<Message> receive() {
+        return receiveDatagram().thenApply(datagram -> datagram == null ? null : datagram.message());
+    }
+
+    /**
+     * Receives a datagram together with the numeric peer supplied by the network channel.
+     *
+     * @return datagram future retaining the original numeric peer
+     */
+    CompletableFuture<ReceivedDatagram> receiveDatagram() {
         ensureOpened();
         return background("udp:receive", () -> {
             try (NioBuffer lease = buffers.allocate()) {
@@ -181,16 +192,40 @@ public final class UdpChannel implements Lifecycle, AutoCloseable {
                 lease.writeTo(payload);
                 final Address address = new Address(Transport.UDP.scheme(), socket.getHostString(), socket.getPort(),
                         null);
-                return Message.of(
+                final Message message = Message.of(
                         Protocol.UDP,
                         address,
                         Headers.empty(),
                         payload.size() == Normal.LONG_ZERO ? Payload.empty() : Payload.of(payload.readByteString()),
                         local);
+                return new ReceivedDatagram(message, socket.getAddress());
+            } catch (final AsynchronousCloseException e) {
+                if (!channel.isOpen()) {
+                    return null;
+                }
+                throw new SocketException("Unable to receive UDP datagram", e);
             } catch (final IOException e) {
                 throw new SocketException("Unable to receive UDP datagram", e);
             }
         });
+    }
+
+    /**
+     * Received message paired with the numeric peer reported by the datagram channel.
+     *
+     * @param message immutable received message
+     * @param peer    numeric datagram peer
+     */
+    record ReceivedDatagram(Message message, InetAddress peer) {
+
+        /**
+         * Creates a validated received datagram.
+         */
+        ReceivedDatagram {
+            message = Assert.notNull(message, () -> new ValidateException("UDP message must not be null"));
+            peer = Assert.notNull(peer, () -> new ValidateException("UDP peer must not be null"));
+        }
+
     }
 
     /**
