@@ -690,6 +690,39 @@ public class MediaType {
     public final static MediaType APPLICATION_PRS_VCFBZIP2_TYPE = new MediaType("application", "prs.vcfbzip2");
 
     /**
+     * A {@code String} constant representing the registered {@code application/jwt} media type.
+     *
+     */
+    public static final String APPLICATION_JWT = "application/jwt";
+
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_JWT} media type.
+     */
+    public static final MediaType APPLICATION_JWT_TYPE = new MediaType("application", "jwt");
+
+    /**
+     * A {@code String} constant representing the registered {@code application/scim+json} media type.
+     */
+    public static final String APPLICATION_SCIM_JSON = "application/scim+json";
+
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_SCIM_JSON} media type.
+     *
+     */
+    public static final MediaType APPLICATION_SCIM_JSON_TYPE = new MediaType("application", "scim+json");
+
+    /**
+     * A {@code String} constant representing the registered {@code application/secevent+jwt} media type.
+     *
+     */
+    public static final String APPLICATION_SECEVENT_JWT = "application/secevent+jwt";
+
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_SECEVENT_JWT} media type.
+     */
+    public static final MediaType APPLICATION_SECEVENT_JWT_TYPE = new MediaType("application", "secevent+jwt");
+
+    /**
      * Regular expression pattern for matching media type tokens.
      */
     public static final String TOKEN = "([a-zA-Z0-9-!#$%&'*+.^_`{|}~]+)";

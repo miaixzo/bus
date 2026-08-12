@@ -271,7 +271,12 @@ public enum Algorithm {
     /**
      * ChaCha20 stream cipher algorithm.
      */
-    CHACHA20("ChaCha20");
+    CHACHA20("ChaCha20"),
+
+    /**
+     * Ed25519 signature and key algorithm.
+     */
+    ED25519("Ed25519");
 
     /**
      * The string representation of the algorithm.

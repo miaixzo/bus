@@ -248,6 +248,16 @@ public enum Protocol {
      */
     GRPC("gRPC"),
 
+    /**
+     * Lightweight Directory Access Protocol over implicit TLS, identified by the registered {@code ldaps} URI scheme.
+     */
+    LDAPS("ldaps"),
+
+    /**
+     * Remote Authentication Dial-In User Service protocol, identified by the lower-case transport name.
+     */
+    RADIUS("radius"),
+
     ;
 
     /**

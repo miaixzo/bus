@@ -1273,6 +1273,35 @@ public final class Http {
          */
         public static final String FAVICON_ICO = "/favicon.ico";
 
+        /**
+         * JSON Web Key Set endpoint path.
+         *
+         */
+        public static final String JWKS = "/jwks";
+
+        /**
+         * OpenID Connect UserInfo endpoint path.
+         */
+        public static final String USERINFO = "/userinfo";
+
+        /**
+         * OAuth 2.0 device authorization endpoint path.
+         *
+         */
+        public static final String DEVICE_AUTHORIZATION = "/device_authorization";
+
+        /**
+         * OAuth 2.0 pushed authorization request endpoint path.
+         *
+         */
+        public static final String PUSHED_AUTHORIZATION_REQUEST = "/par";
+
+        /**
+         * Session logout endpoint path.
+         *
+         */
+        public static final String LOGOUT = "/logout";
+
     }
 
     /**
