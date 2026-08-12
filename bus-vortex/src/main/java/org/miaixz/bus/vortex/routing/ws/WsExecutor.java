@@ -131,8 +131,6 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
      * <p>
      * The protocol (ws/wss) is determined by:
      * <ul>
-     * <li>If {@link Assets#getSign()} == 1, uses wss:// (secure WebSocket)</li>
-     * <li>If port is 443, uses wss:// (standard HTTPS port)</li>
      * <li>If host starts with "wss://", uses wss://</li>
      * <li>Otherwise, uses ws:// (plain WebSocket)</li>
      * </ul>

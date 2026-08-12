@@ -123,7 +123,7 @@ public class QualifierStrategy extends AbstractStrategy {
                 Logger.info(
                         true,
                         "Vortex",
-                        "Asset resolved: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, sign={}, mode={}, host={}, port={}, path={}, url={}",
+                        "Asset resolved: strategy=qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, signing={}, mode={}, host={}, port={}, path={}, url={}",
                         context.getX_request_ip(),
                         assets.getNamespace_id(),
                         assets.getType(),
@@ -132,7 +132,7 @@ public class QualifierStrategy extends AbstractStrategy {
                         assets.getVersion(),
                         assets.getVerb(),
                         assets.getPolicy(),
-                        assets.getSign(),
+                        assets.getSigning(),
                         assets.getProtocol(),
                         assets.getHost(),
                         assets.getPort(),

@@ -41,8 +41,8 @@ import reactor.core.publisher.Mono;
 /**
  * REST/API vetting strategy.
  * <p>
- * REST keeps parameter completeness and timestamp rules here. Route asset checks and route signature validation belong
- * to {@code RestQualifierStrategy}.
+ * REST keeps protocol-level parameter completeness and timestamp-window rules here. The qualifier resolves the route
+ * asset and delegates cryptographic signature verification to {@code SignatureVerifier}.
  *
  * @author Kimi Liu
  */

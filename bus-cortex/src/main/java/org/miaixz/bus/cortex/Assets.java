@@ -124,20 +124,25 @@ public class Assets extends Nature {
     private Integer verb;
 
     /**
-     * Access control policy / security level. Valid range: -1 to 3.
+     * Access-control policy. Valid range: {@code 0} to {@code 3}.
      * <ul>
-     * <li>{@code 0}: Anonymous</li>
-     * <li>{@code 1}: Credential</li>
-     * <li>{@code 2}: Credential + permissions</li>
-     * <li>{@code 3}: Credential + permissions + license</li>
+     * <li>{@code 0}: Public or authentication-bootstrap access without a user credential</li>
+     * <li>{@code 1}: Credential authentication</li>
+     * <li>{@code 2}: Credential authentication and permission validation</li>
+     * <li>{@code 3}: Credential authentication, permission validation, and license validation</li>
      * </ul>
      */
     private Integer policy;
 
     /**
-     * Signature verification flag. {@code 0} = disabled, {@code 1} = enabled.
+     * Request-signing mode.
+     * <ul>
+     * <li>{@code 0}: signature validation disabled</li>
+     * <li>{@code 1}: protocol-specific legacy signing</li>
+     * <li>{@code 2}: credential-bound REST v1 signing</li>
+     * </ul>
      */
-    private Integer sign;
+    private Integer signing;
 
     /**
      * OAuth2 scope ID / permission level required to access this asset.

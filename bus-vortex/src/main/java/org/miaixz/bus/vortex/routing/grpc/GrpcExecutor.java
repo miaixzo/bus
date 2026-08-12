@@ -161,10 +161,9 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
                     if (declaredLength > Math.toIntExact(Holder.get().getMaxBufferedResponseSize())) {
                         return Octets.discard(bodyFlux).then(
                                 Mono.error(
-                                        new DataBufferLimitException(
-                                                "Atomic gRPC response exceeds buffered limit of "
-                                                        + Math.toIntExact(Holder.get().getMaxBufferedResponseSize())
-                                                        + " bytes")));
+                                        new DataBufferLimitException("Atomic gRPC response exceeds buffered limit of "
+                                                + Math.toIntExact(Holder.get().getMaxBufferedResponseSize())
+                                                + " bytes")));
                     }
                     return Octets.readForRelay(
                             bodyFlux,

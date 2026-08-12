@@ -44,4 +44,9 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
      */
     public static final Errors _116000 = ErrorRegistry.register("116000", "This interaction mode is not supported");
 
+    /**
+     * Credential-bound signing requires a Bearer Token or API key.
+     */
+    public static final Errors _116001 = ErrorRegistry.register("116001", "Missing signature credential");
+
 }

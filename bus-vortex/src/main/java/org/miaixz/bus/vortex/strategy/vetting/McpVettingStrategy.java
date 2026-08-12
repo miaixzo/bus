@@ -44,8 +44,9 @@ import reactor.core.publisher.Mono;
 /**
  * Performs MCP Streamable HTTP vetting before the MCP route asset is resolved.
  * <p>
- * This strategy owns MCP protocol checks and Origin validation. Route resolution, authorization, signature
- * verification, and forwarding cleanup are handled by {@code McpQualifierStrategy}.
+ * This strategy owns MCP protocol checks and Origin validation. {@code McpQualifierStrategy} handles route resolution,
+ * authorization, and forwarding cleanup, and delegates cryptographic signature verification to
+ * {@code SignatureVerifier}.
  *
  * @author Kimi Liu
  */

@@ -30,6 +30,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
+import org.miaixz.bus.cortex.Signing;
 import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.registry.RegistryAssets;
@@ -101,6 +102,7 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
         if (item == null) {
             return;
         }
+        Signing.of(item.getSigning());
         if (isMcp(item)) {
             String method = normalizeMcpRouteMethod(item.getMethod());
             if (method == null || StringKit.isBlank(item.getUrl())) {
@@ -158,6 +160,7 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
         if (item == null) {
             return;
         }
+        Signing.of(item.getSigning());
         String resolvedPrimary = resolvePrimary(key);
         if (resolvedPrimary == null) {
             return;

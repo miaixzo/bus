@@ -254,8 +254,7 @@ public class VortexHandler {
                                 response -> executePostHandlers(exchange, router, response, null).thenReturn(response)
                                         .doOnError(error -> Octets.closeOwnedResponse(response))
                                         .doOnCancel(() -> Octets.closeOwnedResponse(response)))
-                        .doOnDiscard(ServerResponse.class, Octets::closeOwnedResponse)
-                        .doOnSuccess(serverResponse -> {
+                        .doOnDiscard(ServerResponse.class, Octets::closeOwnedResponse).doOnSuccess(serverResponse -> {
                             long duration = System.currentTimeMillis() - context.getTimestamp();
                             Logger.info(
                                     false,
@@ -397,9 +396,9 @@ public class VortexHandler {
     /**
      * Handles mock mode responses by returning the mock data from Assets.result field.
      * <p>
-     * This method is invoked when policy=-1 (mock mode). It bypasses the actual downstream service call and returns the
-     * pre-configured mock data directly. The mock data is formatted according to the requested format (JSON/XML/BINARY)
-     * specified in the context.
+     * This method is invoked when the resolved asset enables mock mode. It bypasses the actual downstream service call
+     * and returns the pre-configured mock data directly. The mock data is formatted according to the requested format
+     * (JSON/XML/BINARY) specified in the context.
      * </p>
      *
      * @param context The request context
