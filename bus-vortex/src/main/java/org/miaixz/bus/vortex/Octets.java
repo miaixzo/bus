@@ -35,8 +35,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseCookie;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.vortex.guard.AsyncByteBudget;
 
@@ -137,40 +137,42 @@ public final class Octets {
         }
         long reservationBytes = expectedLength >= 0 ? expectedLength : maxBytes;
         return awaitBufferingCapacity().then(budget.acquire(reservationBytes))
-                .timeout(
-                        Duration.ofSeconds(Holder.get().getBufferAcquireTimeoutSeconds()))
+                .timeout(Duration.ofSeconds(Holder.get().getBufferAcquireTimeoutSeconds()))
                 .onErrorMap(
                         java.util.concurrent.TimeoutException.class,
                         error -> new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
                                 "Buffered-byte capacity wait timed out", error))
-                .flatMap(lease -> expectedLength < 0
-                        ? readReservedSegmented(body, maxBytes, expectedLength, lease)
-                        : Mono.defer(() -> {
-                    byte[] bytes = new byte[Math.toIntExact(expectedLength)];
-                    int[] offset = new int[1];
-                    return body.<Integer>handle((buffer, sink) -> {
-                        try {
-                            int readable = buffer.readableByteCount();
-                            if (readable > bytes.length - offset[0]) {
-                                sink.error(new DataBufferLimitException("Body exceeds declared Content-Length"));
-                                return;
-                            }
-                            buffer.read(bytes, offset[0], readable);
-                            offset[0] += readable;
-                            sink.next(readable);
-                        } finally {
-                            release(buffer);
-                        }
-                    }).then(Mono.defer(() -> {
-                        if (offset[0] != bytes.length) {
-                            return Mono
-                                    .error(new DataBufferLimitException("Body length does not match Content-Length"));
-                        }
-                        return Mono.just(new BufferedBody(bytes, lease));
-                    })).doOnError(error -> lease.close()).doOnCancel(lease::close)
-                            .doOnDiscard(BufferedBody.class, BufferedBody::close)
-                            .doOnDiscard(PooledDataBuffer.class, DataBufferUtils::release);
-                }));
+                .flatMap(
+                        lease -> expectedLength < 0 ? readReservedSegmented(body, maxBytes, expectedLength, lease)
+                                : Mono.defer(() -> {
+                                    byte[] bytes = new byte[Math.toIntExact(expectedLength)];
+                                    int[] offset = new int[1];
+                                    return body.<Integer>handle((buffer, sink) -> {
+                                        try {
+                                            int readable = buffer.readableByteCount();
+                                            if (readable > bytes.length - offset[0]) {
+                                                sink.error(
+                                                        new DataBufferLimitException(
+                                                                "Body exceeds declared Content-Length"));
+                                                return;
+                                            }
+                                            buffer.read(bytes, offset[0], readable);
+                                            offset[0] += readable;
+                                            sink.next(readable);
+                                        } finally {
+                                            release(buffer);
+                                        }
+                                    }).then(Mono.defer(() -> {
+                                        if (offset[0] != bytes.length) {
+                                            return Mono.error(
+                                                    new DataBufferLimitException(
+                                                            "Body length does not match Content-Length"));
+                                        }
+                                        return Mono.just(new BufferedBody(bytes, lease));
+                                    })).doOnError(error -> lease.close()).doOnCancel(lease::close)
+                                            .doOnDiscard(BufferedBody.class, BufferedBody::close)
+                                            .doOnDiscard(PooledDataBuffer.class, DataBufferUtils::release);
+                                }));
     }
 
     /**
@@ -272,13 +274,12 @@ public final class Octets {
             int readable = buffer.readableByteCount();
             long nextLength = (long) accumulator.length() + readable;
             if (nextLength > maxBytes) {
-                return Mono.error(new DataBufferLimitException(
-                        "Exceeded buffered body limit of " + maxBytes + " bytes"));
+                return Mono
+                        .error(new DataBufferLimitException("Exceeded buffered body limit of " + maxBytes + " bytes"));
             }
             long reservedBytes = reservation.bytes();
-            long requiredCapacity = Math.min(
-                    maxBytes,
-                    ((nextLength + WRITE_CHUNK_SIZE - 1) / WRITE_CHUNK_SIZE) * WRITE_CHUNK_SIZE);
+            long requiredCapacity = Math
+                    .min(maxBytes, ((nextLength + WRITE_CHUNK_SIZE - 1) / WRITE_CHUNK_SIZE) * WRITE_CHUNK_SIZE);
             long additional = requiredCapacity - reservedBytes;
             Mono<Void> capacity = additional == 0 ? Mono.empty()
                     : acquire(budget, additional).doOnNext(reservation::add).then();

@@ -31,8 +31,8 @@ import reactor.core.publisher.Mono;
 /**
  * Pass-through request strategy for MCP Streamable HTTP.
  * <p>
- * MCP request bodies are left untouched so JSON-RPC messages are consumed only by the MCP executor or the vetting
- * signature verifier.
+ * MCP request bodies are left untouched so JSON-RPC messages are consumed only by the MCP executor or the shared
+ * signature verifier invoked after route qualification.
  *
  * @author Kimi Liu
  */

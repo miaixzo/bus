@@ -213,7 +213,7 @@ public final class RegistryAssets {
         target.setStream(source.getStream());
         target.setVerb(source.getVerb());
         target.setPolicy(source.getPolicy());
-        target.setSign(source.getSign());
+        target.setSigning(source.getSigning());
         target.setScope(source.getScope());
         target.setRetries(source.getRetries());
         target.setTimeout(source.getTimeout());

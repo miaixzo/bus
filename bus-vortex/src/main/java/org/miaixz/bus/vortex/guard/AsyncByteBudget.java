@@ -323,9 +323,9 @@ public final class AsyncByteBudget implements AutoCloseable {
         /**
          * Returns capacity that is no longer needed while retaining ownership of the remaining bytes.
          * <p>
-         * Unknown-length bodies reserve their maximum permitted size before subscribing to the source. Once the
-         * actual size is known, this operation releases the unused portion without opening a window in which buffered
-         * bytes are unaccounted for. A closed lease cannot be resized.
+         * Unknown-length bodies reserve their maximum permitted size before subscribing to the source. Once the actual
+         * size is known, this operation releases the unused portion without opening a window in which buffered bytes
+         * are unaccounted for. A closed lease cannot be resized.
          *
          * @param retainedBytes exact capacity that must remain owned by this lease
          */

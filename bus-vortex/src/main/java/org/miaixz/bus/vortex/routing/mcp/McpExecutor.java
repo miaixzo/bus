@@ -679,10 +679,9 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     if (declaredLength > Math.toIntExact(Holder.get().getMaxBufferedResponseSize())) {
                         return Octets.discard(bodyFlux).then(
                                 Mono.error(
-                                        new DataBufferLimitException(
-                                                "Atomic MCP response exceeds buffered limit of "
-                                                        + Math.toIntExact(Holder.get().getMaxBufferedResponseSize())
-                                                        + " bytes")));
+                                        new DataBufferLimitException("Atomic MCP response exceeds buffered limit of "
+                                                + Math.toIntExact(Holder.get().getMaxBufferedResponseSize())
+                                                + " bytes")));
                     }
                     return Octets.readForRelay(
                             bodyFlux,

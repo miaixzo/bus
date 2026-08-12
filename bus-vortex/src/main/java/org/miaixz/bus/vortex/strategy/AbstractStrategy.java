@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.TreeMap;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -122,29 +121,6 @@ public abstract class AbstractStrategy implements Strategy {
             }
         }
         return matchedValue;
-    }
-
-    /**
-     * Copies parameters while excluding one gateway field by case-insensitive key match.
-     * <p>
-     * Original parameter names are preserved in the copy so signature generation continues to use the inbound key
-     * spelling.
-     *
-     * @param values source parameter map
-     * @param key    canonical key to exclude
-     * @return sorted copy preserving original keys except the excluded key variants
-     */
-    protected Map<String, Object> copyWithoutIgnoreCase(Map<String, Object> values, String key) {
-        Map<String, Object> copy = new TreeMap<>();
-        if (values == null || values.isEmpty()) {
-            return copy;
-        }
-        values.forEach((name, value) -> {
-            if (name != null && !key.equalsIgnoreCase(name)) {
-                copy.put(name, value);
-            }
-        });
-        return copy;
     }
 
     /**
@@ -440,30 +416,6 @@ public abstract class AbstractStrategy implements Strategy {
             return authority + Symbol.COLON + Port._443.getPort();
         }
         return authority + Symbol.COLON + Port._80.getPort();
-    }
-
-    /**
-     * Extracts the authentication token from the incoming request.
-     *
-     * <p>
-     * Only the standard {@code Authorization: Bearer <token>} header is accepted. Query parameters, cookies, JSON
-     * fields, raw Authorization values, and legacy token headers are intentionally unsupported.
-     *
-     * @param context The incoming {@link ServerHttpRequest} context containing headers and parameters.
-     * @return The extracted token string, or {@code null} when the standard header is absent or malformed.
-     */
-    protected String getToken(Context context) {
-        return Http.Auth.bearerToken(context.getHeaders());
-    }
-
-    /**
-     * Extracts an API key exclusively from the supported request headers.
-     *
-     * @param context The request context.
-     * @return The found API key, or {@code null} if no supported header is present.
-     */
-    protected String getApiKey(Context context) {
-        return Http.Auth.apiKey(context.getHeaders());
     }
 
 }

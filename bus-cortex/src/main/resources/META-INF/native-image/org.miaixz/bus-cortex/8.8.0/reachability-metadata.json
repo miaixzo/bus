@@ -61,7 +61,7 @@
           "name": "scope"
         },
         {
-          "name": "sign"
+          "name": "signing"
         },
         {
           "name": "sort"
@@ -191,7 +191,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getSign",
+          "name": "getSigning",
           "parameterTypes": []
         },
         {
@@ -380,7 +380,7 @@
           ]
         },
         {
-          "name": "setSign",
+          "name": "setSigning",
           "parameterTypes": [
             "java.lang.Integer"
           ]
@@ -567,7 +567,7 @@
           ]
         },
         {
-          "name": "sign",
+          "name": "signing",
           "parameterTypes": [
             "java.lang.Integer"
           ]
@@ -5502,7 +5502,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getSign",
+          "name": "getSigning",
           "parameterTypes": []
         },
         {
@@ -5947,7 +5947,7 @@
           ]
         },
         {
-          "name": "setSign",
+          "name": "setSigning",
           "parameterTypes": [
             "java.lang.Integer"
           ]
@@ -6789,7 +6789,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getSign",
+          "name": "getSigning",
           "parameterTypes": []
         },
         {
@@ -7218,7 +7218,7 @@
           ]
         },
         {
-          "name": "setSign",
+          "name": "setSigning",
           "parameterTypes": [
             "java.lang.Integer"
           ]
@@ -7944,7 +7944,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getSign",
+          "name": "getSigning",
           "parameterTypes": []
         },
         {
@@ -8363,7 +8363,7 @@
           ]
         },
         {
-          "name": "setSign",
+          "name": "setSigning",
           "parameterTypes": [
             "java.lang.Integer"
           ]

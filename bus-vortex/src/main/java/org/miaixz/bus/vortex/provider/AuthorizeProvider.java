@@ -80,7 +80,6 @@ public interface AuthorizeProvider {
 
         final boolean isTokenBased = Consts.ONE.equals(type);
         final boolean isApiKeyBased = Consts.TWO.equals(type);
-
         final boolean requiresLicense = Consts.THREE.equals(policy);
 
         if (isTokenBased) {
