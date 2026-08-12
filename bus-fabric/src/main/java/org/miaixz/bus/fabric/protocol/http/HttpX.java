@@ -51,6 +51,7 @@ import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.DataCodec;
 import org.miaixz.bus.fabric.codec.body.RequestBody;
 import org.miaixz.bus.fabric.guard.GuardRule;
+import org.miaixz.bus.fabric.guard.route.AddressPolicy;
 import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Itinerary;
@@ -376,6 +377,11 @@ public final class HttpX {
          * Optional guard.
          */
         private GuardRule guard;
+
+        /**
+         * Optional explicit network address policy stored as a typed request tag.
+         */
+        private AddressPolicy addressPolicy;
 
         /**
          * Observer.
@@ -1493,6 +1499,19 @@ public final class HttpX {
         }
 
         /**
+         * Installs an explicit network address policy for initial connections, retries, redirects, and proxy routes.
+         * Passing {@code null} removes the policy and preserves the legacy request path that does not execute an
+         * address guard.
+         *
+         * @param addressPolicy immutable address policy, or {@code null} to disable address guarding
+         * @return this builder
+         */
+        public Builder addressPolicy(final AddressPolicy addressPolicy) {
+            this.addressPolicy = addressPolicy;
+            return this;
+        }
+
+        /**
          * Sets observer.
          *
          * @param observer event observer receiving exchange lifecycle events
@@ -1561,7 +1580,8 @@ public final class HttpX {
             if (cached != null && cached.context == context && cached.request.method() == method
                     && simpleTargetMatches(cached.request) && cached.request.headers() == requestHeaders
                     && cached.request.body() == payloadBody && cached.request.tag() == tag
-                    && cached.request.proxy().equals(proxy) && cached.request.timeout().equals(timeout)) {
+                    && cached.request.tag(AddressPolicy.class) == addressPolicy && cached.request.proxy().equals(proxy)
+                    && cached.request.timeout().equals(timeout)) {
                 return cached.request;
             }
             final UnoUrl target = buildUrl();
@@ -1569,11 +1589,13 @@ public final class HttpX {
                     && cached.request.url().toString().equals(target.toString())
                     && cached.request.headers() == requestHeaders && cached.request.body() == payloadBody
                     && cached.request.tag() == tag && cached.request.proxy().equals(proxy)
+                    && cached.request.tag(AddressPolicy.class) == addressPolicy
                     && cached.request.timeout().equals(timeout)) {
                 return cached.request;
             }
             final HttpRequest request = HttpRequest.builder().method(method).url(target).headers(requestHeaders)
-                    .body(payloadBody).tag(tag).proxy(proxy).timeout(timeout).build();
+                    .body(payloadBody).tag(tag).tag(AddressPolicy.class, addressPolicy).proxy(proxy).timeout(timeout)
+                    .build();
             final Protocol protocol = request.url().address().protocol();
             if (protocol != Protocol.HTTP && protocol != Protocol.HTTPS) {
                 throw new ProtocolException("HTTP exchange requires http or https URL");

@@ -26,6 +26,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 import org.miaixz.bus.fabric.guard.GuardRule;
+import org.miaixz.bus.fabric.guard.route.AddressPolicy;
 import org.miaixz.bus.fabric.network.proxy.ProxyHeader;
 import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
@@ -38,6 +39,7 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @param context       runtime services used by the socket exchange
  * @param uri           original target URI requested by the caller
  * @param address       normalized transport address derived from the target URI
+ * @param addressPolicy optional immutable client destination policy
  * @param headers       handshake or first-message headers associated with the exchange
  * @param timeout       connect and session timeout policy
  * @param tlsContext    TLS context, or {@code null} together with {@code tlsSettings}
@@ -54,10 +56,10 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @param pooled        whether the exchange may use pooled transport resources
  * @author Kimi Liu
  */
-record SocketSpec(Context context, URI uri, Address address, Headers headers, Timeout timeout, TlsContext tlsContext,
-        TlsSettings tlsSettings, FrameCodec frameCodec, Handler handler, GuardRule guard, Filter filter,
-        EventObserver observer, ProxyPlan proxy, ProxyHeader proxyHeader, SocketOptions socketOptions,
-        Listener<? super SocketSession> listener, boolean pooled) {
+record SocketSpec(Context context, URI uri, Address address, AddressPolicy addressPolicy, Headers headers,
+        Timeout timeout, TlsContext tlsContext, TlsSettings tlsSettings, FrameCodec frameCodec, Handler handler,
+        GuardRule guard, Filter filter, EventObserver observer, ProxyPlan proxy, ProxyHeader proxyHeader,
+        SocketOptions socketOptions, Listener<? super SocketSession> listener, boolean pooled) {
 
     /**
      * Creates a validated specification.
@@ -65,6 +67,7 @@ record SocketSpec(Context context, URI uri, Address address, Headers headers, Ti
      * @param context       runtime services used by the exchange
      * @param uri           original target URI
      * @param address       normalized transport address
+     * @param addressPolicy optional immutable client destination policy
      * @param headers       handshake or first-message headers
      * @param timeout       timeout policy copied into the specification
      * @param tlsContext    TLS context, or {@code null} with {@code tlsSettings}
@@ -96,6 +99,36 @@ record SocketSpec(Context context, URI uri, Address address, Headers headers, Ti
         observer = EventObserver.safe(require(observer, "Observer"));
         proxy = require(proxy, "Proxy plan");
         socketOptions = require(socketOptions, "Socket options");
+    }
+
+    /**
+     * Creates an unguarded specification through the original construction path.
+     *
+     * @param context       runtime services used by the exchange
+     * @param uri           original target URI
+     * @param address       normalized transport address
+     * @param headers       handshake or first-message headers
+     * @param timeout       timeout policy copied into the specification
+     * @param tlsContext    TLS context, or {@code null} with {@code tlsSettings}
+     * @param tlsSettings   TLS settings, or {@code null} with {@code tlsContext}
+     * @param frameCodec    socket message framing codec
+     * @param handler       inbound message handler
+     * @param guard         optional socket-message guard
+     * @param filter        optional exchange message filter
+     * @param observer      socket lifecycle observer
+     * @param proxy         non-null outbound proxy policy
+     * @param proxyHeader   optional PROXY protocol metadata
+     * @param socketOptions channel and session tuning options
+     * @param listener      session lifecycle listener
+     * @param pooled        whether pooled transport resources may be used
+     */
+    SocketSpec(final Context context, final URI uri, final Address address, final Headers headers,
+            final Timeout timeout, final TlsContext tlsContext, final TlsSettings tlsSettings,
+            final FrameCodec frameCodec, final Handler handler, final GuardRule guard, final Filter filter,
+            final EventObserver observer, final ProxyPlan proxy, final ProxyHeader proxyHeader,
+            final SocketOptions socketOptions, final Listener<? super SocketSession> listener, final boolean pooled) {
+        this(context, uri, address, null, headers, timeout, tlsContext, tlsSettings, frameCodec, handler, guard, filter,
+                observer, proxy, proxyHeader, socketOptions, listener, pooled);
     }
 
     /**

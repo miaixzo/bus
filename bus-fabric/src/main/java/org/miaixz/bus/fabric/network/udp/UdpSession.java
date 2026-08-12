@@ -20,6 +20,7 @@
 package org.miaixz.bus.fabric.network.udp;
 
 import java.net.InetSocketAddress;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -34,6 +35,8 @@ import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.fabric.*;
+import org.miaixz.bus.fabric.guard.route.AddressGuard;
+import org.miaixz.bus.fabric.guard.route.AddressPolicy;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.protocol.MonoCall;
@@ -56,6 +59,16 @@ public final class UdpSession implements Session {
      * Physical remote endpoint, which may be a proxy relay.
      */
     private final Address transportRemote;
+
+    /**
+     * Resolver-validated numeric peer retained by the guarded connection path, or {@code null} for legacy sessions.
+     */
+    private final Address pinnedPeer;
+
+    /**
+     * Immutable address policy used to validate the pinned peer, or {@code null} for legacy sessions.
+     */
+    private final AddressPolicy addressPolicy;
 
     /**
      * Optional relay framing codec.
@@ -118,7 +131,6 @@ public final class UdpSession implements Session {
      * @param listener   optional lifecycle listener
      * @param dispatcher optional dispatcher for Call submission
      * @param onClose    non-null owner cleanup hook invoked during termination
-     * @throws ValidateException if the remote address, channel, or cleanup hook is {@code null}
      */
     UdpSession(final Address remote, final UdpChannel channel, final Listener<Object> listener,
             final Dispatcher dispatcher, final Runnable onClose) {
@@ -134,14 +146,63 @@ public final class UdpSession implements Session {
      * @param dispatcher optional dispatcher used for asynchronous call submission
      * @param onClose    non-null owner cleanup hook invoked during termination
      * @param codec      logical datagram relay codec, or {@code null} for direct transport
-     * @throws ValidateException if {@code remote}, {@code channel}, {@code onClose}, or the codec relay is {@code null}
      */
     UdpSession(final Address remote, final UdpChannel channel, final Listener<Object> listener,
             final Dispatcher dispatcher, final Runnable onClose, final UdpDatagramCodec codec) {
+        this(remote, null, null, channel, listener, dispatcher, onClose, codec);
+    }
+
+    /**
+     * Creates a guarded direct UDP session pinned to one resolver-validated numeric peer.
+     *
+     * @param remote        logical remote endpoint exposed to callers
+     * @param pinnedPeer    numeric remote endpoint selected from the complete guarded DNS result
+     * @param addressPolicy immutable policy that approved the logical and numeric endpoints
+     * @param channel       exclusively owned local UDP channel
+     * @param listener      optional lifecycle listener
+     * @param dispatcher    optional dispatcher used for asynchronous call submission
+     * @param onClose       non-null owner cleanup hook invoked during termination
+     */
+    UdpSession(final Address remote, final Address pinnedPeer, final AddressPolicy addressPolicy,
+            final UdpChannel channel, final Listener<Object> listener, final Dispatcher dispatcher,
+            final Runnable onClose) {
+        this(remote, pinnedPeer, addressPolicy, channel, listener, dispatcher, onClose, null);
+    }
+
+    /**
+     * Creates a logical UDP session over either a guarded numeric peer or the legacy optional relay path.
+     *
+     * @param remote        logical remote endpoint exposed to callers
+     * @param pinnedPeer    resolver-validated numeric endpoint, or {@code null} for a legacy session
+     * @param addressPolicy immutable approving policy, or {@code null} for a legacy session
+     * @param channel       exclusively owned local UDP channel
+     * @param listener      optional lifecycle listener
+     * @param dispatcher    optional dispatcher used for asynchronous call submission
+     * @param onClose       non-null owner cleanup hook invoked during termination
+     * @param codec         legacy relay codec, or {@code null} for direct transport
+     */
+    private UdpSession(final Address remote, final Address pinnedPeer, final AddressPolicy addressPolicy,
+            final UdpChannel channel, final Listener<Object> listener, final Dispatcher dispatcher,
+            final Runnable onClose, final UdpDatagramCodec codec) {
         this.remote = Assert.notNull(remote, () -> new ValidateException("UDP remote address must not be null"));
         this.codec = codec;
-        this.transportRemote = codec == null ? this.remote
-                : Assert.notNull(codec.relay(), () -> new ValidateException("UDP relay address must not be null"));
+        if (pinnedPeer == null) {
+            if (addressPolicy != null) {
+                throw new ValidateException("UDP address policy requires a validated numeric peer");
+            }
+            this.pinnedPeer = null;
+            this.addressPolicy = null;
+            this.transportRemote = codec == null ? this.remote
+                    : Assert.notNull(codec.relay(), () -> new ValidateException("UDP relay address must not be null"));
+        } else {
+            if (codec != null) {
+                throw new ValidateException("Guarded UDP sessions do not support relay framing");
+            }
+            this.addressPolicy = Assert
+                    .notNull(addressPolicy, () -> new ValidateException("UDP address policy must not be null"));
+            this.pinnedPeer = pinPeer(this.remote, pinnedPeer, this.addressPolicy);
+            this.transportRemote = this.pinnedPeer;
+        }
         this.channel = Assert.notNull(channel, () -> new ValidateException("UDP channel must not be null"));
         this.dispatcher = dispatcher;
         this.scope = LifecycleScope.session(
@@ -181,7 +242,6 @@ public final class UdpSession implements Session {
      *
      * @param payload datagram payload materialized when the returned call executes
      * @return deferred send call that discards the transmitted byte count
-     * @throws ValidateException if {@code payload} is {@code null}
      */
     @Override
     public Call<Void> send(final Payload payload) {
@@ -199,7 +259,6 @@ public final class UdpSession implements Session {
      *
      * @param payload datagram payload materialized when the returned call executes
      * @return deferred call completed with the transmitted byte count
-     * @throws ValidateException if {@code payload} is {@code null}
      */
     public Call<Integer> sendDatagram(final Payload payload) {
         final Payload checkedPayload = Assert
@@ -300,6 +359,28 @@ public final class UdpSession implements Session {
     }
 
     /**
+     * Revalidates and normalizes the resolver-selected numeric peer before it becomes session state.
+     *
+     * @param logical logical remote endpoint
+     * @param peer    numeric peer candidate
+     * @param policy  immutable address policy
+     * @return normalized numeric peer pinned to the session
+     */
+    private static Address pinPeer(final Address logical, final Address peer, final AddressPolicy policy) {
+        if (logical.protocol() != org.miaixz.bus.core.net.Protocol.UDP
+                || peer.protocol() != org.miaixz.bus.core.net.Protocol.UDP || logical.port() != peer.port()) {
+            throw new ValidateException("UDP validated peer must match the logical protocol and port");
+        }
+        final InetSocketAddress socket = socket(peer);
+        if (socket.isUnresolved() || socket.getAddress() == null) {
+            throw new ValidateException("UDP validated peer must be numeric");
+        }
+        final java.net.InetAddress numeric = new AddressGuard(policy)
+                .checkTarget(logical, List.of(socket.getAddress()));
+        return new Address(peer.scheme(), numeric.getHostAddress(), peer.port(), peer.path());
+    }
+
+    /**
      * Ensures this session is open.
      */
     private void ensureOpened() {
@@ -313,8 +394,6 @@ public final class UdpSession implements Session {
      *
      * @param payload payload to materialize within the maximum safe UDP body size
      * @return sent byte count
-     * @throws ProtocolException if the payload is oversized or the channel does not consume it completely
-     * @throws StatefulException if the session is not open
      */
     private int sendPayload(final Payload payload) {
         ensureOpened();
@@ -341,8 +420,6 @@ public final class UdpSession implements Session {
      * Receives one message through the channel exactly once.
      *
      * @return one datagram message verified to originate from the bound remote endpoint
-     * @throws ProtocolException if the received remote endpoint does not match this session
-     * @throws StatefulException if the session is not open
      */
     private Message receiveMessage() {
         ensureOpened();

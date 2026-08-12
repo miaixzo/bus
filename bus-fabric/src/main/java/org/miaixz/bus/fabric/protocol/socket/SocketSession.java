@@ -25,6 +25,8 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.io.ByteString;
@@ -35,13 +37,18 @@ import org.miaixz.bus.core.lang.exception.*;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.ThreadKit;
+import org.miaixz.bus.crypto.builtin.TlsHandshake;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.frame.Frame;
 import org.miaixz.bus.fabric.guard.GuardRule;
+import org.miaixz.bus.fabric.network.Conduit;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.Ingress;
 import org.miaixz.bus.fabric.network.kcp.KcpNetwork;
 import org.miaixz.bus.fabric.network.kcp.KcpPacket;
+import org.miaixz.bus.fabric.network.tls.TlsChannel;
+import org.miaixz.bus.fabric.network.tls.TlsEngine;
+import org.miaixz.bus.fabric.network.tls.TlsPolicy;
 import org.miaixz.bus.fabric.network.udp.UdpSession;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
@@ -80,6 +87,26 @@ public final class SocketSession implements Session {
      * Network connection.
      */
     private final Connection connection;
+
+    /**
+     * Active stream conduit, replaced atomically after a successful StartTLS handshake.
+     */
+    private volatile Conduit streamConduit;
+
+    /**
+     * TLS channel created by the one permitted upgrade attempt, or {@code null} before that attempt.
+     */
+    private volatile TlsChannel upgradeChannel;
+
+    /**
+     * One-shot TLS upgrade state.
+     */
+    private final AtomicReference<TlsUpgradeState> tlsUpgradeState;
+
+    /**
+     * Shared operation lock that excludes plaintext reads and writes while the TLS boundary changes.
+     */
+    private final ReentrantReadWriteLock transportLock;
 
     /**
      * Datagram session for UDP/KCP transports.
@@ -276,6 +303,20 @@ public final class SocketSession implements Session {
 
     /**
      * Creates a server session whose stream receive path has one framework-owned reader.
+     *
+     * @param address             peer address represented by the session
+     * @param connection          connected stream transport backing the session
+     * @param codec               codec used to encode and decode socket frames
+     * @param handler             handler receiving decoded inbound messages
+     * @param attributes          initial session attributes, or {@code null} for none
+     * @param listener            lifecycle listener
+     * @param materializeMaxBytes materialize byte threshold
+     * @param socketOptions       socket options
+     * @param dispatcher          shared dispatcher
+     * @param clock               shared session clock
+     * @param timeout             timeout policy governing session operations
+     * @param cancellation        shared cancellation scope
+     * @return opened server socket session
      */
     static SocketSession createServer(
             final Address address,
@@ -565,6 +606,10 @@ public final class SocketSession implements Session {
             throw new ValidateException("Socket transport must not be null");
         }
         this.connection = connection;
+        this.streamConduit = connection == null ? null : connection.conduit();
+        this.tlsUpgradeState = new AtomicReference<>(connection == null ? TlsUpgradeState.UNAVAILABLE
+                : this.streamConduit instanceof TlsChannel ? TlsUpgradeState.SECURE : TlsUpgradeState.PLAIN);
+        this.transportLock = new ReentrantReadWriteLock(true);
         this.datagram = datagram;
         this.kcp = kcp;
         this.codec = require(codec, "Socket codec");
@@ -713,6 +758,32 @@ public final class SocketSession implements Session {
     }
 
     /**
+     * Upgrades this open plaintext TCP session to TLS exactly once.
+     *
+     * <p>
+     * The upgrade requires exclusive ownership of the transport and rejects a datagram session, an existing TLS
+     * boundary, an active read or write, a started completion data plane, or unconsumed plaintext. Every rejected,
+     * cancelled, timed-out, or failed upgrade closes the session because the wire boundary can no longer be reused
+     * safely.
+     * </p>
+     *
+     * @param policy complete TLS context and handshake settings
+     * @return single-execution call containing the completed TLS handshake
+     */
+    public Call<TlsHandshake> upgradeTls(final TlsPolicy policy) {
+        final TlsPolicy current = require(policy, "TLS policy");
+        return MonoCall.create(
+                "socket-session-upgrade-tls",
+                "socket:session:upgrade-tls",
+                dispatcher,
+                observer,
+                null,
+                timeout,
+                () -> upgradeTlsNow(current),
+                this::cancel);
+    }
+
+    /**
      * Reads one message for the server-owned reader.
      *
      * <p>
@@ -769,6 +840,7 @@ public final class SocketSession implements Session {
      * @return null after a complete write
      */
     private Void sendNow(final Payload source) {
+        final Lock operation = enterTransportOperation("Socket write cannot run during TLS upgrade");
         try {
             ensureOpen();
             final Payload outgoing;
@@ -826,6 +898,8 @@ public final class SocketSession implements Session {
         } catch (final Error e) {
             operationFailed(e);
             throw e;
+        } finally {
+            operation.unlock();
         }
     }
 
@@ -876,9 +950,10 @@ public final class SocketSession implements Session {
      * @param byteCount encoded byte count
      */
     private void writeStream(final Buffer encoded, final long byteCount) {
-        if (exclusiveReader && dataPlane == null && connection.conduit() instanceof Ingress) {
+        final Conduit conduit = streamConduit();
+        if (exclusiveReader && dataPlane == null && conduit instanceof Ingress) {
             try {
-                final long written = connection.conduit().writeSynchronously(encoded, byteCount);
+                final long written = conduit.writeSynchronously(encoded, byteCount);
                 if (written != byteCount || encoded.size() != Normal._0) {
                     throw new SocketException("Socket Conduit did not fully consume the encoded frame");
                 }
@@ -887,10 +962,7 @@ public final class SocketSession implements Session {
                 throw new SocketException("Unable to write socket frame", e);
             }
         }
-        final long written = await(
-                connection.conduit().write(encoded, byteCount),
-                timeout.write(),
-                "Unable to write socket frame");
+        final long written = await(conduit.write(encoded, byteCount), timeout.write(), "Unable to write socket frame");
         if (written != byteCount || encoded.size() != Normal._0) {
             throw new SocketException("Socket Conduit did not fully consume the encoded frame");
         }
@@ -912,15 +984,20 @@ public final class SocketSession implements Session {
      * @param prefetched prefetched application bytes, or {@code null}
      */
     void startDataPlane(final Handler target, final Buffer prefetched) {
-        if (connection == null || dataPlane != null) {
-            throw new StatefulException("Socket completion data plane is unavailable");
-        }
-        final DataPlane created = new DataPlane(require(target, "Socket data-plane handler"), prefetched);
-        dataPlane = created;
-        if (created.input.size() == Normal._0) {
-            created.read();
-        } else {
-            created.readCompleted(created.input.size(), null);
+        final Lock operation = enterTransportOperation("Socket data plane cannot start during TLS upgrade");
+        try {
+            if (connection == null || dataPlane != null) {
+                throw new StatefulException("Socket completion data plane is unavailable");
+            }
+            final DataPlane created = new DataPlane(require(target, "Socket data-plane handler"), prefetched);
+            dataPlane = created;
+            if (created.input.size() == Normal._0) {
+                created.read();
+            } else {
+                created.readCompleted(created.input.size(), null);
+            }
+        } finally {
+            operation.unlock();
         }
     }
 
@@ -964,6 +1041,7 @@ public final class SocketSession implements Session {
      * @return received message
      */
     private Message receiveNow(final boolean directFrame) {
+        final Lock operation = enterTransportOperation("Socket read cannot run during TLS upgrade");
         try {
             ensureOpen();
             PendingFrame pending = pollPending();
@@ -989,26 +1067,32 @@ public final class SocketSession implements Session {
         } catch (final Error e) {
             operationFailed(e);
             throw e;
+        } finally {
+            operation.unlock();
         }
     }
 
     /**
      * Reads stream chunks until the stateful codec produces at least one frame.
+     *
+     * @param directFrame true to return the first decoded frame directly
+     * @return first decoded frame for direct mode, otherwise {@code null} after frames are queued
      */
     private PendingFrame readStreamFrames(final boolean directFrame) {
         long wireBytes = Normal._0;
         while (active()) {
             final Buffer input = streamReadBuffer == null ? new Buffer() : streamReadBuffer;
             final long read;
-            if (exclusiveReader && dataPlane == null && connection.conduit() instanceof Ingress) {
+            final Conduit conduit = streamConduit();
+            if (exclusiveReader && dataPlane == null && conduit instanceof Ingress) {
                 try {
-                    read = connection.conduit().readSynchronously(input, socketOptions.readBufferSize());
+                    read = conduit.readSynchronously(input, socketOptions.readBufferSize());
                 } catch (final IOException e) {
                     throw new SocketException("Unable to read socket frame", e);
                 }
             } else {
                 read = await(
-                        connection.conduit().read(input, socketOptions.readBufferSize()),
+                        conduit.read(input, socketOptions.readBufferSize()),
                         timeout.read(),
                         "Unable to read socket frame");
             }
@@ -1289,6 +1373,116 @@ public final class SocketSession implements Session {
     }
 
     /**
+     * Acquires shared transport ownership for one ordinary stream or datagram operation.
+     *
+     * @param message failure message used when an upgrade owns the transport
+     * @return acquired shared lock that the caller must release
+     */
+    private Lock enterTransportOperation(final String message) {
+        final Lock operation = transportLock.readLock();
+        if (!operation.tryLock()) {
+            final StatefulException failure = new StatefulException(message);
+            operationFailed(failure);
+            throw failure;
+        }
+        if (tlsUpgradeState.get() == TlsUpgradeState.UPGRADING) {
+            operation.unlock();
+            final StatefulException failure = new StatefulException(message);
+            operationFailed(failure);
+            throw failure;
+        }
+        return operation;
+    }
+
+    /**
+     * Performs the exclusive one-shot TLS upgrade.
+     *
+     * @param policy validated TLS policy
+     * @return completed handshake metadata
+     */
+    private TlsHandshake upgradeTlsNow(final TlsPolicy policy) {
+        final Lock upgrade = transportLock.writeLock();
+        if (!upgrade.tryLock()) {
+            throw rejectTlsUpgrade("TLS upgrade requires an idle transport");
+        }
+        TlsChannel channel = null;
+        try {
+            ensureOpen();
+            if (!tlsUpgradeState.compareAndSet(TlsUpgradeState.PLAIN, TlsUpgradeState.UPGRADING)) {
+                throw rejectTlsUpgrade("TLS upgrade is unavailable or has already been attempted");
+            }
+            requirePlaintextBoundary();
+            final TlsEngine engine = exclusiveReader
+                    ? TlsEngine.createServer(policy.context(), address, policy.settings())
+                    : TlsEngine.create(policy.context(), address, policy.settings());
+            channel = TlsChannel.wrap(streamConduit(), engine, null, dispatcher, timeout);
+            upgradeChannel = channel;
+            final TlsHandshake handshake = await(channel.handshake(), timeout.connect(), "Socket TLS upgrade failed");
+            streamConduit = channel;
+            tlsUpgradeState.set(TlsUpgradeState.SECURE);
+            touch();
+            return handshake;
+        } catch (final RuntimeException | Error failure) {
+            tlsUpgradeState.set(TlsUpgradeState.FAILED);
+            if (channel != null && active()) {
+                try {
+                    channel.abort();
+                } catch (final RuntimeException cleanup) {
+                    failure.addSuppressed(cleanup);
+                }
+            }
+            operationFailed(failure);
+            throw failure;
+        } finally {
+            upgrade.unlock();
+        }
+    }
+
+    /**
+     * Rejects plaintext buffered beyond the protocol-approved StartTLS boundary.
+     */
+    private void requirePlaintextBoundary() {
+        final boolean pending;
+        synchronized (pendingFrames) {
+            pending = !pendingFrames.isEmpty();
+        }
+        final boolean decoded;
+        synchronized (decodedPayloads) {
+            decoded = !decodedPayloads.isEmpty();
+        }
+        final boolean retainedRead = streamReadBuffer != null && streamReadBuffer.size() > Normal._0;
+        final boolean retainedWrite = streamWriteBuffer != null && streamWriteBuffer.size() > Normal._0;
+        if (dataPlane != null || pending || decoded || retainedRead || retainedWrite) {
+            throw new StatefulException("TLS upgrade rejected unconsumed plaintext");
+        }
+    }
+
+    /**
+     * Returns the current stream conduit.
+     *
+     * @return active plaintext or TLS conduit
+     */
+    private Conduit streamConduit() {
+        final Conduit current = streamConduit;
+        if (current == null) {
+            throw new StatefulException("Socket stream conduit is unavailable");
+        }
+        return current;
+    }
+
+    /**
+     * Creates an upgrade rejection and closes the session before returning it.
+     *
+     * @param message rejection detail
+     * @return terminal upgrade failure
+     */
+    private StatefulException rejectTlsUpgrade(final String message) {
+        final StatefulException failure = new StatefulException(message);
+        operationFailed(failure);
+        return failure;
+    }
+
+    /**
      * Records socket activity.
      */
     private void touch() {
@@ -1423,7 +1617,7 @@ public final class SocketSession implements Session {
 
         RuntimeException cleanupFailure = null;
         try {
-            closeResources(termination == Termination.CLOSE);
+            closeResources(termination == Termination.CLOSE && upgradeChannel == null);
         } catch (final RuntimeException e) {
             cleanupFailure = e;
         }
@@ -1535,6 +1729,18 @@ public final class SocketSession implements Session {
             codec.reset();
         } catch (final RuntimeException e) {
             failure = e;
+        }
+        final TlsChannel tls = upgradeChannel;
+        if (tls != null) {
+            try {
+                if (reusable) {
+                    tls.close();
+                } else {
+                    tls.abort();
+                }
+            } catch (final RuntimeException e) {
+                failure = append(failure, e);
+            }
         }
         if (owner instanceof SocketLease.Owner lease) {
             try {
@@ -1829,7 +2035,7 @@ public final class SocketSession implements Session {
          */
         private void read() {
             if (active()) {
-                connection.conduit().read(input, socketOptions.readBufferSize(), readCompletion);
+                streamConduit().read(input, socketOptions.readBufferSize(), readCompletion);
             }
         }
 
@@ -1908,7 +2114,7 @@ public final class SocketSession implements Session {
                 }
                 pendingWrites++;
             }
-            connection.conduit().write(encoded, expected, writeCompletion);
+            streamConduit().write(encoded, expected, writeCompletion);
         }
 
         /**
@@ -1962,6 +2168,38 @@ public final class SocketSession implements Session {
                 // The transport failure remains authoritative.
             }
         }
+
+    }
+
+    /**
+     * One-shot state of the optional in-session TLS transition.
+     */
+    private enum TlsUpgradeState {
+
+        /**
+         * Plaintext stream is eligible for its one permitted upgrade attempt.
+         */
+        PLAIN,
+
+        /**
+         * TLS handshake exclusively owns the stream conduit.
+         */
+        UPGRADING,
+
+        /**
+         * TLS protects every subsequent stream operation.
+         */
+        SECURE,
+
+        /**
+         * Datagram transport does not support an in-session TLS transition.
+         */
+        UNAVAILABLE,
+
+        /**
+         * The sole upgrade attempt failed and the session is terminal.
+         */
+        FAILED
 
     }
 
