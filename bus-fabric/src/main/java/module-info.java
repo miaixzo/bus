@@ -94,5 +94,7 @@ module bus.fabric {
     exports org.miaixz.bus.fabric.registry;
     exports org.miaixz.bus.fabric.registry.policy;
     exports org.miaixz.bus.fabric.registry.route;
+    exports org.miaixz.bus.fabric.runtime;
+    exports org.miaixz.bus.fabric.runtime.dispatch;
 
 }

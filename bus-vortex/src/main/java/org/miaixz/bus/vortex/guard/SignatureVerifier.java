@@ -84,7 +84,7 @@ public final class SignatureVerifier {
      * Prevents additional verifier instances.
      */
     private SignatureVerifier() {
-        // Utility class.
+        // No initialization required.
     }
 
     /**
