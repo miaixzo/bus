@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.starter
+ * Module: {@code bus.starter}
+ *
+ * <p>
+ * Provides Spring Boot auto-configuration for the Bus ecosystem.
+ *
+ * <p>
+ * Includes conditional configuration, configuration properties, default beans, startup conventions, and integration
+ * wiring for the optional Bus modules and their supported third-party services.
  *
  * @author Kimi Liu
  */

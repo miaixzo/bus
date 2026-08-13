@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.image
+ * Module: {@code bus.image}
+ *
+ * <p>
+ * Provides medical and general-purpose image processing capabilities.
+ *
+ * <p>
+ * Includes DICOM data models and dictionaries, HL7 and network services, image metadata, media codecs, geometry and
+ * multiplanar reconstruction, pixel transformations, streaming, and OpenCV-based operations.
  *
  * @author Kimi Liu
  */

@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.core
+ * Module: {@code bus.core}
+ *
+ * <p>
+ * Provides the foundational APIs and general-purpose utilities used throughout the Bus ecosystem.
+ *
+ * <p>
+ * Includes collections, beans, builders, codecs, type conversion, date and time handling, I/O, reflection, concurrency,
+ * networking, text processing, trees, XML, and common language contracts.
  *
  * @author Kimi Liu
  */

@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.base
+ * Module: {@code bus.base}
+ *
+ * <p>
+ * Provides reusable foundations for enterprise application models and services.
+ *
+ * <p>
+ * Includes base entities, persistence mappers, service abstractions, exception advice, and shared Spring integration
+ * support.
  *
  * @author Kimi Liu
  */

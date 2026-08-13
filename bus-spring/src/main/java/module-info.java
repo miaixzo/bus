@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.spring
+ * Module: {@code bus.spring}
+ *
+ * <p>
+ * Provides shared integration utilities for Spring Framework and Spring Boot applications.
+ *
+ * <p>
+ * Includes annotations, AOP and bean utilities, startup and banner hooks, conditional configuration, JDBC helpers, web
+ * advice, converters, interceptors, argument resolvers, request wrappers, and routing support.
  *
  * @author Kimi Liu
  */

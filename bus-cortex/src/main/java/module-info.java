@@ -18,11 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Bus Cortex — unified registry and configuration center platform.
+ * Module: {@code bus.cortex}
+ *
  * <p>
- * Plugin-based architecture with core abstraction layer supporting API/MCP/Prompt/Config registration types. Zero
- * third-party dependencies — uses only bus ecosystem modules (bus-cache, bus-extra, bus-logger). Storage via bus-cache
- * CacheX abstraction (Memory/Redis/JDBC).
+ * Provides a unified registry and configuration center for service governance metadata.
+ *
+ * <p>
+ * Includes API, MCP, and prompt registries; application settings; namespaces and profiles; secret and revision
+ * management; delivery and watch mechanisms; health information; and cache-backed storage bridges.
  *
  * @author Kimi Liu
  */

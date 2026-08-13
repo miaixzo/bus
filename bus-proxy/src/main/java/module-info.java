@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.proxy
+ * Module: {@code bus.proxy}
+ *
+ * <p>
+ * Provides abstractions for creating and invoking dynamic proxies.
+ *
+ * <p>
+ * Includes proxy factories, invocation and interceptor contracts, chained interception, JDK dynamic proxy support, and
+ * Spring CGLIB integration.
  *
  * @author Kimi Liu
  */

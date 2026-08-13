@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines the bus fabric module.
+ * Module: {@code bus.fabric}
+ *
+ * <p>
+ * Provides reusable networking transports, protocols, and runtime infrastructure.
+ *
+ * <p>
+ * Includes codecs and guards; DNS, TCP, UDP, KCP, proxy, and TLS support; HTTP, SSE, STOMP, and WebSocket protocols;
+ * connection pooling and caching; route registries; runtime dispatch; servlet bridges; and network observability.
  *
  * @author Kimi Liu
  */

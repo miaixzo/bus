@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines the bus.extra module, providing extended utilities and integrations.
+ * Module: {@code bus.extra}
+ *
+ * <p>
+ * Provides optional utilities and integrations that extend the core Bus libraries.
+ *
+ * <p>
+ * Includes captchas, archive processing, emoji handling, FTP and SSH clients, image helpers, JSON adapters, mail,
+ * message queues, natural-language processing, pinyin conversion, QR codes, and template engines.
  *
  * @author Kimi Liu
  */

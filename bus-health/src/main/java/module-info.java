@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.health
+ * Module: {@code bus.health}
+ *
+ * <p>
+ * Provides cross-platform access to operating-system and hardware information.
+ *
+ * <p>
+ * Includes JVM, processor, memory, disk, network, GPU, process, file-system, and cgroup information, together with
+ * native adapters and platform-specific implementations for Linux, macOS, Windows, AIX, FreeBSD, OpenBSD, and Solaris.
  *
  * @author Kimi Liu
  */

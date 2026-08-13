@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.mapper
+ * Module: {@code bus.mapper}
+ *
+ * <p>
+ * Provides object-relational mapping and SQL generation for data-access layers.
+ *
+ * <p>
+ * Includes mapping annotations, query criteria, binding and batch operations, SQL builders, database dialects, runtime
+ * metadata, auditing, pagination, schema management, tenant isolation, key generation, and visibility control.
  *
  * @author Kimi Liu
  */

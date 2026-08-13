@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.limiter
+ * Module: {@code bus.limiter}
+ *
+ * <p>
+ * Provides configurable rate limiting and flow-control protection.
+ *
+ * <p>
+ * Includes limiter contracts, annotations, proxy integration, rule matching, quota enforcement, hotspot control,
+ * circuit degradation, and overload-defense strategies.
  *
  * @author Kimi Liu
  */
