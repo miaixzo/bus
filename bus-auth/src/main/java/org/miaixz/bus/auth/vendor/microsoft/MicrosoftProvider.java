@@ -1,0 +1,45 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.auth.vendor.microsoft;
+
+import org.miaixz.bus.auth.vendor.VendorConfiguration;
+import org.miaixz.bus.auth.vendor.catalog.BuiltinVendors;
+
+/**
+ * Microsoft global third-party authentication client.
+ *
+ * <p>
+ * All public authentication operations are inherited from the shared Microsoft family implementation.
+ * </p>
+ *
+ * @author Kimi Liu
+ */
+public class MicrosoftProvider extends AbstractMicrosoftProvider {
+
+    /**
+     * Creates a Microsoft global client from explicit runtime dependencies.
+     *
+     * @param configuration non-null registration, Fabric, clock, state-store, cache, and secret dependencies
+     */
+    public MicrosoftProvider(final VendorConfiguration configuration) {
+        super(configuration, BuiltinVendors.MICROSOFT);
+    }
+
+}

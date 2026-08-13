@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.auth
+ * Provides protocol-neutral authentication contracts, standard server protocol APIs, and third-party client contracts.
+ *
+ * <p>
+ * Only stable root contracts, standard protocol surfaces, the vendor contract and catalog, and resolver contracts are
+ * exported. Runtime assembly, codecs, state storage, guards, bridges, protocol implementations, routers, caches, and
+ * concrete vendor clients remain module-internal. Sensitive credentials are resolved per operation and must not be
+ * retained in exported values.
+ * </p>
  *
  * @author Kimi Liu
  */
@@ -38,59 +45,22 @@ module bus.auth {
     requires static org.bouncycastle.provider;
 
     exports org.miaixz.bus.auth;
-    exports org.miaixz.bus.auth.cache;
-    exports org.miaixz.bus.auth.magic;
-    exports org.miaixz.bus.auth.metric;
-    exports org.miaixz.bus.auth.metric.jwt;
-    exports org.miaixz.bus.auth.metric.jwt.signature;
-    exports org.miaixz.bus.auth.nimble;
-    exports org.miaixz.bus.auth.nimble.afdian;
-    exports org.miaixz.bus.auth.nimble.alipay;
-    exports org.miaixz.bus.auth.nimble.aliyun;
-    exports org.miaixz.bus.auth.nimble.amazon;
-    exports org.miaixz.bus.auth.nimble.apple;
-    exports org.miaixz.bus.auth.nimble.baidu;
-    exports org.miaixz.bus.auth.nimble.coding;
-    exports org.miaixz.bus.auth.nimble.dingtalk;
-    exports org.miaixz.bus.auth.nimble.douyin;
-    exports org.miaixz.bus.auth.nimble.eleme;
-    exports org.miaixz.bus.auth.nimble.facebook;
-    exports org.miaixz.bus.auth.nimble.feishu;
-    exports org.miaixz.bus.auth.nimble.figma;
-    exports org.miaixz.bus.auth.nimble.gitee;
-    exports org.miaixz.bus.auth.nimble.github;
-    exports org.miaixz.bus.auth.nimble.gitlab;
-    exports org.miaixz.bus.auth.nimble.google;
-    exports org.miaixz.bus.auth.nimble.huawei;
-    exports org.miaixz.bus.auth.nimble.jd;
-    exports org.miaixz.bus.auth.nimble.kujiale;
-    exports org.miaixz.bus.auth.nimble.line;
-    exports org.miaixz.bus.auth.nimble.linkedin;
-    exports org.miaixz.bus.auth.nimble.meituan;
-    exports org.miaixz.bus.auth.nimble.mi;
-    exports org.miaixz.bus.auth.nimble.microsoft;
-    exports org.miaixz.bus.auth.nimble.oidc;
-    exports org.miaixz.bus.auth.nimble.okta;
-    exports org.miaixz.bus.auth.nimble.oschina;
-    exports org.miaixz.bus.auth.nimble.pinterest;
-    exports org.miaixz.bus.auth.nimble.proginn;
-    exports org.miaixz.bus.auth.nimble.qq;
-    exports org.miaixz.bus.auth.nimble.rednote;
-    exports org.miaixz.bus.auth.nimble.renren;
-    exports org.miaixz.bus.auth.nimble.router;
-    exports org.miaixz.bus.auth.nimble.slack;
-    exports org.miaixz.bus.auth.nimble.stackoverflow;
-    exports org.miaixz.bus.auth.nimble.taobao;
-    exports org.miaixz.bus.auth.nimble.teambition;
-    exports org.miaixz.bus.auth.nimble.toutiao;
-    exports org.miaixz.bus.auth.nimble.twitter;
-    exports org.miaixz.bus.auth.nimble.vk;
-    exports org.miaixz.bus.auth.nimble.wechat;
-    exports org.miaixz.bus.auth.nimble.wechat.ee;
-    exports org.miaixz.bus.auth.nimble.wechat.mini;
-    exports org.miaixz.bus.auth.nimble.wechat.mp;
-    exports org.miaixz.bus.auth.nimble.wechat.open;
-    exports org.miaixz.bus.auth.nimble.weibo;
-    exports org.miaixz.bus.auth.nimble.ximalaya;
-
+    exports org.miaixz.bus.auth.protocol;
+    exports org.miaixz.bus.auth.protocol.oauth2;
+    exports org.miaixz.bus.auth.protocol.oidc;
+    /** Exports LDAP standard protocol contracts. */
+    exports org.miaixz.bus.auth.protocol.ldap;
+    /** Exports RADIUS standard protocol contracts. */
+    exports org.miaixz.bus.auth.protocol.radius;
+    /** Exports SCIM standard protocol contracts. */
+    exports org.miaixz.bus.auth.protocol.scim;
+    /** Exports Shared Signals Framework standard protocol contracts. */
+    exports org.miaixz.bus.auth.protocol.ssf;
+    /** Exports third-party authentication client contracts. */
+    exports org.miaixz.bus.auth.vendor;
+    /** Exports the immutable built-in vendor definition catalog. */
+    exports org.miaixz.bus.auth.vendor.catalog;
+    /** Exports operation-scoped resolver contracts. */
+    exports org.miaixz.bus.auth.resolver;
+    exports org.miaixz.bus.auth.vendor.microsoft;
 }

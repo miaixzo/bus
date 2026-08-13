@@ -1,0 +1,254 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.auth.protocol.ssf;
+
+import java.security.SecureRandom;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CompletionStage;
+
+import org.miaixz.bus.auth.Claims;
+import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Outcome;
+import org.miaixz.bus.auth.cache.StateStore;
+import org.miaixz.bus.auth.protocol.jwt.JWT;
+import org.miaixz.bus.auth.protocol.jwt.KeyResolver;
+import org.miaixz.bus.auth.protocol.jwt.signature.JWTSigner;
+import org.miaixz.bus.auth.runtime.Limits;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.extra.json.JsonProvider;
+import org.miaixz.bus.fabric.Clock;
+
+/**
+ * Defines the sole Shared Signals Framework receiver and transmitter facades and the closed event allow-list.
+ *
+ * @author Kimi Liu
+ */
+public final class SSF {
+
+    /**
+     * CAEP session-revoked event.
+     */
+    public static final String CAEP_SESSION_REVOKED = "https://schemas.openid.net/secevent/caep/event-type/session-revoked";
+
+    /**
+     * CAEP credential-change event.
+     */
+    public static final String CAEP_CREDENTIAL_CHANGE = "https://schemas.openid.net/secevent/caep/event-type/credential-change";
+
+    /**
+     * CAEP assurance-level-change event.
+     */
+    public static final String CAEP_ASSURANCE_LEVEL_CHANGE = "https://schemas.openid.net/secevent/caep/event-type/assurance-level-change";
+
+    /**
+     * RISC account-disabled event.
+     */
+    public static final String RISC_ACCOUNT_DISABLED = "https://schemas.openid.net/secevent/risc/event-type/account-disabled";
+
+    /**
+     * RISC account-enabled event.
+     */
+    public static final String RISC_ACCOUNT_ENABLED = "https://schemas.openid.net/secevent/risc/event-type/account-enabled";
+
+    /**
+     * RISC identifier-changed event.
+     */
+    public static final String RISC_IDENTIFIER_CHANGED = "https://schemas.openid.net/secevent/risc/event-type/identifier-changed";
+
+    /**
+     * RISC sessions-revoked event.
+     */
+    public static final String RISC_SESSIONS_REVOKED = "https://schemas.openid.net/secevent/risc/event-type/sessions-revoked";
+
+    /**
+     * Closed allowed event types.
+     */
+    public static final Set<String> ALLOWED_EVENTS = Set.of(
+            CAEP_SESSION_REVOKED,
+            CAEP_CREDENTIAL_CHANGE,
+            CAEP_ASSURANCE_LEVEL_CHANGE,
+            RISC_ACCOUNT_DISABLED,
+            RISC_ACCOUNT_ENABLED,
+            RISC_IDENTIFIER_CHANGED,
+            RISC_SESSIONS_REVOKED);
+
+    /**
+     * Prevents construction.
+     */
+    private SSF() {
+        // No initialization required.
+    }
+
+    /**
+     * Creates one receiver.
+     *
+     * @param policy  trusted JWT policy
+     * @param json    JSON provider
+     * @param clock   trusted security clock
+     * @param keys    trusted key resolver
+     * @param states  atomic replay store
+     * @param limits  immutable protocol limits
+     * @param handler product event handler
+     * @return receiver
+     * @throws ValidateException if a receiver dependency is null or replay protection is disabled
+     */
+    public static ReceiverPort receiver(
+            final JWT.VerificationPolicy policy,
+            final JsonProvider json,
+            final Clock clock,
+            final KeyResolver keys,
+            final StateStore states,
+            final Limits limits,
+            final EventHandler handler) {
+        return new Receiver(policy, json, clock, keys, states, limits, handler);
+    }
+
+    /**
+     * Creates one transmitter.
+     *
+     * @param configuration stream configuration
+     * @param policy        trusted JWT policy
+     * @param signer        trusted signer
+     * @param fabric        Fabric context used for push delivery
+     * @param clock         trusted security clock
+     * @param random        secure JWT entropy source
+     * @param json          JSON provider
+     * @param states        atomic delivery state store
+     * @param limits        immutable protocol limits
+     * @return transmitter
+     * @throws ValidateException if a transmitter dependency or stream configuration is invalid
+     */
+    public static TransmitterPort transmitter(
+            final StreamConfiguration configuration,
+            final JWT.VerificationPolicy policy,
+            final JWTSigner signer,
+            final org.miaixz.bus.fabric.Context fabric,
+            final Clock clock,
+            final SecureRandom random,
+            final JsonProvider json,
+            final StateStore states,
+            final Limits limits) {
+        return new Transmitter(configuration, policy, signer, fabric, clock, random, json, states, limits);
+    }
+
+    /**
+     * Receiver contract.
+     *
+     * @author Kimi Liu
+     */
+    @FunctionalInterface
+    public interface ReceiverPort {
+
+        /**
+         * Verifies and dispatches one compact SET.
+         *
+         * @param invocation operation context
+         * @param token      compact SET
+         * @return processing outcome
+         * @throws ValidateException if a synchronous receiver precondition is invalid
+         */
+        CompletionStage<Outcome<Void>> receive(Context invocation, String token);
+    }
+
+    /**
+     * Transmitter contract.
+     *
+     * @author Kimi Liu
+     */
+    public interface TransmitterPort {
+
+        /**
+         * Pushes one event.
+         *
+         * @param invocation operation context
+         * @param event      security event
+         * @return delivery outcome
+         * @throws ValidateException if a synchronous delivery precondition is invalid
+         */
+        CompletionStage<Outcome<Void>> push(Context invocation, Event event);
+
+        /**
+         * Creates one compact SET for polling storage.
+         *
+         * @param event security event
+         * @return compact SET
+         * @throws ValidateException if the event or stream configuration is invalid
+         */
+        String poll(Event event);
+    }
+
+    /**
+     * Product event dispatch port.
+     *
+     * @author Kimi Liu
+     */
+    @FunctionalInterface
+    public interface EventHandler {
+
+        /**
+         * Handles one verified event.
+         *
+         * @param invocation operation context
+         * @param event      event
+         * @return completion stage
+         */
+        CompletionStage<Void> handle(Context invocation, Event event);
+    }
+
+    /**
+     * Immutable allowed security event.
+     *
+     * @param type    allowed event URI
+     * @param subject stable subject identifier
+     * @param claims  immutable event claims
+     * @author Kimi Liu
+     */
+    public record Event(String type, String subject, Map<String, Object> claims) {
+
+        /**
+         * Validates one event.
+         *
+         * @param type    event type
+         * @param subject subject
+         * @param claims  claims
+         * @throws ValidateException if the event type, subject, claim name, or claim value is invalid
+         */
+        public Event {
+            Assert.isTrue(ALLOWED_EVENTS.contains(type), () -> new ValidateException("SSF event type is not allowed"));
+            subject = Assert.notBlank(subject, () -> new ValidateException("SSF subject must not be blank"));
+            claims = Claims
+                    .from(Assert.notNull(claims, () -> new ValidateException("SSF event claims must not be null")))
+                    .snapshot();
+        }
+
+        /**
+         * Returns a recursively immutable claim view with fresh copies of mutable binary values.
+         *
+         * @return defensive event claim snapshot
+         */
+        @Override
+        public Map<String, Object> claims() {
+            return Claims.from(claims).snapshot();
+        }
+    }
+
+}

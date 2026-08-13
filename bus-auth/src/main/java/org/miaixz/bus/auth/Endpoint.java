@@ -19,36 +19,55 @@
 */
 package org.miaixz.bus.auth;
 
-import lombok.Getter;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.fabric.Address;
+import org.miaixz.bus.fabric.Options;
 
 /**
- * Defines the standard endpoints for various authentication protocols. These endpoints are used to configure the URLs
- * for authorization, token exchange, user information retrieval, token refreshing, and token revocation.
+ * Authentication role attached to a Fabric network address.
  *
+ * @param protocol wire protocol implemented by the endpoint
+ * @param address  normalized Fabric network address
+ * @param options  immutable endpoint-specific options
  * @author Kimi Liu
  */
-@Getter
-public enum Endpoint {
+public record Endpoint(Protocol protocol, Address address, Options options) {
 
     /**
-     * Configuration key for the authorization endpoint.
+     * Validates the endpoint and replaces null options with an empty snapshot.
+     *
+     * @throws ValidateException if {@code protocol} or {@code address} is null
      */
-    AUTHORIZE,
+    public Endpoint {
+        if (protocol == null || address == null) {
+            throw new ValidateException("Endpoint protocol and Fabric address must not be null");
+        }
+        options = options == null ? Options.empty() : options;
+    }
+
     /**
-     * Configuration key for the access token endpoint.
+     * Parses a textual Fabric address into an endpoint with empty options.
+     *
+     * @param protocol wire protocol
+     * @param address  textual Fabric address
+     * @return immutable endpoint
+     * @throws ValidateException if an argument is invalid
      */
-    TOKEN,
+    public static Endpoint of(final Protocol protocol, final String address) {
+        return new Endpoint(protocol, Address.parse(address), Options.empty());
+    }
+
     /**
-     * Configuration key for the user information endpoint.
+     * Creates an endpoint from a parsed Fabric address with empty options.
+     *
+     * @param protocol wire protocol
+     * @param address  parsed Fabric address
+     * @return immutable endpoint
+     * @throws ValidateException if an argument is invalid
      */
-    USERINFO,
-    /**
-     * Configuration key for the refresh token endpoint.
-     */
-    REFRESH,
-    /**
-     * Configuration key for the revoke token endpoint.
-     */
-    REVOKE
+    public static Endpoint of(final Protocol protocol, final Address address) {
+        return new Endpoint(protocol, address, Options.empty());
+    }
 
 }

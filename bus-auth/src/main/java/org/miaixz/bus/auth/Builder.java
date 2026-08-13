@@ -19,250 +19,204 @@
 */
 package org.miaixz.bus.auth;
 
-import java.security.InvalidKeyException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.time.Duration;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
-import lombok.Getter;
-import lombok.Setter;
-
-import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.url.UrlDecoder;
-import org.miaixz.bus.core.net.url.UrlEncoder;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.MapKit;
-import org.miaixz.bus.core.xyz.RandomKit;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.fabric.Options;
 
 /**
- * Builds OAuth URLs with query parameters, handle OAuth signatures, generate PKCE verification codes, and other
- * authentication flow features.
+ * Catalog of shared authentication constants and typed option keys.
  *
  * @author Kimi Liu
  */
-@Getter
-@Setter
-public class Builder {
+public final class Builder {
 
     /**
-     * Query parameter map.
+     * Directory that stores protocol-neutral providers.
      */
-    private final Map<String, String> params = new LinkedHashMap<>(7);
+    public static final String DIRECTORY_PROVIDERS = "providers";
 
     /**
-     * Base URL.
+     * Directory that stores server protocol handlers.
      */
-    private String baseUrl;
+    public static final String DIRECTORY_PROTOCOLS = "protocols";
 
     /**
-     * Private constructor to prevent direct instantiation.
+     * Directory that stores third-party authentication clients.
+     */
+    public static final String DIRECTORY_VENDORS = "vendors";
+
+    /**
+     * Directory that stores authentication policies.
+     */
+    public static final String DIRECTORY_POLICIES = "policies";
+
+    /**
+     * Capability for initiating an authorization flow.
+     */
+    public static final Capability CAPABILITY_AUTHORIZE = Capability.of("authorize");
+
+    /**
+     * Capability for consuming an authorization callback.
+     */
+    public static final Capability CAPABILITY_CALLBACK = Capability.of("callback");
+
+    /**
+     * Capability for authenticating credentials.
+     */
+    public static final Capability CAPABILITY_AUTHENTICATE = Capability.of("authenticate");
+
+    /**
+     * Capability for issuing or exchanging a token.
+     */
+    public static final Capability CAPABILITY_TOKEN = Capability.of("token");
+
+    /**
+     * Capability for refreshing a token.
+     */
+    public static final Capability CAPABILITY_REFRESH = Capability.of("refresh");
+
+    /**
+     * Capability for revoking a token.
+     */
+    public static final Capability CAPABILITY_REVOKE = Capability.of("revoke");
+
+    /**
+     * Capability for introspecting a token.
+     */
+    public static final Capability CAPABILITY_INTROSPECT = Capability.of("introspect");
+
+    /**
+     * Capability for resolving user information.
+     */
+    public static final Capability CAPABILITY_USERINFO = Capability.of("userinfo");
+
+    /**
+     * Capability for publishing or reading discovery metadata.
+     */
+    public static final Capability CAPABILITY_DISCOVERY = Capability.of("discovery");
+
+    /**
+     * Capability for provisioning an identity resource.
+     */
+    public static final Capability CAPABILITY_PROVISION = Capability.of("provision");
+
+    /**
+     * Typed option controlling accepted clock skew.
+     */
+    public static final Options.Key<Duration> OPTION_CLOCK_SKEW = Options
+            .key("auth.security.clock_skew", Duration.class);
+
+    /**
+     * Typed option controlling one-time authorization state lifetime.
+     */
+    public static final Options.Key<Duration> OPTION_STATE_TTL = Options.key("auth.state.ttl", Duration.class);
+
+    /**
+     * Typed option requiring callback state validation.
+     */
+    public static final Options.Key<Boolean> OPTION_STATE_REQUIRED = Options.key("auth.state.required", Boolean.class);
+
+    /**
+     * Typed option limiting callback parameter count.
+     */
+    public static final Options.Key<Integer> OPTION_CALLBACK_MAX_PARAMETERS = Options
+            .key("auth.callback.max_parameters", Integer.class);
+
+    /**
+     * Typed option limiting each callback parameter in UTF-8 bytes.
+     */
+    public static final Options.Key<Integer> OPTION_CALLBACK_MAX_PARAMETER_BYTES = Options
+            .key("auth.callback.max_parameter_bytes", Integer.class);
+
+    /**
+     * Typed option limiting decoded authentication header bytes.
+     */
+    public static final Options.Key<Integer> OPTION_MAX_HEADER_BYTES = Options
+            .key("auth.limit.max_header_bytes", Integer.class);
+
+    /**
+     * Typed option limiting decoded callback or form parameter count.
+     */
+    public static final Options.Key<Integer> OPTION_MAX_PARAMETERS = Options
+            .key("auth.limit.max_parameters", Integer.class);
+
+    /**
+     * Typed option limiting one decoded callback or form parameter in UTF-8 bytes.
+     */
+    public static final Options.Key<Integer> OPTION_MAX_PARAMETER_BYTES = Options
+            .key("auth.limit.max_parameter_bytes", Integer.class);
+
+    /**
+     * Typed option limiting decoded authentication JSON bytes.
+     */
+    public static final Options.Key<Integer> OPTION_MAX_JSON_BYTES = Options
+            .key("auth.limit.max_json_bytes", Integer.class);
+
+    /**
+     * Typed option limiting JSON object or array nesting depth.
+     */
+    public static final Options.Key<Integer> OPTION_MAX_JSON_DEPTH = Options
+            .key("auth.limit.max_json_depth", Integer.class);
+
+    /**
+     * Typed option limiting encoded token bytes.
+     */
+    public static final Options.Key<Integer> OPTION_MAX_TOKEN_BYTES = Options
+            .key("auth.limit.max_token_bytes", Integer.class);
+
+    /**
+     * Typed option limiting one LDAP message in bytes.
+     */
+    public static final Options.Key<Integer> OPTION_MAX_LDAP_MESSAGE_BYTES = Options
+            .key("auth.limit.max_ldap_message_bytes", Integer.class);
+
+    /**
+     * Typed option limiting LDAP BER nesting depth.
+     */
+    public static final Options.Key<Integer> OPTION_MAX_LDAP_DEPTH = Options
+            .key("auth.limit.max_ldap_depth", Integer.class);
+
+    /**
+     * Typed option limiting one SCIM bulk document in bytes.
+     */
+    public static final Options.Key<Integer> OPTION_MAX_SCIM_BULK_BYTES = Options
+            .key("auth.limit.max_scim_bulk_bytes", Integer.class);
+
+    /**
+     * Typed option limiting operations in one SCIM bulk request.
+     */
+    public static final Options.Key<Integer> OPTION_MAX_SCIM_BULK_OPERATIONS = Options
+            .key("auth.limit.max_scim_bulk_operations", Integer.class);
+
+    /**
+     * Typed option limiting one RADIUS datagram in bytes.
+     */
+    public static final Options.Key<Integer> OPTION_MAX_RADIUS_PACKET_BYTES = Options
+            .key("auth.limit.max_radius_packet_bytes", Integer.class);
+
+    /**
+     * Typed option limiting one SSF security event token in bytes.
+     */
+    public static final Options.Key<Integer> OPTION_MAX_SSF_SET_BYTES = Options
+            .key("auth.limit.max_ssf_set_bytes", Integer.class);
+
+    /**
+     * Typed option limiting buffered remote response bytes.
+     */
+    public static final Options.Key<Integer> OPTION_MAX_RESPONSE_BYTES = Options
+            .key("auth.limit.max_response_bytes", Integer.class);
+
+    /**
+     * Typed option limiting redirects followed by an authentication client.
+     */
+    public static final Options.Key<Integer> OPTION_REDIRECT_LIMIT = Options
+            .key("auth.transport.redirect_limit", Integer.class);
+
+    /**
+     * Prevents construction of this constant catalog.
      */
     private Builder() {
         // No initialization required.
-    }
-
-    /**
-     * Creates a Builder instance from a base URL.
-     *
-     * @param baseUrl the base URL
-     * @return a new Builder instance
-     */
-    public static Builder fromUrl(String baseUrl) {
-        Builder builder = new Builder();
-        builder.setBaseUrl(baseUrl);
-        return builder;
-    }
-
-    /**
-     * Parses a string into a key-value map. The string format is {@code key=value&key=value}.
-     *
-     * @param text the string to parse
-     * @return a key-value map
-     */
-    public static Map<String, String> parseStringToMap(String text) {
-        Map<String, String> res;
-        if (text.contains(Symbol.AND)) {
-            String[] fields = text.split(Symbol.AND);
-            res = new HashMap<>((int) (fields.length / 0.75 + 1));
-            for (String field : fields) {
-                if (field.contains(Symbol.EQUAL)) {
-                    String[] keyValue = field.split(Symbol.EQUAL);
-                    res.put(
-                            UrlDecoder.decode(keyValue[0]),
-                            keyValue.length == 2 ? UrlDecoder.decode(keyValue[1]) : null);
-                }
-            }
-        } else {
-            res = new HashMap<>(0);
-        }
-        return res;
-    }
-
-    /**
-     * Converts a key-value map to a string. The format is {@code key=value&key=value}.
-     *
-     * @param map    the map to convert
-     * @param encode whether to URL-encode the values
-     * @return the converted string, or an empty string if the map is null or empty
-     */
-    public static String parseMapToString(Map<String, String> map, boolean encode) {
-        if (null == map || map.isEmpty()) {
-            return Normal.EMPTY;
-        }
-        List<String> paramList = new ArrayList<>();
-        map.forEach((k, v) -> {
-            if (null == v) {
-                paramList.add(k + Symbol.EQUAL);
-            } else {
-                paramList.add(k + Symbol.EQUAL + (encode ? UrlEncoder.encodeAll(v) : v));
-            }
-        });
-        return String.join(Symbol.AND, paramList);
-    }
-
-    /**
-     * Generates an HMAC signature.
-     *
-     * @param key       the signing key
-     * @param data      the data to be signed
-     * @param algorithm the signing algorithm (e.g., HMAC-SHA1)
-     * @return the signature as a byte array
-     * @throws AuthorizedException if the algorithm is not supported or the key is invalid
-     */
-    public static byte[] sign(byte[] key, byte[] data, String algorithm) {
-        try {
-            Mac mac = Mac.getInstance(algorithm);
-            mac.init(new SecretKeySpec(key, algorithm));
-            return mac.doFinal(data);
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.warn(
-                    false,
-                    "Auth",
-                    ex,
-                    "OAuth signature failed: reason=unsupportedAlgorithm, algorithm={}, dataBytes={}",
-                    algorithm,
-                    data == null ? 0 : data.length);
-            throw new AuthorizedException("Unsupported algorithm: " + algorithm, ex);
-        } catch (InvalidKeyException ex) {
-            Logger.warn(
-                    false,
-                    "Auth",
-                    ex,
-                    "OAuth signature failed: reason=invalidKey, algorithm={}, keyBytes={}, dataBytes={}",
-                    algorithm,
-                    key == null ? 0 : key.length,
-                    data == null ? 0 : data.length);
-            throw new AuthorizedException("Invalid key: " + ArrayKit.toString(key), ex);
-        }
-    }
-
-    /**
-     * Generates a Code Verifier for OAuth 2.0 PKCE (Proof Key for Code Exchange).
-     *
-     * @return a Base64 URL-safe random string
-     */
-    public static String codeVerifier() {
-        return Base64.encodeUrlSafe(RandomKit.randomString(50));
-    }
-
-    /**
-     * Generates a Code Challenge for OAuth 2.0 PKCE. Reference: https://tools.ietf.org/html/rfc7636#section-4.2
-     *
-     * @param codeChallengeMethod the code challenge method (e.g., "S256" or "plain")
-     * @param codeVerifier        the code verifier generated by the client
-     * @return the code challenge
-     */
-    public static String codeChallenge(String codeChallengeMethod, String codeVerifier) {
-        if (Algorithm.SHA256.getValue().equalsIgnoreCase(codeChallengeMethod)) {
-            // code_challenge = BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))
-            return new String(Base64.encode(digest(codeVerifier), true), Charset.US_ASCII);
-        } else {
-            return codeVerifier;
-        }
-    }
-
-    /**
-     * Digests a string using the SHA-256 algorithm.
-     *
-     * @param str the string to digest
-     * @return the digested byte array, or null if the algorithm is unavailable
-     */
-    public static byte[] digest(String str) {
-        MessageDigest messageDigest;
-        try {
-            messageDigest = MessageDigest.getInstance(Algorithm.SHA256.getValue());
-            messageDigest.update(str.getBytes(Charset.UTF_8));
-            return messageDigest.digest();
-        } catch (NoSuchAlgorithmException e) {
-            Logger.warn(
-                    false,
-                    "Auth",
-                    e,
-                    "SHA256 digest failed: inputPresent={}, exception={}",
-                    str != null,
-                    e.getClass().getSimpleName());
-        }
-        return null;
-    }
-
-    /**
-     * Builds the URL without encoding parameter values.
-     *
-     * @return the constructed URL
-     */
-    public String build() {
-        return this.build(false);
-    }
-
-    /**
-     * Builds the URL, with an option to URL-encode parameter values.
-     *
-     * @param encode whether to URL-encode the parameter values
-     * @return the constructed URL
-     */
-    public String build(boolean encode) {
-        if (MapKit.isEmpty(this.params)) {
-            return this.baseUrl;
-        }
-        String baseUrl = StringKit.appendIfMissing(this.baseUrl, Symbol.QUESTION_MARK, Symbol.AND);
-        String paramString = parseMapToString(this.params, encode);
-        return baseUrl + paramString;
-    }
-
-    /**
-     * Retrieves a read-only map of query parameters.
-     *
-     * @return an unmodifiable map of parameters
-     */
-    public Map<String, Object> getReadOnlyParams() {
-        return Collections.unmodifiableMap(params);
-    }
-
-    /**
-     * Adds a query parameter to the URL.
-     *
-     * @param key   the parameter name
-     * @param value the parameter value
-     * @return the current Builder instance
-     * @throws RuntimeException if the parameter name is empty
-     */
-    public Builder queryParam(String key, Object value) {
-        if (StringKit.isEmpty(key)) {
-            throw new RuntimeException("Parameter name cannot be empty");
-        }
-        String valueAsString = (value != null ? value.toString() : null);
-        this.params.put(key, valueAsString);
-        return this;
     }
 
 }

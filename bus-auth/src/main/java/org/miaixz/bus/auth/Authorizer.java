@@ -19,207 +19,125 @@
 */
 package org.miaixz.bus.auth;
 
-import java.util.Arrays;
-
-import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.nimble.AbstractProvider;
-import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.core.center.function.FunctionX;
-import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.auth.runtime.AuthRuntime;
+import org.miaixz.bus.auth.runtime.RuntimeBuilder;
+import org.miaixz.bus.auth.vendor.VendorConfiguration;
+import org.miaixz.bus.auth.vendor.VendorProvider;
+import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Authorization module builder, used to quickly construct authentication providers. It uses the builder pattern to
- * configure the authentication source, context, cache, and protocol configurations, dynamically creating corresponding
- * authentication provider instances.
+ * Protocol-neutral authentication entry point backed by a shared default runtime.
  *
  * @author Kimi Liu
  */
-public class Authorizer {
+public final class Authorizer {
 
     /**
-     * Authentication source (e.g., TWITTER, SAML).
-     */
-    private String source;
-
-    /**
-     * Context configuration, containing protocol-specific parameters.
-     */
-    private Context context;
-
-    /**
-     * Cache implementation, used to store temporary data such as state.
-     */
-    private CacheX cache;
-
-    /**
-     * Array of custom protocol configurations.
-     */
-    private Complex[] complex;
-
-    /**
-     * Private constructor to prevent direct instantiation.
+     * Prevents construction of the static authentication entry point.
      */
     private Authorizer() {
         // No initialization required.
     }
 
     /**
-     * Creates an Authorizer builder instance.
+     * Creates a runtime builder preloaded with built-in vendor definitions.
      *
-     * @return a new Authorizer instance
+     * @return mutable runtime builder
      */
-    public static Authorizer builder() {
-        return new Authorizer();
+    public static RuntimeBuilder builder() {
+        return AuthRuntime.builder();
     }
 
     /**
-     * Sets the authentication source.
+     * Creates an empty runtime builder for explicit registration.
      *
-     * @param source the authentication source (e.g., TWITTER, SAML_EXAMPLE)
-     * @return the current Authorizer instance
+     * @return empty mutable runtime builder
      */
-    public Authorizer source(String source) {
-        this.source = source;
-        return this;
+    public static RuntimeBuilder emptyBuilder() {
+        return AuthRuntime.emptyBuilder();
     }
 
     /**
-     * Sets the context configuration.
+     * Returns the lazily shared authentication runtime.
      *
-     * @param context the context configuration object
-     * @return the current Authorizer instance
+     * @return shared runtime
+     * @throws InternalException if runtime construction fails
      */
-    public Authorizer context(Context context) {
-        this.context = context;
-        return this;
-    }
-
-    /**
-     * Dynamically sets the context configuration using a function.
-     *
-     * @param context a function that generates the context configuration based on the source
-     * @return the current Authorizer instance
-     */
-    public Authorizer context(FunctionX<String, Context> context) {
-        this.context = context.apply(this.source);
-        return this;
-    }
-
-    /**
-     * Sets the cache implementation.
-     *
-     * @param cache the cache object
-     * @return the current Authorizer instance
-     */
-    public Authorizer cache(CacheX cache) {
-        this.cache = cache;
-        return this;
-    }
-
-    /**
-     * Sets custom protocol configurations.
-     *
-     * @param complex an array of protocol configurations
-     * @return the current Authorizer instance
-     */
-    public Authorizer complex(Complex... complex) {
-        this.complex = complex;
-        return this;
-    }
-
-    /**
-     * Builds an authentication provider instance. It finds the matching {@link Complex} based on the configured source
-     * and dynamically creates the corresponding provider instance.
-     *
-     * @return an authentication provider instance
-     * @throws AuthorizedException if the source or context is not set, or if no matching {@link Complex} is found
-     */
-    public Provider build() {
-        Logger.debug(
-                true,
-                "Auth",
-                "OAuth provider build started: source={}, contextPresent={}, customComplexCount={}",
-                this.source,
-                this.context != null,
-                this.complex == null ? 0 : this.complex.length);
-        // Validate if source and context are set
-        if (StringKit.isEmpty(this.source) || null == this.context) {
-            Logger.warn(
-                    false,
-                    "Auth",
-                    "OAuth provider build rejected: source={}, reason={}",
-                    this.source,
-                    "missingSourceOrContext");
-            throw new AuthorizedException(ErrorCode._110000);
-        }
-
-        // Merge default Registry and custom Complex configurations
-        Complex[] complexes = this.concat(Registry.values(), this.complex);
-
-        // Filter for the Complex that matches the source
-        Complex complex = Arrays.stream(complexes).distinct()
-                .filter(authSource -> authSource.getName().equalsIgnoreCase(this.source)).findAny()
-                .orElseThrow(() -> new AuthorizedException(ErrorCode._110000));
-
-        // Get the provider class
-        Class<? extends AbstractProvider> targetClass = complex.getTargetClass();
-        if (null == targetClass) {
-            Logger.warn(
-                    false,
-                    "Auth",
-                    "OAuth provider build rejected: source={}, reason={}",
-                    complex.getName(),
-                    "missingTargetClass");
-            throw new AuthorizedException(ErrorCode._110000);
-        }
-
-        // Dynamically create the provider instance
-        try {
-            Provider provider;
-            if (this.cache == null) {
-                provider = targetClass.getDeclaredConstructor(Context.class).newInstance(this.context);
-            } else {
-                provider = targetClass.getDeclaredConstructor(Context.class, CacheX.class)
-                        .newInstance(this.context, this.cache);
+    public static AuthRuntime runtime() {
+        synchronized (DefaultRuntime.class) {
+            try {
+                return Instances.get(DefaultRuntime.class.getName(), DefaultRuntime::new).runtime;
+            } catch (final RuntimeException failure) {
+                if (failure instanceof InternalException) {
+                    throw failure;
+                }
+                throw new InternalException("Unable to create authentication runtime", failure);
             }
-            Logger.debug(
-                    false,
-                    "Auth",
-                    "OAuth provider build completed: source={}, provider={}, cachePresent={}",
-                    complex.getName(),
-                    targetClass.getName(),
-                    this.cache != null);
-            return provider;
-        } catch (Exception e) {
-            Logger.warn(
-                    false,
-                    "Auth",
-                    e,
-                    "OAuth provider creation failed: source={}, provider={}, exception={}",
-                    complex.getName(),
-                    targetClass.getName(),
-                    e.getClass().getSimpleName());
-            throw new AuthorizedException(ErrorCode._110000);
         }
     }
 
     /**
-     * Concatenates two arrays of {@link Complex} objects.
+     * Creates a third-party authentication client from the shared runtime.
      *
-     * @param first  the first array of Complex objects (usually default configurations)
-     * @param second the second array of Complex objects (custom configurations)
-     * @return the concatenated array of Complex objects
+     * @param name          vendor definition name
+     * @param configuration explicit vendor construction dependencies
+     * @return configured vendor provider
+     * @throws RuntimeException if the definition is absent or provider construction fails
      */
-    private Complex[] concat(Complex[] first, Complex[] second) {
-        if (null == second || second.length == 0) {
-            return first;
+    public static VendorProvider vendor(final String name, final VendorConfiguration configuration) {
+        return runtime().provider(name, configuration);
+    }
+
+    /**
+     * Looks up a typed protocol-neutral provider.
+     *
+     * @param id   stable provider identifier
+     * @param type required provider type
+     * @param <P>  provider type
+     * @return registered provider
+     * @throws RuntimeException if the provider is absent or has a different type
+     */
+    public static <P extends Provider> P provider(final String id, final Class<P> type) {
+        return runtime().provider(id, type);
+    }
+
+    /**
+     * Closes and removes the shared authentication runtime when initialized.
+     *
+     * @throws RuntimeException if runtime shutdown fails
+     */
+    public static void shutdown() {
+        synchronized (DefaultRuntime.class) {
+            if (!Instances.exists(DefaultRuntime.class)) {
+                return;
+            }
+            try {
+                Instances.get(DefaultRuntime.class.getName(), DefaultRuntime::new).runtime.close();
+            } finally {
+                Instances.remove(DefaultRuntime.class);
+            }
         }
-        Complex[] result = new Complex[first.length + second.length];
-        System.arraycopy(first, 0, result, 0, first.length);
-        System.arraycopy(second, 0, result, first.length, second.length);
-        return result;
+    }
+
+    /**
+     * Lazily constructed value stored through the shared Bus instance registry.
+     *
+     * @author Kimi Liu
+     */
+    private static final class DefaultRuntime {
+
+        /**
+         * Runtime owned by this singleton holder.
+         */
+        private final AuthRuntime runtime = AuthRuntime.builder().build();
+
+        /**
+         * Creates the singleton runtime holder.
+         */
+        private DefaultRuntime() {
+            // Field initialization creates the runtime.
+        }
     }
 
 }
