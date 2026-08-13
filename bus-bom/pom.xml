@@ -138,7 +138,7 @@
         <rocketmq.version>5.5.0</rocketmq.version>
         <sshd.version>2.18.0</sshd.version>
         <word.version>1.3.1</word.version>
-        <bcpkix.version>1.84</bcpkix.version>
+        <bcpkix.version>1.85</bcpkix.version>
         <javassist.version>3.31.0-GA</javassist.version>
         <jcseg.version>2.6.3</jcseg.version>
         <mybatis.version>3.5.19</mybatis.version>
