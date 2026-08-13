@@ -40,32 +40,41 @@ import org.miaixz.bus.core.xyz.StringKit;
 public enum Protocol {
 
     /**
-     * Named pipe protocol, used for inter-process communication via shared memory. It is slightly faster than sockets
-     * but is limited to processes on the same machine. Java does not support named pipes by default.
+     * Advanced Message Queuing Protocol.
      */
-    PIPE("pipe"),
+    AMQP("AMQP"),
 
     /**
-     * A reliable TCP/IP socket connection protocol that provides connection-oriented communication.
+     * DICOM protocol, used for the transmission and storage of medical imaging data, compliant with ISO 12052.
      */
-    SOCKET("socket"),
+    DICOM("dicom"),
 
     /**
-     * Transmission Control Protocol (TCP), providing reliable, connection-oriented communication, widely used in
-     * network applications.
+     * gRPC - High-performance RPC framework using Protocol Buffers.
      */
-    TCP("tcp"),
+    GRPC("gRPC"),
 
     /**
-     * User Datagram Protocol (UDP), providing connectionless, unreliable communication, suitable for low-latency
-     * scenarios.
+     * HTTP/2 cleartext protocol, which does not require an upgrade handshake and requires the client to have prior
+     * knowledge that the server supports cleartext HTTP/2, compliant with RFC 7540.
      */
-    UDP("udp"),
+    H2_PRIOR_KNOWLEDGE("h2_prior_knowledge"),
+
+    /**
+     * HL7 protocol, a standardized protocol for exchanging medical information, compliant with HL7 international
+     * standards.
+     */
+    HL7("hl7"),
 
     /**
      * Hypertext Transfer Protocol (HTTP), used for transmitting web page data in plain text.
      */
     HTTP("http"),
+
+    /**
+     * Secure Hypertext Transfer Protocol (HTTPS), an encrypted version of HTTP over TLS/SSL, compliant with RFC 2818.
+     */
+    HTTPS("https"),
 
     /**
      * HTTP/1.0 protocol, an early plain text protocol that does not support persistent connections, compliant with RFC
@@ -92,22 +101,81 @@ public enum Protocol {
     HTTP_3("h3"),
 
     /**
-     * SPDY/3.1 protocol, a binary framing protocol from Chromium that supports header compression and request
-     * multiplexing, based on HTTP/1.1 semantics (deprecated).
+     * Custom binary protocol used by Apache Kafka.
      */
-    SPDY_3("spdy/3.1"),
+    KAFKA("Kafka"),
 
     /**
-     * HTTP/2 cleartext protocol, which does not require an upgrade handshake and requires the client to have prior
-     * knowledge that the server supports cleartext HTTP/2, compliant with RFC 7540.
+     * Lightweight Directory Access Protocol (LDAP), used for accessing directory services, compliant with RFC 4511.
      */
-    H2_PRIOR_KNOWLEDGE("h2_prior_knowledge"),
+    LDAP("LDAP"),
+
+    /**
+     * Lightweight Directory Access Protocol over implicit TLS, identified by the registered {@code ldaps} URI scheme.
+     */
+    LDAPS("ldaps"),
+
+    /**
+     * Model-Context Protocol.
+     */
+    MCP("MCP"),
+
+    /**
+     * Message Queue.
+     */
+    MQ("MQ"),
+
+    /**
+     * Message Queuing Telemetry Transport.
+     */
+    MQTT("MQTT"),
+
+    /**
+     * OAuth 1.0a authorization protocol, including request-token and signed-resource flows.
+     */
+    OAUTH1("OAuth 1.0a"),
+
+    /**
+     * OAuth 2.0 authorization framework.
+     */
+    OAUTH2("OAuth 2.0"),
+
+    /**
+     * OpenID Connect protocol, an authentication protocol based on OAuth2, compliant with OpenID standards.
+     */
+    OIDC("OIDC"),
+
+    /**
+     * Message middleware binary protocol.
+     */
+    OPENWIRE("Openwire"),
+
+    /**
+     * Named pipe protocol, used for inter-process communication via shared memory. It is slightly faster than sockets
+     * but is limited to processes on the same machine. Java does not support named pipes by default.
+     */
+    PIPE("pipe"),
 
     /**
      * QUIC (Quick UDP Internet Connections) protocol, a secure, multiplexed transport protocol based on UDP that
      * optimizes HTTP/2 semantics, compliant with RFC 9000.
      */
     QUIC("quic"),
+
+    /**
+     * Remote Authentication Dial-In User Service protocol, identified by the lower-case transport name.
+     */
+    RADIUS("radius"),
+
+    /**
+     * Redis Serialization Protocol.
+     */
+    RESP("RESP"),
+
+    /**
+     * SAML protocol, used for single sign-on and identity federation, compliant with OASIS standards.
+     */
+    SAML("SAML"),
 
     /**
      * SOAP 1.1 protocol, a simple object access protocol based on XML for communication in distributed systems,
@@ -122,20 +190,15 @@ public enum Protocol {
     SOAP_1_2("SOAP 1.2 Protocol"),
 
     /**
-     * WebSocket protocol (cleartext), used for bidirectional real-time communication over TCP, compliant with RFC 6455.
+     * A reliable TCP/IP socket connection protocol that provides connection-oriented communication.
      */
-    WS("ws"),
+    SOCKET("socket"),
 
     /**
-     * Encrypted WebSocket protocol (secure), providing bidirectional real-time communication over TLS, compliant with
-     * RFC 6455.
+     * SPDY/3.1 protocol, a binary framing protocol from Chromium that supports header compression and request
+     * multiplexing, based on HTTP/1.1 semantics (deprecated).
      */
-    WSS("wss"),
-
-    /**
-     * Secure Hypertext Transfer Protocol (HTTPS), an encrypted version of HTTP over TLS/SSL, compliant with RFC 2818.
-     */
-    HTTPS("https"),
+    SPDY_3("spdy/3.1"),
 
     /**
      * Generic SSL protocol, supporting certain versions of SSL encryption (deprecated).
@@ -151,6 +214,17 @@ public enum Protocol {
      * SSL 3.0 protocol, an improved encryption protocol, deprecated due to security vulnerabilities.
      */
     SSLv3("SSLv3"),
+
+    /**
+     * Simple Text Oriented Messaging Protocol.
+     */
+    STOMP("STOMP"),
+
+    /**
+     * Transmission Control Protocol (TCP), providing reliable, connection-oriented communication, widely used in
+     * network applications.
+     */
+    TCP("tcp"),
 
     /**
      * Generic TLS protocol, supporting certain versions of TLS encryption for secure communication.
@@ -178,107 +252,28 @@ public enum Protocol {
     TLSv1_3("TLSv1.3"),
 
     /**
-     * DICOM protocol, used for the transmission and storage of medical imaging data, compliant with ISO 12052.
+     * User Datagram Protocol (UDP), providing connectionless, unreliable communication, suitable for low-latency
+     * scenarios.
      */
-    DICOM("dicom"),
+    UDP("udp"),
 
     /**
-     * HL7 protocol, a standardized protocol for exchanging medical information, compliant with HL7 international
-     * standards.
+     * Vendor-defined authentication exchange that is not an OAuth or OpenID Connect protocol.
      */
-    HL7("hl7"),
+    VENDOR_AUTH("Vendor Authentication"),
 
     /**
-     * OpenID Connect protocol, an authentication protocol based on OAuth2, compliant with OpenID standards.
+     * WebSocket protocol (cleartext), used for bidirectional real-time communication over TCP, compliant with RFC 6455.
      */
-    OIDC("OIDC"),
+    WS("ws"),
 
     /**
-     * SAML protocol, used for single sign-on and identity federation, compliant with OASIS standards.
+     * Encrypted WebSocket protocol (secure), providing bidirectional real-time communication over TLS, compliant with
+     * RFC 6455.
      */
-    SAML("SAML"),
-
-    /**
-     * Lightweight Directory Access Protocol (LDAP), used for accessing directory services, compliant with RFC 4511.
-     */
-    LDAP("LDAP"),
-
-    /**
-     * Message Queue.
-     */
-    MQ("MQ"),
-
-    /**
-     * Advanced Message Queuing Protocol.
-     */
-    AMQP("AMQP"),
-
-    /**
-     * Simple Text Oriented Messaging Protocol.
-     */
-    STOMP("STOMP"),
-
-    /**
-     * Message Queuing Telemetry Transport.
-     */
-    MQTT("MQTT"),
-
-    /**
-     * Message middleware binary protocol.
-     */
-    OPENWIRE("Openwire"),
-
-    /**
-     * Custom binary protocol used by Apache Kafka.
-     */
-    KAFKA("Kafka"),
-
-    /**
-     * Redis Serialization Protocol.
-     */
-    RESP("RESP"),
-
-    /**
-     * Model-Context Protocol.
-     */
-    MCP("MCP"),
-
-    /**
-     * gRPC - High-performance RPC framework using Protocol Buffers.
-     */
-    GRPC("gRPC"),
-
-    /**
-     * Lightweight Directory Access Protocol over implicit TLS, identified by the registered {@code ldaps} URI scheme.
-     */
-    LDAPS("ldaps"),
-
-    /**
-     * Remote Authentication Dial-In User Service protocol, identified by the lower-case transport name.
-     */
-    RADIUS("radius"),
+    WSS("wss"),
 
     ;
-
-    /**
-     * HTTP prefix, formatted as "http://".
-     */
-    public static final String HTTP_PREFIX = HTTP.name + Symbol.COLON + Symbol.FORWARDSLASH;
-
-    /**
-     * HTTPS prefix, formatted as "https://".
-     */
-    public static final String HTTPS_PREFIX = HTTPS.name + Symbol.COLON + Symbol.FORWARDSLASH;
-
-    /**
-     * WebSocket prefix, formatted as "ws://".
-     */
-    public static final String WS_PREFIX = WS.name + Symbol.COLON + Symbol.FORWARDSLASH;
-
-    /**
-     * Secure WebSocket prefix, formatted as "wss://".
-     */
-    public static final String WSS_PREFIX = WSS.name + Symbol.COLON + Symbol.FORWARDSLASH;
 
     /**
      * Local IPv4 address, with the value "127.0.0.1", representing the local loopback address.
@@ -291,14 +286,14 @@ public enum Protocol {
     public static final String HOST_LOCAL = "localhost";
 
     /**
-     * Minimum IPv4 address in string form, with the value "0.0.0.0", typically used to listen on all interfaces.
+     * HTTPS prefix, formatted as "https://".
      */
-    public static final String IPV4_STR_MIN = "0.0.0.0";
+    public static final String HTTPS_PREFIX = HTTPS.name + Symbol.COLON + Symbol.FORWARDSLASH;
 
     /**
-     * Maximum IPv4 address in string form, with the value "255.255.255.255", representing the broadcast address.
+     * HTTP prefix, formatted as "http://".
      */
-    public static final String IPV4_STR_MAX = "255.255.255.255";
+    public static final String HTTP_PREFIX = HTTP.name + Symbol.COLON + Symbol.FORWARDSLASH;
 
     /**
      * Maximum IPv4 address in numerical form, with the value 0xffffffffL, representing the highest IP address.
@@ -306,10 +301,30 @@ public enum Protocol {
     public static final long IPV4_NUM_MAX = 0xffffffffL;
 
     /**
+     * Maximum IPv4 address in string form, with the value "255.255.255.255", representing the broadcast address.
+     */
+    public static final String IPV4_STR_MAX = "255.255.255.255";
+
+    /**
+     * Minimum IPv4 address in string form, with the value "0.0.0.0", typically used to listen on all interfaces.
+     */
+    public static final String IPV4_STR_MIN = "0.0.0.0";
+
+    /**
      * Maximum unused IPv4 address in string form, with the value "0.255.255.255", representing an unallocated address
      * range.
      */
     public static final String IPV4_UNUSED_STR_MAX = "0.255.255.255";
+
+    /**
+     * Secure WebSocket prefix, formatted as "wss://".
+     */
+    public static final String WSS_PREFIX = WSS.name + Symbol.COLON + Symbol.FORWARDSLASH;
+
+    /**
+     * WebSocket prefix, formatted as "ws://".
+     */
+    public static final String WS_PREFIX = WS.name + Symbol.COLON + Symbol.FORWARDSLASH;
 
     /**
      * The name of the protocol, used to identify the protocol type.
