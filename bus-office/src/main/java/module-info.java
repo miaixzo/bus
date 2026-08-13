@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.office
+ * Module: {@code bus.office}
+ *
+ * <p>
+ * Provides APIs for reading, writing, and transforming common office document formats.
+ *
+ * <p>
+ * Includes CSV processing, Excel readers and writers, streaming spreadsheet parsing, cell and style utilities, Word
+ * documents, presentations, OFD documents, and tabular import and export workflows.
  *
  * @author Kimi Liu
  */

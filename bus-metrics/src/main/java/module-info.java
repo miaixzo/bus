@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.metrics
+ * Module: {@code bus.metrics}
+ *
+ * <p>
+ * Provides a vendor-neutral facade for collecting and publishing application metrics.
+ *
+ * <p>
+ * Includes metric instruments, observation guards, tags, rolling windows, service-level objectives, and bridges for
+ * native metrics, Micrometer, OpenTelemetry, and Prometheus.
  *
  * @author Kimi Liu
  */

@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.notify
+ * Module: {@code bus.notify}
+ *
+ * <p>
+ * Provides a unified interface for sending outbound notifications through third-party services.
+ *
+ * <p>
+ * Includes notification contracts, configuration and caching support, email, SMS and push providers, DingTalk, WeChat,
+ * and other vendor-specific messaging adapters.
  *
  * @author Kimi Liu
  */

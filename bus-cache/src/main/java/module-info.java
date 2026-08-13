@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.cache
+ * Module: {@code bus.cache}
+ *
+ * <p>
+ * Provides unified cache abstractions and commonly used cache implementations.
+ *
+ * <p>
+ * Includes cache interfaces, local and distributed cache adapters, annotation-driven caching, single-key and multi-key
+ * read-through handling, serialization support, statistics collection, and cache expiration management.
  *
  * @author Kimi Liu
  */

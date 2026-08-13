@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.storage
+ * Module: {@code bus.storage}
+ *
+ * <p>
+ * Provides a unified abstraction for object and file storage services.
+ *
+ * <p>
+ * Includes storage contracts, configuration and caching, provider selection, object operations, and adapters for
+ * S3-compatible services, cloud buckets, WebDAV, SMB, FTP and SFTP, GitLab, and local filesystems.
  *
  * @author Kimi Liu
  */

@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.crypto
+ * Module: {@code bus.crypto}
+ *
+ * <p>
+ * Provides cryptographic primitives and a consistent interface to common security algorithms.
+ *
+ * <p>
+ * Includes symmetric and asymmetric encryption, message digests, message authentication codes, signatures, key
+ * handling, cipher utilities, and adapters for Java and Bouncy Castle cryptography providers.
  *
  * @author Kimi Liu
  */

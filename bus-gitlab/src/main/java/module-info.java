@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * bus.gitlab
+ * Module: {@code bus.gitlab}
+ *
+ * <p>
+ * Provides a Java client abstraction for GitLab services and resources.
+ *
+ * <p>
+ * Includes service clients, request support, domain models, system hooks, web hooks, and APIs for repositories,
+ * pipelines, issues, merge requests, users, groups, and project administration.
  *
  * @author Kimi Liu
  */

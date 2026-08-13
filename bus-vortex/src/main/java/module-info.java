@@ -18,30 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * The core module for the Bus Vortex reactive API gateway.
+ * Module: {@code bus.vortex}
+ *
  * <p>
- * This module provides a flexible, non-blocking, and extensible framework for building API gateways on top of the
- * Spring WebFlux and Project Reactor stack. It defines the core components for request processing, including the
- * strategy chain, routing, and various service provider interfaces.
+ * Provides a non-blocking and extensible API gateway built on Spring WebFlux and Project Reactor.
+ *
  * <p>
- * Key dependencies:
- * <ul>
- * <li>{@code bus.core}, {@code bus.extra}, etc.: The foundational libraries of the Bus ecosystem, required
- * transitively.</li>
- * <li>{@code spring.webflux}, {@code reactor.core}: The reactive foundation for the entire gateway, marked as as this
- * is a framework.</li>
- * </ul>
- * <p>
- * Exported API Packages:
- * <ul>
- * <li>{@code org.miaixz.bus.vortex}: Core interfaces like {@code Strategy}, {@code Router}, and the central
- * {@code Context} object.</li>
- * <li>{@code org.miaixz.bus.vortex.filter}: The main entry point {@code PrimaryFilter}.</li>
- * <li>{@code org.miaixz.bus.vortex.strategy}: Concrete strategy implementations for the processing chain.</li>
- * <li>{@code org.miaixz.bus.vortex.handler}: Final request handlers and global error handling.</li>
- * <li>{@code org.miaixz.bus.vortex.provider}: Service Provider Interfaces (SPIs) for extensibility.</li>
- * <li>{@code org.miaixz.bus.vortex.registry}: In-memory registries for runtime configurations.</li>
- * </ul>
+ * Includes filters, handlers, strategy chains, provider interfaces, registries, cluster and cache integration, and
+ * routing for REST, gRPC, WebSocket, message queues, large language models, and Model Context Protocol services.
  *
  * @author Kimi Liu
  */
