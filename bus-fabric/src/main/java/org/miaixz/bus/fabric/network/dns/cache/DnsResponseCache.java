@@ -874,7 +874,6 @@ public final class DnsResponseCache {
          *
          * @return timing wheel buckets
          */
-        @SuppressWarnings("unchecked")
         private ArrayDeque<DnsCacheKey>[] newTimingWheel() {
             final ArrayDeque<DnsCacheKey>[] wheel = new ArrayDeque[TIMING_WHEEL_SLOTS];
             for (int index = 0; index < wheel.length; index++) {
