@@ -178,6 +178,11 @@ public enum Protocol {
     SAML("SAML"),
 
     /**
+     * System for Cross-domain Identity Management protocol used to provision and manage identity resources.
+     */
+    SCIM("SCIM"),
+
+    /**
      * SOAP 1.1 protocol, a simple object access protocol based on XML for communication in distributed systems,
      * compliant with W3C standards.
      */
