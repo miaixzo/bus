@@ -214,7 +214,32 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
         /**
          * API key credential.
          */
-        API_KEY
+        API_KEY,
+
+        /**
+         * Password credential presented directly by a user or trusted client.
+         */
+        PASSWORD,
+
+        /**
+         * Short-lived authorization code exchanged for tokens or other credentials.
+         */
+        AUTHORIZATION_CODE,
+
+        /**
+         * Signed or otherwise verifiable assertion presented as a credential.
+         */
+        ASSERTION,
+
+        /**
+         * Certificate credential used to authenticate a peer or bind a cryptographic identity.
+         */
+        CERTIFICATE,
+
+        /**
+         * One-time password credential whose value is valid for a single authentication attempt.
+         */
+        OTP
 
     }
 
