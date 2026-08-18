@@ -19,12 +19,11 @@
 */
 package org.miaixz.bus.fabric.protocol.stomp.body;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
@@ -126,7 +125,7 @@ public final class StompBody implements MessageBody, ProgressBody {
      * @return STOMP body
      */
     public static StompBody text(final String text) {
-        return text(text, StandardCharsets.UTF_8);
+        return text(text, Charset.UTF_8);
     }
 
     /**
@@ -136,8 +135,8 @@ public final class StompBody implements MessageBody, ProgressBody {
      * @param charset character encoding recorded in the media type
      * @return STOMP body
      */
-    public static StompBody text(final String text, final Charset charset) {
-        final Charset current = require(charset, "STOMP charset");
+    public static StompBody text(final String text, final java.nio.charset.Charset charset) {
+        final java.nio.charset.Charset current = require(charset, "STOMP charset");
         return of(Payload.of(require(text, "STOMP text"), current), textMedia(current));
     }
 
@@ -241,7 +240,7 @@ public final class StompBody implements MessageBody, ProgressBody {
      * @param charset character encoding attached to text/plain metadata
      * @return media type
      */
-    private static MediaType textMedia(final Charset charset) {
+    private static MediaType textMedia(final java.nio.charset.Charset charset) {
         return MediaType.TEXT_PLAIN_TYPE.withCharset(charset);
     }
 

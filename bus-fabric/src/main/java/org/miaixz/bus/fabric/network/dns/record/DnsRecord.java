@@ -26,6 +26,7 @@ import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -213,7 +214,7 @@ public final class DnsRecord {
             if (text == null) {
                 throw new ValidateException("TXT chunk must not be null");
             }
-            final byte[] bytes = text.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+            final byte[] bytes = text.getBytes(Charset.UTF_8);
             if (bytes.length > 255) {
                 throw new ValidateException("TXT chunk exceeds 255 bytes");
             }
@@ -705,7 +706,7 @@ public final class DnsRecord {
         if (value == null) {
             throw new ValidateException(name + " must not be null");
         }
-        return value.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        return value.getBytes(Charset.UTF_8);
     }
 
 }

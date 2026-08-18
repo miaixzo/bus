@@ -22,12 +22,12 @@ package org.miaixz.bus.fabric.protocol.websocket.frame;
 import java.io.IOException;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CodingErrorAction;
-import java.nio.charset.StandardCharsets;
 
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
@@ -191,7 +191,7 @@ public final class WebSocketReader {
      */
     private static String decodeUtf8(final ByteString value, final String field) {
         try {
-            return StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
+            return Charset.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
                     .onUnmappableCharacter(CodingErrorAction.REPORT).decode(value.asByteBuffer()).toString();
         } catch (final CharacterCodingException e) {
             throw new ProtocolException(field + " is invalid UTF-8; close code 1007 is required", e);
