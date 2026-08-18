@@ -1256,6 +1256,11 @@ public final class Http {
          * OpenID Connect discovery path.
          */
         public static final String OPENID_CONFIGURATION = "/.well-known/openid-configuration";
+
+        /**
+         * OAuth 2.0 Authorization Server Metadata well-known path defined by RFC 8414.
+         */
+        public static final String AUTHORIZATION_SERVER_METADATA = "/.well-known/oauth-authorization-server";
         /**
          * Security policy discovery path.
          */

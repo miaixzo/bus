@@ -24,10 +24,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
-import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 
 import org.miaixz.bus.core.convert.Convert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
@@ -51,12 +51,13 @@ public class CharsetDetector {
     /**
      * Default charsets to participate in the detection test.
      */
-    private static final Charset[] DEFAULT_CHARSETS;
+    private static final java.nio.charset.Charset[] DEFAULT_CHARSETS;
 
     static {
-        final String[] names = { org.miaixz.bus.core.lang.Charset.DEFAULT_UTF_8, "GBK", "GB2312", "GB18030", "UTF-16BE",
-                "UTF-16LE", "UTF-16", "BIG5", "UNICODE", "US-ASCII" };
-        DEFAULT_CHARSETS = Convert.convert(Charset[].class, names);
+        final String[] names = { Charset.DEFAULT_UTF_8, Charset.DEFAULT_GBK, Charset.DEFAULT_GB_2312,
+                Charset.DEFAULT_GB_18030, Charset.DEFAULT_UTF_16_BE, Charset.DEFAULT_UTF_16_LE, Charset.DEFAULT_UTF_16,
+                "BIG5", "UNICODE", Charset.DEFAULT_US_ASCII };
+        DEFAULT_CHARSETS = Convert.convert(java.nio.charset.Charset[].class, names);
     }
 
     /**
@@ -64,9 +65,9 @@ public class CharsetDetector {
      *
      * @param file     The file to detect the charset from.
      * @param charsets The charsets to test. If null or empty, {@link #DEFAULT_CHARSETS} will be used.
-     * @return The detected {@link Charset}, or null if no charset could be reliably detected.
+     * @return The detected {@link java.nio.charset.Charset}, or null if no charset could be reliably detected.
      */
-    public static Charset detect(final File file, final Charset... charsets) {
+    public static java.nio.charset.Charset detect(final File file, final java.nio.charset.Charset... charsets) {
         return detect(FileKit.getInputStream(file), charsets);
     }
 
@@ -76,10 +77,10 @@ public class CharsetDetector {
      *
      * @param in       The input stream to detect the charset from. This stream will be closed after detection.
      * @param charsets The charsets to test. If null or empty, {@link #DEFAULT_CHARSETS} will be used.
-     * @return The detected {@link Charset}, or null if no charset could be reliably detected.
+     * @return The detected {@link java.nio.charset.Charset}, or null if no charset could be reliably detected.
      * @throws InternalException if an {@link IOException} occurs during stream reading.
      */
-    public static Charset detect(final InputStream in, final Charset... charsets) {
+    public static java.nio.charset.Charset detect(final InputStream in, final java.nio.charset.Charset... charsets) {
         return detect(Normal._8192, in, charsets);
     }
 
@@ -91,10 +92,13 @@ public class CharsetDetector {
      * @param bufferSize The custom buffer size, i.e., the length checked each time.
      * @param in         The input stream to detect the charset from. This stream will be closed after detection.
      * @param charsets   The charsets to test. If null or empty, {@link #DEFAULT_CHARSETS} will be used.
-     * @return The detected {@link Charset}, or null if no charset could be reliably detected.
+     * @return The detected {@link java.nio.charset.Charset}, or null if no charset could be reliably detected.
      * @throws InternalException if an {@link IOException} occurs during stream reading.
      */
-    public static Charset detect(final int bufferSize, final InputStream in, Charset... charsets) {
+    public static java.nio.charset.Charset detect(
+            final int bufferSize,
+            final InputStream in,
+            java.nio.charset.Charset... charsets) {
         if (ArrayKit.isEmpty(charsets)) {
             charsets = DEFAULT_CHARSETS;
         }
@@ -102,7 +106,7 @@ public class CharsetDetector {
         final byte[] buffer = new byte[bufferSize];
         try {
             while (in.read(buffer) > -1) {
-                for (final Charset charset : charsets) {
+                for (final java.nio.charset.Charset charset : charsets) {
                     final CharsetDecoder decoder = charset.newDecoder();
                     if (identify(buffer, decoder)) {
                         return charset;

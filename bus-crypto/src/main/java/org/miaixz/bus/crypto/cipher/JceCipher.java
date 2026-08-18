@@ -126,6 +126,23 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
     }
 
     /**
+     * Supplies additional authenticated data to the initialized JCE cipher.
+     *
+     * @param aad additional authenticated data; an empty array is permitted
+     * @throws IllegalArgumentException if {@code aad} is {@code null}
+     * @throws CryptoException          if the selected cipher mode does not accept AAD in its current state
+     */
+    @Override
+    public void updateAad(final byte[] aad) {
+        Assert.notNull(aad, "Additional authenticated data must not be null");
+        try {
+            this.raw.updateAAD(aad);
+        } catch (final IllegalArgumentException | IllegalStateException cause) {
+            throw new CryptoException(cause);
+        }
+    }
+
+    /**
      * Continues a multi-part encryption or decryption operation (depending on how this cipher was initialized),
      * processing another data part. The first {@code inputLen} bytes in the {@code input} buffer, starting at
      * {@code inputOffset}, are processed, and the result is stored in the output buffer.

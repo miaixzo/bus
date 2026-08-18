@@ -22,7 +22,6 @@ package org.miaixz.bus.cortex;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CodingErrorAction;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +31,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
@@ -65,7 +65,7 @@ public final class Callout {
 
         @Override
         public Payload encode(String value) {
-            return Payload.of(value == null ? Normal.EMPTY : value, StandardCharsets.UTF_8);
+            return Payload.of(value == null ? Normal.EMPTY : value, Charset.UTF_8);
         }
 
         @Override
@@ -75,7 +75,7 @@ public final class Callout {
 
         @Override
         public MediaType media() {
-            return MediaType.TEXT_PLAIN_TYPE.withCharset(StandardCharsets.UTF_8);
+            return MediaType.TEXT_PLAIN_TYPE.withCharset(Charset.UTF_8);
         }
 
     };
@@ -188,7 +188,7 @@ public final class Callout {
     private static String decodeText(Payload payload) {
         byte[] bytes = payload == null ? Normal.EMPTY_BYTE_ARRAY : payload.bytes();
         try {
-            return StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
+            return Charset.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
                     .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(bytes)).toString();
         } catch (CharacterCodingException e) {
             throw new ConvertException("Unable to decode HTTP response as UTF-8", e);

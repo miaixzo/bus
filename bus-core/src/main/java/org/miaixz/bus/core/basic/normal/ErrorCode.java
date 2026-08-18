@@ -160,6 +160,11 @@ public class ErrorCode {
     public static final Errors _410 = ErrorRegistry.register("410", "Gone");
 
     /**
+     * HTTP 412: Precondition Failed.
+     */
+    public static final Errors _412 = ErrorRegistry.register("412", "Precondition Failed");
+
+    /**
      * HTTP 413: Payload Too Large.
      */
     public static final Errors _413 = ErrorRegistry.register("413", "Payload Too Large");

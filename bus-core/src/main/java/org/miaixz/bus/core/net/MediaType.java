@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -203,6 +204,19 @@ public class MediaType {
      * A {@link MediaType} constant representing {@value #APPLICATION_JSON} media type.
      */
     public static final MediaType APPLICATION_JSON_TYPE = new MediaType("application", "json");
+
+    /**
+     * A {@code String} constant representing the IANA-registered {@value #APPLICATION_JWK_SET_JSON} media type for a
+     * JSON Web Key Set. This value does not imply a character-set parameter because RFC 7517 defines the JSON
+     * serialization directly.
+     */
+    public static final String APPLICATION_JWK_SET_JSON = "application/jwk-set+json";
+
+    /**
+     * A {@link MediaType} constant representing the IANA-registered {@value #APPLICATION_JWK_SET_JSON} media type used
+     * by JSON Web Key Set responses.
+     */
+    public static final MediaType APPLICATION_JWK_SET_JSON_TYPE = new MediaType("application", "jwk-set+json");
 
     /**
      * A {@code String} constant representing {@value #APPLICATION_JSON_FASTJSON} media type.
@@ -548,12 +562,12 @@ public class MediaType {
     /**
      * A {@code String} constant representing {@value #TEXT_CSV_UTF8} media type.
      */
-    public final static String TEXT_CSV_UTF8 = "text/csv;charset=utf-8";
+    public final static String TEXT_CSV_UTF8 = "text/csv;charset=" + Charset.DEFAULT_UTF_8;
 
     /**
      * A {@link MediaType} constant representing {@value #TEXT_CSV_UTF8} media type.
      */
-    public final static MediaType TEXT_CSV_UTF8_TYPE = new MediaType("text", "csv", "utf-8");
+    public final static MediaType TEXT_CSV_UTF8_TYPE = new MediaType("text", "csv", Charset.DEFAULT_UTF_8);
 
     /**
      * A {@code String} constant representing {@value #APPLICATION_ZIP} media type.
