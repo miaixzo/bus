@@ -19,21 +19,11 @@
 */
 package org.miaixz.bus.health;
 
-import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -273,7 +263,7 @@ public final class Executor {
             if (exitCode == 0) {
                 return stdout;
             }
-            String error = new String(stderr, StandardCharsets.UTF_8).trim();
+            String error = new String(stderr, Charset.UTF_8).trim();
             if (reportError) {
                 Logger.error(false, "Health", "Privileged file read exited with code {}: {}", exitCode, error);
             } else {
