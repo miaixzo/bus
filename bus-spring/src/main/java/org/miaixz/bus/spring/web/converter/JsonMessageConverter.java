@@ -21,7 +21,6 @@ package org.miaixz.bus.spring.web.converter;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,6 +31,7 @@ import org.springframework.http.converter.AbstractGenericHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.extra.json.JsonPropertyFilter;
 import org.miaixz.bus.extra.json.JsonProvider;
@@ -155,7 +155,7 @@ public class JsonMessageConverter implements MessageConverterRegistrar {
          */
         ProviderHttpMessageConverter(JsonProvider provider, JsonReadOptions readOptions,
                 JsonWriteOptions writeOptions) {
-            super(StandardCharsets.UTF_8, MEDIA_TYPES);
+            super(Charset.UTF_8, MEDIA_TYPES);
             this.provider = provider;
             this.readOptions = readOptions;
             this.writeOptions = writeOptions;

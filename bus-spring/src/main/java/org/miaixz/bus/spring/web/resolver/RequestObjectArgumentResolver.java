@@ -21,7 +21,6 @@ package org.miaixz.bus.spring.web.resolver;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -42,6 +41,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.BeanKit;
@@ -158,7 +158,7 @@ public class RequestObjectArgumentResolver implements HandlerMethodArgumentResol
             return BeanKit.createBean(parameter.getParameterType());
         }
         try {
-            return JsonKit.toPojo(new String(body, StandardCharsets.UTF_8), parameter.getParameterType());
+            return JsonKit.toPojo(new String(body, Charset.UTF_8), parameter.getParameterType());
         } catch (RuntimeException failure) {
             throw new HttpMessageNotReadableException("Invalid JSON request body", failure,
                     new ServletServerHttpRequest(request));
