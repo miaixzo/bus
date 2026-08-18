@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol.stomp.frame;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +28,7 @@ import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
@@ -355,7 +355,7 @@ public final class StompCodec {
      * @return text
      */
     private String ascii(final int start, final int end) {
-        return copy(start, end - start).string(StandardCharsets.UTF_8);
+        return copy(start, end - start).string(Charset.UTF_8);
     }
 
     /**

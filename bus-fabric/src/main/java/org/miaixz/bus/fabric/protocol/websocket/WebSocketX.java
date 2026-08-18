@@ -21,7 +21,6 @@ package org.miaixz.bus.fabric.protocol.websocket;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +28,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -606,7 +606,7 @@ public final class WebSocketX {
             if (handler == null) {
                 this.handler = Demuxer.noop();
             } else {
-                this.handler = (session, message) -> handler.accept(message.payload().text(StandardCharsets.UTF_8));
+                this.handler = (session, message) -> handler.accept(message.payload().text(Charset.UTF_8));
             }
             return this;
         }

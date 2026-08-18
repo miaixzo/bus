@@ -23,11 +23,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.IDN;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
@@ -104,7 +104,7 @@ public final class DnsName {
                 throw new ValidateException("DNS name contains an empty label");
             }
             final String ascii = IDN.toASCII(label).toLowerCase(Locale.ROOT);
-            final int bytes = ascii.getBytes(StandardCharsets.US_ASCII).length;
+            final int bytes = ascii.getBytes(Charset.US_ASCII).length;
             if (bytes == 0 || bytes > MAX_LABEL_LENGTH) {
                 throw new ValidateException("DNS label length is out of range");
             }
@@ -220,7 +220,7 @@ public final class DnsName {
             }
             final String[] labels = labels(normalized);
             for (final String label : labels) {
-                final byte[] bytes = label.getBytes(StandardCharsets.US_ASCII);
+                final byte[] bytes = label.getBytes(Charset.US_ASCII);
                 output.write(bytes.length);
                 output.write(bytes);
             }
@@ -296,7 +296,7 @@ public final class DnsName {
             if (lengthOctet > MAX_LABEL_LENGTH || cursor + lengthOctet > message.length) {
                 throw new ProtocolException("DNS label length is invalid");
             }
-            final String label = new String(message, cursor, lengthOctet, StandardCharsets.US_ASCII);
+            final String label = new String(message, cursor, lengthOctet, Charset.US_ASCII);
             labels.add(label);
             length += lengthOctet + 1;
             if (length > MAX_NAME_LENGTH) {

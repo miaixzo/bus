@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.fabric.protocol.sse.body;
 
-import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
 
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -114,7 +114,7 @@ public final class SseBody implements ResponseBody, ProgressBody {
      * @throws ValidateException if {@code text} is {@code null}
      */
     public static SseBody text(final String text) {
-        return of(Payload.of(require(text, "SSE text"), StandardCharsets.UTF_8));
+        return of(Payload.of(require(text, "SSE text"), Charset.UTF_8));
     }
 
     /**

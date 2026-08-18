@@ -156,7 +156,7 @@ public final class StreamProxyConnector {
                         connection.source(),
                         readExact(connection.source(), 1, timeout, cancellation)[0] & 0xff,
                         timeout,
-                        cancellation), java.nio.charset.StandardCharsets.UTF_8);
+                        cancellation), Charset.UTF_8);
                 case 0x04 -> addressText(readExact(connection.source(), 16, timeout, cancellation));
                 default -> throw new ProtocolException("Unsupported SOCKS UDP relay address type");
             };

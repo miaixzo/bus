@@ -22,9 +22,9 @@ package org.miaixz.bus.fabric.protocol.http.codec;
 import java.net.URI;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
@@ -321,7 +321,7 @@ public final class HttpLine {
                         reset();
                         throw new ProtocolException("HTTP line contains a bare carriage return");
                     }
-                    final String completed = new String(line, Normal._0, length, StandardCharsets.US_ASCII);
+                    final String completed = new String(line, Normal._0, length, Charset.US_ASCII);
                     reset();
                     return completed;
                 }

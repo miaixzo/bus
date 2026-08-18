@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
 import org.miaixz.bus.fabric.network.dns.message.DnsDecodedResponse;
@@ -312,7 +313,7 @@ public final class DnsValidationCache {
      */
     private static byte[] recordHashBytes(final DnsRecord record) {
         final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        bytes.writeBytes(record.name().getBytes(java.nio.charset.StandardCharsets.US_ASCII));
+        bytes.writeBytes(record.name().getBytes(Charset.US_ASCII));
         bytes.write((record.typeCode() >>> 8) & 0xff);
         bytes.write(record.typeCode() & 0xff);
         bytes.write((record.recordClass() >>> 8) & 0xff);
