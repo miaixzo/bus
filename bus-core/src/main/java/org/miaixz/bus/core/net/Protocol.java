@@ -286,6 +286,16 @@ public enum Protocol {
     public static final String HOST_IPV4 = "127.0.0.1";
 
     /**
+     * IPv6 loopback address without URI brackets.
+     */
+    public static final String HOST_IPV6 = "::1";
+
+    /**
+     * IPv6 loopback address in URI host notation.
+     */
+    public static final String HOST_IPV6_BRACKETED = "[::1]";
+
+    /**
      * Local hostname, with the value "localhost", used for local host access.
      */
     public static final String HOST_LOCAL = "localhost";

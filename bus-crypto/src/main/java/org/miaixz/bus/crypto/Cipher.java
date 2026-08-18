@@ -68,6 +68,20 @@ public interface Cipher {
     void init(Algorithm.Type mode, Parameters parameters);
 
     /**
+     * Supplies additional authenticated data to an initialized authenticated cipher before payload processing.
+     * <p>
+     * Implementations that do not represent an authenticated cipher reject this operation with the shared Bus crypto
+     * exception. Callers must provide all AAD before the first {@link #process(byte[], int, int, byte[], int)} or
+     * {@link #processFinal(byte[])} invocation.
+     * </p>
+     *
+     * @param aad additional authenticated data; an empty array is permitted
+     * @throws IllegalArgumentException                           if {@code aad} is {@code null}
+     * @throws org.miaixz.bus.core.lang.exception.CryptoException if the underlying cipher does not support AAD
+     */
+    void updateAad(byte[] aad);
+
+    /**
      * Returns the required size of the output buffer to store the result of the next {@code process} or {@code doFinal}
      * operation.
      * <p>
