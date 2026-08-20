@@ -238,7 +238,6 @@ public final class JsonRecordVerifier<T extends Record> {
      * @param declaredType declared Java class
      * @throws ValidateException if the declared class is unsupported or the JSON value has an incompatible shape
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     private static void validateClass(final String path, final JsonValue value, final Class<?> declaredType) {
         if (value instanceof JsonValue.NullValue) {
             if (declaredType.isPrimitive()) {

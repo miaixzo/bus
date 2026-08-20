@@ -350,10 +350,10 @@ public class Factory {
      *
      * @param options  non-null cache options with an exact atomic backend type
      * @param executor non-null caller-owned executor used by blocking Redis implementations
-     * @return memory, Redis, or Redis Cluster atomic byte cache
+     * @return memory, Redis, or Redis Cluster atomic object cache
      * @throws ProtocolException when the type is not {@code memory}, {@code redis}, or {@code redis-cluster}
      */
-    public CacheX<String, byte[]> initialize(Options options, Executor executor) throws ProtocolException {
+    public CacheX<String, Object> initialize(Options options, Executor executor) throws ProtocolException {
         if (options == null) {
             throw new IllegalArgumentException("options must not be null");
         }
