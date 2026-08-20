@@ -46,9 +46,9 @@ import org.miaixz.bus.fabric.UnoUrl;
 public final class AuthorizationClient {
 
     /**
-     * Immutable registration settings used to bind the outgoing request to one Source.
+     * Immutable registration options used to bind the outgoing request to one Source.
      */
-    private final OAuth2ClientSettings settings;
+    private final OAuth2ClientOptions options;
 
     /**
      * Encoder bound to the compiled Source authorization endpoint.
@@ -58,12 +58,12 @@ public final class AuthorizationClient {
     /**
      * Creates an authorization client for one compiled Source.
      *
-     * @param settings validated Source client settings
-     * @param encoder  standard request-to-URL encoder
+     * @param options validated Source client options
+     * @param encoder standard request-to-URL encoder
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public AuthorizationClient(final OAuth2ClientSettings settings, final AuthorizationRequestEncoder encoder) {
-        this.settings = Assert.notNull(settings, "OAuth 2.x client settings must not be null");
+    public AuthorizationClient(final OAuth2ClientOptions options, final AuthorizationRequestEncoder encoder) {
+        this.options = Assert.notNull(options, "OAuth 2.x client options must not be null");
         this.encoder = Assert.notNull(encoder, "OAuth 2.x authorization request encoder must not be null");
     }
 
@@ -108,7 +108,7 @@ public final class AuthorizationClient {
             return completed(
                     Outcome.failed(failure(ErrorCode._408, "OAuth 2.x authorization has no remaining time budget")));
         }
-        if (!settings.clientId().equals(request.clientId())) {
+        if (!options.clientId().equals(request.clientId())) {
             return completed(
                     Outcome.rejected(
                             failure(
@@ -116,14 +116,14 @@ public final class AuthorizationClient {
                                     "OAuth 2.x authorization client identifier does not match the Source")));
         }
         final String redirectUri = request.redirectUri().getOrNull();
-        if (redirectUri != null && !settings.redirectUris().contains(redirectUri)) {
+        if (redirectUri != null && !options.redirectUris().contains(redirectUri)) {
             return completed(
                     Outcome.rejected(
                             failure(
                                     ErrorCode._400,
                                     "OAuth 2.x authorization redirect URI is not registered for the Source")));
         }
-        if (settings.pkceRequired() && (request.codeChallenge().isEmpty() || request.codeChallengeMethod().isEmpty())) {
+        if (options.pkceRequired() && (request.codeChallenge().isEmpty() || request.codeChallengeMethod().isEmpty())) {
             return completed(
                     Outcome.rejected(
                             failure(

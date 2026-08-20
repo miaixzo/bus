@@ -23,6 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.auth.Authenticator;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.Timeout;
@@ -31,10 +32,10 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
- * Owns the bus-auth framework lifecycle and exposes its Registry and explicit snapshot reload entry.
+ * Owns the bus-auth framework lifecycle and exposes separate registration and execution entries.
  * <p>
  * ExecutionServices remain owned by the external project. Closing this runtime stops the framework Registry only and
- * never closes the caller's executor, Fabric context, stores, resolvers, JSON provider, audit sink, or consent service.
+ * never closes the caller's executor, Fabric context, stores, loaders, JSON provider, audit sink, or consent service.
  * </p>
  *
  * @author Kimi Liu
@@ -45,6 +46,11 @@ public final class AuthRuntime implements Lifecycle, AutoCloseable {
      * Only public gateway to compiled Source capabilities.
      */
     private final Registry registry;
+
+    /**
+     * Capability execution gateway, kept separate from registration state access.
+     */
+    private final Authenticator authenticator;
 
     /**
      * Explicit complete-snapshot reload orchestrator.
@@ -60,22 +66,33 @@ public final class AuthRuntime implements Lifecycle, AutoCloseable {
      * Creates a running runtime from completely assembled framework services.
      *
      * @param registry      initialized revision-zero Registry
+     * @param authenticator capability execution gateway
      * @param reloadService complete-snapshot reload service
      * @throws IllegalArgumentException if a dependency is {@code null}
      */
-    AuthRuntime(final Registry registry, final RuntimeReloadService reloadService) {
+    AuthRuntime(final Registry registry, final Authenticator authenticator, final RuntimeReloadService reloadService) {
         this.registry = Assert.notNull(registry, "Authentication Registry must not be null");
+        this.authenticator = Assert.notNull(authenticator, "Authentication executor must not be null");
         this.reloadService = Assert.notNull(reloadService, "Runtime reload service must not be null");
         this.lifecycle = new AtomicReference<>(Lifecycle.State.RUNNING);
     }
 
     /**
-     * Returns the only public execution gateway for compiled authentication capabilities.
+     * Returns the read-only registration state gateway.
      *
      * @return runtime Registry
      */
     public Registry registry() {
         return registry;
+    }
+
+    /**
+     * Returns the capability execution gateway.
+     *
+     * @return runtime authenticator
+     */
+    public Authenticator authenticator() {
+        return authenticator;
     }
 
     /**
@@ -106,7 +123,7 @@ public final class AuthRuntime implements Lifecycle, AutoCloseable {
     }
 
     /**
-     * Idempotently closes the Registry without closing any externally owned ExecutionServices dependency.
+     * Idempotently closes execution and registration gateways without closing externally owned dependencies.
      */
     @Override
     public void close() {
@@ -114,9 +131,14 @@ public final class AuthRuntime implements Lifecycle, AutoCloseable {
             return;
         }
         try {
+            authenticator.close();
+        } catch (RuntimeException ignored) {
+            // Closing one framework gateway must not prevent the other gateway from closing.
+        }
+        try {
             registry.close();
         } catch (RuntimeException ignored) {
-            // The lifecycle boundary must not transfer a Registry close failure to caller-owned resource management.
+            // Framework close failures must not transfer caller-owned resource management to this runtime.
         } finally {
             lifecycle.set(Lifecycle.State.CLOSED);
         }

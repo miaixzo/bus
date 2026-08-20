@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Composes a Vendor definition, Source settings, redirect lifecycle, and already constructed standard protocol clients.
+ * Composes a Vendor manifest, Source options, redirect lifecycle, and already constructed standard protocol clients.
  * <p>
  * Protocol clients and codecs remain owned by their protocol packages. This adapter only associates each declared
  * standard {@link Capability} with the operation supplied by that client and never reimplements protocol wire logic.
@@ -45,14 +45,14 @@ import org.miaixz.bus.extra.json.JsonValue;
 public final class StandardAdapter implements VendorAdapter {
 
     /**
-     * Selected immutable platform variant definition.
+     * Selected immutable platform variant manifest.
      */
-    private final VendorDefinition.Definition definition;
+    private final VariantManifest.Variant variant;
 
     /**
-     * Complete immutable Source deployment settings.
+     * Complete immutable Source deployment options.
      */
-    private final VendorSettings settings;
+    private final VendorOptions<?> options;
 
     /**
      * Optional shared redirect lifecycle used by browser-oriented composition.
@@ -67,22 +67,22 @@ public final class StandardAdapter implements VendorAdapter {
     /**
      * Exact standard capability subset implemented by the supplied protocol bindings.
      */
-    private final Capability.Manifest manifest;
+    private final Capability.Manifest capabilities;
 
     /**
      * Creates an adapter from fully constructed standard protocol operations.
      *
-     * @param definition      selected platform variant definition
-     * @param settings        complete Source settings object
+     * @param variant         selected platform variant
+     * @param options         complete Source options object
      * @param redirectManager optional redirect lifecycle
      * @param bindings        typed protocol operation associations
      * @throws IllegalArgumentException if a component or binding is {@code null}
      * @throws ValidateException        if bindings do not exactly implement the declared manifest
      */
-    public StandardAdapter(final VendorDefinition.Definition definition, final VendorSettings settings,
+    public StandardAdapter(final VariantManifest.Variant variant, final VendorOptions<?> options,
             final Optional<RedirectManager> redirectManager, final List<Binding<?, ?>> bindings) {
-        this.definition = Assert.notNull(definition, "Standard Vendor definition must not be null");
-        this.settings = Assert.notNull(settings, "Standard Vendor settings must not be null");
+        this.variant = Assert.notNull(variant, "Standard Vendor variant must not be null");
+        this.options = Assert.notNull(options, "Standard Vendor options must not be null");
         Assert.notNull(redirectManager, "Standard Vendor redirect manager container must not be null");
         this.redirectManager = Optional.ofNullable(redirectManager.getOrNull());
         Assert.notNull(bindings, "Standard Vendor protocol bindings must not be null");
@@ -95,7 +95,7 @@ public final class StandardAdapter implements VendorAdapter {
             }
             copy.add(value);
         }
-        final Set<Capability.Key> declared = definition.manifest().capabilities().stream().map(Capability::key)
+        final Set<Capability.Key> declared = variant.capabilityManifest().capabilities().stream().map(Capability::key)
                 .collect(java.util.stream.Collectors.toUnmodifiableSet());
         if (!declared.containsAll(keys)) {
             throw new ValidateException("Standard Vendor protocol bindings must be declared by the manifest");
@@ -105,7 +105,7 @@ public final class StandardAdapter implements VendorAdapter {
         for (Binding<?, ?> binding : copy) {
             capabilities.add(binding.capability());
         }
-        this.manifest = new Capability.Manifest(capabilities);
+        this.capabilities = new Capability.Manifest(capabilities);
     }
 
     /**
@@ -147,7 +147,6 @@ public final class StandardAdapter implements VendorAdapter {
      * @param <S>        success type
      * @return delegated outcome
      */
-    @SuppressWarnings("unchecked")
     private static <Q, S> CompletionStage<Outcome<S>> invokeTyped(
             final Binding<?, ?> binding,
             final Capability<Q, S> capability,
@@ -165,11 +164,11 @@ public final class StandardAdapter implements VendorAdapter {
     /**
      * Returns the exact immutable capability manifest.
      *
-     * @return definition-owned manifest
+     * @return capabilities implemented by the configured standard bindings
      */
     @Override
     public Capability.Manifest manifest() {
-        return manifest;
+        return capabilities;
     }
 
     /**

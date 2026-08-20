@@ -20,15 +20,15 @@
 /**
  * Declares the JD OAuth and Zeus profile Source variant.
  * <p>
- * JdDefinition fixes {@code jd/default}, authorization-code token and current refresh endpoints, the signed Zeus
- * profile gateway, CLIENT_SECRET, prohibited PKCE, and the registered JD login scopes. It publishes Source
- * authentication and standard OAuth authorization only; {@code app_key}, {@code app_secret}, missing token type,
- * platform error branches, private refresh, MD5 query signing, and response envelopes are explicit deviations.
+ * JdManifest fixes {@code jd/default}, authorization-code token and current refresh endpoints, the signed Zeus profile
+ * gateway, CLIENT_SECRET, prohibited PKCE, and the registered JD login scopes. It publishes Source authentication and
+ * standard OAuth authorization only; {@code app_key}, {@code app_secret}, missing token type, platform error branches,
+ * private refresh, MD5 query signing, and response envelopes are explicit deviations.
  * </p>
  * <p>
- * JdSourceSettings contains routing, app key, secret reference, exact HTTPS callback, and unique supported scopes. It
- * cannot configure endpoints, the obsolete OIDC-named refresh path, signing algorithms, gateway method, token models,
- * profile envelopes, refresh capability, or revocation. Fixed addresses and secret material remain definition-owned.
+ * JdOptions contains routing, app key, secret reference, exact HTTPS callback, and unique supported scopes. It cannot
+ * configure endpoints, the obsolete OIDC-named refresh path, signing algorithms, gateway method, token models, profile
+ * envelopes, refresh capability, or revocation. Fixed addresses and secret material remain manifest-owned.
  * </p>
  * <p>
  * Identity is the canonical non-blank token {@code open_id} or {@code xid}; when both are present they must match.

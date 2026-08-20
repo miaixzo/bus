@@ -20,9 +20,8 @@
 package org.miaixz.bus.auth.protocol.radius;
 
 import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.protocol.radius.internal.RadiusProviderDriver;
-import org.miaixz.bus.auth.protocol.radius.server.RadiusProviderSettings;
-import org.miaixz.bus.auth.provider.ProviderDriver;
+import org.miaixz.bus.auth.protocol.radius.server.RadiusServerOptions;
+import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
@@ -103,7 +102,7 @@ public final class Radius {
      *
      * @return new RADIUS Provider driver
      */
-    public static ProviderDriver<RadiusProviderSettings> provider() {
+    public static SourceDriver<RadiusServerOptions> provider() {
         return new RadiusProviderDriver();
     }
 

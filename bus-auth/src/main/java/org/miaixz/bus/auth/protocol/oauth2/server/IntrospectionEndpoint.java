@@ -101,7 +101,7 @@ public final class IntrospectionEndpoint {
         }
         return authenticator.authenticate(request, context, timeout)
                 .thenCompose(authenticated -> switch (authenticated) {
-                    case Outcome.Succeeded<org.miaixz.bus.auth.resolver.ClientResolver.Client> success -> service
+                    case Outcome.Succeeded<org.miaixz.bus.auth.resolver.ConsumerMetadata> success -> service
                             .introspect(decoded, context.withClientId(success.value().id()), timeout)
                             .thenApply(outcome -> switch (outcome) {
                                 case Outcome.Succeeded<IntrospectionResponse> value -> codec
@@ -111,9 +111,9 @@ public final class IntrospectionEndpoint {
                                 case Outcome.Failed<IntrospectionResponse> failed -> errorMapper
                                         .introspection(request, failed.failure());
                             });
-                    case Outcome.Rejected<org.miaixz.bus.auth.resolver.ClientResolver.Client> rejected -> CompletableFuture
+                    case Outcome.Rejected<org.miaixz.bus.auth.resolver.ConsumerMetadata> rejected -> CompletableFuture
                             .completedFuture(errorMapper.introspection(request, rejected.failure()));
-                    case Outcome.Failed<org.miaixz.bus.auth.resolver.ClientResolver.Client> failed -> CompletableFuture
+                    case Outcome.Failed<org.miaixz.bus.auth.resolver.ConsumerMetadata> failed -> CompletableFuture
                             .completedFuture(errorMapper.introspection(request, failed.failure()));
                 });
     }

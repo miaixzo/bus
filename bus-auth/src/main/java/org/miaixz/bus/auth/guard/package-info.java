@@ -23,14 +23,14 @@
  * Algorithm, audience, issuer, redirect URI, scope, and time guards enforce constraints already selected by a concrete
  * registration and protocol profile. {@link org.miaixz.bus.auth.guard.ClientAuthenticator} applies registered client
  * authentication policy, {@link org.miaixz.bus.auth.guard.SecretGuard} validates and converts short-lived secret
- * material, and {@link org.miaixz.bus.auth.guard.ReplayGuard} narrows the injected replay store to atomic one-time use.
+ * material, and {@link org.miaixz.bus.auth.guard.ReplayGuard} narrows the injected replay cache to atomic one-time use.
  * </p>
  * <p>
  * Protocol services, shared security components, and Vendor adapters compose these guards after decoding a typed
- * request. Guards depend on root contracts, resolver leases, cache ports, and bus-core validation or crypto primitives;
- * they do not invoke Registry, load configuration, choose a Provider, or implement protocol flow. Network address,
- * proxy, TLS, and transport enforcement remains owned by Fabric AddressPolicy and its guards rather than being repeated
- * here.
+ * request. Guards depend on root contracts, worker-provided leases, cache ports, and bus-core validation or crypto
+ * primitives; they do not invoke Registry, load configuration, choose a Provider, or implement protocol flow. Network
+ * address, proxy, TLS, and transport enforcement remains owned by Fabric AddressPolicy and its guards rather than being
+ * repeated here.
  * </p>
  * <p>
  * Validation is fail-closed and uses the invocation Budget clock, exact registered identifiers, constant-time secret

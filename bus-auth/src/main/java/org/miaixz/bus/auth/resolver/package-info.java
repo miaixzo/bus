@@ -18,26 +18,19 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines external lookup ports for authentication resources, identities, and cryptographic material.
+ * Defines pure parsers for project-loaded authentication records.
  * <p>
- * Client, subject, attribute, group, and resource resolvers obtain project-owned records for one typed operation.
- * Credential and certificate resolvers expose controlled metadata, while key and secret resolvers return only the
- * material authorized by a bounded query. {@link org.miaixz.bus.auth.shared.SecretLease} owns and erases resolved
- * character material; {@link org.miaixz.bus.auth.resolver.CredentialStore} persists protocol-generated dynamic
- * credentials that must survive across invocations.
+ * Parsers synchronously validate, normalize, and freeze the explicit records supplied by the matching loader in
+ * {@link org.miaixz.bus.auth.worker}. They contain no external loading, persistence, cache, network, executor, Context,
+ * Budget, Registry, audit, consent, or project-business behavior.
  * </p>
  * <p>
- * {@link org.miaixz.bus.auth.shared.ExecutionServices} receives implementations from the external project, and
- * protocol, Vendor, identity, and guard code call the narrow port required by the current operation. This package
- * declares no implementation, data loader, persistence model, network client, Registry access, global locator, or
- * fallback resolver. A resolver does not invoke another Provider or Source to answer a query.
+ * Protocol and runtime services explicitly call a Loader first and then pass only its successful record to the matching
+ * Parser. Rejection and operational failure remain Loader outcomes and are never invented by a Parser.
  * </p>
  * <p>
- * Every query is scoped by registered identifiers, purpose, algorithm, current Budget time, and applicable namespace.
- * Plaintext secret material exists only inside an operation-owned SecretLease and is erased on close; keys and
- * certificates must satisfy use, algorithm, identifier, and validity constraints. Implementations must not cache an
- * authorization decision beyond its lifetime or expose material, query contents, personal data, exceptions, and stack
- * traces in failures or logs.
+ * Parser results are immutable authentication-domain values. Plaintext material remains owned by
+ * {@link org.miaixz.bus.auth.shared.SecretLease}; parsers neither retain nor cache it.
  * </p>
  *
  * @author Kimi Liu

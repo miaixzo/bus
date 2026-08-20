@@ -55,7 +55,7 @@ public final class SourceAuthentication {
     }
 
     /**
-     * Creates the initiation declaration implemented by one concrete Source profile.
+     * Creates the initiation declaration implemented by one concrete Source scheme.
      * <p>
      * The returned capability retains the canonical initiation key and Q/S contract while narrowing its interaction
      * metadata to the modes that the concrete runtime actually implements.
@@ -73,7 +73,7 @@ public final class SourceAuthentication {
     }
 
     /**
-     * Creates the completion declaration implemented by one concrete Source profile.
+     * Creates the completion declaration implemented by one concrete Source scheme.
      * <p>
      * Direct and one-time-code interactions complete during initiation, so completion declarations accept only redirect
      * and device interactions.

@@ -1239,7 +1239,7 @@ public final class MetadataCodec {
     }
 
     /**
-     * Parses one bounded metadata document using hardened JAXP settings.
+     * Parses one bounded metadata document using hardened JAXP options.
      *
      * @param xml bounded source XML
      * @return parsed DOM document

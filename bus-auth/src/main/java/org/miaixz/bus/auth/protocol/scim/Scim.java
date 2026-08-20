@@ -20,9 +20,8 @@
 package org.miaixz.bus.auth.protocol.scim;
 
 import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.protocol.scim.internal.ScimProviderDriver;
-import org.miaixz.bus.auth.protocol.scim.server.ScimProviderSettings;
-import org.miaixz.bus.auth.provider.ProviderDriver;
+import org.miaixz.bus.auth.protocol.scim.server.ScimServerOptions;
+import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
@@ -155,7 +154,7 @@ public final class Scim {
      *
      * @return new SCIM Provider driver
      */
-    public static ProviderDriver<ScimProviderSettings> provider() {
+    public static SourceDriver<ScimServerOptions> provider() {
         return new ScimProviderDriver();
     }
 

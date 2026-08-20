@@ -23,7 +23,7 @@
  * ScimResourceService owns common create, retrieve, replace, patch, delete, and search semantics; ScimUserService and
  * ScimGroupService apply resource-specific constraints; ScimBulkService executes bounded bulk operations;
  * ScimDiscoveryService publishes configuration, schemas, and resource types. ScimErrorMapper emits RFC 7644 errors, and
- * ScimProviderProfile with ScimProviderSettings declares only executable service capabilities.
+ * ScimServerScheme with ScimServerOptions declares only executable service capabilities.
  * </p>
  * <p>
  * Services consume formal SCIM models and codecs, authenticated request context, SecurityBaseline, and the externally

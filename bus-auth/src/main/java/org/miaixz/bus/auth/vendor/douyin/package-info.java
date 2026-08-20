@@ -20,18 +20,18 @@
 /**
  * Declares Douyin open-platform OAuth and ordinary mini-program Source variants.
  * <p>
- * DouyinDefinition exposes {@code douyin/open} as OAUTH2 with fixed authorization, token, profile, and refresh
- * endpoints, CLIENT_SECRET, prohibited PKCE, required {@code user_info} scope, and Source authentication only. Its
- * client-key fields, comma scopes, forms, response envelopes, and missing token type remain registered deviations. It
- * separately exposes {@code douyin/mini-program} as VENDOR_AUTH with the fixed JSON {@code jscode2session} endpoint and
+ * DouyinManifest exposes {@code douyin/open} as OAUTH2 with fixed authorization, token, profile, and refresh endpoints,
+ * CLIENT_SECRET, prohibited PKCE, required {@code user_info} scope, and Source authentication only. Its client-key
+ * fields, comma scopes, forms, response envelopes, and missing token type remain registered deviations. It separately
+ * exposes {@code douyin/mini-program} as VENDOR_AUTH with the fixed JSON {@code jscode2session} endpoint and
  * one-time-code Source authentication.
  * </p>
  * <p>
- * DouyinSourceSettings applies the same routing and credential reference shape to two distinct variants. Open requires
- * an exact HTTPS callback without query or fragment and unique official scopes containing {@code user_info};
- * mini-program prohibits callback and scope settings. Users cannot configure endpoints, issuer, PKCE, optionalScope,
- * refresh switch, anonymous or game login, sandbox, private token/profile/session DTOs, or standard OAuth capabilities
- * for proprietary responses.
+ * DouyinOptions applies the same routing and credential reference shape to two distinct variants. Open requires an
+ * exact HTTPS callback without query or fragment and unique official scopes containing {@code user_info}; mini-program
+ * prohibits callback and scope options. Users cannot configure endpoints, issuer, PKCE, optionalScope, refresh switch,
+ * anonymous or game login, sandbox, private token/profile/session DTOs, or standard OAuth capabilities for proprietary
+ * responses.
  * </p>
  * <p>
  * Both variants require CLIENT_SECRET but never expose its value. Open identity is keyed only by verified

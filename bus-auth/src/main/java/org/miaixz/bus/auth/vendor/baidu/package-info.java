@@ -18,16 +18,16 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the Baidu OAuth 2.0 Vendor definition and client registration settings.
+ * Declares the Baidu OAuth 2.0 Vendor manifest and client registration options.
  * <p>
- * BaiduDefinition exposes the single {@code baidu/default} OAUTH2 variant with fixed authorization, token, and
- * account-profile endpoints. Only authorization is standards-conforming and public. The definition records the private
+ * BaiduManifest exposes the single {@code baidu/default} OAUTH2 variant with fixed authorization, token, and
+ * account-profile endpoints. Only authorization is standards-conforming and public. The manifest records the private
  * GET query client-secret token exchange, token response without {@code token_type}, and query access-token profile
  * call as deviations used solely by Source authentication. PKCE is prohibited and {@code basic} is the default scope.
  * </p>
  * <p>
- * BaiduSourceSettings contains only routing, client ID, CLIENT_SECRET reference, exact callback, and registered scopes.
- * Users cannot override endpoints, enable PKCE, publish the historical revoke path, or select the private query
+ * BaiduOptions contains only routing, client ID, CLIENT_SECRET reference, exact callback, and registered scopes. Users
+ * cannot override endpoints, enable PKCE, publish the historical revoke path, or select the private query
  * authentication as a standard OAuth method. This package exports no private token/profile DTO, standard token or
  * revocation capability, OIDC UserInfo, scope enum, or platform error representation.
  * </p>

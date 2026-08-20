@@ -73,9 +73,9 @@ public final class LdapClient implements AutoCloseable {
     private final Executor executor;
 
     /**
-     * Immutable remote directory and security settings.
+     * Immutable remote directory and security options.
      */
-    private final LdapSourceSettings settings;
+    private final LdapClientOptions options;
 
     /**
      * LDAP-aware Fabric stream frame codec.
@@ -122,18 +122,18 @@ public final class LdapClient implements AutoCloseable {
      *
      * @param fabricContext shared Fabric transport context
      * @param executor      caller-owned executor for blocking Fabric operations
-     * @param settings      immutable LDAP Source settings
+     * @param options       immutable LDAP Source options
      * @param frameCodec    LDAP BER stream frame codec
      * @param encoder       complete LDAPMessage encoder
      * @param decoder       complete LDAPMessage decoder
      * @throws IllegalArgumentException if a dependency is {@code null}
      */
     public LdapClient(final org.miaixz.bus.fabric.Context fabricContext, final Executor executor,
-            final LdapSourceSettings settings, final BerCodec frameCodec, final LdapMessageEncoder encoder,
+            final LdapClientOptions options, final BerCodec frameCodec, final LdapMessageEncoder encoder,
             final LdapMessageDecoder decoder) {
         this.fabricContext = Assert.notNull(fabricContext, "LDAP Fabric context must not be null");
         this.executor = Assert.notNull(executor, "LDAP client executor must not be null");
-        this.settings = Assert.notNull(settings, "LDAP client settings must not be null");
+        this.options = Assert.notNull(options, "LDAP client options must not be null");
         this.frameCodec = Assert.notNull(frameCodec, "LDAP client BER frame codec must not be null");
         this.encoder = Assert.notNull(encoder, "LDAP client message encoder must not be null");
         this.decoder = Assert.notNull(decoder, "LDAP client message decoder must not be null");
@@ -353,13 +353,13 @@ public final class LdapClient implements AutoCloseable {
             }
             final SocketX.Builder builder = SocketX.builder(fabricContext).timeout(timeout.forFabric())
                     .frame(frameCodec);
-            if (settings.securityMode() == LdapSourceSettings.SecurityMode.LDAPS) {
-                builder.tls(settings.host(), settings.port());
+            if (options.securityMode() == LdapClientOptions.SecurityMode.LDAPS) {
+                builder.tls(options.host(), options.port());
             } else {
-                builder.tcp(settings.host(), settings.port());
+                builder.tcp(options.host(), options.port());
             }
             session = await(builder.build().call(), timeout);
-            if (settings.securityMode() == LdapSourceSettings.SecurityMode.START_TLS) {
+            if (options.securityMode() == LdapClientOptions.SecurityMode.START_TLS) {
                 startTls(session, timeout);
             }
             return session;
@@ -414,7 +414,7 @@ public final class LdapClient implements AutoCloseable {
             final int expectedMessageId,
             final Timeout.Budget timeout) {
         final Message message = await(current.receive(), timeout);
-        final LdapMessage response = decoder.decode(message.payload().bytes(settings.maximumMessageBytes()));
+        final LdapMessage response = decoder.decode(message.payload().bytes(options.maximumMessageBytes()));
         if (response.messageId() != expectedMessageId) {
             throw new ProtocolException("LDAP response messageID does not match the outstanding request");
         }

@@ -37,10 +37,11 @@ import org.miaixz.bus.auth.protocol.oidc.EndSessionRequest;
 import org.miaixz.bus.auth.protocol.oidc.IdToken;
 import org.miaixz.bus.auth.protocol.oidc.IdTokenClaims;
 import org.miaixz.bus.auth.protocol.oidc.codec.IdTokenCodec;
-import org.miaixz.bus.auth.resolver.ClientResolver;
-import org.miaixz.bus.auth.resolver.KeyResolver;
-import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.resolver.ConsumerMetadata;
+import org.miaixz.bus.auth.resolver.KeyMaterial;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
+import org.miaixz.bus.auth.worker.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -78,14 +79,14 @@ public final class EndSessionService {
     private static final int MAXIMUM_REPLACE_ATTEMPTS = 3;
 
     /**
-     * Provider identifier used to isolate Session Store keys.
+     * Provider identifier used to isolate Session cache keys.
      */
     private final String providerId;
 
     /**
-     * Frozen issuer and signing settings.
+     * Frozen issuer and signing options.
      */
-    private final OpenIdProviderSettings settings;
+    private final OpenIdServerOptions options;
 
     /**
      * External key, client, session, clock, and security dependencies.
@@ -106,15 +107,15 @@ public final class EndSessionService {
      * Creates an end-session service for one compiled OpenID Provider.
      *
      * @param providerId compiled server-role Source identifier
-     * @param settings   validated OpenID Provider settings
+     * @param options    validated OpenID Provider options
      * @param services   externally implemented runtime dependencies
      * @param codec      JOSE-aware typed ID Token codec
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public EndSessionService(final String providerId, final OpenIdProviderSettings settings,
+    public EndSessionService(final String providerId, final OpenIdServerOptions options,
             final ExecutionServices services, final IdTokenCodec codec) {
         this.providerId = Assert.notBlank(providerId, "OpenID Connect end-session Provider id must not be blank");
-        this.settings = Assert.notNull(settings, "OpenID Connect end-session settings must not be null");
+        this.options = Assert.notNull(options, "OpenID Connect end-session options must not be null");
         this.services = Assert.notNull(services, "OpenID Connect end-session execution services must not be null");
         this.codec = Assert.notNull(codec, "OpenID Connect end-session ID Token codec must not be null");
         this.timeGuard = services.securityBaseline().timeGuard(Protocol.OIDC, services.fabricContext().clock());
@@ -151,7 +152,7 @@ public final class EndSessionService {
      * @return whether registration and redirect bindings are valid
      */
     private static boolean validRedirectClient(
-            final ClientResolver.Client client,
+            final ConsumerMetadata client,
             final String expectedClientId,
             final String requestedRedirect) {
         if (client == null || !expectedClientId.equals(client.id())) {
@@ -172,7 +173,7 @@ public final class EndSessionService {
     }
 
     /**
-     * Creates a safe end-session failure without hint, token, redirect, or resolver details.
+     * Creates a safe end-session failure without hint, token, redirect, or loader details.
      *
      * @param error       shared Bus error definition
      * @param description non-sensitive diagnostic description
@@ -246,12 +247,14 @@ public final class EndSessionService {
             final Context context,
             final Timeout.Budget timeout) {
         final Instant now = timeout.clock().now();
-        final KeyResolver.Query query = new KeyResolver.Query(settings.issuer(),
-                Optional.of(settings.idTokenSigningKeyId()), SIGNATURE_USE, settings.idTokenSigningAlgorithm().name(),
+        final KeyLoader.Request query = new KeyLoader.Request(options.issuer(),
+                Optional.of(options.idTokenSigningKeyId()), SIGNATURE_USE, options.idTokenSigningAlgorithm().name(),
                 now);
-        final CompletionStage<Outcome<KeyResolver.ResolvedKey>> resolution;
+        final CompletionStage<Outcome<KeyMaterial>> resolution;
         try {
-            resolution = services.keyResolver().resolve(query, context, timeout);
+            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
+                    services.keyLoader().load(query, context, timeout),
+                    loaded -> services.keyParser().parse(query, loaded));
         } catch (RuntimeException exception) {
             return completed(
                     Outcome.failed(
@@ -259,17 +262,17 @@ public final class EndSessionService {
         }
         return resolution.handle(
                 (outcome, thrown) -> thrown == null && outcome != null ? outcome
-                        : Outcome.<KeyResolver.ResolvedKey>failed(
+                        : Outcome.<KeyMaterial>failed(
                                 failure(ErrorCode._500, "OpenID Connect end-session signing key resolution failed")))
                 .thenApply(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<KeyResolver.ResolvedKey> success -> decodeHint(
+                    case Outcome.Succeeded<KeyMaterial> success -> decodeHint(
                             compact,
                             requestedClientId,
                             success.value(),
                             timeout);
-                    case Outcome.Rejected<KeyResolver.ResolvedKey> rejected -> Outcome
+                    case Outcome.Rejected<KeyMaterial> rejected -> Outcome
                             .rejected(failure(ErrorCode._400, "OpenID Connect ID Token hint cannot be verified"));
-                    case Outcome.Failed<KeyResolver.ResolvedKey> failed -> Outcome.failed(
+                    case Outcome.Failed<KeyMaterial> failed -> Outcome.failed(
                             failure(
                                     failed.failure().error(),
                                     "OpenID Connect end-session signing key resolution failed"));
@@ -288,24 +291,24 @@ public final class EndSessionService {
     private Outcome<Hint> decodeHint(
             final String compact,
             final String requestedClientId,
-            final KeyResolver.ResolvedKey resolvedKey,
+            final KeyMaterial resolvedKey,
             final Timeout.Budget timeout) {
         try {
             final Instant now = timeout.clock().now();
-            if (resolvedKey == null || !settings.idTokenSigningKeyId().equals(resolvedKey.keyId())
-                    || !settings.idTokenSigningAlgorithm().name().equals(resolvedKey.algorithm())
+            if (resolvedKey == null || !options.idTokenSigningKeyId().equals(resolvedKey.keyId())
+                    || !options.idTokenSigningAlgorithm().name().equals(resolvedKey.algorithm())
                     || now.isBefore(resolvedKey.notBefore()) || !now.isBefore(resolvedKey.notAfter())) {
-                throw new ValidateException("OpenID Connect end-session key does not match Provider settings");
+                throw new ValidateException("OpenID Connect end-session key does not match Provider options");
             }
             final IdTokenCodec.Decoded decoded = codec
                     .decode(new IdToken(compact), new JwtVerifier.Signed(resolvedKey.key(), Set.of()));
-            if (!settings.idTokenSigningAlgorithm().name().equals(decoded.jwt().header().algorithm())
-                    || !decoded.jwt().header().keyId().filter(settings.idTokenSigningKeyId()::equals).isPresent()) {
-                throw new ValidateException("OpenID Connect ID Token hint header does not match Provider settings");
+            if (!options.idTokenSigningAlgorithm().name().equals(decoded.jwt().header().algorithm())
+                    || !decoded.jwt().header().keyId().filter(options.idTokenSigningKeyId()::equals).isPresent()) {
+                throw new ValidateException("OpenID Connect ID Token hint header does not match Provider options");
             }
             final IdTokenClaims claims = decoded.claims();
-            if (!settings.issuer().equals(claims.issuer())) {
-                throw new ValidateException("OpenID Connect ID Token hint issuer does not match Provider settings");
+            if (!options.issuer().equals(claims.issuer())) {
+                throw new ValidateException("OpenID Connect ID Token hint issuer does not match Provider options");
             }
             timeGuard.validateIssuedAt(claims.issuedAt(), timeout);
             timeGuard.validateExpiration(claims.expiration(), timeout);
@@ -351,19 +354,21 @@ public final class EndSessionService {
                     Outcome.rejected(
                             failure(ErrorCode._400, "OpenID Connect post-logout redirect has no verified client")));
         }
-        final CompletionStage<Outcome<ClientResolver.Client>> resolution;
+        final CompletionStage<Outcome<ConsumerMetadata>> resolution;
         try {
-            resolution = services.clientResolver().resolve(clientId, context, timeout);
+            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
+                    services.consumerLoader().load(clientId, context, timeout),
+                    loaded -> services.consumerParser().parse(clientId, loaded));
         } catch (RuntimeException exception) {
             return completed(Outcome.failed(failure(ErrorCode._500, "OpenID Connect logout client resolution failed")));
         }
         return resolution
                 .handle(
                         (outcome, thrown) -> thrown == null && outcome != null ? outcome
-                                : Outcome.<ClientResolver.Client>failed(
+                                : Outcome.<ConsumerMetadata>failed(
                                         failure(ErrorCode._500, "OpenID Connect logout client resolution failed")))
                 .thenCompose(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<ClientResolver.Client> success -> {
+                    case Outcome.Succeeded<ConsumerMetadata> success -> {
                         if (!validRedirectClient(
                                 success.value(),
                                 clientId,
@@ -376,9 +381,9 @@ public final class EndSessionService {
                         }
                         yield endSelectedSession(hint, context, timeout);
                     }
-                    case Outcome.Rejected<ClientResolver.Client> rejected -> completed(
+                    case Outcome.Rejected<ConsumerMetadata> rejected -> completed(
                             Outcome.rejected(failure(ErrorCode._400, "OpenID Connect logout client is unavailable")));
-                    case Outcome.Failed<ClientResolver.Client> failed -> completed(
+                    case Outcome.Failed<ConsumerMetadata> failed -> completed(
                             Outcome.failed(
                                     failure(
                                             failed.failure().error(),
@@ -428,9 +433,9 @@ public final class EndSessionService {
         final String key = Builder.sha256Hex(providerId + '\0' + sessionKey.value());
         final CompletionStage<ExpiringValue<Session>> lookup;
         try {
-            lookup = services.sessionStore().get(key);
+            lookup = services.sessionCache().get(key);
         } catch (RuntimeException exception) {
-            return completed(Outcome.failed(failure(ErrorCode._500, "OpenID Connect Session Store lookup failed")));
+            return completed(Outcome.failed(failure(ErrorCode._500, "OpenID Connect Session cache lookup failed")));
         }
         return lookup.handle((stored, thrown) -> new SessionResult(stored, thrown))
                 .thenCompose(result -> replaceLoadedSession(key, sessionKey, result, timeout, attempt));
@@ -439,9 +444,9 @@ public final class EndSessionService {
     /**
      * Validates a loaded session and performs its compare-and-replace transition.
      *
-     * @param key          isolated Session Store key
+     * @param key          isolated Session cache key
      * @param requestedKey verified session key
-     * @param result       completed store lookup
+     * @param result       completed cache lookup
      * @param timeout      shared operation budget
      * @param attempt      one-based replacement attempt
      * @return asynchronously completed transition outcome
@@ -453,7 +458,7 @@ public final class EndSessionService {
             final Timeout.Budget timeout,
             final int attempt) {
         if (result.failure() != null) {
-            return completed(Outcome.failed(failure(ErrorCode._500, "OpenID Connect Session Store lookup failed")));
+            return completed(Outcome.failed(failure(ErrorCode._500, "OpenID Connect Session cache lookup failed")));
         }
         final ExpiringValue<Session> stored = result.value();
         final Instant now = timeout.clock().now();
@@ -476,17 +481,17 @@ public final class EndSessionService {
         final long ttlMillis = Math.max(1L, Duration.between(now, stored.expiresAt()).toMillis());
         final CompletionStage<Boolean> replacement;
         try {
-            replacement = services.sessionStore().replace(key, stored, update, ttlMillis);
+            replacement = services.sessionCache().replace(key, stored, update, ttlMillis);
         } catch (RuntimeException exception) {
             return completed(
-                    Outcome.failed(failure(ErrorCode._500, "OpenID Connect Session Store replacement failed")));
+                    Outcome.failed(failure(ErrorCode._500, "OpenID Connect Session cache replacement failed")));
         }
         return replacement.handle((replaced, thrown) -> new ReplaceResult(replaced, thrown))
                 .thenCompose(resultValue -> {
                     if (resultValue.failure() != null || resultValue.replaced() == null) {
                         return completed(
                                 Outcome.failed(
-                                        failure(ErrorCode._500, "OpenID Connect Session Store replacement failed")));
+                                        failure(ErrorCode._500, "OpenID Connect Session cache replacement failed")));
                     }
                     if (resultValue.replaced()) {
                         return completed(Outcome.succeeded(null));
@@ -535,7 +540,7 @@ public final class EndSessionService {
     }
 
     /**
-     * Carries one Session Store lookup without leaking exceptional completion.
+     * Carries one Session cache lookup without leaking exceptional completion.
      *
      * @param value   stored session or {@code null}
      * @param failure store failure or {@code null}

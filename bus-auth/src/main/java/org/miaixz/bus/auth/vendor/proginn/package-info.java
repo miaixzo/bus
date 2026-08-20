@@ -18,15 +18,15 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the public Proginn OAuth Vendor definition and externally loaded settings.
+ * Declares the public Proginn OAuth Vendor manifest and externally loaded options.
  * <p>
- * ProginnDefinition fixes {@code proginn/default}, the authorization, token, and basic-profile endpoints,
+ * ProginnManifest fixes {@code proginn/default}, the authorization, token, and basic-profile endpoints,
  * CLIENT_SECRET_POST authentication, prohibited PKCE, default {@code basic} scope, and redirect Source authentication
  * plus standard OAuth authorization and token capabilities. Authorization and token wire models remain standard; only
  * the private profile GET carrying {@code access_token} in the query is a registered Source-completion deviation.
  * </p>
  * <p>
- * ProginnSourceSettings contains only routing, Client ID, Client Secret reference, one exact registered HTTP or HTTPS
+ * ProginnOptions contains only routing, Client ID, Client Secret reference, one exact registered HTTP or HTTPS
  * callback, and a unique ordered subset of {@code basic}, {@code email}, {@code realname}, and {@code cellphone}. Fixed
  * endpoints, token form members, profile query fields, response models, PKCE controls, and identity selectors cannot be
  * supplied by external projects.

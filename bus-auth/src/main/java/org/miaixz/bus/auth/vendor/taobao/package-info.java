@@ -18,9 +18,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the public Taobao OAuth Vendor definition and externally loaded settings.
+ * Declares the public Taobao OAuth Vendor manifest and externally loaded options.
  * <p>
- * TaobaoDefinition fixes {@code taobao/default}, authorization and token endpoints, and redirect Source authentication
+ * TaobaoManifest fixes {@code taobao/default}, authorization and token endpoints, and redirect Source authentication
  * plus standard OAuth authorization and token capabilities. The authorization {@code view=web}, query-bearing
  * empty-form token POST, and Taobao identity fields in the token response are registered deviations. Standard
  * access-token members map to TokenResponse; {@code taobao_user_id}, {@code taobao_open_uid}, {@code taobao_user_nick},
@@ -28,10 +28,9 @@
  * or UserInfo capability is declared.
  * </p>
  * <p>
- * TaobaoSourceSettings contains only routing, Client ID, Client Secret reference, and one exact registered HTTP or
- * HTTPS callback. Scopes must remain empty because the historical authorization request defines none. Fixed endpoints,
- * view, token query/form behavior, response extensions, decoding rules, and identity precedence cannot be externally
- * set.
+ * TaobaoOptions contains only routing, Client ID, Client Secret reference, and one exact registered HTTP or HTTPS
+ * callback. Scopes must remain empty because the historical authorization request defines none. Fixed endpoints, view,
+ * token query/form behavior, response extensions, decoding rules, and identity precedence cannot be externally set.
  * </p>
  * <p>
  * This exported package provides registration metadata; execution enters a Registry-obtained Provider. Identity uses a

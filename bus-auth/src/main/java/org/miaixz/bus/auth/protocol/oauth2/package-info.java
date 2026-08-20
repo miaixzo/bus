@@ -27,10 +27,10 @@
  * {@link org.miaixz.bus.auth.protocol.oauth2.OAuth2} exposes explicit module assembly.
  * </p>
  * <p>
- * Client, server, codec, and internal packages consume these values. OpenID Connect extends the applicable OAuth models
- * in its own package, while Vendor adapters may compose standard operations only when their wire is conformant. Vendor
- * fields, Source authentication values, Registry references, Context, Timeout, Outcome, Bus errors, exceptions, and
- * custom envelopes never become OAuth wire content.
+ * Client, server, codec, and protocol-driver classes consume these values. OpenID Connect extends the applicable OAuth
+ * models in its own package, while Vendor adapters may compose standard operations only when their wire is conformant.
+ * Vendor fields, Source authentication values, Registry references, Context, Timeout, Outcome, Bus errors, exceptions,
+ * and custom envelopes never become OAuth wire content.
  * </p>
  * <p>
  * Constructors preserve required versus optional fields, exact token and error types, scope syntax, registered client

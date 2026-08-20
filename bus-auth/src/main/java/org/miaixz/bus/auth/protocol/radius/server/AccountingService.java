@@ -26,7 +26,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.protocol.radius.*;
-import org.miaixz.bus.auth.resolver.SecretResolver;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
+import org.miaixz.bus.auth.runtime.LoadResult;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -52,7 +53,7 @@ public final class AccountingService {
     /**
      * Frozen accepted versions and packet limits.
      */
-    private final RadiusProviderSettings settings;
+    private final RadiusServerOptions options;
 
     /**
      * Exact external client and Accounting data port.
@@ -60,9 +61,9 @@ public final class AccountingService {
     private final RadiusRequestHandler handler;
 
     /**
-     * External short-lived shared-secret resolver.
+     * External short-lived shared-secret loader and framework-owned parser.
      */
-    private final SecretResolver secretResolver;
+    private final ExecutionServices services;
 
     /**
      * Historic security and RADIUS/1.1 response correlator.
@@ -72,20 +73,20 @@ public final class AccountingService {
     /**
      * Creates an Accounting service for one compiled RADIUS Provider.
      *
-     * @param providerId     compiled server-role Source identifier
-     * @param settings       validated RADIUS settings
-     * @param handler        exact external request handler binding
-     * @param secretResolver shared-secret lease resolver
-     * @param authenticator  packet security implementation
+     * @param providerId    compiled server-role Source identifier
+     * @param options       validated RADIUS options
+     * @param handler       exact external request handler binding
+     * @param services      external loaders and pure parsers
+     * @param authenticator packet security implementation
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public AccountingService(final String providerId, final RadiusProviderSettings settings,
-            final RadiusRequestHandler handler, final SecretResolver secretResolver,
+    public AccountingService(final String providerId, final RadiusServerOptions options,
+            final RadiusRequestHandler handler, final ExecutionServices services,
             final RadiusAuthenticator authenticator) {
         this.providerId = Assert.notBlank(providerId, "RADIUS Accounting Provider id must not be blank");
-        this.settings = Assert.notNull(settings, "RADIUS Accounting settings must not be null");
+        this.options = Assert.notNull(options, "RADIUS Accounting options must not be null");
         this.handler = Assert.notNull(handler, "RADIUS Accounting handler must not be null");
-        this.secretResolver = Assert.notNull(secretResolver, "RADIUS Accounting secret resolver must not be null");
+        this.services = Assert.notNull(services, "RADIUS Accounting execution services must not be null");
         this.authenticator = Assert.notNull(authenticator, "RADIUS Accounting authenticator must not be null");
     }
 
@@ -234,10 +235,10 @@ public final class AccountingService {
             return unavailable("RADIUS Accounting client resolution failed");
         }
         if (stage == null) {
-            return unavailable("RADIUS Accounting client resolver returned no stage");
+            return unavailable("RADIUS Accounting client loader returned no stage");
         }
-        return stage.thenCompose(
-                outcome -> switch (safe(outcome, "RADIUS Accounting client resolver returned no outcome")) {
+        return stage
+                .thenCompose(outcome -> switch (safe(outcome, "RADIUS Accounting client loader returned no outcome")) {
                     case Outcome.Succeeded<RadiusRequestHandler.Client> succeeded -> client(
                             effective,
                             context,
@@ -281,14 +282,14 @@ public final class AccountingService {
         }
         final CompletionStage<Outcome<SecretLease>> resolved = resolveSecret(reference, context, timeout);
         if (resolved == null) {
-            return unavailable("RADIUS Accounting shared-secret resolver returned no stage");
+            return unavailable("RADIUS Accounting shared-secret loader returned no stage");
         }
-        return resolved.thenCompose(
-                outcome -> switch (safe(outcome, "RADIUS Accounting secret resolver returned no outcome")) {
+        return resolved
+                .thenCompose(outcome -> switch (safe(outcome, "RADIUS Accounting secret loader returned no outcome")) {
                     case Outcome.Succeeded<SecretLease> succeeded -> {
                         final SecretLease lease = succeeded.value();
                         if (lease == null) {
-                            yield unavailable("RADIUS Accounting secret resolver returned no lease");
+                            yield unavailable("RADIUS Accounting secret loader returned no lease");
                         }
                         final boolean valid;
                         try (lease) {
@@ -366,10 +367,10 @@ public final class AccountingService {
                 context,
                 timeout);
         if (resolved == null) {
-            return unavailable("RADIUS Accounting response secret resolver returned no stage");
+            return unavailable("RADIUS Accounting response secret loader returned no stage");
         }
         return resolved.thenApply(
-                outcome -> switch (safe(outcome, "RADIUS Accounting response secret resolver returned no outcome")) {
+                outcome -> switch (safe(outcome, "RADIUS Accounting response secret loader returned no outcome")) {
                     case Outcome.Succeeded<SecretLease> succeeded -> sign(correlated, request, succeeded.value());
                     case Outcome.Rejected<SecretLease> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<SecretLease> failed -> Outcome.failed(failed.failure());
@@ -404,7 +405,7 @@ public final class AccountingService {
      * @return whether transport and header may be processed
      */
     private boolean validTransport(final AccountingRequest request, final Context context) {
-        if (!settings.versions().contains(request.header().version())) {
+        if (!options.versions().contains(request.header().version())) {
             return false;
         }
         if (request.header().version() == RadiusPacket.Version.RADIUS_1_0) {
@@ -415,19 +416,21 @@ public final class AccountingService {
     }
 
     /**
-     * Resolves one shared secret while closing synchronous resolver failure.
+     * Loads and parses one shared secret while closing synchronous loader failure.
      *
      * @param reference exact shared-secret reference
      * @param context   invocation context
      * @param timeout   operation budget
-     * @return resolver stage or {@code null} when no stage was returned
+     * @return loader/parser stage or {@code null} when the loader returned no stage
      */
     private CompletionStage<Outcome<SecretLease>> resolveSecret(
             final Credential.Reference reference,
             final Context context,
             final Timeout.Budget timeout) {
         try {
-            return secretResolver.resolve(reference, context, timeout);
+            return LoadResult.parse(
+                    services.secretLoader().load(reference, context, timeout),
+                    loaded -> services.secretParser().parse(reference, loaded));
         } catch (RuntimeException exception) {
             return completed(
                     Outcome.failed(failure(ErrorCode._503, "RADIUS Accounting shared-secret resolution failed")));

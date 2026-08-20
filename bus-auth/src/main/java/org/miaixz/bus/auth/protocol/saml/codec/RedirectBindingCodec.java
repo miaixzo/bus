@@ -208,9 +208,7 @@ public final class RedirectBindingCodec {
         if (!(decoded instanceof SamlMessageCodec.Document<?> document) || !type.isInstance(document.message())) {
             throw new ValidateException("SAML Redirect decoder returned an unexpected message type");
         }
-        @SuppressWarnings("unchecked")
-        final SamlMessageCodec.Document<T> result = (SamlMessageCodec.Document<T>) document;
-        return result;
+        return (SamlMessageCodec.Document<T>) document;
     }
 
     /**

@@ -28,7 +28,7 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.cache.ExpiringValue;
-import org.miaixz.bus.auth.cache.ReplayStore;
+import org.miaixz.bus.auth.cache.ReplayCache;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -41,7 +41,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  * Atomically registers irreversible authentication artifact digests for replay detection.
  * <p>
  * Each digest input is isolated by namespace, industry protocol, registered authority, and artifact purpose. Length
- * prefixes make the input tuple unambiguous. Only the SHA-256 digest and a non-sensitive purpose label cross the store
+ * prefixes make the input tuple unambiguous. Only the SHA-256 digest and a non-sensitive purpose label cross the cache
  * boundary; raw nonce, assertion, token, code, and authenticator material never does.
  * </p>
  *
@@ -50,18 +50,18 @@ import org.miaixz.bus.extra.json.JsonValue;
 public final class ReplayGuard {
 
     /**
-     * Atomic replay store supplied by the external runtime assembly.
+     * Atomic replay cache supplied by the runtime assembly.
      */
-    private final ReplayStore store;
+    private final ReplayCache cache;
 
     /**
-     * Creates a replay guard backed by the required atomic store contract.
+     * Creates a replay guard backed by the required atomic cache wrapper.
      *
-     * @param store atomic replay store
-     * @throws IllegalArgumentException if {@code store} is {@code null}
+     * @param cache atomic replay cache
+     * @throws IllegalArgumentException if {@code cache} is {@code null}
      */
-    public ReplayGuard(final ReplayStore store) {
-        this.store = Assert.notNull(store, "Replay store must not be null");
+    public ReplayGuard(final ReplayCache cache) {
+        this.cache = Assert.notNull(cache, "Replay cache must not be null");
     }
 
     /**
@@ -125,7 +125,7 @@ public final class ReplayGuard {
      * @param artifact  raw artifact lexical value used only as digest input
      * @param expiresAt absolute artifact expiration
      * @param timeout   existing end-to-end operation budget
-     * @return stage containing success, replay rejection, or operational Store failure
+     * @return stage containing success, replay rejection, or operational cache failure
      * @throws IllegalArgumentException if any argument is {@code null} or a required string is blank
      */
     public CompletionStage<Outcome<Void>> register(
@@ -154,13 +154,13 @@ public final class ReplayGuard {
                 effectiveExpiry);
         final long ttlMillis = ttlMillis(now, effectiveExpiry);
         try {
-            final CompletionStage<Boolean> creation = store.create(key, value, ttlMillis);
+            final CompletionStage<Boolean> creation = cache.create(key, value, ttlMillis);
             if (creation == null) {
-                return completed(Outcome.failed(failure(ErrorCode._500, "Replay store returned no creation stage")));
+                return completed(Outcome.failed(failure(ErrorCode._500, "Replay cache returned no creation stage")));
             }
             return creation.handle((created, cause) -> {
                 if (cause != null || created == null) {
-                    return Outcome.<Void>failed(failure(ErrorCode._500, "Replay store creation failed"));
+                    return Outcome.<Void>failed(failure(ErrorCode._500, "Replay cache creation failed"));
                 }
                 if (!created) {
                     return Outcome.<Void>rejected(failure(ErrorCode._409, "Authentication artifact was already used"));
@@ -168,7 +168,7 @@ public final class ReplayGuard {
                 return Outcome.<Void>succeeded(null);
             });
         } catch (RuntimeException ignored) {
-            return completed(Outcome.failed(failure(ErrorCode._500, "Replay store creation failed")));
+            return completed(Outcome.failed(failure(ErrorCode._500, "Replay cache creation failed")));
         }
     }
 

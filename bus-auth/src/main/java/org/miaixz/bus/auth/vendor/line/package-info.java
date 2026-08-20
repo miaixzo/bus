@@ -20,13 +20,13 @@
 /**
  * Declares the LINE web OpenID Connect Source variant.
  * <p>
- * LineDefinition fixes {@code line/default}, issuer {@code https://access.line.me}, Discovery, authorization, token,
+ * LineManifest fixes {@code line/default}, issuer {@code https://access.line.me}, Discovery, authorization, token,
  * refresh, JWKS, legacy-compatible profile, and revocation endpoints, CLIENT_SECRET form authentication, mandatory S256
  * PKCE, and HS256 or ES256 ID Tokens. It publishes Source authentication plus standard authentication, token,
  * revocation, Discovery, and JWKS operations; the retained {@code /v2/profile} resource is not OIDC UserInfo.
  * </p>
  * <p>
- * LineSourceSettings contains routing, channel ID, secret reference, exact HTTPS callback, and unique scopes containing
+ * LineOptions contains routing, channel ID, secret reference, exact HTTPS callback, and unique scopes containing
  * {@code profile} and {@code openid}. It cannot configure endpoints, issuer, PKCE, algorithms, response mode, native or
  * LIFF behavior, prompts, private profile models, remote token verification, or deauthorization.
  * </p>

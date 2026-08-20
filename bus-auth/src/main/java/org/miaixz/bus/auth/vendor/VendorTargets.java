@@ -42,23 +42,22 @@ import org.miaixz.bus.fabric.UnoUrl;
  * enforcement remains the responsibility of the standard client or platform adapter using the endpoint.
  * </p>
  *
- * @param authorization        authorization endpoint
- * @param temporaryCredentials OAuth 1.0 temporary credential endpoint
- * @param token                token or platform credential endpoint
- * @param userInfo             user information endpoint
- * @param refresh              refresh endpoint when distinct from token
- * @param introspection        standard introspection or registered platform token-info endpoint
- * @param revocation           revocation endpoint
- * @param deviceAuthorization  device authorization endpoint
- * @param discovery            OpenID or OAuth metadata discovery endpoint
- * @param jwks                 JSON Web Key Set endpoint
- * @param endSession           OpenID Connect end-session endpoint
+ * @param authorization       authorization endpoint
+ * @param token               token or platform credential endpoint
+ * @param userInfo            user information endpoint
+ * @param refresh             refresh endpoint when distinct from token
+ * @param introspection       standard introspection or registered platform token-info endpoint
+ * @param revocation          revocation endpoint
+ * @param deviceAuthorization device authorization endpoint
+ * @param discovery           OpenID or OAuth metadata discovery endpoint
+ * @param jwks                JSON Web Key Set endpoint
+ * @param endSession          OpenID Connect end-session endpoint
  * @author Kimi Liu
  */
-public record VendorTargets(Optional<Target> authorization, Optional<Target> temporaryCredentials,
-        Optional<Target> token, Optional<Target> userInfo, Optional<Target> refresh, Optional<Target> introspection,
-        Optional<Target> revocation, Optional<Target> deviceAuthorization, Optional<Target> discovery,
-        Optional<Target> jwks, Optional<Target> endSession) {
+public record VendorTargets(Optional<Target> authorization, Optional<Target> token, Optional<Target> userInfo,
+        Optional<Target> refresh, Optional<Target> introspection, Optional<Target> revocation,
+        Optional<Target> deviceAuthorization, Optional<Target> discovery, Optional<Target> jwks,
+        Optional<Target> endSession) {
 
     /**
      * Placeholder for a path-segment tenant value.
@@ -82,7 +81,6 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tem
      */
     public VendorTargets {
         authorization = normalize(authorization, "Vendor authorization endpoint");
-        temporaryCredentials = normalize(temporaryCredentials, "Vendor temporary credentials endpoint");
         token = normalize(token, "Vendor token endpoint");
         userInfo = normalize(userInfo, "Vendor user information endpoint");
         refresh = normalize(refresh, "Vendor refresh endpoint");
@@ -95,23 +93,21 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tem
     }
 
     /**
-     * Resolves a definition-owned issuer template with the same constrained variables used by target templates.
+     * Resolves a manifest-owned issuer template with the same constrained variables used by target templates.
      * <p>
      * The returned value is an exact credential-free HTTPS issuer identifier without query or fragment. This method
      * performs deterministic substitution only; it does not perform discovery, network access, or issuer comparison.
      * </p>
      *
-     * @param value    definition-owned fixed issuer or constrained issuer template
-     * @param settings validated platform settings supplying any required template selectors
+     * @param value   manifest-owned fixed issuer or constrained issuer template
+     * @param options validated platform options supplying any required template selectors
      * @return exact resolved HTTPS issuer identifier
-     * @throws IllegalArgumentException if the value is blank or settings are {@code null}
+     * @throws IllegalArgumentException if the value is blank or options are {@code null}
      * @throws ValidateException        if the template or resolved issuer violates the constrained trust boundary
      */
-    public static String resolveIdentifier(final String value, final VendorSettings settings) {
+    public static String resolveIdentifier(final String value, final VendorOptions<?> options) {
         validateIdentifierTemplate(value);
-        final String resolved = resolveValue(
-                value,
-                Assert.notNull(settings, "Vendor Source settings must not be null"));
+        final String resolved = resolveValue(value, Assert.notNull(options, "Vendor Source options must not be null"));
         final UnoUrl url = UnoUrl.parse(resolved);
         if (!Protocol.HTTPS.name.equalsIgnoreCase(url.scheme()) || url.host() == null || !url.username().isEmpty()
                 || !url.query().isEmpty() || url.fragment() != null) {
@@ -122,9 +118,9 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tem
     }
 
     /**
-     * Validates a definition-owned issuer template without requiring deployment selector values.
+     * Validates a manifest-owned issuer template without requiring deployment selector values.
      *
-     * @param value definition-owned fixed issuer or constrained issuer template
+     * @param value manifest-owned fixed issuer or constrained issuer template
      * @throws IllegalArgumentException if the value is blank
      * @throws ValidateException        if the value is not a credential-free HTTPS identifier template without query or
      *                                  fragment
@@ -139,7 +135,7 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tem
     /**
      * Normalizes an optional target container.
      *
-     * @param value optional definition-owned endpoint target
+     * @param value optional manifest-owned endpoint target
      * @param label diagnostic endpoint slot label
      * @return normalized optional target
      */
@@ -163,12 +159,12 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tem
     /**
      * Resolves one optional target.
      *
-     * @param target   optional definition-owned endpoint target
-     * @param settings validated external Source settings
+     * @param target  optional manifest-owned endpoint target
+     * @param options validated external Source options
      * @return optional resolved endpoint
      */
-    private static Optional<Endpoint> resolve(final Optional<Target> target, final VendorSettings settings) {
-        return target.isPresent() ? Optional.of(target.getOrNull().resolve(settings)) : Optional.empty();
+    private static Optional<Endpoint> resolve(final Optional<Target> target, final VendorOptions<?> options) {
+        return target.isPresent() ? Optional.of(target.getOrNull().resolve(options)) : Optional.empty();
     }
 
     /**
@@ -187,24 +183,24 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tem
     }
 
     /**
-     * Resolves every supported constrained variable in a definition-owned HTTPS template.
+     * Resolves every supported constrained variable in a manifest-owned HTTPS template.
      *
-     * @param value    validated endpoint or issuer template
-     * @param settings validated platform settings
+     * @param value   validated endpoint or issuer template
+     * @param options validated platform options
      * @return resolved template text
      */
-    private static String resolveValue(final String value, final VendorSettings settings) {
+    private static String resolveValue(final String value, final VendorOptions<?> options) {
         String resolved = value;
         if (resolved.contains(TENANT)) {
-            resolved = resolved.replace(TENANT, segment(require(settings.templateTenant(), "Vendor tenant")));
+            resolved = resolved.replace(TENANT, segment(require(options.templateTenant(), "Vendor tenant")));
         }
         if (resolved.contains(AUTHORIZATION_SERVER_ID)) {
             resolved = resolved.replace(
                     AUTHORIZATION_SERVER_ID,
-                    segment(require(settings.templateAuthorizationServerId(), "Vendor authorization server id")));
+                    segment(require(options.templateAuthorizationServerId(), "Vendor authorization server id")));
         }
         if (resolved.contains(INSTANCE)) {
-            final String instance = require(settings.templateInstance(), "Vendor instance");
+            final String instance = require(options.templateInstance(), "Vendor instance");
             final String authority = authority(value);
             resolved = resolved.replace(INSTANCE, authority.equals(INSTANCE) ? dnsHost(instance) : dnsLabel(instance));
         }
@@ -287,7 +283,7 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tem
     /**
      * Validates the immutable syntax and placement of every supported template variable.
      *
-     * @param value definition-owned HTTPS endpoint template
+     * @param value manifest-owned HTTPS endpoint template
      */
     private static void validateTemplate(final String value) {
         if (!value.startsWith(Protocol.HTTPS_PREFIX) || value.indexOf(Symbol.C_HASH) >= 0) {
@@ -346,18 +342,18 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tem
     }
 
     /**
-     * Resolves every present endpoint against one platform Source settings record.
+     * Resolves every present endpoint against one platform Source options record.
      *
-     * @param settings exact platform settings selected by its Vendor definition
+     * @param options exact platform options selected by its Vendor manifest
      * @return immutable fully resolved endpoint set
      */
-    public Resolved resolve(final VendorSettings settings) {
-        final VendorSettings checkedSettings = Assert.notNull(settings, "Vendor Source settings must not be null");
-        return new Resolved(resolve(authorization, checkedSettings), resolve(temporaryCredentials, checkedSettings),
-                resolve(token, checkedSettings), resolve(userInfo, checkedSettings), resolve(refresh, checkedSettings),
-                resolve(introspection, checkedSettings), resolve(revocation, checkedSettings),
-                resolve(deviceAuthorization, checkedSettings), resolve(discovery, checkedSettings),
-                resolve(jwks, checkedSettings), resolve(endSession, checkedSettings));
+    public Resolved resolve(final VendorOptions<?> options) {
+        final VendorOptions<?> checkedOptions = Assert.notNull(options, "Vendor Source options must not be null");
+        return new Resolved(resolve(authorization, checkedOptions), resolve(token, checkedOptions),
+                resolve(userInfo, checkedOptions), resolve(refresh, checkedOptions),
+                resolve(introspection, checkedOptions), resolve(revocation, checkedOptions),
+                resolve(deviceAuthorization, checkedOptions), resolve(discovery, checkedOptions),
+                resolve(jwks, checkedOptions), resolve(endSession, checkedOptions));
     }
 
     /**
@@ -408,10 +404,10 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tem
         /**
          * Resolves this target without performing network activity.
          *
-         * @param settings exact platform settings
+         * @param options exact platform options
          * @return fully resolved immutable endpoint
          */
-        Endpoint resolve(VendorSettings settings);
+        Endpoint resolve(VendorOptions<?> options);
 
     }
 
@@ -433,21 +429,21 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tem
         }
 
         /**
-         * Returns the fixed endpoint without reading deployment settings.
+         * Returns the fixed endpoint without reading deployment options.
          *
-         * @param settings exact platform settings
+         * @param options exact platform options
          * @return fixed endpoint
          */
         @Override
-        public Endpoint resolve(final VendorSettings settings) {
-            Assert.notNull(settings, "Vendor Source settings must not be null");
+        public Endpoint resolve(final VendorOptions<?> options) {
+            Assert.notNull(options, "Vendor Source options must not be null");
             return endpoint;
         }
 
     }
 
     /**
-     * Holds one definition-owned HTTPS endpoint template with a constrained host or path-segment substitution.
+     * Holds one manifest-owned HTTPS endpoint template with a constrained host or path-segment substitution.
      *
      * @param value             immutable official HTTPS template
      * @param method            HTTP request method
@@ -484,14 +480,14 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tem
         /**
          * Resolves the constrained host and path variables into a complete HTTPS endpoint.
          *
-         * @param settings exact platform settings
+         * @param options exact platform options
          * @return fully resolved immutable endpoint
          * @throws ValidateException if a required value is absent or is not valid for its constrained position
          */
         @Override
-        public Endpoint resolve(final VendorSettings settings) {
-            final VendorSettings checkedSettings = Assert.notNull(settings, "Vendor Source settings must not be null");
-            final String resolved = resolveValue(value, checkedSettings);
+        public Endpoint resolve(final VendorOptions<?> options) {
+            final VendorOptions<?> checkedOptions = Assert.notNull(options, "Vendor Source options must not be null");
+            final String resolved = resolveValue(value, checkedOptions);
             final UnoUrl url = UnoUrl.parse(resolved);
             if (!Protocol.HTTPS.name.equalsIgnoreCase(url.scheme()) || !url.username().isEmpty()
                     || url.fragment() != null) {
@@ -507,23 +503,22 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tem
     /**
      * Contains the complete endpoints resolved from targets in the same semantic order as {@link VendorTargets}.
      *
-     * @param authorization        authorization endpoint
-     * @param temporaryCredentials temporary credential endpoint
-     * @param token                token endpoint
-     * @param userInfo             user information endpoint
-     * @param refresh              refresh endpoint
-     * @param introspection        introspection or token-info endpoint
-     * @param revocation           revocation endpoint
-     * @param deviceAuthorization  device authorization endpoint
-     * @param discovery            discovery endpoint
-     * @param jwks                 JWK Set endpoint
-     * @param endSession           end-session endpoint
+     * @param authorization       authorization endpoint
+     * @param token               token endpoint
+     * @param userInfo            user information endpoint
+     * @param refresh             refresh endpoint
+     * @param introspection       introspection or token-info endpoint
+     * @param revocation          revocation endpoint
+     * @param deviceAuthorization device authorization endpoint
+     * @param discovery           discovery endpoint
+     * @param jwks                JWK Set endpoint
+     * @param endSession          end-session endpoint
      * @author Kimi Liu
      */
-    public record Resolved(Optional<Endpoint> authorization, Optional<Endpoint> temporaryCredentials,
-            Optional<Endpoint> token, Optional<Endpoint> userInfo, Optional<Endpoint> refresh,
-            Optional<Endpoint> introspection, Optional<Endpoint> revocation, Optional<Endpoint> deviceAuthorization,
-            Optional<Endpoint> discovery, Optional<Endpoint> jwks, Optional<Endpoint> endSession) {
+    public record Resolved(Optional<Endpoint> authorization, Optional<Endpoint> token, Optional<Endpoint> userInfo,
+            Optional<Endpoint> refresh, Optional<Endpoint> introspection, Optional<Endpoint> revocation,
+            Optional<Endpoint> deviceAuthorization, Optional<Endpoint> discovery, Optional<Endpoint> jwks,
+            Optional<Endpoint> endSession) {
 
         /**
          * Normalizes every resolved endpoint container.
@@ -532,9 +527,6 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tem
          */
         public Resolved {
             authorization = normalizeEndpoint(authorization, "Resolved Vendor authorization endpoint");
-            temporaryCredentials = normalizeEndpoint(
-                    temporaryCredentials,
-                    "Resolved Vendor temporary credentials endpoint");
             token = normalizeEndpoint(token, "Resolved Vendor token endpoint");
             userInfo = normalizeEndpoint(userInfo, "Resolved Vendor user information endpoint");
             refresh = normalizeEndpoint(refresh, "Resolved Vendor refresh endpoint");

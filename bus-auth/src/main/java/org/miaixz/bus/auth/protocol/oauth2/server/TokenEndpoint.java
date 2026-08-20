@@ -108,7 +108,7 @@ public final class TokenEndpoint {
         }
         return authenticator.authenticate(request, context, timeout)
                 .thenCompose(authenticated -> switch (authenticated) {
-                    case Outcome.Succeeded<org.miaixz.bus.auth.resolver.ClientResolver.Client> success -> service
+                    case Outcome.Succeeded<org.miaixz.bus.auth.resolver.ConsumerMetadata> success -> service
                             .token(decoded, context.withClientId(success.value().id()), timeout)
                             .thenApply(outcome -> switch (outcome) {
                                 case Outcome.Succeeded<TokenEndpointResponse> value -> encoder
@@ -118,9 +118,9 @@ public final class TokenEndpoint {
                                 case Outcome.Failed<TokenEndpointResponse> failed -> errorMapper
                                         .token(request, failed.failure());
                             });
-                    case Outcome.Rejected<org.miaixz.bus.auth.resolver.ClientResolver.Client> rejected -> CompletableFuture
+                    case Outcome.Rejected<org.miaixz.bus.auth.resolver.ConsumerMetadata> rejected -> CompletableFuture
                             .completedFuture(errorMapper.token(request, rejected.failure()));
-                    case Outcome.Failed<org.miaixz.bus.auth.resolver.ClientResolver.Client> failed -> CompletableFuture
+                    case Outcome.Failed<org.miaixz.bus.auth.resolver.ConsumerMetadata> failed -> CompletableFuture
                             .completedFuture(errorMapper.token(request, failed.failure()));
                 });
     }

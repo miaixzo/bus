@@ -18,18 +18,18 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the public OSChina OAuth Vendor definition and externally loaded settings.
+ * Declares the public OSChina OAuth Vendor manifest and externally loaded options.
  * <p>
- * OsChinaDefinition fixes the sole {@code oschina/default} variant and its authorization, token, and profile endpoints.
+ * OsChinaManifest fixes the sole {@code oschina/default} variant and its authorization, token, and profile endpoints.
  * It exposes redirect Source authentication plus standard OAuth authorization and token capabilities. The historical
  * token GET carrying {@code client_secret} and {@code dataType=json}, token {@code uid} extension, and profile GET
  * carrying {@code access_token} and {@code dataType=json} are explicit vendor deviations confined to the private
  * adapter; public requests and successful token results retain standard OAuth models and Bearer semantics.
  * </p>
  * <p>
- * OsChinaSourceSettings contains only routing, Client ID, Client Secret reference, one exact registered HTTP or HTTPS
+ * OsChinaOptions contains only routing, Client ID, Client Secret reference, one exact registered HTTP or HTTPS
  * callback, and unique syntactically valid OAuth scopes. The fixed endpoint set, query authentication, response
- * members, profile fields, PKCE behavior, and transport rules cannot be overridden or supplied as external settings.
+ * members, profile fields, PKCE behavior, and transport rules cannot be overridden or supplied as external options.
  * </p>
  * <p>
  * This exported package provides registration and management metadata, not an executable client. Runtime use must enter

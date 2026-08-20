@@ -21,15 +21,16 @@ package org.miaixz.bus.auth.source;
 
 import java.util.List;
 
+import org.miaixz.bus.auth.Options;
 import org.miaixz.bus.auth.Source;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
- * Validates complete Sources against the frozen Source driver profile catalog.
+ * Validates complete Sources against the frozen Source driver scheme catalog.
  * <p>
- * Each Source selects one driver by stable type identifier. The selected driver validates the actual protocol and
- * decodes the raw settings JSON; Vendor-specific platform and variant invariants remain with the Vendor compiler.
+ * Each Source selects one driver by stable type identifier. The external project supplies an already materialized
+ * Options value; Vendor-specific platform and variant invariants remain with the Vendor compiler.
  * </p>
  *
  * @author Kimi Liu
@@ -45,23 +46,23 @@ public final class SourceValidator {
      * Creates a Source validator backed by explicitly supplied Source drivers.
      *
      * @param drivers Source drivers
-     * @throws IllegalArgumentException if the list, a driver, or a profile is {@code null}
+     * @throws IllegalArgumentException if the list, a driver, or a scheme is {@code null}
      */
     public SourceValidator(final List<? extends SourceDriver<?>> drivers) {
         Assert.notNull(drivers, "Source drivers must not be null");
         for (SourceDriver<?> driver : drivers) {
             Assert.notNull(
-                    Assert.notNull(driver, "Source driver must not be null").profile(),
-                    "Source driver profile must not be null");
+                    Assert.notNull(driver, "Source driver must not be null").scheme(),
+                    "Source driver scheme must not be null");
         }
         this.drivers = List.copyOf(drivers);
     }
 
     /**
-     * Validates Source namespace, association shape, type, protocol, and settings boundary.
+     * Validates Source namespace, association shape, type, protocol, and options boundary.
      *
      * @param value complete Source entity
-     * @throws ValidateException        if a generic Source does not match its protocol profile
+     * @throws ValidateException        if a generic Source does not match its protocol scheme
      * @throws IllegalArgumentException if a common required field is {@code null} or blank
      */
     public void validate(final Source value) {
@@ -79,19 +80,24 @@ public final class SourceValidator {
         if (!driver.supports(protocol)) {
             throw new ValidateException("Source protocol is not supported by type " + type);
         }
-        driver.decode(value);
+        final Options<?> options = Assert.notNull(value.getOptions(), "Source options must not be null");
+        final Class<?> declared = Assert.notNull(options.type(), "Source options type must not be null");
+        if (declared != options.getClass()) {
+            throw new ValidateException("Source options type must exactly match its implementation class");
+        }
+        driver.require(options);
     }
 
     /**
-     * Resolves the unique profile for a Source category without introducing an implementation dependency.
+     * Resolves the unique scheme for a Source category without introducing an implementation dependency.
      *
      * @param type stable Source driver type
      * @return unique matching Source driver
-     * @throws ValidateException if the frozen catalog has no matching profile
+     * @throws ValidateException if the frozen catalog has no matching scheme
      */
     private SourceDriver<?> driver(final String type) {
         for (SourceDriver<?> driver : drivers) {
-            if (driver.profile().id().equals(type)) {
+            if (driver.scheme().id().equals(type)) {
                 return driver;
             }
         }

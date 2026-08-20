@@ -20,17 +20,17 @@
 /**
  * Declares the Huawei Account Kit OpenID Connect Source variant.
  * <p>
- * HuaweiDefinition fixes {@code huawei/default}, issuer {@code https://accounts.huawei.com}, Discovery, authorization,
+ * HuaweiManifest fixes {@code huawei/default}, issuer {@code https://accounts.huawei.com}, Discovery, authorization,
  * token, refresh, JWKS, proprietary profile, and revocation endpoints, CLIENT_SECRET form authentication, mandatory
  * S256 PKCE, RS256 ID Tokens, and exact {@code openid profile email} scopes. It publishes Source authentication plus
  * standard authentication, revocation, Discovery, and JWKS operations, but no public token or UserInfo capability
  * because Huawei's numeric errors and profile wire are platform-specific.
  * </p>
  * <p>
- * HuaweiSourceSettings contains only routing, client, secret-reference, exact HTTPS callback, and the frozen scopes. It
- * cannot configure endpoints, issuer, algorithms, PKCE, tokeninfo, SDK-only codes, client credentials, implicit or
- * hybrid flow, private token/profile records, or separate refresh operations. Remote metadata can confirm but never
- * rewrite the compiled definition.
+ * HuaweiOptions contains only routing, client, secret-reference, exact HTTPS callback, and the frozen scopes. It cannot
+ * configure endpoints, issuer, algorithms, PKCE, tokeninfo, SDK-only codes, client credentials, implicit or hybrid
+ * flow, private token/profile records, or separate refresh operations. Remote metadata can confirm but never rewrite
+ * the compiled manifest.
  * </p>
  * <p>
  * Identity is the locally verified ID Token {@code sub}, representing Huawei UnionID, and must equal the proprietary

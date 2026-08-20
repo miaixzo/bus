@@ -23,92 +23,92 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.auth.shared.ExecutionServices;
-import org.miaixz.bus.auth.vendor.afdian.AfdianDefinition;
-import org.miaixz.bus.auth.vendor.afdian.internal.AfdianSourceAdapter;
-import org.miaixz.bus.auth.vendor.alipay.AlipayDefinition;
-import org.miaixz.bus.auth.vendor.alipay.internal.AlipaySourceAdapter;
-import org.miaixz.bus.auth.vendor.aliyun.AliyunDefinition;
-import org.miaixz.bus.auth.vendor.aliyun.internal.AliyunSourceAdapter;
-import org.miaixz.bus.auth.vendor.amazon.AmazonDefinition;
-import org.miaixz.bus.auth.vendor.amazon.internal.AmazonSourceAdapter;
-import org.miaixz.bus.auth.vendor.apple.AppleDefinition;
-import org.miaixz.bus.auth.vendor.apple.internal.AppleSourceAdapter;
-import org.miaixz.bus.auth.vendor.baidu.BaiduDefinition;
-import org.miaixz.bus.auth.vendor.baidu.internal.BaiduSourceAdapter;
-import org.miaixz.bus.auth.vendor.coding.CodingDefinition;
-import org.miaixz.bus.auth.vendor.coding.internal.CodingSourceAdapter;
-import org.miaixz.bus.auth.vendor.dingtalk.DingTalkDefinition;
-import org.miaixz.bus.auth.vendor.dingtalk.internal.DingTalkSourceAdapter;
-import org.miaixz.bus.auth.vendor.douyin.DouyinDefinition;
-import org.miaixz.bus.auth.vendor.douyin.internal.DouyinSourceAdapter;
-import org.miaixz.bus.auth.vendor.eleme.ElemeDefinition;
-import org.miaixz.bus.auth.vendor.eleme.internal.ElemeSourceAdapter;
-import org.miaixz.bus.auth.vendor.facebook.FacebookDefinition;
-import org.miaixz.bus.auth.vendor.facebook.internal.FacebookSourceAdapter;
-import org.miaixz.bus.auth.vendor.feishu.FeishuDefinition;
-import org.miaixz.bus.auth.vendor.feishu.internal.FeishuSourceAdapter;
-import org.miaixz.bus.auth.vendor.figma.FigmaDefinition;
-import org.miaixz.bus.auth.vendor.figma.internal.FigmaSourceAdapter;
-import org.miaixz.bus.auth.vendor.gitee.GiteeDefinition;
-import org.miaixz.bus.auth.vendor.gitee.internal.GiteeSourceAdapter;
-import org.miaixz.bus.auth.vendor.github.GitHubDefinition;
-import org.miaixz.bus.auth.vendor.github.internal.GitHubSourceAdapter;
-import org.miaixz.bus.auth.vendor.gitlab.GitLabDefinition;
-import org.miaixz.bus.auth.vendor.gitlab.internal.GitLabSourceAdapter;
-import org.miaixz.bus.auth.vendor.google.GoogleDefinition;
-import org.miaixz.bus.auth.vendor.google.internal.GoogleSourceAdapter;
-import org.miaixz.bus.auth.vendor.huawei.HuaweiDefinition;
-import org.miaixz.bus.auth.vendor.huawei.internal.HuaweiSourceAdapter;
-import org.miaixz.bus.auth.vendor.jd.JdDefinition;
-import org.miaixz.bus.auth.vendor.jd.internal.JdSourceAdapter;
-import org.miaixz.bus.auth.vendor.kujiale.KujialeDefinition;
-import org.miaixz.bus.auth.vendor.kujiale.internal.KujialeSourceAdapter;
-import org.miaixz.bus.auth.vendor.line.LineDefinition;
-import org.miaixz.bus.auth.vendor.line.internal.LineSourceAdapter;
-import org.miaixz.bus.auth.vendor.linkedin.LinkedInDefinition;
-import org.miaixz.bus.auth.vendor.linkedin.internal.LinkedInSourceAdapter;
-import org.miaixz.bus.auth.vendor.meituan.MeituanDefinition;
-import org.miaixz.bus.auth.vendor.meituan.internal.MeituanSourceAdapter;
-import org.miaixz.bus.auth.vendor.mi.MiDefinition;
-import org.miaixz.bus.auth.vendor.mi.internal.MiSourceAdapter;
-import org.miaixz.bus.auth.vendor.microsoft.MicrosoftDefinition;
-import org.miaixz.bus.auth.vendor.microsoft.internal.MicrosoftSourceAdapter;
-import org.miaixz.bus.auth.vendor.okta.OktaDefinition;
-import org.miaixz.bus.auth.vendor.okta.internal.OktaSourceAdapter;
-import org.miaixz.bus.auth.vendor.oschina.OsChinaDefinition;
-import org.miaixz.bus.auth.vendor.oschina.internal.OsChinaSourceAdapter;
-import org.miaixz.bus.auth.vendor.pinterest.PinterestDefinition;
-import org.miaixz.bus.auth.vendor.pinterest.internal.PinterestSourceAdapter;
-import org.miaixz.bus.auth.vendor.proginn.ProginnDefinition;
-import org.miaixz.bus.auth.vendor.proginn.internal.ProginnSourceAdapter;
-import org.miaixz.bus.auth.vendor.qq.QqDefinition;
-import org.miaixz.bus.auth.vendor.qq.internal.QqSourceAdapter;
-import org.miaixz.bus.auth.vendor.rednote.RedNoteDefinition;
-import org.miaixz.bus.auth.vendor.rednote.internal.RedNoteSourceAdapter;
-import org.miaixz.bus.auth.vendor.slack.SlackDefinition;
-import org.miaixz.bus.auth.vendor.slack.internal.SlackSourceAdapter;
-import org.miaixz.bus.auth.vendor.stackoverflow.StackOverflowDefinition;
-import org.miaixz.bus.auth.vendor.stackoverflow.internal.StackOverflowSourceAdapter;
-import org.miaixz.bus.auth.vendor.taobao.TaobaoDefinition;
-import org.miaixz.bus.auth.vendor.taobao.internal.TaobaoSourceAdapter;
-import org.miaixz.bus.auth.vendor.teambition.TeambitionDefinition;
-import org.miaixz.bus.auth.vendor.teambition.internal.TeambitionSourceAdapter;
-import org.miaixz.bus.auth.vendor.toutiao.ToutiaoDefinition;
-import org.miaixz.bus.auth.vendor.toutiao.internal.ToutiaoSourceAdapter;
-import org.miaixz.bus.auth.vendor.twitter.TwitterDefinition;
-import org.miaixz.bus.auth.vendor.twitter.internal.TwitterSourceAdapter;
-import org.miaixz.bus.auth.vendor.vk.VkDefinition;
-import org.miaixz.bus.auth.vendor.vk.internal.VkSourceAdapter;
-import org.miaixz.bus.auth.vendor.wechat.WeChatDefinition;
-import org.miaixz.bus.auth.vendor.wechat.internal.ee.WeChatEeAdapter;
-import org.miaixz.bus.auth.vendor.wechat.internal.mini.WeChatMiniAdapter;
-import org.miaixz.bus.auth.vendor.wechat.internal.mp.WeChatMpAdapter;
-import org.miaixz.bus.auth.vendor.wechat.internal.open.WeChatOpenAdapter;
-import org.miaixz.bus.auth.vendor.weibo.WeiboDefinition;
-import org.miaixz.bus.auth.vendor.weibo.internal.WeiboSourceAdapter;
-import org.miaixz.bus.auth.vendor.ximalaya.XimalayaDefinition;
-import org.miaixz.bus.auth.vendor.ximalaya.internal.XimalayaSourceAdapter;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
+import org.miaixz.bus.auth.vendor.afdian.AfdianManifest;
+import org.miaixz.bus.auth.vendor.afdian.AfdianSourceAdapter;
+import org.miaixz.bus.auth.vendor.alipay.AlipayManifest;
+import org.miaixz.bus.auth.vendor.alipay.AlipaySourceAdapter;
+import org.miaixz.bus.auth.vendor.aliyun.AliyunManifest;
+import org.miaixz.bus.auth.vendor.aliyun.AliyunSourceAdapter;
+import org.miaixz.bus.auth.vendor.amazon.AmazonManifest;
+import org.miaixz.bus.auth.vendor.amazon.AmazonSourceAdapter;
+import org.miaixz.bus.auth.vendor.apple.AppleManifest;
+import org.miaixz.bus.auth.vendor.apple.AppleSourceAdapter;
+import org.miaixz.bus.auth.vendor.baidu.BaiduManifest;
+import org.miaixz.bus.auth.vendor.baidu.BaiduSourceAdapter;
+import org.miaixz.bus.auth.vendor.coding.CodingManifest;
+import org.miaixz.bus.auth.vendor.coding.CodingSourceAdapter;
+import org.miaixz.bus.auth.vendor.dingtalk.DingTalkManifest;
+import org.miaixz.bus.auth.vendor.dingtalk.DingTalkSourceAdapter;
+import org.miaixz.bus.auth.vendor.douyin.DouyinManifest;
+import org.miaixz.bus.auth.vendor.douyin.DouyinSourceAdapter;
+import org.miaixz.bus.auth.vendor.eleme.ElemeManifest;
+import org.miaixz.bus.auth.vendor.eleme.ElemeSourceAdapter;
+import org.miaixz.bus.auth.vendor.facebook.FacebookManifest;
+import org.miaixz.bus.auth.vendor.facebook.FacebookSourceAdapter;
+import org.miaixz.bus.auth.vendor.feishu.FeishuManifest;
+import org.miaixz.bus.auth.vendor.feishu.FeishuSourceAdapter;
+import org.miaixz.bus.auth.vendor.figma.FigmaManifest;
+import org.miaixz.bus.auth.vendor.figma.FigmaSourceAdapter;
+import org.miaixz.bus.auth.vendor.gitee.GiteeManifest;
+import org.miaixz.bus.auth.vendor.gitee.GiteeSourceAdapter;
+import org.miaixz.bus.auth.vendor.github.GitHubManifest;
+import org.miaixz.bus.auth.vendor.github.GitHubSourceAdapter;
+import org.miaixz.bus.auth.vendor.gitlab.GitLabManifest;
+import org.miaixz.bus.auth.vendor.gitlab.GitLabSourceAdapter;
+import org.miaixz.bus.auth.vendor.google.GoogleManifest;
+import org.miaixz.bus.auth.vendor.google.GoogleSourceAdapter;
+import org.miaixz.bus.auth.vendor.huawei.HuaweiManifest;
+import org.miaixz.bus.auth.vendor.huawei.HuaweiSourceAdapter;
+import org.miaixz.bus.auth.vendor.jd.JdManifest;
+import org.miaixz.bus.auth.vendor.jd.JdSourceAdapter;
+import org.miaixz.bus.auth.vendor.kujiale.KujialeManifest;
+import org.miaixz.bus.auth.vendor.kujiale.KujialeSourceAdapter;
+import org.miaixz.bus.auth.vendor.line.LineManifest;
+import org.miaixz.bus.auth.vendor.line.LineSourceAdapter;
+import org.miaixz.bus.auth.vendor.linkedin.LinkedInManifest;
+import org.miaixz.bus.auth.vendor.linkedin.LinkedInSourceAdapter;
+import org.miaixz.bus.auth.vendor.meituan.MeituanManifest;
+import org.miaixz.bus.auth.vendor.meituan.MeituanSourceAdapter;
+import org.miaixz.bus.auth.vendor.mi.MiManifest;
+import org.miaixz.bus.auth.vendor.mi.MiSourceAdapter;
+import org.miaixz.bus.auth.vendor.microsoft.MicrosoftManifest;
+import org.miaixz.bus.auth.vendor.microsoft.MicrosoftSourceAdapter;
+import org.miaixz.bus.auth.vendor.okta.OktaManifest;
+import org.miaixz.bus.auth.vendor.okta.OktaSourceAdapter;
+import org.miaixz.bus.auth.vendor.oschina.OsChinaManifest;
+import org.miaixz.bus.auth.vendor.oschina.OsChinaSourceAdapter;
+import org.miaixz.bus.auth.vendor.pinterest.PinterestManifest;
+import org.miaixz.bus.auth.vendor.pinterest.PinterestSourceAdapter;
+import org.miaixz.bus.auth.vendor.proginn.ProginnManifest;
+import org.miaixz.bus.auth.vendor.proginn.ProginnSourceAdapter;
+import org.miaixz.bus.auth.vendor.qq.QqManifest;
+import org.miaixz.bus.auth.vendor.qq.QqSourceAdapter;
+import org.miaixz.bus.auth.vendor.rednote.RedNoteManifest;
+import org.miaixz.bus.auth.vendor.rednote.RedNoteSourceAdapter;
+import org.miaixz.bus.auth.vendor.slack.SlackManifest;
+import org.miaixz.bus.auth.vendor.slack.SlackSourceAdapter;
+import org.miaixz.bus.auth.vendor.stackoverflow.StackOverflowManifest;
+import org.miaixz.bus.auth.vendor.stackoverflow.StackOverflowSourceAdapter;
+import org.miaixz.bus.auth.vendor.taobao.TaobaoManifest;
+import org.miaixz.bus.auth.vendor.taobao.TaobaoSourceAdapter;
+import org.miaixz.bus.auth.vendor.teambition.TeambitionManifest;
+import org.miaixz.bus.auth.vendor.teambition.TeambitionSourceAdapter;
+import org.miaixz.bus.auth.vendor.toutiao.ToutiaoManifest;
+import org.miaixz.bus.auth.vendor.toutiao.ToutiaoSourceAdapter;
+import org.miaixz.bus.auth.vendor.twitter.TwitterManifest;
+import org.miaixz.bus.auth.vendor.twitter.TwitterSourceAdapter;
+import org.miaixz.bus.auth.vendor.vk.VkManifest;
+import org.miaixz.bus.auth.vendor.vk.VkSourceAdapter;
+import org.miaixz.bus.auth.vendor.wechat.WeChatEeAdapter;
+import org.miaixz.bus.auth.vendor.wechat.WeChatManifest;
+import org.miaixz.bus.auth.vendor.wechat.WeChatMiniAdapter;
+import org.miaixz.bus.auth.vendor.wechat.WeChatMpAdapter;
+import org.miaixz.bus.auth.vendor.wechat.WeChatOpenAdapter;
+import org.miaixz.bus.auth.vendor.weibo.WeiboManifest;
+import org.miaixz.bus.auth.vendor.weibo.WeiboSourceAdapter;
+import org.miaixz.bus.auth.vendor.ximalaya.XimalayaManifest;
+import org.miaixz.bus.auth.vendor.ximalaya.XimalayaSourceAdapter;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -116,8 +116,8 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 /**
  * Builds the framework-owned baseline inventories consumed by the public Vendor module builder.
  * <p>
- * Assembly is explicit and deterministic: forty-one Vendor definitions and fifty exact platform-variant adapter
- * bindings are frozen before contribution. The module performs no reflection, service loading, Registry access, network
+ * Assembly is explicit and deterministic: forty-one Vendor manifests and fifty exact platform-variant adapter bindings
+ * are frozen before contribution. The module performs no reflection, service loading, Registry access, network
  * operation, or runtime registration mutation.
  * </p>
  *
@@ -151,53 +151,53 @@ final class VendorSuite {
     }
 
     /**
-     * Builds the complete Vendor definition directory in stable inventory order.
+     * Builds the complete Vendor manifest directory in stable inventory order.
      *
      * @return immutable forty-one-platform directory
      */
     private static VendorDirectory buildVendorDirectory() {
         return new VendorDirectory(List.of(
-                new AfdianDefinition(),
-                new AlipayDefinition(),
-                new AliyunDefinition(),
-                new AmazonDefinition(),
-                new AppleDefinition(),
-                new BaiduDefinition(),
-                new CodingDefinition(),
-                new DingTalkDefinition(),
-                new DouyinDefinition(),
-                new ElemeDefinition(),
-                new FacebookDefinition(),
-                new FeishuDefinition(),
-                new FigmaDefinition(),
-                new GiteeDefinition(),
-                new GitHubDefinition(),
-                new GitLabDefinition(),
-                new GoogleDefinition(),
-                new HuaweiDefinition(),
-                new JdDefinition(),
-                new KujialeDefinition(),
-                new LineDefinition(),
-                new LinkedInDefinition(),
-                new MeituanDefinition(),
-                new MiDefinition(),
-                new MicrosoftDefinition(),
-                new OktaDefinition(),
-                new OsChinaDefinition(),
-                new PinterestDefinition(),
-                new ProginnDefinition(),
-                new QqDefinition(),
-                new RedNoteDefinition(),
-                new SlackDefinition(),
-                new StackOverflowDefinition(),
-                new TaobaoDefinition(),
-                new TeambitionDefinition(),
-                new ToutiaoDefinition(),
-                new TwitterDefinition(),
-                new VkDefinition(),
-                new WeChatDefinition(),
-                new WeiboDefinition(),
-                new XimalayaDefinition()));
+                new AfdianManifest(),
+                new AlipayManifest(),
+                new AliyunManifest(),
+                new AmazonManifest(),
+                new AppleManifest(),
+                new BaiduManifest(),
+                new CodingManifest(),
+                new DingTalkManifest(),
+                new DouyinManifest(),
+                new ElemeManifest(),
+                new FacebookManifest(),
+                new FeishuManifest(),
+                new FigmaManifest(),
+                new GiteeManifest(),
+                new GitHubManifest(),
+                new GitLabManifest(),
+                new GoogleManifest(),
+                new HuaweiManifest(),
+                new JdManifest(),
+                new KujialeManifest(),
+                new LineManifest(),
+                new LinkedInManifest(),
+                new MeituanManifest(),
+                new MiManifest(),
+                new MicrosoftManifest(),
+                new OktaManifest(),
+                new OsChinaManifest(),
+                new PinterestManifest(),
+                new ProginnManifest(),
+                new QqManifest(),
+                new RedNoteManifest(),
+                new SlackManifest(),
+                new StackOverflowManifest(),
+                new TaobaoManifest(),
+                new TeambitionManifest(),
+                new ToutiaoManifest(),
+                new TwitterManifest(),
+                new VkManifest(),
+                new WeChatManifest(),
+                new WeiboManifest(),
+                new XimalayaManifest()));
     }
 
     /**
@@ -209,238 +209,218 @@ final class VendorSuite {
         final Map<AdapterBindings.Key, VendorAdapter.Factory<?>> bindings = new LinkedHashMap<>(50);
         register(
                 bindings,
-                AfdianDefinition.ID,
-                AfdianDefinition.DEFAULT,
-                factory(AfdianDefinition.class, AfdianSourceAdapter::new));
+                AfdianManifest.ID,
+                AfdianManifest.DEFAULT,
+                factory(AfdianManifest.class, AfdianSourceAdapter::new));
         register(
                 bindings,
-                AlipayDefinition.ID,
-                AlipayDefinition.DEFAULT,
-                factory(AlipayDefinition.class, AlipaySourceAdapter::new));
+                AlipayManifest.ID,
+                AlipayManifest.DEFAULT,
+                factory(AlipayManifest.class, AlipaySourceAdapter::new));
         register(
                 bindings,
-                AliyunDefinition.ID,
-                AliyunDefinition.DEFAULT,
-                factory(AliyunDefinition.class, AliyunSourceAdapter::new));
+                AliyunManifest.ID,
+                AliyunManifest.DEFAULT,
+                factory(AliyunManifest.class, AliyunSourceAdapter::new));
         register(
                 bindings,
-                AmazonDefinition.ID,
-                AmazonDefinition.DEFAULT,
-                factory(AmazonDefinition.class, AmazonSourceAdapter::new));
+                AmazonManifest.ID,
+                AmazonManifest.DEFAULT,
+                factory(AmazonManifest.class, AmazonSourceAdapter::new));
         register(
                 bindings,
-                AppleDefinition.ID,
-                AppleDefinition.DEFAULT,
-                factory(AppleDefinition.class, AppleSourceAdapter::new));
+                AppleManifest.ID,
+                AppleManifest.DEFAULT,
+                factory(AppleManifest.class, AppleSourceAdapter::new));
         register(
                 bindings,
-                BaiduDefinition.ID,
-                BaiduDefinition.DEFAULT,
-                factory(BaiduDefinition.class, BaiduSourceAdapter::new));
+                BaiduManifest.ID,
+                BaiduManifest.DEFAULT,
+                factory(BaiduManifest.class, BaiduSourceAdapter::new));
         register(
                 bindings,
-                CodingDefinition.ID,
-                CodingDefinition.DEFAULT,
-                factory(CodingDefinition.class, CodingSourceAdapter::new));
+                CodingManifest.ID,
+                CodingManifest.DEFAULT,
+                factory(CodingManifest.class, CodingSourceAdapter::new));
         register(
                 bindings,
-                DingTalkDefinition.ID,
-                DingTalkDefinition.OAUTH2,
-                factory(DingTalkDefinition.class, DingTalkSourceAdapter::new));
+                DingTalkManifest.ID,
+                DingTalkManifest.OAUTH2,
+                factory(DingTalkManifest.class, DingTalkSourceAdapter::new));
         register(
                 bindings,
-                DingTalkDefinition.ID,
-                DingTalkDefinition.ACCOUNT,
-                factory(DingTalkDefinition.class, DingTalkSourceAdapter::new));
+                DingTalkManifest.ID,
+                DingTalkManifest.ACCOUNT,
+                factory(DingTalkManifest.class, DingTalkSourceAdapter::new));
         register(
                 bindings,
-                DouyinDefinition.ID,
-                DouyinDefinition.OPEN,
-                factory(DouyinDefinition.class, DouyinSourceAdapter::new));
+                DouyinManifest.ID,
+                DouyinManifest.OPEN,
+                factory(DouyinManifest.class, DouyinSourceAdapter::new));
         register(
                 bindings,
-                DouyinDefinition.ID,
-                DouyinDefinition.MINI_PROGRAM,
-                factory(DouyinDefinition.class, DouyinSourceAdapter::new));
+                DouyinManifest.ID,
+                DouyinManifest.MINI_PROGRAM,
+                factory(DouyinManifest.class, DouyinSourceAdapter::new));
         register(
                 bindings,
-                ElemeDefinition.ID,
-                ElemeDefinition.DEFAULT,
-                factory(ElemeDefinition.class, ElemeSourceAdapter::new));
+                ElemeManifest.ID,
+                ElemeManifest.DEFAULT,
+                factory(ElemeManifest.class, ElemeSourceAdapter::new));
         register(
                 bindings,
-                FacebookDefinition.ID,
-                FacebookDefinition.DEFAULT,
-                factory(FacebookDefinition.class, FacebookSourceAdapter::new));
+                FacebookManifest.ID,
+                FacebookManifest.DEFAULT,
+                factory(FacebookManifest.class, FacebookSourceAdapter::new));
         register(
                 bindings,
-                FeishuDefinition.ID,
-                FeishuDefinition.DEFAULT,
-                factory(FeishuDefinition.class, FeishuSourceAdapter::new));
+                FeishuManifest.ID,
+                FeishuManifest.DEFAULT,
+                factory(FeishuManifest.class, FeishuSourceAdapter::new));
         register(
                 bindings,
-                FigmaDefinition.ID,
-                FigmaDefinition.DEFAULT,
-                factory(FigmaDefinition.class, FigmaSourceAdapter::new));
+                FigmaManifest.ID,
+                FigmaManifest.DEFAULT,
+                factory(FigmaManifest.class, FigmaSourceAdapter::new));
         register(
                 bindings,
-                GiteeDefinition.ID,
-                GiteeDefinition.DEFAULT,
-                factory(GiteeDefinition.class, GiteeSourceAdapter::new));
+                GiteeManifest.ID,
+                GiteeManifest.DEFAULT,
+                factory(GiteeManifest.class, GiteeSourceAdapter::new));
         register(
                 bindings,
-                GitHubDefinition.ID,
-                GitHubDefinition.DEFAULT,
-                factory(GitHubDefinition.class, GitHubSourceAdapter::new));
+                GitHubManifest.ID,
+                GitHubManifest.DEFAULT,
+                factory(GitHubManifest.class, GitHubSourceAdapter::new));
         register(
                 bindings,
-                GitLabDefinition.ID,
-                GitLabDefinition.DEFAULT,
-                factory(GitLabDefinition.class, GitLabSourceAdapter::new));
+                GitLabManifest.ID,
+                GitLabManifest.DEFAULT,
+                factory(GitLabManifest.class, GitLabSourceAdapter::new));
         register(
                 bindings,
-                GoogleDefinition.ID,
-                GoogleDefinition.DEFAULT,
-                factory(GoogleDefinition.class, GoogleSourceAdapter::new));
+                GoogleManifest.ID,
+                GoogleManifest.DEFAULT,
+                factory(GoogleManifest.class, GoogleSourceAdapter::new));
         register(
                 bindings,
-                HuaweiDefinition.ID,
-                HuaweiDefinition.DEFAULT,
-                factory(HuaweiDefinition.class, HuaweiSourceAdapter::new));
-        register(bindings, JdDefinition.ID, JdDefinition.DEFAULT, factory(JdDefinition.class, JdSourceAdapter::new));
+                HuaweiManifest.ID,
+                HuaweiManifest.DEFAULT,
+                factory(HuaweiManifest.class, HuaweiSourceAdapter::new));
+        register(bindings, JdManifest.ID, JdManifest.DEFAULT, factory(JdManifest.class, JdSourceAdapter::new));
         register(
                 bindings,
-                KujialeDefinition.ID,
-                KujialeDefinition.DEFAULT,
-                factory(KujialeDefinition.class, KujialeSourceAdapter::new));
+                KujialeManifest.ID,
+                KujialeManifest.DEFAULT,
+                factory(KujialeManifest.class, KujialeSourceAdapter::new));
+        register(bindings, LineManifest.ID, LineManifest.DEFAULT, factory(LineManifest.class, LineSourceAdapter::new));
         register(
                 bindings,
-                LineDefinition.ID,
-                LineDefinition.DEFAULT,
-                factory(LineDefinition.class, LineSourceAdapter::new));
+                LinkedInManifest.ID,
+                LinkedInManifest.DEFAULT,
+                factory(LinkedInManifest.class, LinkedInSourceAdapter::new));
         register(
                 bindings,
-                LinkedInDefinition.ID,
-                LinkedInDefinition.DEFAULT,
-                factory(LinkedInDefinition.class, LinkedInSourceAdapter::new));
+                MeituanManifest.ID,
+                MeituanManifest.DEFAULT,
+                factory(MeituanManifest.class, MeituanSourceAdapter::new));
+        register(bindings, MiManifest.ID, MiManifest.DEFAULT, factory(MiManifest.class, MiSourceAdapter::new));
         register(
                 bindings,
-                MeituanDefinition.ID,
-                MeituanDefinition.DEFAULT,
-                factory(MeituanDefinition.class, MeituanSourceAdapter::new));
-        register(bindings, MiDefinition.ID, MiDefinition.DEFAULT, factory(MiDefinition.class, MiSourceAdapter::new));
+                MicrosoftManifest.ID,
+                MicrosoftManifest.GLOBAL,
+                factory(MicrosoftManifest.class, MicrosoftSourceAdapter::new));
         register(
                 bindings,
-                MicrosoftDefinition.ID,
-                MicrosoftDefinition.GLOBAL,
-                factory(MicrosoftDefinition.class, MicrosoftSourceAdapter::new));
+                MicrosoftManifest.ID,
+                MicrosoftManifest.CHINA,
+                factory(MicrosoftManifest.class, MicrosoftSourceAdapter::new));
+        register(bindings, OktaManifest.ID, OktaManifest.DEFAULT, factory(OktaManifest.class, OktaSourceAdapter::new));
         register(
                 bindings,
-                MicrosoftDefinition.ID,
-                MicrosoftDefinition.CHINA,
-                factory(MicrosoftDefinition.class, MicrosoftSourceAdapter::new));
+                OsChinaManifest.ID,
+                OsChinaManifest.DEFAULT,
+                factory(OsChinaManifest.class, OsChinaSourceAdapter::new));
         register(
                 bindings,
-                OktaDefinition.ID,
-                OktaDefinition.DEFAULT,
-                factory(OktaDefinition.class, OktaSourceAdapter::new));
+                PinterestManifest.ID,
+                PinterestManifest.DEFAULT,
+                factory(PinterestManifest.class, PinterestSourceAdapter::new));
         register(
                 bindings,
-                OsChinaDefinition.ID,
-                OsChinaDefinition.DEFAULT,
-                factory(OsChinaDefinition.class, OsChinaSourceAdapter::new));
+                ProginnManifest.ID,
+                ProginnManifest.DEFAULT,
+                factory(ProginnManifest.class, ProginnSourceAdapter::new));
+        register(bindings, QqManifest.ID, QqManifest.OPEN, factory(QqManifest.class, QqSourceAdapter::new));
+        register(bindings, QqManifest.ID, QqManifest.MINI_PROGRAM, factory(QqManifest.class, QqSourceAdapter::new));
         register(
                 bindings,
-                PinterestDefinition.ID,
-                PinterestDefinition.DEFAULT,
-                factory(PinterestDefinition.class, PinterestSourceAdapter::new));
+                RedNoteManifest.ID,
+                RedNoteManifest.MARKETING,
+                factory(RedNoteManifest.class, RedNoteSourceAdapter::new));
         register(
                 bindings,
-                ProginnDefinition.ID,
-                ProginnDefinition.DEFAULT,
-                factory(ProginnDefinition.class, ProginnSourceAdapter::new));
-        register(bindings, QqDefinition.ID, QqDefinition.OPEN, factory(QqDefinition.class, QqSourceAdapter::new));
+                SlackManifest.ID,
+                SlackManifest.DEFAULT,
+                factory(SlackManifest.class, SlackSourceAdapter::new));
         register(
                 bindings,
-                QqDefinition.ID,
-                QqDefinition.MINI_PROGRAM,
-                factory(QqDefinition.class, QqSourceAdapter::new));
+                StackOverflowManifest.ID,
+                StackOverflowManifest.DEFAULT,
+                factory(StackOverflowManifest.class, StackOverflowSourceAdapter::new));
         register(
                 bindings,
-                RedNoteDefinition.ID,
-                RedNoteDefinition.MARKETING,
-                factory(RedNoteDefinition.class, RedNoteSourceAdapter::new));
+                TaobaoManifest.ID,
+                TaobaoManifest.DEFAULT,
+                factory(TaobaoManifest.class, TaobaoSourceAdapter::new));
         register(
                 bindings,
-                SlackDefinition.ID,
-                SlackDefinition.DEFAULT,
-                factory(SlackDefinition.class, SlackSourceAdapter::new));
+                TeambitionManifest.ID,
+                TeambitionManifest.DEFAULT,
+                factory(TeambitionManifest.class, TeambitionSourceAdapter::new));
         register(
                 bindings,
-                StackOverflowDefinition.ID,
-                StackOverflowDefinition.DEFAULT,
-                factory(StackOverflowDefinition.class, StackOverflowSourceAdapter::new));
+                ToutiaoManifest.ID,
+                ToutiaoManifest.DEFAULT,
+                factory(ToutiaoManifest.class, ToutiaoSourceAdapter::new));
         register(
                 bindings,
-                TaobaoDefinition.ID,
-                TaobaoDefinition.DEFAULT,
-                factory(TaobaoDefinition.class, TaobaoSourceAdapter::new));
+                TwitterManifest.ID,
+                TwitterManifest.DEFAULT,
+                factory(TwitterManifest.class, TwitterSourceAdapter::new));
+        register(bindings, VkManifest.ID, VkManifest.DEFAULT, factory(VkManifest.class, VkSourceAdapter::new));
         register(
                 bindings,
-                TeambitionDefinition.ID,
-                TeambitionDefinition.DEFAULT,
-                factory(TeambitionDefinition.class, TeambitionSourceAdapter::new));
+                WeChatManifest.ID,
+                WeChatManifest.OPEN,
+                factory(WeChatManifest.class, WeChatOpenAdapter::new));
+        register(bindings, WeChatManifest.ID, WeChatManifest.MP, factory(WeChatManifest.class, WeChatMpAdapter::new));
         register(
                 bindings,
-                ToutiaoDefinition.ID,
-                ToutiaoDefinition.DEFAULT,
-                factory(ToutiaoDefinition.class, ToutiaoSourceAdapter::new));
+                WeChatManifest.ID,
+                WeChatManifest.MINI,
+                factory(WeChatManifest.class, WeChatMiniAdapter::new));
+        register(bindings, WeChatManifest.ID, WeChatManifest.EE, factory(WeChatManifest.class, WeChatEeAdapter::new));
         register(
                 bindings,
-                TwitterDefinition.ID,
-                TwitterDefinition.OAUTH1,
-                factory(TwitterDefinition.class, TwitterSourceAdapter::new));
-        register(bindings, VkDefinition.ID, VkDefinition.DEFAULT, factory(VkDefinition.class, VkSourceAdapter::new));
+                WeChatManifest.ID,
+                WeChatManifest.EE_QRCODE,
+                factory(WeChatManifest.class, WeChatEeAdapter::new));
         register(
                 bindings,
-                WeChatDefinition.ID,
-                WeChatDefinition.OPEN,
-                factory(WeChatDefinition.class, WeChatOpenAdapter::new));
+                WeChatManifest.ID,
+                WeChatManifest.EE_WEB,
+                factory(WeChatManifest.class, WeChatEeAdapter::new));
         register(
                 bindings,
-                WeChatDefinition.ID,
-                WeChatDefinition.MP,
-                factory(WeChatDefinition.class, WeChatMpAdapter::new));
+                WeiboManifest.ID,
+                WeiboManifest.DEFAULT,
+                factory(WeiboManifest.class, WeiboSourceAdapter::new));
         register(
                 bindings,
-                WeChatDefinition.ID,
-                WeChatDefinition.MINI,
-                factory(WeChatDefinition.class, WeChatMiniAdapter::new));
-        register(
-                bindings,
-                WeChatDefinition.ID,
-                WeChatDefinition.EE,
-                factory(WeChatDefinition.class, WeChatEeAdapter::new));
-        register(
-                bindings,
-                WeChatDefinition.ID,
-                WeChatDefinition.EE_QRCODE,
-                factory(WeChatDefinition.class, WeChatEeAdapter::new));
-        register(
-                bindings,
-                WeChatDefinition.ID,
-                WeChatDefinition.EE_WEB,
-                factory(WeChatDefinition.class, WeChatEeAdapter::new));
-        register(
-                bindings,
-                WeiboDefinition.ID,
-                WeiboDefinition.DEFAULT,
-                factory(WeiboDefinition.class, WeiboSourceAdapter::new));
-        register(
-                bindings,
-                XimalayaDefinition.ID,
-                XimalayaDefinition.DEFAULT,
-                factory(XimalayaDefinition.class, XimalayaSourceAdapter::new));
+                XimalayaManifest.ID,
+                XimalayaManifest.DEFAULT,
+                factory(XimalayaManifest.class, XimalayaSourceAdapter::new));
         if (bindings.size() != 50) {
             throw new ValidateException("Vendor adapter inventory must contain exactly fifty variants");
         }
@@ -469,55 +449,50 @@ final class VendorSuite {
     }
 
     /**
-     * Adapts a concrete Vendor definition constructor to the module-internal generic factory contract.
+     * Adapts a concrete platform manifest constructor to the framework generic factory contract.
      *
-     * @param definitionType exact concrete Vendor definition class
-     * @param constructor    exact concrete adapter constructor
-     * @param <D>            concrete Vendor definition type
-     * @param <S>            concrete platform settings type
-     * @return type-safe adapter factory with runtime definition-class verification
+     * @param manifestType exact concrete platform manifest class
+     * @param constructor  exact concrete adapter constructor
+     * @param <D>          concrete platform manifest type
+     * @param <S>          concrete platform options type
+     * @return type-safe adapter factory with runtime manifest-class verification
      */
-    private static <D extends VendorDefinition<S>, S extends VendorSettings> VendorAdapter.Factory<S> factory(
-            final Class<D> definitionType,
+    private static <D extends VariantManifest<S>, S extends VendorOptions<?>> VendorAdapter.Factory<S> factory(
+            final Class<D> manifestType,
             final AdapterConstructor<D, S> constructor) {
-        Assert.notNull(definitionType, "Vendor definition class must not be null");
+        Assert.notNull(manifestType, "Vendor manifest class must not be null");
         Assert.notNull(constructor, "Vendor adapter constructor must not be null");
-        return (namespaceId, sourceId, vendorDefinition, variantDefinition, settings, services) -> constructor.create(
-                namespaceId,
-                sourceId,
-                definitionType.cast(vendorDefinition),
-                variantDefinition,
-                settings,
-                services);
+        return (namespaceId, sourceId, manifest, variant, options, services) -> constructor
+                .create(namespaceId, sourceId, manifestType.cast(manifest), variant, options, services);
     }
 
     /**
-     * Represents one concrete platform adapter constructor without weakening its definition or settings type.
+     * Represents one concrete platform adapter constructor without weakening its manifest or options type.
      *
-     * @param <D> concrete Vendor definition type
-     * @param <S> concrete platform settings type
+     * @param <D> concrete platform manifest type
+     * @param <S> concrete platform options type
      * @author Kimi Liu
      */
     @FunctionalInterface
-    private interface AdapterConstructor<D extends VendorDefinition<S>, S extends VendorSettings> {
+    private interface AdapterConstructor<D extends VariantManifest<S>, S extends VendorOptions<?>> {
 
         /**
          * Creates one Source-bound concrete platform adapter.
          *
-         * @param namespaceId       registration namespace identifier
-         * @param sourceId          registration Source identifier
-         * @param vendorDefinition  exact concrete Vendor definition
-         * @param variantDefinition exact selected variant definition
-         * @param settings          decoded concrete platform settings
-         * @param services          complete caller-owned runtime dependencies
+         * @param namespaceId registration namespace identifier
+         * @param sourceId    registration Source identifier
+         * @param manifest    exact concrete platform manifest
+         * @param variant     exact selected variant
+         * @param options     decoded concrete platform options
+         * @param services    complete caller-owned runtime dependencies
          * @return non-null concrete adapter
          */
         VendorAdapter create(
                 String namespaceId,
                 String sourceId,
-                D vendorDefinition,
-                VendorDefinition.Definition variantDefinition,
-                S settings,
+                D manifest,
+                VariantManifest.Variant variant,
+                S options,
                 ExecutionServices services);
 
     }

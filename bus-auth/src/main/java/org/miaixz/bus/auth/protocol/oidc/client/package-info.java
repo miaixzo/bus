@@ -24,7 +24,7 @@
  * Discovery, Authentication Request URL encoding, typed OpenIdTokenResponse handling, UserInfo, and RP-Initiated
  * Logout. DiscoveryClient obtains composed Provider Metadata, AuthorizationResponseValidator binds the OAuth browser
  * response, IdTokenVerifier validates the signed identity assertion, and UserInfoClient binds returned claims to the
- * verified subject. OpenIdClientSettings and OpenIdSourceProfile expose only the endpoints, algorithms, claims, and
+ * verified subject. OpenIdClientOptions and OpenIdClientScheme expose only the endpoints, algorithms, claims, and
  * capabilities supported by a generic OIDC Source.
  * </p>
  * <p>

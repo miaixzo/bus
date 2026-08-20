@@ -18,18 +18,18 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the Aliyun OpenID Connect Vendor definition and client registration settings.
+ * Declares the Aliyun OpenID Connect Vendor manifest and client registration options.
  * <p>
- * AliyunDefinition exposes the single {@code aliyun/default} OIDC variant with fixed authorization, token, UserInfo,
+ * AliyunManifest exposes the single {@code aliyun/default} OIDC variant with fixed authorization, token, UserInfo,
  * revocation, Discovery, and JWK Set endpoints. It declares client_secret_post, CLIENT_SECRET, mandatory S256 PKCE,
  * RS256 ID Tokens, {@code openid profile} defaults, and only the Source authentication, OIDC authorization, token,
  * revocation, Discovery, JWK Set, and UserInfo capabilities implemented by its adapter. Its deviation list is empty.
  * </p>
  * <p>
- * AliyunSourceSettings contains only routing, public client ID, secret reference, exact callback, and ordered official
- * scopes. Fixed platform endpoints, client authentication, algorithms, PKCE policy, Discovery defaults, and response
- * fields are definition-owned and cannot be overridden by users. This package exports no private token or profile DTO,
- * custom scope enum, endpoint selector, issuer selector, or Vendor-specific alternative to standard OIDC models.
+ * AliyunOptions contains only routing, public client ID, secret reference, exact callback, and ordered official scopes.
+ * Fixed platform endpoints, client authentication, algorithms, PKCE policy, Discovery defaults, and response fields are
+ * manifest-owned and cannot be overridden by users. This package exports no private token or profile DTO, custom scope
+ * enum, endpoint selector, issuer selector, or Vendor-specific alternative to standard OIDC models.
  * </p>
  * <p>
  * Credentials must reference CLIENT_SECRET, callback ownership is exact and HTTPS in production, and requested scopes

@@ -20,14 +20,14 @@
 /**
  * Provides protocol-standard authentication services and registered external identity integrations.
  * <p>
- * The module exports protocol-neutral contracts, externally implemented stores and resolvers, runtime and registration
- * services, standard LDAP, OAuth 1.0, OAuth 2.0, OpenID Connect, RADIUS, SAML, and SCIM models and services, shared
- * security value types, and immutable Vendor Source profiles. HTTP transport remains owned by {@code bus.fabric}.
+ * The module exports protocol-neutral contracts, project data loaders, pure parsers, runtime and registration services,
+ * standard LDAP, OAuth 2.0, OpenID Connect, RADIUS, SAML, and SCIM models and services, shared security value types,
+ * and immutable Vendor Source schemes. HTTP transport remains owned by {@code bus.fabric}.
  * </p>
  * <p>
- * Registry invocation SPIs, runtime snapshot assembly, and every internal protocol or Vendor adapter package remain
- * encapsulated. Callers assemble public Provider and Source drivers, then enter execution through Registry and Provider
- * contracts without depending on platform wire adapters.
+ * Protocol drivers, server-side issuers, runtime assembly classes, and Registry view classes use explicit public
+ * responsibility packages instead of hidden {@code internal} packages. Registration queries and capability execution
+ * remain separate through Registry and Authenticator.
  * </p>
  *
  * @author Kimi Liu
@@ -51,20 +51,16 @@ module bus.auth {
     exports org.miaixz.bus.auth.cache;
     exports org.miaixz.bus.auth.codec;
     exports org.miaixz.bus.auth.guard;
-    exports org.miaixz.bus.auth.identity;
     exports org.miaixz.bus.auth.library;
     exports org.miaixz.bus.auth.protocol;
     exports org.miaixz.bus.auth.protocol.ldap;
     exports org.miaixz.bus.auth.protocol.ldap.client;
     exports org.miaixz.bus.auth.protocol.ldap.codec;
     exports org.miaixz.bus.auth.protocol.ldap.server;
-    exports org.miaixz.bus.auth.protocol.oauth1;
-    exports org.miaixz.bus.auth.protocol.oauth1.client;
-    exports org.miaixz.bus.auth.protocol.oauth1.codec;
-    exports org.miaixz.bus.auth.protocol.oauth1.security;
     exports org.miaixz.bus.auth.protocol.oauth2;
     exports org.miaixz.bus.auth.protocol.oauth2.client;
     exports org.miaixz.bus.auth.protocol.oauth2.codec;
+    exports org.miaixz.bus.auth.protocol.oauth2.grant;
     exports org.miaixz.bus.auth.protocol.oauth2.server;
     exports org.miaixz.bus.auth.protocol.oidc;
     exports org.miaixz.bus.auth.protocol.oidc.client;
@@ -95,6 +91,8 @@ module bus.auth {
     exports org.miaixz.bus.auth.shared.pkce;
     exports org.miaixz.bus.auth.source;
     exports org.miaixz.bus.auth.vendor;
+    exports org.miaixz.bus.auth.worker;
+    exports org.miaixz.bus.auth.worker.identity;
     exports org.miaixz.bus.auth.vendor.afdian;
     exports org.miaixz.bus.auth.vendor.alipay;
     exports org.miaixz.bus.auth.vendor.aliyun;

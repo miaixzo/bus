@@ -18,25 +18,25 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines the public loading, validation, observation, and resource-access boundary of the Registry.
+ * Defines the loading, validation, publication, and read-only state boundary of the Registry.
  * <p>
- * External projects implement {@link org.miaixz.bus.auth.registry.RegistrationLoader} and the generic
- * {@link org.miaixz.bus.auth.registry.ResourceService} to supply complete registration snapshots and management data.
- * Snapshot record lists are structurally frozen, while their Library, Provider, and Source entities remain mutable
- * persistence models owned by the external project. {@link org.miaixz.bus.auth.registry.RegistrationValidator} applies
- * cross-entity Library, Provider, Source, namespace, and Library-to-Provider-to-Source ownership rules before
- * compilation. {@link org.miaixz.bus.auth.registry.RegistryListener} observes publication lifecycle, while
+ * External projects implement {@link org.miaixz.bus.auth.worker.RegistrationLoader} to supply complete registration
+ * snapshots. CRUD and management data access remain project responsibilities. Snapshot record lists are structurally
+ * frozen, while their Library, Provider, and Source entities remain mutable project-supplied models owned by the
+ * external project. The loader converts persisted Source configuration into typed Options before this boundary.
+ * {@link org.miaixz.bus.auth.registry.RegistrationValidator} applies cross-entity Library, Provider, Source, namespace,
+ * and Library-to-Provider-to-Source ownership rules before compilation.
+ * {@link org.miaixz.bus.auth.worker.RegistryListener} observes publication lifecycle, while
  * {@link org.miaixz.bus.auth.registry.RegistryIssue} reports non-secret reload failures.
  * </p>
  * <p>
- * Runtime assembly calls this package through the root Registry and registration contracts. The public registry layer
- * remains neutral: runtime assembly supplies already compiled immutable views, and no concrete protocol service,
- * platform adapter, Driver, or persistence implementation is imported here. Registry users invoke only a
- * {@link org.miaixz.bus.auth.Registry.Reference}, never a compiled Source instance.
+ * Runtime assembly supplies already compiled immutable views. No concrete protocol service, platform adapter, Driver,
+ * persistence implementation, security decision, audit operation, or capability execution belongs to this package.
+ * {@link org.miaixz.bus.auth.Authenticator} consumes a Registry reference without adding execution duties to Registry.
  * </p>
  * <p>
  * A reload validates and compiles the complete candidate before one atomic publication; partial views and fallback to
- * an invalid candidate are forbidden. Issues and listener notifications must omit settings bodies, credentials, tokens,
+ * an invalid candidate are forbidden. Issues and listener notifications must omit options bodies, credentials, tokens,
  * protocol messages, exceptions, and stack traces, and management resource access must preserve namespace isolation
  * established by the external project.
  * </p>

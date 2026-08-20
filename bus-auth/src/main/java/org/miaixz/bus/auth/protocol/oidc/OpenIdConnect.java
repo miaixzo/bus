@@ -20,11 +20,8 @@
 package org.miaixz.bus.auth.protocol.oidc;
 
 import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.protocol.oidc.client.OpenIdClientSettings;
-import org.miaixz.bus.auth.protocol.oidc.internal.OpenIdProviderDriver;
-import org.miaixz.bus.auth.protocol.oidc.internal.OpenIdSourceDriver;
-import org.miaixz.bus.auth.protocol.oidc.server.OpenIdProviderSettings;
-import org.miaixz.bus.auth.provider.ProviderDriver;
+import org.miaixz.bus.auth.protocol.oidc.client.OpenIdClientOptions;
+import org.miaixz.bus.auth.protocol.oidc.server.OpenIdServerOptions;
 import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.core.net.Protocol;
 
@@ -68,7 +65,7 @@ public final class OpenIdConnect {
      *
      * @return new OpenID Provider driver
      */
-    public static ProviderDriver<OpenIdProviderSettings> provider() {
+    public static SourceDriver<OpenIdServerOptions> provider() {
         return new OpenIdProviderDriver();
     }
 
@@ -77,7 +74,7 @@ public final class OpenIdConnect {
      *
      * @return new OpenID Source driver
      */
-    public static SourceDriver<OpenIdClientSettings> source() {
+    public static SourceDriver<OpenIdClientOptions> source() {
         return new OpenIdSourceDriver();
     }
 

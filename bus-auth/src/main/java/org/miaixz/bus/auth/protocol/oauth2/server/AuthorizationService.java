@@ -26,7 +26,7 @@ import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationRequest;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationResponse;
-import org.miaixz.bus.auth.protocol.oauth2.internal.AuthorizationCodeIssuer;
+import org.miaixz.bus.auth.protocol.oauth2.grant.AuthorizationCodeIssuer;
 import org.miaixz.bus.core.lang.Assert;
 
 /**

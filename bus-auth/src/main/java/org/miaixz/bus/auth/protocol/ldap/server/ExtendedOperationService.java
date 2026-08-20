@@ -47,9 +47,9 @@ public final class ExtendedOperationService {
     private final String providerId;
 
     /**
-     * Frozen Provider extended-operation and StartTLS settings.
+     * Frozen Provider extended-operation and StartTLS options.
      */
-    private final LdapProviderSettings settings;
+    private final LdapServerOptions options;
 
     /**
      * External implementation for operations other than framework-handled StartTLS.
@@ -60,13 +60,13 @@ public final class ExtendedOperationService {
      * Creates an Extended Operation service for one compiled LDAP Provider.
      *
      * @param providerId compiled server-role Source identifier
-     * @param settings   validated LDAP Provider settings
+     * @param options    validated LDAP Provider options
      * @param store      externally implemented directory store
      */
-    public ExtendedOperationService(final String providerId, final LdapProviderSettings settings,
+    public ExtendedOperationService(final String providerId, final LdapServerOptions options,
             final DirectoryStore store) {
         this.providerId = Assert.notBlank(providerId, "LDAP Extended Provider id must not be blank");
-        this.settings = Assert.notNull(settings, "LDAP Extended Provider settings must not be null");
+        this.options = Assert.notNull(options, "LDAP Extended Provider options must not be null");
         this.store = Assert.notNull(store, "LDAP Extended directory store must not be null");
     }
 
@@ -199,7 +199,7 @@ public final class ExtendedOperationService {
         if (!request.requestValue().isEmpty()) {
             return local(messageId, LdapResultCode.PROTOCOL_ERROR, ExtendedRequest.START_TLS_OID);
         }
-        if (!settings.startTlsSupported()) {
+        if (!options.startTlsSupported()) {
             return local(messageId, LdapResultCode.PROTOCOL_ERROR, ExtendedRequest.START_TLS_OID);
         }
         if (transport != Endpoint.Transport.TCP) {

@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.Enumers;
  * <p>
  * Session lifecycle is separate from Registry snapshots, protocol-specific session identifiers, and tokens. The record
  * contains only its stable key, lifecycle state, and validity interval; token and credential material must be retained
- * by their dedicated stores or external resolvers.
+ * by their dedicated stores or external loaders.
  * </p>
  *
  * @param key       stable session key

@@ -295,17 +295,17 @@ public final class ScimDiscoveryCodec {
         members.put(Scim.Attributes.CHANGE_PASSWORD, supported(value.changePassword()));
         members.put(Scim.Attributes.SORT_SUPPORTED, supported(value.sort()));
         members.put(Scim.Attributes.ETAG_SUPPORTED, supported(value.etag()));
-        final List<JsonValue> schemes = new ArrayList<>(value.authenticationSchemes().size());
-        for (ServiceProviderConfig.AuthenticationScheme scheme : value.authenticationSchemes()) {
+        final List<JsonValue> mechanisms = new ArrayList<>(value.authenticationSchemes().size());
+        for (ServiceProviderConfig.AuthenticationMechanism mechanism : value.authenticationSchemes()) {
             final Map<String, JsonValue> item = new LinkedHashMap<>();
-            item.put(Scim.Attributes.TYPE, string(scheme.type()));
-            item.put(Scim.Attributes.RESOURCE_NAME, string(scheme.name()));
-            item.put(Scim.Attributes.DESCRIPTION, string(scheme.description()));
-            put(item, Scim.Attributes.SPEC_URI, scheme.specUri());
-            put(item, Scim.Attributes.DOCUMENTATION_URI, scheme.documentationUri());
-            schemes.add(new JsonValue.ObjectValue(item));
+            item.put(Scim.Attributes.TYPE, string(mechanism.type()));
+            item.put(Scim.Attributes.RESOURCE_NAME, string(mechanism.name()));
+            item.put(Scim.Attributes.DESCRIPTION, string(mechanism.description()));
+            put(item, Scim.Attributes.SPEC_URI, mechanism.specUri());
+            put(item, Scim.Attributes.DOCUMENTATION_URI, mechanism.documentationUri());
+            mechanisms.add(new JsonValue.ObjectValue(item));
         }
-        members.put(Scim.Attributes.AUTHENTICATION_SCHEMES, new JsonValue.ArrayValue(schemes));
+        members.put(Scim.Attributes.AUTHENTICATION_SCHEMES, new JsonValue.ArrayValue(mechanisms));
         return response(request, new JsonValue.ObjectValue(members), value.meta());
     }
 

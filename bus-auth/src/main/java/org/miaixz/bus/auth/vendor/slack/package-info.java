@@ -18,9 +18,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the public Slack OAuth Vendor definition and externally loaded settings.
+ * Declares the public Slack OAuth Vendor manifest and externally loaded options.
  * <p>
- * SlackDefinition fixes {@code slack/default}, authorization, token, users-info, and revocation endpoints, default
+ * SlackManifest fixes {@code slack/default}, authorization, token, users-info, and revocation endpoints, default
  * identity scopes, and redirect Source authentication plus standard OAuth authorization, token, and revocation
  * capabilities. Comma-delimited scope, GET query token credentials, the {@code oauth.v2.access} envelope,
  * {@code users.info} query/envelope, and Bearer GET {@code auth.revoke} envelope are explicit vendor deviations
@@ -28,10 +28,10 @@
  * RevocationRequest semantics.
  * </p>
  * <p>
- * SlackSourceSettings contains only routing, Client ID, Client Secret reference, exact registered HTTP or HTTPS
- * callback, and unique standard scope strings. Explicit scopes must contain {@code users:read} so the fixed identity
- * operation is authorized. Fixed endpoints, delimiters, query credentials, response envelopes, profile selectors, and
- * revocation transport cannot be externally configured.
+ * SlackOptions contains only routing, Client ID, Client Secret reference, exact registered HTTP or HTTPS callback, and
+ * unique standard scope strings. Explicit scopes must contain {@code users:read} so the fixed identity operation is
+ * authorized. Fixed endpoints, delimiters, query credentials, response envelopes, profile selectors, and revocation
+ * transport cannot be externally configured.
  * </p>
  * <p>
  * This exported package provides registration and management metadata; execution must enter a Registry-obtained

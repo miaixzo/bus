@@ -23,7 +23,7 @@
  * {@link org.miaixz.bus.auth.shared.consent.ConsentRequest} identifies the subject, client, requested scopes, claims,
  * and operation requiring a decision; {@link org.miaixz.bus.auth.shared.consent.ConsentDecision} records the explicit
  * result; and {@link org.miaixz.bus.auth.shared.consent.Consent} represents a bounded granted consent.
- * {@link org.miaixz.bus.auth.shared.consent.ConsentService} is implemented by the external project that owns consent
+ * {@link org.miaixz.bus.auth.worker.ConsentService} is implemented by the external project that owns consent
  * presentation, persistence, and revocation.
  * </p>
  * <p>

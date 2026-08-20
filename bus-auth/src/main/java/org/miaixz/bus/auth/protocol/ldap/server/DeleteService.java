@@ -46,9 +46,9 @@ public final class DeleteService {
     private final String providerId;
 
     /**
-     * Frozen Provider settings retained for uniform construction.
+     * Frozen Provider options retained for uniform construction.
      */
-    private final LdapProviderSettings settings;
+    private final LdapServerOptions options;
 
     /**
      * External directory implementation.
@@ -59,12 +59,12 @@ public final class DeleteService {
      * Creates a Delete service for one compiled LDAP Provider.
      *
      * @param providerId compiled server-role Source identifier
-     * @param settings   validated LDAP Provider settings
+     * @param options    validated LDAP Provider options
      * @param store      externally implemented directory store
      */
-    public DeleteService(final String providerId, final LdapProviderSettings settings, final DirectoryStore store) {
+    public DeleteService(final String providerId, final LdapServerOptions options, final DirectoryStore store) {
         this.providerId = Assert.notBlank(providerId, "LDAP Delete Provider id must not be blank");
-        this.settings = Assert.notNull(settings, "LDAP Delete Provider settings must not be null");
+        this.options = Assert.notNull(options, "LDAP Delete Provider options must not be null");
         this.store = Assert.notNull(store, "LDAP Delete directory store must not be null");
     }
 

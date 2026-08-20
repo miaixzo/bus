@@ -30,8 +30,9 @@ import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.saml.AuthnRequest;
 import org.miaixz.bus.auth.protocol.saml.Response;
 import org.miaixz.bus.auth.protocol.saml.SamlBinding;
-import org.miaixz.bus.auth.protocol.saml.internal.AssertionIssuer;
-import org.miaixz.bus.auth.resolver.ClientResolver;
+import org.miaixz.bus.auth.resolver.ConsumerMetadata;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
+import org.miaixz.bus.auth.runtime.LoadResult;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -60,14 +61,14 @@ public final class SingleSignOnService {
     private static final String REQUEST_DENIED = "urn:oasis:names:tc:SAML:2.0:status:RequestDenied";
 
     /**
-     * Validated identity-provider settings.
+     * Validated identity-provider options.
      */
-    private final SamlProviderSettings settings;
+    private final SamlServerOptions options;
 
     /**
-     * External registered service-provider resolver.
+     * External loaders and framework-owned parsers used by this service.
      */
-    private final ClientResolver clientResolver;
+    private final ExecutionServices services;
 
     /**
      * Internal standard assertion and response issuer.
@@ -80,18 +81,18 @@ public final class SingleSignOnService {
     private final SamlErrorMapper errorMapper;
 
     /**
-     * Creates a SingleSignOnService from its policy, resolver, issuer, and error mapper.
+     * Creates a SingleSignOnService from its policy, execution services, issuer, and error mapper.
      *
-     * @param settings        validated SAML Provider settings
-     * @param clientResolver  external registered service-provider resolver
+     * @param options         validated SAML Provider options
+     * @param services        external loaders and pure parsers
      * @param assertionIssuer internal SAML assertion issuer
      * @param errorMapper     standard SAML error-response mapper
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public SingleSignOnService(final SamlProviderSettings settings, final ClientResolver clientResolver,
+    public SingleSignOnService(final SamlServerOptions options, final ExecutionServices services,
             final AssertionIssuer assertionIssuer, final SamlErrorMapper errorMapper) {
-        this.settings = Assert.notNull(settings, "SAML Provider settings must not be null");
-        this.clientResolver = Assert.notNull(clientResolver, "SAML client resolver must not be null");
+        this.options = Assert.notNull(options, "SAML Provider options must not be null");
+        this.services = Assert.notNull(services, "SAML execution services must not be null");
         this.assertionIssuer = Assert.notNull(assertionIssuer, "SAML Assertion issuer must not be null");
         this.errorMapper = Assert.notNull(errorMapper, "SAML error mapper must not be null");
     }
@@ -136,17 +137,19 @@ public final class SingleSignOnService {
         Assert.notNull(timeout, "SAML Single Sign-On time budget must not be null");
         final Outcome<String> requester = requester(request, timeout);
         return switch (requester) {
-            case Outcome.Succeeded<String> success -> clientResolver.resolve(success.value(), context, timeout)
+            case Outcome.Succeeded<String> success -> LoadResult
+                    .parse(
+                            services.consumerLoader().load(success.value(), context, timeout),
+                            loaded -> services.consumerParser().parse(success.value(), loaded))
                     .thenCompose(resolved -> switch (resolved) {
-                        case Outcome.Succeeded<ClientResolver.Client> client -> issue(
+                        case Outcome.Succeeded<ConsumerMetadata> client -> issue(
                                 request,
                                 client.value(),
                                 context,
                                 timeout);
-                        case Outcome.Rejected<ClientResolver.Client> rejected -> completed(
+                        case Outcome.Rejected<ConsumerMetadata> rejected -> completed(
                                 Outcome.rejected(rejected.failure()));
-                        case Outcome.Failed<ClientResolver.Client> failed -> completed(
-                                Outcome.failed(failed.failure()));
+                        case Outcome.Failed<ConsumerMetadata> failed -> completed(Outcome.failed(failed.failure()));
                     });
             case Outcome.Rejected<String> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<String> failed -> completed(Outcome.failed(failed.failure()));
@@ -164,7 +167,7 @@ public final class SingleSignOnService {
         if (timeout.expired()) {
             return Outcome.failed(failure(ErrorCode._408, "SAML Authentication Request has no remaining time budget"));
         }
-        if (!settings.singleSignOnServiceEndpoint().url().toString().equals(request.destination().getOrNull())) {
+        if (!options.singleSignOnServiceEndpoint().url().toString().equals(request.destination().getOrNull())) {
             return Outcome.rejected(failure(ErrorCode._400, "SAML Authentication Request Destination is invalid"));
         }
         final var issuer = request.issuer().getOrNull();
@@ -179,8 +182,8 @@ public final class SingleSignOnService {
                     failure(ErrorCode._400, "SAML Authentication Request Issuer is not an entity identifier"));
         }
         final Instant now = timeout.clock().now();
-        if (request.issueInstant().isBefore(now.minus(settings.clockSkew()))
-                || request.issueInstant().isAfter(now.plus(settings.clockSkew()))) {
+        if (request.issueInstant().isBefore(now.minus(options.clockSkew()))
+                || request.issueInstant().isAfter(now.plus(options.clockSkew()))) {
             return Outcome.rejected(
                     failure(
                             ErrorCode._400,
@@ -206,7 +209,7 @@ public final class SingleSignOnService {
      */
     private CompletionStage<Outcome<Response>> issue(
             final AuthnRequest request,
-            final ClientResolver.Client client,
+            final ConsumerMetadata client,
             final Context context,
             final Timeout.Budget timeout) {
         final String issuer = request.issuer().getOrNull().nameId().value();

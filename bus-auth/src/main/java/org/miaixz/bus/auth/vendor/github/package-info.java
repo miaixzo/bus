@@ -20,14 +20,14 @@
 /**
  * Declares the GitHub.com OAuth App Source variant.
  * <p>
- * GitHubDefinition fixes {@code github/default}, the browser, token, refresh, and REST current-user endpoints,
+ * GitHubManifest fixes {@code github/default}, the browser, token, refresh, and REST current-user endpoints,
  * CLIENT_SECRET form authentication, required S256 PKCE, and the minimum {@code read:user} scope. It publishes Source
  * authentication and standard OAuth authorization only; the missing token grant type, comma-delimited response scope,
  * optional expiring-token pair, and REST user representation remain registered private deviations.
  * </p>
  * <p>
- * GitHubSourceSettings contains routing, client, secret-reference, exact HTTPS callback, and unique registered scopes.
- * It cannot select GitHub Enterprise Server, GitHub Apps, device flow, endpoint versions, token lifecycle switches,
+ * GitHubOptions contains routing, client, secret-reference, exact HTTPS callback, and unique registered scopes. It
+ * cannot select GitHub Enterprise Server, GitHub Apps, device flow, endpoint versions, token lifecycle switches,
  * private response records, or a platform management API disguised as RFC 7009 revocation.
  * </p>
  * <p>

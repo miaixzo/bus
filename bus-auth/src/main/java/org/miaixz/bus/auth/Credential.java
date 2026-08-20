@@ -26,7 +26,7 @@ import org.miaixz.bus.core.lang.Symbol;
 /**
  * Defines references to credential material owned by an external secure storage implementation.
  * <p>
- * Authentication registrations and typed settings retain only {@link Reference} values. Plaintext passwords, client
+ * Authentication registrations and typed options retain only {@link Reference} values. Plaintext passwords, client
  * secrets, private keys, shared secrets, and certificates never become fields of this contract and must not appear in
  * serialization or logs.
  * </p>
@@ -101,7 +101,7 @@ public final class Credential {
     }
 
     /**
-     * Identifies credential material in an external resolver without containing that material.
+     * Identifies credential material in an external loader without containing that material.
      *
      * @param id   opaque external credential record identifier
      * @param type expected material type used to prevent type confusion

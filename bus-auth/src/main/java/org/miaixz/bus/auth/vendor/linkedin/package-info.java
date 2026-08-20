@@ -20,16 +20,16 @@
 /**
  * Declares the current LinkedIn OpenID Connect Source variant.
  * <p>
- * LinkedInDefinition fixes {@code linkedin/default}, issuer {@code https://www.linkedin.com/oauth}, authorization,
- * token, Discovery, JWKS, and standard UserInfo endpoints, CLIENT_SECRET form authentication, prohibited PKCE, RS256,
- * and current {@code openid profile email} scopes. It publishes Source authentication, standard authentication, JWKS,
- * and UserInfo; incomplete Discovery and token contracts remain private to Source completion.
+ * LinkedInManifest fixes {@code linkedin/default}, issuer {@code https://www.linkedin.com/oauth}, authorization, token,
+ * Discovery, JWKS, and standard UserInfo endpoints, CLIENT_SECRET form authentication, prohibited PKCE, RS256, and
+ * current {@code openid profile email} scopes. It publishes Source authentication, standard authentication, JWKS, and
+ * UserInfo; incomplete Discovery and token contracts remain private to Source completion.
  * </p>
  * <p>
- * LinkedInSourceSettings contains routing, client, secret reference, exact HTTPS callback, and supported scopes
- * containing {@code openid} and {@code profile}. It cannot restore the retired lite-profile/email APIs or scopes,
- * configure native PKCE, endpoints, issuer, projections, token capability, refresh, or revocation. The obsolete
- * duplicate refresh endpoint registration is intentionally absent.
+ * LinkedInOptions contains routing, client, secret reference, exact HTTPS callback, and supported scopes containing
+ * {@code openid} and {@code profile}. It cannot restore the retired lite-profile/email APIs or scopes, configure native
+ * PKCE, endpoints, issuer, projections, token capability, refresh, or revocation. The obsolete duplicate refresh
+ * endpoint registration is intentionally absent.
  * </p>
  * <p>
  * Identity is the locally verified ID Token {@code sub}, which must equal standard UserInfo {@code sub}. Email, names,

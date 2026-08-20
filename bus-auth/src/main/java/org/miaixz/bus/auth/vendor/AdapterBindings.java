@@ -22,12 +22,12 @@ package org.miaixz.bus.auth.vendor;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
- * Holds the immutable exact bindings between platform variants and their internal adapter factories.
+ * Holds the immutable exact bindings between platform variants and their adapter factories.
  * <p>
  * Selection uses only {@link Key}; the bindings perform no platform switch, reflection, service loading, package
  * scanning, or fallback adapter construction.
@@ -61,34 +61,28 @@ final class AdapterBindings {
     }
 
     /**
-     * Performs the single contained generic cast after exact runtime settings-class validation.
+     * Performs the single contained generic cast after exact runtime options-class validation.
      *
-     * @param namespaceId       namespace identifier
-     * @param sourceId          Source identifier
-     * @param vendorDefinition  selected Vendor definition
-     * @param variantDefinition selected variant definition
-     * @param settings          exact settings instance
-     * @param services          runtime dependencies
-     * @param factory           paired factory
-     * @param <S>               exact settings type
+     * @param namespaceId namespace identifier
+     * @param sourceId    Source identifier
+     * @param manifest    selected platform manifest
+     * @param variant     selected variant
+     * @param options     exact options instance
+     * @param services    runtime dependencies
+     * @param factory     paired factory
+     * @param <S>         exact options type
      * @return adapter created by the paired factory
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static <S extends VendorSettings> VendorAdapter createTyped(
+    private static <S extends VendorOptions<?>> VendorAdapter createTyped(
             final String namespaceId,
             final String sourceId,
-            final VendorDefinition<?> vendorDefinition,
-            final VendorDefinition.Definition variantDefinition,
-            final VendorSettings settings,
+            final VariantManifest<?> manifest,
+            final VariantManifest.Variant variant,
+            final VendorOptions<?> options,
             final ExecutionServices services,
             final VendorAdapter.Factory<?> factory) {
-        return ((VendorAdapter.Factory) factory).create(
-                namespaceId,
-                sourceId,
-                (VendorDefinition) vendorDefinition,
-                variantDefinition,
-                settings,
-                services);
+        return ((VendorAdapter.Factory) factory)
+                .create(namespaceId, sourceId, (VariantManifest) manifest, variant, options, services);
     }
 
     /**
@@ -103,45 +97,39 @@ final class AdapterBindings {
     /**
      * Creates and verifies the adapter registered for one exact platform Source.
      *
-     * @param namespaceId       namespace identifier from the current registration
-     * @param sourceId          Source identifier from the current registration
-     * @param vendorDefinition  exact selected Vendor definition
-     * @param variantDefinition exact selected variant definition
-     * @param settings          decoded exact platform settings
-     * @param services          complete external runtime dependencies
-     * @return non-null adapter whose manifest exactly equals the selected definition
+     * @param namespaceId namespace identifier from the current registration
+     * @param sourceId    Source identifier from the current registration
+     * @param manifest    exact selected platform manifest
+     * @param variant     exact selected variant
+     * @param options     decoded exact platform options
+     * @param services    complete external runtime dependencies
+     * @return non-null adapter whose capability manifest equals the selected variant's capability manifest
      * @throws IllegalArgumentException if an input is null or an isolation identifier is blank
-     * @throws ValidateException        if pairing, settings type, route values, factory execution, or manifest is
+     * @throws ValidateException        if pairing, options type, route values, factory execution, or manifest is
      *                                  invalid
      */
     VendorAdapter create(
             final String namespaceId,
             final String sourceId,
-            final VendorDefinition<?> vendorDefinition,
-            final VendorDefinition.Definition variantDefinition,
-            final VendorSettings settings,
+            final VariantManifest<?> manifest,
+            final VariantManifest.Variant variant,
+            final VendorOptions<?> options,
             final ExecutionServices services) {
         Assert.notBlank(namespaceId, "Vendor adapter namespace id must not be blank");
         Assert.notBlank(sourceId, "Vendor adapter Source id must not be blank");
-        final VendorDefinition<?> checkedVendorDefinition = Assert
-                .notNull(vendorDefinition, "Vendor adapter definition must not be null");
-        final VendorDefinition.Definition checkedVariantDefinition = Assert
-                .notNull(variantDefinition, "Vendor adapter variant definition must not be null");
-        final VendorSettings checkedSettings = Assert.notNull(settings, "Vendor adapter settings must not be null");
+        final VariantManifest<?> checkedManifest = Assert.notNull(manifest, "Vendor adapter manifest must not be null");
+        final VariantManifest.Variant checkedVariant = Assert
+                .notNull(variant, "Vendor adapter variant manifest must not be null");
+        final VendorOptions<?> checkedOptions = Assert.notNull(options, "Vendor adapter options must not be null");
         final ExecutionServices checkedComponents = Assert
                 .notNull(services, "Vendor adapter execution services must not be null");
-        if (checkedSettings.getClass() != checkedVendorDefinition.settingsType()) {
-            throw new ValidateException(
-                    "Vendor settings class must exactly equal the selected definition settings type");
-        }
-        if (!checkedSettings.vendor().equals(checkedVendorDefinition.type())
-                || !checkedVariantDefinition.platform().equals(checkedVendorDefinition.type())
-                || !checkedSettings.variant().equals(checkedVariantDefinition.variant())) {
-            throw new ValidateException(
-                    "Vendor settings routing keys do not match the selected definition and variant");
+        if (!checkedOptions.vendor().equals(checkedManifest.vendor())
+                || !checkedVariant.platform().equals(checkedManifest.vendor())
+                || !checkedOptions.variant().equals(checkedVariant.variant())) {
+            throw new ValidateException("Vendor options routing keys do not match the selected manifest and variant");
         }
         final VendorAdapter.Factory<?> factory = bindings
-                .get(new Key(checkedVendorDefinition.type(), checkedVariantDefinition.variant()));
+                .get(new Key(checkedManifest.vendor(), checkedVariant.variant()));
         if (factory == null) {
             throw new ValidateException("Vendor adapter factory is not registered for the selected platform variant");
         }
@@ -150,9 +138,9 @@ final class AdapterBindings {
             vendorAdapter = createTyped(
                     namespaceId,
                     sourceId,
-                    checkedVendorDefinition,
-                    checkedVariantDefinition,
-                    checkedSettings,
+                    checkedManifest,
+                    checkedVariant,
+                    checkedOptions,
                     checkedComponents,
                     factory);
         } catch (RuntimeException cause) {
@@ -164,8 +152,8 @@ final class AdapterBindings {
         if (vendorAdapter == null) {
             throw new ValidateException("Vendor adapter factory returned null");
         }
-        if (!vendorAdapter.manifest().equals(checkedVariantDefinition.manifest())) {
-            throw new ValidateException("Vendor adapter manifest must equal the selected variant definition manifest");
+        if (!vendorAdapter.manifest().equals(checkedVariant.capabilityManifest())) {
+            throw new ValidateException("Vendor adapter capabilities must equal the selected variant capabilities");
         }
         return vendorAdapter;
     }

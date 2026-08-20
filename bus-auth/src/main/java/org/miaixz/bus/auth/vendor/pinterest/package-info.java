@@ -18,26 +18,26 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the public Pinterest OAuth Vendor definition and externally loaded settings.
+ * Declares the public Pinterest OAuth Vendor manifest and externally loaded options.
  * <p>
- * PinterestDefinition fixes {@code pinterest/default}, its authorization, token, and profile endpoints, default
+ * PinterestManifest fixes {@code pinterest/default}, its authorization, token, and profile endpoints, default
  * {@code read_public} scope, and redirect Source-authentication plus standard OAuth authorization/token capabilities.
  * Comma-delimited authorization scope, query token fields and Client Secret, the empty form POST, status/message token
  * envelope, query profile token and field selector, and status/message/data profile envelope are registered vendor
  * deviations confined to the non-exported adapter.
  * </p>
  * <p>
- * PinterestSourceSettings contains only routing, Client ID, Client Secret reference, one exact registered HTTP or HTTPS
+ * PinterestOptions contains only routing, Client ID, Client Secret reference, one exact registered HTTP or HTTPS
  * callback, and a unique ordered subset of the frozen Pinterest scope vocabulary. The fixed endpoints, delimiter, query
  * names, form shape, profile fields, envelope records, avatar selector, PKCE behavior, and transport policy are
- * definition-owned and cannot be supplied by an external project.
+ * manifest-owned and cannot be supplied by an external project.
  * </p>
  * <p>
  * This exported package provides registration and management metadata. Runtime execution must enter a Provider obtained
  * from Registry and delegate to the private adapter. Only a valid Pinterest profile {@code id} becomes the
  * ExternalIdentity subject; username, names, biography, and the {@code 60x60} image remain attributes. Client secrets,
  * state, callback codes, access tokens, complete response envelopes, profile fields, and platform error messages must
- * not enter settings diagnostics, Context, tracing, logs, or public failure details.
+ * not enter options diagnostics, Context, tracing, logs, or public failure details.
  * </p>
  *
  * @author Kimi Liu

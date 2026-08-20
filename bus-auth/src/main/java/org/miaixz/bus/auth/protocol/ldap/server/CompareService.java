@@ -46,9 +46,9 @@ public final class CompareService {
     private final String providerId;
 
     /**
-     * Frozen Provider settings retained for the uniform LDAP service contract.
+     * Frozen Provider options retained for the uniform LDAP service contract.
      */
-    private final LdapProviderSettings settings;
+    private final LdapServerOptions options;
 
     /**
      * External directory implementation.
@@ -59,12 +59,12 @@ public final class CompareService {
      * Creates a Compare service for one compiled LDAP Provider.
      *
      * @param providerId compiled server-role Source identifier
-     * @param settings   validated LDAP Provider settings
+     * @param options    validated LDAP Provider options
      * @param store      externally implemented directory store
      */
-    public CompareService(final String providerId, final LdapProviderSettings settings, final DirectoryStore store) {
+    public CompareService(final String providerId, final LdapServerOptions options, final DirectoryStore store) {
         this.providerId = Assert.notBlank(providerId, "LDAP Compare Provider id must not be blank");
-        this.settings = Assert.notNull(settings, "LDAP Compare Provider settings must not be null");
+        this.options = Assert.notNull(options, "LDAP Compare Provider options must not be null");
         this.store = Assert.notNull(store, "LDAP Compare directory store must not be null");
     }
 

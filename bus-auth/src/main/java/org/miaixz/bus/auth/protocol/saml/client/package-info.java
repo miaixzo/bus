@@ -23,7 +23,7 @@
  * {@link org.miaixz.bus.auth.protocol.saml.client.SamlServiceProvider} initiates Web Browser SSO and Single Logout with
  * HTTP-Redirect or HTTP-POST bindings. AssertionConsumerService decodes and validates the returned SAML Response before
  * producing a stable external identity, while MetadataClient obtains and validates Identity Provider metadata.
- * SamlSourceProfile and SamlSourceSettings declare the exact entity, endpoints, bindings, trust material, and
+ * SamlClientScheme and SamlClientOptions declare the exact entity, endpoints, bindings, trust material, and
  * capabilities of a generic SAML Source.
  * </p>
  * <p>

@@ -28,12 +28,11 @@ import java.util.function.Function;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.registry.RegistrationLoader;
+import org.miaixz.bus.auth.registry.AtomicRegistryState;
 import org.miaixz.bus.auth.registry.RegistrationValidator;
-import org.miaixz.bus.auth.registry.RegistryListener;
-import org.miaixz.bus.auth.registry.internal.AtomicRegistryState;
-import org.miaixz.bus.auth.registry.spi.RegistryView;
-import org.miaixz.bus.auth.runtime.internal.SnapshotCompiler;
+import org.miaixz.bus.auth.registry.RegistryView;
+import org.miaixz.bus.auth.worker.RegistrationLoader;
+import org.miaixz.bus.auth.worker.RegistryListener;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
@@ -50,7 +49,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public final class RuntimeReloadService {
 
     /**
-     * External complete registration snapshot loader.
+     * External complete registration batch loader.
      */
     private final RegistrationLoader loader;
 
@@ -77,7 +76,7 @@ public final class RuntimeReloadService {
     /**
      * Creates the single complete-snapshot reload orchestrator.
      *
-     * @param loader        external complete snapshot loader
+     * @param loader        external complete registration batch loader
      * @param validator     raw registration validator
      * @param compiler      validated snapshot compiler
      * @param registryState atomic committed-view holder
@@ -125,7 +124,7 @@ public final class RuntimeReloadService {
             return failed("Runtime reload time budget has expired");
         }
         final RegistryView expected = registryState.current();
-        final CompletionStage<Registry.Snapshot> loading;
+        final CompletionStage<RegistrationLoader.Batch> loading;
         try {
             loading = loader.load(context, timeout);
         } catch (RuntimeException cause) {
@@ -136,7 +135,7 @@ public final class RuntimeReloadService {
         }
         return loading
                 .handle(
-                        (snapshot, cause) -> cause == null ? process(snapshot, expected, timeout)
+                        (batch, cause) -> cause == null ? process(batch, expected, timeout)
                                 : RuntimeReloadService.<Registry.Report>failed("Registration loader stage failed"))
                 .thenCompose(Function.identity());
     }
@@ -144,18 +143,20 @@ public final class RuntimeReloadService {
     /**
      * Validates, compiles, and atomically commits one loaded snapshot.
      *
-     * @param snapshot loaded complete candidate snapshot
+     * @param batch    externally loaded complete candidate batch
      * @param expected Registry view captured before loading
      * @param timeout  shared operation budget
      * @return stage containing validation or successful commit report
      */
     private CompletionStage<Registry.Report> process(
-            final Registry.Snapshot snapshot,
+            final RegistrationLoader.Batch batch,
             final RegistryView expected,
             final Timeout.Budget timeout) {
-        if (snapshot == null) {
-            return failed("Registration loader returned no snapshot");
+        if (batch == null) {
+            return failed("Registration loader returned no batch");
         }
+        final Registry.Snapshot snapshot = new Registry.Snapshot(new Registry.Revision(batch.revision()),
+                batch.registrations());
         if (snapshot.revision().value() <= expected.revision().value()) {
             return failed("Registry snapshot revision must increase monotonically");
         }

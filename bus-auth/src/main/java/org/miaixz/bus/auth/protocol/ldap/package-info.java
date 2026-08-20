@@ -26,10 +26,10 @@
  * extensible result codes. Unknown non-critical extensions retain their registered binary values.
  * </p>
  * <p>
- * LDAP client, server, codec, and internal packages consume these immutable values. This package does not implement a
- * network connection, directory storage, authentication backend, Registry lookup, project permissions, identity
- * linking, Vendor behavior, a generic operation envelope, or an HTTP/JSON representation. LDAP model values are never
- * replaced with JNDI objects or framework request and response types.
+ * LDAP client, server, codec, and protocol-driver classes consume these immutable values. This package does not
+ * implement a network connection, directory storage, authentication backend, Registry lookup, project permissions,
+ * identity linking, Vendor behavior, a generic operation envelope, or an HTTP/JSON representation. LDAP model values
+ * are never replaced with JNDI objects or framework request and response types.
  * </p>
  * <p>
  * Models preserve ASN.1 tags, OCTET STRING bytes, message IDs, result codes, control criticality, DN and filter syntax,

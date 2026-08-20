@@ -47,9 +47,9 @@ public final class ScimBulkService {
     private final String providerId;
 
     /**
-     * Validated Provider settings governing Bulk and resource policy.
+     * Validated Provider options governing Bulk and resource policy.
      */
-    private final ScimProviderSettings settings;
+    private final ScimServerOptions options;
 
     /**
      * External project implementation of ordered Bulk execution.
@@ -60,14 +60,13 @@ public final class ScimBulkService {
      * Creates a Bulk service for one exact compiled SCIM Provider.
      *
      * @param providerId compiled server-role Source identifier
-     * @param settings   validated SCIM Provider settings
+     * @param options    validated SCIM Provider options
      * @param store      externally supplied resource store
      * @throws IllegalArgumentException if an argument is {@code null} or the identifier is blank
      */
-    public ScimBulkService(final String providerId, final ScimProviderSettings settings,
-            final ScimResourceStore store) {
+    public ScimBulkService(final String providerId, final ScimServerOptions options, final ScimResourceStore store) {
         this.providerId = Assert.notBlank(providerId, "SCIM Provider id must not be blank");
-        this.settings = Assert.notNull(settings, "SCIM Provider settings must not be null");
+        this.options = Assert.notNull(options, "SCIM Provider options must not be null");
         this.store = Assert.notNull(store, "SCIM Bulk store must not be null");
     }
 
@@ -117,7 +116,7 @@ public final class ScimBulkService {
         Assert.notNull(request, "SCIM Bulk request must not be null");
         Assert.notNull(context, "SCIM Bulk context must not be null");
         Assert.notNull(timeout, "SCIM Bulk time budget must not be null");
-        final ServiceProviderConfig.Bulk bulk = settings.serviceProviderConfig().bulk();
+        final ServiceProviderConfig.Bulk bulk = options.serviceProviderConfig().bulk();
         if (!bulk.supported() || request.operations().size() > bulk.maxOperations()) {
             return completed(
                     Outcome.rejected(
@@ -144,7 +143,7 @@ public final class ScimBulkService {
     }
 
     /**
-     * Validates one typed Bulk operation against Provider settings and its registered resource target.
+     * Validates one typed Bulk operation against Provider options and its registered resource target.
      *
      * @param operation candidate operation
      * @return validation failure, or {@code null} when valid
@@ -152,10 +151,10 @@ public final class ScimBulkService {
     private Outcome.Failure operation(final BulkRequest.Operation operation) {
         final ResourceTarget target = operation.target();
         final String type = target.resourceType().name();
-        if (!settings.supports(type)) {
+        if (!options.supports(type)) {
             return failure(ErrorCode._404, "SCIM Bulk operation resource type is not enabled");
         }
-        if (!settings.serviceProviderConfig().etag().supported() && !operation.version().isEmpty()) {
+        if (!options.serviceProviderConfig().etag().supported() && !operation.version().isEmpty()) {
             return failure(ErrorCode._412, "SCIM conditional version is disabled");
         }
         final BulkRequest.Data data = operation.data().getOrNull();
@@ -166,7 +165,7 @@ public final class ScimBulkService {
                 return failure(ErrorCode._400, "SCIM Bulk resource data does not match operation target");
             }
             if (resource instanceof User user && !user.password().isEmpty()
-                    && !settings.serviceProviderConfig().changePassword().supported()) {
+                    && !options.serviceProviderConfig().changePassword().supported()) {
                 return failure(ErrorCode._400, "SCIM password change is disabled");
             }
             final Resource.Common common = resource instanceof User user ? user.common() : ((Group) resource).common();
@@ -178,11 +177,11 @@ public final class ScimBulkService {
             }
         }
         if (data instanceof BulkRequest.PatchData patchData) {
-            if (!settings.serviceProviderConfig().patch().supported()) {
+            if (!options.serviceProviderConfig().patch().supported()) {
                 return failure(ErrorCode._400, "SCIM PATCH is disabled");
             }
-            if (!settings.serviceProviderConfig().changePassword().supported() && patchData.patch().operations()
-                    .stream().anyMatch(item -> item.value().getOrNull() instanceof PatchOperation.SecretData)) {
+            if (!options.serviceProviderConfig().changePassword().supported() && patchData.patch().operations().stream()
+                    .anyMatch(item -> item.value().getOrNull() instanceof PatchOperation.SecretData)) {
                 return failure(ErrorCode._400, "SCIM password change is disabled");
             }
         }

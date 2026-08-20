@@ -20,7 +20,6 @@
 /**
  * Defines management and safe launch contracts for the authentication application library.
  * <p>
- * {@link org.miaixz.bus.auth.library.LibraryService} leaves Library persistence to an external project,
  * {@link org.miaixz.bus.auth.library.LibraryValidator} enforces the framework-owned entity invariants. External
  * projects load complete Library, Provider, and Source entities directly through the registration boundary.
  * {@link org.miaixz.bus.auth.library.LibraryLaunchService} resolves allowed Principal placeholders in the persisted
@@ -32,9 +31,9 @@
  * transaction handling remain responsibilities of the external project.
  * </p>
  * <p>
- * A launch operation validates namespace and registration ownership before returning redirect information. It does not
- * follow redirects, invoke arbitrary user-supplied URLs, resolve plaintext credentials, expose hidden registrations, or
- * weaken the Registry's single invocation entry and capability checks.
+ * A launch operation validates the Library structure before returning a resolved URL. It does not follow redirects,
+ * invoke arbitrary user-supplied URLs, resolve plaintext credentials, expose hidden registrations, or weaken the
+ * Registry's single invocation entry and capability checks.
  * </p>
  *
  * @author Kimi Liu

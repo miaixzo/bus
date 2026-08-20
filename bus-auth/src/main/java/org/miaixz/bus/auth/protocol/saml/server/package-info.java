@@ -23,8 +23,8 @@
  * {@link org.miaixz.bus.auth.protocol.saml.server.SamlIdentityProvider} coordinates the supported server operations.
  * SingleSignOnService validates AuthnRequest and creates a standard Response containing issued assertions;
  * SingleLogoutService processes LogoutRequest and LogoutResponse; MetadataService publishes EntityDescriptor content;
- * SamlErrorMapper creates a standards-compliant Response Status when returning an error is safe. SamlProviderProfile
- * and SamlProviderSettings declare only executable IdP capabilities.
+ * SamlErrorMapper creates a standards-compliant Response Status when returning an error is safe. SamlServerScheme and
+ * SamlServerOptions declare only executable IdP capabilities.
  * </p>
  * <p>
  * This package consumes SAML models, codecs, security validators, verified subject and session context, consent and

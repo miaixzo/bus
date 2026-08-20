@@ -32,7 +32,7 @@ import org.miaixz.bus.auth.protocol.saml.SamlBinding;
 import org.miaixz.bus.auth.protocol.saml.codec.MetadataCodec;
 import org.miaixz.bus.auth.protocol.saml.codec.SamlMessageCodec;
 import org.miaixz.bus.auth.protocol.saml.security.SamlSignatureValidator;
-import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -46,7 +46,7 @@ import org.miaixz.bus.fabric.Fabric;
  * <p>
  * The fetched entity must exactly match the configured identity-provider entity and must declare the exact SSO and
  * optional SLO endpoint locations used by the compiled Source. XML signature verification is delegated to the shared
- * SAML signature validator backed by external certificate and key resolvers.
+ * SAML signature validator backed by external certificate and key loaders.
  * </p>
  *
  * @author Kimi Liu
@@ -54,9 +54,9 @@ import org.miaixz.bus.fabric.Fabric;
 public final class MetadataClient {
 
     /**
-     * Validated SAML Source deployment settings.
+     * Validated SAML Source deployment options.
      */
-    private final SamlSourceSettings settings;
+    private final SamlClientOptions options;
 
     /**
      * Caller-owned runtime and Fabric dependencies.
@@ -76,15 +76,15 @@ public final class MetadataClient {
     /**
      * Creates a SAML Metadata client for one compiled Source.
      *
-     * @param settings           validated SAML Source settings
+     * @param options            validated SAML Source options
      * @param services           externally owned execution services
      * @param codec              strict SAML Metadata codec
      * @param signatureValidator SAML XML signature validator
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public MetadataClient(final SamlSourceSettings settings, final ExecutionServices services,
-            final MetadataCodec codec, final SamlSignatureValidator signatureValidator) {
-        this.settings = Assert.notNull(settings, "SAML Source settings must not be null");
+    public MetadataClient(final SamlClientOptions options, final ExecutionServices services, final MetadataCodec codec,
+            final SamlSignatureValidator signatureValidator) {
+        this.options = Assert.notNull(options, "SAML Source options must not be null");
         this.services = Assert.notNull(services, "SAML execution services must not be null");
         this.codec = Assert.notNull(codec, "SAML Metadata codec must not be null");
         this.signatureValidator = Assert.notNull(signatureValidator, "SAML signature validator must not be null");
@@ -129,7 +129,7 @@ public final class MetadataClient {
         return CompletableFuture.supplyAsync(() -> retrieve(timeout), services.executor())
                 .thenCompose(outcome -> switch (outcome) {
                     case Outcome.Succeeded<SamlMessageCodec.Document<EntityDescriptor>> success -> signatureValidator
-                            .validateMetadata(success.value(), settings.identityProviderEntityId(), context, timeout);
+                            .validateMetadata(success.value(), options.identityProviderEntityId(), context, timeout);
                     case Outcome.Rejected<SamlMessageCodec.Document<EntityDescriptor>> rejected -> completed(
                             Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SamlMessageCodec.Document<EntityDescriptor>> failed -> completed(
@@ -155,13 +155,13 @@ public final class MetadataClient {
             if (timeout.expired()) {
                 return Outcome.failed(failure(ErrorCode._408, "SAML Metadata request exhausted its time budget"));
             }
-            final var endpoint = settings.identityProviderMetadataEndpoint();
+            final var endpoint = options.identityProviderMetadataEndpoint();
             final var response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
                     .method(Http.Method.GET).timeout(timeout.forFabric())
                     .addressPolicy(services.securityBaseline().require(Protocol.SAML).addressPolicy()).execute();
             final SamlMessageCodec.Document<EntityDescriptor> document = codec.decode(response);
             final EntityDescriptor metadata = document.message();
-            if (!settings.identityProviderEntityId().equals(metadata.entityId())) {
+            if (!options.identityProviderEntityId().equals(metadata.entityId())) {
                 return Outcome.rejected(
                         failure(
                                 ErrorCode._400,
@@ -190,8 +190,8 @@ public final class MetadataClient {
      * @return {@code true} when one role exactly covers every configured remote endpoint
      */
     private boolean declaresConfiguredEndpoints(final EntityDescriptor metadata) {
-        final String signOn = settings.singleSignOnServiceEndpoint().url().toString();
-        final var configuredLogout = settings.singleLogoutServiceEndpoint().getOrNull();
+        final String signOn = options.singleSignOnServiceEndpoint().url().toString();
+        final var configuredLogout = options.singleLogoutServiceEndpoint().getOrNull();
         final String logout = configuredLogout == null ? null : configuredLogout.url().toString();
         for (IdpSsoDescriptor identityProvider : metadata.identityProviders()) {
             final boolean signOnDeclared = identityProvider.singleSignOnServices().stream().anyMatch(

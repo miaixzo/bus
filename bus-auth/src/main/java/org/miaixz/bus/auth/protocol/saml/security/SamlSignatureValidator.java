@@ -46,12 +46,13 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.saml.*;
-import org.miaixz.bus.auth.protocol.saml.client.SamlSourceSettings;
+import org.miaixz.bus.auth.protocol.saml.client.SamlClientOptions;
 import org.miaixz.bus.auth.protocol.saml.codec.RedirectBindingCodec;
 import org.miaixz.bus.auth.protocol.saml.codec.SamlMessageCodec;
-import org.miaixz.bus.auth.protocol.saml.server.SamlProviderSettings;
-import org.miaixz.bus.auth.resolver.CertificateResolver;
+import org.miaixz.bus.auth.protocol.saml.server.SamlServerOptions;
+import org.miaixz.bus.auth.resolver.CertificateMaterial;
 import org.miaixz.bus.auth.shared.SecurityBaseline;
+import org.miaixz.bus.auth.worker.CertificateLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Algorithm;
@@ -70,7 +71,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  * <p>
  * XML signatures are always checked on the retained original DOM. Reference URIs must identify the exact signed root or
  * Assertion by a unique document ID, and JSR-105 secure validation is mandatory. Embedded {@code KeyInfo} never
- * establishes trust; certificate chains and trust roots are selected only by the external resolver and cleaned by the
+ * establishes trust; certificate chains and trust roots are supplied by the external loader and parsed before cleaning
  * Bus certificate-chain implementation.
  * </p>
  *
@@ -79,7 +80,7 @@ import org.miaixz.bus.extra.json.JsonValue;
 public final class SamlSignatureValidator {
 
     /**
-     * SAML certificate use passed to the external certificate resolver.
+     * SAML certificate use passed to the external certificate loader.
      */
     private static final String SIGNING_USE = "signing";
 
@@ -89,9 +90,9 @@ public final class SamlSignatureValidator {
     private static final String ENVELOPED = Transform.ENVELOPED;
 
     /**
-     * Externally implemented certificate and trust-root resolver.
+     * External certificate loader and framework-owned certificate parser.
      */
-    private final CertificateResolver certificateResolver;
+    private final org.miaixz.bus.auth.runtime.ExecutionServices services;
 
     /**
      * Shared non-relaxable algorithm and resource policy.
@@ -101,13 +102,13 @@ public final class SamlSignatureValidator {
     /**
      * Creates a SAML signature validator.
      *
-     * @param certificateResolver external trusted certificate resolver
-     * @param securityBaseline    shared SAML security baseline
+     * @param services         external loaders and pure parsers
+     * @param securityBaseline shared SAML security baseline
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public SamlSignatureValidator(final CertificateResolver certificateResolver,
+    public SamlSignatureValidator(final org.miaixz.bus.auth.runtime.ExecutionServices services,
             final SecurityBaseline securityBaseline) {
-        this.certificateResolver = Assert.notNull(certificateResolver, "SAML certificate resolver must not be null");
+        this.services = Assert.notNull(services, "SAML execution services must not be null");
         this.securityBaseline = Assert.notNull(securityBaseline, "SAML security baseline must not be null");
     }
 
@@ -386,26 +387,26 @@ public final class SamlSignatureValidator {
      * Validates required and present signatures on a SAML Response and its plain assertions.
      *
      * @param document original Response document
-     * @param settings trusted service-provider Source settings
+     * @param options  trusted service-provider Source options
      * @param context  immutable invocation context
      * @param timeout  shared end-to-end budget
      * @return stage containing the unchanged trusted document or closed failure
      */
     public CompletionStage<Outcome<SamlMessageCodec.Document<Response>>> validateResponse(
             final SamlMessageCodec.Document<Response> document,
-            final SamlSourceSettings settings,
+            final SamlClientOptions options,
             final Context context,
             final Timeout.Budget timeout) {
         Assert.notNull(document, "SAML Response document must not be null");
-        Assert.notNull(settings, "SAML Source settings must not be null");
+        Assert.notNull(options, "SAML Source options must not be null");
         invocation(context, timeout);
         final Response response = document.message();
         final String issuer = issuer(response.issuer().getOrNull(), "SAML Response");
-        if (!settings.identityProviderEntityId().equals(issuer)) {
+        if (!options.identityProviderEntityId().equals(issuer)) {
             return completed(rejected("SAML Response issuer does not match the trusted identity provider"));
         }
         final boolean rootSigned = response.signature().isPresent();
-        if (settings.wantResponsesSigned() && !rootSigned) {
+        if (options.wantResponsesSigned() && !rootSigned) {
             return completed(rejected("SAML Response requires a response signature"));
         }
         final List<String> assertions = new ArrayList<>();
@@ -414,7 +415,7 @@ public final class SamlSignatureValidator {
             if (content instanceof Response.PlainAssertion plain) {
                 assertions.add(plain.assertion().id());
                 everyPlainSigned &= plain.assertion().signature().isPresent();
-                if (settings.wantAssertionsSigned() && !plain.assertion().signature().isPresent()) {
+                if (options.wantAssertionsSigned() && !plain.assertion().signature().isPresent()) {
                     return completed(rejected("SAML Response contains an unsigned assertion"));
                 }
             }
@@ -423,29 +424,29 @@ public final class SamlSignatureValidator {
                 && response.assertions().stream().noneMatch(Response.EncryptedAssertion.class::isInstance)) {
             return completed(rejected("SAML Response must have a trusted response or assertion signature"));
         }
-        return validateResponseSignatures(document, settings, issuer, rootSigned, assertions, context, timeout);
+        return validateResponseSignatures(document, options, issuer, rootSigned, assertions, context, timeout);
     }
 
     /**
      * Validates an Authentication Request HTTP-Redirect signature when required or present.
      *
-     * @param decoded  decoded request retaining exact signed input
-     * @param settings identity-provider signature policy
-     * @param context  immutable invocation context
-     * @param timeout  shared end-to-end budget
+     * @param decoded decoded request retaining exact signed input
+     * @param options identity-provider signature policy
+     * @param context immutable invocation context
+     * @param timeout shared end-to-end budget
      * @return stage containing the unchanged decoded request or closed failure
      */
     public CompletionStage<Outcome<RedirectBindingCodec.Decoded<AuthnRequest>>> validateAuthnRequest(
             final RedirectBindingCodec.Decoded<AuthnRequest> decoded,
-            final SamlProviderSettings settings,
+            final SamlServerOptions options,
             final Context context,
             final Timeout.Budget timeout) {
         Assert.notNull(decoded, "SAML Authentication Request must not be null");
-        Assert.notNull(settings, "SAML Provider settings must not be null");
+        Assert.notNull(options, "SAML Provider options must not be null");
         return validateRedirect(
                 decoded,
-                settings.wantAuthnRequestsSigned(),
-                settings.signatureAlgorithm(),
+                options.wantAuthnRequestsSigned(),
+                options.signatureAlgorithm(),
                 issuer(decoded.document().message().issuer().getOrNull(), "SAML Authentication Request"),
                 context,
                 timeout);
@@ -454,23 +455,23 @@ public final class SamlSignatureValidator {
     /**
      * Validates a Logout Request HTTP-Redirect signature when required or present.
      *
-     * @param decoded  decoded request retaining exact signed input
-     * @param settings identity-provider signature policy
-     * @param context  immutable invocation context
-     * @param timeout  shared end-to-end budget
+     * @param decoded decoded request retaining exact signed input
+     * @param options identity-provider signature policy
+     * @param context immutable invocation context
+     * @param timeout shared end-to-end budget
      * @return stage containing the unchanged decoded request or closed failure
      */
     public CompletionStage<Outcome<RedirectBindingCodec.Decoded<LogoutRequest>>> validateLogoutRequest(
             final RedirectBindingCodec.Decoded<LogoutRequest> decoded,
-            final SamlProviderSettings settings,
+            final SamlServerOptions options,
             final Context context,
             final Timeout.Budget timeout) {
         Assert.notNull(decoded, "SAML Logout Request must not be null");
-        Assert.notNull(settings, "SAML Provider settings must not be null");
+        Assert.notNull(options, "SAML Provider options must not be null");
         return validateRedirect(
                 decoded,
-                settings.wantLogoutRequestsSigned(),
-                settings.signatureAlgorithm(),
+                options.wantLogoutRequestsSigned(),
+                options.signatureAlgorithm(),
                 issuer(decoded.document().message().issuer().getOrNull(), "SAML Logout Request"),
                 context,
                 timeout);
@@ -480,19 +481,19 @@ public final class SamlSignatureValidator {
      * Validates one decrypted Assertion signature on its original plaintext document.
      *
      * @param document decrypted assertion document
-     * @param settings trusted service-provider Source settings
+     * @param options  trusted service-provider Source options
      * @param context  immutable invocation context
      * @param timeout  shared end-to-end budget
      * @return stage containing the unchanged trusted assertion document or closed failure
      */
     CompletionStage<Outcome<SamlMessageCodec.Document<Assertion>>> validateAssertion(
             final SamlMessageCodec.Document<Assertion> document,
-            final SamlSourceSettings settings,
+            final SamlClientOptions options,
             final Context context,
             final Timeout.Budget timeout) {
         final Assertion assertion = Assert.notNull(document, "SAML Assertion document must not be null").message();
         final String issuer = issuer(assertion.issuer(), "SAML Assertion");
-        if (!settings.identityProviderEntityId().equals(issuer)) {
+        if (!options.identityProviderEntityId().equals(issuer)) {
             return completed(rejected("SAML Assertion issuer does not match the trusted identity provider"));
         }
         if (!assertion.signature().isPresent()) {
@@ -503,7 +504,7 @@ public final class SamlSignatureValidator {
                 document.ids(),
                 issuer,
                 assertion.id(),
-                settings.signatureAlgorithm(),
+                options.signatureAlgorithm(),
                 true,
                 context,
                 timeout).thenApply(outcome -> release(outcome, document));
@@ -513,7 +514,7 @@ public final class SamlSignatureValidator {
      * Validates response and assertion XML signatures sequentially against the same trusted issuer.
      *
      * @param document     original Response document
-     * @param settings     Source algorithm policy
+     * @param options      Source algorithm policy
      * @param issuer       trusted identity-provider entityID
      * @param rootSigned   whether a root Signature is present
      * @param assertionIds signed or potentially signed plain assertion IDs
@@ -523,7 +524,7 @@ public final class SamlSignatureValidator {
      */
     private CompletionStage<Outcome<SamlMessageCodec.Document<Response>>> validateResponseSignatures(
             final SamlMessageCodec.Document<Response> document,
-            final SamlSourceSettings settings,
+            final SamlClientOptions options,
             final String issuer,
             final boolean rootSigned,
             final List<String> assertionIds,
@@ -535,7 +536,7 @@ public final class SamlSignatureValidator {
                         document.ids(),
                         issuer,
                         document.message().id(),
-                        settings.signatureAlgorithm(),
+                        options.signatureAlgorithm(),
                         true,
                         context,
                         timeout)
@@ -549,7 +550,7 @@ public final class SamlSignatureValidator {
                             document.ids(),
                             issuer,
                             assertionId,
-                            settings.signatureAlgorithm(),
+                            options.signatureAlgorithm(),
                             true,
                             context,
                             timeout);
@@ -663,17 +664,20 @@ public final class SamlSignatureValidator {
             final Timeout.Budget timeout) {
         if (timeout.expired())
             return completed(failed("SAML signature validation has no remaining time budget"));
-        final CompletionStage<Outcome<CertificateResolver.ResolvedCertificate>> resolution = certificateResolver
-                .resolve(new CertificateResolver.Query(issuer, SIGNING_USE, timeout.clock().now()), context, timeout);
+        final CertificateLoader.Request request = new CertificateLoader.Request(issuer, SIGNING_USE,
+                timeout.clock().now());
+        final CompletionStage<Outcome<CertificateMaterial>> resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
+                services.certificateLoader().load(request, context, timeout),
+                loaded -> services.certificateParser().parse(request, loaded));
         if (resolution == null)
-            return completed(failed("SAML certificate resolver returned no result stage"));
+            return completed(failed("SAML certificate loader returned no result stage"));
         return resolution.handle((outcome, cause) -> {
             if (cause != null || outcome == null)
                 return failed("SAML certificate resolution failed");
             return switch (outcome) {
-                case Outcome.Succeeded<CertificateResolver.ResolvedCertificate> success -> {
+                case Outcome.Succeeded<CertificateMaterial> success -> {
                     try {
-                        final CertificateResolver.ResolvedCertificate resolved = success.value();
+                        final CertificateMaterial resolved = success.value();
                         final CertificateChain clean = CertificateChainCleaner.of(resolved.trustRoots())
                                 .clean(resolved.chain().certificates(), issuer);
                         if (!(clean.leaf() instanceof X509Certificate certificate)) {
@@ -685,9 +689,8 @@ public final class SamlSignatureValidator {
                         yield rejected("SAML signing certificate chain is not trusted or time-valid");
                     }
                 }
-                case Outcome.Rejected<CertificateResolver.ResolvedCertificate> rejected -> Outcome
-                        .rejected(rejected.failure());
-                case Outcome.Failed<CertificateResolver.ResolvedCertificate> failed -> Outcome.failed(failed.failure());
+                case Outcome.Rejected<CertificateMaterial> rejected -> Outcome.rejected(rejected.failure());
+                case Outcome.Failed<CertificateMaterial> failed -> Outcome.failed(failed.failure());
             };
         });
     }

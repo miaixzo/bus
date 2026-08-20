@@ -51,7 +51,7 @@ public final class AssertionConsumerService {
     /**
      * Validated service-provider trust and response policy.
      */
-    private final SamlSourceSettings settings;
+    private final SamlClientOptions options;
 
     /**
      * Conditions, audience, subject-confirmation, issuer, and time validator.
@@ -71,15 +71,15 @@ public final class AssertionConsumerService {
     /**
      * Creates an Assertion Consumer Service with an explicit validation pipeline.
      *
-     * @param settings           validated SAML Source settings
+     * @param options            validated SAML Source options
      * @param assertionValidator SAML assertion profile validator
      * @param replayValidator    atomic SAML replay validator
      * @param decryptionService  SAML EncryptedAssertion decryption service
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public AssertionConsumerService(final SamlSourceSettings settings, final SamlAssertionValidator assertionValidator,
+    public AssertionConsumerService(final SamlClientOptions options, final SamlAssertionValidator assertionValidator,
             final SamlReplayValidator replayValidator, final SamlDecryptionService decryptionService) {
-        this.settings = Assert.notNull(settings, "SAML Source settings must not be null");
+        this.options = Assert.notNull(options, "SAML Source options must not be null");
         this.assertionValidator = Assert.notNull(assertionValidator, "SAML assertion validator must not be null");
         this.replayValidator = Assert.notNull(replayValidator, "SAML replay validator must not be null");
         this.decryptionService = Assert.notNull(decryptionService, "SAML decryption service must not be null");
@@ -129,15 +129,15 @@ public final class AssertionConsumerService {
         if (!(envelope instanceof Outcome.Succeeded<Response>)) {
             return completed(envelope);
         }
-        return decryptionService.decrypt(response, settings, context, timeout)
+        return decryptionService.decrypt(response, options, context, timeout)
                 .thenCompose(decrypted -> switch (decrypted) {
                     case Outcome.Succeeded<Response> success -> assertionValidator
-                            .validate(success.value(), expectedInResponseTo, settings, context, timeout);
+                            .validate(success.value(), expectedInResponseTo, options, context, timeout);
                     case Outcome.Rejected<Response> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<Response> failed -> completed(Outcome.failed(failed.failure()));
                 }).thenCompose(validated -> switch (validated) {
                     case Outcome.Succeeded<Response> success -> replayValidator
-                            .validate(success.value(), settings, context, timeout);
+                            .validate(success.value(), options, context, timeout);
                     case Outcome.Rejected<Response> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<Response> failed -> completed(Outcome.failed(failed.failure()));
                 });
@@ -165,7 +165,7 @@ public final class AssertionConsumerService {
             return Outcome.rejected(
                     failure(ErrorCode._401, "SAML Response InResponseTo does not match the initiated request"));
         }
-        if (!settings.assertionConsumerServiceUrl().equals(response.destination().getOrNull())) {
+        if (!options.assertionConsumerServiceUrl().equals(response.destination().getOrNull())) {
             return Outcome.rejected(
                     failure(ErrorCode._401, "SAML Response Destination does not match the Assertion Consumer Service"));
         }

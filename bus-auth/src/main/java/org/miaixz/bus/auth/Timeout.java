@@ -30,7 +30,7 @@ import org.miaixz.bus.fabric.Clock;
  * Defines the shared deadline budget propagated through one authentication operation.
  * <p>
  * This namespace does not introduce a second timeout policy. {@link Budget} combines an absolute deadline with the
- * existing Fabric timeout policy so Registry, Store, Resolver, codec, and transport layers consume one decreasing total
+ * existing Fabric timeout policy so Registry, worker, parser, codec, and transport layers consume one decreasing total
  * budget instead of resetting timeouts at every boundary.
  * </p>
  *

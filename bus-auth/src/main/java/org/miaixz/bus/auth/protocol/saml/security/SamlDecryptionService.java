@@ -45,10 +45,11 @@ import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.saml.Assertion;
 import org.miaixz.bus.auth.protocol.saml.Response;
 import org.miaixz.bus.auth.protocol.saml.Saml;
-import org.miaixz.bus.auth.protocol.saml.client.SamlSourceSettings;
+import org.miaixz.bus.auth.protocol.saml.client.SamlClientOptions;
 import org.miaixz.bus.auth.protocol.saml.codec.SamlMessageCodec;
-import org.miaixz.bus.auth.resolver.KeyResolver;
+import org.miaixz.bus.auth.resolver.KeyMaterial;
 import org.miaixz.bus.auth.shared.SecurityBaseline;
+import org.miaixz.bus.auth.worker.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.Optional;
@@ -131,9 +132,9 @@ public final class SamlDecryptionService {
     private static final int GCM_TAG_BITS = 128;
 
     /**
-     * Externally implemented private-key resolver.
+     * External private-key loader and framework-owned key parser.
      */
-    private final KeyResolver keyResolver;
+    private final org.miaixz.bus.auth.runtime.ExecutionServices services;
 
     /**
      * Strict plaintext SAML XML codec.
@@ -153,15 +154,16 @@ public final class SamlDecryptionService {
     /**
      * Creates an EncryptedAssertion decryption service.
      *
-     * @param keyResolver        external exact private-key resolver
+     * @param services           external loaders and pure parsers
      * @param messageCodec       strict SAML plaintext codec
      * @param signatureValidator trusted assertion signature validator
      * @param securityBaseline   shared SAML security baseline
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public SamlDecryptionService(final KeyResolver keyResolver, final SamlMessageCodec messageCodec,
-            final SamlSignatureValidator signatureValidator, final SecurityBaseline securityBaseline) {
-        this.keyResolver = Assert.notNull(keyResolver, "SAML decryption key resolver must not be null");
+    public SamlDecryptionService(final org.miaixz.bus.auth.runtime.ExecutionServices services,
+            final SamlMessageCodec messageCodec, final SamlSignatureValidator signatureValidator,
+            final SecurityBaseline securityBaseline) {
+        this.services = Assert.notNull(services, "SAML execution services must not be null");
         this.messageCodec = Assert.notNull(messageCodec, "SAML message codec must not be null");
         this.signatureValidator = Assert.notNull(signatureValidator, "SAML signature validator must not be null");
         this.securityBaseline = Assert.notNull(securityBaseline, "SAML security baseline must not be null");
@@ -484,18 +486,18 @@ public final class SamlDecryptionService {
      * Decrypts and signature-validates every encrypted assertion as one atomic response transformation.
      *
      * @param response signature-validated SAML Response
-     * @param settings trusted service-provider Source settings
+     * @param options  trusted service-provider Source options
      * @param context  immutable invocation context
      * @param timeout  shared end-to-end budget
      * @return stage containing an unchanged or completely decrypted Response, or a closed failure
      */
     public CompletionStage<Outcome<Response>> decrypt(
             final Response response,
-            final SamlSourceSettings settings,
+            final SamlClientOptions options,
             final Context context,
             final Timeout.Budget timeout) {
         Assert.notNull(response, "SAML Response must not be null");
-        Assert.notNull(settings, "SAML Source settings must not be null");
+        Assert.notNull(options, "SAML Source options must not be null");
         Assert.notNull(context, "SAML decryption context must not be null");
         Assert.notNull(timeout, "SAML decryption budget must not be null");
         if (response.assertions().stream().noneMatch(Response.EncryptedAssertion.class::isInstance)) {
@@ -507,7 +509,7 @@ public final class SamlDecryptionService {
             stage = stage.thenCompose(outcome -> switch (outcome) {
                 case Outcome.Succeeded<List<Response.AssertionContent>> success -> content instanceof Response.PlainAssertion
                         ? completed(append(success.value(), content))
-                        : decryptOne((Response.EncryptedAssertion) content, settings, context, timeout)
+                        : decryptOne((Response.EncryptedAssertion) content, options, context, timeout)
                                 .thenApply(decrypted -> switch (decrypted) {
                                     case Outcome.Succeeded<Assertion> assertion -> append(
                                             success.value(),
@@ -533,14 +535,14 @@ public final class SamlDecryptionService {
      * Decrypts one encrypted choice and validates its plaintext signature.
      *
      * @param encrypted encrypted assertion choice
-     * @param settings  trusted Source settings
+     * @param options   trusted Source options
      * @param context   invocation context
      * @param timeout   shared budget
      * @return stage containing one trusted plaintext assertion
      */
     private CompletionStage<Outcome<Assertion>> decryptOne(
             final Response.EncryptedAssertion encrypted,
-            final SamlSourceSettings settings,
+            final SamlClientOptions options,
             final Context context,
             final Timeout.Budget timeout) {
         if (timeout.expired())
@@ -552,24 +554,25 @@ public final class SamlDecryptionService {
         } catch (RuntimeException exception) {
             return completed(rejected("SAML EncryptedAssertion structure or algorithm is invalid"));
         }
-        final KeyResolver.Query query = new KeyResolver.Query(settings.entityId(), Optional.of(payload.keyName()),
+        final KeyLoader.Request query = new KeyLoader.Request(options.entityId(), Optional.of(payload.keyName()),
                 "decryption", payload.keyAlgorithm(), timeout.clock().now());
-        final CompletionStage<Outcome<KeyResolver.ResolvedKey>> resolution = keyResolver
-                .resolve(query, context, timeout);
+        final CompletionStage<Outcome<KeyMaterial>> resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
+                services.keyLoader().load(query, context, timeout),
+                loaded -> services.keyParser().parse(query, loaded));
         if (resolution == null)
-            return completed(failed("SAML decryption key resolver returned no result stage"));
-        return resolution.exceptionally(
-                cause -> SamlDecryptionService.<KeyResolver.ResolvedKey>failed("SAML decryption key resolution failed"))
+            return completed(failed("SAML decryption key loader returned no result stage"));
+        return resolution
+                .exceptionally(
+                        cause -> SamlDecryptionService.<KeyMaterial>failed("SAML decryption key resolution failed"))
                 .thenCompose(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<KeyResolver.ResolvedKey> success -> decryptPlaintext(
+                    case Outcome.Succeeded<KeyMaterial> success -> decryptPlaintext(
                             payload,
                             success.value(),
-                            settings,
+                            options,
                             context,
                             timeout);
-                    case Outcome.Rejected<KeyResolver.ResolvedKey> rejected -> completed(
-                            Outcome.rejected(rejected.failure()));
-                    case Outcome.Failed<KeyResolver.ResolvedKey> failed -> completed(Outcome.failed(failed.failure()));
+                    case Outcome.Rejected<KeyMaterial> rejected -> completed(Outcome.rejected(rejected.failure()));
+                    case Outcome.Failed<KeyMaterial> failed -> completed(Outcome.failed(failed.failure()));
                 });
     }
 
@@ -578,15 +581,15 @@ public final class SamlDecryptionService {
      *
      * @param payload  validated encrypted payload
      * @param resolved exact private key
-     * @param settings trusted Source settings
+     * @param options  trusted Source options
      * @param context  invocation context
      * @param timeout  shared budget
      * @return stage containing a signature-validated assertion
      */
     private CompletionStage<Outcome<Assertion>> decryptPlaintext(
             final EncryptedPayload payload,
-            final KeyResolver.ResolvedKey resolved,
-            final SamlSourceSettings settings,
+            final KeyMaterial resolved,
+            final SamlClientOptions options,
             final Context context,
             final Timeout.Budget timeout) {
         byte[] contentKey = null;
@@ -632,7 +635,7 @@ public final class SamlDecryptionService {
                 return completed(rejected("Decrypted SAML Assertion exceeds the configured message limit"));
             }
             final SamlMessageCodec.Document<Assertion> document = messageCodec.decodeAssertion(plaintext);
-            return signatureValidator.validateAssertion(document, settings, context, timeout)
+            return signatureValidator.validateAssertion(document, options, context, timeout)
                     .thenApply(validated -> switch (validated) {
                         case Outcome.Succeeded<SamlMessageCodec.Document<Assertion>> success -> Outcome
                                 .succeeded(success.value().message());

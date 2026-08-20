@@ -34,7 +34,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  * <p>
  * The object preserves unknown extension values but never treats a field-name collection as its schema. Conversion to
  * and from a JSON object occurs only at the JWK wire boundary. Execution-key construction and key ownership remain the
- * responsibility of the resolver and protocol security layers.
+ * responsibility of the project key loader, framework key parser, and protocol security layers.
  * </p>
  *
  * @author Kimi Liu

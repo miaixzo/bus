@@ -18,24 +18,24 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the CODING team OAuth 2.0 Vendor definition and tenant-bound settings.
+ * Declares the CODING team OAuth 2.0 Vendor manifest and tenant-bound options.
  * <p>
- * CodingDefinition exposes the single {@code coding/default} OAUTH2 variant with authorization, token, and OpenAPI
+ * CodingManifest exposes the single {@code coding/default} OAUTH2 variant with authorization, token, and OpenAPI
  * endpoint templates restricted to {@code {instance}.coding.net}. It declares client_secret_post, CLIENT_SECRET,
  * prohibited PKCE, {@code user:profile:ro} default scope, Source authentication only, and deviations for
  * comma-delimited authorization scope, callback team and scope, string {@code expires_in}, and the OpenAPI request and
  * response envelope.
  * </p>
  * <p>
- * CodingSourceSettings adds one non-blank DNS-label {@code team}, which is the only legal endpoint template instance.
- * Users cannot submit a complete host, URL, arbitrary tenant domain, endpoint, issuer, or refresh mode. This package
- * exports no public OAuth authorization or token capability, private token or OpenAPI DTO, custom expires-in type,
- * independent refresh operation, or platform error envelope.
+ * CodingOptions adds one non-blank DNS-label {@code team}, which is the only legal endpoint template instance. Users
+ * cannot submit a complete host, URL, arbitrary tenant domain, endpoint, issuer, or refresh mode. This package exports
+ * no public OAuth authorization or token capability, private token or OpenAPI DTO, custom expires-in type, independent
+ * refresh operation, or platform error envelope.
  * </p>
  * <p>
  * Routing, team, CLIENT_SECRET reference, exact callback, and unique registered scopes containing
- * {@code user:profile:ro} are mandatory. The definition remains OAUTH2 because it is an OAuth authorization-code
- * client, while the non-standard scope delimiter, token field type, and OpenAPI envelope remain isolated in Source
+ * {@code user:profile:ro} are mandatory. The manifest remains OAUTH2 because it is an OAuth authorization-code client,
+ * while the non-standard scope delimiter, token field type, and OpenAPI envelope remain isolated in Source
  * authentication. Only a positive integral OpenAPI {@code Response.User.Id} converted to decimal text may become the
  * external subject.
  * </p>

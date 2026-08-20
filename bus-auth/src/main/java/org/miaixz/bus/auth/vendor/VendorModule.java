@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 /**
  * Freezes one exact set of built-in and externally contributed third-party platforms for runtime and management use.
  * <p>
- * The same immutable definition and adapter-binding inventories produce both the management directory and the Source
+ * The same immutable manifest and adapter-binding inventories produce both the management directory and the Source
  * driver. A built module cannot accept later mutation, perform data loading, or execute authentication during startup.
  * </p>
  *
@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public final class VendorModule {
 
     /**
-     * Immutable management and compilation definition directory.
+     * Immutable management and compilation manifest directory.
      */
     private final VendorDirectory vendorDirectory;
 
@@ -51,9 +51,9 @@ public final class VendorModule {
     private final AdapterBindings adapterBindings;
 
     /**
-     * Creates an immutable Vendor module from a validated definition directory and adapter bindings.
+     * Creates an immutable Vendor module from a validated manifest directory and adapter bindings.
      *
-     * @param vendorDirectory complete Vendor definition directory
+     * @param vendorDirectory complete Vendor manifest directory
      * @param adapterBindings complete adapter factory bindings
      */
     private VendorModule(final VendorDirectory vendorDirectory, final AdapterBindings adapterBindings) {
@@ -73,7 +73,7 @@ public final class VendorModule {
     /**
      * Returns the exact immutable directory represented by this Vendor module.
      *
-     * @return immutable Vendor definition directory
+     * @return immutable Vendor manifest directory
      */
     public VendorDirectory directory() {
         return vendorDirectory;
@@ -84,7 +84,7 @@ public final class VendorModule {
      *
      * @return immutable Vendor Source compiler
      */
-    public SourceDriver<VendorSettings> source() {
+    public SourceDriver<VendorOptions<?>> source() {
         return new VendorCompiler(vendorDirectory, adapterBindings);
     }
 
@@ -96,9 +96,9 @@ public final class VendorModule {
     public static final class Builder {
 
         /**
-         * Collected Vendor definitions in deterministic contribution order.
+         * Collected Vendor manifests in deterministic contribution order.
          */
-        private final List<VendorDefinition<?>> definitions = new ArrayList<>();
+        private final List<VariantManifest<?>> manifests = new ArrayList<>();
 
         /**
          * Collected exact platform-variant adapter bindings.
@@ -134,7 +134,7 @@ public final class VendorModule {
                 throw new ValidateException("Built-in Vendor platforms have already been added");
             }
             builtins = true;
-            definitions.addAll(VendorSuite.directory().definitions());
+            manifests.addAll(VendorSuite.directory().manifests());
             mergeBindings(VendorSuite.bindings().bindings());
             return this;
         }
@@ -176,29 +176,29 @@ public final class VendorModule {
         public synchronized VendorModule build() {
             mutable();
             built = true;
-            if (definitions.isEmpty()) {
+            if (manifests.isEmpty()) {
                 throw new ValidateException("Vendor module must contain at least one platform driver");
             }
-            return new VendorModule(new VendorDirectory(definitions), new AdapterBindings(adapterBindings));
+            return new VendorModule(new VendorDirectory(manifests), new AdapterBindings(adapterBindings));
         }
 
         /**
          * Adds one type-safe driver through the only contained generic boundary.
          *
          * @param driver contributed platform driver
-         * @param <S>    exact contributed settings type
+         * @param <S>    exact contributed options type
          */
-        private <S extends VendorSettings> void add(final VendorDriver<S> driver) {
-            final VendorDefinition<S> vendorDefinition = driver.definition();
-            for (VendorDefinition<?> existing : definitions) {
-                if (existing.type().equals(vendorDefinition.type())) {
-                    throw new ValidateException("Duplicate Vendor definition id: " + vendorDefinition.type().value());
+        private <S extends VendorOptions<?>> void add(final VendorDriver<S> driver) {
+            final VariantManifest<S> manifest = driver.manifest();
+            for (VariantManifest<?> existing : manifests) {
+                if (existing.vendor().equals(manifest.vendor())) {
+                    throw new ValidateException("Duplicate Vendor manifest id: " + manifest.vendor().value());
                 }
             }
-            definitions.add(vendorDefinition);
+            manifests.add(manifest);
             final Map<AdapterBindings.Key, VendorAdapter.Factory<?>> contributed = new LinkedHashMap<>();
             for (Map.Entry<Vendor.Variant, VendorAdapter.Factory<S>> entry : driver.factories().entrySet()) {
-                contributed.put(new AdapterBindings.Key(vendorDefinition.type(), entry.getKey()), entry.getValue());
+                contributed.put(new AdapterBindings.Key(manifest.vendor(), entry.getKey()), entry.getValue());
             }
             mergeBindings(contributed);
         }

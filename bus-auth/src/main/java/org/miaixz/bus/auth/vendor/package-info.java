@@ -18,35 +18,35 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines third-party Vendor definitions, directory metadata, fixed endpoints, settings, and registered deviations.
+ * Defines the framework boundary for third-party authentication platforms.
  * <p>
- * {@link org.miaixz.bus.auth.vendor.Vendor} owns stable platform and variant identifiers and display metadata.
- * VendorDefinition declares each variant's actual OAuth 1.0, OAuth 2.0, OpenID Connect, or VENDOR_AUTH protocol,
- * conformance, endpoints, scope, management form, capability manifest, and deviations. VendorDirectory is the immutable
- * management and Hub view. VendorModule freezes one exact built-in, external, or combined contribution set for both
- * runtime compilation and management display. VendorTargets distinguishes framework-owned fixed or templated platform
- * endpoints from deployment settings, and VendorSettings retains only registration data supplied by the external
- * project.
+ * {@link org.miaixz.bus.auth.vendor.Vendor} owns stable platform and variant identifiers plus presentation metadata.
+ * {@link org.miaixz.bus.auth.vendor.VariantManifest} describes exactly one platform; its nested
+ * {@link org.miaixz.bus.auth.vendor.VariantManifest.Variant} owns the protocol, default scopes, official targets,
+ * implemented capabilities, and documented deviations of one supported variant. Framework-owned fixed and constrained
+ * target templates remain in {@link org.miaixz.bus.auth.vendor.VendorTargets}; project-supplied deployment values and
+ * external credential references remain in {@link org.miaixz.bus.auth.vendor.VendorOptions}.
  * </p>
  * <p>
- * Vendor is a Source specialization, not an authentication protocol. Standards-conforming operations delegate to the
- * matching protocol client; a platform package owns only documented extensions or proprietary flows. VendorModule,
- * VendorDriver, VendorAdapter, VendorAdapter.Factory, and RedirectManager form the explicit external platform driver
- * boundary. Runtime assembly obtains every adapter through Registry compilation. This package has no mutable global
- * registration, Controller, project data loader, persistence, Provider/server role, or generic token, profile,
- * callback, request, response, and error DTO.
+ * {@link org.miaixz.bus.auth.vendor.VendorDriver} binds one manifest to exact per-variant factories.
+ * {@link org.miaixz.bus.auth.vendor.VendorModule} freezes built-in and externally contributed drivers into one
+ * immutable inventory. {@link org.miaixz.bus.auth.vendor.VendorDirectory} provides read-only manifest lookup, while the
+ * Source compiler validates project options against that inventory and creates the selected
+ * {@link org.miaixz.bus.auth.vendor.VendorAdapter}. These classes do not exchange responsibilities: manifests describe,
+ * options carry deployment input, drivers bind factories, the module assembles, the directory indexes, and adapters
+ * execute.
  * </p>
  * <p>
- * Vendor definitions advertise only implemented capabilities and preserve official fixed addresses so users do not
- * re-enter them. Every deviation identifies its affected operation, location, platform field, optional standard field,
- * HTTP method, media type, and envelope. Secrets remain credential references until an operation-scoped SecretLease is
- * opened. Platform token bodies and identity responses remain private to one adapter, and credentials, tokens,
- * callbacks, raw profiles, or private DTOs never enter directories, registrations, diagnostics, or protocol wire.
+ * Vendor is a Source specialization, not a replacement authentication protocol. Standards-conforming operations
+ * delegate to their protocol packages; a platform package owns only documented extensions or proprietary flows. This
+ * package contains no mutable global registration, project data loader, persistence, controller, user or account
+ * binding model, business Session, or generic replacement token/profile/callback DTO. Secrets remain external
+ * references until execution-scoped resolution.
  * </p>
  * <p>
  * The direct subdirectories of this package are reserved exclusively for named third-party platforms. Cross-platform
- * contracts and package-private implementations remain in this root package; every platform keeps its executable
- * adapter in its own non-exported internal subpackage.
+ * contracts and package-private implementations remain in this root package; every platform keeps its manifest,
+ * options, and executable adapter together in one non-exported platform package.
  * </p>
  *
  * @author Kimi Liu

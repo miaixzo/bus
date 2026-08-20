@@ -18,24 +18,24 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the public RedNote marketing authorization profile and externally loaded settings.
+ * Declares the public RedNote marketing authorization profile and externally loaded options.
  * <p>
- * RedNoteDefinition fixes the proprietary {@code rednote/marketing} VENDOR_AUTH variant and its authorization,
+ * RedNoteManifest fixes the proprietary {@code rednote/marketing} VENDOR_AUTH variant and its authorization,
  * initial-token, and refresh-token endpoints. It publishes only the application capabilities
  * {@code vendor.rednote.marketing_authorize} and {@code vendor.rednote.marketing_token}, with dedicated nested request
  * and response records that preserve official field names and the initial-versus-refresh token union. It does not
  * publish Source authentication, ExternalIdentity, OAuth AuthorizationRequest, TokenResponse, or O2A/O2T capabilities.
  * </p>
  * <p>
- * RedNoteSourceSettings contains routing, application ID, external application-secret reference, exact registered HTTP
- * or HTTPS callback, and a unique ordered subset of the frozen marketing scopes. Fixed endpoints, camel-case query
- * names, form field aliases, response codes, lifetime branch, and token parsing rules remain profile or adapter owned
- * and cannot be configured by external projects.
+ * RedNoteOptions contains routing, application ID, external application-secret reference, exact registered HTTP or
+ * HTTPS callback, and a unique ordered subset of the frozen marketing scopes. Fixed endpoints, camel-case query names,
+ * form field aliases, response codes, lifetime branch, and token parsing rules remain profile or adapter owned and
+ * cannot be configured by external projects.
  * </p>
  * <p>
  * This exported package provides management contracts for an authorization-only integration. Runtime invocation must
  * enter a Provider obtained from Registry; no identity or session may be inferred from its token response. Application
- * secrets, state, codes, access and refresh tokens, response bodies, and platform diagnostics must not enter settings
+ * secrets, state, codes, access and refresh tokens, response bodies, and platform diagnostics must not enter options
  * diagnostics, Context, tracing, logs, or public failure details.
  * </p>
  *

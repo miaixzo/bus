@@ -21,14 +21,14 @@
  * Hosts security capabilities shared by multiple authentication protocols without defining another protocol.
  * <p>
  * The root exports {@link org.miaixz.bus.auth.shared.SecurityBaseline}, an immutable selection of algorithm, time,
- * replay, address, and protocol-specific limits supplied through {@link org.miaixz.bus.auth.shared.ExecutionServices}.
+ * replay, address, and protocol-specific limits supplied through {@link org.miaixz.bus.auth.runtime.ExecutionServices}.
  * Subpackages implement reusable audit, JOSE, JWT, PKCE, DPoP, claim, and consent building blocks that formal protocol
  * services compose under their own standard contracts.
  * </p>
  * <p>
  * Dependencies flow from protocol and Vendor implementations into the narrow shared capability they need, then into
  * bus-core, bus-crypto, bus-cache ports, and Fabric security primitives. Shared code does not dispatch protocols,
- * publish Provider or Source profiles, access Registry, select a Vendor, or introduce SSF, JWT, JOSE, or a security
+ * publish Provider or Source schemes, access Registry, select a Vendor, or introduce SSF, JWT, JOSE, or a security
  * event as a top-level authentication protocol.
  * </p>
  * <p>

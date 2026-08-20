@@ -47,7 +47,7 @@ public final class LibraryLaunchService {
     private final Set<String> allowedClaims;
 
     /**
-     * Creates a launch resolver with the complete claim placeholder allow-list.
+     * Creates a launch service with the complete claim placeholder allow-list.
      *
      * @param allowedClaims claim names external management may use in launch templates
      * @throws IllegalArgumentException if the set, a claim name, or a claim name value is {@code null} or blank

@@ -36,7 +36,7 @@ import org.miaixz.bus.auth.protocol.oauth2.IntrospectionRequest;
 import org.miaixz.bus.auth.protocol.oauth2.IntrospectionResponse;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.codec.IntrospectionCodec;
-import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -60,7 +60,7 @@ public final class IntrospectionClient {
     /**
      * Validated client registration and selected client authentication method.
      */
-    private final OAuth2ClientSettings settings;
+    private final OAuth2ClientOptions options;
 
     /**
      * Caller-owned execution services and Fabric context.
@@ -80,16 +80,16 @@ public final class IntrospectionClient {
     /**
      * Creates an introspection client for one compiled Source.
      *
-     * @param settings validated OAuth 2.x client settings
+     * @param options  validated OAuth 2.x client options
      * @param services externally owned runtime dependencies
      * @param codec    strict RFC 7662 codec
      * @throws IllegalArgumentException if a collaborator is {@code null} or no introspection endpoint is configured
      */
-    public IntrospectionClient(final OAuth2ClientSettings settings, final ExecutionServices services,
+    public IntrospectionClient(final OAuth2ClientOptions options, final ExecutionServices services,
             final IntrospectionCodec codec) {
-        this.settings = Assert.notNull(settings, "OAuth 2.x client settings must not be null");
+        this.options = Assert.notNull(options, "OAuth 2.x client options must not be null");
         Assert.notNull(
-                settings.introspectionEndpoint().getOrNull(),
+                options.introspectionEndpoint().getOrNull(),
                 "OAuth 2.x introspection endpoint must be configured");
         this.services = Assert.notNull(services, "OAuth 2.x execution services must not be null");
         this.codec = Assert.notNull(codec, "OAuth 2.x introspection codec must not be null");
@@ -166,10 +166,13 @@ public final class IntrospectionClient {
             return completed(
                     Outcome.failed(failure(ErrorCode._408, "OAuth 2.x introspection request has no time budget")));
         }
-        if (Endpoint.Authentication.NONE.equals(settings.clientAuthenticationMethod())) {
+        if (Endpoint.Authentication.NONE.equals(options.clientAuthenticationMethod())) {
             return execute(request, null, timeout);
         }
-        return services.secretResolver().resolve(settings.clientCredential().getOrNull(), context, timeout)
+        return org.miaixz.bus.auth.runtime.LoadResult
+                .parse(
+                        services.secretLoader().load(options.clientCredential().getOrNull(), context, timeout),
+                        loaded -> services.secretParser().parse(options.clientCredential().getOrNull(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> execute(request, success.value(), timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
@@ -197,16 +200,16 @@ public final class IntrospectionClient {
                             failure(ErrorCode._408, "OAuth 2.x introspection request exhausted its time budget"));
                 }
                 body = formCodec.encode(authenticated(codec.encode(request), secret));
-                final var endpoint = settings.introspectionEndpoint().getOrNull();
+                final var endpoint = options.introspectionEndpoint().getOrNull();
                 final var builder = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
                         .method(Http.Method.POST).timeout(timeout.forFabric())
                         .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
                         .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE);
-                if (Endpoint.Authentication.CLIENT_SECRET_BASIC.equals(settings.clientAuthenticationMethod())) {
+                if (Endpoint.Authentication.CLIENT_SECRET_BASIC.equals(options.clientAuthenticationMethod())) {
                     builder.header(
                             Http.Header.AUTHORIZATION,
                             HttpAuth.basic(
-                                    formComponent(settings.clientId()),
+                                    formComponent(options.clientId()),
                                     formComponent(new String(secret.material()))).value());
                 }
                 return decoded(codec.decode(builder.execute()));
@@ -234,10 +237,10 @@ public final class IntrospectionClient {
     private List<Parameter> authenticated(final List<Parameter> encoded, final SecretLease secret) {
         final List<Parameter> parameters = new ArrayList<>(
                 Assert.notNull(encoded, "OAuth 2.x encoded introspection parameters must not be null"));
-        if (Endpoint.Authentication.NONE.equals(settings.clientAuthenticationMethod())) {
-            parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, settings.clientId()));
-        } else if (Endpoint.Authentication.CLIENT_SECRET_POST.equals(settings.clientAuthenticationMethod())) {
-            parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, settings.clientId()));
+        if (Endpoint.Authentication.NONE.equals(options.clientAuthenticationMethod())) {
+            parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()));
+        } else if (Endpoint.Authentication.CLIENT_SECRET_POST.equals(options.clientAuthenticationMethod())) {
+            parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()));
             parameters.add(new Parameter(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())));
         }
         return List.copyOf(parameters);

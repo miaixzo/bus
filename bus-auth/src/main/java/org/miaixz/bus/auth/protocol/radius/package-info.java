@@ -26,10 +26,10 @@
  * RadiusAttribute, VendorSpecificAttribute, and EapMessage retain unsigned wire ranges and raw octet values.
  * </p>
  * <p>
- * RADIUS server, codec, and internal packages consume these immutable packet values. The transport boundary determines
- * RADIUS 1.0 or RADIUS/1.1 before decoding. This package does not implement network I/O, client lookup, shared-secret
- * resolution, accounting storage, Registry access, a client/Source role, Vendor authentication, Dynamic Authorization,
- * or HTTP/JSON/framework envelopes.
+ * RADIUS server, codec, and protocol-driver classes consume these immutable packet values. The transport boundary
+ * determines RADIUS 1.0 or RADIUS/1.1 before decoding. This package does not implement network I/O, client lookup,
+ * shared-secret resolution, accounting storage, Registry access, a client/Source role, Vendor authentication, Dynamic
+ * Authorization, or HTTP/JSON/framework envelopes.
  * </p>
  * <p>
  * Packet models preserve Code, Length-covered content, attribute order, unknown attributes, legacy Identifier and

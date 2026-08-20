@@ -20,14 +20,14 @@
 /**
  * Declares the Eleme service-provider OAuth Source variant.
  * <p>
- * ElemeDefinition exposes only {@code eleme/default}. It fixes the authorization, token, refresh, and merchant RPC
+ * ElemeManifest exposes only {@code eleme/default}. It fixes the authorization, token, refresh, and merchant RPC
  * endpoints, requires CLIENT_SECRET with HTTP Basic token authentication, prohibits PKCE, requires the {@code all}
  * scope, and publishes Source authentication plus the standard OAuth authorization and token operations. The merchant
  * RPC gateway is a registered platform deviation and is never represented as OAuth UserInfo.
  * </p>
  * <p>
- * ElemeSourceSettings contains only routing, client, secret-reference, callback, and scope data. Applications cannot
- * supply endpoints, switch to a merchant client-credentials flow, change the NOP version or action, select a signing
+ * ElemeOptions contains only routing, client, secret-reference, callback, and scope data. Applications cannot supply
+ * endpoints, switch to a merchant client-credentials flow, change the NOP version or action, select a signing
  * algorithm, expose private RPC records, or reinterpret merchant deauthorization as RFC 7009 token revocation.
  * </p>
  * <p>

@@ -34,21 +34,25 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Produces standard SCIM discovery resources from immutable settings and externally supplied schema catalogs.
+ * Produces standard SCIM discovery resources from immutable options and externally supplied schema catalogs.
  *
  * @author Kimi Liu
  */
 public final class ScimDiscoveryService {
 
     /**
-     * Typed standard authentication-scheme catalog in stable discovery order.
+     * Typed standard authentication-mechanism catalog in stable discovery order.
      */
-    private static final List<ServiceProviderConfig.AuthenticationScheme> AUTHENTICATION_SCHEMES = List.of(
-            scheme("oauth", "OAuth 1.0", "OAuth 1.0 request authentication", "rfc5849"),
-            scheme("oauth2", "OAuth 2.0", "OAuth 2.0 client authentication", "rfc6749"),
-            scheme("oauthbearertoken", "OAuth Bearer Token", "OAuth 2.0 bearer token authentication", "rfc6750"),
-            scheme("httpbasic", "HTTP Basic", "HTTP Basic authentication", "rfc7617"),
-            scheme("httpdigest", "HTTP Digest", "HTTP Digest authentication", "rfc7616"));
+    private static final List<ServiceProviderConfig.AuthenticationMechanism> DEFAULT_AUTHENTICATION_MECHANISMS = List
+            .of(
+                    mechanism("oauth2", "OAuth 2.0", "OAuth 2.0 client authentication", "rfc6749"),
+                    mechanism(
+                            "oauthbearertoken",
+                            "OAuth Bearer Token",
+                            "OAuth 2.0 bearer token authentication",
+                            "rfc6750"),
+                    mechanism("httpbasic", "HTTP Basic", "HTTP Basic authentication", "rfc7617"),
+                    mechanism("httpdigest", "HTTP Digest", "HTTP Digest authentication", "rfc7616"));
 
     /**
      * Compiled server-role Source identifier used to isolate catalog lookups.
@@ -56,9 +60,9 @@ public final class ScimDiscoveryService {
     private final String providerId;
 
     /**
-     * Validated settings from which ServiceProviderConfig is generated.
+     * Validated options from which ServiceProviderConfig is generated.
      */
-    private final ScimProviderSettings settings;
+    private final ScimServerOptions options;
 
     /**
      * External project implementation of SCIM discovery catalogs.
@@ -69,32 +73,32 @@ public final class ScimDiscoveryService {
      * Creates a discovery service for one exact compiled SCIM Provider.
      *
      * @param providerId compiled server-role Source identifier
-     * @param settings   validated SCIM Provider settings
+     * @param options    validated SCIM Provider options
      * @param store      externally supplied discovery catalog store
      * @throws IllegalArgumentException if an argument is {@code null} or the identifier is blank
      */
-    public ScimDiscoveryService(final String providerId, final ScimProviderSettings settings,
+    public ScimDiscoveryService(final String providerId, final ScimServerOptions options,
             final ScimResourceStore store) {
         this.providerId = Assert.notBlank(providerId, "SCIM Provider id must not be blank");
-        this.settings = Assert.notNull(settings, "SCIM Provider settings must not be null");
+        this.options = Assert.notNull(options, "SCIM Provider options must not be null");
         this.store = Assert.notNull(store, "SCIM discovery store must not be null");
     }
 
     /**
-     * Creates one standard authentication scheme citation.
+     * Creates one standard authentication mechanism citation.
      *
-     * @param type        registered scheme type
+     * @param type        registered mechanism type
      * @param name        standard human-readable name
-     * @param description non-sensitive scheme description
+     * @param description non-sensitive mechanism description
      * @param rfc         lowercase RFC document identifier
-     * @return immutable authentication scheme
+     * @return immutable authentication mechanism
      */
-    private static ServiceProviderConfig.AuthenticationScheme scheme(
+    private static ServiceProviderConfig.AuthenticationMechanism mechanism(
             final String type,
             final String name,
             final String description,
             final String rfc) {
-        return new ServiceProviderConfig.AuthenticationScheme(type, name, description,
+        return new ServiceProviderConfig.AuthenticationMechanism(type, name, description,
                 Optional.of("https://www.rfc-editor.org/rfc/" + rfc), Optional.empty());
     }
 
@@ -152,7 +156,7 @@ public final class ScimDiscoveryService {
     }
 
     /**
-     * Generates the standard ServiceProviderConfig resource from validated Provider settings.
+     * Generates the standard ServiceProviderConfig resource from validated Provider options.
      *
      * @param context immutable invocation context
      * @param timeout shared end-to-end time budget
@@ -165,7 +169,7 @@ public final class ScimDiscoveryService {
         if (timeout.expired()) {
             return completed(Outcome.failed(timeoutFailure("ServiceProviderConfig")));
         }
-        return completed(Outcome.succeeded(settings.serviceProviderConfig()));
+        return completed(Outcome.succeeded(options.serviceProviderConfig()));
     }
 
     /**
@@ -209,13 +213,13 @@ public final class ScimDiscoveryService {
     }
 
     /**
-     * Builds authentication scheme resources in stable registered-value order.
+     * Builds authentication mechanism resources in stable registered-value order.
      *
-     * @return immutable standard authentication scheme list
+     * @return immutable standard authentication mechanism list
      */
-    private List<ServiceProviderConfig.AuthenticationScheme> authenticationSchemes() {
-        final List<ServiceProviderConfig.AuthenticationScheme> result = new ArrayList<>();
-        result.addAll(settings.serviceProviderConfig().authenticationSchemes());
+    private List<ServiceProviderConfig.AuthenticationMechanism> authenticationMechanisms() {
+        final List<ServiceProviderConfig.AuthenticationMechanism> result = new ArrayList<>();
+        result.addAll(options.serviceProviderConfig().authenticationSchemes());
         return List.copyOf(result);
     }
 
@@ -224,7 +228,7 @@ public final class ScimDiscoveryService {
      *
      * @param stage              external store stage
      * @param resourceClass      required standard resource class
-     * @param exactResourceTypes whether enabled ResourceType names must match settings exactly
+     * @param exactResourceTypes whether enabled ResourceType names must match options exactly
      * @param operation          discovery operation name
      * @return validated discovery stage
      */
@@ -258,8 +262,8 @@ public final class ScimDiscoveryService {
                     }
                 }
                 if (exactResourceTypes
-                        && (!settings.resourceTypes().stream().map(ResourceType::name).allMatch(names::contains)
-                                || names.size() != settings.resourceTypes().size())) {
+                        && (!options.resourceTypes().stream().map(ResourceType::name).allMatch(names::contains)
+                                || names.size() != options.resourceTypes().size())) {
                     return Outcome.failed(storeFailure(operation));
                 }
                 if (!exactResourceTypes && !containsRequiredSchemas(names)) {
@@ -277,8 +281,8 @@ public final class ScimDiscoveryService {
      * @return whether all enabled core schemas are present
      */
     private boolean containsRequiredSchemas(final Set<String> schemaIds) {
-        return (!settings.supports(Scim.ResourceTypes.USER) || schemaIds.contains(Scim.USER_SCHEMA))
-                && (!settings.supports(Scim.ResourceTypes.GROUP) || schemaIds.contains(Scim.GROUP_SCHEMA));
+        return (!options.supports(Scim.ResourceTypes.USER) || schemaIds.contains(Scim.USER_SCHEMA))
+                && (!options.supports(Scim.ResourceTypes.GROUP) || schemaIds.contains(Scim.GROUP_SCHEMA));
     }
 
 }

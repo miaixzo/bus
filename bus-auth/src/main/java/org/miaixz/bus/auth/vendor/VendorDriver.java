@@ -26,56 +26,57 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
- * Pairs one externally contributed Vendor definition with the exact factories for all of its declared variants.
+ * Binds one externally contributed {@link VariantManifest} to the exact adapter factory for every declared variant.
  * <p>
- * A driver is startup code, not persisted registration data. External projects continue to load configured Source
- * registrations through the common RegistrationLoader after the complete Vendor module has been frozen.
+ * A driver is immutable assembly input. It validates complete manifest-to-factory coverage but does not register
+ * itself, load or persist Source data, construct adapters, or execute authentication. External projects own
+ * contribution and Source loading; {@link VendorModule} owns freezing the resulting inventory.
  * </p>
  *
- * @param <S> exact immutable settings type accepted by the contributed definition
+ * @param <O> exact immutable options type accepted by the contributed manifest
  * @author Kimi Liu
  */
-public final class VendorDriver<S extends VendorSettings> {
+public final class VendorDriver<O extends VendorOptions<?>> {
 
     /**
-     * Immutable contributed Vendor definition.
+     * Immutable contributed Vendor manifest.
      */
-    private final VendorDefinition<S> vendorDefinition;
+    private final VariantManifest<O> manifest;
 
     /**
      * Immutable factory map covering every declared platform variant.
      */
-    private final Map<Vendor.Variant, VendorAdapter.Factory<S>> factories;
+    private final Map<Vendor.Variant, VendorAdapter.Factory<O>> factories;
 
     /**
      * Creates and validates one complete immutable driver.
      *
-     * @param vendorDefinition contributed Vendor definition
-     * @param factories        exact factory map covering every declared variant
+     * @param manifest  contributed platform manifest
+     * @param factories exact factory map covering every declared variant
      * @throws IllegalArgumentException if an argument or map member is null
-     * @throws ValidateException        if a variant is missing, duplicated, or not declared by the definition
+     * @throws ValidateException        if a variant is missing, duplicated, or not declared by the manifest
      */
-    private VendorDriver(final VendorDefinition<S> vendorDefinition,
-            final Map<Vendor.Variant, VendorAdapter.Factory<S>> factories) {
-        this.vendorDefinition = Assert.notNull(vendorDefinition, "Vendor driver definition must not be null");
+    private VendorDriver(final VariantManifest<O> manifest,
+            final Map<Vendor.Variant, VendorAdapter.Factory<O>> factories) {
+        this.manifest = Assert.notNull(manifest, "Vendor driver manifest must not be null");
         Assert.notNull(factories, "Vendor driver factories must not be null");
-        final Map<Vendor.Variant, VendorAdapter.Factory<S>> copy = new LinkedHashMap<>(factories.size());
-        for (Map.Entry<Vendor.Variant, VendorAdapter.Factory<S>> entry : factories.entrySet()) {
+        final Map<Vendor.Variant, VendorAdapter.Factory<O>> copy = new LinkedHashMap<>(factories.size());
+        for (Map.Entry<Vendor.Variant, VendorAdapter.Factory<O>> entry : factories.entrySet()) {
             final Vendor.Variant variant = Assert.notNull(entry.getKey(), "Vendor driver variant must not be null");
-            final VendorAdapter.Factory<S> factory = Assert
+            final VendorAdapter.Factory<O> factory = Assert
                     .notNull(entry.getValue(), "Vendor driver factory must not be null");
-            vendorDefinition.variant(variant);
+            manifest.variant(variant);
             if (copy.putIfAbsent(variant, factory) != null) {
                 throw new ValidateException("Duplicate Vendor driver variant: " + variant.value());
             }
         }
-        for (VendorDefinition.Definition variantDefinition : vendorDefinition.variants()) {
-            if (!copy.containsKey(variantDefinition.variant())) {
+        for (VariantManifest.Variant variant : manifest.variants()) {
+            if (!copy.containsKey(variant.variant())) {
                 throw new ValidateException(
-                        "Vendor driver factory is missing for variant: " + variantDefinition.variant().value());
+                        "Vendor driver factory is missing for variant: " + variant.variant().value());
             }
         }
-        if (copy.size() != vendorDefinition.variants().size()) {
+        if (copy.size() != manifest.variants().size()) {
             throw new ValidateException("Vendor driver factories must exactly cover the defined variants");
         }
         this.factories = Map.copyOf(copy);
@@ -84,24 +85,24 @@ public final class VendorDriver<S extends VendorSettings> {
     /**
      * Creates a driver with explicit per-variant platform execution factories.
      *
-     * @param vendorDefinition contributed Vendor definition
-     * @param factories        exact factory map covering every declared variant
-     * @param <S>              exact immutable settings type
+     * @param manifest  contributed platform manifest
+     * @param factories exact factory map covering every declared variant
+     * @param <O>       exact immutable options type
      * @return complete custom driver
      */
-    public static <S extends VendorSettings> VendorDriver<S> of(
-            final VendorDefinition<S> vendorDefinition,
-            final Map<Vendor.Variant, VendorAdapter.Factory<S>> factories) {
-        return new VendorDriver<>(vendorDefinition, factories);
+    public static <O extends VendorOptions<?>> VendorDriver<O> of(
+            final VariantManifest<O> manifest,
+            final Map<Vendor.Variant, VendorAdapter.Factory<O>> factories) {
+        return new VendorDriver<>(manifest, factories);
     }
 
     /**
-     * Returns the contributed immutable Vendor definition.
+     * Returns the contributed immutable Vendor manifest.
      *
-     * @return Vendor definition
+     * @return Vendor manifest
      */
-    public VendorDefinition<S> definition() {
-        return vendorDefinition;
+    public VariantManifest<O> manifest() {
+        return manifest;
     }
 
     /**
@@ -109,7 +110,7 @@ public final class VendorDriver<S extends VendorSettings> {
      *
      * @return variant factories
      */
-    public Map<Vendor.Variant, VendorAdapter.Factory<S>> factories() {
+    public Map<Vendor.Variant, VendorAdapter.Factory<O>> factories() {
         return factories;
     }
 

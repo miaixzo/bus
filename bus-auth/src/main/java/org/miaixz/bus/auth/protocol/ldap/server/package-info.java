@@ -21,9 +21,9 @@
  * Implements the LDAP version 3 server and Provider direction.
  * <p>
  * Bind, Search, Modify, Add, Delete, Modify DN, Compare, Abandon, Unbind, and Extended operation services implement the
- * corresponding RFC 4511 semantics. LdapErrorMapper produces the operation-specific LDAPResult, while
- * LdapProviderProfile and LdapProviderSettings declare supported authentication choices, controls, extensions, limits,
- * and StartTLS behavior. DirectoryStore is the external project's directory and transaction port.
+ * corresponding RFC 4511 semantics. LdapErrorMapper produces the operation-specific LDAPResult, while LdapServerScheme
+ * and LdapServerOptions declare supported authentication choices, controls, extensions, limits, and StartTLS behavior.
+ * DirectoryStore is the external project's directory and transaction port.
  * </p>
  * <p>
  * Services consume typed LDAP messages, authenticated connection Context, SecurityBaseline, codecs, and DirectoryStore.

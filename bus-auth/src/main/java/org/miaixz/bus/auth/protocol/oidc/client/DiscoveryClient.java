@@ -28,7 +28,7 @@ import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdProviderMetadata;
 import org.miaixz.bus.auth.protocol.oidc.codec.OpenIdProviderMetadataCodec;
-import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -45,9 +45,9 @@ import org.miaixz.bus.fabric.Fabric;
 public final class DiscoveryClient {
 
     /**
-     * Validated relying-party settings containing the trusted issuer and discovery endpoint.
+     * Validated relying-party options containing the trusted issuer and discovery endpoint.
      */
-    private final OpenIdClientSettings settings;
+    private final OpenIdClientOptions options;
 
     /**
      * Caller-owned runtime dependencies and Fabric context.
@@ -62,17 +62,15 @@ public final class DiscoveryClient {
     /**
      * Creates a Discovery client for one compiled OpenID Connect Source.
      *
-     * @param settings validated OpenID Connect client settings
+     * @param options  validated OpenID Connect client options
      * @param services externally owned runtime dependencies
      * @param codec    strict OpenID Provider Metadata codec
      * @throws IllegalArgumentException if a collaborator is {@code null} or discovery is not configured
      */
-    public DiscoveryClient(final OpenIdClientSettings settings, final ExecutionServices services,
+    public DiscoveryClient(final OpenIdClientOptions options, final ExecutionServices services,
             final OpenIdProviderMetadataCodec codec) {
-        this.settings = Assert.notNull(settings, "OpenID Connect client settings must not be null");
-        Assert.notNull(
-                settings.discoveryEndpoint().getOrNull(),
-                "OpenID Connect discovery endpoint must be configured");
+        this.options = Assert.notNull(options, "OpenID Connect client options must not be null");
+        Assert.notNull(options.discoveryEndpoint().getOrNull(), "OpenID Connect discovery endpoint must be configured");
         this.services = Assert.notNull(services, "OpenID Connect execution services must not be null");
         this.codec = Assert.notNull(codec, "OpenID Connect metadata codec must not be null");
     }
@@ -130,12 +128,12 @@ public final class DiscoveryClient {
                 return Outcome
                         .failed(failure(ErrorCode._408, "OpenID Connect discovery request exhausted its time budget"));
             }
-            final var endpoint = settings.discoveryEndpoint().getOrNull();
+            final var endpoint = options.discoveryEndpoint().getOrNull();
             final var response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
                     .method(Http.Method.GET).timeout(timeout.forFabric())
                     .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy()).execute();
             final OpenIdProviderMetadata metadata = codec.decode(response);
-            if (!settings.expectedIssuer().equals(metadata.authorizationServerMetadata().issuer())) {
+            if (!options.expectedIssuer().equals(metadata.authorizationServerMetadata().issuer())) {
                 return Outcome.rejected(
                         failure(
                                 ErrorCode._400,

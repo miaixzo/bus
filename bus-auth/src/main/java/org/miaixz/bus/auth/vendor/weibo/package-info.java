@@ -18,18 +18,18 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the public Weibo OAuth Vendor definition and externally loaded settings.
+ * Declares the public Weibo OAuth Vendor manifest and externally loaded options.
  * <p>
- * WeiboDefinition fixes {@code weibo/default}, authorization, token, profile, and revocation endpoints, and exposes
+ * WeiboManifest fixes {@code weibo/default}, authorization, token, profile, and revocation endpoints, and exposes
  * redirect Source authentication, standard OAuth authorization, and standard revocation. It does not publish token
  * capability because the historical success response omits mandatory {@code token_type}. Comma scope, query-bearing
  * empty-form token POST, profile query plus historical OAuth2 header, and query revocation with {@code result=true} are
  * private deviations. The former fabricated local {@code API-RemoteIP} value is intentionally absent.
  * </p>
  * <p>
- * WeiboSourceSettings contains routing, App Key, external Client Secret reference, exact registered HTTP or HTTPS
- * callback, and a unique ordered subset of the official scope vocabulary; an empty list normalizes to {@code all}.
- * Fixed endpoints, query/header behavior, fabricated network facts, response parsing, and identity binding cannot be
+ * WeiboOptions contains routing, App Key, external Client Secret reference, exact registered HTTP or HTTPS callback,
+ * and a unique ordered subset of the official scope vocabulary; an empty list normalizes to {@code all}. Fixed
+ * endpoints, query/header behavior, fabricated network facts, response parsing, and identity binding cannot be
  * externally supplied.
  * </p>
  * <p>

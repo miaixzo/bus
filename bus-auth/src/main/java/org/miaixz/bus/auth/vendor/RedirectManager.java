@@ -28,9 +28,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.cache.ExpiringValue;
-import org.miaixz.bus.auth.cache.NonceStore;
-import org.miaixz.bus.auth.resolver.CredentialStore;
-import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.cache.NonceCache;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.shared.pkce.CodeChallenge;
 import org.miaixz.bus.auth.shared.pkce.CodeVerifier;
@@ -39,6 +38,7 @@ import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceAuthenticationInitiation;
 import org.miaixz.bus.auth.source.SourceAuthenticationRequest;
 import org.miaixz.bus.auth.source.SourceAuthenticationResult;
+import org.miaixz.bus.auth.worker.CredentialStore;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
@@ -66,12 +66,12 @@ public final class RedirectManager {
     private static final Duration LIFETIME = Duration.ofMinutes(10);
 
     /**
-     * State-store isolation purpose.
+     * State-cache isolation purpose.
      */
     private static final String STATE_PURPOSE = "vendor-state";
 
     /**
-     * Nonce-store isolation purpose.
+     * Nonce-cache isolation purpose.
      */
     private static final String NONCE_PURPOSE = "vendor-nonce";
 
@@ -91,14 +91,14 @@ public final class RedirectManager {
     private final String sourceId;
 
     /**
-     * Exact selected platform variant definition.
+     * Exact selected platform variant manifest.
      */
-    private final VendorDefinition.Definition variantDefinition;
+    private final VariantManifest.Variant variant;
 
     /**
-     * Exact decoded platform Source settings.
+     * Exact decoded platform Source options.
      */
-    private final VendorSettings vendorSettings;
+    private final VendorOptions<?> vendorOptions;
 
     /**
      * Externally owned stores, clock, and security baseline.
@@ -130,23 +130,22 @@ public final class RedirectManager {
      *
      * @param namespaceId       exact namespace identifier from the registration
      * @param sourceId          exact Source identifier from the registration
-     * @param variantDefinition selected platform variant definition
-     * @param vendorSettings    decoded exact platform settings
+     * @param variant           selected platform variant manifest
+     * @param vendorOptions     decoded exact platform options
      * @param runtimeComponents complete external runtime dependencies
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      */
-    private RedirectManager(final String namespaceId, final String sourceId,
-            final VendorDefinition.Definition variantDefinition, final VendorSettings vendorSettings,
-            final ExecutionServices runtimeComponents) {
+    private RedirectManager(final String namespaceId, final String sourceId, final VariantManifest.Variant variant,
+            final VendorOptions<?> vendorOptions, final ExecutionServices runtimeComponents) {
         this.namespaceId = Assert.notBlank(namespaceId, "Vendor redirect namespace id must not be blank");
         this.sourceId = Assert.notBlank(sourceId, "Vendor redirect Source id must not be blank");
-        this.variantDefinition = Assert.notNull(variantDefinition, "Vendor redirect definition must not be null");
-        this.vendorSettings = Assert.notNull(vendorSettings, "Vendor redirect settings must not be null");
+        this.variant = Assert.notNull(variant, "Vendor redirect manifest must not be null");
+        this.vendorOptions = Assert.notNull(vendorOptions, "Vendor redirect options must not be null");
         this.runtimeComponents = Assert
                 .notNull(runtimeComponents, "Vendor redirect execution services must not be null");
-        final var policy = runtimeComponents.securityBaseline().require(variantDefinition.protocol());
-        this.nonceEnabled = variantDefinition.protocol() == Protocol.OIDC;
-        this.pkceEnabled = vendorSettings.pkce();
+        final var policy = runtimeComponents.securityBaseline().require(variant.protocol());
+        this.nonceEnabled = variant.protocol() == Protocol.OIDC;
+        this.pkceEnabled = vendorOptions.pkce();
         this.pkceGenerator = pkceEnabled ? new PkceGenerator(policy) : null;
         this.randomBytes = (Math.max(256, policy.minimumEntropyBits()) + Byte.SIZE - 1) / Byte.SIZE;
     }
@@ -156,24 +155,24 @@ public final class RedirectManager {
      *
      * @param namespaceId       registration namespace identifier
      * @param sourceId          registration Source identifier
-     * @param variantDefinition selected platform variant definition
-     * @param vendorSettings    decoded immutable platform settings
+     * @param variant           selected platform variant manifest
+     * @param vendorOptions     decoded immutable platform options
      * @param runtimeComponents complete externally supplied runtime dependencies
      * @return framework-owned redirect manager
      */
     public static RedirectManager create(
             final String namespaceId,
             final String sourceId,
-            final VendorDefinition.Definition variantDefinition,
-            final VendorSettings vendorSettings,
+            final VariantManifest.Variant variant,
+            final VendorOptions<?> vendorOptions,
             final ExecutionServices runtimeComponents) {
-        return new RedirectManager(namespaceId, sourceId, variantDefinition, vendorSettings, runtimeComponents);
+        return new RedirectManager(namespaceId, sourceId, variant, vendorOptions, runtimeComponents);
     }
 
     /**
      * Converts an atomic create stage into a closed framework outcome.
      *
-     * @param stage                atomic store creation stage
+     * @param stage                atomic cache creation stage
      * @param failureDescription   safe operational failure description
      * @param collisionDescription safe collision description
      * @return normalized creation outcome
@@ -265,8 +264,8 @@ public final class RedirectManager {
         Assert.notNull(request, "Vendor redirect start request must not be null");
         Assert.notNull(operation, "Vendor redirect prepare operation must not be null");
         invocation(context, timeout);
-        if (!sourceId.equals(request.sourceId()) || vendorSettings.redirectUri().isEmpty()
-                || !vendorSettings.redirectUri().getOrNull().equals(request.callbackTarget().redirectUri())) {
+        if (!sourceId.equals(request.sourceId()) || vendorOptions.redirectUri().isEmpty()
+                || !vendorOptions.redirectUri().getOrNull().equals(request.callbackTarget().redirectUri())) {
             return completed(rejected("Vendor redirect callback target does not match the registered Source"));
         }
         if (timeout.expired()) {
@@ -382,8 +381,7 @@ public final class RedirectManager {
                 || prepared.correlationValue() == null || prepared.correlationValue().isBlank()) {
             return completed(failed("Vendor authorization preparation returned invalid redirect data"));
         }
-        if (variantDefinition.protocol() != Protocol.OAUTH1
-                && !initiation.state().equals(prepared.correlationValue())) {
+        if (!initiation.state().equals(prepared.correlationValue())) {
             return completed(rejected("Vendor authorization correlation does not equal generated state"));
         }
         final Instant expiresAt = timeout.clock().now().plus(LIFETIME);
@@ -453,9 +451,9 @@ public final class RedirectManager {
         }
         final CompletionStage<Boolean> stage;
         try {
-            stage = runtimeComponents.nonceStore().create(
+            stage = runtimeComponents.nonceCache().create(
                     digest(NONCE_PURPOSE, correlationValue),
-                    new ExpiringValue<>(new NonceStore.Nonce(sourceId, nonce.getOrNull()), expiresAt),
+                    new ExpiringValue<>(new NonceCache.Nonce(sourceId, nonce.getOrNull()), expiresAt),
                     LIFETIME.toMillis());
         } catch (RuntimeException cause) {
             return completed(failed("Vendor nonce storage failed"));
@@ -510,7 +508,7 @@ public final class RedirectManager {
     private CompletionStage<Outcome<Void>> createState(final Callback.Correlation correlation) {
         final CompletionStage<Boolean> stage;
         try {
-            stage = runtimeComponents.stateStore().create(
+            stage = runtimeComponents.stateCache().create(
                     digest(STATE_PURPOSE, correlation.state()),
                     new ExpiringValue<>(correlation, correlation.expiresAt()),
                     LIFETIME.toMillis());
@@ -532,16 +530,16 @@ public final class RedirectManager {
             final Timeout.Budget timeout) {
         final CompletionStage<ExpiringValue<Callback.Correlation>> stage;
         try {
-            stage = runtimeComponents.stateStore().take(digest(STATE_PURPOSE, correlationValue));
+            stage = runtimeComponents.stateCache().take(digest(STATE_PURPOSE, correlationValue));
         } catch (RuntimeException cause) {
-            return completed(failed("Vendor callback state store failed"));
+            return completed(failed("Vendor callback state cache failed"));
         }
         if (stage == null) {
-            return completed(failed("Vendor callback state store returned no stage"));
+            return completed(failed("Vendor callback state cache returned no stage"));
         }
         return stage.handle((stored, cause) -> {
             if (cause != null) {
-                return failed("Vendor callback state store failed");
+                return failed("Vendor callback state cache failed");
             }
             if (stored == null || !sourceId.equals(stored.value().sourceId())
                     || !correlationValue.equals(stored.value().state())
@@ -568,18 +566,18 @@ public final class RedirectManager {
         if (correlation.nonce().isEmpty()) {
             return completed(Outcome.succeeded(null));
         }
-        final CompletionStage<ExpiringValue<NonceStore.Nonce>> stage;
+        final CompletionStage<ExpiringValue<NonceCache.Nonce>> stage;
         try {
-            stage = runtimeComponents.nonceStore().take(digest(NONCE_PURPOSE, correlationValue));
+            stage = runtimeComponents.nonceCache().take(digest(NONCE_PURPOSE, correlationValue));
         } catch (RuntimeException cause) {
-            return completed(failed("Vendor nonce store failed"));
+            return completed(failed("Vendor nonce cache failed"));
         }
         if (stage == null) {
-            return completed(failed("Vendor nonce store returned no stage"));
+            return completed(failed("Vendor nonce cache returned no stage"));
         }
         return stage.handle((stored, cause) -> {
             if (cause != null) {
-                return failed("Vendor nonce store failed");
+                return failed("Vendor nonce cache failed");
             }
             if (stored == null || !sourceId.equals(stored.value().sourceId())
                     || !correlation.nonce().getOrNull().equals(stored.value().nonce())
@@ -692,7 +690,7 @@ public final class RedirectManager {
      * Deletes previously created values in reverse dependency order after an initiation failure.
      *
      * @param correlationValue platform callback correlation value
-     * @param nonceStored      whether a nonce may have been created
+     * @param nonceCached      whether a nonce may have been created
      * @param verifierStored   whether a verifier may have been stored
      * @param context          immutable invocation context
      * @param timeout          shared time budget
@@ -700,7 +698,7 @@ public final class RedirectManager {
      */
     private CompletionStage<Void> rollback(
             final String correlationValue,
-            final boolean nonceStored,
+            final boolean nonceCached,
             final boolean verifierStored,
             final Context context,
             final Timeout.Budget timeout) {
@@ -708,7 +706,7 @@ public final class RedirectManager {
         if (verifierStored) {
             result = result.thenCompose(ignored -> deleteVerifier(correlationValue, context, timeout));
         }
-        if (nonceStored) {
+        if (nonceCached) {
             result = result.thenCompose(ignored -> deleteNonce(correlationValue));
         }
         return result;
@@ -743,7 +741,7 @@ public final class RedirectManager {
      */
     private CompletionStage<Void> deleteNonce(final String correlationValue) {
         try {
-            final CompletionStage<Boolean> stage = runtimeComponents.nonceStore()
+            final CompletionStage<Boolean> stage = runtimeComponents.nonceCache()
                     .delete(digest(NONCE_PURPOSE, correlationValue));
             return stage == null ? CompletableFuture.completedFuture(null) : stage.handle((ignored, cause) -> null);
         } catch (RuntimeException cause) {
@@ -766,9 +764,9 @@ public final class RedirectManager {
     }
 
     /**
-     * Creates one irreversible namespace- and Source-isolated store key.
+     * Creates one irreversible namespace- and Source-isolated cache key.
      *
-     * @param purpose stable store purpose
+     * @param purpose stable cache purpose
      * @param binding opaque protocol binding
      * @return lowercase SHA-256 hexadecimal key
      */

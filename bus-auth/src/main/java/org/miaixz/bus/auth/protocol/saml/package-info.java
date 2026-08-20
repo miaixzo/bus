@@ -26,16 +26,16 @@
  * their OASIS-defined spelling and semantics.
  * </p>
  * <p>
- * SAML client, server, codec, security, and internal packages consume these immutable models. Shared cryptographic
- * components provide primitives without changing XML semantics. This package has no transport, persistence, Registry,
- * identity linking, project permissions, Vendor fields, generic protocol envelopes, or framework execution types.
- * HTTP-Artifact, ECP, and Name Identifier Management are outside the implemented SAML capability set.
+ * SAML client, server, codec, security, and protocol-driver classes consume these immutable models. Shared
+ * cryptographic components provide primitives without changing XML semantics. This package has no transport,
+ * persistence, Registry, identity linking, project permissions, Vendor fields, generic protocol envelopes, or framework
+ * execution types. HTTP-Artifact, ECP, and Name Identifier Management are outside the implemented SAML capability set.
  * </p>
  * <p>
  * XML content is represented only after namespace-aware, schema-constrained parsing with unique IDs and bounded size,
  * depth, text, and collection counts. Models never serialize Context, Timeout, Callback, Outcome, Bus errors,
- * exceptions, or internal settings. SAML failures use a standard Response Status when a response can be returned
- * safely; they are never converted to JSON or OAuth errors.
+ * exceptions, or internal options. SAML failures use a standard Response Status when a response can be returned safely;
+ * they are never converted to JSON or OAuth errors.
  * </p>
  *
  * @author Kimi Liu

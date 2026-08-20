@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
- * Declares one strongly typed authentication capability actually implemented by a runtime provider.
+ * Declares one strongly typed authentication capability implemented by a compiled Source worker.
  * <p>
  * Request and response classes are part of the declaration, allowing Registry invocation to retain compile-time type
  * relationships instead of reducing protocol operations to generic requests. Capability declarations are internal
@@ -39,7 +39,7 @@ import org.miaixz.bus.core.net.Protocol;
  * @param key          stable protocol and operation key
  * @param requestType  exact standard request type accepted by the capability
  * @param responseType exact standard response type returned through {@link Outcome}
- * @param direction    runtime provider direction
+ * @param direction    protocol role implemented by the Source worker
  * @param interactions interaction patterns supported by the operation
  * @param security     minimum caller or subject authentication boundary
  * @param <Q>          standard request type
@@ -55,7 +55,7 @@ public record Capability<Q, S>(Key key, Class<Q> requestType, Class<S> responseT
      * @param key          stable protocol and operation key
      * @param requestType  exact standard request type
      * @param responseType exact standard success value type
-     * @param direction    runtime provider direction
+     * @param direction    protocol role implemented by the Source worker
      * @param interactions supported interaction patterns
      * @param security     minimum authentication boundary
      * @throws IllegalArgumentException if any component is {@code null}
@@ -72,7 +72,7 @@ public record Capability<Q, S>(Key key, Class<Q> requestType, Class<S> responseT
     }
 
     /**
-     * Identifies the protocol role implemented by a compiled Source runtime.
+     * Identifies the protocol role implemented by a compiled Source worker.
      * <p>
      * The enum names are historical role names and do not identify the persistence {@link Provider} or {@link Source}
      * entity category. Both directions are selected and configured by a Source registration.
@@ -194,7 +194,7 @@ public record Capability<Q, S>(Key key, Class<Q> requestType, Class<S> responseT
     }
 
     /**
-     * Holds the immutable capabilities implemented by one profile or runtime provider.
+     * Holds the immutable capabilities implemented by one profile or Source worker.
      * <p>
      * Entries preserve declaration order and must have unique {@link Key} values. A manifest is internal compilation
      * metadata, not a protocol response or user-visible conformance claim by itself.

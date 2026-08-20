@@ -44,7 +44,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  * Applies shared issuer, audience, temporal, exact-claim, and optional replay policy to a verified JWT.
  * <p>
  * Protocol-specific claims remain owned by their protocol implementation. Expected validation refusals are returned as
- * rejected outcomes, while replay-store operational failures retain the failed outcome produced by ReplayGuard.
+ * rejected outcomes, while replay-cache operational failures retain the failed outcome produced by ReplayGuard.
  * </p>
  *
  * @author Kimi Liu
@@ -101,7 +101,7 @@ public final class JwtValidator {
      * @param requirements explicit common-claim requirements
      * @param context      current immutable authentication context
      * @param timeout      shared end-to-end operation budget
-     * @return stage containing the accepted JWT, expected rejection, or replay-store failure
+     * @return stage containing the accepted JWT, expected rejection, or replay-cache failure
      */
     public CompletionStage<Outcome<Jwt>> validate(
             final Jwt jwt,

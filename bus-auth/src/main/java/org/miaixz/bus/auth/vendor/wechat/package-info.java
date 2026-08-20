@@ -18,17 +18,17 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares six public WeChat and WeCom identity Source variants and their externally loaded settings.
+ * Declares six public WeChat and WeCom identity Source variants and their externally loaded options.
  * <p>
- * WeChatDefinition separates {@code open}, {@code mp}, {@code mini}, {@code ee}, {@code ee-qrcode}, and {@code ee-web}.
+ * WeChatManifest separates {@code open}, {@code mp}, {@code mini}, {@code ee}, {@code ee-qrcode}, and {@code ee-web}.
  * Open and Official Account are OAuth clients exposing redirect Source authentication and standard authorization only;
  * their token responses omit mandatory {@code token_type}, so token, refresh, and profile calls remain private. Mini
  * Program and the three WeCom flows are VENDOR_AUTH with Source authentication only. Every endpoint, HTTP method,
  * official field, envelope, and subject rule is variant-owned.
  * </p>
  * <p>
- * WeChatSourceSettings contains the common routing, App ID or Corp ID, Client Secret reference, variant callback and
- * scope, plus the closed selectors {@code loginType}, {@code agentId}, {@code language}, and {@code userType}. Browser
+ * WeChatOptions contains the common routing, App ID or Corp ID, Client Secret reference, variant callback and scope,
+ * plus the closed selectors {@code loginType}, {@code agentId}, {@code language}, and {@code userType}. Browser
  * variants require an exact callback; Mini Program prohibits callbacks and scopes. Open, Official Account, and ee-web
  * accept only their official identity scopes, while each WeCom selector is legal only for its owning variant.
  * </p>
