@@ -98,6 +98,16 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
+     * Returns the canonical Gson provider name used for configuration and discovery.
+     *
+     * @return {@code gson}
+     */
+    @Override
+    public String type() {
+        return "gson";
+    }
+
+    /**
      * Creates the standalone default Gson engine used when the application does not provide a configured Gson bean.
      *
      * @return Gson engine with Bus-compatible map and list adapters
@@ -145,16 +155,6 @@ public class GsonProvider extends AbstractJsonProvider {
                             return list;
                         })
                 .create();
-    }
-
-    /**
-     * Returns the canonical configuration name of this provider.
-     *
-     * @return {@code gson}
-     */
-    @Override
-    public String name() {
-        return "gson";
     }
 
     /**

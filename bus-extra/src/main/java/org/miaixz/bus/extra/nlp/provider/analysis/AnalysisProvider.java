@@ -64,6 +64,16 @@ public class AnalysisProvider implements NLPProvider {
     }
 
     /**
+     * Returns the stable generic Lucene analysis engine name used for named NLP provider selection.
+     *
+     * @return {@code analysis}
+     */
+    @Override
+    public String type() {
+        return "analysis";
+    }
+
+    /**
      * Performs word segmentation on the given text using the configured Lucene {@link Analyzer}. It creates a
      * {@link TokenStream} from the text and wraps it in an {@link AnalysisResult}.
      *

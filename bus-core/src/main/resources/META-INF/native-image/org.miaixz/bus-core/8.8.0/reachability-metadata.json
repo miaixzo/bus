@@ -12011,19 +12011,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Povider",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.lang.EnumValue$Probe",
       "methods": [
         {

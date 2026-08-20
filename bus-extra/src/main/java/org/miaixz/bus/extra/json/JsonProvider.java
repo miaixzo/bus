@@ -27,7 +27,6 @@ import java.util.Map;
 import org.miaixz.bus.core.Provider;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
@@ -38,14 +37,16 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public interface JsonProvider extends Provider {
+public interface JsonProvider extends Provider<String> {
 
     /**
-     * Returns the stable provider name used by configuration and diagnostics.
+     * Returns the stable, non-blank provider name used by configuration, discovery and diagnostics. Implementations
+     * should override this default with a short canonical name when they participate in named selection.
      *
-     * @return provider name
+     * @return fully qualified implementation class name by default
      */
-    default String name() {
+    @Override
+    default String type() {
         return getClass().getName();
     }
 
@@ -88,7 +89,7 @@ public interface JsonProvider extends Provider {
         if (type instanceof Class<?> clazz) {
             return (T) toPojo(json, clazz);
         }
-        throw new InternalException("JSON provider does not support generic type: " + name() + ", type=" + type);
+        throw new InternalException("JSON provider does not support generic type: " + type() + ", type=" + type);
     }
 
     /**
@@ -128,7 +129,7 @@ public interface JsonProvider extends Provider {
     default byte[] write(Object object, JsonWriteOptions options) {
         JsonWriteOptions resolved = options == null ? JsonWriteOptions.defaults() : options;
         if (!resolved.writeNulls() || resolved.hasPropertyFilter()) {
-            throw new InternalException("JSON provider does not support write options: " + name());
+            throw new InternalException("JSON provider does not support write options: " + type());
         }
         String json = resolved.dateFormat() == null ? toJsonString(object)
                 : toJsonString(object, resolved.dateFormat());
@@ -183,7 +184,7 @@ public interface JsonProvider extends Provider {
             throw new IllegalArgumentException("JSON maximum depth must be positive");
         }
         if (rejectDuplicateNames) {
-            throw new InternalException("JSON provider does not support duplicate member rejection: " + name());
+            throw new InternalException("JSON provider does not support duplicate member rejection: " + type());
         }
         final JsonValue value = readValue(json);
         validateDepth(value, 0, maximumDepth);
@@ -221,7 +222,7 @@ public interface JsonProvider extends Provider {
         if (maximumDepth <= 0) {
             throw new IllegalArgumentException("JSON maximum depth must be positive");
         }
-        throw new InternalException("JSON provider does not support raw member extraction: " + name());
+        throw new InternalException("JSON provider does not support raw member extraction: " + type());
     }
 
     /**
@@ -397,15 +398,5 @@ public interface JsonProvider extends Provider {
      * @return {@code true} if the string is a valid JSON, {@code false} otherwise.
      */
     boolean isJson(String json);
-
-    /**
-     * Returns the provider type.
-     *
-     * @return the provider type identifier
-     */
-    @Override
-    default Object type() {
-        return EnumValue.Povider.JSON;
-    }
 
 }

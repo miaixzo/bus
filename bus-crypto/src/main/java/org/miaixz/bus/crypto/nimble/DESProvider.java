@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.crypto.nimble;
 
+import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Provider;
@@ -37,6 +38,16 @@ public class DESProvider implements Provider {
      */
     public DESProvider() {
         // No initialization required.
+    }
+
+    /**
+     * Returns the stable DES algorithm name used to register this provider.
+     *
+     * @return {@link Algorithm#DES} algorithm value
+     */
+    @Override
+    public String type() {
+        return Algorithm.DES.getValue();
     }
 
     /**

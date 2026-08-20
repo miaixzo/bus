@@ -45,6 +45,16 @@ public class RC4Provider implements Provider {
     }
 
     /**
+     * Returns the stable RC4 algorithm name used to register this provider.
+     *
+     * @return {@link Algorithm#RC4} algorithm value
+     */
+    @Override
+    public String type() {
+        return Algorithm.RC4.getValue();
+    }
+
+    /**
      * Encrypts the given content using RC4 with the provided key.
      *
      * @param key     The encryption key as a string. It will be converted to bytes using the platform's default

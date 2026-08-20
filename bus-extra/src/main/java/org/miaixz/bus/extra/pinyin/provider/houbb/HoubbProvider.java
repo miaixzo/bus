@@ -60,6 +60,16 @@ public class HoubbProvider implements PinyinProvider {
     }
 
     /**
+     * Returns the stable Houbb provider name used for named Pinyin provider selection.
+     *
+     * @return {@code houbb}
+     */
+    @Override
+    public String type() {
+        return "houbb";
+    }
+
+    /**
      * Gets the pinyin of a single character. This method is designed to be overridden by subclasses for custom pinyin
      * conversion.
      * <p>

@@ -94,12 +94,12 @@ public class JacksonProvider extends AbstractJsonProvider {
     }
 
     /**
-     * Returns the canonical configuration name of this provider.
+     * Returns the canonical Jackson provider name used for configuration and discovery.
      *
      * @return {@code jackson}
      */
     @Override
-    public String name() {
+    public String type() {
         return "jackson";
     }
 

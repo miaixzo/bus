@@ -72,7 +72,7 @@ public class MethodProvider implements Provider {
      * @return The {@link StrategyMode#HOT_METHOD} enum value.
      */
     @Override
-    public StrategyMode get() {
+    public StrategyMode type() {
         return StrategyMode.HOT_METHOD;
     }
 

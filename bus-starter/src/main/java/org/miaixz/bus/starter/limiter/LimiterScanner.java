@@ -87,13 +87,14 @@ public class LimiterScanner implements InstantiationAwareBeanPostProcessor {
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         Class<?> clazz = Builder.getUserClass(bean.getClass());
-        if (!isInScope(clazz)) {
+        // Provider beans are infrastructure assembly inputs and must be registered regardless of the application
+        // package filter used for annotation scanning. Built-in providers live in framework packages.
+        if (Provider.class.isAssignableFrom(clazz)) {
+            StrategyManager.add((Provider) bean);
             return bean;
         }
 
-        // Register custom strategy providers.
-        if (Provider.class.isAssignableFrom(clazz)) {
-            StrategyManager.add((Provider) bean);
+        if (!isInScope(clazz)) {
             return bean;
         }
 

@@ -99,7 +99,7 @@ public class RequestProvider implements Provider {
      * @return The {@link StrategyMode#REQUEST_LIMIT} enum value.
      */
     @Override
-    public StrategyMode get() {
+    public StrategyMode type() {
         return StrategyMode.REQUEST_LIMIT;
     }
 

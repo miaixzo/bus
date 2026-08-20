@@ -22,7 +22,6 @@ package org.miaixz.bus.crypto;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.crypto.nimble.*;
@@ -47,53 +46,50 @@ public final class Registry {
     /**
      * Cache for cryptographic algorithm providers, mapping algorithm names to {@link Provider} instances.
      */
-    private static Map<String, Provider> ALGORITHM_CACHE = new ConcurrentHashMap<>();
+    private static final Map<String, Provider> ALGORITHM_CACHE = new ConcurrentHashMap<>();
 
     static {
-        register(Algorithm.AES.getValue(), new AESProvider());
-        register(Algorithm.DES.getValue(), new DESProvider());
-        register(Algorithm.RC4.getValue(), new RC4Provider());
-        register(Algorithm.RSA.getValue(), new RSAProvider());
-        register(Algorithm.SM2.getValue(), new SM2Provider());
-        register(Algorithm.SM4.getValue(), new SM4Provider());
+        register(new AESProvider());
+        register(new DESProvider());
+        register(new RC4Provider());
+        register(new RSAProvider());
+        register(new SM2Provider());
+        register(new SM4Provider());
     }
 
     /**
-     * Registers a cryptographic service provider with a given name. If a provider with the same name or the same class
-     * simple name is already registered, an {@link InternalException} is thrown.
+     * Registers a cryptographic service provider under the stable algorithm name returned by
+     * {@link Provider#type()}.
      *
-     * @param name   The name of the algorithm or component to register.
-     * @param object The {@link Provider} instance to register.
-     * @throws InternalException if a component with the same name or class simple name is already registered.
+     * @param provider The {@link Provider} instance to register.
+     * @throws IllegalArgumentException if the provider or its algorithm name is null or blank
+     * @throws InternalException        if another provider is already registered under the same algorithm name
      */
-    public static void register(String name, Provider object) {
+    public static void register(Provider provider) {
+        if (provider == null) {
+            throw new IllegalArgumentException("Crypto provider must not be null");
+        }
+        final String name = provider.type();
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Crypto provider and type must not be null or blank");
+        }
         Logger.debug(
                 true,
                 "Crypto",
                 "Crypto provider registration started: name={}, provider={}",
                 name,
-                object == null ? null : object.getClass().getSimpleName());
-        if (ALGORITHM_CACHE.containsKey(name)) {
+                provider.getClass().getSimpleName());
+        final Provider previous = ALGORITHM_CACHE.putIfAbsent(name, provider);
+        if (previous != null) {
             Logger.warn(false, "Crypto", "Crypto provider registration rejected: name={}, reason=duplicateName", name);
-            throw new InternalException("Repeat registration of components with the same name：" + name);
+            throw new InternalException("A crypto provider is already registered for algorithm: " + name);
         }
-        Class<?> clazz = object.getClass();
-        if (ALGORITHM_CACHE.containsKey(clazz.getSimpleName())) {
-            Logger.warn(
-                    false,
-                    "Crypto",
-                    "Crypto provider registration rejected: name={}, provider={}, reason=duplicateType",
-                    name,
-                    clazz.getSimpleName());
-            throw new InternalException("Repeat registration of components with the same name：" + clazz);
-        }
-        ALGORITHM_CACHE.putIfAbsent(name, object);
         Logger.debug(
                 false,
                 "Crypto",
                 "Crypto provider registered: name={}, provider={}, registeredCount={}",
                 name,
-                clazz.getSimpleName(),
+                provider.getClass().getSimpleName(),
                 ALGORITHM_CACHE.size());
     }
 
@@ -102,12 +98,15 @@ public final class Registry {
      *
      * @param name The name of the algorithm or component to retrieve.
      * @return The {@link Provider} instance associated with the given name.
-     * @throws IllegalArgumentException if no provider is found for the specified name.
+     * @throws IllegalArgumentException if the name is null or blank, or no provider is found for it
      */
     public static Provider require(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Crypto algorithm name must not be null or blank");
+        }
         Logger.debug(true, "Crypto", "Crypto provider lookup started: name={}", name);
-        Provider object = ALGORITHM_CACHE.get(name);
-        if (ObjectKit.isEmpty(object)) {
+        Provider provider = ALGORITHM_CACHE.get(name);
+        if (ObjectKit.isEmpty(provider)) {
             Logger.warn(false, "Crypto", "Crypto provider lookup failed: name={}", name);
             throw new IllegalArgumentException("None provider be found!, type:" + name);
         }
@@ -116,8 +115,8 @@ public final class Registry {
                 "Crypto",
                 "Crypto provider resolved: name={}, provider={}",
                 name,
-                object.getClass().getSimpleName());
-        return object;
+                provider.getClass().getSimpleName());
+        return provider;
     }
 
     /**
@@ -126,8 +125,8 @@ public final class Registry {
      * @param name The name of the algorithm or component to check.
      * @return {@code true} if a provider with the given name is registered, {@code false} otherwise.
      */
-    public boolean contains(String name) {
-        return ALGORITHM_CACHE.containsKey(name);
+    public static boolean contains(String name) {
+        return name != null && !name.isBlank() && ALGORITHM_CACHE.containsKey(name);
     }
 
 }

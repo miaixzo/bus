@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.validate.magic;
 
-import org.miaixz.bus.core.Provider;
-import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.validate.Context;
 
 /**
@@ -31,7 +29,7 @@ import org.miaixz.bus.validate.Context;
  * @author Kimi Liu
  */
 @FunctionalInterface
-public interface Matcher<T, K> extends Provider {
+public interface Matcher<T, K> {
 
     /**
      * Converts a {@link Validator} to a {@link Matcher}.
@@ -73,15 +71,5 @@ public interface Matcher<T, K> extends Provider {
      * @return {@code true} if the validation passes, {@code false} otherwise.
      */
     boolean on(T object, K annotation, Context context);
-
-    /**
-     * Returns the type of this provider.
-     *
-     * @return The provider type, which is {@link EnumValue.Povider#VALIDATE}.
-     */
-    @Override
-    default Object type() {
-        return EnumValue.Povider.VALIDATE;
-    }
 
 }

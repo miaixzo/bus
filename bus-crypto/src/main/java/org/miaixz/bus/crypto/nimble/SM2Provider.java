@@ -21,6 +21,7 @@ package org.miaixz.bus.crypto.nimble;
 
 import org.bouncycastle.crypto.engines.SM2Engine;
 
+import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -40,6 +41,16 @@ public class SM2Provider implements Provider {
      */
     public SM2Provider() {
         // No initialization required.
+    }
+
+    /**
+     * Returns the stable SM2 algorithm name used to register this provider.
+     *
+     * @return {@link Algorithm#SM2} algorithm value
+     */
+    @Override
+    public String type() {
+        return Algorithm.SM2.getValue();
     }
 
     /**

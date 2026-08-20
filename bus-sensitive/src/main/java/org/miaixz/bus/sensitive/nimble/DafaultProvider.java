@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.sensitive.nimble;
 
+import org.miaixz.bus.core.lang.EnumValue;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -38,6 +40,16 @@ public class DafaultProvider extends AbstractProvider {
      */
     public DafaultProvider() {
         // No initialization required.
+    }
+
+    /**
+     * Returns the masking strategy used to register this default provider.
+     *
+     * @return {@link EnumValue.Masking#DEFAUL}
+     */
+    @Override
+    public EnumValue.Masking type() {
+        return EnumValue.Masking.DEFAUL;
     }
 
     /**

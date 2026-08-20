@@ -68,12 +68,6 @@ public class Holder implements org.miaixz.bus.core.Holder {
      * @return The {@link java.security.Provider} instance, or {@code null} if not using a custom provider.
      */
     public static java.security.Provider getProvider() {
-        Logger.debug(
-                false,
-                "Crypto",
-                "Crypto provider resolved: enabled={}, provider={}",
-                useCustomProvider,
-                useCustomProvider && provider != null ? provider.getName() : null);
         return useCustomProvider ? provider : null;
     }
 
