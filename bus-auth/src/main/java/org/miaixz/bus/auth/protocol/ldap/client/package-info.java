@@ -21,9 +21,9 @@
  * Implements the LDAP version 3 client and generic Source direction.
  * <p>
  * {@link org.miaixz.bus.auth.protocol.ldap.client.LdapClient} owns one bounded LDAP connection lifecycle and correlates
- * encoded requests with response messages. LdapIdentityResolver performs the configured bind and search sequence and
- * maps one verified directory entry to an external identity. LdapSourceProfile and LdapSourceSettings declare the exact
- * host, port, transport security, bind identity, search base, filter, attributes, subject key, and Source capability.
+ * encoded requests with response messages. LdapIdentityParser performs the configured bind and search sequence and maps
+ * one verified directory entry to an external identity. LdapClientScheme and LdapClientOptions declare the exact host,
+ * port, transport security, bind identity, search base, filter, attributes, subject key, and Source capability.
  * </p>
  * <p>
  * This package consumes LDAP models and codecs, Fabric transport and TLS policy, resolvers, SecretLease,

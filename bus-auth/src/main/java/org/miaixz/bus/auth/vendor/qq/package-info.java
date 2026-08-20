@@ -18,18 +18,18 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares QQ Open Platform and QQ Mini Program Vendor definitions and externally loaded settings.
+ * Declares QQ Open Platform and QQ Mini Program Vendor manifests and externally loaded options.
  * <p>
- * QqDefinition separates {@code qq/open} from {@code qq/mini-program}. The Open Platform variant is an OAuth client
- * with fixed authorization, token, refresh, OpenID, and profile endpoints, but publishes only redirect Source
- * authentication and standard OAuth authorization because its historical text token response omits mandatory
- * {@code token_type}. Comma scope, query Client Secret, empty form, text token, JSONP OpenID, and query profile
- * behavior remain private deviations. The Mini Program variant is proprietary VENDOR_AUTH and publishes only direct
- * Source authentication through its fixed {@code jscode2session} endpoint.
+ * QqManifest separates {@code qq/open} from {@code qq/mini-program}. The Open Platform variant is an OAuth client with
+ * fixed authorization, token, refresh, OpenID, and profile endpoints, but publishes only redirect Source authentication
+ * and standard OAuth authorization because its historical text token response omits mandatory {@code token_type}. Comma
+ * scope, query Client Secret, empty form, text token, JSONP OpenID, and query profile behavior remain private
+ * deviations. The Mini Program variant is proprietary VENDOR_AUTH and publishes only direct Source authentication
+ * through its fixed {@code jscode2session} endpoint.
  * </p>
  * <p>
- * QqSourceSettings carries shared routing, App ID, Client Secret reference, and variant-specific callback and scope
- * values. Open requires an exact registered HTTP or HTTPS callback and a unique ordered scope list containing
+ * QqOptions carries shared routing, App ID, Client Secret reference, and variant-specific callback and scope values.
+ * Open requires an exact registered HTTP or HTTPS callback and a unique ordered scope list containing
  * {@code get_user_info} when explicit; it may select verified UnionID as subject. Mini Program prohibits callback,
  * scopes, and UnionID preference. No endpoint, token parser, JSONP wrapper, replay control, session-key model, or
  * platform response record is externally configurable.

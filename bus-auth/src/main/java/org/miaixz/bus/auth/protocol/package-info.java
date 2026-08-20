@@ -21,9 +21,9 @@
  * Defines formal protocol conformance metadata and contains only formal authentication protocol subpackages.
  * <p>
  * {@link org.miaixz.bus.auth.protocol.Conformance} binds an exact bus-core protocol identifier and version to immutable
- * normative citations and a precise implementation statement. OAuth 1.0, OAuth 2.x, OpenID Connect, SAML, SCIM, LDAP,
- * and RADIUS keep their standard wire models, codecs, client or server roles, security logic, and internal runtime
- * assembly in dedicated child packages.
+ * normative citations and a precise implementation statement. OAuth 2.x, OpenID Connect, SAML, SCIM, LDAP, and RADIUS
+ * keep their standard wire models, codecs, client or server roles, security logic, and runtime assembly in dedicated
+ * child packages.
  * </p>
  * <p>
  * Profiles and Vendor definitions reference Conformance only for behavior actually implemented by the matching formal

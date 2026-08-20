@@ -20,16 +20,16 @@
 /**
  * Declares the Figma OAuth Source variant.
  * <p>
- * FigmaDefinition exposes {@code figma/default} with fixed commercial authorization, token, refresh, and current-user
+ * FigmaManifest exposes {@code figma/default} with fixed commercial authorization, token, refresh, and current-user
  * endpoints. It requires CLIENT_SECRET with HTTP Basic token authentication, requires S256 PKCE, defaults to
  * {@code current_user:read}, and publishes Source authentication plus the standard OAuth authorization operation. The
  * platform token identity field and incompletely registered token error wire remain explicit deviations.
  * </p>
  * <p>
- * FigmaSourceSettings contains only routing, client, secret-reference, exact callback, and registered scope data.
- * Applications cannot configure government hosts, legacy refresh endpoints, token authentication, PKCE policy, private
- * response records, error assumptions, or token and refresh capabilities. The callback is an exact registered HTTPS URI
- * and scopes are unique and must include {@code current_user:read}.
+ * FigmaOptions contains only routing, client, secret-reference, exact callback, and registered scope data. Applications
+ * cannot configure government hosts, legacy refresh endpoints, token authentication, PKCE policy, private response
+ * records, error assumptions, or token and refresh capabilities. The callback is an exact registered HTTPS URI and
+ * scopes are unique and must include {@code current_user:read}.
  * </p>
  * <p>
  * Source authentication requires the profile's non-blank string {@code id} to match the token response's

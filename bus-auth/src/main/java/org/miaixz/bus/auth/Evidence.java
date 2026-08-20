@@ -27,9 +27,9 @@ import org.miaixz.bus.extra.json.JsonValue;
 /**
  * Represents one verified piece of authentication evidence and its assurance strength.
  * <p>
- * Evidence is created only after the responsible protocol, Vendor adapter, resolver, or identity service validates the
- * source value. It records a safe derived claim and verification provenance, never a raw password, token, assertion,
- * private platform response, or other credential material.
+ * Evidence is created only after the responsible protocol, Vendor adapter, loader/parser chain, or identity worker
+ * validates the source value. It records a safe derived claim and verification provenance, never a raw password, token,
+ * assertion, private platform response, or other credential material.
  * </p>
  *
  * @param type     verified evidence category

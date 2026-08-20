@@ -20,11 +20,8 @@
 package org.miaixz.bus.auth.protocol.ldap;
 
 import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.protocol.ldap.client.LdapSourceSettings;
-import org.miaixz.bus.auth.protocol.ldap.internal.LdapProviderDriver;
-import org.miaixz.bus.auth.protocol.ldap.internal.LdapSourceDriver;
-import org.miaixz.bus.auth.protocol.ldap.server.LdapProviderSettings;
-import org.miaixz.bus.auth.provider.ProviderDriver;
+import org.miaixz.bus.auth.protocol.ldap.client.LdapClientOptions;
+import org.miaixz.bus.auth.protocol.ldap.server.LdapServerOptions;
 import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.core.net.Protocol;
 
@@ -406,7 +403,7 @@ public final class Ldap {
      *
      * @return new LDAP Provider driver
      */
-    public static ProviderDriver<LdapProviderSettings> provider() {
+    public static SourceDriver<LdapServerOptions> provider() {
         return new LdapProviderDriver();
     }
 
@@ -415,7 +412,7 @@ public final class Ldap {
      *
      * @return new LDAP Source driver
      */
-    public static SourceDriver<LdapSourceSettings> source() {
+    public static SourceDriver<LdapClientOptions> source() {
         return new LdapSourceDriver();
     }
 

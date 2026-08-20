@@ -30,7 +30,7 @@ import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationServerMetadata;
 import org.miaixz.bus.auth.protocol.oauth2.ResponseType;
-import org.miaixz.bus.auth.protocol.oauth2.server.OAuth2ProviderSettings;
+import org.miaixz.bus.auth.protocol.oauth2.server.OAuth2ServerOptions;
 import org.miaixz.bus.auth.protocol.oidc.ClaimType;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdProviderMetadata;
@@ -41,10 +41,10 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Produces OpenID Provider Metadata exclusively from one frozen server-role Source settings object.
+ * Produces OpenID Provider Metadata exclusively from one frozen server-role Source options object.
  * <p>
- * The service performs no registry, resolver, store, or network access. It advertises only the Authorization Code Flow,
- * endpoint operations, client authentication methods, and extensions enabled in the compiled Source runtime.
+ * The service performs no Registry, loader, parser, cache, or network access. It advertises only the Authorization Code
+ * Flow, endpoint operations, client authentication methods, and extensions enabled in the compiled Source runtime.
  * </p>
  *
  * @author Kimi Liu
@@ -52,27 +52,27 @@ import org.miaixz.bus.extra.json.JsonValue;
 public final class DiscoveryService {
 
     /**
-     * Frozen OpenID Provider settings used as the only metadata source.
+     * Frozen OpenID Provider options used as the only metadata source.
      */
-    private final OpenIdProviderSettings settings;
+    private final OpenIdServerOptions options;
 
     /**
      * Creates a metadata service for one compiled OpenID Provider.
      *
-     * @param settings validated and frozen OpenID Provider settings
-     * @throws IllegalArgumentException if {@code settings} is {@code null}
+     * @param options validated and frozen OpenID Provider options
+     * @throws IllegalArgumentException if {@code options} is {@code null}
      */
-    public DiscoveryService(final OpenIdProviderSettings settings) {
-        this.settings = Assert.notNull(settings, "OpenID Connect discovery settings must not be null");
+    public DiscoveryService(final OpenIdServerOptions options) {
+        this.options = Assert.notNull(options, "OpenID Connect discovery options must not be null");
     }
 
     /**
-     * Extracts a required endpoint URL from validated settings.
+     * Extracts a required endpoint URL from validated options.
      *
      * @param endpoint endpoint container
      * @param label    safe endpoint label
      * @return exact configured URL
-     * @throws IllegalStateException if compiled settings violate their required endpoint invariant
+     * @throws IllegalStateException if compiled options violate their required endpoint invariant
      */
     private static String requiredUrl(final Optional<Endpoint> endpoint, final String label) {
         final Endpoint value = endpoint.getOrNull();
@@ -111,11 +111,11 @@ public final class DiscoveryService {
                             new Outcome.Failure(ErrorCode._408, "OpenID Connect discovery has no remaining time budget",
                                     new JsonValue.ObjectValue(Map.of()))));
         }
-        final OAuth2ProviderSettings oauth = settings.oauth2Settings();
-        final AuthorizationServerMetadata authorizationServer = new AuthorizationServerMetadata(settings.issuer(),
+        final OAuth2ServerOptions oauth = options.oauth2Options();
+        final AuthorizationServerMetadata authorizationServer = new AuthorizationServerMetadata(options.issuer(),
                 Optional.of(requiredUrl(oauth.authorizationEndpoint(), "authorization")),
                 Optional.of(requiredUrl(oauth.tokenEndpoint(), "token")),
-                Optional.of(requiredUrl(settings.jwkSetEndpoint(), "JWK Set")),
+                Optional.of(requiredUrl(options.jwkSetEndpoint(), "JWK Set")),
                 oauth.scopesSupported().stream().sorted().toList(), List.of(ResponseType.CODE),
                 List.of(OpenIdConnect.ResponseModes.QUERY), oauth.grantTypesSupported().stream().toList(),
                 oauth.tokenEndpointAuthMethodsSupported().stream().toList(), List.of(), Optional.empty(), List.of(),
@@ -125,11 +125,11 @@ public final class DiscoveryService {
                 optionalUrl(oauth.deviceAuthorizationEndpoint()), Optional.of(Boolean.TRUE), List.of(),
                 new JsonValue.ObjectValue(Map.of()));
         final OpenIdProviderMetadata metadata = new OpenIdProviderMetadata(authorizationServer,
-                optionalUrl(settings.userInfoEndpoint()), List.of(), List.copyOf(settings.subjectTypesSupported()),
-                List.of(settings.idTokenSigningAlgorithm()), List.of(), List.of(), List.of(), List.of(), List.of(),
-                List.of(), List.of(ClaimType.NORMAL), List.copyOf(settings.claimsSupported()), List.of(),
+                optionalUrl(options.userInfoEndpoint()), List.of(), List.copyOf(options.subjectTypesSupported()),
+                List.of(options.idTokenSigningAlgorithm()), List.of(), List.of(), List.of(), List.of(), List.of(),
+                List.of(), List.of(ClaimType.NORMAL), List.copyOf(options.claimsSupported()), List.of(),
                 Optional.of(Boolean.TRUE), Optional.of(Boolean.FALSE), Optional.of(Boolean.FALSE), Optional.empty(),
-                optionalUrl(settings.endSessionEndpoint()), new JsonValue.ObjectValue(Map.of()));
+                optionalUrl(options.endSessionEndpoint()), new JsonValue.ObjectValue(Map.of()));
         return CompletableFuture.completedFuture(Outcome.succeeded(metadata));
     }
 

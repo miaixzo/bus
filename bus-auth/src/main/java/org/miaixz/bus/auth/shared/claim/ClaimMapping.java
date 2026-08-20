@@ -65,7 +65,7 @@ public record ClaimMapping(Source source, String sourceName, String targetName, 
      */
     public enum Source {
         /**
-         * Immutable Subject or AttributeResolver attribute JSON member.
+         * Immutable Subject or parsed attribute JSON member.
          */
         SUBJECT_ATTRIBUTE,
         /**

@@ -20,17 +20,16 @@
 /**
  * Declares Microsoft global-cloud and China-cloud OAuth Source variants.
  * <p>
- * MicrosoftDefinition exposes {@code microsoft/global} and {@code microsoft/china}. Each variant owns constrained
- * tenant templates for standard authorization, token, and refresh operations plus its fixed Microsoft Graph
- * current-user endpoint. Both require CLIENT_SECRET form authentication, prohibit PKCE, default to compatibility
- * identity scopes plus {@code User.Read}, and publish Source authentication with standard OAuth authorization and token
- * operations.
+ * MicrosoftManifest exposes {@code microsoft/global} and {@code microsoft/china}. Each variant owns constrained tenant
+ * templates for standard authorization, token, and refresh operations plus its fixed Microsoft Graph current-user
+ * endpoint. Both require CLIENT_SECRET form authentication, prohibit PKCE, default to compatibility identity scopes
+ * plus {@code User.Read}, and publish Source authentication with standard OAuth authorization and token operations.
  * </p>
  * <p>
- * MicrosoftSourceSettings contains routing, canonical Application ID, secret reference, exact registered callback,
- * unique delegated scopes, and a validated tenant alias, UUID, or verified domain. It cannot accept arbitrary hosts,
- * complete URLs, endpoint overrides, cloud mixing, PKCE, Graph models, or a separate refresh operation. China rejects
- * the unsupported consumer audience.
+ * MicrosoftOptions contains routing, canonical Application ID, secret reference, exact registered callback, unique
+ * delegated scopes, and a validated tenant alias, UUID, or verified domain. It cannot accept arbitrary hosts, complete
+ * URLs, endpoint overrides, cloud mixing, PKCE, Graph models, or a separate refresh operation. China rejects the
+ * unsupported consumer audience.
  * </p>
  * <p>
  * Source identity accepts only the non-blank Microsoft Graph {@code id} as its subject. User principal name, mail,

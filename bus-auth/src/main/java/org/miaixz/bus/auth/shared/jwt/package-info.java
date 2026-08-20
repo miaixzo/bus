@@ -29,7 +29,7 @@
  * </p>
  * <p>
  * Formal protocols and shared DPoP compose these operations under their own token purpose and wire contract. This
- * package depends on JOSE, provider-neutral JSON, the Budget clock, and key resolvers; it is not a Provider, Source,
+ * package depends on JOSE, provider-neutral JSON, the Budget clock, and key loaders; it is not a Provider, Source,
  * protocol dispatcher, token endpoint, session service, or remote validation client.
  * </p>
  * <p>

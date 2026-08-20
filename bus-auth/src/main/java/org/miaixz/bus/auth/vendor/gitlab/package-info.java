@@ -20,14 +20,14 @@
 /**
  * Declares the GitLab.com OAuth Source variant.
  * <p>
- * GitLabDefinition fixes {@code gitlab/default}, the authorization, token, refresh, revocation, and current-user
+ * GitLabManifest fixes {@code gitlab/default}, the authorization, token, refresh, revocation, and current-user
  * endpoints, CLIENT_SECRET form authentication, required S256 PKCE, and the minimum {@code read_user} scope. It
  * publishes Source authentication and the standard OAuth authorization, token, and revocation operations. The refresh
  * {@code redirect_uri}, {@code created_at} extension, and empty-JSON revocation success are registered wire deviations.
  * </p>
  * <p>
- * GitLabSourceSettings contains routing, client, secret-reference, exact HTTPS callback, and unique scopes beginning
- * with {@code read_user}. It cannot configure a self-managed origin, switch protocols because OIDC scopes are selected,
+ * GitLabOptions contains routing, client, secret-reference, exact HTTPS callback, and unique scopes beginning with
+ * {@code read_user}. It cannot configure a self-managed origin, switch protocols because OIDC scopes are selected,
  * disable PKCE, override endpoints, expose private REST records, or add a separate refresh operation.
  * </p>
  * <p>

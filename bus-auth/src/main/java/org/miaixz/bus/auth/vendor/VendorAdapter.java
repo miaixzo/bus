@@ -25,14 +25,14 @@ import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
 
 /**
- * Defines the executable contract implemented by one compiled third-party platform variant.
+ * Defines the executable contract implemented by one compiled third-party platform {@link VariantManifest.Variant}.
  * <p>
- * Implementations expose only capabilities declared by their immutable variant definition. Standard OAuth and OpenID
- * Connect operations retain the request and response types defined by their protocol packages; this contract does not
- * introduce replacement token, callback, refresh, revocation, or user-information operations.
+ * An adapter executes capabilities only. It does not own platform metadata, variant routing, deployment options,
+ * factory registration, or Source compilation. Standard OAuth and OpenID Connect operations retain the request and
+ * response types defined by their protocol packages; this contract does not introduce replacement protocol models.
  * </p>
  *
  * @author Kimi Liu
@@ -64,31 +64,31 @@ public interface VendorAdapter {
             Timeout.Budget timeout);
 
     /**
-     * Creates the exact adapter paired with one platform variant during immutable Registry compilation.
+     * Creates the exact adapter paired with one platform variant during immutable Source compilation.
      *
-     * @param <S> exact platform settings type accepted by the paired Vendor definition
+     * @param <O> exact deployment options type accepted by the paired {@link VariantManifest}
      * @author Kimi Liu
      */
     @FunctionalInterface
-    public interface Factory<S extends VendorSettings> {
+    public interface Factory<O extends VendorOptions<?>> {
 
         /**
          * Creates one Source-isolated platform adapter from validated immutable inputs.
          *
-         * @param namespaceId       namespace identifier copied from the Source registration
-         * @param sourceId          Source identifier copied from the Source registration
-         * @param vendorDefinition  exact Vendor definition
-         * @param variantDefinition exact selected platform variant definition
-         * @param settings          decoded immutable platform settings
-         * @param services          complete externally supplied runtime dependency set
-         * @return non-null adapter whose manifest equals the definition manifest
+         * @param namespaceId namespace identifier copied from the Source registration
+         * @param sourceId    Source identifier copied from the Source registration
+         * @param manifest    exact platform manifest
+         * @param variant     exact variant selected from that manifest
+         * @param options     validated immutable deployment options
+         * @param services    complete externally supplied runtime dependency set
+         * @return non-null adapter whose capability manifest equals the selected variant's capability manifest
          */
         VendorAdapter create(
                 String namespaceId,
                 String sourceId,
-                VendorDefinition<S> vendorDefinition,
-                VendorDefinition.Definition variantDefinition,
-                S settings,
+                VariantManifest<O> manifest,
+                VariantManifest.Variant variant,
+                O options,
                 ExecutionServices services);
 
     }

@@ -30,7 +30,7 @@ import org.miaixz.bus.core.basic.entity.Tracer;
  * <p>
  * A provider belongs to exactly one {@link Library} through {@link #library_id} and groups one or more authentication
  * {@link Source Sources}. It stores only provider-level presentation, selection, and management configuration; protocol
- * selection and protocol settings belong exclusively to each Source.
+ * selection and protocol options belong exclusively to each Source.
  * </p>
  * <p>
  * This mutable persistence model is intended for external projects to extend and map to their storage model. It has no

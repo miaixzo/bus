@@ -45,9 +45,9 @@ public final class UnbindService {
     private final String providerId;
 
     /**
-     * Frozen Provider settings retained for a uniform service construction contract.
+     * Frozen Provider options retained for a uniform service construction contract.
      */
-    private final LdapProviderSettings settings;
+    private final LdapServerOptions options;
 
     /**
      * External connection-state and directory implementation.
@@ -58,13 +58,13 @@ public final class UnbindService {
      * Creates an Unbind service for one compiled LDAP Provider.
      *
      * @param providerId compiled server-role Source identifier
-     * @param settings   validated LDAP Provider settings
+     * @param options    validated LDAP Provider options
      * @param store      externally implemented directory store
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public UnbindService(final String providerId, final LdapProviderSettings settings, final DirectoryStore store) {
+    public UnbindService(final String providerId, final LdapServerOptions options, final DirectoryStore store) {
         this.providerId = Assert.notBlank(providerId, "LDAP Unbind Provider id must not be blank");
-        this.settings = Assert.notNull(settings, "LDAP Unbind Provider settings must not be null");
+        this.options = Assert.notNull(options, "LDAP Unbind Provider options must not be null");
         this.store = Assert.notNull(store, "LDAP Unbind directory store must not be null");
     }
 

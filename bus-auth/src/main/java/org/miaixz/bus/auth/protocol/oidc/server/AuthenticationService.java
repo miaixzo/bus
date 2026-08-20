@@ -25,10 +25,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.cache.AuthorizationCodeStore;
+import org.miaixz.bus.auth.cache.AuthorizationCodeCache;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationResponse;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2ErrorCode;
-import org.miaixz.bus.auth.protocol.oauth2.internal.AuthorizationCodeIssuer;
+import org.miaixz.bus.auth.protocol.oauth2.grant.AuthorizationCodeIssuer;
 import org.miaixz.bus.auth.protocol.oidc.AuthenticationRequest;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
@@ -251,7 +251,7 @@ public final class AuthenticationService {
                                     "OpenID Connect essential authentication claims cannot be satisfied")));
         }
 
-        final AuthorizationCodeStore.OpenIdBinding binding = new AuthorizationCodeStore.OpenIdBinding(request.nonce(),
+        final AuthorizationCodeCache.OpenIdBinding binding = new AuthorizationCodeCache.OpenIdBinding(request.nonce(),
                 session.issuedAt(), authentication.authenticationContextClass(), authentication.authenticationMethods(),
                 session.key(), request.claims());
         return issuer.authorize(

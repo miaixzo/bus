@@ -67,9 +67,9 @@ public final class SamlServiceProvider {
     private final RedirectBindingCodec redirectBindingCodec;
 
     /**
-     * Validated deployment and security settings for this service provider.
+     * Validated deployment and security options for this service provider.
      */
-    private final SamlSourceSettings settings;
+    private final SamlClientOptions options;
 
     /**
      * Creates a SAML service provider from its four narrowly scoped collaborators.
@@ -77,18 +77,18 @@ public final class SamlServiceProvider {
      * @param metadataClient           trusted identity-provider metadata client
      * @param assertionConsumerService validated assertion consumer service
      * @param redirectBindingCodec     HTTP-Redirect request codec
-     * @param settings                 validated service-provider settings
+     * @param options                  validated service-provider options
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
     public SamlServiceProvider(final MetadataClient metadataClient,
             final AssertionConsumerService assertionConsumerService, final RedirectBindingCodec redirectBindingCodec,
-            final SamlSourceSettings settings) {
+            final SamlClientOptions options) {
         this.metadataClient = Assert.notNull(metadataClient, "SAML Metadata client must not be null");
         this.assertionConsumerService = Assert
                 .notNull(assertionConsumerService, "SAML Assertion Consumer Service must not be null");
         this.redirectBindingCodec = Assert
                 .notNull(redirectBindingCodec, "SAML Redirect Binding codec must not be null");
-        this.settings = Assert.notNull(settings, "SAML Source settings must not be null");
+        this.options = Assert.notNull(options, "SAML Source options must not be null");
     }
 
     /**
@@ -165,12 +165,12 @@ public final class SamlServiceProvider {
             return completed(Outcome.failed(timeoutFailure("SAML Single Sign-On initiation")));
         }
         return redirectBindingCodec.encode(
-                settings.singleSignOnServiceEndpoint(),
+                options.singleSignOnServiceEndpoint(),
                 request,
                 relayState,
-                settings.signAuthnRequests(),
-                settings.signingKeyId(),
-                settings.signatureAlgorithm(),
+                options.signAuthnRequests(),
+                options.signingKeyId(),
+                options.signatureAlgorithm(),
                 context,
                 timeout);
     }
@@ -211,7 +211,7 @@ public final class SamlServiceProvider {
         if (timeout.expired()) {
             return completed(Outcome.failed(timeoutFailure("SAML Single Logout initiation")));
         }
-        final var endpoint = settings.singleLogoutServiceEndpoint().getOrNull();
+        final var endpoint = options.singleLogoutServiceEndpoint().getOrNull();
         if (endpoint == null) {
             return completed(
                     Outcome.rejected(
@@ -223,9 +223,9 @@ public final class SamlServiceProvider {
                 endpoint,
                 request,
                 relayState,
-                settings.signLogoutRequests(),
-                settings.signingKeyId(),
-                settings.signatureAlgorithm(),
+                options.signLogoutRequests(),
+                options.signingKeyId(),
+                options.signatureAlgorithm(),
                 context,
                 timeout);
     }

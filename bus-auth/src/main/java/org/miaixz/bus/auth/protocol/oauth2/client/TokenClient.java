@@ -37,7 +37,7 @@ import org.miaixz.bus.auth.protocol.oauth2.TokenEndpointResponse;
 import org.miaixz.bus.auth.protocol.oauth2.TokenRequest;
 import org.miaixz.bus.auth.protocol.oauth2.codec.TokenRequestEncoder;
 import org.miaixz.bus.auth.protocol.oauth2.codec.TokenResponseDecoder;
-import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -61,7 +61,7 @@ public final class TokenClient {
     /**
      * Validated client registration and selected client authentication method.
      */
-    private final OAuth2ClientSettings settings;
+    private final OAuth2ClientOptions options;
 
     /**
      * Caller-owned execution services and Fabric context.
@@ -86,16 +86,16 @@ public final class TokenClient {
     /**
      * Creates a token client for one compiled OAuth 2.x Source.
      *
-     * @param settings        validated OAuth 2.x client settings
+     * @param options         validated OAuth 2.x client options
      * @param services        externally owned runtime dependencies
      * @param requestEncoder  standard token request encoder
      * @param responseDecoder standard token response decoder
      * @throws IllegalArgumentException if a collaborator is {@code null} or no token endpoint is configured
      */
-    public TokenClient(final OAuth2ClientSettings settings, final ExecutionServices services,
+    public TokenClient(final OAuth2ClientOptions options, final ExecutionServices services,
             final TokenRequestEncoder requestEncoder, final TokenResponseDecoder responseDecoder) {
-        this.settings = Assert.notNull(settings, "OAuth 2.x client settings must not be null");
-        Assert.notNull(settings.tokenEndpoint().getOrNull(), "OAuth 2.x token endpoint must be configured");
+        this.options = Assert.notNull(options, "OAuth 2.x client options must not be null");
+        Assert.notNull(options.tokenEndpoint().getOrNull(), "OAuth 2.x token endpoint must be configured");
         this.services = Assert.notNull(services, "OAuth 2.x execution services must not be null");
         this.requestEncoder = Assert.notNull(requestEncoder, "OAuth 2.x token request encoder must not be null");
         this.responseDecoder = Assert.notNull(responseDecoder, "OAuth 2.x token response decoder must not be null");
@@ -171,10 +171,13 @@ public final class TokenClient {
         if (timeout.expired()) {
             return completed(Outcome.failed(failure(ErrorCode._408, "OAuth 2.x token request has no time budget")));
         }
-        if (Endpoint.Authentication.NONE.equals(settings.clientAuthenticationMethod())) {
+        if (Endpoint.Authentication.NONE.equals(options.clientAuthenticationMethod())) {
             return execute(request, null, timeout);
         }
-        return services.secretResolver().resolve(settings.clientCredential().getOrNull(), context, timeout)
+        return org.miaixz.bus.auth.runtime.LoadResult
+                .parse(
+                        services.secretLoader().load(options.clientCredential().getOrNull(), context, timeout),
+                        loaded -> services.secretParser().parse(options.clientCredential().getOrNull(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> execute(request, success.value(), timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
@@ -203,16 +206,16 @@ public final class TokenClient {
                 }
                 final List<Parameter> parameters = authenticated(requestEncoder.encode(request), secret);
                 body = formCodec.encode(parameters);
-                final var endpoint = settings.tokenEndpoint().getOrNull();
+                final var endpoint = options.tokenEndpoint().getOrNull();
                 final var builder = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
                         .method(Http.Method.POST).timeout(timeout.forFabric())
                         .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
                         .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE);
-                if (Endpoint.Authentication.CLIENT_SECRET_BASIC.equals(settings.clientAuthenticationMethod())) {
+                if (Endpoint.Authentication.CLIENT_SECRET_BASIC.equals(options.clientAuthenticationMethod())) {
                     builder.header(
                             Http.Header.AUTHORIZATION,
                             HttpAuth.basic(
-                                    formComponent(settings.clientId()),
+                                    formComponent(options.clientId()),
                                     formComponent(new String(secret.material()))).value());
                 }
                 return decoded(responseDecoder.decode(builder.execute()));
@@ -231,7 +234,7 @@ public final class TokenClient {
     }
 
     /**
-     * Adds exactly the client authentication parameters selected by the Source settings.
+     * Adds exactly the client authentication parameters selected by the Source options.
      *
      * @param encoded standard grant parameters
      * @param secret  optional client-secret lease
@@ -240,10 +243,10 @@ public final class TokenClient {
     private List<Parameter> authenticated(final List<Parameter> encoded, final SecretLease secret) {
         final List<Parameter> parameters = new ArrayList<>(
                 Assert.notNull(encoded, "OAuth 2.x encoded token parameters must not be null"));
-        if (Endpoint.Authentication.NONE.equals(settings.clientAuthenticationMethod())) {
-            parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, settings.clientId()));
-        } else if (Endpoint.Authentication.CLIENT_SECRET_POST.equals(settings.clientAuthenticationMethod())) {
-            parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, settings.clientId()));
+        if (Endpoint.Authentication.NONE.equals(options.clientAuthenticationMethod())) {
+            parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()));
+        } else if (Endpoint.Authentication.CLIENT_SECRET_POST.equals(options.clientAuthenticationMethod())) {
+            parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()));
             parameters.add(new Parameter(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())));
         }
         return List.copyOf(parameters);

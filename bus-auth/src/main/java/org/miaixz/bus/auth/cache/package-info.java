@@ -18,23 +18,21 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines atomic storage ports for one-time and lifecycle-bound authentication state.
+ * Defines typed bus-cache wrappers for one-time and lifecycle-bound authentication state.
  * <p>
- * {@link org.miaixz.bus.auth.cache.AtomicStore} narrows {@link org.miaixz.bus.cache.CacheX} to mandatory linearizable
- * create, get, take, replace, and delete operations. Purpose-specific ports separate authorization state, nonce,
- * authorization code, device code, access token, refresh token, session, and replay records; immutable
- * {@link org.miaixz.bus.auth.cache.ExpiringValue} values retain framework-visible expiry without defining a backend.
+ * Purpose-specific caches separate authorization state, nonce, authorization code, device code, access token, refresh
+ * token, session, and replay records. Each cache adds only its fixed key namespace and exact immutable value type
+ * before delegating create, get, take, replace, and delete to {@link org.miaixz.bus.cache.CacheX}. Immutable
+ * {@link org.miaixz.bus.auth.cache.ExpiringValue} values retain protocol-visible expiry without defining a backend.
  * </p>
  * <p>
- * Protocol, Vendor, identity, and guard code depend on these narrow ports. External projects adapt a bus-cache backend
- * through ExecutionServices; this package contains no in-memory, database, distributed-cache, or persistence
- * implementation and does not call Registry or protocol services.
+ * Protocol, Vendor, identity, and guard code call these wrappers. The runtime supplies one bus-cache backend; this
+ * package contains no in-memory, database, distributed-cache, serialization, connection, or persistence implementation
+ * and does not call Registry or protocol services.
  * </p>
  * <p>
- * Backends must perform create-if-absent, consume, and compare-and-replace at one linearization point and enforce the
- * supplied lifetime. Keys are isolated by namespace, registration, protocol, and purpose before storage. Implementors
- * must not emulate atomic operations with multiple calls, extend expired state, log keys or values, or retain token,
- * verifier, code, nonce, and session material beyond the requested lifecycle.
+ * The selected bus-cache backend must support the atomic operations used by authentication. bus-auth never emulates an
+ * unsupported atomic operation with multiple cache calls and never selects or manages a concrete cache backend.
  * </p>
  *
  * @author Kimi Liu

@@ -27,8 +27,8 @@ import org.miaixz.bus.core.lang.Optional;
 /**
  * Describes one safe, resource-addressable issue that rejected a Registry snapshot.
  * <p>
- * The value uses shared Bus errors and contains no raw settings, credentials, tokens, private payloads, exception
- * stack, or implementation class names. It is diagnostic data and does not define a custom exception or protocol error
+ * The value uses shared Bus errors and contains no raw options, credentials, tokens, private payloads, exception stack,
+ * or implementation class names. It is diagnostic data and does not define a custom exception or protocol error
  * response.
  * </p>
  *
@@ -92,12 +92,12 @@ public record RegistryIssue(Registration.Kind kind, String id, Stage stage, Opti
         VALIDATE,
 
         /**
-         * Typed settings or resource decoding failed.
+         * Typed options or resource decoding failed.
          */
         DECODE,
 
         /**
-         * Runtime provider compilation failed.
+         * Source worker compilation failed.
          */
         COMPILE,
 

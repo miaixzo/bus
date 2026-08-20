@@ -21,44 +21,22 @@ package org.miaixz.bus.auth;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.registry.RegistryIssue;
 import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * Provides the public runtime-registration entry to compiled Source capabilities.
+ * Provides read-only access to the currently committed registration state.
  * <p>
- * Callers identify a registered resource with {@link Reference} and request one strongly typed {@link Capability}. The
- * Capability dispatch never returns runtime providers, protocol executors, or Vendor adapters. The diagnostic
- * {@link #snapshot()} method exposes the committed registration records, including their persistence entities.
+ * The {@link #snapshot()} method exposes the committed registration records, including their persistence entities.
  * Implementations atomically replace structurally immutable compiled views and preserve the previous view when
- * validation or compilation fails.
+ * validation or compilation fails. Capability execution belongs exclusively to {@link Authenticator}.
  * </p>
  *
  * @author Kimi Liu
  */
 public interface Registry extends Lifecycle, AutoCloseable {
-
-    /**
-     * Invokes one declared capability through the currently committed immutable Registry view.
-     *
-     * @param reference  registered Source reference
-     * @param capability strongly typed capability implemented by the referenced runtime provider
-     * @param request    formal standard request value
-     * @param context    immutable invocation context
-     * @param timeout    shared decreasing operation time budget
-     * @param <Q>        formal request type
-     * @param <S>        formal success value type
-     * @return asynchronous internal outcome without exposing the selected runtime provider
-     */
-    <Q, S> CompletionStage<Outcome<S>> invoke(
-            Reference reference,
-            Capability<Q, S> capability,
-            Q request,
-            Context context,
-            Timeout.Budget timeout);
 
     /**
      * Returns the complete registration snapshot associated with the committed Registry view.
@@ -79,7 +57,7 @@ public interface Registry extends Lifecycle, AutoCloseable {
     Revision revision();
 
     /**
-     * Closes the Registry without transferring ownership of externally supplied stores, resolvers, or transports.
+     * Closes the Registry without transferring ownership of externally supplied stores, loaders, or transports.
      */
     @Override
     void close();

@@ -28,8 +28,8 @@ import org.miaixz.bus.auth.protocol.oauth2.RefreshTokenGrant;
 import org.miaixz.bus.auth.protocol.oauth2.TokenEndpointResponse;
 import org.miaixz.bus.auth.protocol.oauth2.TokenRequest;
 import org.miaixz.bus.auth.protocol.oauth2.TokenResponse;
-import org.miaixz.bus.auth.protocol.oauth2.internal.AccessTokenIssuer;
-import org.miaixz.bus.auth.protocol.oauth2.internal.RefreshTokenRotator;
+import org.miaixz.bus.auth.protocol.oauth2.grant.AccessTokenIssuer;
+import org.miaixz.bus.auth.protocol.oauth2.grant.RefreshTokenRotator;
 import org.miaixz.bus.core.lang.Assert;
 
 /**

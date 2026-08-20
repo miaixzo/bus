@@ -36,7 +36,7 @@
  * <p>
  * Models preserve standard claim names and JSON types, including NumericDate seconds and string-or-array audience.
  * Unknown extension claims remain typed JsonValue members and are never flattened into a framework map. No model
- * serializes Context, Timeout, Outcome, Bus errors, exceptions, Source settings, or Vendor DTOs. Logout intentionally
+ * serializes Context, Timeout, Outcome, Bus errors, exceptions, Source options, or Vendor DTOs. Logout intentionally
  * has no invented EndSessionResponse, and OIDC-specific nonce, ID Token, UserInfo, Discovery, and session semantics are
  * never attributed to plain OAuth 2.x.
  * </p>

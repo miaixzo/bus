@@ -28,7 +28,7 @@ import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationServerMetadata;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationServerMetadataCodec;
-import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -45,9 +45,9 @@ import org.miaixz.bus.fabric.Fabric;
 public final class AuthorizationServerMetadataClient {
 
     /**
-     * Validated Source settings containing the trusted issuer and metadata endpoint.
+     * Validated Source options containing the trusted issuer and metadata endpoint.
      */
-    private final OAuth2ClientSettings settings;
+    private final OAuth2ClientOptions options;
 
     /**
      * Caller-owned execution services and Fabric context.
@@ -62,19 +62,19 @@ public final class AuthorizationServerMetadataClient {
     /**
      * Creates a metadata client for one compiled Source.
      *
-     * @param settings validated OAuth 2.x client settings
+     * @param options  validated OAuth 2.x client options
      * @param services externally owned runtime dependencies
      * @param codec    strict RFC 8414 metadata codec
      * @throws IllegalArgumentException if a collaborator is {@code null} or no metadata endpoint is configured
      */
-    public AuthorizationServerMetadataClient(final OAuth2ClientSettings settings, final ExecutionServices services,
+    public AuthorizationServerMetadataClient(final OAuth2ClientOptions options, final ExecutionServices services,
             final AuthorizationServerMetadataCodec codec) {
-        this.settings = Assert.notNull(settings, "OAuth 2.x client settings must not be null");
+        this.options = Assert.notNull(options, "OAuth 2.x client options must not be null");
         Assert.notNull(
-                settings.authorizationServerMetadataEndpoint().getOrNull(),
+                options.authorizationServerMetadataEndpoint().getOrNull(),
                 "OAuth 2.x authorization server metadata endpoint must be configured");
         Assert.notNull(
-                settings.expectedIssuer().getOrNull(),
+                options.expectedIssuer().getOrNull(),
                 "OAuth 2.x authorization server metadata expected issuer must be configured");
         this.services = Assert.notNull(services, "OAuth 2.x execution services must not be null");
         this.codec = Assert.notNull(codec, "OAuth 2.x authorization server metadata codec must not be null");
@@ -131,12 +131,12 @@ public final class AuthorizationServerMetadataClient {
             if (timeout.expired()) {
                 return Outcome.failed(failure(ErrorCode._408, "OAuth 2.x metadata request exhausted its time budget"));
             }
-            final var endpoint = settings.authorizationServerMetadataEndpoint().getOrNull();
+            final var endpoint = options.authorizationServerMetadataEndpoint().getOrNull();
             final var response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
                     .method(Http.Method.GET).timeout(timeout.forFabric())
                     .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute();
             final AuthorizationServerMetadata metadata = codec.decode(response);
-            if (!settings.expectedIssuer().getOrNull().equals(metadata.issuer())) {
+            if (!options.expectedIssuer().getOrNull().equals(metadata.issuer())) {
                 return Outcome.rejected(
                         failure(
                                 ErrorCode._400,

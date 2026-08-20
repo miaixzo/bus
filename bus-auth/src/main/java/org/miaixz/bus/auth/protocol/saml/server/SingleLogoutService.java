@@ -34,8 +34,9 @@ import org.miaixz.bus.auth.Session;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.protocol.saml.*;
-import org.miaixz.bus.auth.resolver.ClientResolver;
-import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.resolver.ConsumerMetadata;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
+import org.miaixz.bus.auth.runtime.LoadResult;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.data.id.UUID;
@@ -79,22 +80,17 @@ public final class SingleLogoutService {
     private static final String UNKNOWN_PRINCIPAL = "urn:oasis:names:tc:SAML:2.0:status:UnknownPrincipal";
 
     /**
-     * Validated identity-provider settings.
+     * Validated identity-provider options.
      */
-    private final SamlProviderSettings settings;
+    private final SamlServerOptions options;
 
     /**
-     * Compiled server-role Source identifier used to isolate the shared Session Store key.
+     * Compiled server-role Source identifier used to isolate the shared Session cache key.
      */
     private final String providerId;
 
     /**
-     * External registered service-provider resolver.
-     */
-    private final ClientResolver clientResolver;
-
-    /**
-     * Externally owned execution services providing the atomic Session Store.
+     * External loaders and framework-owned parsers used by this service.
      */
     private final ExecutionServices services;
 
@@ -106,18 +102,16 @@ public final class SingleLogoutService {
     /**
      * Creates a SingleLogoutService with explicit registration and session dependencies.
      *
-     * @param providerId     compiled server-role Source identifier
-     * @param settings       validated SAML Provider settings
-     * @param clientResolver external service-provider resolver
-     * @param services       externally owned execution services
-     * @param errorMapper    standard SAML error response mapper
+     * @param providerId  compiled server-role Source identifier
+     * @param options     validated SAML Provider options
+     * @param services    externally owned execution services
+     * @param errorMapper standard SAML error response mapper
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public SingleLogoutService(final String providerId, final SamlProviderSettings settings,
-            final ClientResolver clientResolver, final ExecutionServices services, final SamlErrorMapper errorMapper) {
+    public SingleLogoutService(final String providerId, final SamlServerOptions options,
+            final ExecutionServices services, final SamlErrorMapper errorMapper) {
         this.providerId = Assert.notBlank(providerId, "SAML Provider identifier must not be blank");
-        this.settings = Assert.notNull(settings, "SAML Provider settings must not be null");
-        this.clientResolver = Assert.notNull(clientResolver, "SAML client resolver must not be null");
+        this.options = Assert.notNull(options, "SAML Provider options must not be null");
         this.services = Assert.notNull(services, "SAML execution services must not be null");
         this.errorMapper = Assert.notNull(errorMapper, "SAML error mapper must not be null");
     }
@@ -128,7 +122,7 @@ public final class SingleLogoutService {
      * @param client registered service provider
      * @return trusted HTTPS URL or {@code null} when missing or invalid
      */
-    private static String logoutDestination(final ClientResolver.Client client) {
+    private static String logoutDestination(final ConsumerMetadata client) {
         final JsonValue value = client.metadata().values().get(SINGLE_LOGOUT_SERVICE_URL);
         if (!(value instanceof JsonValue.StringValue string)) {
             return null;
@@ -181,17 +175,19 @@ public final class SingleLogoutService {
         Assert.notNull(timeout, "SAML Single Logout time budget must not be null");
         final Outcome<String> requester = requester(request, timeout);
         return switch (requester) {
-            case Outcome.Succeeded<String> success -> clientResolver.resolve(success.value(), context, timeout)
+            case Outcome.Succeeded<String> success -> LoadResult
+                    .parse(
+                            services.consumerLoader().load(success.value(), context, timeout),
+                            loaded -> services.consumerParser().parse(success.value(), loaded))
                     .thenCompose(resolved -> switch (resolved) {
-                        case Outcome.Succeeded<ClientResolver.Client> client -> end(
+                        case Outcome.Succeeded<ConsumerMetadata> client -> end(
                                 request,
                                 client.value(),
                                 context,
                                 timeout);
-                        case Outcome.Rejected<ClientResolver.Client> rejected -> completed(
+                        case Outcome.Rejected<ConsumerMetadata> rejected -> completed(
                                 Outcome.rejected(rejected.failure()));
-                        case Outcome.Failed<ClientResolver.Client> failed -> completed(
-                                Outcome.failed(failed.failure()));
+                        case Outcome.Failed<ConsumerMetadata> failed -> completed(Outcome.failed(failed.failure()));
                     });
             case Outcome.Rejected<String> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<String> failed -> completed(Outcome.failed(failed.failure()));
@@ -206,7 +202,7 @@ public final class SingleLogoutService {
      * @return requester entityID or a closed validation failure
      */
     private Outcome<String> requester(final LogoutRequest request, final Timeout.Budget timeout) {
-        final var endpoint = settings.singleLogoutServiceEndpoint().getOrNull();
+        final var endpoint = options.singleLogoutServiceEndpoint().getOrNull();
         if (endpoint == null) {
             return Outcome.rejected(failure(ErrorCode._404, "SAML Single Logout is not configured"));
         }
@@ -228,9 +224,9 @@ public final class SingleLogoutService {
             return Outcome.rejected(failure(ErrorCode._400, "SAML Logout Request Issuer is invalid"));
         }
         final Instant now = timeout.clock().now();
-        if (request.issueInstant().isBefore(now.minus(settings.clockSkew()))
-                || request.issueInstant().isAfter(now.plus(settings.clockSkew())) || (request.notOnOrAfter().isPresent()
-                        && !request.notOnOrAfter().getOrNull().plus(settings.clockSkew()).isAfter(now))) {
+        if (request.issueInstant().isBefore(now.minus(options.clockSkew()))
+                || request.issueInstant().isAfter(now.plus(options.clockSkew())) || (request.notOnOrAfter().isPresent()
+                        && !request.notOnOrAfter().getOrNull().plus(options.clockSkew()).isAfter(now))) {
             return Outcome.rejected(failure(ErrorCode._400, "SAML Logout Request is outside its validity interval"));
         }
         return Outcome.succeeded(issuerName.value());
@@ -247,7 +243,7 @@ public final class SingleLogoutService {
      */
     private CompletionStage<Outcome<LogoutResponse>> end(
             final LogoutRequest request,
-            final ClientResolver.Client client,
+            final ConsumerMetadata client,
             final Context context,
             final Timeout.Budget timeout) {
         final String issuer = request.issuer().getOrNull().nameId().value();
@@ -291,18 +287,18 @@ public final class SingleLogoutService {
         final String key = Builder.sha256Hex(providerId + '\0' + sessionKey.value());
         final CompletionStage<ExpiringValue<Session>> lookup;
         try {
-            lookup = services.sessionStore().get(key);
+            lookup = services.sessionCache().get(key);
         } catch (RuntimeException exception) {
-            return completed(Outcome.failed(failure(ErrorCode._500, "SAML Session Store lookup failed")));
+            return completed(Outcome.failed(failure(ErrorCode._500, "SAML Session cache lookup failed")));
         }
         if (lookup == null) {
-            return completed(Outcome.failed(failure(ErrorCode._500, "SAML Session Store returned no lookup stage")));
+            return completed(Outcome.failed(failure(ErrorCode._500, "SAML Session cache returned no lookup stage")));
         }
         return lookup
                 .handle(
                         (stored, thrown) -> thrown == null ? Outcome.succeeded(stored)
                                 : Outcome.<ExpiringValue<Session>>failed(
-                                        failure(ErrorCode._500, "SAML Session Store lookup failed")))
+                                        failure(ErrorCode._500, "SAML Session cache lookup failed")))
                 .thenCompose(outcome -> switch (outcome) {
                     case Outcome.Succeeded<ExpiringValue<Session>> success -> replaceSession(
                             key,
@@ -319,7 +315,7 @@ public final class SingleLogoutService {
     /**
      * Validates a loaded Session and performs one atomic state replacement.
      *
-     * @param key          isolated Session Store key
+     * @param key          isolated Session cache key
      * @param requestedKey verified requested Session key
      * @param stored       currently stored value, or {@code null}
      * @param timeout      shared operation budget
@@ -349,19 +345,19 @@ public final class SingleLogoutService {
         final long ttlMillis = Math.max(1L, Duration.between(now, stored.expiresAt()).toMillis());
         final CompletionStage<Boolean> replacement;
         try {
-            replacement = services.sessionStore().replace(key, stored, update, ttlMillis);
+            replacement = services.sessionCache().replace(key, stored, update, ttlMillis);
         } catch (RuntimeException exception) {
-            return completed(Outcome.failed(failure(ErrorCode._500, "SAML Session Store replacement failed")));
+            return completed(Outcome.failed(failure(ErrorCode._500, "SAML Session cache replacement failed")));
         }
         if (replacement == null) {
             return completed(
-                    Outcome.failed(failure(ErrorCode._500, "SAML Session Store returned no replacement stage")));
+                    Outcome.failed(failure(ErrorCode._500, "SAML Session cache returned no replacement stage")));
         }
         return replacement
                 .handle(
                         (replaced, thrown) -> thrown == null && replaced != null ? Outcome.succeeded(replaced)
                                 : Outcome.<Boolean>failed(
-                                        failure(ErrorCode._500, "SAML Session Store replacement failed")))
+                                        failure(ErrorCode._500, "SAML Session cache replacement failed")))
                 .thenCompose(outcome -> switch (outcome) {
                     case Outcome.Succeeded<Boolean> success -> {
                         if (success.value())
@@ -392,7 +388,7 @@ public final class SingleLogoutService {
         return new LogoutResponse(Symbol.C_UNDERLINE + UUID.randomUUID().toString(true), Optional.of(request.id()),
                 "2.0", timeout.clock().now(), Optional.of(destination), Optional.empty(),
                 Optional.of(
-                        new Issuer(new NameID(settings.entityId(), Optional.empty(), Optional.empty(),
+                        new Issuer(new NameID(options.entityId(), Optional.empty(), Optional.empty(),
                                 Optional.of(ENTITY_NAME_ID), Optional.empty()))),
                 Optional.empty(), List.of(),
                 new Status(new StatusCode(StatusCode.SUCCESS, Optional.empty()), Optional.empty(), Optional.empty()));

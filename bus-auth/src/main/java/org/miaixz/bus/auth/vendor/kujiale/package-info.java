@@ -20,15 +20,15 @@
 /**
  * Declares the Kujiale OAuth Source variant.
  * <p>
- * KujialeDefinition fixes {@code kujiale/default}, authorization, query-authenticated token and refresh, private OpenID
+ * KujialeManifest fixes {@code kujiale/default}, authorization, query-authenticated token and refresh, private OpenID
  * lookup, and profile endpoints, CLIENT_SECRET, prohibited PKCE, and registered comma-delimited scopes. It publishes
  * Source authentication and standard OAuth authorization only; empty-form POSTs, query secrets and tokens, camel-case
  * members, and {@code c/m/d/f} envelopes remain registered private deviations.
  * </p>
  * <p>
- * KujialeSourceSettings contains routing, client, secret reference, exact HTTPS callback, and ordered unique supported
- * scopes. It cannot configure endpoints, authentication placement, PKCE, private lookup, envelope fields, token models,
- * refresh capability, UserInfo, introspection, or revocation.
+ * KujialeOptions contains routing, client, secret reference, exact HTTPS callback, and ordered unique supported scopes.
+ * It cannot configure endpoints, authentication placement, PKCE, private lookup, envelope fields, token models, refresh
+ * capability, UserInfo, introspection, or revocation.
  * </p>
  * <p>
  * Identity requires the private OpenID lookup and profile {@code openId} to match byte for byte. That value alone is

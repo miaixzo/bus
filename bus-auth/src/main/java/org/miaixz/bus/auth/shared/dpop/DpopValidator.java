@@ -42,7 +42,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  * Completes DPoP validation by binding a verified proof to an optional token {@code cnf.jkt} and atomically recording
  * its key-scoped {@code jti} against replay.
  * <p>
- * Expected protocol refusals become rejected outcomes. Replay-store operational failures retain the failed outcome
+ * Expected protocol refusals become rejected outcomes. Replay-cache operational failures retain the failed outcome
  * classification produced by {@link ReplayGuard}; no proof, token, or thumbprint material enters failure details.
  * </p>
  *
@@ -105,7 +105,7 @@ public final class DpopValidator {
      * @param requirements replay isolation and optional access-token confirmation requirements
      * @param context      current immutable authentication context
      * @param timeout      shared end-to-end operation budget
-     * @return stage containing the accepted proof, expected rejection, or replay-store failure
+     * @return stage containing the accepted proof, expected rejection, or replay-cache failure
      */
     public CompletionStage<Outcome<DpopProof>> validate(
             final String compact,

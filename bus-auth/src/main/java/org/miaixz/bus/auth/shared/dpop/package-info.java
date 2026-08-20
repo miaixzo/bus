@@ -27,7 +27,7 @@
  * access-token hash requirements.
  * </p>
  * <p>
- * OAuth token and protected-resource operations compose this package with shared JWT, JOSE, key resolvers, the Budget
+ * OAuth token and protected-resource operations compose this package with shared JWT, JOSE, key loaders, the Budget
  * clock, and replay storage. DPoP does not issue access tokens, route HTTP, choose a client, replace TLS, or silently
  * convert a Bearer request into a proof-bound request.
  * </p>

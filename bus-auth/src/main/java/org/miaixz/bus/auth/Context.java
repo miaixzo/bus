@@ -97,7 +97,7 @@ public record Context(RequestId requestId, Attributes attributes, Locale locale,
     }
 
     /**
-     * Identifies one framework invocation across Registry, Store, Resolver, and protocol layers.
+     * Identifies one framework invocation across Registry, worker ports, parsers, and protocol layers.
      *
      * @param value non-blank request correlation value
      * @author Kimi Liu

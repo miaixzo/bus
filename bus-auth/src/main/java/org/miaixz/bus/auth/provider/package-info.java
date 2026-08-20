@@ -18,18 +18,18 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines management contracts for protocol-neutral Provider entities.
+ * Defines validation for protocol-neutral Provider entities.
  * <p>
- * {@link org.miaixz.bus.auth.provider.ProviderValidator} enforces common Provider registration invariants, and
- * {@link org.miaixz.bus.auth.provider.ProviderService} leaves entity persistence to an external project.
+ * {@link org.miaixz.bus.auth.provider.ProviderValidator} enforces common Provider registration invariants. Provider
+ * persistence and management operations remain external project responsibilities.
  * </p>
  * <p>
- * The historical {@link org.miaixz.bus.auth.provider.ProviderProfile} and
- * {@link org.miaixz.bus.auth.provider.ProviderDriver} names describe server roles defined by protocol standards. Both
- * extend Source contracts and consume Source JSON; they do not make the Provider persistence entity protocol-aware.
+ * Server-role protocol implementations use the root {@link org.miaixz.bus.auth.Scheme} declaration and the common
+ * {@link org.miaixz.bus.auth.source.SourceDriver} compilation boundary directly. This package does not define parallel
+ * Provider settings, profile, or driver abstractions and does not make the Provider persistence entity protocol-aware.
  * </p>
  * <p>
- * Provider services must not expose credential material, instantiate protocol runtimes, perform authentication, or
+ * Provider contracts must not expose credential material, instantiate protocol runtimes, perform authentication, or
  * infer protocol support from Provider-level settings.
  * </p>
  *

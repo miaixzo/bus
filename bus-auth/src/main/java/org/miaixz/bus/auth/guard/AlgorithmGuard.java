@@ -92,7 +92,7 @@ public final class AlgorithmGuard {
      *
      * @param algorithm       exact protocol-registered algorithm identifier
      * @param allowed         usage-specific algorithm allowlist from the security baseline and selected profile
-     * @param key             explicit JCA key selected by a resolver
+     * @param key             explicit JCA key accepted by the key parser
      * @param requiredKeyType key category declared by the selected algorithm profile
      * @param usage           cryptographic direction requested by the calling service
      * @throws IllegalArgumentException if a required argument or allowlist entry is {@code null}

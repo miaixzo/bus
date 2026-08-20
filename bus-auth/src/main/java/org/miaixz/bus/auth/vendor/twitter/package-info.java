@@ -17,25 +17,13 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+
 /**
- * Declares the public Twitter OAuth 1.0 Vendor definition and externally loaded settings.
+ * Implements X (Twitter) sign-in with OAuth 2.0 Authorization Code and mandatory PKCE S256.
  * <p>
- * TwitterDefinition fixes {@code twitter/oauth1}, the temporary-credential, resource-owner authorization,
- * token-credential, and protected-resource endpoints, HMAC-SHA1, a ten-minute temporary credential lifetime, and an
- * empty realm and scope. It exposes redirect Source authentication together with the four RFC 5849 client capabilities.
- * Only the Twitter profile query flags and bounded user projection are registered Source-completion deviations; OAuth
- * protocol requests and credentials retain their standard models.
- * </p>
- * <p>
- * TwitterSourceSettings contains routing, official consumer key, external Client Secret or Shared Secret reference, and
- * one exact registered HTTP or HTTPS OAuth callback. Scope must be empty. Fixed endpoints, signature method, temporary
- * lifetime, profile query, credential-store behavior, and identity projection cannot be externally supplied.
- * </p>
- * <p>
- * This exported package provides registration metadata; execution enters a Registry-obtained Provider. Identity is
- * created only from a positive decimal Twitter {@code id_str}; profile strings remain attributes. Consumer secrets,
- * temporary and token secrets, callback verifier, access tokens, response bodies, and profile data must not enter
- * diagnostics, Context, tracing, logs, or public failures.
+ * The platform directory contains its immutable manifest, validated external options and runtime adapter. It uses the X
+ * OAuth 2.0 authorize, token, refresh and revoke endpoints and resolves the authenticated user from X API v2
+ * {@code /2/users/me}.
  * </p>
  *
  * @author Kimi Liu

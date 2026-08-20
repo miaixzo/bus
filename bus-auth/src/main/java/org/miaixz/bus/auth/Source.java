@@ -29,11 +29,12 @@ import org.miaixz.bus.core.basic.entity.Namespace;
  * Represents one registered authentication protocol source owned by a Provider.
  * <p>
  * Every source belongs to exactly one {@link Provider} through {@link #provider_id}. A Provider may own multiple
- * Sources, each independently selecting its adapter type, actual protocol, and raw protocol configuration.
+ * Sources, each independently selecting its adapter type, actual protocol, and typed protocol options.
  * </p>
  * <p>
- * This mutable persistence model exposes no runtime operation, protocol implementation, vendor-specific field, or
- * reverse collection. Runtime access is available only through the Registry.
+ * This mutable registration model exposes no runtime operation, protocol implementation, vendor-specific field, or
+ * reverse collection. The external project remains responsible for persistence mapping and materializes the typed
+ * options value before loading the registration. Runtime access is available only through the Registry.
  * </p>
  *
  * @author Kimi Liu
@@ -61,10 +62,10 @@ public class Source extends Namespace {
     private String name;
 
     /**
-     * Required exact Source profile identifier used to select a registered Driver. Built-in values include
-     * {@code oauth1}, {@code oauth2}, {@code oidc}, {@code saml}, {@code ldap}, {@code vendor}, and server-role values
-     * such as {@code oauth2-server}, {@code oidc-server}, {@code saml-server}, {@code scim-server},
-     * {@code ldap-server}, and {@code radius-server}. Custom Drivers may contribute additional stable identifiers.
+     * Required exact {@link Scheme} identifier used to select a registered Driver. Built-in values include
+     * {@code oauth2}, {@code oidc}, {@code saml}, {@code ldap}, {@code vendor}, and server-role values such as
+     * {@code oauth2-server}, {@code oidc-server}, {@code saml-server}, {@code scim-server}, {@code ldap-server}, and
+     * {@code radius-server}. Custom Drivers may contribute additional stable identifiers.
      */
     private String type;
 
@@ -84,22 +85,22 @@ public class Source extends Namespace {
 
     /**
      * Required actual protocol accepted by the selected Driver. Values are compared case-insensitively with Bus
-     * protocol names such as {@code OAUTH1}, {@code OAUTH2}, {@code OIDC}, {@code SAML}, {@code SCIM}, {@code LDAP},
-     * {@code RADIUS}, or {@code VENDOR_AUTH}; lower-case database values are recommended. The selected Driver performs
-     * the final type-to-protocol compatibility check.
+     * protocol names such as {@code OAUTH2}, {@code OIDC}, {@code SAML}, {@code SCIM}, {@code LDAP}, {@code RADIUS}, or
+     * {@code VENDOR_AUTH}; lower-case database values are recommended. The selected Driver performs the final
+     * type-to-protocol compatibility check.
      */
     private String protocol;
 
     /**
-     * Required non-blank JSON object encoded as text. The Driver selected by {@link #type} decodes it into its exact
-     * immutable settings class and validates protocol-specific values. Secret material must be represented by external
-     * {@link Credential.Reference} values and must never be embedded as plaintext.
+     * Required immutable options value already materialized by the external project integration boundary. The Driver
+     * selected by {@link #type} validates and consumes the concrete value. Secret material must be represented by
+     * external {@link Credential.Reference} values and must never be embedded as plaintext.
      */
-    private String settings;
+    private Options<?> options;
 
     /**
      * Optional JSON object encoded as text for external management extensions. {@code null} or blank means no metadata;
-     * its members must not override {@link #type}, {@link #protocol}, settings, authorization, or security decisions.
+     * its members must not override {@link #type}, {@link #protocol}, options, authorization, or security decisions.
      */
     private String metadata;
 
@@ -110,7 +111,7 @@ public class Source extends Namespace {
     private String description;
 
     /**
-     * Creates an empty persistence model for an external source service implementation.
+     * Creates an empty registration model for an external project integration.
      */
     public Source() {
         // No initialization required.

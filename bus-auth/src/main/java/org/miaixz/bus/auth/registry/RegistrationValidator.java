@@ -35,7 +35,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  * <p>
  * External projects supply complete {@link Library}, {@link Provider}, and {@link Source} objects. Validation follows
  * their dependency order and checks identity, namespace scope, one-to-many relationships, lifecycle compatibility, and
- * Source routing identifiers. Protocol-specific settings are decoded later by the selected Source Driver.
+ * Source routing identifiers and the presence of already materialized protocol options. Concrete option invariants are
+ * validated later by the selected Source Driver.
  * </p>
  *
  * @author Kimi Liu
@@ -175,8 +176,8 @@ public final class RegistrationValidator {
                 issue(issues, record, "sort", ErrorCode._100101, "Source sort must not be negative");
             }
             validateSourceProtocol(record, source, issues);
-            if (StringKit.isBlank(source.getSettings())) {
-                issue(issues, record, "settings", ErrorCode._100100, "Source settings must not be blank");
+            if (source.getOptions() == null) {
+                issue(issues, record, "options", ErrorCode._100100, "Source options must not be null");
             }
         }
     }
@@ -222,7 +223,7 @@ public final class RegistrationValidator {
     }
 
     /**
-     * Adds one safe validation issue without including settings or credential material.
+     * Adds one safe validation issue without including options or credential material.
      *
      * @param issues      mutable issue accumulator
      * @param record      owning registration

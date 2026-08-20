@@ -24,13 +24,13 @@
  * RadiusRequestHandler, apply version-specific wire security, invoke the appropriate handler operation, validate the
  * returned standard packet, preserve Proxy-State, and correlate the response. RadiusAuthenticator owns only legacy
  * Request/Response Authenticator and Message-Authenticator processing plus the non-cryptographic RFC 9765 Token path.
- * RadiusProviderProfile and RadiusProviderSettings declare supported versions, EAP, limits, and security requirements.
+ * RadiusServerScheme and RadiusServerOptions declare supported versions, EAP, limits, and security requirements.
  * </p>
  * <p>
  * The framework owns packet validation and orchestration; the external project owns trusted transport adaptation,
  * client resolution, authentication decisions, accounting processing, persistence, and permissions. Services consume
- * typed packets, codecs, SecretResolver, SecurityBaseline, Context, and Budget. They perform no network I/O, direct
- * Registry lookup, Source/client behavior, Vendor login, Dynamic Authorization, or HTTP/JSON error mapping.
+ * typed packets, codecs, SecretLoader, SecretParser, SecurityBaseline, Context, and Budget. They perform no network
+ * I/O, direct Registry lookup, Source/client behavior, Vendor login, Dynamic Authorization, or HTTP/JSON error mapping.
  * </p>
  * <p>
  * Legacy clients require a shared-secret reference and validate applicable Authenticators and Type 80 in constant time;

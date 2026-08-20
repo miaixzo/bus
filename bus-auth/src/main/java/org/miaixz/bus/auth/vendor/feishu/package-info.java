@@ -20,14 +20,14 @@
 /**
  * Declares the Feishu confidential-client OAuth Source variant.
  * <p>
- * FeishuDefinition exposes {@code feishu/default} with fixed authorization, v3 token, refresh, and user-information
+ * FeishuManifest exposes {@code feishu/default} with fixed authorization, v3 token, refresh, and user-information
  * endpoints. It requires CLIENT_SECRET and S256 PKCE, has no default scope, accepts only optional
  * {@code offline_access}, and publishes Source authentication plus the standard authorization operation. JSON client
  * authentication, token envelopes, refresh rotation, and profile envelopes are registered platform deviations.
  * </p>
  * <p>
- * FeishuSourceSettings contains only routing, client, secret-reference, exact callback, and scope data. Applications
- * cannot choose legacy v1 or v2 endpoints, disable PKCE, configure token JSON fields, publish private refresh behavior,
+ * FeishuOptions contains only routing, client, secret-reference, exact callback, and scope data. Applications cannot
+ * choose legacy v1 or v2 endpoints, disable PKCE, configure token JSON fields, publish private refresh behavior,
  * reinterpret the profile endpoint as OIDC UserInfo, or expose platform response records. The callback is an exact
  * registered HTTPS URI, and scopes are unique and bounded.
  * </p>

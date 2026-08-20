@@ -102,7 +102,7 @@ public final class RevocationEndpoint {
         }
         return authenticator.authenticate(request, context, timeout)
                 .thenCompose(authenticated -> switch (authenticated) {
-                    case Outcome.Succeeded<org.miaixz.bus.auth.resolver.ClientResolver.Client> success -> service
+                    case Outcome.Succeeded<org.miaixz.bus.auth.resolver.ConsumerMetadata> success -> service
                             .revoke(decoded, context.withClientId(success.value().id()), timeout)
                             .thenApply(outcome -> switch (outcome) {
                                 case Outcome.Succeeded<Void> value -> HttpResponse.builder().request(request)
@@ -111,9 +111,9 @@ public final class RevocationEndpoint {
                                         .revocation(request, rejected.failure());
                                 case Outcome.Failed<Void> failed -> errorMapper.revocation(request, failed.failure());
                             });
-                    case Outcome.Rejected<org.miaixz.bus.auth.resolver.ClientResolver.Client> rejected -> CompletableFuture
+                    case Outcome.Rejected<org.miaixz.bus.auth.resolver.ConsumerMetadata> rejected -> CompletableFuture
                             .completedFuture(errorMapper.revocation(request, rejected.failure()));
-                    case Outcome.Failed<org.miaixz.bus.auth.resolver.ClientResolver.Client> failed -> CompletableFuture
+                    case Outcome.Failed<org.miaixz.bus.auth.resolver.ConsumerMetadata> failed -> CompletableFuture
                             .completedFuture(errorMapper.revocation(request, failed.failure()));
                 });
     }

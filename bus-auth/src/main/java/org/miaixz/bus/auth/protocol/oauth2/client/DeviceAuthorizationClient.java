@@ -36,7 +36,7 @@ import org.miaixz.bus.auth.protocol.oauth2.DeviceAuthorizationRequest;
 import org.miaixz.bus.auth.protocol.oauth2.DeviceAuthorizationResponse;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.codec.DeviceAuthorizationCodec;
-import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -58,9 +58,9 @@ import org.miaixz.bus.fabric.protocol.http.auth.HttpAuth;
 public final class DeviceAuthorizationClient {
 
     /**
-     * Validated Source settings that bind the client identifier and endpoint.
+     * Validated Source options that bind the client identifier and endpoint.
      */
-    private final OAuth2ClientSettings settings;
+    private final OAuth2ClientOptions options;
 
     /**
      * Caller-owned execution services and Fabric context.
@@ -80,16 +80,16 @@ public final class DeviceAuthorizationClient {
     /**
      * Creates a device authorization client for one compiled Source.
      *
-     * @param settings validated OAuth 2.x client settings
+     * @param options  validated OAuth 2.x client options
      * @param services externally owned runtime dependencies
      * @param codec    strict RFC 8628 codec
      * @throws IllegalArgumentException if a collaborator is {@code null} or no device endpoint is configured
      */
-    public DeviceAuthorizationClient(final OAuth2ClientSettings settings, final ExecutionServices services,
+    public DeviceAuthorizationClient(final OAuth2ClientOptions options, final ExecutionServices services,
             final DeviceAuthorizationCodec codec) {
-        this.settings = Assert.notNull(settings, "OAuth 2.x client settings must not be null");
+        this.options = Assert.notNull(options, "OAuth 2.x client options must not be null");
         Assert.notNull(
-                settings.deviceAuthorizationEndpoint().getOrNull(),
+                options.deviceAuthorizationEndpoint().getOrNull(),
                 "OAuth 2.x device authorization endpoint must be configured");
         this.services = Assert.notNull(services, "OAuth 2.x execution services must not be null");
         this.codec = Assert.notNull(codec, "OAuth 2.x device authorization codec must not be null");
@@ -167,17 +167,20 @@ public final class DeviceAuthorizationClient {
                     Outcome.failed(
                             failure(ErrorCode._408, "OAuth 2.x device authorization request has no time budget")));
         }
-        if (!settings.clientId().equals(request.clientId())) {
+        if (!options.clientId().equals(request.clientId())) {
             return completed(
                     Outcome.rejected(
                             failure(
                                     ErrorCode._400,
                                     "OAuth 2.x device authorization client identifier does not match the Source")));
         }
-        if (Endpoint.Authentication.NONE.equals(settings.clientAuthenticationMethod())) {
+        if (Endpoint.Authentication.NONE.equals(options.clientAuthenticationMethod())) {
             return execute(request, null, timeout);
         }
-        return services.secretResolver().resolve(settings.clientCredential().getOrNull(), context, timeout)
+        return org.miaixz.bus.auth.runtime.LoadResult
+                .parse(
+                        services.secretLoader().load(options.clientCredential().getOrNull(), context, timeout),
+                        loaded -> services.secretParser().parse(options.clientCredential().getOrNull(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> execute(request, success.value(), timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
@@ -207,16 +210,16 @@ public final class DeviceAuthorizationClient {
                                     "OAuth 2.x device authorization request exhausted its time budget"));
                 }
                 body = formCodec.encode(authenticated(codec.encode(request), secret));
-                final var endpoint = settings.deviceAuthorizationEndpoint().getOrNull();
+                final var endpoint = options.deviceAuthorizationEndpoint().getOrNull();
                 final var builder = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
                         .method(Http.Method.POST).timeout(timeout.forFabric())
                         .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
                         .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE);
-                if (Endpoint.Authentication.CLIENT_SECRET_BASIC.equals(settings.clientAuthenticationMethod())) {
+                if (Endpoint.Authentication.CLIENT_SECRET_BASIC.equals(options.clientAuthenticationMethod())) {
                     builder.header(
                             Http.Header.AUTHORIZATION,
                             HttpAuth.basic(
-                                    formComponent(settings.clientId()),
+                                    formComponent(options.clientId()),
                                     formComponent(new String(secret.material()))).value());
                 }
                 return decoded(codec.decode(builder.execute()));
@@ -244,7 +247,7 @@ public final class DeviceAuthorizationClient {
     private List<Parameter> authenticated(final List<Parameter> encoded, final SecretLease secret) {
         final List<Parameter> parameters = new ArrayList<>(
                 Assert.notNull(encoded, "OAuth 2.x encoded device authorization parameters must not be null"));
-        if (Endpoint.Authentication.CLIENT_SECRET_POST.equals(settings.clientAuthenticationMethod())) {
+        if (Endpoint.Authentication.CLIENT_SECRET_POST.equals(options.clientAuthenticationMethod())) {
             parameters.add(new Parameter(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())));
         }
         return List.copyOf(parameters);

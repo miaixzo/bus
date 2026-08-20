@@ -30,16 +30,16 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Subject;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.cache.AccessTokenStore;
-import org.miaixz.bus.auth.cache.AuthorizationCodeStore;
+import org.miaixz.bus.auth.cache.AccessTokenCache;
+import org.miaixz.bus.auth.cache.AuthorizationCodeCache;
 import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2ErrorCode;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.auth.protocol.oidc.UserInfoRequest;
 import org.miaixz.bus.auth.protocol.oidc.UserInfoResponse;
 import org.miaixz.bus.auth.protocol.oidc.codec.UserInfoCodec;
-import org.miaixz.bus.auth.resolver.AttributeResolver;
-import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.resolver.Attributes;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -70,12 +70,12 @@ public final class UserInfoService {
     private final String providerId;
 
     /**
-     * Frozen Provider claim-release settings.
+     * Frozen Provider claim-release options.
      */
-    private final OpenIdProviderSettings settings;
+    private final OpenIdServerOptions options;
 
     /**
-     * External access-token store and subject attribute resolver.
+     * Access-token cache, external attribute loader, and pure attribute parser.
      */
     private final ExecutionServices services;
 
@@ -88,14 +88,14 @@ public final class UserInfoService {
      * Creates a UserInfo service for one compiled OpenID Provider.
      *
      * @param providerId compiled server-role Source identifier
-     * @param settings   validated OpenID Provider settings
+     * @param options    validated OpenID Provider options
      * @param services   externally implemented runtime dependencies
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public UserInfoService(final String providerId, final OpenIdProviderSettings settings,
+    public UserInfoService(final String providerId, final OpenIdServerOptions options,
             final ExecutionServices services) {
         this.providerId = Assert.notBlank(providerId, "OpenID Connect UserInfo Provider id must not be blank");
-        this.settings = Assert.notNull(settings, "OpenID Connect UserInfo Provider settings must not be null");
+        this.options = Assert.notNull(options, "OpenID Connect UserInfo Provider options must not be null");
         this.services = Assert.notNull(services, "OpenID Connect UserInfo execution services must not be null");
         this.codec = new UserInfoCodec(services.jsonProvider());
     }
@@ -106,7 +106,7 @@ public final class UserInfoService {
      * @param entry validated access-token state
      * @return mutable ordered claim-name set
      */
-    private static LinkedHashSet<String> claimsForScopes(final AccessTokenStore.Entry entry) {
+    private static LinkedHashSet<String> claimsForScopes(final AccessTokenCache.Entry entry) {
         final LinkedHashSet<String> claims = new LinkedHashSet<>();
         for (String scope : entry.scope()) {
             switch (scope) {
@@ -149,7 +149,7 @@ public final class UserInfoService {
      * @param binding validated OpenID authorization binding
      * @return immutable requested claim map, or an empty map when absent
      */
-    private static Map<String, JsonValue> requestedUserInfoClaims(final AuthorizationCodeStore.OpenIdBinding binding) {
+    private static Map<String, JsonValue> requestedUserInfoClaims(final AuthorizationCodeCache.OpenIdBinding binding) {
         final JsonValue.ObjectValue root = binding.requestedClaims().getOrNull();
         if (root == null || root.values().get(OpenIdConnect.Claims.USERINFO) == null) {
             return Map.of();
@@ -236,9 +236,9 @@ public final class UserInfoService {
                                     OAuth2ErrorCode.TEMPORARILY_UNAVAILABLE,
                                     "OpenID Connect UserInfo request has no remaining time budget")));
         }
-        final CompletionStage<ExpiringValue<AccessTokenStore.Entry>> lookup;
+        final CompletionStage<ExpiringValue<AccessTokenCache.Entry>> lookup;
         try {
-            lookup = services.accessTokenStore().get(tokenKey(request.accessToken()));
+            lookup = services.accessTokenCache().get(tokenKey(request.accessToken()));
         } catch (RuntimeException exception) {
             return completed(
                     Outcome.failed(
@@ -247,20 +247,20 @@ public final class UserInfoService {
                                     OAuth2ErrorCode.SERVER_ERROR,
                                     "OpenID Connect UserInfo access token lookup failed")));
         }
-        return lookup.handle((stored, thrown) -> new StoreResult(stored, thrown))
+        return lookup.handle((stored, thrown) -> new CacheResult(stored, thrown))
                 .thenCompose(result -> validateAndResolve(result, context, timeout));
     }
 
     /**
      * Validates stored token state and resolves the bound current attributes.
      *
-     * @param result  completed store lookup result
+     * @param result  completed cache lookup result
      * @param context immutable invocation context
      * @param timeout shared operation budget
      * @return asynchronously completed UserInfo outcome
      */
     private CompletionStage<Outcome<UserInfoResponse>> validateAndResolve(
-            final StoreResult result,
+            final CacheResult result,
             final Context context,
             final Timeout.Budget timeout) {
         if (result.failure() != null) {
@@ -271,7 +271,7 @@ public final class UserInfoService {
                                     OAuth2ErrorCode.SERVER_ERROR,
                                     "OpenID Connect UserInfo access token lookup failed")));
         }
-        final ExpiringValue<AccessTokenStore.Entry> stored = result.value();
+        final ExpiringValue<AccessTokenCache.Entry> stored = result.value();
         final Instant now = timeout.clock().now();
         if (stored == null || stored.value() == null || !stored.expiresAt().isAfter(now)
                 || !providerId.equals(stored.value().providerId())) {
@@ -282,7 +282,7 @@ public final class UserInfoService {
                                     OAuth2ErrorCode.INVALID_TOKEN,
                                     "OpenID Connect UserInfo bearer token is invalid or expired")));
         }
-        final AccessTokenStore.Entry entry = stored.value();
+        final AccessTokenCache.Entry entry = stored.value();
         if (!entry.scope().contains(OpenIdConnect.Scopes.OPENID) || entry.openIdBinding().isEmpty()) {
             return completed(
                     Outcome.rejected(
@@ -291,9 +291,11 @@ public final class UserInfoService {
                                     OAuth2ErrorCode.INVALID_TOKEN,
                                     "OpenID Connect UserInfo bearer token has no OpenID authorization binding")));
         }
-        final CompletionStage<Outcome<AttributeResolver.Attributes>> resolution;
+        final CompletionStage<Outcome<Attributes>> resolution;
         try {
-            resolution = services.attributeResolver().resolve(new Subject.Key(entry.subjectId()), context, timeout);
+            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
+                    services.attributeLoader().load(new Subject.Key(entry.subjectId()), context, timeout),
+                    loaded -> services.attributeParser().parse(new Subject.Key(entry.subjectId()), loaded));
         } catch (RuntimeException exception) {
             return completed(
                     Outcome.failed(
@@ -305,7 +307,7 @@ public final class UserInfoService {
         return resolution
                 .handle(
                         (outcome, thrown) -> thrown == null && outcome != null ? outcome
-                                : Outcome.<AttributeResolver.Attributes>failed(
+                                : Outcome.<Attributes>failed(
                                         failure(
                                                 ErrorCode._500,
                                                 OAuth2ErrorCode.SERVER_ERROR,
@@ -321,22 +323,22 @@ public final class UserInfoService {
      * @return standard UserInfo outcome
      */
     private Outcome<UserInfoResponse> mapAttributes(
-            final Outcome<AttributeResolver.Attributes> outcome,
-            final AccessTokenStore.Entry entry) {
+            final Outcome<Attributes> outcome,
+            final AccessTokenCache.Entry entry) {
         return switch (outcome) {
-            case Outcome.Succeeded<AttributeResolver.Attributes> success -> success.value() == null
+            case Outcome.Succeeded<Attributes> success -> success.value() == null
                     ? Outcome.failed(
                             failure(
                                     ErrorCode._500,
                                     OAuth2ErrorCode.SERVER_ERROR,
                                     "OpenID Connect UserInfo attribute resolution returned no value"))
                     : response(entry, success.value());
-            case Outcome.Rejected<AttributeResolver.Attributes> rejected -> Outcome.rejected(
+            case Outcome.Rejected<Attributes> rejected -> Outcome.rejected(
                     failure(
                             rejected.failure().error(),
                             OAuth2ErrorCode.INVALID_TOKEN,
                             "OpenID Connect UserInfo subject is unavailable"));
-            case Outcome.Failed<AttributeResolver.Attributes> failed -> Outcome.failed(
+            case Outcome.Failed<Attributes> failed -> Outcome.failed(
                     failure(
                             failed.failure().error(),
                             OAuth2ErrorCode.SERVER_ERROR,
@@ -351,9 +353,7 @@ public final class UserInfoService {
      * @param attributes current subject attributes
      * @return successful response or failure for an unavailable essential claim
      */
-    private Outcome<UserInfoResponse> response(
-            final AccessTokenStore.Entry entry,
-            final AttributeResolver.Attributes attributes) {
+    private Outcome<UserInfoResponse> response(final AccessTokenCache.Entry entry, final Attributes attributes) {
         final LinkedHashSet<String> requested = claimsForScopes(entry);
         final Map<String, JsonValue> individual = requestedUserInfoClaims(entry.openIdBinding().getOrNull());
         requested.addAll(individual.keySet());
@@ -362,7 +362,7 @@ public final class UserInfoService {
             if (JwtClaims.SUBJECT.equals(name)) {
                 continue;
             }
-            if (reservedClaim(name) || !settings.claimsSupported().contains(name)) {
+            if (reservedClaim(name) || !options.claimsSupported().contains(name)) {
                 if (essential(individual.get(name))) {
                     return Outcome.failed(
                             failure(
@@ -401,20 +401,20 @@ public final class UserInfoService {
      * Produces a Provider-isolated irreversible lookup key for an opaque bearer token.
      *
      * @param token sensitive bearer token
-     * @return SHA-256 hexadecimal store key
+     * @return SHA-256 hexadecimal cache key
      */
     private String tokenKey(final String token) {
         return Builder.sha256Hex(providerId + '\0' + token);
     }
 
     /**
-     * Carries a store result without allowing exceptional completion to escape protocol mapping.
+     * Carries a cache result without allowing exceptional completion to escape protocol mapping.
      *
      * @param value   stored access-token state or {@code null}
-     * @param failure asynchronous store failure or {@code null}
+     * @param failure asynchronous cache failure or {@code null}
      * @author Kimi Liu
      */
-    private record StoreResult(ExpiringValue<AccessTokenStore.Entry> value, Throwable failure) {
+    private record CacheResult(ExpiringValue<AccessTokenCache.Entry> value, Throwable failure) {
 
     }
 

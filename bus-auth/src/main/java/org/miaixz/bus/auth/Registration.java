@@ -27,9 +27,9 @@ import org.miaixz.bus.core.lang.Enumers;
  * Defines the single provider-neutral loading model for Library, Provider, and Source registrations.
  * <p>
  * External projects create complete records from databases, files, or remote services. The framework validates and
- * compiles one complete snapshot; this container performs no loading, persistence, protocol decoding, or Registry
- * access. Each record carries the complete managed entity instead of duplicating entity fields or transporting raw
- * settings.
+ * compiles one complete snapshot; this container performs no loading, persistence, protocol option materialization, or
+ * Registry access. Each record carries the complete managed entity instead of duplicating entity fields or transporting
+ * persistence representations.
  * </p>
  *
  * @author Kimi Liu
@@ -117,9 +117,9 @@ public final class Registration {
     /**
      * Carries one resource registration loaded by an external project.
      * <p>
-     * Resource identity, namespace, protocol, relationships, presentation data, and persistent settings remain on the
+     * Resource identity, namespace, protocol, relationships, presentation data, and materialized options remain on the
      * mutable resource object that owns them. The record components are fixed, but this wrapper does not freeze or copy
-     * the enclosed persistence entity; it adds only registration state and generation information.
+     * the enclosed project-supplied entity; it adds only registration state and generation information.
      * </p>
      *
      * @param kind       managed resource kind

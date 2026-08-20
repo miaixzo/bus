@@ -24,7 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.miaixz.bus.auth.cache.ReplayStore;
+import org.miaixz.bus.auth.cache.ReplayCache;
 import org.miaixz.bus.auth.guard.AlgorithmGuard;
 import org.miaixz.bus.auth.guard.ReplayGuard;
 import org.miaixz.bus.auth.guard.TimeGuard;
@@ -44,7 +44,7 @@ import org.miaixz.bus.fabric.guard.tls.TlsGuard;
  * <p>
  * One instance is shared by all Provider, Source, and Vendor runtimes. It stores policy values and composes existing
  * authentication and Fabric guards; it performs no cryptographic primitive, network I/O, protocol serialization, or
- * settings resolution and supplies no permissive defaults.
+ * options resolution and supplies no permissive defaults.
  * </p>
  *
  * @author Kimi Liu
@@ -171,13 +171,13 @@ public final class SecurityBaseline {
     }
 
     /**
-     * Creates a ReplayGuard over the caller's required atomic replay store.
+     * Creates a ReplayGuard over the required atomic replay cache.
      *
-     * @param store atomic replay digest store
+     * @param cache atomic replay digest cache
      * @return replay guard
      */
-    public ReplayGuard replayGuard(final ReplayStore store) {
-        return new ReplayGuard(store);
+    public ReplayGuard replayGuard(final ReplayCache cache) {
+        return new ReplayGuard(cache);
     }
 
     /**

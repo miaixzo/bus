@@ -20,11 +20,11 @@
 /**
  * Defines management and compilation contracts for protocol and Vendor Sources.
  * <p>
- * {@link org.miaixz.bus.auth.source.SourceProfile}, {@link org.miaixz.bus.auth.source.SourceDriver},
- * {@link org.miaixz.bus.auth.source.SourceValidator}, and {@link org.miaixz.bus.auth.source.SourceService} define the
- * typed management and complete-registration compilation boundary shared by client-role and server-role protocol
- * Sources. {@link org.miaixz.bus.auth.source.SourceAuthentication} supplies the single redirect or direct sign-in
- * capability; its request, initiation, and result types converge a successfully verified platform account on
+ * {@link org.miaixz.bus.auth.Scheme}, {@link org.miaixz.bus.auth.Options},
+ * {@link org.miaixz.bus.auth.source.SourceDriver}, and {@link org.miaixz.bus.auth.source.SourceValidator} define the
+ * typed complete-registration compilation boundary shared by client-role and server-role protocol Sources.
+ * {@link org.miaixz.bus.auth.source.SourceAuthentication} supplies the single redirect or direct sign-in capability;
+ * its request, initiation, and result types converge a successfully verified platform account on
  * {@link org.miaixz.bus.auth.source.ExternalIdentity}. An {@link org.miaixz.bus.auth.source.IdentityMapper} then maps
  * that evidence-bearing identity without changing its verified subject.
  * </p>
@@ -35,10 +35,13 @@
  * driver for runtime assembly.
  * </p>
  * <p>
- * Source authentication represents a completed account-verification flow, not a substitute OAuth or proprietary
- * protocol. Only a stable identifier verified under the selected Source may become the external subject; access tokens,
- * authorization codes, session keys, client secrets, unverified email addresses, and display names must never be used
- * as fallback subjects or exposed in attributes and failures.
+ * {@code Scheme} declares immutable authentication metadata, while {@code Options} carries typed deployment input and
+ * alone declares its exact implementation type. The integrating project materializes Options before loading a Source;
+ * {@code SourceDriver} only validates the matching concrete value and compiles it. Source authentication represents a
+ * completed account-verification flow, not a substitute OAuth or proprietary protocol. Only a stable identifier
+ * verified under the selected Source may become the external subject; access tokens, authorization codes, session keys,
+ * client secrets, unverified email addresses, and display names must never be used as fallback subjects or exposed in
+ * attributes and failures.
  * </p>
  *
  * @author Kimi Liu

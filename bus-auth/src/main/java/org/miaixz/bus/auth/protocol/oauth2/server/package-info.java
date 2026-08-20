@@ -24,15 +24,15 @@
  * introspection, revocation, device authorization, or authorization-server metadata operation. Their corresponding
  * service contracts own protocol decisions, while {@link org.miaixz.bus.auth.protocol.oauth2.server.OAuth2ErrorMapper}
  * maps failures to the error response defined for the specific OAuth endpoint.
- * {@link org.miaixz.bus.auth.protocol.oauth2.server.OAuth2ProviderProfile} and
- * {@link org.miaixz.bus.auth.protocol.oauth2.server.OAuth2ProviderSettings} declare only capabilities and settings
+ * {@link org.miaixz.bus.auth.protocol.oauth2.server.OAuth2ServerScheme} and
+ * {@link org.miaixz.bus.auth.protocol.oauth2.server.OAuth2ServerOptions} declare only capabilities and options
  * implemented by the compiled server-role Source runtime.
  * </p>
  * <p>
  * This package consumes the standard OAuth model and codec packages, verified client identity carried by Context,
- * consent and claim ports, token and authorization-code issuers, atomic stores, SecurityBaseline, and Fabric transport.
- * It does not load registrations, persist clients or grants, authenticate an end user, implement project permissions,
- * select a Vendor, or expose Registry, Outcome, exceptions, or Bus errors as OAuth wire content.
+ * consent and claim ports, the sibling grant package, atomic stores, SecurityBaseline, and Fabric transport. It does
+ * not load registrations, persist clients or grants, authenticate an end user, implement project permissions, select a
+ * Vendor, or expose Registry, Outcome, exceptions, or Bus errors as OAuth wire content.
  * </p>
  * <p>
  * Every endpoint enforces its registered HTTP method, media type, client-authentication policy, redirect URI, grant,

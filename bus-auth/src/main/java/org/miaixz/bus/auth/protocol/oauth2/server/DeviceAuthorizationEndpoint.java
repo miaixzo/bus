@@ -102,7 +102,7 @@ public final class DeviceAuthorizationEndpoint {
         }
         return authenticator.authenticate(request, context, timeout)
                 .thenCompose(authenticated -> switch (authenticated) {
-                    case Outcome.Succeeded<org.miaixz.bus.auth.resolver.ClientResolver.Client> success -> service
+                    case Outcome.Succeeded<org.miaixz.bus.auth.resolver.ConsumerMetadata> success -> service
                             .deviceAuthorization(decoded, context.withClientId(success.value().id()), timeout)
                             .thenApply(outcome -> switch (outcome) {
                                 case Outcome.Succeeded<DeviceAuthorizationResponse> value -> codec
@@ -112,9 +112,9 @@ public final class DeviceAuthorizationEndpoint {
                                 case Outcome.Failed<DeviceAuthorizationResponse> failed -> errorMapper
                                         .deviceAuthorization(request, failed.failure());
                             });
-                    case Outcome.Rejected<org.miaixz.bus.auth.resolver.ClientResolver.Client> rejected -> CompletableFuture
+                    case Outcome.Rejected<org.miaixz.bus.auth.resolver.ConsumerMetadata> rejected -> CompletableFuture
                             .completedFuture(errorMapper.deviceAuthorization(request, rejected.failure()));
-                    case Outcome.Failed<org.miaixz.bus.auth.resolver.ClientResolver.Client> failed -> CompletableFuture
+                    case Outcome.Failed<org.miaixz.bus.auth.resolver.ConsumerMetadata> failed -> CompletableFuture
                             .completedFuture(errorMapper.deviceAuthorization(request, failed.failure()));
                 });
     }

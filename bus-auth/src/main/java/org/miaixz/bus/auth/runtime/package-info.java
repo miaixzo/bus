@@ -20,23 +20,24 @@
 /**
  * Defines deterministic framework assembly, externally owned services, reload, and lifecycle contracts.
  * <p>
- * {@link org.miaixz.bus.auth.shared.ExecutionServices} is the sole aggregate through which an external project supplies
- * Fabric, JSON, executor, resolver, store, audit, consent, and security-baseline dependencies.
- * {@link org.miaixz.bus.auth.runtime.RuntimeBuilder} accepts explicit Source drivers together with the external
- * registration loader, freezes the resulting driver indexes, and returns an
- * {@link org.miaixz.bus.auth.runtime.AuthRuntime}; {@link org.miaixz.bus.auth.runtime.RuntimeReloadService} explicitly
- * loads and atomically publishes later Registry revisions.
+ * {@link org.miaixz.bus.auth.runtime.ExecutionServices} combines caller-owned infrastructure with one immutable
+ * {@link org.miaixz.bus.auth.worker.WorkerSet} and framework-owned pure parsers.
+ * {@link org.miaixz.bus.auth.runtime.RuntimeBuilder} accepts explicit Source drivers, freezes their indexes, and
+ * returns an {@link org.miaixz.bus.auth.runtime.AuthRuntime}; {@link org.miaixz.bus.auth.runtime.RuntimeReloadService}
+ * explicitly loads and atomically publishes later Registry revisions. {@link org.miaixz.bus.auth.worker.SourceWorker}
+ * is the public compiled-capability contract returned by Source drivers and retained only inside a published runtime
+ * generation.
  * </p>
  * <p>
  * Applications select protocol and Vendor drivers explicitly, build once, then request the initial and subsequent
- * reloads. Runtime assembly consumes public driver contracts and the internal Registry SPI but contains no OAuth,
- * OpenID Connect, SAML, SCIM, LDAP, RADIUS, or Vendor business operation. It performs no classpath discovery, project
- * data loading during build, global singleton installation, or creation of transport and persistence resources.
+ * reloads. Runtime assembly consumes public driver contracts and the immutable Registry view contract but contains no
+ * OAuth, OpenID Connect, SAML, SCIM, LDAP, RADIUS, or Vendor business operation. It performs no classpath discovery,
+ * project data loading during build, global singleton installation, or creation of transport and persistence resources.
  * </p>
  * <p>
  * Runtime and Registry closing stop framework work but do not close caller-owned Fabric, executor, JSON provider,
- * stores, resolvers, keys, or network resources. Reload is all-or-nothing, observes one Budget, and must not expose
- * candidate settings, compiled providers, credentials, protocol messages, exceptions, or stack traces when it fails.
+ * stores, loaders, keys, or network resources. Reload is all-or-nothing, observes one Budget, and must not expose
+ * candidate options, compiled workers, credentials, protocol messages, exceptions, or stack traces when it fails.
  * </p>
  *
  * @author Kimi Liu

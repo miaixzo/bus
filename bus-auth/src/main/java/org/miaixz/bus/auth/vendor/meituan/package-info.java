@@ -20,15 +20,15 @@
 /**
  * Declares the Meituan OAuth Source variant.
  * <p>
- * MeituanDefinition fixes {@code meituan/default}, authorization, token, refresh, and profile endpoints,
+ * MeituanManifest fixes {@code meituan/default}, authorization, token, refresh, and profile endpoints,
  * {@code app_id}/{@code secret} form authentication, prohibited PKCE, and an explicitly empty scope. It publishes
  * Source authentication and standard OAuth authorization only; renamed client fields, missing token type and scope,
  * HTTP-200 platform errors, private refresh, and profile fields remain registered deviations.
  * </p>
  * <p>
- * MeituanSourceSettings contains routing, canonical decimal app ID, secret reference, exact HTTPS callback, and no
- * scopes. It cannot configure endpoints, PKCE, platform form fields, private token/profile records, refresh capability,
- * UserInfo, or revocation. The public authorization operation always emits the required empty {@code scope} parameter.
+ * MeituanOptions contains routing, canonical decimal app ID, secret reference, exact HTTPS callback, and no scopes. It
+ * cannot configure endpoints, PKCE, platform form fields, private token/profile records, refresh capability, UserInfo,
+ * or revocation. The public authorization operation always emits the required empty {@code scope} parameter.
  * </p>
  * <p>
  * Identity accepts only the non-blank profile {@code openid} as its subject. Nickname and avatar remain attributes and

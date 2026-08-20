@@ -46,9 +46,9 @@ import org.miaixz.bus.fabric.UnoUrl;
 public final class EndSessionClient {
 
     /**
-     * Validated relying-party settings containing the end-session endpoint.
+     * Validated relying-party options containing the end-session endpoint.
      */
-    private final OpenIdClientSettings settings;
+    private final OpenIdClientOptions options;
 
     /**
      * Strict RP-Initiated Logout query encoder.
@@ -58,14 +58,14 @@ public final class EndSessionClient {
     /**
      * Creates an end-session client for one compiled OpenID Connect Source.
      *
-     * @param settings validated OpenID Connect client settings
-     * @param codec    strict RP-Initiated Logout request codec
+     * @param options validated OpenID Connect client options
+     * @param codec   strict RP-Initiated Logout request codec
      * @throws IllegalArgumentException if a collaborator is {@code null} or logout is not configured
      */
-    public EndSessionClient(final OpenIdClientSettings settings, final EndSessionRequestCodec codec) {
-        this.settings = Assert.notNull(settings, "OpenID Connect client settings must not be null");
+    public EndSessionClient(final OpenIdClientOptions options, final EndSessionRequestCodec codec) {
+        this.options = Assert.notNull(options, "OpenID Connect client options must not be null");
         Assert.notNull(
-                settings.endSessionEndpoint().getOrNull(),
+                options.endSessionEndpoint().getOrNull(),
                 "OpenID Connect end-session endpoint must be configured");
         this.codec = Assert.notNull(codec, "OpenID Connect end-session request codec must not be null");
     }
@@ -112,7 +112,7 @@ public final class EndSessionClient {
                     Outcome.failed(failure(ErrorCode._408, "OpenID Connect end-session request has no time budget")));
         }
         try {
-            final UnoUrl endpoint = settings.endSessionEndpoint().getOrNull().url();
+            final UnoUrl endpoint = options.endSessionEndpoint().getOrNull().url();
             return completed(Outcome.succeeded(codec.encode(endpoint, request)));
         } catch (RuntimeException exception) {
             return completed(

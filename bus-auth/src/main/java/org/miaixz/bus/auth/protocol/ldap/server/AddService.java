@@ -46,9 +46,9 @@ public final class AddService {
     private final String providerId;
 
     /**
-     * Frozen Provider settings retained for uniform construction.
+     * Frozen Provider options retained for uniform construction.
      */
-    private final LdapProviderSettings settings;
+    private final LdapServerOptions options;
 
     /**
      * External directory implementation responsible for schema and atomicity.
@@ -59,12 +59,12 @@ public final class AddService {
      * Creates an Add service for one compiled LDAP Provider.
      *
      * @param providerId compiled server-role Source identifier
-     * @param settings   validated LDAP Provider settings
+     * @param options    validated LDAP Provider options
      * @param store      externally implemented directory store
      */
-    public AddService(final String providerId, final LdapProviderSettings settings, final DirectoryStore store) {
+    public AddService(final String providerId, final LdapServerOptions options, final DirectoryStore store) {
         this.providerId = Assert.notBlank(providerId, "LDAP Add Provider id must not be blank");
-        this.settings = Assert.notNull(settings, "LDAP Add Provider settings must not be null");
+        this.options = Assert.notNull(options, "LDAP Add Provider options must not be null");
         this.store = Assert.notNull(store, "LDAP Add directory store must not be null");
     }
 

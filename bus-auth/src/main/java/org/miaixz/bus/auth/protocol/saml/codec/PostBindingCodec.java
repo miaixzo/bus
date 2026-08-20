@@ -269,7 +269,6 @@ public final class PostBindingCodec {
      * @return typed secure document retaining the original XML
      * @throws ValidateException if the selected type is unsupported
      */
-    @SuppressWarnings("unchecked")
     private <T> SamlMessageCodec.Document<T> decodeDocument(final byte[] xml, final Class<T> messageType) {
         if (messageType == AuthnRequest.class) {
             return (SamlMessageCodec.Document<T>) messageCodec.decodeAuthnRequest(xml);

@@ -18,24 +18,24 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the Afdian creator-account Vendor definition and externally managed client settings.
+ * Declares the Afdian creator-account Vendor manifest and externally managed client options.
  * <p>
- * AfdianDefinition exposes the single {@code afdian/default} VENDOR_AUTH variant with fixed public authorization and
+ * AfdianManifest exposes the single {@code afdian/default} VENDOR_AUTH variant with fixed public authorization and
  * identity-exchange endpoints, the {@code basic} default scope, CLIENT_SECRET credential type, and browser initiate and
- * complete capabilities. AfdianSourceSettings accepts only the platform routing keys, public client identifier,
- * credential reference, exact registered callback, and ordered requested scopes.
+ * complete capabilities. AfdianOptions accepts only the platform routing keys, public client identifier, credential
+ * reference, exact registered callback, and ordered requested scopes.
  * </p>
  * <p>
- * Management catalogs and Vendor compilation consume this package. The concrete adapter remains in the non-exported
- * internal package. Callers do not provide Afdian's fixed endpoints or its private response shape, and this package
- * does not publish an OAuth TokenResponse, OAuth UserInfo, platform token DTO, custom scope enum, transport behavior,
- * or credential value.
+ * Management catalogs and Vendor compilation consume this package. The concrete adapter is co-located with its manifest
+ * and options and is instantiated only by the framework Vendor suite. Callers do not provide Afdian's fixed endpoints
+ * or its private response shape, and this package does not publish an OAuth TokenResponse, OAuth UserInfo, platform
+ * token DTO, custom scope enum, transport behavior, or credential value.
  * </p>
  * <p>
  * Routing is fixed to one variant, credentials must reference CLIENT_SECRET, callback ownership is exact, and scopes
- * are immutable non-blank platform values. The definition deliberately declares VENDOR_AUTH because the token
- * endpoint's private JSON envelope returns {@code data.user_id} as the terminal identity rather than a
- * standards-compliant OAuth token response. Only that verified stable user identifier may become the external subject.
+ * are immutable non-blank platform values. The manifest deliberately declares VENDOR_AUTH because the token endpoint's
+ * private JSON envelope returns {@code data.user_id} as the terminal identity rather than a standards-compliant OAuth
+ * token response. Only that verified stable user identifier may become the external subject.
  * </p>
  *
  * @author Kimi Liu

@@ -20,11 +20,8 @@
 package org.miaixz.bus.auth.protocol.oauth2;
 
 import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientSettings;
-import org.miaixz.bus.auth.protocol.oauth2.internal.OAuth2ProviderDriver;
-import org.miaixz.bus.auth.protocol.oauth2.internal.OAuth2SourceDriver;
-import org.miaixz.bus.auth.protocol.oauth2.server.OAuth2ProviderSettings;
-import org.miaixz.bus.auth.provider.ProviderDriver;
+import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientOptions;
+import org.miaixz.bus.auth.protocol.oauth2.server.OAuth2ServerOptions;
 import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.core.net.Protocol;
 
@@ -74,7 +71,7 @@ public final class OAuth2 {
      *
      * @return new OAuth 2.x Provider driver
      */
-    public static ProviderDriver<OAuth2ProviderSettings> provider() {
+    public static SourceDriver<OAuth2ServerOptions> provider() {
         return new OAuth2ProviderDriver();
     }
 
@@ -83,7 +80,7 @@ public final class OAuth2 {
      *
      * @return new OAuth 2.x Source driver
      */
-    public static SourceDriver<OAuth2ClientSettings> source() {
+    public static SourceDriver<OAuth2ClientOptions> source() {
         return new OAuth2SourceDriver();
     }
 

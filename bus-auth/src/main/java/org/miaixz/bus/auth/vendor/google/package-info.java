@@ -20,18 +20,18 @@
 /**
  * Declares the Google web-server OpenID Connect Source variant.
  * <p>
- * GoogleDefinition fixes {@code google/default}, issuer {@code https://accounts.google.com}, Discovery, authorization,
+ * GoogleManifest fixes {@code google/default}, issuer {@code https://accounts.google.com}, Discovery, authorization,
  * token, refresh, JWKS, UserInfo, and revocation endpoints, CLIENT_SECRET form authentication, required S256 PKCE,
  * RS256 ID Tokens, and the exact {@code openid profile email} scopes. Its manifest publishes Source authentication and
  * the standard OIDC authentication, token, revocation, Discovery, JWKS, and UserInfo operations.
  * </p>
  * <p>
- * GoogleSourceSettings contains routing, client, secret-reference, exact HTTPS redirect URI, and those three scopes. It
- * cannot configure endpoints, issuer, algorithms, PKCE, tokeninfo, implicit or hybrid flow, device flow, JavaScript
- * callbacks, hosted-domain policy, incremental authorization, DPoP, introspection, or RP-Initiated Logout.
+ * GoogleOptions contains routing, client, secret-reference, exact HTTPS redirect URI, and those three scopes. It cannot
+ * configure endpoints, issuer, algorithms, PKCE, tokeninfo, implicit or hybrid flow, device flow, JavaScript callbacks,
+ * hosted-domain policy, incremental authorization, DPoP, introspection, or RP-Initiated Logout.
  * </p>
  * <p>
- * Remote metadata can only confirm the frozen definition and cannot rewrite it. Source identity is the locally verified
+ * Remote metadata can only confirm the frozen manifest and cannot rewrite it. Source identity is the locally verified
  * ID Token {@code sub}, which must equal UserInfo {@code sub}; email, hosted domain, names, and profile data remain
  * standard claims and never replace the subject. The documented legacy token issuer is an explicit verification
  * deviation, not an alternative configured issuer.

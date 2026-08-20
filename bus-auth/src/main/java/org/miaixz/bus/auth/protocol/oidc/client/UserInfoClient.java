@@ -29,7 +29,7 @@ import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oidc.UserInfoRequest;
 import org.miaixz.bus.auth.protocol.oidc.UserInfoResponse;
 import org.miaixz.bus.auth.protocol.oidc.codec.UserInfoCodec;
-import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -47,9 +47,9 @@ import org.miaixz.bus.fabric.Fabric;
 public final class UserInfoClient {
 
     /**
-     * Validated relying-party settings containing the UserInfo endpoint.
+     * Validated relying-party options containing the UserInfo endpoint.
      */
-    private final OpenIdClientSettings settings;
+    private final OpenIdClientOptions options;
 
     /**
      * Caller-owned runtime dependencies and Fabric context.
@@ -64,15 +64,15 @@ public final class UserInfoClient {
     /**
      * Creates a UserInfo client for one compiled OpenID Connect Source.
      *
-     * @param settings validated OpenID Connect client settings
+     * @param options  validated OpenID Connect client options
      * @param services externally owned runtime dependencies
      * @param codec    strict UserInfo codec
      * @throws IllegalArgumentException if a collaborator is {@code null} or UserInfo is not configured
      */
-    public UserInfoClient(final OpenIdClientSettings settings, final ExecutionServices services,
+    public UserInfoClient(final OpenIdClientOptions options, final ExecutionServices services,
             final UserInfoCodec codec) {
-        this.settings = Assert.notNull(settings, "OpenID Connect client settings must not be null");
-        Assert.notNull(settings.userInfoEndpoint().getOrNull(), "OpenID Connect UserInfo endpoint must be configured");
+        this.options = Assert.notNull(options, "OpenID Connect client options must not be null");
+        Assert.notNull(options.userInfoEndpoint().getOrNull(), "OpenID Connect UserInfo endpoint must be configured");
         this.services = Assert.notNull(services, "OpenID Connect execution services must not be null");
         this.codec = Assert.notNull(codec, "OpenID Connect UserInfo codec must not be null");
     }
@@ -165,7 +165,7 @@ public final class UserInfoClient {
                 return Outcome
                         .failed(failure(ErrorCode._408, "OpenID Connect UserInfo request exhausted its time budget"));
             }
-            final var endpoint = settings.userInfoEndpoint().getOrNull();
+            final var endpoint = options.userInfoEndpoint().getOrNull();
             final var response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
                     .method(Http.Method.GET)
                     .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + request.accessToken())

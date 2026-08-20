@@ -32,7 +32,7 @@
  * Dependencies flow from specialized second-level packages toward these contracts. Root types use Bus core and
  * provider-neutral transport or JSON value primitives only; they do not import protocol implementations, Vendor
  * adapters, registry implementations, runtime assembly, or project persistence. External projects provide data and
- * ports through the relevant specialized service and resolver packages.
+ * ports through the relevant specialized worker, parser, and service packages.
  * </p>
  * <p>
  * These objects are framework control-plane and invocation values, not protocol wire documents. A transport adapter

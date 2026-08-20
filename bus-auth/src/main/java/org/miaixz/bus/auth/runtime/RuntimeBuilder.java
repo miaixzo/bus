@@ -22,25 +22,23 @@ package org.miaixz.bus.auth.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.auth.Authenticator;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.protocol.ldap.Ldap;
-import org.miaixz.bus.auth.protocol.oauth1.OAuth1;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.auth.protocol.radius.Radius;
 import org.miaixz.bus.auth.protocol.saml.Saml;
 import org.miaixz.bus.auth.protocol.scim.Scim;
-import org.miaixz.bus.auth.registry.RegistrationLoader;
+import org.miaixz.bus.auth.registry.AtomicRegistryState;
+import org.miaixz.bus.auth.registry.DefaultRegistry;
 import org.miaixz.bus.auth.registry.RegistrationValidator;
-import org.miaixz.bus.auth.registry.RegistryListener;
-import org.miaixz.bus.auth.registry.internal.AtomicRegistryState;
-import org.miaixz.bus.auth.registry.internal.DefaultRegistry;
-import org.miaixz.bus.auth.registry.spi.RegistryView;
-import org.miaixz.bus.auth.runtime.internal.SnapshotCompiler;
-import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.registry.RegistryView;
 import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorModule;
+import org.miaixz.bus.auth.worker.RegistrationLoader;
+import org.miaixz.bus.auth.worker.RegistryListener;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
@@ -83,34 +81,29 @@ public final class RuntimeBuilder {
     private boolean built;
 
     /**
-     * Creates an empty internal builder used only by the two named assembly factories.
+     * Creates an empty private builder used only by the two named assembly factories.
      *
-     * @param services           complete externally owned execution services
-     * @param registrationLoader external complete registration snapshot loader
+     * @param services complete externally owned execution services
      */
-    private RuntimeBuilder(final ExecutionServices services, final RegistrationLoader registrationLoader) {
+    private RuntimeBuilder(final ExecutionServices services) {
         this.services = Assert.notNull(services, "Runtime execution services must not be null");
-        this.registrationLoader = Assert.notNull(registrationLoader, "Registration loader must not be null");
+        this.registrationLoader = services.registrationLoader();
         this.sources = new ArrayList<>();
-        this.listeners = new ArrayList<>();
+        this.listeners = new ArrayList<>(services.registryListeners());
     }
 
     /**
      * Creates a standard one-shot builder containing every built-in protocol and Vendor implementation.
      *
-     * @param services           complete externally owned execution services
-     * @param registrationLoader external complete registration snapshot loader
+     * @param services complete externally owned execution services
      * @return builder with the complete built-in implementation set
      * @throws IllegalArgumentException if an argument is {@code null} or a built-in contribution is invalid
      */
-    public static RuntimeBuilder standard(
-            final ExecutionServices services,
-            final RegistrationLoader registrationLoader) {
-        final RuntimeBuilder builder = new RuntimeBuilder(services, registrationLoader);
+    public static RuntimeBuilder standard(final ExecutionServices services) {
+        final RuntimeBuilder builder = new RuntimeBuilder(services);
         final VendorModule vendors = Vendor.module();
         return builder.sources(
                 List.of(
-                        OAuth1.source(),
                         OAuth2.source(),
                         OAuth2.provider(),
                         OpenIdConnect.source(),
@@ -127,13 +120,12 @@ public final class RuntimeBuilder {
     /**
      * Creates an empty one-shot builder for an explicitly selected implementation set.
      *
-     * @param services           complete externally owned execution services
-     * @param registrationLoader external complete registration snapshot loader
+     * @param services complete externally owned execution services
      * @return empty custom builder
      * @throws IllegalArgumentException if an argument is {@code null}
      */
-    public static RuntimeBuilder custom(final ExecutionServices services, final RegistrationLoader registrationLoader) {
-        return new RuntimeBuilder(services, registrationLoader);
+    public static RuntimeBuilder custom(final ExecutionServices services) {
+        return new RuntimeBuilder(services);
     }
 
     /**
@@ -197,9 +189,10 @@ public final class RuntimeBuilder {
         final RegistryView initial = snapshotCompiler.compile(snapshot);
         final AtomicRegistryState state = new AtomicRegistryState(initial);
         final Registry registry = new DefaultRegistry(state);
+        final Authenticator authenticator = new DefaultAuthenticator(state);
         final RuntimeReloadService reloadService = new RuntimeReloadService(registrationLoader,
                 new RegistrationValidator(), snapshotCompiler, state, List.copyOf(listeners));
-        return new AuthRuntime(registry, reloadService);
+        return new AuthRuntime(registry, authenticator, reloadService);
     }
 
     /**

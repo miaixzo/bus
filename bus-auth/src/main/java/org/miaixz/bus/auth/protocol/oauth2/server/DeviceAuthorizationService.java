@@ -29,12 +29,12 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.cache.DeviceCodeStore;
+import org.miaixz.bus.auth.cache.DeviceCodeCache;
 import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.guard.ScopeValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
-import org.miaixz.bus.auth.resolver.ClientResolver;
-import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.resolver.ConsumerMetadata;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -95,12 +95,12 @@ public final class DeviceAuthorizationService {
     private final String providerId;
 
     /**
-     * Frozen Provider settings supplying grant, lifetime, interval, and verification URI policy.
+     * Frozen Provider options supplying grant, lifetime, interval, and verification URI policy.
      */
-    private final OAuth2ProviderSettings settings;
+    private final OAuth2ServerOptions options;
 
     /**
-     * Externally implemented client resolver and atomic device-code store.
+     * External client loader and framework atomic device-code cache.
      */
     private final ExecutionServices services;
 
@@ -118,15 +118,15 @@ public final class DeviceAuthorizationService {
      * Creates a device authorization service for one compiled OAuth Provider.
      *
      * @param providerId     compiled server-role Source identifier
-     * @param settings       validated Provider settings
+     * @param options        validated Provider options
      * @param services       caller-owned runtime dependencies
      * @param scopeValidator standard scope validator
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public DeviceAuthorizationService(final String providerId, final OAuth2ProviderSettings settings,
+    public DeviceAuthorizationService(final String providerId, final OAuth2ServerOptions options,
             final ExecutionServices services, final ScopeValidator scopeValidator) {
         this.providerId = Assert.notBlank(providerId, "OAuth 2.x Provider id must not be blank");
-        this.settings = Assert.notNull(settings, "OAuth 2.x Provider settings must not be null");
+        this.options = Assert.notNull(options, "OAuth 2.x Provider options must not be null");
         this.services = Assert.notNull(services, "OAuth 2.x execution services must not be null");
         this.scopeValidator = Assert.notNull(scopeValidator, "OAuth 2.x scope validator must not be null");
         final int entropyBits = Math.max(
@@ -202,8 +202,8 @@ public final class DeviceAuthorizationService {
                                     OAuth2ErrorCode.TEMPORARILY_UNAVAILABLE,
                                     "OAuth 2.x device authorization has no remaining time budget")));
         }
-        if (!settings.grantTypesSupported().contains(GrantType.DEVICE_CODE)
-                || settings.deviceAuthorizationEndpoint().isEmpty() || settings.deviceVerificationUri().isEmpty()) {
+        if (!options.grantTypesSupported().contains(GrantType.DEVICE_CODE)
+                || options.deviceAuthorizationEndpoint().isEmpty() || options.deviceVerificationUri().isEmpty()) {
             return completed(
                     Outcome.rejected(
                             failure(
@@ -221,9 +221,11 @@ public final class DeviceAuthorizationService {
                                     "OAuth 2.x device authorization client binding is invalid")));
         }
 
-        final CompletionStage<Outcome<ClientResolver.Client>> resolution;
+        final CompletionStage<Outcome<ConsumerMetadata>> resolution;
         try {
-            resolution = services.clientResolver().resolve(clientId, context, timeout);
+            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
+                    services.consumerLoader().load(clientId, context, timeout),
+                    loaded -> services.consumerParser().parse(clientId, loaded));
         } catch (RuntimeException exception) {
             return completed(
                     Outcome.failed(
@@ -235,14 +237,14 @@ public final class DeviceAuthorizationService {
         return resolution
                 .handle(
                         (outcome, thrown) -> thrown == null && outcome != null ? outcome
-                                : Outcome.<ClientResolver.Client>failed(
+                                : Outcome.<ConsumerMetadata>failed(
                                         failure(
                                                 ErrorCode._500,
                                                 OAuth2ErrorCode.SERVER_ERROR,
                                                 "OAuth 2.x device authorization client resolution failed")))
                 .thenCompose(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<ClientResolver.Client> success -> {
-                        final ClientResolver.Client client = success.value();
+                    case Outcome.Succeeded<ConsumerMetadata> success -> {
+                        final ConsumerMetadata client = success.value();
                         if (client == null || !clientId.equals(client.id())) {
                             yield completed(
                                     Outcome.rejected(
@@ -271,13 +273,13 @@ public final class DeviceAuthorizationService {
                         }
                         yield create(clientId, scope, timeout, 1);
                     }
-                    case Outcome.Rejected<ClientResolver.Client> rejected -> completed(
+                    case Outcome.Rejected<ConsumerMetadata> rejected -> completed(
                             Outcome.rejected(
                                     failure(
                                             rejected.failure().error(),
                                             OAuth2ErrorCode.INVALID_CLIENT,
                                             "OAuth 2.x device authorization client was rejected")));
-                    case Outcome.Failed<ClientResolver.Client> failed -> completed(
+                    case Outcome.Failed<ConsumerMetadata> failed -> completed(
                             Outcome.failed(
                                     failure(
                                             failed.failure().error(),
@@ -310,15 +312,15 @@ public final class DeviceAuthorizationService {
         }
         final String deviceCode = deviceCode();
         final String userCode = userCode();
-        final Instant expiresAt = timeout.clock().now().plus(settings.deviceCodeLifetime());
-        final DeviceCodeStore.Entry entry = new DeviceCodeStore.Entry(providerId, clientId, userCode, scope,
-                DeviceCodeStore.Status.PENDING, settings.devicePollingInterval(), Optional.empty(), Optional.empty());
+        final Instant expiresAt = timeout.clock().now().plus(options.deviceCodeLifetime());
+        final DeviceCodeCache.Entry entry = new DeviceCodeCache.Entry(providerId, clientId, userCode, scope,
+                DeviceCodeCache.Status.PENDING, options.devicePollingInterval(), Optional.empty(), Optional.empty());
         final CompletionStage<Boolean> creation;
         try {
-            creation = services.deviceCodeStore().create(
+            creation = services.deviceCodeCache().create(
                     key(deviceCode),
                     new ExpiringValue<>(entry, expiresAt),
-                    settings.deviceCodeLifetime().toMillis());
+                    options.deviceCodeLifetime().toMillis());
         } catch (RuntimeException exception) {
             return completed(
                     Outcome.failed(
@@ -348,28 +350,28 @@ public final class DeviceAuthorizationService {
                                                 OAuth2ErrorCode.SERVER_ERROR,
                                                 "OAuth 2.x device authorization code allocation failed")));
                     }
-                    final String verificationUri = settings.deviceVerificationUri().getOrNull();
+                    final String verificationUri = options.deviceVerificationUri().getOrNull();
                     final String complete = UnoUrl.parse(verificationUri).newBuilder()
                             .query(OAuth2.Parameters.USER_CODE, userCode).build().toString();
                     return completed(
                             Outcome.succeeded(
                                     new DeviceAuthorizationResponse(deviceCode, userCode, verificationUri,
-                                            Optional.of(complete), settings.deviceCodeLifetime().toSeconds(),
-                                            Optional.of(settings.devicePollingInterval().toSeconds()))));
+                                            Optional.of(complete), options.deviceCodeLifetime().toSeconds(),
+                                            Optional.of(options.devicePollingInterval().toSeconds()))));
                 });
     }
 
     /**
-     * Validates the requested scope against the client and server-role Source settings.
+     * Validates the requested scope against the client and server-role Source options.
      *
      * @param scope  requested scope-token list
      * @param client resolved client registration
      * @return whether every scope is allowed
      */
-    private boolean validScope(final List<String> scope, final ClientResolver.Client client) {
+    private boolean validScope(final List<String> scope, final ConsumerMetadata client) {
         try {
             scopeValidator.validateRequested(scope, client.scopes());
-            scopeValidator.validateRequested(scope, settings.scopesSupported());
+            scopeValidator.validateRequested(scope, options.scopesSupported());
             return true;
         } catch (RuntimeException exception) {
             return false;
@@ -394,7 +396,7 @@ public final class DeviceAuthorizationService {
      * Produces a Provider-isolated irreversible key for an opaque device code.
      *
      * @param deviceCode generated opaque device code
-     * @return hexadecimal SHA-256 Store key
+     * @return hexadecimal SHA-256 cache key
      */
     private String key(final String deviceCode) {
         return Builder.sha256Hex(providerId + '\0' + deviceCode);

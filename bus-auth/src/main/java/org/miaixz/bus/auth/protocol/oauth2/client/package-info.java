@@ -22,9 +22,9 @@
  * <p>
  * {@link org.miaixz.bus.auth.protocol.oauth2.client.OAuth2Client} aggregates authorization, token, introspection,
  * revocation, device authorization, and metadata operations selected by
- * {@link org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientSettings}. Operation-specific clients preserve their
+ * {@link org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientOptions}. Operation-specific clients preserve their
  * corresponding standard request and response types, and
- * {@link org.miaixz.bus.auth.protocol.oauth2.client.OAuth2SourceProfile} publishes only the capabilities supported by
+ * {@link org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme} publishes only the capabilities supported by
  * the generic client registration.
  * </p>
  * <p>

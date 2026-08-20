@@ -18,25 +18,25 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the public Ximalaya OAuth Vendor definition and externally loaded settings.
+ * Declares the public Ximalaya OAuth Vendor manifest and externally loaded options.
  * <p>
- * XimalayaDefinition fixes {@code ximalaya/default}, authorization, token, and profile endpoints, CLIENT_SECRET_POST,
+ * XimalayaManifest fixes {@code ximalaya/default}, authorization, token, and profile endpoints, CLIENT_SECRET_POST,
  * prohibited PKCE, empty scope, and redirect Source authentication plus standard OAuth authorization. It does not
  * publish token capability because the historical token response omits mandatory {@code token_type}. Authorization and
  * callback device binding, private token fields, signed profile query, closed error vocabularies, and profile identity
  * fields remain registered private deviations.
  * </p>
  * <p>
- * XimalayaSourceSettings contains routing, application ID, external Client Secret reference, exact registered HTTP or
- * HTTPS callback, empty scopes, and bounded official {@code deviceId}, {@code clientOsType}, and {@code packageId}
- * selectors. The OS type must be one of 1, 2, or 3. Fixed endpoints, signature construction, response parsing, and
- * identity binding cannot be externally supplied.
+ * XimalayaOptions contains routing, application ID, external Client Secret reference, exact registered HTTP or HTTPS
+ * callback, empty scopes, and bounded official {@code deviceId}, {@code clientOsType}, and {@code packageId} selectors.
+ * The OS type must be one of 1, 2, or 3. Fixed endpoints, signature construction, response parsing, and identity
+ * binding cannot be externally supplied.
  * </p>
  * <p>
  * This exported package is registration metadata; execution enters a Registry-obtained Provider. Callback device ID
- * must equal settings, and profile {@code id} must equal token {@code uid}; only that bound ID becomes subject.
- * Secrets, state, codes, tokens, device/package identifiers, signature material, bodies, and diagnostics must not enter
- * Context, tracing, logs, or public failures.
+ * must equal options, and profile {@code id} must equal token {@code uid}; only that bound ID becomes subject. Secrets,
+ * state, codes, tokens, device/package identifiers, signature material, bodies, and diagnostics must not enter Context,
+ * tracing, logs, or public failures.
  * </p>
  *
  * @author Kimi Liu

@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
- * Holds the immutable creation-time directory of all explicitly contributed Vendor definitions and variants.
+ * Holds the immutable creation-time directory of all explicitly contributed Vendor manifests and variants.
  * <p>
  * The directory performs no reflection, service loading, endpoint execution, Registry access, or post-construction
  * registration.
@@ -41,126 +41,123 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public final class VendorDirectory {
 
     /**
-     * Vendor definitions retained in deterministic construction order.
+     * Vendor manifests retained in deterministic construction order.
      */
-    private final List<VendorDefinition<?>> definitions;
+    private final List<VariantManifest<?>> manifests;
 
     /**
      * Immutable platform lookup index.
      */
-    private final Map<Vendor.Id, VendorDefinition<?>> definitionsById;
+    private final Map<Vendor.Id, VariantManifest<?>> manifestsById;
 
     /**
      * Immutable variant lookup index grouped by platform identifier.
      */
-    private final Map<Vendor.Id, Map<Vendor.Variant, VendorDefinition.Definition>> variantDefinitionsById;
+    private final Map<Vendor.Id, Map<Vendor.Variant, VariantManifest.Variant>> variantsById;
 
     /**
      * Creates and freezes a directory whose platform and per-platform variant identifiers are unique.
      *
-     * @param definitions complete explicitly assembled Vendor definition list
-     * @throws IllegalArgumentException if a list member or required definition value is null
-     * @throws ValidateException        if a platform is duplicated or a definition has no variant or duplicate variants
+     * @param manifests complete explicitly assembled Vendor manifest list
+     * @throws IllegalArgumentException if a list member or required manifest value is null
+     * @throws ValidateException        if a platform is duplicated or a manifest has no variant or duplicate variants
      */
-    public VendorDirectory(final List<VendorDefinition<?>> definitions) {
-        Assert.notNull(definitions, "Vendor definitions must not be null");
-        final List<VendorDefinition<?>> orderedDefinitions = new ArrayList<>(definitions.size());
-        final Map<Vendor.Id, VendorDefinition<?>> definitionsById = new LinkedHashMap<>(definitions.size());
-        final Map<Vendor.Id, Map<Vendor.Variant, VendorDefinition.Definition>> variantDefinitionsById = new LinkedHashMap<>(
-                definitions.size());
-        for (VendorDefinition<?> candidateDefinition : definitions) {
-            final VendorDefinition<?> vendorDefinition = Assert
-                    .notNull(candidateDefinition, "Vendor definition must not be null");
-            final Vendor.Id vendorId = Assert.notNull(vendorDefinition.type(), "Vendor definition id must not be null");
-            if (definitionsById.putIfAbsent(vendorId, vendorDefinition) != null) {
-                throw new ValidateException("Duplicate Vendor definition id: " + vendorId.value());
+    public VendorDirectory(final List<VariantManifest<?>> manifests) {
+        Assert.notNull(manifests, "Vendor manifests must not be null");
+        final List<VariantManifest<?>> orderedManifests = new ArrayList<>(manifests.size());
+        final Map<Vendor.Id, VariantManifest<?>> manifestsById = new LinkedHashMap<>(manifests.size());
+        final Map<Vendor.Id, Map<Vendor.Variant, VariantManifest.Variant>> variantsById = new LinkedHashMap<>(
+                manifests.size());
+        for (VariantManifest<?> candidateManifest : manifests) {
+            final VariantManifest<?> manifest = Assert.notNull(candidateManifest, "Vendor manifest must not be null");
+            final Vendor.Id vendorId = Assert.notNull(manifest.vendor(), "Vendor manifest id must not be null");
+            if (manifestsById.putIfAbsent(vendorId, manifest) != null) {
+                throw new ValidateException("Duplicate Vendor manifest id: " + vendorId.value());
             }
-            final List<VendorDefinition.Definition> variantDefinitions = Assert
-                    .notNull(vendorDefinition.variants(), "Vendor definition variants must not be null");
-            if (variantDefinitions.isEmpty()) {
-                throw new ValidateException("Vendor definition must declare at least one variant: " + vendorId.value());
+            final List<VariantManifest.Variant> variants = Assert
+                    .notNull(manifest.variants(), "Vendor manifest variants must not be null");
+            if (variants.isEmpty()) {
+                throw new ValidateException("Vendor manifest must declare at least one variant: " + vendorId.value());
             }
-            final Map<Vendor.Variant, VendorDefinition.Definition> definitionsByVariant = new LinkedHashMap<>(
-                    variantDefinitions.size());
-            for (VendorDefinition.Definition variantDefinition : variantDefinitions) {
-                final VendorDefinition.Definition checkedVariantDefinition = Assert
-                        .notNull(variantDefinition, "Vendor variant definition must not be null");
-                if (!vendorId.equals(checkedVariantDefinition.platform())) {
-                    throw new ValidateException("Vendor variant platform does not match its owning definition: "
-                            + vendorId.value() + Symbol.SLASH + checkedVariantDefinition.variant().value());
+            final Map<Vendor.Variant, VariantManifest.Variant> variantsByKey = new LinkedHashMap<>(variants.size());
+            for (VariantManifest.Variant variant : variants) {
+                final VariantManifest.Variant checkedVariant = Assert
+                        .notNull(variant, "Vendor variant must not be null");
+                if (!vendorId.equals(checkedVariant.platform())) {
+                    throw new ValidateException("Vendor variant platform does not match its owning manifest: "
+                            + vendorId.value() + Symbol.SLASH + checkedVariant.variant().value());
                 }
-                if (definitionsByVariant
-                        .putIfAbsent(checkedVariantDefinition.variant(), checkedVariantDefinition) != null) {
+                if (variantsByKey.putIfAbsent(checkedVariant.variant(), checkedVariant) != null) {
                     throw new ValidateException("Duplicate Vendor variant " + vendorId.value() + Symbol.SLASH
-                            + checkedVariantDefinition.variant().value());
+                            + checkedVariant.variant().value());
                 }
             }
-            orderedDefinitions.add(vendorDefinition);
-            variantDefinitionsById.put(vendorId, Map.copyOf(definitionsByVariant));
+            orderedManifests.add(manifest);
+            variantsById.put(vendorId, Map.copyOf(variantsByKey));
         }
-        this.definitions = List.copyOf(orderedDefinitions);
-        this.definitionsById = Map.copyOf(definitionsById);
-        this.variantDefinitionsById = Map.copyOf(variantDefinitionsById);
+        this.manifests = List.copyOf(orderedManifests);
+        this.manifestsById = Map.copyOf(manifestsById);
+        this.variantsById = Map.copyOf(variantsById);
     }
 
     /**
-     * Returns all Vendor definitions in deterministic construction order.
+     * Returns all Vendor manifests in deterministic construction order.
      *
-     * @return immutable Vendor definition list
+     * @return immutable Vendor manifest list
      */
-    public List<VendorDefinition<?>> definitions() {
-        return definitions;
+    public List<VariantManifest<?>> manifests() {
+        return manifests;
     }
 
     /**
-     * Finds a Vendor definition by its exact stable identifier.
+     * Finds a Vendor manifest by its exact stable identifier.
      *
      * @param id platform identifier
-     * @return matching definition or empty when absent
+     * @return matching manifest or empty when absent
      */
-    public Optional<VendorDefinition<?>> find(final Vendor.Id id) {
-        Assert.notNull(id, "Vendor definition id must not be null");
-        return Optional.ofNullable(definitionsById.get(id));
+    public Optional<VariantManifest<?>> find(final Vendor.Id id) {
+        Assert.notNull(id, "Vendor manifest id must not be null");
+        return Optional.ofNullable(manifestsById.get(id));
     }
 
     /**
-     * Returns the unique Vendor definition registered under an identifier.
+     * Returns the unique Vendor manifest registered under an identifier.
      *
      * @param id platform identifier
-     * @return matching immutable definition
+     * @return matching immutable manifest
      * @throws IllegalArgumentException if the identifier is null
-     * @throws ValidateException        if no definition is registered
+     * @throws ValidateException        if no manifest is registered
      */
-    public VendorDefinition<?> require(final Vendor.Id id) {
-        Assert.notNull(id, "Vendor definition id must not be null");
-        final VendorDefinition<?> vendorDefinition = definitionsById.get(id);
-        if (vendorDefinition == null) {
-            throw new ValidateException("Vendor definition not found: " + id.value());
+    public VariantManifest<?> require(final Vendor.Id id) {
+        Assert.notNull(id, "Vendor manifest id must not be null");
+        final VariantManifest<?> manifest = manifestsById.get(id);
+        if (manifest == null) {
+            throw new ValidateException("Vendor manifest not found: " + id.value());
         }
-        return vendorDefinition;
+        return manifest;
     }
 
     /**
-     * Returns the unique definition registered for a platform and variant pair.
+     * Returns the unique variant registered for a platform and variant pair.
      *
-     * @param id      platform identifier
-     * @param variant platform variant identifier
-     * @return matching immutable variant definition
+     * @param id        platform identifier
+     * @param variantId platform variant identifier
+     * @return matching immutable variant
      * @throws IllegalArgumentException if an identifier is null
      * @throws ValidateException        if the platform or variant is not registered
      */
-    public VendorDefinition.Definition require(final Vendor.Id id, final Vendor.Variant variant) {
-        Assert.notNull(id, "Vendor definition id must not be null");
-        Assert.notNull(variant, "Vendor variant must not be null");
-        final Map<Vendor.Variant, VendorDefinition.Definition> variantDefinitions = variantDefinitionsById.get(id);
-        if (variantDefinitions == null) {
-            throw new ValidateException("Vendor definition not found: " + id.value());
+    public VariantManifest.Variant require(final Vendor.Id id, final Vendor.Variant variantId) {
+        Assert.notNull(id, "Vendor manifest id must not be null");
+        Assert.notNull(variantId, "Vendor variant must not be null");
+        final Map<Vendor.Variant, VariantManifest.Variant> variants = variantsById.get(id);
+        if (variants == null) {
+            throw new ValidateException("Vendor manifest not found: " + id.value());
         }
-        final VendorDefinition.Definition variantDefinition = variantDefinitions.get(variant);
-        if (variantDefinition == null) {
-            throw new ValidateException("Vendor variant not found: " + id.value() + Symbol.SLASH + variant.value());
+        final VariantManifest.Variant variant = variants.get(variantId);
+        if (variant == null) {
+            throw new ValidateException("Vendor variant not found: " + id.value() + Symbol.SLASH + variantId.value());
         }
-        return variantDefinition;
+        return variant;
     }
 
 }

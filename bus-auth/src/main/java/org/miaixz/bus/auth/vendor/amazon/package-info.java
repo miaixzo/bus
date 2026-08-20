@@ -18,15 +18,15 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the Login with Amazon OAuth 2.0 Vendor definition and client settings.
+ * Declares the Login with Amazon OAuth 2.0 Vendor manifest and client options.
  * <p>
- * AmazonDefinition exposes the single {@code amazon/default} OAUTH2 variant with fixed authorization, token,
- * token-info, and customer-profile endpoints. It declares client_secret_post, CLIENT_SECRET, optional S256 PKCE,
- * {@code profile}, {@code profile:user_id}, and {@code postal_code} defaults, and Source authentication plus standard
- * OAuth authorization and token capabilities. Amazon token-info is recorded as a platform identity step, not RFC 7662.
+ * AmazonManifest exposes the single {@code amazon/default} OAUTH2 variant with fixed authorization, token, token-info,
+ * and customer-profile endpoints. It declares client_secret_post, CLIENT_SECRET, optional S256 PKCE, {@code profile},
+ * {@code profile:user_id}, and {@code postal_code} defaults, and Source authentication plus standard OAuth
+ * authorization and token capabilities. Amazon token-info is recorded as a platform identity step, not RFC 7662.
  * </p>
  * <p>
- * AmazonSourceSettings contains the common registration values and one explicit PKCE switch. Users cannot override the
+ * AmazonOptions contains the common registration values and one explicit PKCE switch. Users cannot override the
  * platform endpoints, client authentication, token-info transport, Bearer profile transport, or default protocol. This
  * package exports no Amazon token-info or profile DTO, custom protocol model, introspection capability, UserInfo model,
  * independent refresh operation, or private response fields.

@@ -27,13 +27,13 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.cache.AccessTokenStore;
+import org.miaixz.bus.auth.cache.AccessTokenCache;
 import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.protocol.oauth2.IntrospectionRequest;
 import org.miaixz.bus.auth.protocol.oauth2.IntrospectionResponse;
 import org.miaixz.bus.auth.protocol.oauth2.Scope;
 import org.miaixz.bus.auth.protocol.oauth2.TokenType;
-import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -43,7 +43,7 @@ import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Resolves RFC 7662 token activity from the external atomic access-token store.
+ * Resolves RFC 7662 token activity from the atomic access-token cache.
  *
  * @author Kimi Liu
  */
@@ -55,12 +55,12 @@ public final class IntrospectionService {
     private final String providerId;
 
     /**
-     * Validated Provider settings supplying the published issuer.
+     * Validated Provider options supplying the published issuer.
      */
-    private final OAuth2ProviderSettings settings;
+    private final OAuth2ServerOptions options;
 
     /**
-     * Caller-owned runtime dependencies including the access-token store.
+     * Runtime dependencies including the access-token cache.
      */
     private final ExecutionServices services;
 
@@ -68,14 +68,14 @@ public final class IntrospectionService {
      * Creates a token introspection service for one compiled server-role Source runtime.
      *
      * @param providerId compiled server-role Source identifier
-     * @param settings   validated Provider settings
+     * @param options    validated Provider options
      * @param services   externally owned runtime dependencies
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public IntrospectionService(final String providerId, final OAuth2ProviderSettings settings,
+    public IntrospectionService(final String providerId, final OAuth2ServerOptions options,
             final ExecutionServices services) {
         this.providerId = Assert.notBlank(providerId, "OAuth 2.x Provider id must not be blank");
-        this.settings = Assert.notNull(settings, "OAuth 2.x Provider settings must not be null");
+        this.options = Assert.notNull(options, "OAuth 2.x Provider options must not be null");
         this.services = Assert.notNull(services, "OAuth 2.x execution services must not be null");
     }
 
@@ -134,9 +134,9 @@ public final class IntrospectionService {
             return completed(
                     Outcome.failed(failure(ErrorCode._408, "OAuth 2.x introspection has no remaining time budget")));
         }
-        final CompletionStage<ExpiringValue<AccessTokenStore.Entry>> lookup;
+        final CompletionStage<ExpiringValue<AccessTokenCache.Entry>> lookup;
         try {
-            lookup = services.accessTokenStore().get(key(request.token()));
+            lookup = services.accessTokenCache().get(key(request.token()));
         } catch (RuntimeException exception) {
             return completed(Outcome.failed(failure(ErrorCode._500, "OAuth 2.x access token lookup failed")));
         }
@@ -159,8 +159,8 @@ public final class IntrospectionService {
      * @param stored active isolated access-token state
      * @return active standard introspection response
      */
-    private IntrospectionResponse active(final ExpiringValue<AccessTokenStore.Entry> stored) {
-        final AccessTokenStore.Entry entry = stored.value();
+    private IntrospectionResponse active(final ExpiringValue<AccessTokenCache.Entry> stored) {
+        final AccessTokenCache.Entry entry = stored.value();
         final Map<String, JsonValue> extensions = entry.actorSubjectId().isEmpty() ? Map.of()
                 : Map.of(
                         "act",
@@ -170,7 +170,7 @@ public final class IntrospectionService {
                 entry.scope().isEmpty() ? Optional.empty() : Optional.of(new Scope(entry.scope())),
                 Optional.of(entry.clientId()), Optional.empty(), Optional.of(TokenType.BEARER),
                 Optional.of(stored.expiresAt().getEpochSecond()), Optional.empty(), Optional.empty(),
-                Optional.of(entry.subjectId()), entry.audience(), Optional.of(settings.issuer()), Optional.empty());
+                Optional.of(entry.subjectId()), entry.audience(), Optional.of(options.issuer()), Optional.empty());
         return new IntrospectionResponse(true, Optional.of(metadata), new JsonValue.ObjectValue(extensions));
     }
 
@@ -178,7 +178,7 @@ public final class IntrospectionService {
      * Produces a Provider-isolated irreversible lookup key for an opaque token.
      *
      * @param token opaque token value
-     * @return SHA-256 hexadecimal store key
+     * @return SHA-256 hexadecimal cache key
      */
     private String key(final String token) {
         return Builder.sha256Hex(providerId + '\0' + token);

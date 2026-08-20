@@ -23,8 +23,8 @@
  * AuthenticationService processes a validated Authentication Request and produces the OIDC authorization result.
  * Discovery, JWK Set, UserInfo, and end-session services own their corresponding standard operations, while endpoint
  * types enforce each HTTP representation and OpenIdErrorMapper selects the protocol-defined error form.
- * {@link org.miaixz.bus.auth.protocol.oidc.server.OpenIdProviderProfile} composes the implemented OIDC capabilities
- * with the OAuth token-side capabilities declared by its settings.
+ * {@link org.miaixz.bus.auth.protocol.oidc.server.OpenIdServerScheme} composes the implemented OIDC capabilities with
+ * the OAuth token-side capabilities declared by its options.
  * </p>
  * <p>
  * This package consumes OIDC and OAuth models and codecs, verified client and subject context, consent and claim ports,

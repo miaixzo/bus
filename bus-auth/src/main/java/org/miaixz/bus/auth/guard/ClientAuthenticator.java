@@ -24,15 +24,16 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.resolver.ClientResolver;
+import org.miaixz.bus.auth.resolver.ConsumerMetadata;
 
 /**
  * Authenticates a protocol client from that protocol's real authentication-evidence boundary.
  * <p>
  * OAuth client secret methods, private-key assertions, mutual TLS, SAML, and LDAP do not share one wire credential
  * shape, so this strategy remains generic in {@code Q}. Implementations select only registered methods, resolve the
- * client through ClientResolver, keep secret material inside SecretLease scope, and use SecretGuard for comparisons.
- * Expected authentication refusal is returned as Outcome rather than encoded as a protocol response by this layer.
+ * consumer through ConsumerLoader and ConsumerParser, keep secret material inside SecretLease scope, and use
+ * SecretGuard for comparisons. Expected authentication refusal is returned as Outcome rather than encoded as a protocol
+ * response by this layer.
  * </p>
  *
  * @param <Q> formal protocol request or existing transport type carrying that protocol's authentication evidence
@@ -49,6 +50,6 @@ public interface ClientAuthenticator<Q> {
      * @param timeout shared end-to-end time budget
      * @return asynchronous internal outcome containing the immutable resolved client view
      */
-    CompletionStage<Outcome<ClientResolver.Client>> authenticate(Q request, Context context, Timeout.Budget timeout);
+    CompletionStage<Outcome<ConsumerMetadata>> authenticate(Q request, Context context, Timeout.Budget timeout);
 
 }

@@ -18,18 +18,18 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the public Stack Overflow OAuth Vendor definition and externally loaded settings.
+ * Declares the public Stack Overflow OAuth Vendor manifest and externally loaded options.
  * <p>
- * StackOverflowDefinition fixes {@code stackoverflow/default}, authorization, token, and Stack Exchange {@code /me}
+ * StackOverflowManifest fixes {@code stackoverflow/default}, authorization, token, and Stack Exchange {@code /me}
  * endpoints, default {@code read_inbox} scope, and redirect Source authentication plus standard OAuth authorization. It
  * intentionally does not publish OAuth token capability because the historical token JSON omits the mandatory
  * {@code token_type}. Comma scope, query-bearing token POST, compact token JSON, profile query
  * {@code access_token}/{@code key}/{@code site}, and the Stack Exchange items envelope remain private deviations.
  * </p>
  * <p>
- * StackOverflowSourceSettings contains routing, Client ID, Client Secret reference, exact registered HTTP or HTTPS
- * callback, a unique ordered subset of the frozen scope vocabulary, Stack Apps key, and site identifier. Fixed
- * endpoints, response parsing, query transport, envelope rules, and identity selection cannot be externally supplied.
+ * StackOverflowOptions contains routing, Client ID, Client Secret reference, exact registered HTTP or HTTPS callback, a
+ * unique ordered subset of the frozen scope vocabulary, Stack Apps key, and site identifier. Fixed endpoints, response
+ * parsing, query transport, envelope rules, and identity selection cannot be externally supplied.
  * </p>
  * <p>
  * This exported package is registration metadata; execution enters a Registry-obtained Provider. Identity is created

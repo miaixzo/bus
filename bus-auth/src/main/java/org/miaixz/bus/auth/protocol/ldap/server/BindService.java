@@ -47,9 +47,9 @@ public final class BindService {
     private final String providerId;
 
     /**
-     * Frozen Provider Bind and transport settings.
+     * Frozen Provider Bind and transport options.
      */
-    private final LdapProviderSettings settings;
+    private final LdapServerOptions options;
 
     /**
      * External connection-state and directory implementation.
@@ -60,13 +60,13 @@ public final class BindService {
      * Creates a Bind service for one compiled LDAP Provider.
      *
      * @param providerId compiled server-role Source identifier
-     * @param settings   validated LDAP Provider settings
+     * @param options    validated LDAP Provider options
      * @param store      externally implemented directory store
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public BindService(final String providerId, final LdapProviderSettings settings, final DirectoryStore store) {
+    public BindService(final String providerId, final LdapServerOptions options, final DirectoryStore store) {
         this.providerId = Assert.notBlank(providerId, "LDAP Bind Provider id must not be blank");
-        this.settings = Assert.notNull(settings, "LDAP Bind Provider settings must not be null");
+        this.options = Assert.notNull(options, "LDAP Bind Provider options must not be null");
         this.store = Assert.notNull(store, "LDAP Bind directory store must not be null");
     }
 
@@ -211,7 +211,7 @@ public final class BindService {
     }
 
     /**
-     * Validates the selected standard authentication choice against Provider settings and transport confidentiality.
+     * Validates the selected standard authentication choice against Provider options and transport confidentiality.
      *
      * @param request   validated LDAPv3 Bind request
      * @param transport effective connection transport
@@ -221,15 +221,15 @@ public final class BindService {
         if (request.authentication() instanceof AuthenticationChoice.Simple simple) {
             final boolean anonymous = request.name().value().isEmpty() && simple.password().length == 0;
             if (anonymous) {
-                return settings.anonymousBindSupported() ? null : LdapResultCode.INAPPROPRIATE_AUTHENTICATION;
+                return options.anonymousBindSupported() ? null : LdapResultCode.INAPPROPRIATE_AUTHENTICATION;
             }
-            if (!settings.simpleBindSupported()) {
+            if (!options.simpleBindSupported()) {
                 return LdapResultCode.AUTH_METHOD_NOT_SUPPORTED;
             }
             return transport == Endpoint.Transport.TLS ? null : LdapResultCode.CONFIDENTIALITY_REQUIRED;
         }
         final AuthenticationChoice.Sasl sasl = (AuthenticationChoice.Sasl) request.authentication();
-        return settings.saslMechanisms().contains(sasl.credentials().mechanism()) ? null
+        return options.saslMechanisms().contains(sasl.credentials().mechanism()) ? null
                 : LdapResultCode.AUTH_METHOD_NOT_SUPPORTED;
     }
 

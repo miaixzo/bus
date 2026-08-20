@@ -18,9 +18,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the public Toutiao OAuth Vendor definition and externally loaded settings.
+ * Declares the public Toutiao OAuth Vendor manifest and externally loaded options.
  * <p>
- * ToutiaoDefinition fixes {@code toutiao/default}, authorization, token, and profile endpoints, and exposes redirect
+ * ToutiaoManifest fixes {@code toutiao/default}, authorization, token, and profile endpoints, and exposes redirect
  * Source authentication plus standard OAuth authorization. It does not publish token capability because the historical
  * token response omits mandatory {@code token_type}. Authorization
  * {@code client_key}/{@code auth_only}/{@code display}, query-bearing empty-form token POST, private token fields, and
@@ -28,10 +28,9 @@
  * flow.
  * </p>
  * <p>
- * ToutiaoSourceSettings contains routing, official {@code client_key}, Client Secret reference, and one exact
- * registered HTTP or HTTPS callback. Scopes must remain empty because the frozen request sends none. Fixed endpoints,
- * extension query fields, token parser, profile envelope, anonymous display rule, and error mapping cannot be
- * externally supplied.
+ * ToutiaoOptions contains routing, official {@code client_key}, Client Secret reference, and one exact registered HTTP
+ * or HTTPS callback. Scopes must remain empty because the frozen request sends none. Fixed endpoints, extension query
+ * fields, token parser, profile envelope, anonymous display rule, and error mapping cannot be externally supplied.
  * </p>
  * <p>
  * This exported package is registration metadata; execution enters a Registry-obtained Provider. Only non-blank profile

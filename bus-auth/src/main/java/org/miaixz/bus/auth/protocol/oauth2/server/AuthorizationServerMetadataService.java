@@ -41,8 +41,8 @@ import org.miaixz.bus.extra.json.JsonValue;
  * Publishes RFC 8414 authorization server metadata derived solely from one validated Provider policy.
  * <p>
  * The service reports only endpoints and features that the compiled OAuth Provider can actually execute. Deployment
- * information that is not represented by {@link OAuth2ProviderSettings}, including JWK Set, documentation, policy,
- * signed metadata, dynamic registration, and DPoP transport support, remains absent.
+ * information that is not represented by {@link OAuth2ServerOptions}, including JWK Set, documentation, policy, signed
+ * metadata, dynamic registration, and DPoP transport support, remains absent.
  * </p>
  *
  * @author Kimi Liu
@@ -50,18 +50,18 @@ import org.miaixz.bus.extra.json.JsonValue;
 public final class AuthorizationServerMetadataService {
 
     /**
-     * Immutable Provider settings used as the single metadata source of truth.
+     * Immutable Provider options used as the single metadata source of truth.
      */
-    private final OAuth2ProviderSettings settings;
+    private final OAuth2ServerOptions options;
 
     /**
      * Creates a metadata service for one validated OAuth Provider.
      *
-     * @param settings validated immutable Provider settings
-     * @throws IllegalArgumentException if settings are {@code null}
+     * @param options validated immutable Provider options
+     * @throws IllegalArgumentException if options are {@code null}
      */
-    public AuthorizationServerMetadataService(final OAuth2ProviderSettings settings) {
-        this.settings = Assert.notNull(settings, "OAuth 2.x Provider settings must not be null");
+    public AuthorizationServerMetadataService(final OAuth2ServerOptions options) {
+        this.options = Assert.notNull(options, "OAuth 2.x Provider options must not be null");
     }
 
     /**
@@ -143,24 +143,24 @@ public final class AuthorizationServerMetadataService {
      * @return immutable authorization server metadata
      */
     private AuthorizationServerMetadata build() {
-        final Endpoint authorization = settings.authorizationEndpoint().getOrNull();
-        final Endpoint token = settings.tokenEndpoint().getOrNull();
-        final Endpoint revocation = settings.revocationEndpoint().getOrNull();
-        final Endpoint introspection = settings.introspectionEndpoint().getOrNull();
-        final Endpoint device = settings.deviceAuthorizationEndpoint().getOrNull();
+        final Endpoint authorization = options.authorizationEndpoint().getOrNull();
+        final Endpoint token = options.tokenEndpoint().getOrNull();
+        final Endpoint revocation = options.revocationEndpoint().getOrNull();
+        final Endpoint introspection = options.introspectionEndpoint().getOrNull();
+        final Endpoint device = options.deviceAuthorizationEndpoint().getOrNull();
         final boolean authorizationEnabled = authorization != null;
-        return new AuthorizationServerMetadata(settings.issuer(), url(authorization), url(token), Optional.empty(),
-                settings.scopesSupported().stream().sorted().toList(),
+        return new AuthorizationServerMetadata(options.issuer(), url(authorization), url(token), Optional.empty(),
+                options.scopesSupported().stream().sorted().toList(),
                 authorizationEnabled ? List.of(ResponseType.CODE) : List.of(),
                 authorizationEnabled ? List.of(OAuth2.ResponseModes.QUERY) : List.of(),
-                settings.grantTypesSupported().stream().sorted(Comparator.comparing(GrantType::value)).toList(),
-                settings.tokenEndpointAuthMethodsSupported().stream()
+                options.grantTypesSupported().stream().sorted(Comparator.comparing(GrantType::value)).toList(),
+                options.tokenEndpointAuthMethodsSupported().stream()
                         .sorted(Comparator.comparing(ClientAuthenticationMethod::value)).toList(),
                 List.of(), Optional.empty(), List.of(), Optional.empty(), Optional.empty(), url(revocation),
                 authentication(revocation), List.of(), url(introspection), authentication(introspection), List.of(),
-                authorizationEnabled && settings.pkceRequired() ? List.of(PkceMethod.S256) : List.of(),
-                Optional.empty(), url(device), authorizationEnabled ? Optional.of(Boolean.TRUE) : Optional.empty(),
-                List.of(), new JsonValue.ObjectValue(Map.of()));
+                authorizationEnabled && options.pkceRequired() ? List.of(PkceMethod.S256) : List.of(), Optional.empty(),
+                url(device), authorizationEnabled ? Optional.of(Boolean.TRUE) : Optional.empty(), List.of(),
+                new JsonValue.ObjectValue(Map.of()));
     }
 
 }

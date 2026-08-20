@@ -23,7 +23,7 @@
  * {@link org.miaixz.bus.auth.shared.audit.AuditCategory} and {@link org.miaixz.bus.auth.shared.audit.AuditOutcome}
  * provide closed classification values; {@link org.miaixz.bus.auth.shared.audit.AuditEvent} carries bounded,
  * provider-neutral event data, and {@link org.miaixz.bus.auth.shared.audit.AuditSanitizer} removes or summarizes values
- * before the event reaches an externally implemented {@link org.miaixz.bus.auth.shared.audit.AuditSink}.
+ * before the event reaches an externally implemented {@link org.miaixz.bus.auth.worker.AuditSink}.
  * </p>
  * <p>
  * Registry, runtime, protocol, Vendor, identity, and guard code emit events through the injected sink. This package

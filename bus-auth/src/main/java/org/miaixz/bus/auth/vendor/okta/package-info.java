@@ -18,25 +18,25 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the public Okta OpenID Connect Vendor definition and externally loaded settings.
+ * Declares the public Okta OpenID Connect Vendor manifest and externally loaded options.
  * <p>
- * OktaDefinition fixes {@code okta/default} to the issuer
+ * OktaManifest fixes {@code okta/default} to the issuer
  * {@code https://{instance}.okta.com/oauth2/{authorizationServerId}} and derives authorization, token, UserInfo,
  * revocation, Discovery, and JWK Set endpoints from that same authority. It publishes redirect Source authentication
  * and the standard OpenID Connect authentication, token, revocation, Discovery, JWK Set, and UserInfo capabilities,
  * requires CLIENT_SECRET_BASIC, accepts only RS256 ID Tokens, prohibits PKCE, and declares no platform wire deviation.
  * </p>
  * <p>
- * OktaSourceSettings contains only routing, Client ID, Client Secret reference, exact registered callback, unique
- * standard scopes, one canonical Okta organization label, and one bounded authorization-server identifier. Explicit
- * scopes must include {@code openid}; complete issuer or endpoint URLs, arbitrary hosts, algorithms, response models,
- * and executable Provider state cannot be supplied through settings.
+ * OktaOptions contains only routing, Client ID, Client Secret reference, exact registered callback, unique standard
+ * scopes, one canonical Okta organization label, and one bounded authorization-server identifier. Explicit scopes must
+ * include {@code openid}; complete issuer or endpoint URLs, arbitrary hosts, algorithms, response models, and
+ * executable Provider state cannot be supplied through options.
  * </p>
  * <p>
  * This exported package serves external registration and management. Invocation must enter a Provider obtained from
  * Registry and proceed through the non-exported adapter. A completed identity accepts only the cryptographically
  * verified ID Token {@code sub}, after UserInfo subject equality, as ExternalIdentity subject. Client secrets, state,
- * nonce, callback codes, tokens, JWK material, claims, and upstream documents must not enter settings diagnostics,
+ * nonce, callback codes, tokens, JWK material, claims, and upstream documents must not enter options diagnostics,
  * Context, logs, or public failure details.
  * </p>
  *

@@ -18,19 +18,19 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the public Teambition OAuth Vendor definition and externally loaded settings.
+ * Declares the public Teambition OAuth Vendor manifest and externally loaded options.
  * <p>
- * TeambitionDefinition fixes {@code teambition/default}, authorization, token, profile, and historical refresh
- * endpoints, and exposes redirect Source authentication plus standard OAuth authorization. It does not publish OAuth
- * token capability because the private token response omits mandatory {@code token_type}. The non-standard
+ * TeambitionManifest fixes {@code teambition/default}, authorization, token, profile, and historical refresh endpoints,
+ * and exposes redirect Source authentication plus standard OAuth authorization. It does not publish OAuth token
+ * capability because the private token response omits mandatory {@code token_type}. The non-standard
  * {@code grant_type=code}, compact token response, {@code Authorization: OAuth2} profile scheme, and user-bound refresh
  * endpoint are registered deviations and remain internal.
  * </p>
  * <p>
- * TeambitionSourceSettings contains only routing, Client ID, Client Secret reference, and one exact registered HTTP or
- * HTTPS callback. Scopes must be empty because the historical authorization request defines none. Fixed endpoints,
- * grant value, token parser, authorization scheme, refresh behavior, profile record, and identity key cannot be
- * supplied by external projects.
+ * TeambitionOptions contains only routing, Client ID, Client Secret reference, and one exact registered HTTP or HTTPS
+ * callback. Scopes must be empty because the historical authorization request defines none. Fixed endpoints, grant
+ * value, token parser, authorization scheme, refresh behavior, profile record, and identity key cannot be supplied by
+ * external projects.
  * </p>
  * <p>
  * This exported package is registration metadata; execution enters a Registry-obtained Provider. Only a non-blank

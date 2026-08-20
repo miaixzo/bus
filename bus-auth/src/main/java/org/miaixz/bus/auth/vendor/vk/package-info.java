@@ -18,19 +18,18 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the public VK OAuth Vendor definition and externally loaded settings.
+ * Declares the public VK OAuth Vendor manifest and externally loaded options.
  * <p>
- * VkDefinition fixes {@code vk/default}, authorization, token/refresh, private-user, and revocation endpoints,
- * mandatory S256, default {@code vkid.personal_info email}, and redirect Source authentication plus standard OAuth
- * authorization, token, and revocation capabilities. Callback and token {@code device_id} binding, VK error and
- * {@code user_id} fields, the private user envelope, and revocation form/one-marker response are explicit deviations;
- * an unverified ID token is never identity evidence.
+ * VkManifest fixes {@code vk/default}, authorization, token/refresh, private-user, and revocation endpoints, mandatory
+ * S256, default {@code vkid.personal_info email}, and redirect Source authentication plus standard OAuth authorization,
+ * token, and revocation capabilities. Callback and token {@code device_id} binding, VK error and {@code user_id}
+ * fields, the private user envelope, and revocation form/one-marker response are explicit deviations; an unverified ID
+ * token is never identity evidence.
  * </p>
  * <p>
- * VkSourceSettings contains routing, Client ID, external Client Secret reference, exact registered HTTP or HTTPS
- * callback, unique ordered VK scopes covering {@code vkid.personal_info}, and a mandatory true PKCE flag. Fixed
- * endpoints, device binding, token/profile envelopes, revocation wire, and identity rules cannot be externally
- * supplied.
+ * VkOptions contains routing, Client ID, external Client Secret reference, exact registered HTTP or HTTPS callback,
+ * unique ordered VK scopes covering {@code vkid.personal_info}, and a mandatory true PKCE flag. Fixed endpoints, device
+ * binding, token/profile envelopes, revocation wire, and identity rules cannot be externally supplied.
  * </p>
  * <p>
  * This exported package provides registration metadata; execution enters a Registry-obtained Provider. Only the

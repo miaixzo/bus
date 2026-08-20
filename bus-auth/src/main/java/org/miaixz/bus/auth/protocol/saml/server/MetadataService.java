@@ -29,7 +29,8 @@ import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.saml.*;
 import org.miaixz.bus.auth.protocol.saml.codec.MetadataCodec;
-import org.miaixz.bus.auth.resolver.CertificateResolver;
+import org.miaixz.bus.auth.resolver.CertificateMaterial;
+import org.miaixz.bus.auth.worker.CertificateLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
@@ -48,14 +49,14 @@ import org.miaixz.bus.extra.json.JsonValue;
 public final class MetadataService {
 
     /**
-     * Validated identity-provider settings.
+     * Validated identity-provider options.
      */
-    private final SamlProviderSettings settings;
+    private final SamlServerOptions options;
 
     /**
-     * External certificate-chain and trust-root resolver.
+     * External certificate loader and framework-owned certificate parser.
      */
-    private final CertificateResolver certificateResolver;
+    private final org.miaixz.bus.auth.runtime.ExecutionServices services;
 
     /**
      * Strict SAML Metadata codec and KeyInfo encoder.
@@ -65,15 +66,15 @@ public final class MetadataService {
     /**
      * Creates a Metadata publication service.
      *
-     * @param settings            validated SAML Provider settings
-     * @param certificateResolver external certificate material resolver
-     * @param metadataCodec       strict SAML Metadata codec
+     * @param options       validated SAML Provider options
+     * @param services      external loaders and pure parsers
+     * @param metadataCodec strict SAML Metadata codec
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public MetadataService(final SamlProviderSettings settings, final CertificateResolver certificateResolver,
-            final MetadataCodec metadataCodec) {
-        this.settings = Assert.notNull(settings, "SAML Provider settings must not be null");
-        this.certificateResolver = Assert.notNull(certificateResolver, "SAML certificate resolver must not be null");
+    public MetadataService(final SamlServerOptions options,
+            final org.miaixz.bus.auth.runtime.ExecutionServices services, final MetadataCodec metadataCodec) {
+        this.options = Assert.notNull(options, "SAML Provider options must not be null");
+        this.services = Assert.notNull(services, "SAML execution services must not be null");
         this.metadataCodec = Assert.notNull(metadataCodec, "SAML Metadata codec must not be null");
     }
 
@@ -94,15 +95,18 @@ public final class MetadataService {
                                     "SAML Metadata publication has no remaining time budget",
                                     new JsonValue.ObjectValue(Map.of()))));
         }
-        final CertificateResolver.Query query = new CertificateResolver.Query(settings.entityId(), "signing",
+        final CertificateLoader.Request query = new CertificateLoader.Request(options.entityId(), "signing",
                 timeout.clock().now());
-        return certificateResolver.resolve(query, context, timeout).thenApply(outcome -> switch (outcome) {
-            case Outcome.Succeeded<CertificateResolver.ResolvedCertificate> success -> Outcome
-                    .succeeded(descriptor(success.value()));
-            case Outcome.Rejected<CertificateResolver.ResolvedCertificate> rejected -> Outcome
-                    .rejected(rejected.failure());
-            case Outcome.Failed<CertificateResolver.ResolvedCertificate> failed -> Outcome.failed(failed.failure());
-        });
+        return org.miaixz.bus.auth.runtime.LoadResult
+                .parse(
+                        services.certificateLoader().load(query, context, timeout),
+                        loaded -> services.certificateParser().parse(query, loaded))
+                .thenApply(outcome -> switch (outcome) {
+                    case Outcome.Succeeded<CertificateMaterial> success -> Outcome
+                            .succeeded(descriptor(success.value()));
+                    case Outcome.Rejected<CertificateMaterial> rejected -> Outcome.rejected(rejected.failure());
+                    case Outcome.Failed<CertificateMaterial> failed -> Outcome.failed(failed.failure());
+                });
     }
 
     /**
@@ -111,21 +115,21 @@ public final class MetadataService {
      * @param certificate externally resolved certificate chain and trust roots
      * @return unsigned semantic EntityDescriptor for final Metadata encoding and signing
      */
-    private EntityDescriptor descriptor(final CertificateResolver.ResolvedCertificate certificate) {
+    private EntityDescriptor descriptor(final CertificateMaterial certificate) {
         final KeyDescriptor key = new KeyDescriptor(Optional.of(KeyDescriptor.Use.SIGNING),
                 new KeyDescriptor.KeyInfo(metadataCodec.keyInfo(certificate.chain())), List.of());
-        final SingleSignOnServiceEndpoint signOn = new SingleSignOnServiceEndpoint(settings.requestBinding(),
-                settings.singleSignOnServiceEndpoint().url().toString(), Optional.empty(), List.of(), Map.of());
-        final List<SingleLogoutServiceEndpoint> logout = settings.singleLogoutServiceEndpoint().isEmpty() ? List.of()
+        final SingleSignOnServiceEndpoint signOn = new SingleSignOnServiceEndpoint(options.requestBinding(),
+                options.singleSignOnServiceEndpoint().url().toString(), Optional.empty(), List.of(), Map.of());
+        final List<SingleLogoutServiceEndpoint> logout = options.singleLogoutServiceEndpoint().isEmpty() ? List.of()
                 : List.of(
-                        new SingleLogoutServiceEndpoint(settings.requestBinding(),
-                                settings.singleLogoutServiceEndpoint().getOrNull().url().toString(), Optional.empty(),
+                        new SingleLogoutServiceEndpoint(options.requestBinding(),
+                                options.singleLogoutServiceEndpoint().getOrNull().url().toString(), Optional.empty(),
                                 List.of(), Map.of()));
         final IdpSsoDescriptor identityProvider = new IdpSsoDescriptor(Optional.empty(), Optional.empty(),
                 Optional.empty(), List.of(IdpSsoDescriptor.PROTOCOL), Optional.empty(), Optional.empty(), List.of(),
                 List.of(key), Optional.empty(), List.of(), logout, List.of(), List.of(signOn),
-                Optional.of(settings.wantAuthnRequestsSigned()));
-        return new EntityDescriptor(settings.entityId(), Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.of(options.wantAuthnRequestsSigned()));
+        return new EntityDescriptor(options.entityId(), Optional.empty(), Optional.empty(), Optional.empty(),
                 Optional.empty(), List.of(), List.of(identityProvider), List.of(), Optional.empty(), List.of(),
                 List.of(), Map.of());
     }

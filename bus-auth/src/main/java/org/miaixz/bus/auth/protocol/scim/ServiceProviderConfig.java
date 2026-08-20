@@ -46,12 +46,12 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  */
 public record ServiceProviderConfig(List<String> schemas, Optional<String> documentationUri, Supported patch, Bulk bulk,
         FilterSupport filter, Supported changePassword, Supported sort, Supported etag,
-        List<AuthenticationScheme> authenticationSchemes, Optional<Resource.Meta> meta) implements Resource {
+        List<AuthenticationMechanism> authenticationSchemes, Optional<Resource.Meta> meta) implements Resource {
 
     /**
-     * Enforces the discovery schema, absolute documentation URI, and unique authentication scheme types.
+     * Enforces the discovery schema, absolute documentation URI, and unique authentication mechanism types.
      *
-     * @throws IllegalArgumentException if a required value, container, or scheme is {@code null}
+     * @throws IllegalArgumentException if a required value, container, or mechanism is {@code null}
      * @throws ValidateException        if a URI, schema, or duplicate authentication type is invalid
      */
     public ServiceProviderConfig {
@@ -69,10 +69,11 @@ public record ServiceProviderConfig(List<String> schemas, Optional<String> docum
         sort = Assert.notNull(sort, "SCIM sort support must not be null");
         etag = Assert.notNull(etag, "SCIM etag support must not be null");
         Assert.notNull(authenticationSchemes, "SCIM authenticationSchemes must not be null");
-        final Set<String> schemeTypes = new HashSet<>(authenticationSchemes.size());
-        for (AuthenticationScheme scheme : authenticationSchemes) {
-            final AuthenticationScheme item = Assert.notNull(scheme, "SCIM authenticationScheme must not be null");
-            if (!schemeTypes.add(item.type().toLowerCase(Locale.ROOT))) {
+        final Set<String> mechanismTypes = new HashSet<>(authenticationSchemes.size());
+        for (AuthenticationMechanism mechanism : authenticationSchemes) {
+            final AuthenticationMechanism item = Assert
+                    .notNull(mechanism, "SCIM authenticationScheme must not be null");
+            if (!mechanismTypes.add(item.type().toLowerCase(Locale.ROOT))) {
                 throw new ValidateException("SCIM authenticationScheme types must be unique ignoring case");
             }
         }
@@ -161,7 +162,7 @@ public record ServiceProviderConfig(List<String> schemas, Optional<String> docum
     }
 
     /**
-     * Describes one RFC 7643 service-provider authentication scheme.
+     * Describes one RFC 7643 service-provider authentication mechanism.
      *
      * @param type             authentication scheme type
      * @param name             human-readable authentication scheme name
@@ -170,7 +171,7 @@ public record ServiceProviderConfig(List<String> schemas, Optional<String> docum
      * @param documentationUri absolute implementation documentation URI when supplied
      * @author Kimi Liu
      */
-    public record AuthenticationScheme(String type, String name, String description, Optional<String> specUri,
+    public record AuthenticationMechanism(String type, String name, String description, Optional<String> specUri,
             Optional<String> documentationUri) {
 
         /**
@@ -179,7 +180,7 @@ public record ServiceProviderConfig(List<String> schemas, Optional<String> docum
          * @throws IllegalArgumentException if a required value or optional container is {@code null}
          * @throws ValidateException        if an optional URI is invalid
          */
-        public AuthenticationScheme {
+        public AuthenticationMechanism {
             type = Assert.notBlank(type, "SCIM authenticationScheme type must not be blank");
             name = Assert.notBlank(name, "SCIM authenticationScheme name must not be blank");
             description = Assert.notBlank(description, "SCIM authenticationScheme description must not be blank");

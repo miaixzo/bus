@@ -48,9 +48,9 @@ public final class ScimResourceService {
     private final String providerId;
 
     /**
-     * Typed Provider settings and discovery associations.
+     * Typed Provider options and discovery associations.
      */
-    private final ScimProviderSettings settings;
+    private final ScimServerOptions options;
 
     /**
      * External project implementation of resource persistence.
@@ -61,13 +61,13 @@ public final class ScimResourceService {
      * Creates a resource service for one compiled SCIM Provider.
      *
      * @param providerId compiled server-role Source identifier
-     * @param settings   typed Provider settings
+     * @param options    typed Provider options
      * @param store      externally supplied data port
      */
-    public ScimResourceService(final String providerId, final ScimProviderSettings settings,
+    public ScimResourceService(final String providerId, final ScimServerOptions options,
             final ScimResourceStore store) {
         this.providerId = Assert.notBlank(providerId, "SCIM Provider id must not be blank");
-        this.settings = Assert.notNull(settings, "SCIM Provider settings must not be null");
+        this.options = Assert.notNull(options, "SCIM Provider options must not be null");
         this.store = Assert.notNull(store, "SCIM resource store must not be null");
     }
 
@@ -261,14 +261,14 @@ public final class ScimResourceService {
             final Context context,
             final Timeout.Budget timeout) {
         require(request, context, timeout);
-        if (!settings.serviceProviderConfig().patch().supported()) {
+        if (!options.serviceProviderConfig().patch().supported()) {
             return completed(Outcome.rejected(failure(ErrorCode._400, "SCIM PATCH is disabled")));
         }
         final Outcome.Failure invalid = mutation(request.target(), request.ifMatch());
         if (invalid != null) {
             return completed(Outcome.rejected(invalid));
         }
-        if (!settings.serviceProviderConfig().changePassword().supported() && request.patch().operations().stream()
+        if (!options.serviceProviderConfig().changePassword().supported() && request.patch().operations().stream()
                 .anyMatch(operation -> operation.value().getOrNull() instanceof PatchOperation.SecretData)) {
             return completed(Outcome.rejected(failure(ErrorCode._400, "SCIM password change is disabled")));
         }
@@ -426,11 +426,11 @@ public final class ScimResourceService {
      * @return validation failure, or {@code null} when valid
      */
     private Outcome.Failure searchParameters(final SearchParameters parameters) {
-        if (!parameters.sortBy().isEmpty() && !settings.serviceProviderConfig().sort().supported()) {
+        if (!parameters.sortBy().isEmpty() && !options.serviceProviderConfig().sort().supported()) {
             return failure(ErrorCode._400, "SCIM sorting is disabled");
         }
         if (!parameters.count().isEmpty()
-                && parameters.count().getOrThrow() > settings.serviceProviderConfig().filter().maxResults()) {
+                && parameters.count().getOrThrow() > options.serviceProviderConfig().filter().maxResults()) {
             return failure(ErrorCode._400, "SCIM search count exceeds the advertised limit");
         }
         return null;
@@ -444,7 +444,7 @@ public final class ScimResourceService {
      * @return validation failure or {@code null}
      */
     private Outcome.Failure target(final ResourceTarget value, final boolean individual) {
-        if (value == null || !settings.resourceTypes().contains(value.resourceType())) {
+        if (value == null || !options.resourceTypes().contains(value.resourceType())) {
             return failure(ErrorCode._404, "SCIM resource type is not enabled");
         }
         if (individual != value.resourceId().isPresent()) {
@@ -469,7 +469,7 @@ public final class ScimResourceService {
             return invalid;
         }
         Assert.notNull(ifMatch, "SCIM If-Match container must not be null");
-        if (!settings.serviceProviderConfig().etag().supported() && !ifMatch.isEmpty()) {
+        if (!options.serviceProviderConfig().etag().supported() && !ifMatch.isEmpty()) {
             return failure(ErrorCode._412, "SCIM entity-tag preconditions are disabled");
         }
         return null;
@@ -483,11 +483,11 @@ public final class ScimResourceService {
      * @return validation failure or {@code null}
      */
     private Outcome.Failure writable(final Resource resource, final String type) {
-        if (type == null || !settings.supports(type)) {
+        if (type == null || !options.supports(type)) {
             return failure(ErrorCode._404, "SCIM resource type is not enabled");
         }
         if (resource instanceof User user && !user.password().isEmpty()
-                && !settings.serviceProviderConfig().changePassword().supported()) {
+                && !options.serviceProviderConfig().changePassword().supported()) {
             return failure(ErrorCode._400, "SCIM password change is disabled");
         }
         return null;
@@ -570,7 +570,7 @@ public final class ScimResourceService {
         if (common.id().isEmpty() || resource instanceof User user && !user.password().isEmpty()) {
             return false;
         }
-        if (settings.serviceProviderConfig().etag().supported()
+        if (options.serviceProviderConfig().etag().supported()
                 && (common.meta().isEmpty() || common.meta().getOrThrow().version().isEmpty())) {
             return false;
         }

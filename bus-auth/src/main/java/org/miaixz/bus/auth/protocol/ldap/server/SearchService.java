@@ -49,7 +49,7 @@ public final class SearchService {
     /**
      * Frozen Provider search limits.
      */
-    private final LdapProviderSettings settings;
+    private final LdapServerOptions options;
 
     /**
      * External connection-state and directory implementation.
@@ -60,13 +60,13 @@ public final class SearchService {
      * Creates a Search service for one compiled LDAP Provider.
      *
      * @param providerId compiled server-role Source identifier
-     * @param settings   validated LDAP Provider settings
+     * @param options    validated LDAP Provider options
      * @param store      externally implemented directory store
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public SearchService(final String providerId, final LdapProviderSettings settings, final DirectoryStore store) {
+    public SearchService(final String providerId, final LdapServerOptions options, final DirectoryStore store) {
         this.providerId = Assert.notBlank(providerId, "LDAP Search Provider id must not be blank");
-        this.settings = Assert.notNull(settings, "LDAP Search Provider settings must not be null");
+        this.options = Assert.notNull(options, "LDAP Search Provider options must not be null");
         this.store = Assert.notNull(store, "LDAP Search directory store must not be null");
     }
 
@@ -221,13 +221,13 @@ public final class SearchService {
      * Rebuilds the standard Search request with Provider search limits applied.
      *
      * @param request decoded Search request
-     * @return request whose size and time limits cannot exceed Provider settings
+     * @return request whose size and time limits cannot exceed Provider options
      */
     private SearchRequest bounded(final SearchRequest request) {
-        final int sizeLimit = request.sizeLimit() == 0 ? settings.maximumSearchEntries()
-                : Math.min(request.sizeLimit(), settings.maximumSearchEntries());
-        final int timeLimit = request.timeLimit() == 0 ? settings.maximumSearchTimeSeconds()
-                : Math.min(request.timeLimit(), settings.maximumSearchTimeSeconds());
+        final int sizeLimit = request.sizeLimit() == 0 ? options.maximumSearchEntries()
+                : Math.min(request.sizeLimit(), options.maximumSearchEntries());
+        final int timeLimit = request.timeLimit() == 0 ? options.maximumSearchTimeSeconds()
+                : Math.min(request.timeLimit(), options.maximumSearchTimeSeconds());
         return new SearchRequest(request.baseObject(), request.scope(), request.derefAliases(), sizeLimit, timeLimit,
                 request.typesOnly(), request.filter(), request.attributes());
     }

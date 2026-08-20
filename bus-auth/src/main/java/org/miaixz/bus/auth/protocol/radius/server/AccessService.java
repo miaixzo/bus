@@ -28,7 +28,8 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.protocol.radius.*;
 import org.miaixz.bus.auth.protocol.radius.codec.EapMessageCodec;
-import org.miaixz.bus.auth.resolver.SecretResolver;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
+import org.miaixz.bus.auth.runtime.LoadResult;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -55,7 +56,7 @@ public final class AccessService {
     /**
      * Frozen accepted versions and Access security policy.
      */
-    private final RadiusProviderSettings settings;
+    private final RadiusServerOptions options;
 
     /**
      * Exact external client and Access data port.
@@ -63,9 +64,9 @@ public final class AccessService {
     private final RadiusRequestHandler handler;
 
     /**
-     * External short-lived shared-secret resolver.
+     * External short-lived shared-secret loader and framework-owned parser.
      */
-    private final SecretResolver secretResolver;
+    private final ExecutionServices services;
 
     /**
      * Historic security and RADIUS/1.1 response correlator.
@@ -80,21 +81,20 @@ public final class AccessService {
     /**
      * Creates an Access service for one compiled RADIUS Provider.
      *
-     * @param providerId     compiled server-role Source identifier
-     * @param settings       validated RADIUS settings
-     * @param handler        exact external request handler binding
-     * @param secretResolver shared-secret lease resolver
-     * @param authenticator  packet security implementation
-     * @param eapCodec       EAP-Message fragment codec
+     * @param providerId    compiled server-role Source identifier
+     * @param options       validated RADIUS options
+     * @param handler       exact external request handler binding
+     * @param services      external loaders and pure parsers
+     * @param authenticator packet security implementation
+     * @param eapCodec      EAP-Message fragment codec
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public AccessService(final String providerId, final RadiusProviderSettings settings,
-            final RadiusRequestHandler handler, final SecretResolver secretResolver,
-            final RadiusAuthenticator authenticator, final EapMessageCodec eapCodec) {
+    public AccessService(final String providerId, final RadiusServerOptions options, final RadiusRequestHandler handler,
+            final ExecutionServices services, final RadiusAuthenticator authenticator, final EapMessageCodec eapCodec) {
         this.providerId = Assert.notBlank(providerId, "RADIUS Access Provider id must not be blank");
-        this.settings = Assert.notNull(settings, "RADIUS Access settings must not be null");
+        this.options = Assert.notNull(options, "RADIUS Access options must not be null");
         this.handler = Assert.notNull(handler, "RADIUS Access handler must not be null");
-        this.secretResolver = Assert.notNull(secretResolver, "RADIUS Access secret resolver must not be null");
+        this.services = Assert.notNull(services, "RADIUS Access execution services must not be null");
         this.authenticator = Assert.notNull(authenticator, "RADIUS Access authenticator must not be null");
         this.eapCodec = Assert.notNull(eapCodec, "RADIUS Access EAP codec must not be null");
     }
@@ -236,9 +236,9 @@ public final class AccessService {
             return unavailable("RADIUS client resolution failed");
         }
         if (resolved == null) {
-            return unavailable("RADIUS client resolver returned no stage");
+            return unavailable("RADIUS client loader returned no stage");
         }
-        return resolved.thenCompose(outcome -> switch (safe(outcome, "RADIUS client resolver returned no outcome")) {
+        return resolved.thenCompose(outcome -> switch (safe(outcome, "RADIUS client loader returned no outcome")) {
             case Outcome.Succeeded<RadiusRequestHandler.Client> succeeded -> client(
                     effective,
                     context,
@@ -280,20 +280,20 @@ public final class AccessService {
         }
         final CompletionStage<Outcome<SecretLease>> resolved = resolveSecret(reference, context, timeout);
         if (resolved == null) {
-            return unavailable("RADIUS shared-secret resolver returned no stage");
+            return unavailable("RADIUS shared-secret loader returned no stage");
         }
         return resolved
-                .thenCompose(outcome -> switch (safe(outcome, "RADIUS shared-secret resolver returned no outcome")) {
+                .thenCompose(outcome -> switch (safe(outcome, "RADIUS shared-secret loader returned no outcome")) {
                     case Outcome.Succeeded<SecretLease> succeeded -> {
                         final SecretLease lease = succeeded.value();
                         if (lease == null) {
-                            yield unavailable("RADIUS shared-secret resolver returned no lease");
+                            yield unavailable("RADIUS shared-secret loader returned no lease");
                         }
                         final boolean valid;
                         try (lease) {
                             final boolean eap = has(request, Radius.Attributes.EAP_MESSAGE);
                             valid = authenticator
-                                    .verifyAccessRequest(request, lease, settings.requireMessageAuthenticator() || eap);
+                                    .verifyAccessRequest(request, lease, options.requireMessageAuthenticator() || eap);
                         }
                         yield valid ? invokeHandler(request, client, context.withClientId(client.id()), timeout)
                                 : discard("RADIUS Access-Request authenticator is invalid");
@@ -317,7 +317,7 @@ public final class AccessService {
             final RadiusRequestHandler.Client client,
             final Context context,
             final Timeout.Budget timeout) {
-        if (!settings.eapSupported() && has(request, Radius.Attributes.EAP_MESSAGE)) {
+        if (!options.eapSupported() && has(request, Radius.Attributes.EAP_MESSAGE)) {
             return finish(new AccessReject(request.header(), List.of()), request, client, context, timeout);
         }
         final CompletionStage<Outcome<RadiusPacket>> stage;
@@ -373,10 +373,10 @@ public final class AccessService {
         final Credential.Reference reference = client.sharedSecret().getOrNull();
         final CompletionStage<Outcome<SecretLease>> resolved = resolveSecret(reference, context, timeout);
         if (resolved == null) {
-            return unavailable("RADIUS response shared-secret resolver returned no stage");
+            return unavailable("RADIUS response shared-secret loader returned no stage");
         }
         return resolved
-                .thenApply(outcome -> switch (safe(outcome, "RADIUS response secret resolver returned no outcome")) {
+                .thenApply(outcome -> switch (safe(outcome, "RADIUS response secret loader returned no outcome")) {
                     case Outcome.Succeeded<SecretLease> succeeded -> sign(correlated, request, succeeded.value());
                     case Outcome.Rejected<SecretLease> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<SecretLease> failed -> Outcome.failed(failed.failure());
@@ -396,7 +396,7 @@ public final class AccessService {
             final AccessRequest request,
             final SecretLease lease) {
         if (lease == null) {
-            return Outcome.failed(failure(ErrorCode._503, "RADIUS response secret resolver returned no lease"));
+            return Outcome.failed(failure(ErrorCode._503, "RADIUS response secret loader returned no lease"));
         }
         try (lease) {
             return Outcome.succeeded(authenticator.authenticateResponse(response, request, lease));
@@ -411,7 +411,7 @@ public final class AccessService {
      * @return whether transport and header may be processed
      */
     private boolean validTransport(final AccessRequest request, final Context context) {
-        if (!settings.versions().contains(request.header().version())) {
+        if (!options.versions().contains(request.header().version())) {
             return false;
         }
         if (request.header().version() == RadiusPacket.Version.RADIUS_1_0) {
@@ -448,19 +448,21 @@ public final class AccessService {
     }
 
     /**
-     * Resolves one shared secret while converting synchronous resolver failure into a closed stage.
+     * Loads and parses one shared secret while converting synchronous loader failure into a closed stage.
      *
      * @param reference exact shared-secret reference
      * @param context   invocation context
      * @param timeout   operation budget
-     * @return resolver stage or {@code null} when it returned no stage
+     * @return loader/parser stage or {@code null} when the loader returned no stage
      */
     private CompletionStage<Outcome<SecretLease>> resolveSecret(
             final Credential.Reference reference,
             final Context context,
             final Timeout.Budget timeout) {
         try {
-            return secretResolver.resolve(reference, context, timeout);
+            return LoadResult.parse(
+                    services.secretLoader().load(reference, context, timeout),
+                    loaded -> services.secretParser().parse(reference, loaded));
         } catch (RuntimeException exception) {
             return completed(Outcome.failed(failure(ErrorCode._503, "RADIUS shared-secret resolution failed")));
         }

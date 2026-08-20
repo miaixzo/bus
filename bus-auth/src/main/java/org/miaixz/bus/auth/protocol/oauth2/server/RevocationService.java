@@ -27,11 +27,11 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.cache.AccessTokenStore;
+import org.miaixz.bus.auth.cache.AccessTokenCache;
 import org.miaixz.bus.auth.cache.ExpiringValue;
-import org.miaixz.bus.auth.cache.RefreshTokenStore;
+import org.miaixz.bus.auth.cache.RefreshTokenCache;
 import org.miaixz.bus.auth.protocol.oauth2.RevocationRequest;
-import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -51,7 +51,7 @@ public final class RevocationService {
     private final String providerId;
 
     /**
-     * Caller-owned runtime dependencies containing both token stores.
+     * Runtime dependencies containing both token caches.
      */
     private final ExecutionServices services;
 
@@ -115,11 +115,11 @@ public final class RevocationService {
                     Outcome.failed(failure(ErrorCode._408, "OAuth 2.x token revocation has no remaining time budget")));
         }
         final String key = key(request.token());
-        final CompletionStage<ExpiringValue<AccessTokenStore.Entry>> access;
-        final CompletionStage<ExpiringValue<RefreshTokenStore.Entry>> refresh;
+        final CompletionStage<ExpiringValue<AccessTokenCache.Entry>> access;
+        final CompletionStage<ExpiringValue<RefreshTokenCache.Entry>> refresh;
         try {
-            access = services.accessTokenStore().get(key);
-            refresh = services.refreshTokenStore().get(key);
+            access = services.accessTokenCache().get(key);
+            refresh = services.refreshTokenCache().get(key);
         } catch (RuntimeException exception) {
             return completed(Outcome.failed(failure(ErrorCode._500, "OAuth 2.x token lookup failed")));
         }
@@ -127,7 +127,7 @@ public final class RevocationService {
                 .thenCompose(state -> delete(key, state, clientId, timeout.clock().now())).handle(
                         (ignored, thrown) -> thrown == null ? Outcome.<Void>succeeded(null)
                                 : Outcome.<Void>failed(
-                                        failure(ErrorCode._500, "OAuth 2.x token revocation store failed")));
+                                        failure(ErrorCode._500, "OAuth 2.x token revocation cache failed")));
     }
 
     /**
@@ -146,9 +146,9 @@ public final class RevocationService {
             final Instant now) {
         final boolean deleteAccess = accessOwned(state.access(), clientId, now);
         final boolean deleteRefresh = refreshOwned(state.refresh(), clientId, now);
-        final CompletionStage<Boolean> accessDelete = deleteAccess ? services.accessTokenStore().delete(key)
+        final CompletionStage<Boolean> accessDelete = deleteAccess ? services.accessTokenCache().delete(key)
                 : CompletableFuture.completedFuture(false);
-        final CompletionStage<Boolean> refreshDelete = deleteRefresh ? services.refreshTokenStore().delete(key)
+        final CompletionStage<Boolean> refreshDelete = deleteRefresh ? services.refreshTokenCache().delete(key)
                 : CompletableFuture.completedFuture(false);
         return accessDelete.thenCombine(refreshDelete, (first, second) -> null);
     }
@@ -162,7 +162,7 @@ public final class RevocationService {
      * @return whether this entry may be deleted
      */
     private boolean accessOwned(
-            final ExpiringValue<AccessTokenStore.Entry> stored,
+            final ExpiringValue<AccessTokenCache.Entry> stored,
             final String clientId,
             final Instant now) {
         return stored != null && stored.expiresAt().isAfter(now) && providerId.equals(stored.value().providerId())
@@ -178,7 +178,7 @@ public final class RevocationService {
      * @return whether this entry may be deleted
      */
     private boolean refreshOwned(
-            final ExpiringValue<RefreshTokenStore.Entry> stored,
+            final ExpiringValue<RefreshTokenCache.Entry> stored,
             final String clientId,
             final Instant now) {
         return stored != null && stored.expiresAt().isAfter(now) && providerId.equals(stored.value().providerId())
@@ -189,21 +189,21 @@ public final class RevocationService {
      * Produces a Provider-isolated irreversible lookup key for an opaque token.
      *
      * @param token opaque token value
-     * @return SHA-256 hexadecimal store key
+     * @return SHA-256 hexadecimal cache key
      */
     private String key(final String token) {
         return Builder.sha256Hex(providerId + '\0' + token);
     }
 
     /**
-     * Carries the two possible store entries addressed by one opaque token digest.
+     * Carries the two possible cache entries addressed by one opaque token digest.
      *
      * @param access  optional access-token state
      * @param refresh optional refresh-token state
      * @author Kimi Liu
      */
-    private record TokenState(ExpiringValue<AccessTokenStore.Entry> access,
-            ExpiringValue<RefreshTokenStore.Entry> refresh) {
+    private record TokenState(ExpiringValue<AccessTokenCache.Entry> access,
+            ExpiringValue<RefreshTokenCache.Entry> refresh) {
 
     }
 

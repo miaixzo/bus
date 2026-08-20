@@ -18,15 +18,15 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the Sign in with Apple OpenID Connect Vendor definition and signing-key registration.
+ * Declares the Sign in with Apple OpenID Connect Vendor manifest and signing-key registration.
  * <p>
- * AppleDefinition exposes the single {@code apple/default} OIDC variant with fixed authorization, token, revocation,
+ * AppleManifest exposes the single {@code apple/default} OIDC variant with fixed authorization, token, revocation,
  * Discovery, and JWK Set endpoints. It declares PRIVATE_KEY client credentials, prohibited PKCE, RS256 ID Tokens,
  * {@code name email} defaults, Source authentication, token, revocation, Discovery, and JWK Set capabilities. Its
  * deviations record Apple's form_post authorization scope and ES256 client-secret JWT sent as client_secret_post.
  * </p>
  * <p>
- * AppleSourceSettings contains the common registration values plus Team ID and key ID used with the external private
+ * AppleOptions contains the common registration values plus Team ID and key ID used with the external private
  * signing-key reference. Users do not configure Apple's fixed issuer and endpoints, token authentication shape,
  * algorithms, response mode, or JWK Set. This package publishes neither a generic OIDC authorization capability whose
  * required {@code openid} scope would misrepresent Apple's wire nor private callback, user, token, and key DTOs.

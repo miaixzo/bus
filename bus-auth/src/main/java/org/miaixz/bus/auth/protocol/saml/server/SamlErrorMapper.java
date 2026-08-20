@@ -41,18 +41,18 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public final class SamlErrorMapper {
 
     /**
-     * Validated identity-provider settings used for Issuer construction.
+     * Validated identity-provider options used for Issuer construction.
      */
-    private final SamlProviderSettings settings;
+    private final SamlServerOptions options;
 
     /**
      * Creates a standard SAML error mapper for one Provider.
      *
-     * @param settings validated SAML Provider settings
-     * @throws IllegalArgumentException if settings are {@code null}
+     * @param options validated SAML Provider options
+     * @throws IllegalArgumentException if options are {@code null}
      */
-    public SamlErrorMapper(final SamlProviderSettings settings) {
-        this.settings = Assert.notNull(settings, "SAML Provider settings must not be null");
+    public SamlErrorMapper(final SamlServerOptions options) {
+        this.options = Assert.notNull(options, "SAML Provider options must not be null");
     }
 
     /**
@@ -174,7 +174,7 @@ public final class SamlErrorMapper {
      * @return entity-format SAML Issuer
      */
     private Issuer issuer() {
-        return new Issuer(new NameID(settings.entityId(), Optional.empty(), Optional.empty(),
+        return new Issuer(new NameID(options.entityId(), Optional.empty(), Optional.empty(),
                 Optional.of(Saml.NameIdFormats.ENTITY), Optional.empty()));
     }
 
