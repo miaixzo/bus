@@ -306,7 +306,6 @@ public interface JsonProvider extends Provider<String> {
      * @throws ValidateException        if the encoded value is not an object or contains an undeclared member
      * @throws InternalException        if this provider cannot encode or parse the record
      */
-    @SuppressWarnings("unchecked")
     default <T extends Record> JsonValue.ObjectValue toObject(final T record) {
         final T value = Assert.notNull(record, "JSON record value must not be null");
         final Class<T> recordType = (Class<T>) value.getClass();
