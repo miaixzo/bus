@@ -38,4 +38,14 @@ public class SmartcnProvider extends AnalysisProvider {
         super(new SmartChineseAnalyzer());
     }
 
+    /**
+     * Returns the stable SmartCN engine name used for named NLP provider selection.
+     *
+     * @return {@code smartcn}
+     */
+    @Override
+    public String type() {
+        return "smartcn";
+    }
+
 }

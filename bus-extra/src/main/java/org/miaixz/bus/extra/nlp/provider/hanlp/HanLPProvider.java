@@ -70,6 +70,16 @@ public class HanLPProvider implements NLPProvider {
     }
 
     /**
+     * Returns the stable HanLP engine name used for named NLP provider selection.
+     *
+     * @return {@code hanlp}
+     */
+    @Override
+    public String type() {
+        return "hanlp";
+    }
+
+    /**
      * Performs word segmentation on the given text using the configured HanLP {@link Segment} instance. The result is
      * wrapped in a {@link HanLPResult} to conform to the {@link NLPResult} interface.
      *

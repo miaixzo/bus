@@ -59,6 +59,16 @@ public class Bopomofo4JProvider implements PinyinProvider {
     }
 
     /**
+     * Returns the stable Bopomofo4j provider name used for named Pinyin provider selection.
+     *
+     * @return {@code bopomofo4j}
+     */
+    @Override
+    public String type() {
+        return "bopomofo4j";
+    }
+
+    /**
      * Gets the pinyin of a single character. This method is designed to be overridden by subclasses for custom pinyin
      * conversion.
      * <p>

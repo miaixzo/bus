@@ -22,7 +22,6 @@ package org.miaixz.bus.extra.pinyin;
 import java.util.List;
 
 import org.miaixz.bus.core.Provider;
-import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
@@ -34,7 +33,15 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @author Kimi Liu
  */
-public interface PinyinProvider extends Provider {
+public interface PinyinProvider extends Provider<String> {
+
+    /**
+     * Returns the stable, case-insensitive provider name used for named SPI selection.
+     *
+     * @return non-blank Pinyin provider name without a {@code Provider} suffix
+     */
+    @Override
+    String type();
 
     /**
      * Converts a single character to its Pinyin. If the character is a Chinese character, its uppercase Pinyin is
@@ -102,14 +109,6 @@ public interface PinyinProvider extends Provider {
         final String splitSeparator = StringKit.isEmpty(separator) ? Symbol.HASH : separator;
         final List<String> split = CharsBacker.split(getPinyin(str, splitSeparator), splitSeparator);
         return CollKit.join(split, separator, (s) -> String.valueOf(!s.isEmpty() ? s.charAt(0) : Normal.EMPTY));
-    }
-
-    /**
-     * The type method.
-     */
-    @Override
-    default Object type() {
-        return EnumValue.Povider.PINYIN;
     }
 
 }

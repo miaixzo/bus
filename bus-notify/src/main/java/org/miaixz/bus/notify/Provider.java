@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.notify.magic.Notice;
 
@@ -33,7 +32,7 @@ import org.miaixz.bus.notify.magic.Notice;
  * @param <T> the type of notice used for the notification, extending {@link Notice}
  * @author Kimi Liu
  */
-public interface Provider<T extends Notice> extends org.miaixz.bus.core.Provider {
+public interface Provider<T extends Notice> {
 
     /**
      * Sends a notification using the specified template {@link Notice}. Note: The template implementation varies among
@@ -73,16 +72,6 @@ public interface Provider<T extends Notice> extends org.miaixz.bus.core.Provider
      */
     default Message<Void> send(T entity, String... mobile) {
         return send(entity, ListKit.of(mobile));
-    }
-
-    /**
-     * Returns the type of this provider.
-     *
-     * @return The provider type, which is {@link EnumValue.Povider#NOTIFY}.
-     */
-    @Override
-    default Object type() {
-        return EnumValue.Povider.NOTIFY;
     }
 
 }

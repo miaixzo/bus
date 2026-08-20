@@ -72,6 +72,16 @@ public class MmsegProvider implements NLPProvider {
     }
 
     /**
+     * Returns the stable mmseg4j engine name used for named NLP provider selection.
+     *
+     * @return {@code mmseg}
+     */
+    @Override
+    public String type() {
+        return "mmseg";
+    }
+
+    /**
      * Performs word segmentation on the given text using the configured mmseg4j {@link Seg} instance. A new
      * {@link MMSeg} instance is created for each call to ensure thread safety. The result is wrapped in an
      * {@link MmsegResult} to conform to the {@link NLPResult} interface.

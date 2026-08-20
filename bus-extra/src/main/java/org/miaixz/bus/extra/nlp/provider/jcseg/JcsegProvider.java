@@ -75,6 +75,16 @@ public class JcsegProvider implements NLPProvider {
     }
 
     /**
+     * Returns the stable Jcseg engine name used for named NLP provider selection.
+     *
+     * @return {@code jcseg}
+     */
+    @Override
+    public String type() {
+        return "jcseg";
+    }
+
+    /**
      * Performs word segmentation on the given text using the Jcseg engine. A new {@link ISegment} instance is created
      * for each call to ensure thread safety. The result is wrapped in a {@link JcsegResult} to conform to the
      * {@link NLPResult} interface.

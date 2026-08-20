@@ -97,7 +97,7 @@ public abstract class AbstractJsonProvider implements JsonProvider {
         Assert.notNull(value, "JSON value must not be null");
         final String document = encodeValue(value);
         if (document == null) {
-            throw new InternalException("JSON provider returned no serialized document: " + name());
+            throw new InternalException("JSON provider returned no serialized document: " + type());
         }
         return document.getBytes(Charset.UTF_8);
     }
@@ -135,7 +135,7 @@ public abstract class AbstractJsonProvider implements JsonProvider {
         new DocumentGuard(document, maximumDepth, rejectDuplicateNames).validate();
         final JsonValue value = decodeValue(document);
         if (value == null) {
-            throw new InternalException("JSON provider returned no provider-neutral value: " + name());
+            throw new InternalException("JSON provider returned no provider-neutral value: " + type());
         }
         return value;
     }

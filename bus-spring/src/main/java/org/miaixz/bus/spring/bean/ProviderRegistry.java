@@ -60,21 +60,33 @@ public class ProviderRegistry implements ApplicationListener<ContextClosedEvent>
     }
 
     /**
-     * Returns the first ordered Provider whose declared type matches the support value.
+     * Returns the unique Provider whose declared type matches the support value.
      *
      * @param <T>           result type
      * @param <S>           support type
      * @param providerClass provider contract
      * @param support       provider selection predicate
-     * @return the first matching Provider, or {@code null} when none supports the value
+     * @return the unique matching Provider, or {@code null} when none supports the value
+     * @throws IllegalStateException if more than one Provider declares the same type
      */
     public <T extends Provider<S>, S> T load(Class<T> providerClass, S support) {
+        Objects.requireNonNull(providerClass, "providerClass");
+        Objects.requireNonNull(support, "support");
+        T match = null;
         for (T provider : all(providerClass)) {
-            if (Objects.equals(provider.type(), support)) {
-                return provider;
+            final S type = Objects.requireNonNull(
+                    provider.type(),
+                    () -> "Provider type must not be null: " + provider.getClass().getName());
+            if (Objects.equals(type, support)) {
+                if (match != null) {
+                    throw new IllegalStateException("Duplicate Provider type " + support + " for contract "
+                            + providerClass.getName() + ": " + match.getClass().getName() + " and "
+                            + provider.getClass().getName());
+                }
+                match = provider;
             }
         }
-        return null;
+        return match;
     }
 
     /**

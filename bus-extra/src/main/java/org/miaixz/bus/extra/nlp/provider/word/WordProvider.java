@@ -79,6 +79,16 @@ public class WordProvider implements NLPProvider {
     }
 
     /**
+     * Returns the stable Word engine name used for named NLP provider selection.
+     *
+     * @return {@code word}
+     */
+    @Override
+    public String type() {
+        return "word";
+    }
+
+    /**
      * Performs word segmentation on the given text using the configured Word {@link Segmentation} instance. The result
      * is wrapped in a {@link WordResult} to conform to the {@link NLPResult} interface.
      *

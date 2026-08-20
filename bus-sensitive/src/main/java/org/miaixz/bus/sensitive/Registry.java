@@ -51,49 +51,57 @@ public final class Registry {
     private static final Map<EnumValue.Masking, StrategyProvider> STRATEGY_CACHE = new ConcurrentHashMap<>();
 
     static {
-        register(EnumValue.Masking.ADDRESS, new AddressProvider());
-        register(EnumValue.Masking.BANK_CARD, new BandCardProvider());
-        register(EnumValue.Masking.CNAPS_CODE, new CnapsProvider());
-        register(EnumValue.Masking.DEFAUL, new DafaultProvider());
-        register(EnumValue.Masking.EMAIL, new EmailProvider());
-        register(EnumValue.Masking.CITIZENID, new CitizenIdProvider());
-        register(EnumValue.Masking.MOBILE, new MobileProvider());
-        register(EnumValue.Masking.NAME, new NameProvider());
-        register(EnumValue.Masking.NONE, new NoneProvider());
-        register(EnumValue.Masking.PASSWORD, new PasswordProvider());
-        register(EnumValue.Masking.PAY_SIGN_NO, new CardProvider());
-        register(EnumValue.Masking.PHONE, new PhoneProvider());
+        register(new AddressProvider());
+        register(new BandCardProvider());
+        register(new CnapsProvider());
+        register(new DafaultProvider());
+        register(new EmailProvider());
+        register(new CitizenIdProvider());
+        register(new MobileProvider());
+        register(new NameProvider());
+        register(new NoneProvider());
+        register(new PasswordProvider());
+        register(new CardProvider());
+        register(new PhoneProvider());
     }
 
     /**
      * Registers a new strategy provider.
      *
-     * @param name   The {@link EnumValue.Masking} to associate with the provider.
-     * @param object The {@link StrategyProvider} instance.
-     * @throws InternalException if a provider with the same name or class is already registered.
+     * @param provider The {@link StrategyProvider} instance.
+     * @throws IllegalArgumentException if the provider or its masking strategy is null
+     * @throws InternalException        if another provider is already registered for the same masking strategy
      */
-    public static void register(EnumValue.Masking name, StrategyProvider object) {
+    public static void register(StrategyProvider provider) {
+        if (provider == null) {
+            throw new IllegalArgumentException("Sensitive provider must not be null");
+        }
+        final EnumValue.Masking type = provider.type();
+        if (type == null) {
+            throw new IllegalArgumentException("Sensitive provider type must not be null: "
+                    + provider.getClass().getName());
+        }
         Logger.debug(
                 true,
                 "Sensitive",
                 "Sensitive strategy registration started: type={}, provider={}",
-                name,
-                object == null ? null : object.getClass().getSimpleName());
-        if (STRATEGY_CACHE.containsKey(name)) {
+                type,
+                provider.getClass().getSimpleName());
+        final StrategyProvider previous = STRATEGY_CACHE.putIfAbsent(type, provider);
+        if (previous != null) {
             Logger.warn(
                     false,
                     "Sensitive",
                     "Sensitive strategy registration rejected: type={}, reason=duplicateName",
-                    name);
-            throw new InternalException("A component with the same name is already registered: " + name);
+                    type);
+            throw new InternalException("A sensitive provider is already registered for type: " + type);
         }
-        STRATEGY_CACHE.putIfAbsent(name, object);
         Logger.debug(
                 false,
                 "Sensitive",
                 "Sensitive strategy registered: type={}, provider={}, registeredCount={}",
-                name,
-                object.getClass().getSimpleName(),
+                type,
+                provider.getClass().getSimpleName(),
                 STRATEGY_CACHE.size());
     }
 
@@ -105,6 +113,9 @@ public final class Registry {
      * @throws IllegalArgumentException if no provider is found for the given type.
      */
     public static StrategyProvider require(EnumValue.Masking name) {
+        if (name == null) {
+            throw new IllegalArgumentException("Sensitive strategy type must not be null");
+        }
         Logger.debug(true, "Sensitive", "Sensitive strategy lookup started: type={}", name);
         StrategyProvider sensitiveProvider = STRATEGY_CACHE.get(name);
         if (ObjectKit.isEmpty(sensitiveProvider)) {
@@ -121,11 +132,13 @@ public final class Registry {
     }
 
     /**
-     * Retrieves the strategy provider associated with a custom annotation that uses a built-in strategy.
+     * Rejects an unresolved built-in marker because an annotation class alone does not declare the
+     * {@link EnumValue.Masking} key required by this registry.
      *
-     * @param annotationClass The class of the custom annotation.
-     * @return The corresponding built-in strategy provider.
-     * @throws InternalException if the annotation is not a valid built-in strategy marker.
+     * @param annotationClass custom annotation using the unresolved marker
+     * @return never returns normally
+     * @throws IllegalArgumentException if the annotation type is null
+     * @throws InternalException        always, because no masking key can be derived from the marker
      */
     public static StrategyProvider require(final Class<? extends Annotation> annotationClass) {
         Logger.debug(
@@ -133,26 +146,16 @@ public final class Registry {
                 "Sensitive",
                 "Sensitive annotation strategy lookup started: annotation={}",
                 annotationClass == null ? null : annotationClass.getName());
-        // This method assumes the cache is keyed by annotation class, which it is not.
-        // The logic seems flawed, as it's trying to look up by class in a map keyed by enum.
-        // For the purpose of documentation, we'll describe its intended behavior.
-        StrategyProvider strategy = STRATEGY_CACHE.get(annotationClass);
-        if (ObjectKit.isEmpty(strategy)) {
-            Logger.warn(
-                    false,
-                    "Sensitive",
-                    "Sensitive annotation strategy lookup failed: annotation={}",
-                    annotationClass.getName());
-            throw new InternalException(
-                    "Unsupported built-in strategy. Do not use [BuiltInProvider] in custom annotations.");
+        if (annotationClass == null) {
+            throw new IllegalArgumentException("Sensitive strategy annotation type must not be null");
         }
-        Logger.debug(
+        Logger.warn(
                 false,
                 "Sensitive",
-                "Sensitive annotation strategy resolved: annotation={}, provider={}",
-                annotationClass.getName(),
-                strategy.getClass().getSimpleName());
-        return strategy;
+                "Sensitive annotation strategy lookup failed: annotation={}, reason=missingMaskingType",
+                annotationClass.getName());
+        throw new InternalException(
+                "BuiltInProvider is only a marker and does not declare a masking type; use a concrete StrategyProvider");
     }
 
     /**
@@ -202,11 +205,11 @@ public final class Registry {
     /**
      * Checks if a strategy for the given name is registered.
      *
-     * @param name The name of the strategy to check.
+     * @param type masking strategy to check
      * @return {@code true} if the strategy is registered, {@code false} otherwise.
      */
-    public boolean contains(String name) {
-        return STRATEGY_CACHE.containsKey(name);
+    public static boolean contains(EnumValue.Masking type) {
+        return type != null && STRATEGY_CACHE.containsKey(type);
     }
 
 }

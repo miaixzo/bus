@@ -67,16 +67,6 @@ public class FastJsonProvider extends AbstractJsonProvider {
     private static final JSONWriter.Feature[] VALUE_WRITER_FEATURES = { JSONWriter.Feature.WriteMapNullValue };
 
     /**
-     * Returns the canonical configuration name of this provider.
-     *
-     * @return {@code fastjson}
-     */
-    @Override
-    public String name() {
-        return "fastjson";
-    }
-
-    /**
      * Parses one complete JSON document into Fastjson2 containers and converts them to provider-neutral values.
      *
      * @param document complete non-empty JSON document
@@ -199,6 +189,16 @@ public class FastJsonProvider extends AbstractJsonProvider {
      */
     public FastJsonProvider() {
         // No initialization required.
+    }
+
+    /**
+     * Returns the canonical Fastjson2 provider name used for configuration and discovery.
+     *
+     * @return {@code fastjson}
+     */
+    @Override
+    public String type() {
+        return "fastjson";
     }
 
     /**

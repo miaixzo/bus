@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.pay;
 
-import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.pay.magic.Voucher;
 
 /**
@@ -28,16 +27,6 @@ import org.miaixz.bus.pay.magic.Voucher;
  * @param <T> The global object type, extending {@link Voucher}.
  * @author Kimi Liu
  */
-public interface Provider<T extends Voucher> extends org.miaixz.bus.core.Provider {
-
-    /**
-     * Returns the type of this provider.
-     *
-     * @return The provider type, which is {@link EnumValue.Povider#PAY}.
-     */
-    @Override
-    default Object type() {
-        return EnumValue.Povider.PAY;
-    }
+public interface Provider<T extends Voucher> {
 
 }

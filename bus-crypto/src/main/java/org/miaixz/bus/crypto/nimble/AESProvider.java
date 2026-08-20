@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.crypto.nimble;
 
+import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Provider;
@@ -40,6 +41,16 @@ public class AESProvider implements Provider {
      */
     public AESProvider() {
         // No initialization required.
+    }
+
+    /**
+     * Returns the stable AES algorithm name used to register this provider.
+     *
+     * @return {@link Algorithm#AES} algorithm value
+     */
+    @Override
+    public String type() {
+        return Algorithm.AES.getValue();
     }
 
     /**

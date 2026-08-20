@@ -58,7 +58,7 @@ public class FallbackProvider implements Provider {
      * @return The {@link StrategyMode#FALLBACK} enum value.
      */
     @Override
-    public StrategyMode get() {
+    public StrategyMode type() {
         return StrategyMode.FALLBACK;
     }
 

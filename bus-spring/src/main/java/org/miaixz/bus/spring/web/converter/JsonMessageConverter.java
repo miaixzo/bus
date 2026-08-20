@@ -78,7 +78,7 @@ public class JsonMessageConverter implements MessageConverterRegistrar {
      */
     @Override
     public String name() {
-        return "BusJson[" + provider.name() + Symbol.BRACKET_RIGHT;
+        return "BusJson[" + provider.type() + Symbol.BRACKET_RIGHT;
     }
 
     /**

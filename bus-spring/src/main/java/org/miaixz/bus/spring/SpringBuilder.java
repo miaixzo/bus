@@ -362,7 +362,7 @@ public class SpringBuilder {
     }
 
     /**
-     * Selects the first ordered provider whose declared support matches the supplied value.
+     * Selects the unique provider whose declared support matches the supplied value.
      *
      * @param <T>           result type
      * @param <S>           support type

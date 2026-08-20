@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.sensitive.nimble;
 
+import org.miaixz.bus.core.lang.EnumValue;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.sensitive.Context;
 
@@ -35,6 +37,16 @@ public class PasswordProvider extends AbstractProvider {
      */
     public PasswordProvider() {
         // No initialization required.
+    }
+
+    /**
+     * Returns the masking strategy used to register this password provider.
+     *
+     * @return {@link EnumValue.Masking#PASSWORD}
+     */
+    @Override
+    public EnumValue.Masking type() {
+        return EnumValue.Masking.PASSWORD;
     }
 
     /**

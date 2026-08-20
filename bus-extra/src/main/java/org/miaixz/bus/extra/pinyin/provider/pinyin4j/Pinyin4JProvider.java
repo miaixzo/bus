@@ -96,6 +96,16 @@ public class Pinyin4JProvider implements PinyinProvider {
     }
 
     /**
+     * Returns the stable Pinyin4j provider name used for named Pinyin provider selection.
+     *
+     * @return {@code pinyin4j}
+     */
+    @Override
+    public String type() {
+        return "pinyin4j";
+    }
+
+    /**
      * Gets the pinyin of a single character. This method is designed to be overridden by subclasses for custom pinyin
      * conversion.
      * <p>

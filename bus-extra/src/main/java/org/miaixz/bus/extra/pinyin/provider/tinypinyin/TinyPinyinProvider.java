@@ -71,6 +71,16 @@ public class TinyPinyinProvider implements PinyinProvider {
     }
 
     /**
+     * Returns the stable TinyPinyin provider name used for named Pinyin provider selection.
+     *
+     * @return {@code tinypinyin}
+     */
+    @Override
+    public String type() {
+        return "tinypinyin";
+    }
+
+    /**
      * Gets the pinyin of a single character. This method is designed to be overridden by subclasses for custom pinyin
      * conversion.
      * <p>
