@@ -22,9 +22,18 @@ package org.miaixz.bus.auth.resolver;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Credential;
+import org.miaixz.bus.auth.Outcome;
+import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.shared.SecretLease;
 
 /**
- * Resolves caller-owned secret characters for one scoped authentication operation.
+ * Acquires a new short-lived lease for externally stored character-based secret material.
+ * <p>
+ * Implementations support password, client-secret, and shared-secret references. Private keys and certificates are
+ * resolved through their dedicated typed ports. Every successful call returns a new lease for immediate use inside one
+ * bounded operation; consumers close it before crossing another asynchronous boundary.
+ * </p>
  *
  * @author Kimi Liu
  */
@@ -32,13 +41,16 @@ import org.miaixz.bus.auth.Context;
 public interface SecretResolver {
 
     /**
-     * Resolves one secret without transferring ownership of resolver-internal storage.
+     * Acquires a new lease for one typed external credential reference.
      *
-     * @param context    non-null authentication context
-     * @param kind       non-blank secret classification
-     * @param identifier non-blank secret identifier
-     * @return non-null stage containing a non-null caller-owned character array
+     * @param request password, client-secret, or shared-secret reference
+     * @param context immutable non-secret invocation context
+     * @param timeout shared end-to-end operation budget
+     * @return stage containing a successful new lease, expected rejection, or operational failure
      */
-    CompletionStage<char[]> resolve(Context context, String kind, String identifier);
+    CompletionStage<Outcome<SecretLease>> resolve(
+            Credential.Reference request,
+            Context context,
+            Timeout.Budget timeout);
 
 }

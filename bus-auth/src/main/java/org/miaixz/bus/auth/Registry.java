@@ -19,117 +19,182 @@
 */
 package org.miaixz.bus.auth;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.core.lang.exception.StatefulException;
-import org.miaixz.bus.fabric.registry.Binding;
-import org.miaixz.bus.fabric.registry.Ledger;
+import org.miaixz.bus.auth.registry.RegistryIssue;
+import org.miaixz.bus.core.Lifecycle;
+import org.miaixz.bus.core.lang.Assert;
 
 /**
- * Authentication component registry backed by the shared Fabric ledger contract.
+ * Provides the public runtime-registration entry to compiled Source capabilities.
+ * <p>
+ * Callers identify a registered resource with {@link Reference} and request one strongly typed {@link Capability}. The
+ * Capability dispatch never returns runtime providers, protocol executors, or Vendor adapters. The diagnostic
+ * {@link #snapshot()} method exposes the committed registration records, including their persistence entities.
+ * Implementations atomically replace structurally immutable compiled views and preserve the previous view when
+ * validation or compilation fails.
+ * </p>
  *
- * @param <T> registered component type
  * @author Kimi Liu
  */
-public interface Registry<T> extends Ledger<T> {
+public interface Registry extends Lifecycle, AutoCloseable {
 
     /**
-     * Creates an empty registry backed by a Fabric ledger.
+     * Invokes one declared capability through the currently committed immutable Registry view.
      *
-     * @param <T> registered component type
-     * @return empty registry
+     * @param reference  registered Source reference
+     * @param capability strongly typed capability implemented by the referenced runtime provider
+     * @param request    formal standard request value
+     * @param context    immutable invocation context
+     * @param timeout    shared decreasing operation time budget
+     * @param <Q>        formal request type
+     * @param <S>        formal success value type
+     * @return asynchronous internal outcome without exposing the selected runtime provider
      */
-    static <T> Registry<T> create() {
-        return adapt(Ledger.create());
-    }
+    <Q, S> CompletionStage<Outcome<S>> invoke(
+            Reference reference,
+            Capability<Q, S> capability,
+            Q request,
+            Context context,
+            Timeout.Budget timeout);
 
     /**
-     * Adapts a Fabric ledger without changing its storage semantics.
+     * Returns the complete registration snapshot associated with the committed Registry view.
+     * <p>
+     * The snapshot owns an unmodifiable record list, but each record still references the mutable persistence entity
+     * supplied by the external project.
+     * </p>
      *
-     * @param ledger Fabric ledger
-     * @param <T>    registered component type
-     * @return registry view
-     * @throws StatefulException if {@code ledger} is null
+     * @return current structurally frozen registration snapshot
      */
-    static <T> Registry<T> adapt(final Ledger<T> ledger) {
-        if (ledger == null) {
-            throw new StatefulException("Fabric ledger must not be null");
+    Snapshot snapshot();
+
+    /**
+     * Returns the revision of the currently committed Registry view.
+     *
+     * @return current Registry snapshot revision
+     */
+    Revision revision();
+
+    /**
+     * Closes the Registry without transferring ownership of externally supplied stores, resolvers, or transports.
+     */
+    @Override
+    void close();
+
+    /**
+     * Identifies the monotonically increasing version of a complete committed Registry snapshot.
+     *
+     * @param value non-negative snapshot revision
+     * @author Kimi Liu
+     */
+    record Revision(long value) {
+
+        /**
+         * Creates a Registry snapshot revision.
+         *
+         * @param value non-negative snapshot revision
+         * @throws IllegalArgumentException if the revision is negative
+         */
+        public Revision {
+            Assert.isTrue(value >= 0, "Registry revision must not be negative");
         }
-        if (ledger instanceof Registry<?>) {
-            return cast(ledger);
+
+    }
+
+    /**
+     * Identifies one invocable Source registration without exposing its runtime implementation.
+     *
+     * @param kind invocable registration kind, restricted to Source
+     * @param id   managed resource identifier
+     * @author Kimi Liu
+     */
+    record Reference(Registration.Kind kind, String id) {
+
+        /**
+         * Creates an invocable Registry reference.
+         *
+         * @param kind Source registration kind
+         * @param id   non-blank managed resource identifier
+         * @throws IllegalArgumentException if the kind is not Source or the identifier is blank
+         */
+        public Reference {
+            Assert.notNull(kind, "Registry reference kind must not be null");
+            Assert.isTrue(kind == Registration.Kind.SOURCE, "Registry references only support Source registrations");
+            Assert.notBlank(id, "Registry reference id must not be blank");
         }
-        return new Registry<>() {
 
-            /** {@inheritDoc} This view delegates insertion to the wrapped Fabric ledger. */
-            @Override
-            public void put(final Binding<T> binding) {
-                ledger.put(binding);
-            }
+        /**
+         * Creates a reference to one client-side Source registration.
+         *
+         * @param id non-blank Source resource identifier
+         * @return Source Registry reference
+         */
+        public static Reference source(final String id) {
+            return new Reference(Registration.Kind.SOURCE, id);
+        }
 
-            /** {@inheritDoc} This view delegates lookup to the wrapped Fabric ledger. */
-            @Override
-            public T get(final String key) {
-                return ledger.get(key);
-            }
-
-            /** {@inheritDoc} This view delegates binding lookup to the wrapped Fabric ledger. */
-            @Override
-            public Binding<T> binding(final String key) {
-                return ledger.binding(key);
-            }
-
-            /** {@inheritDoc} This view delegates removal to the wrapped Fabric ledger. */
-            @Override
-            public T remove(final String key) {
-                return ledger.remove(key);
-            }
-
-            /** {@inheritDoc} This view returns the wrapped Fabric ledger snapshot. */
-            @Override
-            public Map<String, Binding<T>> snapshot() {
-                return ledger.snapshot();
-            }
-
-            /** {@inheritDoc} This view returns the wrapped Fabric ledger size. */
-            @Override
-            public int size() {
-                return ledger.size();
-            }
-        };
     }
 
     /**
-     * Contains the single safe generic cast used when a ledger already implements this registry contract.
+     * Carries one complete immutable desired registration state loaded by an external project.
      *
-     * @param ledger ledger proven to implement {@link Registry}
-     * @param <T>    registered component type
-     * @return the same registry instance with its existing generic contract
+     * @param revision version assigned to the complete snapshot
+     * @param records  all Library, Provider, and Source records in loading order
+     * @author Kimi Liu
      */
-    @SuppressWarnings("unchecked")
-    private static <T> Registry<T> cast(final Ledger<T> ledger) {
-        return (Registry<T>) ledger;
+    record Snapshot(Revision revision, List<Registration.Record<?>> records) {
+
+        /**
+         * Creates a snapshot with a detached unmodifiable record list.
+         * <p>
+         * Record wrappers and contained persistence entities are not deep-copied.
+         * </p>
+         *
+         * @param revision snapshot revision
+         * @param records  complete registration records
+         * @throws IllegalArgumentException if a component or record is {@code null}
+         */
+        public Snapshot {
+            Assert.notNull(revision, "Registry snapshot revision must not be null");
+            Assert.notNull(records, "Registry snapshot records must not be null");
+            final List<Registration.Record<?>> copy = new ArrayList<>(records.size());
+            for (Registration.Record<?> record : records) {
+                copy.add(Assert.notNull(record, "Registry snapshot record must not be null"));
+            }
+            records = List.copyOf(copy);
+        }
+
     }
 
     /**
-     * Looks up an optional component.
+     * Carries immutable validation or compilation issues for a rejected Registry snapshot.
      *
-     * @param key stable registry key
-     * @return optional registered component
+     * @param revision rejected snapshot revision
+     * @param issues   ordered safe issues that identify their resource and processing stage
+     * @author Kimi Liu
      */
-    default Optional<T> find(final String key) {
-        return Optional.ofNullable(get(key));
-    }
+    record Report(Revision revision, List<RegistryIssue> issues) {
 
-    /**
-     * Returns a required component.
-     *
-     * @param key stable registry key
-     * @return registered component
-     * @throws StatefulException if the key is not registered
-     */
-    default T require(final String key) {
-        return find(key).orElseThrow(() -> new StatefulException("Authentication component is not registered: " + key));
+        /**
+         * Creates an immutable rejected-snapshot report.
+         *
+         * @param revision rejected snapshot revision
+         * @param issues   ordered Registry issues
+         * @throws IllegalArgumentException if a component or issue is {@code null}
+         */
+        public Report {
+            Assert.notNull(revision, "Registry report revision must not be null");
+            Assert.notNull(issues, "Registry report issues must not be null");
+            final List<RegistryIssue> copy = new ArrayList<>(issues.size());
+            for (RegistryIssue issue : issues) {
+                copy.add(Assert.notNull(issue, "Registry report issue must not be null"));
+            }
+            issues = List.copyOf(copy);
+        }
+
     }
 
 }

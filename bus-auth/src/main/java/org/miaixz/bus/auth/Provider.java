@@ -19,48 +19,84 @@
 */
 package org.miaixz.bus.auth;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
+import org.miaixz.bus.core.basic.entity.Tracer;
+
 /**
- * Base contract implemented by authentication capability providers.
+ * Represents one protocol-neutral authentication provider group owned by a Library.
+ * <p>
+ * A provider belongs to exactly one {@link Library} through {@link #library_id} and groups one or more authentication
+ * {@link Source Sources}. It stores only provider-level presentation, selection, and management configuration; protocol
+ * selection and protocol settings belong exclusively to each Source.
+ * </p>
+ * <p>
+ * This mutable persistence model is intended for external projects to extend and map to their storage model. It has no
+ * reverse collection, protocol identifier, protocol Discovery document, or runtime settings object.
+ * </p>
  *
  * @author Kimi Liu
  */
-public interface Provider extends org.miaixz.bus.core.Provider<Descriptor> {
+@Getter
+@Setter
+@SuperBuilder
+public class Provider extends Tracer {
 
     /**
-     * Returns the immutable descriptor for this provider.
-     *
-     * @return provider descriptor
+     * Required non-blank identifier of the owning Library. The referenced Library must exist; when this Provider is
+     * enabled, the Library must also be enabled. Multiple Providers may reference the same Library.
      */
-    Descriptor descriptor();
+    private String library_id;
 
     /**
-     * Returns the descriptor identifier as the stable Bus provider type.
-     *
-     * @return stable provider identifier
+     * Required non-blank stable Provider code. The value is used by external management interfaces and must be unique
+     * among Providers with the same {@link #library_id}.
      */
-    @Override
-    default Object type() {
-        return descriptor().id();
-    }
+    private String code;
 
     /**
-     * Creates provider instances from typed configuration.
-     *
-     * @param <C> configuration type
-     * @param <P> provider type
-     * @author Kimi Liu
+     * Required non-blank human-readable Provider name displayed by management and authentication interfaces.
      */
-    @FunctionalInterface
-    interface Factory<C, P extends Provider> {
+    private String name;
 
-        /**
-         * Creates a provider instance.
-         *
-         * @param configuration provider configuration
-         * @return created provider
-         */
-        P create(C configuration);
+    /**
+     * Optional external media reference for the Provider icon. {@code null} or blank means no Provider-level icon; a
+     * value may be a relative path, storage identifier, or HTTP(S) URL as interpreted by the external project.
+     */
+    private String icon;
 
+    /**
+     * Optional presentation order within the owning Library. {@code null} means unspecified; otherwise the value must
+     * be zero or greater, and lower values are displayed first.
+     */
+    private Integer sort;
+
+    /**
+     * Optional JSON object encoded as text for Provider-level Source selection and aggregation settings. {@code null}
+     * or blank means no Provider-level overrides. Protocol identifiers, endpoints, credentials, and protocol parameters
+     * must not be stored here because those values belong to Source.
+     */
+    private String settings;
+
+    /**
+     * Optional JSON object encoded as text for external management extensions. {@code null} or blank means no metadata;
+     * its members must not affect Source selection, protocol execution, authorization, or security decisions.
+     */
+    private String metadata;
+
+    /**
+     * Optional human-readable Provider description. {@code null} means that no description is supplied; the value is
+     * presentation-only and must not be interpreted as authentication policy.
+     */
+    private String description;
+
+    /**
+     * Creates an empty persistence model for an external provider service implementation.
+     */
+    public Provider() {
+        // No initialization required.
     }
 
 }

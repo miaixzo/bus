@@ -6,7 +6,7 @@
     "repository-url": "https://github.com/818000/bus",
     "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-auth/$version$/bus-auth-$version$-javadoc.jar",
-    "description": "Bus Auth provides authentication, authorization, OAuth, token, and endpoint integration helpers used by Bus applications.",
+    "description": "Bus Auth provides protocol-standard authentication services and registered external identity Source profiles.",
     "tested-versions": [
       "8.8.0",
       "8.8.1",

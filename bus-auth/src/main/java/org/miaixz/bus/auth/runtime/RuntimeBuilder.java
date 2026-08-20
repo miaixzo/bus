@@ -19,124 +19,197 @@
 */
 package org.miaixz.bus.auth.runtime;
 
-import org.miaixz.bus.auth.Policy;
-import org.miaixz.bus.auth.Provider;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.protocol.Handler;
-import org.miaixz.bus.auth.vendor.VendorDefinition;
-import org.miaixz.bus.auth.vendor.catalog.BuiltinVendors;
+import org.miaixz.bus.auth.protocol.ldap.Ldap;
+import org.miaixz.bus.auth.protocol.oauth1.OAuth1;
+import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
+import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
+import org.miaixz.bus.auth.protocol.radius.Radius;
+import org.miaixz.bus.auth.protocol.saml.Saml;
+import org.miaixz.bus.auth.protocol.scim.Scim;
+import org.miaixz.bus.auth.registry.RegistrationLoader;
+import org.miaixz.bus.auth.registry.RegistrationValidator;
+import org.miaixz.bus.auth.registry.RegistryListener;
+import org.miaixz.bus.auth.registry.internal.AtomicRegistryState;
+import org.miaixz.bus.auth.registry.internal.DefaultRegistry;
+import org.miaixz.bus.auth.registry.spi.RegistryView;
+import org.miaixz.bus.auth.runtime.internal.SnapshotCompiler;
+import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.source.SourceDriver;
+import org.miaixz.bus.auth.vendor.Vendor;
+import org.miaixz.bus.auth.vendor.VendorModule;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.registry.Binding;
 
 /**
- * Single-use builder registering typed providers, handlers, and policies for one authentication runtime.
+ * Performs deterministic one-time assembly of the bus-auth Registry and runtime lifecycle.
+ * <p>
+ * The standard factory explicitly assembles every built-in protocol and Vendor driver owned by bus-auth. The custom
+ * factory starts without built-ins for deployments that intentionally select another implementation set. Build freezes
+ * the resulting indexes, validates type and profile uniqueness, publishes a synchronous revision-zero empty view, and
+ * returns a running AuthRuntime. External registration data is loaded only by an explicit reload after build.
+ * </p>
  *
  * @author Kimi Liu
  */
-public final class RuntimeBuilder implements org.miaixz.bus.core.Builder<AuthRuntime> {
+public final class RuntimeBuilder {
 
     /**
-     * Built-in vendor definitions used only by vendor client creation.
+     * Complete externally supplied execution service set.
      */
-    private final Registry<VendorDefinition> vendors = Registry.create();
+    private final ExecutionServices services;
 
     /**
-     * Registered protocol-neutral providers.
+     * External complete registration snapshot loader.
      */
-    private final Registry<Provider> providers = Registry.create();
+    private final RegistrationLoader registrationLoader;
 
     /**
-     * Registered server protocol handlers.
+     * Explicit Source drivers retained in caller-provided order.
      */
-    private final Registry<Handler<?, ?>> handlers = Registry.create();
+    private final List<SourceDriver<?>> sources;
 
     /**
-     * Registered authentication policies.
+     * Explicit Registry listeners retained in caller-provided order.
      */
-    private final Registry<Policy> policies = Registry.create();
+    private final List<RegistryListener> listeners;
 
     /**
-     * Whether ownership has already transferred to a runtime.
+     * Whether the one-shot build process has begun.
      */
     private boolean built;
 
     /**
-     * Creates one builder and optionally installs built-in vendor definitions.
+     * Creates an empty internal builder used only by the two named assembly factories.
+     *
+     * @param services           complete externally owned execution services
+     * @param registrationLoader external complete registration snapshot loader
      */
-    private RuntimeBuilder(final boolean defaults) {
-        if (defaults) {
-            for (final BuiltinVendors vendor : BuiltinVendors.values()) {
-                vendors.put(Binding.of(vendor.descriptor().id(), vendor));
-            }
+    private RuntimeBuilder(final ExecutionServices services, final RegistrationLoader registrationLoader) {
+        this.services = Assert.notNull(services, "Runtime execution services must not be null");
+        this.registrationLoader = Assert.notNull(registrationLoader, "Registration loader must not be null");
+        this.sources = new ArrayList<>();
+        this.listeners = new ArrayList<>();
+    }
+
+    /**
+     * Creates a standard one-shot builder containing every built-in protocol and Vendor implementation.
+     *
+     * @param services           complete externally owned execution services
+     * @param registrationLoader external complete registration snapshot loader
+     * @return builder with the complete built-in implementation set
+     * @throws IllegalArgumentException if an argument is {@code null} or a built-in contribution is invalid
+     */
+    public static RuntimeBuilder standard(
+            final ExecutionServices services,
+            final RegistrationLoader registrationLoader) {
+        final RuntimeBuilder builder = new RuntimeBuilder(services, registrationLoader);
+        final VendorModule vendors = Vendor.module();
+        return builder.sources(
+                List.of(
+                        OAuth1.source(),
+                        OAuth2.source(),
+                        OAuth2.provider(),
+                        OpenIdConnect.source(),
+                        OpenIdConnect.provider(),
+                        Saml.source(),
+                        Saml.provider(),
+                        Ldap.source(),
+                        Ldap.provider(),
+                        Scim.provider(),
+                        Radius.provider(),
+                        vendors.source()));
+    }
+
+    /**
+     * Creates an empty one-shot builder for an explicitly selected implementation set.
+     *
+     * @param services           complete externally owned execution services
+     * @param registrationLoader external complete registration snapshot loader
+     * @return empty custom builder
+     * @throws IllegalArgumentException if an argument is {@code null}
+     */
+    public static RuntimeBuilder custom(final ExecutionServices services, final RegistrationLoader registrationLoader) {
+        return new RuntimeBuilder(services, registrationLoader);
+    }
+
+    /**
+     * Adds one explicit client-role, server-role, or Vendor Source driver before build.
+     *
+     * @param driver Source driver
+     * @return this builder
+     * @throws IllegalArgumentException if {@code driver} is {@code null}
+     * @throws ValidateException        if build has already begun
+     */
+    public synchronized RuntimeBuilder source(final SourceDriver<?> driver) {
+        mutable();
+        sources.add(Assert.notNull(driver, "Source driver must not be null"));
+        return this;
+    }
+
+    /**
+     * Adds Source drivers in caller-provided deterministic order.
+     *
+     * @param drivers Source drivers
+     * @return this builder
+     * @throws IllegalArgumentException if the list or an entry is {@code null}
+     * @throws ValidateException        if build has already begun
+     */
+    public synchronized RuntimeBuilder sources(final List<? extends SourceDriver<?>> drivers) {
+        mutable();
+        Assert.notNull(drivers, "Source driver list must not be null");
+        for (SourceDriver<?> driver : drivers) {
+            sources.add(Assert.notNull(driver, "Source driver must not be null"));
         }
-    }
-
-    /**
-     * @return builder preloaded with built-in vendor definitions
-     */
-    public static RuntimeBuilder create() {
-        return new RuntimeBuilder(true);
-    }
-
-    /**
-     * @return empty builder
-     */
-    public static RuntimeBuilder empty() {
-        return new RuntimeBuilder(false);
-    }
-
-    /**
-     * Registers or replaces a provider by descriptor identifier.
-     */
-    public RuntimeBuilder provider(final Provider provider) {
-        ensureMutable();
-        final Provider checked = Assert
-                .notNull(provider, () -> new ValidateException("Authentication provider must not be null"));
-        providers.put(Binding.of(checked.descriptor().id(), checked));
         return this;
     }
 
     /**
-     * Registers or replaces a protocol handler by descriptor identifier.
+     * Adds one externally implemented Registry commit listener before build.
+     *
+     * @param listener Registry listener
+     * @return this builder
+     * @throws IllegalArgumentException if {@code listener} is {@code null}
+     * @throws ValidateException        if build has already begun
      */
-    public RuntimeBuilder handler(final Handler<?, ?> handler) {
-        ensureMutable();
-        final Handler<?, ?> checked = Assert
-                .notNull(handler, () -> new ValidateException("Protocol handler must not be null"));
-        handlers.put(Binding.of(checked.descriptor().id(), checked));
+    public synchronized RuntimeBuilder listener(final RegistryListener listener) {
+        mutable();
+        listeners.add(Assert.notNull(listener, "Registry listener must not be null"));
         return this;
     }
 
     /**
-     * Registers or replaces a policy under an explicit stable name.
+     * Freezes contributions and synchronously assembles a running revision-zero runtime.
+     *
+     * @return fully assembled running AuthRuntime
+     * @throws ValidateException        if build was already attempted or contributions conflict
+     * @throws IllegalArgumentException if a driver or listener is invalid
      */
-    public RuntimeBuilder policy(final String name, final Policy policy) {
-        ensureMutable();
-        policies.put(
-                Binding.of(
-                        name,
-                        Assert.notNull(policy, () -> new ValidateException("Authentication policy must not be null"))));
-        return this;
-    }
-
-    /**
-     * Transfers the four registries to one active runtime.
-     */
-    @Override
-    public AuthRuntime build() {
-        ensureMutable();
+    public synchronized AuthRuntime build() {
+        mutable();
         built = true;
-        return new AuthRuntime(vendors, providers, handlers, policies);
+        final SnapshotCompiler snapshotCompiler = new SnapshotCompiler(List.copyOf(sources), services);
+        final Registry.Revision revision = new Registry.Revision(0L);
+        final Registry.Snapshot snapshot = new Registry.Snapshot(revision, List.of());
+        final RegistryView initial = snapshotCompiler.compile(snapshot);
+        final AtomicRegistryState state = new AtomicRegistryState(initial);
+        final Registry registry = new DefaultRegistry(state);
+        final RuntimeReloadService reloadService = new RuntimeReloadService(registrationLoader,
+                new RegistrationValidator(), snapshotCompiler, state, List.copyOf(listeners));
+        return new AuthRuntime(registry, reloadService);
     }
 
     /**
-     * Rejects mutation after ownership transfer.
+     * Rejects mutation after the one-shot build process has begun.
+     *
+     * @throws ValidateException if this builder is frozen
      */
-    private void ensureMutable() {
+    private void mutable() {
         if (built) {
-            throw new StatefulException("Authentication runtime builder has already built its runtime");
+            throw new ValidateException("Runtime builder is already frozen");
         }
     }
 

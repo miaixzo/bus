@@ -19,77 +19,100 @@
 */
 package org.miaixz.bus.auth.vendor;
 
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Descriptor;
-import org.miaixz.bus.auth.Endpoint;
-import org.miaixz.bus.auth.Provider;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.fabric.Options;
 
 /**
- * Immutable endpoint metadata and typed provider factory contract for one authentication vendor.
+ * Declares immutable platform metadata and its independently supported authentication variants.
  *
+ * @param <S> exact immutable settings object used by this platform
  * @author Kimi Liu
  */
-public interface VendorDefinition {
+public interface VendorDefinition<S extends VendorSettings> extends org.miaixz.bus.core.Provider<Vendor.Id> {
 
     /**
-     * Returns the immutable endpoint map for supported vendor operations.
+     * Returns the stable platform identifier.
      *
-     * @return non-null immutable endpoint map indexed by vendor operation
+     * @return platform identifier
      */
-    Map<VendorEndpoint, Endpoint> endpoints();
+    @Override
+    Vendor.Id type();
 
     /**
-     * Returns the vendor's primary wire protocol.
+     * Returns immutable platform presentation metadata.
      *
-     * @return non-null Bus protocol
+     * @return management presentation metadata
      */
-    Protocol protocol();
+    Vendor.Metadata metadata();
 
     /**
-     * Returns the typed factory for provider instances using explicit runtime dependencies.
+     * Returns the exact settings object accepted for this platform.
      *
-     * @return non-null vendor provider factory
+     * @return platform settings class
      */
-    Provider.Factory<VendorConfiguration, ? extends VendorProvider> factory();
+    Class<S> settingsType();
 
     /**
-     * Derives the root provider descriptor exclusively from this definition's identity, protocol, and endpoints.
+     * Returns all supported variants in deterministic declaration order.
      *
-     * @return immutable root descriptor
-     * @throws ValidateException if an endpoint role, endpoint, or protocol is absent, or an endpoint uses a different
-     *                           protocol
+     * @return immutable non-empty variants
      */
-    default Descriptor descriptor() {
-        final Protocol protocol = protocol();
-        if (protocol == null) {
-            throw new ValidateException("Vendor protocol must not be null");
-        }
-        final Map<VendorEndpoint, Endpoint> source = endpoints();
-        if (source == null) {
-            throw new ValidateException("Vendor endpoints must not be null");
-        }
-        final Map<Capability, Endpoint> resolved = new LinkedHashMap<>();
-        for (final Map.Entry<VendorEndpoint, Endpoint> entry : source.entrySet()) {
-            final VendorEndpoint role = entry.getKey();
-            final Endpoint endpoint = entry.getValue();
-            if (role == null || endpoint == null) {
-                throw new ValidateException("Vendor endpoint role and endpoint must not be null");
+    List<Definition> variants();
+
+    /**
+     * Returns one unique platform variant definition.
+     *
+     * @param variant requested variant identifier
+     * @return exact definition
+     * @throws ValidateException if the variant is unsupported
+     */
+    Definition variant(Vendor.Variant variant);
+
+    /**
+     * Carries only immutable platform facts required to compile one variant.
+     *
+     * @param platform      stable third-party platform identifier
+     * @param variant       stable platform variant identifier
+     * @param protocol      actual industry-standard or proprietary Bus protocol
+     * @param defaultScopes ordered default scopes for authorization requests
+     * @param targets       official immutable platform targets
+     * @param manifest      fully implemented capability manifest
+     * @param deviations    proven platform deviations from the selected protocol
+     * @author Kimi Liu
+     */
+    record Definition(Vendor.Id platform, Vendor.Variant variant, Protocol protocol, List<String> defaultScopes,
+            VendorTargets targets, Capability.Manifest manifest, List<VendorDeviation> deviations) {
+
+        /**
+         * Validates and freezes one platform variant definition.
+         *
+         * @throws IllegalArgumentException if a component or collection item is {@code null}
+         */
+        public Definition {
+            platform = Assert.notNull(platform, "Vendor definition platform must not be null");
+            variant = Assert.notNull(variant, "Vendor definition variant must not be null");
+            protocol = Assert.notNull(protocol, "Vendor definition protocol must not be null");
+            Assert.notNull(defaultScopes, "Vendor definition default scopes must not be null");
+            final List<String> scopes = new ArrayList<>(defaultScopes.size());
+            for (String scope : defaultScopes) {
+                scopes.add(Assert.notBlank(scope, "Vendor default scope must not be blank"));
             }
-            if (endpoint.protocol() != protocol) {
-                throw new ValidateException("Vendor endpoint protocol must match the vendor protocol");
+            defaultScopes = List.copyOf(scopes);
+            targets = Assert.notNull(targets, "Vendor definition targets must not be null");
+            manifest = Assert.notNull(manifest, "Vendor definition manifest must not be null");
+            Assert.notNull(deviations, "Vendor definition deviations must not be null");
+            final List<VendorDeviation> copy = new ArrayList<>(deviations.size());
+            for (VendorDeviation deviation : deviations) {
+                copy.add(Assert.notNull(deviation, "Vendor definition deviation must not be null"));
             }
-            resolved.put(role.capability(), endpoint);
+            deviations = List.copyOf(copy);
         }
-        final String name = this instanceof Enum<?> value ? value.name() : getClass().getSimpleName();
-        return new Descriptor(name.toLowerCase(Locale.ROOT), name, protocol, resolved.keySet(), resolved,
-                Options.empty());
+
     }
 
 }

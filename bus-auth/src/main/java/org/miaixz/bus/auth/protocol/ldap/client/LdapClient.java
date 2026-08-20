@@ -19,612 +19,430 @@
 */
 package org.miaixz.bus.auth.protocol.ldap.client;
 
-import java.io.ByteArrayOutputStream;
-import java.net.URI;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
+import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Outcome.*;
-import org.miaixz.bus.auth.protocol.ldap.LDAP;
-import org.miaixz.bus.auth.protocol.ldap.LDAP.*;
-import org.miaixz.bus.auth.protocol.ldap.control.LdapControl;
-import org.miaixz.bus.auth.protocol.ldap.control.PagedResultsControl;
-import org.miaixz.bus.auth.protocol.ldap.filter.LdapFilter;
-import org.miaixz.bus.auth.protocol.ldap.message.LdapMessage;
-import org.miaixz.bus.auth.protocol.ldap.message.LdapProtocolOp;
-import org.miaixz.bus.auth.protocol.ldap.message.LdapResult;
+import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.protocol.ldap.*;
+import org.miaixz.bus.auth.protocol.ldap.codec.BerCodec;
+import org.miaixz.bus.auth.protocol.ldap.codec.LdapMessageDecoder;
+import org.miaixz.bus.auth.protocol.ldap.codec.LdapMessageEncoder;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.ExceptionKit;
+import org.miaixz.bus.extra.json.JsonValue;
+import org.miaixz.bus.fabric.Call;
+import org.miaixz.bus.fabric.Message;
+import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.network.tls.TlsPolicy;
+import org.miaixz.bus.fabric.protocol.socket.SocketOptions;
 import org.miaixz.bus.fabric.protocol.socket.SocketSession;
+import org.miaixz.bus.fabric.protocol.socket.SocketX;
 
 /**
- * Sole {@link LDAP.Client} implementation. It lazily opens one product-owned Bus stream, allocates bounded message
- * identifiers, converts public immutable DTOs to the LDAP wire model, and owns exactly one {@link LdapClientSession}
- * until idempotent close.
+ * Executes standard LDAPv3 Bind, Search, and Unbind operations on one exclusive Fabric socket session.
+ * <p>
+ * A client instance is intentionally not pooled or shared between authentication attempts because LDAP Bind state is
+ * connection-scoped. Operations are serialized in submission order, message identifiers are assigned by the client, and
+ * every response must carry the corresponding identifier. Implicit TLS or the standard StartTLS operation is completed
+ * before the first Bind.
+ * </p>
  *
  * @author Kimi Liu
  */
-public final class LdapClient implements LDAP.Client {
+public final class LdapClient implements AutoCloseable {
 
     /**
-     * Immutable client configuration.
+     * Shared Fabric transport context owned by the integrating runtime.
      */
-    private final ClientConfig configuration;
+    private final org.miaixz.bus.fabric.Context fabricContext;
 
     /**
-     * Product-supplied authentication runtime.
+     * Caller-owned executor used for every blocking Fabric Call.
      */
-    /**
-     * Shared close completion.
-     */
-    private CompletionStage<Void> closeStage;
+    private final Executor executor;
 
     /**
-     * Whether close has been requested.
+     * Immutable remote directory and security settings.
      */
-    private boolean closed;
+    private final LdapSourceSettings settings;
 
     /**
-     * Next bounded message identifier.
+     * LDAP-aware Fabric stream frame codec.
      */
-    private int nextMessageId = Normal._1;
+    private final BerCodec frameCodec;
 
     /**
-     * Shared lazy session opening stage.
+     * Complete LDAPMessage encoder.
      */
-    private CompletionStage<LdapClientSession> sessionStage;
+    private final LdapMessageEncoder encoder;
 
     /**
-     * Creates one managed LDAP client.
+     * Complete LDAPMessage decoder.
+     */
+    private final LdapMessageDecoder decoder;
+
+    /**
+     * Positive message identifier sequence used by this exclusive connection.
+     */
+    private final AtomicInteger nextMessageId;
+
+    /**
+     * Lock protecting the serialized stage tail and socket lifecycle.
+     */
+    private final Object lifecycleLock;
+
+    /**
+     * Completion tail that orders every submitted LDAP operation.
+     */
+    private CompletableFuture<Void> tail;
+
+    /**
+     * Lazily opened exclusive socket session, or {@code null} before the first operation.
+     */
+    private SocketSession session;
+
+    /**
+     * Whether this client has been permanently closed.
+     */
+    private volatile boolean closed;
+
+    /**
+     * Creates one exclusive lazy LDAP connection owner.
      *
-     * @param configuration       immutable client configuration
-     * @param session             connected Fabric socket session owned by this client
-     * @param tlsPolicy           Fabric TLS policy required for StartTLS, or {@code null} when StartTLS is disabled
-     * @param maximumMessageBytes positive LDAP message-size ceiling in bytes
+     * @param fabricContext shared Fabric transport context
+     * @param executor      caller-owned executor for blocking Fabric operations
+     * @param settings      immutable LDAP Source settings
+     * @param frameCodec    LDAP BER stream frame codec
+     * @param encoder       complete LDAPMessage encoder
+     * @param decoder       complete LDAPMessage decoder
+     * @throws IllegalArgumentException if a dependency is {@code null}
      */
-    public LdapClient(final ClientConfig configuration, final SocketSession session, final TlsPolicy tlsPolicy,
-            final int maximumMessageBytes) {
-        this.configuration = Assert
-                .notNull(configuration, () -> new ValidateException("LDAP client configuration must not be null"));
-        this.sessionStage = CompletableFuture.completedFuture(
-                new LdapClientSession(
-                        Assert.notNull(session, () -> new ValidateException("LDAP Socket session must not be null")),
-                        configuration.transportPolicy(), tlsPolicy, maximumMessageBytes,
-                        configuration.connectWithTls()));
+    public LdapClient(final org.miaixz.bus.fabric.Context fabricContext, final Executor executor,
+            final LdapSourceSettings settings, final BerCodec frameCodec, final LdapMessageEncoder encoder,
+            final LdapMessageDecoder decoder) {
+        this.fabricContext = Assert.notNull(fabricContext, "LDAP Fabric context must not be null");
+        this.executor = Assert.notNull(executor, "LDAP client executor must not be null");
+        this.settings = Assert.notNull(settings, "LDAP client settings must not be null");
+        this.frameCodec = Assert.notNull(frameCodec, "LDAP client BER frame codec must not be null");
+        this.encoder = Assert.notNull(encoder, "LDAP client message encoder must not be null");
+        this.decoder = Assert.notNull(decoder, "LDAP client message decoder must not be null");
+        this.nextMessageId = new AtomicInteger(1);
+        this.lifecycleLock = new Object();
+        this.tail = CompletableFuture.completedFuture(null);
     }
 
     /**
-     * Maps an internal LDAP result to the public snapshot.
+     * Executes and waits for one Fabric Call within the remaining shared operation budget.
      *
-     * @param source internal result
-     * @return public result
+     * @param call    single-use Fabric Call
+     * @param timeout shared operation budget
+     * @param <T>     Fabric result type
+     * @return completed Fabric value
      */
-    private static Result result(final LdapResult source) {
-        return new Result(source.code(), source.matchedDn(), source.diagnostic(),
-                source.referrals().stream().map(URI::toASCIIString).toList());
-    }
-
-    /**
-     * Converts a credential to UTF-8 without constructing an immutable String.
-     *
-     * @param characters copied credential characters
-     * @return encoded credential bytes
-     */
-    private static byte[] utf8(final char[] characters) {
-        final ByteBuffer encoded = StandardCharsets.UTF_8.encode(CharBuffer.wrap(characters));
-        final byte[] result = new byte[encoded.remaining()];
-        encoded.get(result);
-        if (encoded.hasArray()) {
-            Arrays.fill(encoded.array(), (byte) Normal._0);
+    private static <T> T await(final Call<T> call, final Timeout.Budget timeout) {
+        final Duration remaining = timeout.remaining();
+        if (remaining.isZero()) {
+            throw new ValidateException("LDAP operation time budget has expired");
         }
-        return result;
+        return call.await(remaining);
     }
 
     /**
-     * Upgrades the managed plaintext session to TLS.
+     * Creates a safe operational failure without exception text or secret details.
      *
-     * @param invocation operation context
-     * @return upgrade outcome
+     * @param error       existing Bus error code
+     * @param description fixed non-sensitive failure description
+     * @param <T>         absent success type
+     * @return failed operation outcome
      */
-    @Override
-    public CompletionStage<Outcome<Void>> startTls(final Context invocation) {
-        return execute(invocation, session -> session.startTls(messageId()).thenApply(ignored -> null));
+    private static <T> Outcome<T> failed(
+            final org.miaixz.bus.core.basic.normal.Errors error,
+            final String description) {
+        return Outcome.failed(new Outcome.Failure(error, description, new JsonValue.ObjectValue(Map.of())));
     }
 
     /**
-     * Executes simple Bind with credential buffers cleared after wire-model construction.
+     * Executes one standard Bind request on this connection.
      *
-     * @param invocation operation context
-     * @param request    bind request
-     * @return bind outcome
+     * @param request standard Bind request
+     * @param context immutable authentication invocation context
+     * @param timeout shared end-to-end time budget
+     * @return stage containing the exact Bind response or a closed transport/protocol failure
      */
-    @Override
-    public CompletionStage<Outcome<BindResult>> bind(final Context invocation, final LDAP.BindRequest request) {
-        final LDAP.BindRequest source = Assert
-                .notNull(request, () -> new ValidateException("LDAP Bind request must not be null"));
-        return execute(invocation, session -> {
-            final int id = messageId();
-            final char[] characters = source.credential();
-            final byte[] credential = utf8(characters);
-            Arrays.fill(characters, '\0');
-            try {
-                return session.bind(id, new LdapProtocolOp.BindRequest(source.distinguishedName(), credential))
-                        .thenApply(response -> new BindResult(id, result(response.result())));
-            } finally {
-                Arrays.fill(credential, (byte) Normal._0);
+    public CompletionStage<Outcome<BindResponse>> bind(
+            final BindRequest request,
+            final Context context,
+            final Timeout.Budget timeout) {
+        Assert.notNull(request, "LDAP Bind request must not be null");
+        return serial(context, timeout, () -> {
+            final LdapMessage response = exchange(request, timeout);
+            if (!(response.protocolOp() instanceof BindResponse bind)) {
+                throw new ProtocolException("LDAP Bind request received a non-Bind response");
             }
+            return Outcome.succeeded(bind);
         });
     }
 
     /**
-     * Executes Search including the optional RFC 2696 page control.
+     * Executes one standard Search and collects its ordered response message sequence through SearchResultDone.
      *
-     * @param invocation operation context
-     * @param request    search request
-     * @return search outcome
+     * @param request standard Search request
+     * @param context immutable authentication invocation context
+     * @param timeout shared end-to-end time budget
+     * @return stage containing immutable Entry/Reference/Done messages or a closed failure
      */
-    @Override
-    public CompletionStage<Outcome<SearchResult>> search(final Context invocation, final LDAP.SearchRequest request) {
-        final LDAP.SearchRequest source = Assert
-                .notNull(request, () -> new ValidateException("LDAP Search request must not be null"));
-        return execute(invocation, session -> {
-            final int id = messageId();
-            final LdapProtocolOp.SearchRequest operation = new LdapProtocolOp.SearchRequest(source.baseDn(),
-                    source.scope(), source.dereferenceAliases(), source.sizeLimit(), source.timeLimit(),
-                    source.typesOnly(), FilterTextParser.parse(source.filter()), source.attributes());
-            final List<LdapControl> controls = source.pageSize() == Normal._0 ? List.of()
-                    : List.of(PagedResultsControl.request(source.pageSize(), source.cookie()));
-            return session.search(new LdapMessage(id, operation, controls)).thenApply(messages -> search(id, messages));
+    public CompletionStage<Outcome<List<LdapMessage>>> search(
+            final SearchRequest request,
+            final Context context,
+            final Timeout.Budget timeout) {
+        Assert.notNull(request, "LDAP Search request must not be null");
+        return serial(context, timeout, () -> Outcome.succeeded(searchNow(request, timeout)));
+    }
+
+    /**
+     * Sends one standard Unbind request, closes the connection, and waits for no response.
+     *
+     * @param request standard Unbind request
+     * @param context immutable authentication invocation context
+     * @param timeout shared end-to-end time budget
+     * @return stage containing empty success after the request is sent and the session is closed
+     */
+    public CompletionStage<Outcome<Void>> unbind(
+            final UnbindRequest request,
+            final Context context,
+            final Timeout.Budget timeout) {
+        Assert.notNull(request, "LDAP Unbind request must not be null");
+        return serial(context, timeout, () -> {
+            final SocketSession current = requireSession(timeout);
+            final int messageId = messageId();
+            send(current, new LdapMessage(messageId, request, List.of()), timeout);
+            closeSession();
+            return Outcome.succeeded(null);
         });
     }
 
     /**
-     * Executes Compare.
-     *
-     * @param invocation operation context
-     * @param request    compare request
-     * @return compare outcome
+     * Permanently closes this client and its current exclusive socket session.
      */
     @Override
-    public CompletionStage<Outcome<CompareResult>> compare(
-            final Context invocation,
-            final LDAP.CompareRequest request) {
-        final LDAP.CompareRequest source = Assert
-                .notNull(request, () -> new ValidateException("LDAP Compare request must not be null"));
-        return execute(invocation, session -> {
-            final int id = messageId();
-            final LdapProtocolOp.CompareRequest operation = new LdapProtocolOp.CompareRequest(
-                    source.distinguishedName(), source.attribute(), source.assertion());
-            return session.compare(id, operation).thenApply(response -> {
-                final Result mapped = result(response.result());
-                final boolean matched = response.result().code() == LDAP.ResultCode.COMPARE_TRUE;
-                return new CompareResult(id, matched, mapped);
-            });
-        });
-    }
-
-    /**
-     * Sends Abandon for one positive outstanding message identifier.
-     *
-     * @param invocation operation context
-     * @param messageId  outstanding message identifier
-     * @return abandon outcome
-     */
-    @Override
-    public CompletionStage<Outcome<Void>> abandon(final Context invocation, final int messageId) {
-        Assert.isTrue(
-                messageId > Normal._0 && messageId <= configuration.maximumMessageId(),
-                () -> new ValidateException("LDAP abandoned message identifier is invalid"));
-        return execute(invocation, session -> session.abandon(messageId(), messageId).thenApply(ignored -> null));
-    }
-
-    /**
-     * Sends Unbind and closes the managed session.
-     *
-     * @param invocation operation context
-     * @return unbind outcome
-     */
-    @Override
-    public CompletionStage<Outcome<Void>> unbind(final Context invocation) {
-        return execute(invocation, session -> session.unbind(messageId()).thenApply(ignored -> null));
-    }
-
-    /**
-     * Closes this client idempotently, including an opening session.
-     *
-     * @return shared close completion
-     */
-    @Override
-    public synchronized CompletionStage<Void> close() {
-        if (closeStage == null) {
+    public void close() {
+        synchronized (lifecycleLock) {
             closed = true;
-            if (sessionStage == null) {
-                closeStage = CompletableFuture.completedFuture(null);
-            } else {
-                closeStage = sessionStage.handle((session, failure) -> session).thenCompose(
-                        session -> session == null ? CompletableFuture.completedFuture(null) : session.close());
-            }
+            closeSession();
         }
-        return closeStage;
     }
 
     /**
-     * Executes one client operation and maps failures into the common outcome algebra.
+     * Adds one operation to the exclusive serialized connection tail.
      *
-     * @param invocation operation context
-     * @param operation  session operation
-     * @param <T>        successful value type
-     * @return operation outcome
+     * @param context   immutable invocation context validated before scheduling
+     * @param timeout   shared operation budget validated before scheduling
+     * @param operation blocking operation executed on the caller-owned executor
+     * @param <T>       operation success type
+     * @return serialized asynchronous closed Outcome
      */
-    private <T> CompletionStage<Outcome<T>> execute(
-            final Context invocation,
-            final Function<LdapClientSession, CompletionStage<T>> operation) {
-        final Context context = Assert
-                .notNull(invocation, () -> new ValidateException("LDAP invocation must not be null"));
+    private <T> CompletionStage<Outcome<T>> serial(
+            final Context context,
+            final Timeout.Budget timeout,
+            final Supplier<Outcome<T>> operation) {
+        Assert.notNull(context, "LDAP client invocation context must not be null");
+        Assert.notNull(timeout, "LDAP client time budget must not be null");
+        Assert.notNull(operation, "LDAP client operation must not be null");
+        synchronized (lifecycleLock) {
+            if (closed) {
+                return CompletableFuture.completedFuture(failed(ErrorCode._503, "LDAP client connection is closed."));
+            }
+            final CompletableFuture<Outcome<T>> result = tail.handle((ignored, previousFailure) -> null)
+                    .thenApplyAsync(ignored -> execute(operation, timeout), executor);
+            tail = result.handle((ignored, failure) -> null);
+            return result;
+        }
+    }
+
+    /**
+     * Executes one serialized blocking operation and closes the session after any exceptional failure.
+     *
+     * @param operation blocking operation body
+     * @param timeout   shared operation budget
+     * @param <T>       success type
+     * @return successful, rejected, or operational failure value
+     */
+    private <T> Outcome<T> execute(final Supplier<Outcome<T>> operation, final Timeout.Budget timeout) {
+        if (timeout.expired()) {
+            closeSession();
+            return failed(ErrorCode._504, "LDAP operation time budget expired.");
+        }
         try {
-            return session(context).thenCompose(operation).<Outcome<T>>thenApply(Success::new)
-                    .exceptionally(this::failure);
-        } catch (final Throwable failure) {
-            return CompletableFuture.completedFuture(failure(failure));
+            return operation.get();
+        } catch (RuntimeException exception) {
+            closeSession();
+            if (exception instanceof ProtocolException) {
+                return failed(ErrorCode._502, "LDAP peer returned an invalid protocol message.");
+            }
+            if (exception instanceof ValidateException && timeout.expired()) {
+                return failed(ErrorCode._504, "LDAP operation time budget expired.");
+            }
+            return failed(ErrorCode._503, "LDAP transport operation failed.");
         }
     }
 
     /**
-     * Opens or returns the sole managed session.
+     * Exchanges one request for exactly one response with the same message identifier.
      *
-     * @param invocation opening operation context
-     * @return shared session stage
+     * @param operation standard request protocol operation
+     * @param timeout   shared operation budget
+     * @return matching complete response message
      */
-    private synchronized CompletionStage<LdapClientSession> session(final Context invocation) {
-        if (closed) {
-            return CompletableFuture.failedFuture(new IllegalStateException("LDAP client is closed"));
-        }
-        return sessionStage;
+    private LdapMessage exchange(final LdapMessage.ProtocolOp operation, final Timeout.Budget timeout) {
+        final SocketSession current = requireSession(timeout);
+        final int messageId = messageId();
+        send(current, new LdapMessage(messageId, operation, List.of()), timeout);
+        return receive(current, messageId, timeout);
     }
 
     /**
-     * Allocates the next bounded message identifier.
+     * Executes Search and stops only after a single final SearchResultDone.
      *
-     * @return positive message identifier
+     * @param request standard Search request
+     * @param timeout shared operation budget
+     * @return immutable ordered LDAP Search response messages
      */
-    private synchronized int messageId() {
-        final int result = nextMessageId;
-        nextMessageId = result == configuration.maximumMessageId() ? Normal._1 : result + Normal._1;
-        return result;
+    private List<LdapMessage> searchNow(final SearchRequest request, final Timeout.Budget timeout) {
+        final SocketSession current = requireSession(timeout);
+        final int messageId = messageId();
+        send(current, new LdapMessage(messageId, request, List.of()), timeout);
+        final List<LdapMessage> responses = new ArrayList<>();
+        while (true) {
+            final LdapMessage response = receive(current, messageId, timeout);
+            if (!(response.protocolOp() instanceof SearchResultEntry)
+                    && !(response.protocolOp() instanceof SearchResultReference)
+                    && !(response.protocolOp() instanceof SearchResultDone)) {
+                throw new ProtocolException("LDAP Search received an invalid response operation");
+            }
+            responses.add(response);
+            if (response.protocolOp() instanceof SearchResultDone) {
+                return List.copyOf(responses);
+            }
+        }
     }
 
     /**
-     * Maps one terminal Search response sequence.
+     * Opens and protects the exclusive socket session on first use.
      *
-     * @param messageId request identifier
-     * @param messages  response messages
-     * @return public immutable result
+     * @param timeout shared operation budget used for connection and optional StartTLS
+     * @return open TLS-protected socket session
      */
-    private SearchResult search(final int messageId, final List<LdapMessage> messages) {
-        final ArrayList<LDAP.Entry> entries = new ArrayList<>();
-        for (int index = Normal._0; index < messages.size() - Normal._1; index++) {
-            entries.add(((LdapProtocolOp.SearchEntry) messages.get(index).operation()).entry());
-        }
-        final LdapMessage terminal = messages.getLast();
-        final LdapResult done = ((LdapProtocolOp.SearchDone) terminal.operation()).result();
-        byte[] cookie = new byte[0];
-        for (final LdapControl control : terminal.controls()) {
-            if (PagedResultsControl.OID.equals(control.oid())) {
-                cookie = PagedResultsControl.decode(control, Integer.MAX_VALUE).cookie();
-            } else if (control.critical()) {
-                throw new ValidateException("LDAP response contains an unsupported critical control");
+    private SocketSession requireSession(final Timeout.Budget timeout) {
+        synchronized (lifecycleLock) {
+            if (closed) {
+                throw new ValidateException("LDAP client is closed");
             }
-        }
-        return new SearchResult(messageId, entries, result(done), cookie);
-    }
-
-    /**
-     * Converts one exceptional completion to a stable safe outcome.
-     *
-     * @param throwable exceptional completion
-     * @param <T>       absent success type
-     * @return rejected or failed outcome
-     */
-    private <T> Outcome<T> failure(final Throwable throwable) {
-        final Throwable cause = ExceptionKit.unwrap(throwable);
-        if (cause instanceof ValidateException || cause instanceof IllegalArgumentException) {
-            return new Rejected<>(new Failure(Kind.VALIDATION, ErrorCode._100101, false));
-        }
-        if (cause instanceof IllegalStateException) {
-            return new Rejected<>(new Failure(Kind.CONFLICT, ErrorCode._100807, false));
-        }
-        return new Failed<>(new Failure(Kind.REMOTE, ErrorCode._100805, true), cause);
-    }
-
-    /**
-     * Bounded RFC 4515 text parser used only at the public client boundary.
-     *
-     * @author Kimi Liu
-     */
-    private static final class FilterTextParser {
-
-        /**
-         * Source filter text.
-         */
-        private final String source;
-
-        /**
-         * Current source offset.
-         */
-        private int offset;
-
-        /**
-         * Creates one parser.
-         *
-         * @param source source filter
-         */
-        private FilterTextParser(final String source) {
-            this.source = source;
-        }
-
-        /**
-         * Parses one complete filter.
-         *
-         * @param source source filter text
-         * @return immutable filter tree
-         */
-        private static LdapFilter parse(final String source) {
-            final FilterTextParser parser = new FilterTextParser(
-                    Assert.notBlank(source, () -> new ValidateException("LDAP filter must not be blank")));
-            final LdapFilter result = parser.filter(Normal._1);
-            if (parser.offset != source.length()) {
-                throw new ValidateException("LDAP filter contains trailing text");
+            if (session != null) {
+                return session;
             }
-            return result;
-        }
-
-        /**
-         * Parses one substring assertion.
-         *
-         * @param attribute attribute description
-         * @param encoded   encoded assertion text
-         * @return substring filter
-         */
-        private static LdapFilter substring(final String attribute, final String encoded) {
-            final ArrayList<String> parts = new ArrayList<>();
-            int start = Normal._0;
-            for (int index = Normal._0; index < encoded.length(); index++) {
-                if (encoded.charAt(index) == '\\') {
-                    index += 2;
-                } else if (encoded.charAt(index) == '*') {
-                    parts.add(encoded.substring(start, index));
-                    start = index + Normal._1;
-                }
-            }
-            parts.add(encoded.substring(start));
-            final byte[] initial = parts.getFirst().isEmpty() ? null : value(parts.getFirst());
-            final byte[] terminal = parts.getLast().isEmpty() ? null : value(parts.getLast());
-            final ArrayList<byte[]> any = new ArrayList<>();
-            for (int index = Normal._1; index < parts.size() - Normal._1; index++) {
-                if (!parts.get(index).isEmpty()) {
-                    any.add(value(parts.get(index)));
-                }
-            }
-            return new LdapFilter.Substrings(attribute, initial, any, terminal);
-        }
-
-        /**
-         * Decodes RFC 4515 hexadecimal escapes to assertion bytes.
-         *
-         * @param encoded assertion text
-         * @return decoded bytes
-         */
-        private static byte[] value(final String encoded) {
-            final ByteArrayOutputStream result = new ByteArrayOutputStream(encoded.length());
-            int start = Normal._0;
-            for (int index = Normal._0; index < encoded.length();) {
-                if (encoded.charAt(index) == '\\') {
-                    result.writeBytes(encoded.substring(start, index).getBytes(StandardCharsets.UTF_8));
-                    final int high = Character.digit(encoded.charAt(index + Normal._1), 16);
-                    final int low = Character.digit(encoded.charAt(index + 2), 16);
-                    if (high < Normal._0 || low < Normal._0) {
-                        throw invalid();
-                    }
-                    result.write(high << 4 | low);
-                    index += 3;
-                    start = index;
-                } else {
-                    index++;
-                }
-            }
-            result.writeBytes(encoded.substring(start).getBytes(StandardCharsets.UTF_8));
-            return result.toByteArray();
-        }
-
-        /**
-         * Tests for an unescaped substring wildcard.
-         *
-         * @param encoded assertion text
-         * @return whether an unescaped wildcard exists
-         */
-        private static boolean containsUnescapedStar(final String encoded) {
-            for (int index = Normal._0; index < encoded.length(); index++) {
-                if (encoded.charAt(index) == '\\') {
-                    index += 2;
-                } else if (encoded.charAt(index) == '*') {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /**
-         * Creates a fixed filter-validation failure.
-         *
-         * @return validation failure
-         */
-        private static ValidateException invalid() {
-            return new ValidateException("LDAP filter syntax is invalid");
-        }
-
-        /**
-         * Parses one parenthesized filter with a bounded depth.
-         *
-         * @param depth current depth
-         * @return parsed filter
-         */
-        private LdapFilter filter(final int depth) {
-            if (depth > 16 || take() != '(') {
-                throw invalid();
-            }
-            final char marker = peek();
-            final LdapFilter result;
-            if (marker == '&' || marker == '|') {
-                offset++;
-                final ArrayList<LdapFilter> children = new ArrayList<>();
-                while (peek() == '(') {
-                    if (children.size() >= LdapFilter.MAXIMUM_CHILDREN) {
-                        throw invalid();
-                    }
-                    children.add(filter(depth + Normal._1));
-                }
-                result = marker == '&' ? new LdapFilter.And(children) : new LdapFilter.Or(children);
-            } else if (marker == '!') {
-                offset++;
-                result = new LdapFilter.Not(filter(depth + Normal._1));
+            final SocketX.Builder builder = SocketX.builder(fabricContext).timeout(timeout.forFabric())
+                    .frame(frameCodec);
+            if (settings.securityMode() == LdapSourceSettings.SecurityMode.LDAPS) {
+                builder.tls(settings.host(), settings.port());
             } else {
-                result = item();
+                builder.tcp(settings.host(), settings.port());
             }
-            if (take() != ')') {
-                throw invalid();
+            session = await(builder.build().call(), timeout);
+            if (settings.securityMode() == LdapSourceSettings.SecurityMode.START_TLS) {
+                startTls(session, timeout);
             }
-            return result;
+            return session;
         }
+    }
 
-        /**
-         * Parses one assertion item.
-         *
-         * @return parsed assertion filter
-         */
-        private LdapFilter item() {
-            final int start = offset;
-            while (offset < source.length() && source.charAt(offset) != '=' && source.charAt(offset) != '~'
-                    && source.charAt(offset) != '>' && source.charAt(offset) != '<' && source.charAt(offset) != ':') {
-                offset++;
-            }
-            if (offset >= source.length() || offset == start && source.charAt(offset) != ':') {
-                throw invalid();
-            }
-            final String attribute = source.substring(start, offset);
-            if (source.startsWith(":=", offset) || source.charAt(offset) == ':') {
-                return extensible(attribute);
-            }
-            final String operator;
-            if (source.startsWith("~=", offset) || source.startsWith(">=", offset) || source.startsWith("<=", offset)) {
-                operator = source.substring(offset, offset + 2);
-                offset += 2;
-            } else if (source.charAt(offset++) == '=') {
-                operator = "=";
-            } else {
-                throw invalid();
-            }
-            final String encoded = assertionText();
-            if ("=".equals(operator) && "*".equals(encoded)) {
-                return new LdapFilter.Present(attribute);
-            }
-            if ("=".equals(operator) && containsUnescapedStar(encoded)) {
-                return substring(attribute, encoded);
-            }
-            final byte[] value = value(encoded);
-            return switch (operator) {
-                case "=" -> new LdapFilter.Equality(attribute, value);
-                case "~=" -> new LdapFilter.Approximate(attribute, value);
-                case ">=" -> new LdapFilter.GreaterOrEqual(attribute, value);
-                case "<=" -> new LdapFilter.LessOrEqual(attribute, value);
-                default -> throw invalid();
-            };
+    /**
+     * Performs the standard StartTLS extended exchange and upgrades the same Fabric session.
+     *
+     * @param current open plaintext TCP session
+     * @param timeout shared operation budget
+     */
+    private void startTls(final SocketSession current, final Timeout.Budget timeout) {
+        final int requestId = messageId();
+        send(
+                current,
+                new LdapMessage(requestId,
+                        new ExtendedRequest(ExtendedRequest.START_TLS_OID, org.miaixz.bus.core.lang.Optional.empty()),
+                        List.of()),
+                timeout);
+        final LdapMessage response = receive(current, requestId, timeout);
+        if (!(response.protocolOp() instanceof ExtendedResponse extended)
+                || !LdapResultCode.SUCCESS.equals(extended.result().resultCode())) {
+            throw new ProtocolException("LDAP StartTLS did not return a successful ExtendedResponse");
         }
+        final TlsPolicy socketPolicy = fabricContext.options().get(SocketOptions.TLS_POLICY);
+        final TlsPolicy policy = socketPolicy == null ? TlsPolicy.resolve(fabricContext.options()) : socketPolicy;
+        await(current.upgradeTls(policy), timeout);
+    }
 
-        /**
-         * Parses one extensible-match assertion.
-         *
-         * @param attribute leading attribute
-         * @return extensible filter
-         */
-        private LdapFilter extensible(final String attribute) {
-            boolean dn = false;
-            String rule = null;
-            while (source.charAt(offset) == ':' && !source.startsWith(":=", offset)) {
-                offset++;
-                final int start = offset;
-                while (offset < source.length() && source.charAt(offset) != ':') {
-                    offset++;
-                }
-                final String component = source.substring(start, offset);
-                if ("dn".equalsIgnoreCase(component)) {
-                    dn = true;
-                } else if (!component.isEmpty() && rule == null) {
-                    rule = component;
-                } else {
-                    throw invalid();
-                }
-            }
-            if (!source.startsWith(":=", offset)) {
-                throw invalid();
-            }
-            offset += 2;
-            return new LdapFilter.Extensible(rule, attribute.isEmpty() ? null : attribute, value(assertionText()), dn);
+    /**
+     * Encodes and sends one complete LDAPMessage.
+     *
+     * @param current open socket session
+     * @param message complete request message
+     * @param timeout shared operation budget
+     */
+    private void send(final SocketSession current, final LdapMessage message, final Timeout.Budget timeout) {
+        await(current.send(Payload.of(encoder.encode(message))), timeout);
+    }
+
+    /**
+     * Receives and decodes one complete response with the expected message identifier and no unsupported controls.
+     *
+     * @param current           open socket session
+     * @param expectedMessageId request message identifier
+     * @param timeout           shared operation budget
+     * @return matching complete response message
+     */
+    private LdapMessage receive(
+            final SocketSession current,
+            final int expectedMessageId,
+            final Timeout.Budget timeout) {
+        final Message message = await(current.receive(), timeout);
+        final LdapMessage response = decoder.decode(message.payload().bytes(settings.maximumMessageBytes()));
+        if (response.messageId() != expectedMessageId) {
+            throw new ProtocolException("LDAP response messageID does not match the outstanding request");
         }
-
-        /**
-         * Reads assertion text until the containing right parenthesis.
-         *
-         * @return encoded assertion text
-         */
-        private String assertionText() {
-            final int start = offset;
-            while (offset < source.length() && source.charAt(offset) != ')') {
-                if (source.charAt(offset) == '\\') {
-                    if (offset + 2 >= source.length()) {
-                        throw invalid();
-                    }
-                    offset += 3;
-                } else {
-                    offset++;
-                }
-            }
-            return source.substring(start, offset);
+        if (!response.controls().isEmpty()) {
+            throw new ProtocolException("LDAP Source received unsupported response Controls");
         }
+        return response;
+    }
 
-        /**
-         * Returns the current character without consuming it.
-         *
-         * @return current character
-         */
-        private char peek() {
-            if (offset >= source.length()) {
-                throw invalid();
+    /**
+     * Allocates one positive LDAP message identifier and wraps safely after the signed integer maximum.
+     *
+     * @return next positive message identifier
+     */
+    private int messageId() {
+        return nextMessageId.getAndUpdate(current -> current == Integer.MAX_VALUE ? 1 : current + 1);
+    }
+
+    /**
+     * Closes and clears the current exclusive socket session without changing permanent client state.
+     */
+    private void closeSession() {
+        synchronized (lifecycleLock) {
+            final SocketSession current = session;
+            session = null;
+            if (current != null) {
+                current.close();
             }
-            return source.charAt(offset);
-        }
-
-        /**
-         * Returns and consumes the current character.
-         *
-         * @return consumed character
-         */
-        private char take() {
-            final char result = peek();
-            offset++;
-            return result;
         }
     }
 

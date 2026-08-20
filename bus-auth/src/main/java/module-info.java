@@ -18,48 +18,82 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Module: {@code bus.auth}
- *
+ * Provides protocol-standard authentication services and registered external identity integrations.
  * <p>
- * Provides authentication, authorization, and federated identity integrations.
- *
+ * The module exports protocol-neutral contracts, externally implemented stores and resolvers, runtime and registration
+ * services, standard LDAP, OAuth 1.0, OAuth 2.0, OpenID Connect, RADIUS, SAML, and SCIM models and services, shared
+ * security value types, and immutable Vendor Source profiles. HTTP transport remains owned by {@code bus.fabric}.
+ * </p>
  * <p>
- * Includes protocol-neutral contracts, JWT handling, OAuth 2.0 and OpenID Connect flows, LDAP, RADIUS, SCIM, Shared
- * Signals Framework support, credential resolution, runtime services, and third-party identity providers.
+ * Registry invocation SPIs, runtime snapshot assembly, and every internal protocol or Vendor adapter package remain
+ * encapsulated. Callers assemble public Provider and Source drivers, then enter execution through Registry and Provider
+ * contracts without depending on platform wire adapters.
+ * </p>
  *
  * @author Kimi Liu
  */
 module bus.auth {
 
     requires java.naming;
+    requires java.xml;
+    requires java.xml.crypto;
 
     requires bus.cache;
     requires bus.core;
     requires bus.crypto;
     requires bus.extra;
     requires bus.fabric;
-    requires bus.logger;
 
     requires static lombok;
-    requires static org.bouncycastle.pkix;
-    requires static org.bouncycastle.provider;
+    requires static jakarta.persistence;
 
     exports org.miaixz.bus.auth;
-
     exports org.miaixz.bus.auth.cache;
-    exports org.miaixz.bus.auth.bridge;
+    exports org.miaixz.bus.auth.codec;
+    exports org.miaixz.bus.auth.guard;
+    exports org.miaixz.bus.auth.identity;
+    exports org.miaixz.bus.auth.library;
     exports org.miaixz.bus.auth.protocol;
-    exports org.miaixz.bus.auth.protocol.jwt;
-    exports org.miaixz.bus.auth.protocol.jwt.signature;
-    exports org.miaixz.bus.auth.protocol.oauth2;
-    exports org.miaixz.bus.auth.protocol.oidc;
     exports org.miaixz.bus.auth.protocol.ldap;
+    exports org.miaixz.bus.auth.protocol.ldap.client;
+    exports org.miaixz.bus.auth.protocol.ldap.codec;
+    exports org.miaixz.bus.auth.protocol.ldap.server;
+    exports org.miaixz.bus.auth.protocol.oauth1;
+    exports org.miaixz.bus.auth.protocol.oauth1.client;
+    exports org.miaixz.bus.auth.protocol.oauth1.codec;
+    exports org.miaixz.bus.auth.protocol.oauth1.security;
+    exports org.miaixz.bus.auth.protocol.oauth2;
+    exports org.miaixz.bus.auth.protocol.oauth2.client;
+    exports org.miaixz.bus.auth.protocol.oauth2.codec;
+    exports org.miaixz.bus.auth.protocol.oauth2.server;
+    exports org.miaixz.bus.auth.protocol.oidc;
+    exports org.miaixz.bus.auth.protocol.oidc.client;
+    exports org.miaixz.bus.auth.protocol.oidc.codec;
+    exports org.miaixz.bus.auth.protocol.oidc.server;
     exports org.miaixz.bus.auth.protocol.radius;
+    exports org.miaixz.bus.auth.protocol.radius.codec;
+    exports org.miaixz.bus.auth.protocol.radius.server;
+    exports org.miaixz.bus.auth.protocol.saml;
+    exports org.miaixz.bus.auth.protocol.saml.client;
+    exports org.miaixz.bus.auth.protocol.saml.codec;
+    exports org.miaixz.bus.auth.protocol.saml.security;
+    exports org.miaixz.bus.auth.protocol.saml.server;
     exports org.miaixz.bus.auth.protocol.scim;
-    exports org.miaixz.bus.auth.protocol.ssf;
+    exports org.miaixz.bus.auth.protocol.scim.codec;
+    exports org.miaixz.bus.auth.protocol.scim.server;
+    exports org.miaixz.bus.auth.provider;
     exports org.miaixz.bus.auth.registry;
     exports org.miaixz.bus.auth.resolver;
     exports org.miaixz.bus.auth.runtime;
+    exports org.miaixz.bus.auth.shared;
+    exports org.miaixz.bus.auth.shared.audit;
+    exports org.miaixz.bus.auth.shared.claim;
+    exports org.miaixz.bus.auth.shared.consent;
+    exports org.miaixz.bus.auth.shared.dpop;
+    exports org.miaixz.bus.auth.shared.jose;
+    exports org.miaixz.bus.auth.shared.jwt;
+    exports org.miaixz.bus.auth.shared.pkce;
+    exports org.miaixz.bus.auth.source;
     exports org.miaixz.bus.auth.vendor;
     exports org.miaixz.bus.auth.vendor.afdian;
     exports org.miaixz.bus.auth.vendor.alipay;
@@ -86,15 +120,12 @@ module bus.auth {
     exports org.miaixz.bus.auth.vendor.meituan;
     exports org.miaixz.bus.auth.vendor.mi;
     exports org.miaixz.bus.auth.vendor.microsoft;
-    exports org.miaixz.bus.auth.vendor.oidc;
     exports org.miaixz.bus.auth.vendor.okta;
     exports org.miaixz.bus.auth.vendor.oschina;
     exports org.miaixz.bus.auth.vendor.pinterest;
     exports org.miaixz.bus.auth.vendor.proginn;
     exports org.miaixz.bus.auth.vendor.qq;
     exports org.miaixz.bus.auth.vendor.rednote;
-    exports org.miaixz.bus.auth.vendor.renren;
-    exports org.miaixz.bus.auth.vendor.router;
     exports org.miaixz.bus.auth.vendor.slack;
     exports org.miaixz.bus.auth.vendor.stackoverflow;
     exports org.miaixz.bus.auth.vendor.taobao;
@@ -103,10 +134,6 @@ module bus.auth {
     exports org.miaixz.bus.auth.vendor.twitter;
     exports org.miaixz.bus.auth.vendor.vk;
     exports org.miaixz.bus.auth.vendor.wechat;
-    exports org.miaixz.bus.auth.vendor.wechat.ee;
-    exports org.miaixz.bus.auth.vendor.wechat.mini;
-    exports org.miaixz.bus.auth.vendor.wechat.mp;
-    exports org.miaixz.bus.auth.vendor.wechat.open;
     exports org.miaixz.bus.auth.vendor.weibo;
     exports org.miaixz.bus.auth.vendor.ximalaya;
 

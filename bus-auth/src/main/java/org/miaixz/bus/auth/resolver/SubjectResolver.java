@@ -19,14 +19,20 @@
 */
 package org.miaixz.bus.auth.resolver;
 
-import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Subject;
+import org.miaixz.bus.auth.Timeout;
 
 /**
- * Resolves one immutable trusted subject snapshot in an authentication context.
+ * Resolves an existing stable Subject from an opaque external subject reference.
+ * <p>
+ * The external project owns the reference's Realm and Source isolation semantics. This port performs lookup only;
+ * account creation, account linking, attribute reconciliation, principal construction, and session creation remain in
+ * their dedicated identity services.
+ * </p>
  *
  * @author Kimi Liu
  */
@@ -34,12 +40,13 @@ import org.miaixz.bus.auth.Subject;
 public interface SubjectResolver {
 
     /**
-     * Resolves a subject by its exact protocol identifier.
+     * Resolves one existing stable Subject.
      *
-     * @param context   non-null authentication context
-     * @param subjectId non-blank subject identifier
-     * @return non-null stage containing a non-null optional subject snapshot
+     * @param request opaque external Subject reference
+     * @param context immutable non-secret invocation context
+     * @param timeout shared end-to-end operation budget
+     * @return stage containing a successful Subject, expected rejection, or operational failure
      */
-    CompletionStage<Optional<Subject>> resolve(Context context, String subjectId);
+    CompletionStage<Outcome<Subject>> resolve(Subject.Reference request, Context context, Timeout.Budget timeout);
 
 }

@@ -19,67 +19,18 @@
 */
 package org.miaixz.bus.auth.cache;
 
-import java.time.Duration;
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
-
-import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Callback;
 
 /**
- * Cache-backed specialization of the authentication runtime's atomic state port.
+ * Stores one-time callback correlation for OAuth, OpenID Connect, SAML, and Vendor browser interactions.
+ * <p>
+ * Keys are irreversible digests isolated by namespace, Source, and state purpose. Consumers must use the inherited
+ * atomic {@link #take(Object)} operation so a callback state succeeds at most once; implementations must not store the
+ * raw state value as a backend key or combine this key space with nonce or replay entries.
+ * </p>
  *
  * @author Kimi Liu
  */
-public interface StateStore {
-
-    /**
-     * Atomically stores state when no unexpired value exists for the tenant-scoped key.
-     *
-     * @param context non-null operation context supplying the tenant
-     * @param key     non-blank logical state key
-     * @param value   non-null caller-owned state bytes
-     * @param ttl     positive state lifetime
-     * @return non-null stage containing whether insertion occurred
-     */
-    CompletionStage<Boolean> putIfAbsent(Context context, String key, byte[] value, Duration ttl);
-
-    /**
-     * Reads state without consuming it.
-     *
-     * @param context non-null operation context supplying the tenant
-     * @param key     non-blank logical state key
-     * @return non-null stage containing independent state bytes or an empty optional
-     */
-    CompletionStage<Optional<byte[]>> get(Context context, String key);
-
-    /**
-     * Atomically reads and removes state once.
-     *
-     * @param context non-null operation context supplying the tenant
-     * @param key     non-blank logical state key
-     * @return non-null stage containing independent consumed bytes or an empty optional
-     */
-    CompletionStage<Optional<byte[]>> take(Context context, String key);
-
-    /**
-     * Atomically replaces state only when the current bytes equal the expected bytes.
-     *
-     * @param context  non-null operation context supplying the tenant
-     * @param key      non-blank logical state key
-     * @param expected non-null caller-owned expected bytes
-     * @param update   non-null caller-owned replacement bytes
-     * @param ttl      positive replacement lifetime
-     * @return non-null stage containing whether replacement occurred
-     */
-    CompletionStage<Boolean> compareAndSet(Context context, String key, byte[] expected, byte[] update, Duration ttl);
-
-    /**
-     * Atomically removes state for a tenant-scoped key.
-     *
-     * @param context non-null operation context supplying the tenant
-     * @param key     non-blank logical state key
-     * @return non-null stage containing whether removal occurred
-     */
-    CompletionStage<Boolean> remove(Context context, String key);
+public interface StateStore extends AtomicStore<String, ExpiringValue<Callback.Correlation>> {
 
 }

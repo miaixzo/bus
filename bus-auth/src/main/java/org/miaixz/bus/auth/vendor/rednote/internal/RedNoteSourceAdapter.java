@@ -1,0 +1,513 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.auth.vendor.rednote.internal;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+
+import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Outcome;
+import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.codec.FormCodec;
+import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
+import org.miaixz.bus.auth.shared.ExecutionServices;
+import org.miaixz.bus.auth.shared.SecretLease;
+import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.vendor.VendorDefinition;
+import org.miaixz.bus.auth.vendor.rednote.RedNoteDefinition;
+import org.miaixz.bus.auth.vendor.rednote.RedNoteDefinition.MarketingAuthorizationRequest;
+import org.miaixz.bus.auth.vendor.rednote.RedNoteDefinition.MarketingTokenRequest;
+import org.miaixz.bus.auth.vendor.rednote.RedNoteDefinition.MarketingTokenResponse;
+import org.miaixz.bus.auth.vendor.rednote.RedNoteSourceSettings;
+import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.extra.json.JsonValue;
+import org.miaixz.bus.fabric.Fabric;
+import org.miaixz.bus.fabric.UnoUrl;
+import org.miaixz.bus.fabric.protocol.http.HttpResponse;
+
+/**
+ * Implements the Vendor-defined Xiaohongshu marketing authorization-only API.
+ * <p>
+ * The adapter exposes exactly two Vendor capabilities, resolves application secrets only for one token operation, maps
+ * no response to OAuth protocol models, and never creates an external identity or Source-authentication result.
+ * </p>
+ *
+ * @author Kimi Liu
+ */
+public final class RedNoteSourceAdapter implements VendorAdapter {
+
+    /**
+     * Maximum bounded JSON response size accepted from the marketing API.
+     */
+    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+
+    /**
+     * Maximum JSON nesting accepted from the marketing API.
+     */
+    private static final int MAXIMUM_JSON_DEPTH = 16;
+
+    /**
+     * Selected immutable RedNote marketing definition.
+     */
+    private final VendorDefinition.Definition variantDefinition;
+
+    /**
+     * Validated externally loaded marketing registration settings.
+     */
+    private final RedNoteSourceSettings settings;
+
+    /**
+     * Caller-owned secret, JSON, network, and execution dependencies.
+     */
+    private final ExecutionServices services;
+
+    /**
+     * Shared strict application-form encoder.
+     */
+    private final FormCodec formCodec;
+
+    /**
+     * Creates one authorization-only RedNote adapter.
+     *
+     * @param namespaceId       registration namespace retained by the uniform adapter construction contract
+     * @param sourceId          registered Source identifier retained for Registry routing only
+     * @param vendorDefinition  selected RedNote definition
+     * @param variantDefinition exact marketing definition
+     * @param settings          decoded externally loaded marketing settings
+     * @param services          caller-owned runtime dependencies
+     * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
+     * @throws ValidateException        if routing, protocol, definition, or settings differ from marketing
+     */
+    public RedNoteSourceAdapter(final String namespaceId, final String sourceId,
+            final RedNoteDefinition vendorDefinition, final VendorDefinition.Definition variantDefinition,
+            final RedNoteSourceSettings settings, final ExecutionServices services) {
+        Assert.notBlank(namespaceId, "RedNote namespace id must not be blank");
+        Assert.notBlank(sourceId, "RedNote Source id must not be blank");
+        final RedNoteDefinition selected = Assert.notNull(vendorDefinition, "RedNote definition must not be null");
+        this.variantDefinition = Assert.notNull(variantDefinition, "RedNote definition must not be null");
+        this.settings = Assert.notNull(settings, "RedNote settings must not be null");
+        this.services = Assert.notNull(services, "RedNote execution services must not be null");
+        if (!RedNoteDefinition.ID.equals(selected.type())
+                || !selected.variant(RedNoteDefinition.MARKETING).equals(variantDefinition)
+                || !RedNoteDefinition.MARKETING.equals(variantDefinition.variant())
+                || variantDefinition.protocol() != Protocol.VENDOR_AUTH
+                || !RedNoteDefinition.ID.equals(settings.vendor())
+                || !RedNoteDefinition.MARKETING.equals(settings.variant())) {
+            throw new ValidateException("RedNote adapter requires the rednote/marketing Vendor definition");
+        }
+        this.formCodec = new FormCodec();
+    }
+
+    /**
+     * Materializes an operation-scoped application secret and clears the intermediate character buffer.
+     *
+     * @param lease open secret lease owned by the caller
+     * @return transient string required by the form encoder
+     */
+    private static String secret(final SecretLease lease) {
+        final char[] material = lease.material();
+        try {
+            return new String(material);
+        } finally {
+            Arrays.fill(material, '\0');
+        }
+    }
+
+    /**
+     * Verifies that every decoded member belongs to the RedNote token response union.
+     *
+     * @param object decoded token response object
+     * @return whether every member has registered RedNote semantics
+     */
+    private static boolean responseMembers(final JsonValue.ObjectValue object) {
+        for (String name : object.values().keySet()) {
+            if (!switch (name) {
+                case "code", OAuth2.Parameters.ERROR, "sub_error", OAuth2.Parameters.ERROR_DESCRIPTION, OAuth2.Parameters.ACCESS_TOKEN, "access_token_expires_in", OAuth2.Parameters.REFRESH_TOKEN, OAuth2.Parameters.SCOPE, OAuth2.Parameters.EXPIRES_IN -> true;
+                default -> false;
+            }) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Reads one required non-blank JSON string member.
+     *
+     * @param object decoded response object
+     * @param name   exact member name
+     * @return required non-blank string
+     */
+    private static String requiredString(final JsonValue.ObjectValue object, final String name) {
+        final String value = optionalString(object, name);
+        if (value == null || value.isBlank()) {
+            throw new ValidateException("RedNote response requires a non-blank string member: " + name);
+        }
+        return value;
+    }
+
+    /**
+     * Reads one optional JSON string member.
+     *
+     * @param object decoded response object
+     * @param name   exact member name
+     * @return string value or {@code null} when absent or explicit null
+     */
+    private static String optionalString(final JsonValue.ObjectValue object, final String name) {
+        final JsonValue value = object.values().get(name);
+        if (value == null || value instanceof JsonValue.NullValue) {
+            return null;
+        }
+        if (!(value instanceof JsonValue.StringValue string)) {
+            throw new ValidateException("RedNote response member must be a JSON string: " + name);
+        }
+        return string.value();
+    }
+
+    /**
+     * Reads one exact integral JSON member.
+     *
+     * @param object decoded response object
+     * @param name   exact member name
+     * @return exact long value
+     */
+    private static long exactLong(final JsonValue.ObjectValue object, final String name) {
+        final JsonValue value = object.values().get(name);
+        if (!(value instanceof JsonValue.NumberValue number)) {
+            throw new ValidateException("RedNote response requires a numeric member: " + name);
+        }
+        try {
+            return number.value().longValueExact();
+        } catch (ArithmeticException cause) {
+            throw new ValidateException("RedNote numeric member must be an exact long: " + name, cause);
+        }
+    }
+
+    /**
+     * Reads one optional positive exact integral JSON lifetime.
+     *
+     * @param object decoded response object
+     * @param name   exact lifetime member name
+     * @return optional positive exact long
+     */
+    private static Optional<Long> optionalPositiveLong(final JsonValue.ObjectValue object, final String name) {
+        if (!object.values().containsKey(name)) {
+            return Optional.empty();
+        }
+        final long value = exactLong(object, name);
+        if (value <= 0L) {
+            throw new ValidateException("RedNote token lifetime must be positive: " + name);
+        }
+        return Optional.of(value);
+    }
+
+    /**
+     * Narrows a delegated outcome through the declared response type.
+     *
+     * @param stage        delegated outcome stage
+     * @param responseType declared response class
+     * @param <S>          expected successful response type
+     * @return type-safe delegated outcome
+     */
+    private static <S> CompletionStage<Outcome<S>> narrow(
+            final CompletionStage<? extends Outcome<?>> stage,
+            final Class<S> responseType) {
+        return stage.thenApply(outcome -> switch (outcome) {
+            case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
+            case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
+            case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+        });
+    }
+
+    /**
+     * Creates an immutable empty JSON object.
+     *
+     * @return provider-neutral empty object
+     */
+    private static JsonValue.ObjectValue emptyObject() {
+        return new JsonValue.ObjectValue(Map.of());
+    }
+
+    /**
+     * Creates an already completed asynchronous outcome.
+     *
+     * @param outcome completed outcome
+     * @param <T>     successful value type
+     * @return completed stage
+     */
+    private static <T> CompletionStage<Outcome<T>> completed(final Outcome<T> outcome) {
+        return CompletableFuture.completedFuture(outcome);
+    }
+
+    /**
+     * Creates a safe expected request or platform rejection.
+     *
+     * @param description non-sensitive rejection description
+     * @param <T>         expected successful value type
+     * @return rejected outcome
+     */
+    private static <T> Outcome<T> rejected(final String description) {
+        return Outcome.rejected(new Outcome.Failure(ErrorCode._400, description, emptyObject()));
+    }
+
+    /**
+     * Creates a safe operational failure using the shared Bus error taxonomy.
+     *
+     * @param code        shared Bus error code
+     * @param description non-sensitive failure description
+     * @param <T>         expected successful value type
+     * @return failed outcome
+     */
+    private static <T> Outcome<T> failed(final Errors code, final String description) {
+        return Outcome.failed(new Outcome.Failure(code, description, emptyObject()));
+    }
+
+    /**
+     * Returns the exact authorization-only RedNote capability manifest.
+     *
+     * @return immutable marketing capability set
+     */
+    @Override
+    public Capability.Manifest manifest() {
+        return variantDefinition.manifest();
+    }
+
+    /**
+     * Routes only the two profile-scoped RedNote marketing operations.
+     *
+     * @param capability exact runtime-selected capability
+     * @param request    exact nested marketing request
+     * @param context    immutable invocation context
+     * @param timeout    shared end-to-end budget
+     * @param <Q>        request type
+     * @param <S>        successful response type
+     * @return typed Vendor outcome without standard OAuth or identity models
+     */
+    @Override
+    public <Q, S> CompletionStage<Outcome<S>> invoke(
+            final Capability<Q, S> capability,
+            final Q request,
+            final Context context,
+            final Timeout.Budget timeout) {
+        Assert.notNull(capability, "RedNote capability must not be null");
+        Assert.notNull(context, "RedNote invocation context must not be null");
+        Assert.notNull(timeout, "RedNote invocation budget must not be null");
+        if (!manifest().capabilities().contains(capability)) {
+            return completed(rejected("RedNote capability is not declared"));
+        }
+        if (capability.equals(RedNoteDefinition.REDNOTE_MARKETING_AUTHORIZE)
+                && request instanceof MarketingAuthorizationRequest authorization) {
+            return completed(authorize(authorization, capability.responseType()));
+        }
+        if (capability.equals(RedNoteDefinition.REDNOTE_MARKETING_TOKEN)
+                && request instanceof MarketingTokenRequest token) {
+            return narrow(token(token, context, timeout), capability.responseType());
+        }
+        return completed(rejected("RedNote capability request is invalid"));
+    }
+
+    /**
+     * Builds one exact camel-case marketing authorization URL.
+     *
+     * @param request      profile-scoped authorization request
+     * @param responseType exact declared URL response type
+     * @param <S>          declared successful response type
+     * @return typed authorization outcome
+     */
+    private <S> Outcome<S> authorize(final MarketingAuthorizationRequest request, final Class<S> responseType) {
+        if (!settings.redirectUri().getOrNull().equals(request.redirectUri())) {
+            return rejected("RedNote authorization callback differs from the registration");
+        }
+        final List<String> scopes = request.scopes().isEmpty() ? effectiveScopes() : request.scopes();
+        if (!effectiveScopes().containsAll(scopes) || scopes.isEmpty()) {
+            return rejected("RedNote authorization scopes exceed the registration");
+        }
+        try {
+            final var endpoint = variantDefinition.targets().resolve(settings).authorization().getOrNull();
+            final UnoUrl location = endpoint.url().newBuilder().query("appId", settings.clientId())
+                    .query(OAuth2.Parameters.SCOPE, String.join(Symbol.SPACE, scopes))
+                    .query("redirectUri", request.redirectUri()).query(OAuth2.Parameters.STATE, request.state())
+                    .build();
+            return Outcome.succeeded(responseType.cast(location));
+        } catch (RuntimeException cause) {
+            return rejected("RedNote authorization request is invalid");
+        }
+    }
+
+    /**
+     * Resolves one operation-scoped application secret and executes the selected token branch.
+     *
+     * @param request exact initial or refresh token request
+     * @param context immutable invocation context
+     * @param timeout shared end-to-end budget
+     * @return marketing token outcome stage
+     */
+    private CompletionStage<Outcome<MarketingTokenResponse>> token(
+            final MarketingTokenRequest request,
+            final Context context,
+            final Timeout.Budget timeout) {
+        try {
+            final CompletionStage<Outcome<SecretLease>> stage = services.secretResolver()
+                    .resolve(settings.credential(), context, timeout);
+            if (stage == null) {
+                return completed(failed(ErrorCode._502, "RedNote secret resolver returned no stage"));
+            }
+            return stage
+                    .handle(
+                            (outcome, cause) -> cause == null && outcome != null ? outcome
+                                    : RedNoteSourceAdapter
+                                            .<SecretLease>failed(ErrorCode._502, "RedNote secret resolution failed"))
+                    .thenCompose(outcome -> switch (outcome) {
+                        case Outcome.Succeeded<SecretLease> success -> CompletableFuture.supplyAsync(() -> {
+                            try (SecretLease secret = success.value()) {
+                                return send(request, secret, timeout);
+                            } catch (RuntimeException cause) {
+                                return failed(ErrorCode._502, "RedNote token operation failed");
+                            }
+                        }, services.executor());
+                        case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
+                        case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    });
+        } catch (RuntimeException cause) {
+            return completed(failed(ErrorCode._502, "RedNote secret resolution failed"));
+        }
+    }
+
+    /**
+     * Sends one exact RedNote initial-token or refresh-token form.
+     *
+     * @param request validated profile-scoped request
+     * @param secret  open application-secret lease
+     * @param timeout shared end-to-end budget
+     * @return decoded platform token response
+     */
+    private Outcome<MarketingTokenResponse> send(
+            final MarketingTokenRequest request,
+            final SecretLease secret,
+            final Timeout.Budget timeout) {
+        if (timeout.expired()) {
+            return failed(ErrorCode._408, "RedNote token request has no remaining time budget");
+        }
+        byte[] body = null;
+        try {
+            final boolean initial = request.code().isPresent();
+            body = formCodec.encode(
+                    List.of(
+                            new Parameter("app_id", settings.clientId()),
+                            new Parameter("secret", secret(secret)),
+                            new Parameter(initial ? "code" : OAuth2.Parameters.REFRESH_TOKEN,
+                                    initial ? request.code().getOrNull() : request.refreshToken().getOrNull())));
+            final var resolvedTargets = variantDefinition.targets().resolve(settings);
+            final String endpoint = (initial ? resolvedTargets.token() : resolvedTargets.refresh()).getOrNull().url()
+                    .toString();
+            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
+                    .addressPolicy(services.securityBaseline().require(Protocol.VENDOR_AUTH).addressPolicy())
+                    .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
+                return decode(response, initial);
+            }
+        } catch (RuntimeException cause) {
+            return failed(ErrorCode._502, "RedNote token request failed");
+        } finally {
+            if (body != null) {
+                Arrays.fill(body, (byte) 0);
+            }
+        }
+    }
+
+    /**
+     * Strictly decodes one RedNote token or refresh response union.
+     *
+     * @param response owned token endpoint response
+     * @param initial  whether the active branch exchanges an authorization code
+     * @return exact profile-scoped token response or safely classified failure
+     */
+    private Outcome<MarketingTokenResponse> decode(final HttpResponse response, final boolean initial) {
+        try {
+            final JsonValue.ObjectValue object = object(response);
+            if (!responseMembers(object)) {
+                throw new ValidateException("RedNote token response members are invalid");
+            }
+            final long code = exactLong(object, "code");
+            final String error = optionalString(object, OAuth2.Parameters.ERROR);
+            if (response.code() != Http.Status.OK || code != 0L || error != null) {
+                optionalString(object, "sub_error");
+                optionalString(object, OAuth2.Parameters.ERROR_DESCRIPTION);
+                if (response.code() == Http.Status.TOO_MANY_REQUESTS) {
+                    return failed(ErrorCode._429, "RedNote token endpoint rate limited the request");
+                }
+                return response.code() >= Http.Status.INTERNAL_SERVER_ERROR
+                        ? failed(ErrorCode._502, "RedNote token endpoint returned an upstream error")
+                        : rejected("RedNote token endpoint rejected the request");
+            }
+            final Optional<Long> expiresIn = optionalPositiveLong(
+                    object,
+                    initial ? "access_token_expires_in" : OAuth2.Parameters.EXPIRES_IN);
+            return Outcome.succeeded(
+                    new MarketingTokenResponse(requiredString(object, OAuth2.Parameters.ACCESS_TOKEN),
+                            Optional.ofNullable(optionalString(object, OAuth2.Parameters.REFRESH_TOKEN)),
+                            Optional.ofNullable(optionalString(object, OAuth2.Parameters.SCOPE)), expiresIn));
+        } catch (RuntimeException cause) {
+            return failed(ErrorCode._502, "RedNote token endpoint returned an invalid response");
+        }
+    }
+
+    /**
+     * Strictly reads one bounded RedNote JSON object.
+     *
+     * @param response response whose body remains owned by the caller
+     * @return immutable provider-neutral JSON object
+     */
+    private JsonValue.ObjectValue object(final HttpResponse response) {
+        if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
+            throw new ValidateException("RedNote response must use application/json");
+        }
+        final JsonValue value = services.jsonProvider()
+                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+        if (!(value instanceof JsonValue.ObjectValue object)) {
+            throw new ValidateException("RedNote response root must be a JSON object");
+        }
+        return object;
+    }
+
+    /**
+     * Returns explicit configured scopes or the immutable definition default.
+     *
+     * @return ordered effective marketing scopes
+     */
+    private List<String> effectiveScopes() {
+        return settings.scopes().isEmpty() ? variantDefinition.defaultScopes() : settings.scopes();
+    }
+
+}

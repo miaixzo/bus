@@ -19,220 +19,106 @@
 */
 package org.miaixz.bus.auth.runtime;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.miaixz.bus.auth.Policy;
-import org.miaixz.bus.auth.Provider;
+import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.protocol.Handler;
-import org.miaixz.bus.auth.vendor.VendorConfiguration;
-import org.miaixz.bus.auth.vendor.VendorDefinition;
-import org.miaixz.bus.auth.vendor.VendorErrors;
-import org.miaixz.bus.auth.vendor.VendorProvider;
+import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
- * Unified authentication runtime backed by four explicit typed registries and the shared Bus lifecycle contract.
+ * Owns the bus-auth framework lifecycle and exposes its Registry and explicit snapshot reload entry.
+ * <p>
+ * ExecutionServices remain owned by the external project. Closing this runtime stops the framework Registry only and
+ * never closes the caller's executor, Fabric context, stores, resolvers, JSON provider, audit sink, or consent service.
+ * </p>
  *
  * @author Kimi Liu
  */
-public final class AuthRuntime implements Engine {
+public final class AuthRuntime implements Lifecycle, AutoCloseable {
 
     /**
-     * Immutable-access vendor definition registry.
+     * Only public gateway to compiled Source capabilities.
      */
-    private final Registry<VendorDefinition> vendors;
+    private final Registry registry;
 
     /**
-     * Protocol-neutral provider registry.
+     * Explicit complete-snapshot reload orchestrator.
      */
-    private final Registry<Provider> providers;
+    private final RuntimeReloadService reloadService;
 
     /**
-     * Server protocol handler registry.
+     * Atomic externally observable runtime lifecycle state.
      */
-    private final Registry<Handler<?, ?>> handlers;
+    private final AtomicReference<Lifecycle.State> lifecycle;
 
     /**
-     * Shared policy registry.
-     */
-    private final Registry<Policy> policies;
-
-    /**
-     * Current observable runtime lifecycle state.
-     */
-    private final AtomicReference<Lifecycle.State> state = new AtomicReference<>(Lifecycle.State.RUNNING);
-
-    /**
-     * Creates an active runtime owning the four supplied registries.
+     * Creates a running runtime from completely assembled framework services.
      *
-     * @param vendors   vendor definitions
-     * @param providers protocol-neutral providers
-     * @param handlers  server protocol handlers
-     * @param policies  authentication policies
+     * @param registry      initialized revision-zero Registry
+     * @param reloadService complete-snapshot reload service
+     * @throws IllegalArgumentException if a dependency is {@code null}
      */
-    AuthRuntime(final Registry<VendorDefinition> vendors, final Registry<Provider> providers,
-            final Registry<Handler<?, ?>> handlers, final Registry<Policy> policies) {
-        this.vendors = required(vendors, "Vendor registry");
-        this.providers = required(providers, "Provider registry");
-        this.handlers = required(handlers, "Handler registry");
-        this.policies = required(policies, "Policy registry");
+    AuthRuntime(final Registry registry, final RuntimeReloadService reloadService) {
+        this.registry = Assert.notNull(registry, "Authentication Registry must not be null");
+        this.reloadService = Assert.notNull(reloadService, "Runtime reload service must not be null");
+        this.lifecycle = new AtomicReference<>(Lifecycle.State.RUNNING);
     }
 
     /**
-     * @return builder preloaded with built-in vendor definitions
+     * Returns the only public execution gateway for compiled authentication capabilities.
+     *
+     * @return runtime Registry
      */
-    public static RuntimeBuilder builder() {
-        return RuntimeBuilder.create();
+    public Registry registry() {
+        return registry;
     }
 
     /**
-     * @return empty builder requiring explicit component registration
+     * Loads, validates, compiles, and atomically publishes one complete external registration snapshot.
+     *
+     * @param context immutable non-secret invocation context
+     * @param timeout shared end-to-end operation budget
+     * @return stage containing the validation or commit report for the attempted snapshot
+     * @throws IllegalArgumentException if an argument is {@code null}
      */
-    public static RuntimeBuilder emptyBuilder() {
-        return RuntimeBuilder.empty();
-    }
-
-    /**
-     * Validates one required registry.
-     */
-    private static <T> Registry<T> required(final Registry<T> registry, final String label) {
-        return Assert.notNull(registry, () -> new ValidateException(label + " must not be null"));
-    }
-
-    /**
-     * Closes a registry snapshot in reverse registration order.
-     */
-    private static void closeValues(final Registry<?> registry) {
-        final List<Object> values = new ArrayList<>(
-                registry.snapshot().values().stream().map(binding -> binding.value()).toList());
-        Collections.reverse(values);
-        for (final Object value : values) {
-            if (value instanceof AutoCloseable closeable) {
-                try {
-                    closeable.close();
-                } catch (final RuntimeException failure) {
-                    throw failure;
-                } catch (final Exception failure) {
-                    throw new InternalException("Unable to close authentication component", failure);
-                }
-            }
+    public CompletionStage<Registry.Report> reload(final Context context, final Timeout.Budget timeout) {
+        Assert.notNull(context, "Runtime reload context must not be null");
+        Assert.notNull(timeout, "Runtime reload budget must not be null");
+        if (lifecycle.get() != Lifecycle.State.RUNNING) {
+            return CompletableFuture.failedFuture(new ValidateException("Authentication runtime is not running"));
         }
+        return reloadService.reload(context, timeout);
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Registry<VendorDefinition> vendors() {
-        requireRunning();
-        return vendors;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Registry<Provider> providers() {
-        requireRunning();
-        return providers;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Registry<Handler<?, ?>> handlers() {
-        requireRunning();
-        return handlers;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Registry<Policy> policies() {
-        requireRunning();
-        return policies;
-    }
-
-    /**
-     * {@inheritDoc}
+     * Returns the current externally observable runtime lifecycle state.
+     *
+     * @return RUNNING before close, CLOSING during close, or CLOSED afterward
      */
     @Override
     public Lifecycle.State state() {
-        return state.get();
+        return lifecycle.get();
     }
 
     /**
-     * Resolves one required provider and verifies its runtime type.
-     *
-     * @param id   stable provider identifier
-     * @param type required provider type
-     * @param <P>  provider type
-     * @return registered provider
-     */
-    public <P extends Provider> P provider(final String id, final Class<P> type) {
-        final Provider provider = providers().require(id);
-        final Class<P> expected = Assert
-                .notNull(type, () -> new ValidateException("Authentication provider type must not be null"));
-        if (!expected.isInstance(provider)) {
-            throw new ValidateException("Authentication provider has the wrong type: " + id);
-        }
-        return expected.cast(provider);
-    }
-
-    /**
-     * Creates a third-party client from a registered vendor definition.
-     *
-     * @param name          vendor definition name
-     * @param configuration explicit construction dependencies
-     * @return configured vendor provider
-     */
-    public VendorProvider provider(final String name, final VendorConfiguration configuration) {
-        Assert.notNull(configuration, () -> new ValidateException("Vendor configuration must not be null"));
-        final VendorDefinition definition = vendors().get(name);
-        if (definition == null || definition.factory() == null) {
-            throw new AuthorizedException(VendorErrors._110000);
-        }
-        return definition.factory().create(configuration);
-    }
-
-    /**
-     * Closes handlers, providers, policies, and vendor definitions in that fixed order, each in reverse registration
-     * order. Non-closeable values require no lifecycle action.
+     * Idempotently closes the Registry without closing any externally owned ExecutionServices dependency.
      */
     @Override
     public void close() {
-        if (!state.compareAndSet(Lifecycle.State.RUNNING, Lifecycle.State.CLOSING)) {
+        if (!lifecycle.compareAndSet(Lifecycle.State.RUNNING, Lifecycle.State.CLOSING)) {
             return;
         }
         try {
-            closeValues(handlers);
-            closeValues(providers);
-            closeValues(policies);
-            closeValues(vendors);
-            state.set(Lifecycle.State.CLOSED);
-        } catch (final RuntimeException failure) {
-            state.set(Lifecycle.State.FAILED);
-            throw failure;
-        }
-    }
-
-    /**
-     * Rejects registry access after shutdown begins.
-     */
-    private void requireRunning() {
-        if (state.get() != Lifecycle.State.RUNNING) {
-            throw new StatefulException("Authentication runtime is not running");
+            registry.close();
+        } catch (RuntimeException ignored) {
+            // The lifecycle boundary must not transfer a Registry close failure to caller-owned resource management.
+        } finally {
+            lifecycle.set(Lifecycle.State.CLOSED);
         }
     }
 

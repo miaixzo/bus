@@ -19,48 +19,34 @@
 */
 package org.miaixz.bus.auth;
 
-import java.util.Set;
-
-import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Immutable identity authenticated for one invocation.
+ * Represents the immutable current authenticated-principal view produced by the identity flow.
+ * <p>
+ * A principal is derived from a stable {@link Subject} and verified claims. It does not replace the stored subject,
+ * carry {@link Session} state, define roles or authorities, or perform external authorization decisions; those
+ * application concerns remain outside bus-auth.
+ * </p>
  *
- * @param subjectId authenticated human or workload subject identifier
- * @param clientId  authenticated client identifier
- * @param scopes    immutable granted scope names
- * @param claims    immutable authenticated claim snapshot
+ * @param name   stable display or login name selected by the identity service
+ * @param claims immutable provider-neutral verified claims
  * @author Kimi Liu
  */
-public record Principal(String subjectId, String clientId, Set<String> scopes, Claims claims) {
+public record Principal(String name, JsonValue.ObjectValue claims) {
 
     /**
-     * Normalizes identifiers and snapshots mutable inputs.
+     * Creates a detached immutable authenticated-principal view.
      *
-     * @throws ValidateException if both identity identifiers are absent
+     * @param name   non-blank principal name
+     * @param claims provider-neutral verified claims
+     * @throws IllegalArgumentException if the name is blank or claims are {@code null}
      */
     public Principal {
-        subjectId = normalize(subjectId);
-        clientId = normalize(clientId);
-        if (subjectId == null && clientId == null) {
-            throw new ValidateException("Principal must identify a subject or client");
-        }
-        scopes = scopes == null ? Set.of() : Set.copyOf(scopes);
-        claims = claims == null ? Claims.empty() : claims;
-    }
-
-    /**
-     * Trims an optional identifier and converts blank text to null.
-     *
-     * @param value optional identifier
-     * @return normalized identifier or null
-     */
-    private static String normalize(final String value) {
-        if (value == null) {
-            return null;
-        }
-        final String normalized = value.trim();
-        return normalized.isEmpty() ? null : normalized;
+        Assert.notBlank(name, "Principal name must not be blank");
+        Assert.notNull(claims, "Principal claims must not be null");
+        claims = new JsonValue.ObjectValue(claims.values());
     }
 
 }

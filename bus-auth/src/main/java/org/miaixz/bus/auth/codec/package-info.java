@@ -18,17 +18,24 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines the internal encoding boundary for authentication wire values.
- *
+ * Defines provider-neutral encoding contracts and reusable HTTP value primitives.
  * <p>
- * Codecs may depend on bus-core encoding contracts, bus-crypto primitives, and explicitly injected bus-extra providers.
- * They must remain independent of transport selection, protocol response construction, runtime assembly, and vendor
- * behavior. Implementations must validate complete input, enforce explicit bounds, copy sensitive mutable data where
- * ownership crosses a boundary, and avoid including secrets in diagnostics.
+ * {@link org.miaixz.bus.auth.codec.Codec} supplies a typed encode/decode boundary.
+ * {@link org.miaixz.bus.auth.codec.FormCodec} and {@link org.miaixz.bus.auth.codec.QueryCodec} preserve ordered
+ * {@link org.miaixz.bus.auth.codec.Parameter parameters}, duplicate names, empty values, strict percent escapes, and
+ * UTF-8 semantics. {@link org.miaixz.bus.auth.codec.HeaderCodec} and {@link org.miaixz.bus.auth.codec.HeaderValue}
+ * handle validated field values without constructing an HTTP response.
  * </p>
- *
  * <p>
- * This package is internal to {@code bus-auth} and is intentionally not exported by JPMS.
+ * Protocol-specific codecs compose these primitives and remain responsible for formal field vocabularies and wire
+ * models. This package reuses bus-core URL, encoder, decoder, charset, and HTTP constants plus Fabric-neutral values;
+ * it does not import OAuth, OpenID Connect, SAML, SCIM, LDAP, RADIUS, Vendor, Registry, or runtime types and does not
+ * define a generic protocol envelope.
+ * </p>
+ * <p>
+ * Decoders reject malformed UTF-8, invalid percent encoding, forbidden control characters, and multiplicity that the
+ * calling standard does not allow. Callers own input-size limits and must erase encoded forms that contain credentials,
+ * authorization codes, verifiers, or tokens immediately after transport completion; codecs do not log payloads.
  * </p>
  *
  * @author Kimi Liu

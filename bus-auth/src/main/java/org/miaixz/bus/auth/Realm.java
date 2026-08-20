@@ -19,68 +19,75 @@
 */
 package org.miaixz.bus.auth;
 
-import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.core.lang.Assert;
 
 /**
- * Immutable authentication security domain.
+ * Identifies an immutable identity security domain and its management presentation metadata.
+ * <p>
+ * A realm scopes identity interpretation within an authentication deployment. It is not a persistence namespace,
+ * tenant, role, permission set, or authorization evaluator and therefore does not replace {@link Library} namespace
+ * isolation.
+ * </p>
  *
- * @param id      stable tenant or security-domain identifier
- * @param name    human-readable security-domain name
- * @param options immutable realm options
+ * @param key      stable identity-domain key
+ * @param metadata human-readable identity-domain metadata
  * @author Kimi Liu
  */
-public record Realm(String id, String name, Options options) {
+public record Realm(Key key, Metadata metadata) {
 
     /**
-     * Validates text and snapshots the option set.
+     * Creates an immutable identity realm.
      *
-     * @throws ValidateException if {@code id} or {@code name} is blank
+     * @param key      stable identity-domain key
+     * @param metadata human-readable identity-domain metadata
+     * @throws IllegalArgumentException if either component is {@code null}
      */
     public Realm {
-        id = required(id, "Realm identifier");
-        name = required(name, "Realm name");
-        options = options == null ? Options.empty() : options;
+        Assert.notNull(key, "Realm key must not be null");
+        Assert.notNull(metadata, "Realm metadata must not be null");
     }
 
     /**
-     * Creates a realm whose display name equals its identifier.
+     * Wraps the stable value used to identify an identity security domain.
      *
-     * @param id stable realm identifier
-     * @return immutable realm
-     * @throws ValidateException if {@code id} is blank
+     * @param value stable realm identifier
+     * @author Kimi Liu
      */
-    public static Realm of(final String id) {
-        return new Realm(id, id, Options.empty());
-    }
+    public record Key(String value) {
 
-    /**
-     * Validates and trims required text.
-     *
-     * @param value text to validate
-     * @param label field label used in failures
-     * @return trimmed text
-     * @throws ValidateException if the text is null or blank
-     */
-    private static String required(final String value, final String label) {
-        if (value == null || value.isBlank()) {
-            throw new ValidateException(label + " must not be blank");
+        /**
+         * Creates a realm key.
+         *
+         * @param value non-blank stable realm identifier
+         * @throws IllegalArgumentException if the value is blank
+         */
+        public Key {
+            Assert.notBlank(value, "Realm key value must not be blank");
         }
-        return value.trim();
+
     }
 
     /**
-     * Returns a realm view with the supplied policy applied to its options.
+     * Carries human-readable realm presentation data without security policy or permission semantics.
      *
-     * @param policy authentication policy
-     * @return immutable realm with updated options
-     * @throws ValidateException if {@code policy} is null
+     * @param name        non-blank realm display name
+     * @param description realm description, which may be empty
+     * @author Kimi Liu
      */
-    public Realm with(final Policy policy) {
-        if (policy == null) {
-            throw new ValidateException("Realm policy must not be null");
+    public record Metadata(String name, String description) {
+
+        /**
+         * Creates realm presentation metadata.
+         *
+         * @param name        non-blank display name
+         * @param description non-null description, which may be empty
+         * @throws IllegalArgumentException if the name is blank or the description is {@code null}
+         */
+        public Metadata {
+            Assert.notBlank(name, "Realm metadata name must not be blank");
+            Assert.notNull(description, "Realm metadata description must not be null");
         }
-        return new Realm(id, name, policy.from(options));
+
     }
 
 }
