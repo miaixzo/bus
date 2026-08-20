@@ -19,1019 +19,369 @@
 */
 package org.miaixz.bus.auth.protocol.oauth2;
 
-import java.net.URI;
-import java.security.SecureRandom;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.concurrent.CompletionStage;
-
-import org.miaixz.bus.auth.Callback.Outbound;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.cache.StateStore;
-import org.miaixz.bus.auth.protocol.jwt.JWT.TrustedAlgorithm;
-import org.miaixz.bus.auth.protocol.jwt.KeyResolver;
-import org.miaixz.bus.auth.resolver.SecretResolver;
-import org.miaixz.bus.auth.resolver.SubjectResolver;
-import org.miaixz.bus.auth.runtime.Limits;
-import org.miaixz.bus.core.basic.normal.Errors;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.extra.json.JsonProvider;
-import org.miaixz.bus.fabric.Clock;
+import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientSettings;
+import org.miaixz.bus.auth.protocol.oauth2.internal.OAuth2ProviderDriver;
+import org.miaixz.bus.auth.protocol.oauth2.internal.OAuth2SourceDriver;
+import org.miaixz.bus.auth.protocol.oauth2.server.OAuth2ProviderSettings;
+import org.miaixz.bus.auth.provider.ProviderDriver;
+import org.miaixz.bus.auth.source.SourceDriver;
+import org.miaixz.bus.core.net.Protocol;
 
 /**
- * Defines the sole public OAuth 2.0 protocol facade and its immutable operation contracts.
- * <p>
- * The facade exposes authorization code with PKCE, client credentials, rotating refresh tokens, device authorization,
- * pushed authorization requests, JWT-secured requests and responses, token introspection, and token revocation.
- * Implicit and resource-owner-password grants have no representation in this contract and therefore cannot enter an
- * OAuth engine.
- * </p>
+ * Exposes direction-neutral OAuth 2.x operation keys and explicit Provider and Source driver factories.
  *
  * @author Kimi Liu
  */
 public final class OAuth2 {
 
     /**
-     * Prevents construction of the protocol contract namespace.
+     * OAuth authorization endpoint operation key.
+     */
+    public static final Capability.Key AUTHORIZATION = Capability.Key.standard(Protocol.OAUTH2, "authorize");
+    /**
+     * OAuth token endpoint operation key shared by every supported grant type.
+     */
+    public static final Capability.Key TOKEN = Capability.Key.standard(Protocol.OAUTH2, "token");
+    /**
+     * OAuth token introspection endpoint operation key.
+     */
+    public static final Capability.Key INTROSPECTION = Capability.Key.standard(Protocol.OAUTH2, "introspect");
+    /**
+     * OAuth token revocation endpoint operation key.
+     */
+    public static final Capability.Key REVOCATION = Capability.Key.standard(Protocol.OAUTH2, "revoke");
+    /**
+     * OAuth device authorization endpoint operation key.
+     */
+    public static final Capability.Key DEVICE_AUTHORIZATION = Capability.Key
+            .standard(Protocol.OAUTH2, "device_authorization");
+    /**
+     * OAuth Authorization Server Metadata operation key.
+     */
+    public static final Capability.Key AUTHORIZATION_SERVER_METADATA = Capability.Key
+            .standard(Protocol.OAUTH2, "authorization_server_metadata");
+
+    /**
+     * Prevents instantiation of the OAuth 2.x operation namespace.
      */
     private OAuth2() {
         // No initialization required.
     }
 
     /**
-     * Creates the sole production OAuth engine over trusted policy and product runtime ports.
+     * Creates the server-side OAuth 2.x driver.
      *
-     * @param policy       trusted OAuth security policy
-     * @param dependencies registered-client and authorization-grant product ports
-     * @param states       tenant-isolated atomic protocol state store
-     * @param subjects     trusted subject resolver
-     * @param secrets      client secret resolver
-     * @param clock        Fabric protocol clock
-     * @param random       secure random source for generated credentials
-     * @param json         explicit JSON provider for bounded protocol state
-     * @param limits       closed parser and allocation limits
-     * @param keys         trusted JWT signing and verification key resolver
-     * @return fully assembled OAuth engine
+     * @return new OAuth 2.x Provider driver
      */
-    public static Engine engine(
-            final Policy policy,
-            final OAuth2Dependencies dependencies,
-            final StateStore states,
-            final SubjectResolver subjects,
-            final SecretResolver secrets,
-            final Clock clock,
-            final SecureRandom random,
-            final JsonProvider json,
-            final Limits limits,
-            final KeyResolver keys) {
-        return new OAuth2Engine(policy, dependencies, states, subjects, secrets, clock, random, json, limits, keys);
+    public static ProviderDriver<OAuth2ProviderSettings> provider() {
+        return new OAuth2ProviderDriver();
     }
 
     /**
-     * Returns an insertion-ordered immutable scope snapshot.
+     * Creates the client-side OAuth 2.x driver.
      *
-     * @param values requested or granted scopes
-     * @return immutable scope snapshot
+     * @return new OAuth 2.x Source driver
      */
-    private static Set<String> snapshotScopes(final Set<String> values) {
-        return values == null || values.isEmpty() ? Set.of() : Collections.unmodifiableSet(new LinkedHashSet<>(values));
+    public static SourceDriver<OAuth2ClientSettings> source() {
+        return new OAuth2SourceDriver();
     }
 
     /**
-     * Returns an independent secret-character snapshot.
-     *
-     * @param value optional secret characters
-     * @return independent secret copy
+     * Defines standard OAuth request and response member names used on the wire.
      */
-    private static char[] characters(final char[] value) {
-        return value == null ? new char[0] : value.clone();
+    public static final class Parameters {
+
+        /**
+         * Standard access token member name.
+         */
+        public static final String ACCESS_TOKEN = "access_token";
+        /**
+         * Standard actor token parameter name.
+         */
+        public static final String ACTOR_TOKEN = "actor_token";
+        /**
+         * Standard actor token type parameter name.
+         */
+        public static final String ACTOR_TOKEN_TYPE = "actor_token_type";
+        /**
+         * Standard active introspection member name.
+         */
+        public static final String ACTIVE = "active";
+        /**
+         * Standard audience parameter name.
+         */
+        public static final String AUDIENCE = "audience";
+        /**
+         * Standard authorization code parameter name.
+         */
+        public static final String CODE = "code";
+        /**
+         * Standard PKCE code challenge parameter name.
+         */
+        public static final String CODE_CHALLENGE = "code_challenge";
+        /**
+         * Standard PKCE code challenge method parameter name.
+         */
+        public static final String CODE_CHALLENGE_METHOD = "code_challenge_method";
+        /**
+         * Standard PKCE code verifier parameter name.
+         */
+        public static final String CODE_VERIFIER = "code_verifier";
+        /**
+         * Standard client identifier parameter name.
+         */
+        public static final String CLIENT_ID = "client_id";
+        /**
+         * Standard client secret parameter name.
+         */
+        public static final String CLIENT_SECRET = "client_secret";
+        /**
+         * Standard device code member name.
+         */
+        public static final String DEVICE_CODE = "device_code";
+        /**
+         * Standard error code member name.
+         */
+        public static final String ERROR = "error";
+        /**
+         * Standard human-readable error description member name.
+         */
+        public static final String ERROR_DESCRIPTION = "error_description";
+        /**
+         * Standard error documentation URI member name.
+         */
+        public static final String ERROR_URI = "error_uri";
+        /**
+         * Standard token lifetime member name.
+         */
+        public static final String EXPIRES_IN = "expires_in";
+        /**
+         * Standard grant type parameter name.
+         */
+        public static final String GRANT_TYPE = "grant_type";
+        /**
+         * Standard polling interval member name.
+         */
+        public static final String INTERVAL = "interval";
+        /**
+         * RFC 9207 authorization response issuer parameter name.
+         */
+        public static final String ISS = "iss";
+        /**
+         * Standard issued token type member name.
+         */
+        public static final String ISSUED_TOKEN_TYPE = "issued_token_type";
+        /**
+         * Standard redirect URI parameter name.
+         */
+        public static final String REDIRECT_URI = "redirect_uri";
+        /**
+         * Standard refresh token member name.
+         */
+        public static final String REFRESH_TOKEN = "refresh_token";
+        /**
+         * Standard requested token type parameter name.
+         */
+        public static final String REQUESTED_TOKEN_TYPE = "requested_token_type";
+        /**
+         * Standard resource indicator parameter name.
+         */
+        public static final String RESOURCE = "resource";
+        /**
+         * Standard response type parameter name.
+         */
+        public static final String RESPONSE_TYPE = "response_type";
+        /**
+         * Standard scope parameter or member name.
+         */
+        public static final String SCOPE = "scope";
+        /**
+         * Standard authorization state parameter name.
+         */
+        public static final String STATE = "state";
+        /**
+         * Standard subject token parameter name.
+         */
+        public static final String SUBJECT_TOKEN = "subject_token";
+        /**
+         * Standard subject token type parameter name.
+         */
+        public static final String SUBJECT_TOKEN_TYPE = "subject_token_type";
+        /**
+         * Standard token parameter name used by introspection and revocation.
+         */
+        public static final String TOKEN = "token";
+        /**
+         * Standard token type hint parameter name.
+         */
+        public static final String TOKEN_TYPE_HINT = "token_type_hint";
+        /**
+         * Standard token type member name.
+         */
+        public static final String TOKEN_TYPE = "token_type";
+        /**
+         * Standard resource-owner username parameter name.
+         */
+        public static final String USERNAME = "username";
+        /**
+         * Standard device user code member name.
+         */
+        public static final String USER_CODE = "user_code";
+        /**
+         * Standard device verification URI member name.
+         */
+        public static final String VERIFICATION_URI = "verification_uri";
+        /**
+         * Standard complete device verification URI member name.
+         */
+        public static final String VERIFICATION_URI_COMPLETE = "verification_uri_complete";
+
+        /**
+         * Prevents instantiation of the OAuth parameter namespace.
+         */
+        private Parameters() {
+            // No initialization required.
+        }
+
     }
 
     /**
-     * Requires one positive trusted duration.
-     *
-     * @param value configured duration
-     * @param label programming-contract label
-     * @return unchanged positive duration
+     * Defines OAuth authorization response-mode values published by authorization-server metadata.
      */
-    private static Duration positive(final Duration value, final String label) {
-        final Duration current = Assert.notNull(value, label + " must be not null!");
-        Assert.isTrue(!current.isZero() && !current.isNegative(), label + " must be positive!");
-        return current;
+    public static final class ResponseModes {
+
+        /**
+         * Query-encoded authorization response mode.
+         */
+        public static final String QUERY = "query";
+
+        /**
+         * Prevents instantiation of the OAuth response-mode namespace.
+         */
+        private ResponseModes() {
+            // No initialization required.
+        }
+
     }
 
     /**
-     * OAuth grants enabled by the protocol engine.
-     *
-     * @author Kimi Liu
+     * Defines standard RFC 8414 authorization-server metadata member names.
      */
-    public enum GrantType {
+    public static final class Metadata {
 
         /**
-         * Authorization code grant with mandatory PKCE.
+         * Authorization endpoint metadata member name.
          */
-        AUTHORIZATION_CODE("authorization_code"),
+        public static final String AUTHORIZATION_ENDPOINT = "authorization_endpoint";
+        /**
+         * Authorization response issuer support metadata member name.
+         */
+        public static final String AUTHORIZATION_RESPONSE_ISSUER_SUPPORTED = "authorization_response_iss_parameter_supported";
+        /**
+         * PKCE method metadata member name.
+         */
+        public static final String CODE_CHALLENGE_METHODS_SUPPORTED = "code_challenge_methods_supported";
+        /**
+         * Device authorization endpoint metadata member name.
+         */
+        public static final String DEVICE_AUTHORIZATION_ENDPOINT = "device_authorization_endpoint";
+        /**
+         * DPoP algorithm metadata member name.
+         */
+        public static final String DPOP_SIGNING_ALGORITHMS_SUPPORTED = "dpop_signing_alg_values_supported";
+        /**
+         * Grant type metadata member name.
+         */
+        public static final String GRANT_TYPES_SUPPORTED = "grant_types_supported";
+        /**
+         * Introspection endpoint metadata member name.
+         */
+        public static final String INTROSPECTION_ENDPOINT = "introspection_endpoint";
+        /**
+         * Introspection authentication method metadata member name.
+         */
+        public static final String INTROSPECTION_ENDPOINT_AUTH_METHODS_SUPPORTED = "introspection_endpoint_auth_methods_supported";
+        /**
+         * Introspection signing algorithm metadata member name.
+         */
+        public static final String INTROSPECTION_ENDPOINT_AUTH_SIGNING_ALGORITHMS_SUPPORTED = "introspection_endpoint_auth_signing_alg_values_supported";
+        /**
+         * Issuer metadata member name.
+         */
+        public static final String ISSUER = "issuer";
+        /**
+         * JSON Web Key Set URI metadata member name.
+         */
+        public static final String JWKS_URI = "jwks_uri";
+        /**
+         * Operator policy URI metadata member name.
+         */
+        public static final String OP_POLICY_URI = "op_policy_uri";
+        /**
+         * Operator terms-of-service URI metadata member name.
+         */
+        public static final String OP_TOS_URI = "op_tos_uri";
+        /**
+         * Dynamic client registration endpoint metadata member name.
+         */
+        public static final String REGISTRATION_ENDPOINT = "registration_endpoint";
+        /**
+         * Response mode metadata member name.
+         */
+        public static final String RESPONSE_MODES_SUPPORTED = "response_modes_supported";
+        /**
+         * Response type metadata member name.
+         */
+        public static final String RESPONSE_TYPES_SUPPORTED = "response_types_supported";
+        /**
+         * Revocation endpoint metadata member name.
+         */
+        public static final String REVOCATION_ENDPOINT = "revocation_endpoint";
+        /**
+         * Revocation authentication method metadata member name.
+         */
+        public static final String REVOCATION_ENDPOINT_AUTH_METHODS_SUPPORTED = "revocation_endpoint_auth_methods_supported";
+        /**
+         * Revocation signing algorithm metadata member name.
+         */
+        public static final String REVOCATION_ENDPOINT_AUTH_SIGNING_ALGORITHMS_SUPPORTED = "revocation_endpoint_auth_signing_alg_values_supported";
+        /**
+         * Scope metadata member name.
+         */
+        public static final String SCOPES_SUPPORTED = "scopes_supported";
+        /**
+         * Service documentation URI metadata member name.
+         */
+        public static final String SERVICE_DOCUMENTATION = "service_documentation";
+        /**
+         * Signed metadata member name.
+         */
+        public static final String SIGNED_METADATA = "signed_metadata";
+        /**
+         * Token endpoint metadata member name.
+         */
+        public static final String TOKEN_ENDPOINT = "token_endpoint";
+        /**
+         * Token endpoint authentication method metadata member name.
+         */
+        public static final String TOKEN_ENDPOINT_AUTH_METHODS_SUPPORTED = "token_endpoint_auth_methods_supported";
+        /**
+         * Token endpoint signing algorithm metadata member name.
+         */
+        public static final String TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHMS_SUPPORTED = "token_endpoint_auth_signing_alg_values_supported";
+        /**
+         * User-interface locale metadata member name.
+         */
+        public static final String UI_LOCALES_SUPPORTED = "ui_locales_supported";
 
         /**
-         * Confidential-client credentials grant.
+         * Prevents instantiation of the OAuth metadata namespace.
          */
-        CLIENT_CREDENTIALS("client_credentials"),
-
-        /**
-         * Rotating refresh-token grant.
-         */
-        REFRESH_TOKEN("refresh_token"),
-
-        /**
-         * Device authorization grant.
-         */
-        DEVICE_CODE("urn:ietf:params:oauth:grant-type:device_code");
-
-        /**
-         * Exact wire value.
-         */
-        private final String value;
-
-        /**
-         * Creates one enabled grant registration.
-         *
-         * @param value exact wire value
-         */
-        GrantType(final String value) {
-            this.value = value;
+        private Metadata() {
+            // No initialization required.
         }
 
-        /**
-         * Returns the exact case-sensitive wire value.
-         *
-         * @return exact wire value
-         */
-        public String value() {
-            return value;
-        }
-    }
-
-    /**
-     * Authorization response modes supported by the protocol engine.
-     *
-     * @author Kimi Liu
-     */
-    public enum ResponseMode {
-
-        /**
-         * Query response carrying a code and state.
-         */
-        QUERY("query"),
-
-        /**
-         * Form-post response carrying a code and state.
-         */
-        FORM_POST("form_post"),
-
-        /**
-         * Query response carrying one JWT-secured authorization response.
-         */
-        QUERY_JWT("query.jwt"),
-
-        /**
-         * Form-post response carrying one JWT-secured authorization response.
-         */
-        FORM_POST_JWT("form_post.jwt");
-
-        /**
-         * Exact wire value.
-         */
-        private final String value;
-
-        /**
-         * Creates one response-mode registration.
-         *
-         * @param value exact wire value
-         */
-        ResponseMode(final String value) {
-            this.value = value;
-        }
-
-        /**
-         * Returns the exact case-sensitive wire value.
-         *
-         * @return exact wire value
-         */
-        public String value() {
-            return value;
-        }
-    }
-
-    /**
-     * PKCE transformation methods admitted by authorization-code processing.
-     *
-     * @author Kimi Liu
-     */
-    public enum CodeChallengeMethod {
-
-        /**
-         * SHA-256 PKCE transformation.
-         */
-        S256("S256");
-
-        /**
-         * Exact wire value.
-         */
-        private final String value;
-
-        /**
-         * Creates the fixed PKCE method registration.
-         *
-         * @param value exact wire value
-         */
-        CodeChallengeMethod(final String value) {
-            this.value = value;
-        }
-
-        /**
-         * Returns the exact case-sensitive wire value.
-         *
-         * @return exact wire value
-         */
-        public String value() {
-            return value;
-        }
-    }
-
-    /**
-     * Access-token types issued and disclosed by the protocol engine.
-     *
-     * @author Kimi Liu
-     */
-    public enum TokenType {
-
-        /**
-         * RFC 6750 bearer token.
-         */
-        BEARER("Bearer");
-
-        /**
-         * Exact response value.
-         */
-        private final String value;
-
-        /**
-         * Creates the fixed token-type registration.
-         *
-         * @param value exact response value
-         */
-        TokenType(final String value) {
-            this.value = value;
-        }
-
-        /**
-         * Returns the exact response value.
-         *
-         * @return exact response value
-         */
-        public String value() {
-            return value;
-        }
-    }
-
-    /**
-     * Token type hints accepted by introspection and revocation.
-     *
-     * @author Kimi Liu
-     */
-    public enum TokenTypeHint {
-
-        /**
-         * Access-token hint.
-         */
-        ACCESS_TOKEN("access_token"),
-
-        /**
-         * Refresh-token hint.
-         */
-        REFRESH_TOKEN("refresh_token");
-
-        /**
-         * Exact wire value.
-         */
-        private final String value;
-
-        /**
-         * Creates one token-type hint registration.
-         *
-         * @param value exact wire value
-         */
-        TokenTypeHint(final String value) {
-            this.value = value;
-        }
-
-        /**
-         * Returns the exact case-sensitive wire value.
-         *
-         * @return exact wire value
-         */
-        public String value() {
-            return value;
-        }
-    }
-
-    /**
-     * Stable OAuth wire errors that are not represented by generic Bus errors.
-     *
-     * @author Kimi Liu
-     */
-    public enum ProtocolError implements Errors {
-
-        /**
-         * The request is malformed, duplicated, incomplete, or otherwise invalid.
-         */
-        INVALID_REQUEST("invalid_request", "The OAuth request is invalid"),
-
-        /**
-         * Client authentication failed.
-         */
-        INVALID_CLIENT("invalid_client", "Client authentication failed"),
-
-        /**
-         * The authorization grant or refresh token is invalid.
-         */
-        INVALID_GRANT("invalid_grant", "The authorization grant is invalid"),
-
-        /**
-         * The authenticated client cannot use the requested grant.
-         */
-        UNAUTHORIZED_CLIENT("unauthorized_client", "The client is not authorized for this request"),
-
-        /**
-         * The authorization server does not support the requested grant.
-         */
-        UNSUPPORTED_GRANT_TYPE("unsupported_grant_type", "The requested grant type is not supported"),
-
-        /**
-         * The requested scope is invalid or exceeds authorization.
-         */
-        INVALID_SCOPE("invalid_scope", "The requested scope is invalid"),
-
-        /**
-         * The resource owner or policy denied authorization.
-         */
-        ACCESS_DENIED("access_denied", "The authorization request was denied"),
-
-        /**
-         * The requested authorization response type is unsupported.
-         */
-        UNSUPPORTED_RESPONSE_TYPE("unsupported_response_type", "The requested response type is not supported"),
-
-        /**
-         * Device authorization has not completed.
-         */
-        AUTHORIZATION_PENDING("authorization_pending", "Device authorization is pending"),
-
-        /**
-         * Device polling is faster than the allowed interval.
-         */
-        SLOW_DOWN("slow_down", "Device authorization polling must slow down"),
-
-        /**
-         * A device or one-time authorization transaction expired.
-         */
-        EXPIRED_TOKEN("expired_token", "The authorization transaction expired"),
-
-        /**
-         * The service cannot currently process the request.
-         */
-        TEMPORARILY_UNAVAILABLE("temporarily_unavailable", "The authorization service is temporarily unavailable"),
-
-        /**
-         * The pushed request URI is invalid, expired, or already consumed.
-         */
-        INVALID_REQUEST_URI("invalid_request_uri", "The pushed authorization request URI is invalid"),
-
-        /**
-         * The JWT-secured authorization request is invalid.
-         */
-        INVALID_REQUEST_OBJECT("invalid_request_object", "The authorization request object is invalid"),
-
-        /**
-         * JWT-secured authorization requests are unavailable for the client.
-         */
-        REQUEST_NOT_SUPPORTED("request_not_supported", "Authorization request objects are not supported"),
-
-        /**
-         * Pushed request URIs are unavailable for the client.
-         */
-        REQUEST_URI_NOT_SUPPORTED("request_uri_not_supported", "Authorization request URIs are not supported");
-
-        /**
-         * Stable wire key.
-         */
-        private final String key;
-
-        /**
-         * Fixed safe wire description.
-         */
-        private final String value;
-
-        /**
-         * Creates one unregistered protocol error.
-         *
-         * @param key   standard OAuth error key
-         * @param value fixed safe description
-         */
-        ProtocolError(final String key, final String value) {
-            this.key = key;
-            this.value = value;
-        }
-
-        /**
-         * Returns the standard OAuth error key.
-         *
-         * @return standard OAuth error key
-         */
-        @Override
-        public String getKey() {
-            return key;
-        }
-
-        /**
-         * Returns the fixed safe OAuth error description.
-         *
-         * @return fixed safe description
-         */
-        @Override
-        public String getValue() {
-            return value;
-        }
-    }
-
-    /**
-     * Fixed OAuth operation surface implemented by the internal protocol engine.
-     *
-     * @author Kimi Liu
-     */
-    public interface Engine {
-
-        /**
-         * Processes an authorization endpoint request.
-         *
-         * @param invocation tenant-scoped operation context
-         * @param request    bounded authorization request
-         * @param decision   product authorization-page decision
-         * @return stage containing an authorization response or stable failure
-         */
-        CompletionStage<Outcome<Outbound>> authorize(
-                Context invocation,
-                AuthorizationRequest request,
-                AuthorizationDecision decision);
-
-        /**
-         * Processes a token endpoint request for an allowed grant.
-         *
-         * @param invocation tenant-scoped operation context
-         * @param request    bounded token request
-         * @return stage containing a token response or stable failure
-         */
-        CompletionStage<Outcome<TokenResponse>> token(Context invocation, TokenRequest request);
-
-        /**
-         * Creates a device authorization transaction.
-         *
-         * @param invocation tenant-scoped operation context
-         * @param request    bounded device authorization request
-         * @return stage containing device authorization details or stable failure
-         */
-        CompletionStage<Outcome<DeviceAuthorizationResponse>> device(
-                Context invocation,
-                DeviceAuthorizationRequest request);
-
-        /**
-         * Completes or denies a pending device authorization transaction.
-         *
-         * @param invocation tenant-scoped operation context
-         * @param request    product verification-page decision
-         * @return stage containing completion or stable failure
-         */
-        CompletionStage<Outcome<Void>> completeDevice(Context invocation, DeviceVerificationRequest request);
-
-        /**
-         * Stores a pushed authorization request.
-         *
-         * @param invocation tenant-scoped operation context
-         * @param request    bounded pushed authorization request
-         * @return stage containing a one-time request URI or stable failure
-         */
-        CompletionStage<Outcome<PushedAuthorizationResponse>> push(
-                Context invocation,
-                PushedAuthorizationRequest request);
-
-        /**
-         * Returns the authorized active state of one token.
-         *
-         * @param invocation tenant-scoped operation context
-         * @param request    bounded introspection request
-         * @return stage containing minimal token state or stable failure
-         */
-        CompletionStage<Outcome<IntrospectionResponse>> introspect(Context invocation, IntrospectionRequest request);
-
-        /**
-         * Idempotently revokes one access or refresh token.
-         *
-         * @param invocation tenant-scoped operation context
-         * @param request    bounded revocation request
-         * @return stage containing completion or stable failure
-         */
-        CompletionStage<Outcome<Void>> revoke(Context invocation, RevocationRequest request);
-    }
-
-    /**
-     * Immutable product-selected OAuth security policy shared by every flow.
-     *
-     * @param issuer                exact token issuer
-     * @param audiences             non-empty access-token audiences
-     * @param scopes                complete server scope allowlist
-     * @param grants                complete server grant allowlist
-     * @param tokenAlgorithm        trusted JWT signing algorithm
-     * @param signingKeyId          trusted signing key identifier
-     * @param accessTokenLifetime   positive access-token lifetime
-     * @param refreshTokenLifetime  positive refresh-token family lifetime
-     * @param deviceVerificationUri exact HTTPS device verification URI
-     * @author Kimi Liu
-     */
-    public record Policy(String issuer, Set<String> audiences, Set<String> scopes, Set<GrantType> grants,
-            TrustedAlgorithm tokenAlgorithm, String signingKeyId, Duration accessTokenLifetime,
-            Duration refreshTokenLifetime, URI deviceVerificationUri) {
-
-        /**
-         * Validates trusted policy and snapshots all allowlists.
-         *
-         * @param issuer                exact token issuer
-         * @param audiences             access-token audiences
-         * @param scopes                server scopes
-         * @param grants                server grants
-         * @param tokenAlgorithm        trusted token algorithm
-         * @param signingKeyId          signing key identifier
-         * @param accessTokenLifetime   access-token lifetime
-         * @param refreshTokenLifetime  refresh-token family lifetime
-         * @param deviceVerificationUri device verification URI
-         */
-        public Policy {
-            issuer = Assert.notBlank(issuer, "OAuth issuer must be not blank!");
-            audiences = snapshotScopes(audiences);
-            Assert.isTrue(!audiences.isEmpty(), "OAuth audiences must be not empty!");
-            scopes = snapshotScopes(scopes);
-            grants = grants == null || grants.isEmpty() ? Set.of()
-                    : Collections.unmodifiableSet(new LinkedHashSet<>(grants));
-            Assert.isTrue(!grants.isEmpty(), "OAuth grants must be not empty!");
-            tokenAlgorithm = Assert.notNull(tokenAlgorithm, "OAuth token algorithm must be not null!");
-            signingKeyId = Assert.notBlank(signingKeyId, "OAuth signing key identifier must be not blank!");
-            accessTokenLifetime = positive(accessTokenLifetime, "OAuth access-token lifetime");
-            refreshTokenLifetime = positive(refreshTokenLifetime, "OAuth refresh-token lifetime");
-            deviceVerificationUri = Assert
-                    .notNull(deviceVerificationUri, "OAuth device verification URI must be not null!");
-            Assert.isTrue(
-                    deviceVerificationUri.isAbsolute() && !deviceVerificationUri.isOpaque()
-                            && "https".equals(deviceVerificationUri.getScheme())
-                            && deviceVerificationUri.getHost() != null && deviceVerificationUri.getUserInfo() == null
-                            && deviceVerificationUri.getFragment() == null,
-                    "OAuth device verification URI must be an absolute HTTPS URI!");
-        }
-    }
-
-    /**
-     * Immutable authorization-page decision supplied by the product layer.
-     *
-     * @param subjectId      authenticated subject identifier
-     * @param approvedScopes scopes explicitly approved by the subject and policy
-     * @param approved       whether authorization was approved
-     * @author Kimi Liu
-     */
-    public record AuthorizationDecision(String subjectId, Set<String> approvedScopes, boolean approved) {
-
-        /**
-         * Snapshots approved scopes without accepting credentials or page state.
-         *
-         * @param subjectId      authenticated subject identifier
-         * @param approvedScopes approved scopes
-         * @param approved       approval decision
-         */
-        public AuthorizationDecision {
-            approvedScopes = snapshotScopes(approvedScopes);
-        }
-    }
-
-    /**
-     * Immutable authorization endpoint input.
-     *
-     * @param clientId            client identifier
-     * @param redirectUri         requested redirect URI
-     * @param scopes              requested scopes
-     * @param state               optional client state
-     * @param codeChallenge       mandatory authorization-code PKCE challenge
-     * @param codeChallengeMethod fixed PKCE method
-     * @param requestObject       optional JWT-secured authorization request
-     * @param requestUri          optional one-time pushed request URI
-     * @param responseMode        requested response mode
-     * @param nonce               optional OpenID Connect nonce
-     * @author Kimi Liu
-     */
-    public record AuthorizationRequest(String clientId, URI redirectUri, Set<String> scopes, String state,
-            String codeChallenge, CodeChallengeMethod codeChallengeMethod, String requestObject, String requestUri,
-            ResponseMode responseMode, String nonce) {
-
-        /**
-         * Snapshots authorization request state without performing network-input validation.
-         *
-         * @param clientId            client identifier
-         * @param redirectUri         requested redirect URI
-         * @param scopes              requested scopes
-         * @param state               optional client state
-         * @param codeChallenge       PKCE challenge
-         * @param codeChallengeMethod fixed PKCE method
-         * @param requestObject       optional request object
-         * @param requestUri          optional pushed request URI
-         * @param responseMode        response mode
-         * @param nonce               optional nonce
-         */
-        public AuthorizationRequest {
-            scopes = snapshotScopes(scopes);
-        }
-
-        /**
-         * Redacts state, PKCE, request-object, and pushed-request artifacts from diagnostic output.
-         *
-         * @return fixed redacted representation
-         */
-        @Override
-        public String toString() {
-            return "AuthorizationRequest[REDACTED]";
-        }
-    }
-
-    /**
-     * Immutable token endpoint input covering only enabled grants.
-     *
-     * @param grantType    selected enabled grant
-     * @param clientId     client identifier
-     * @param clientSecret optional copied client secret
-     * @param code         optional authorization code
-     * @param redirectUri  optional exact redirect URI
-     * @param codeVerifier optional PKCE verifier
-     * @param refreshToken optional rotating refresh token
-     * @param deviceCode   optional device code
-     * @param scopes       requested scopes
-     * @author Kimi Liu
-     */
-    public record TokenRequest(GrantType grantType, String clientId, char[] clientSecret, String code, URI redirectUri,
-            String codeVerifier, String refreshToken, String deviceCode, Set<String> scopes) {
-
-        /**
-         * Copies token request secrets and scopes.
-         *
-         * @param grantType    selected enabled grant
-         * @param clientId     client identifier
-         * @param clientSecret optional client secret
-         * @param code         optional authorization code
-         * @param redirectUri  optional redirect URI
-         * @param codeVerifier optional PKCE verifier
-         * @param refreshToken optional refresh token
-         * @param deviceCode   optional device code
-         * @param scopes       requested scopes
-         */
-        public TokenRequest {
-            clientSecret = characters(clientSecret);
-            scopes = snapshotScopes(scopes);
-        }
-
-        /**
-         * Returns an independent client-secret copy.
-         *
-         * @return copied client secret
-         */
-        @Override
-        public char[] clientSecret() {
-            return clientSecret.clone();
-        }
-
-        /**
-         * Redacts every credential and token from diagnostic output.
-         *
-         * @return fixed redacted representation
-         */
-        @Override
-        public String toString() {
-            return "TokenRequest[REDACTED]";
-        }
-    }
-
-    /**
-     * Immutable token endpoint output.
-     *
-     * @param accessToken  issued access token
-     * @param tokenType    fixed token type
-     * @param expiresIn    positive lifetime in seconds
-     * @param scopes       granted scopes
-     * @param refreshToken optional rotated refresh token
-     * @param idToken      optional OpenID Connect ID token
-     * @author Kimi Liu
-     */
-    public record TokenResponse(String accessToken, TokenType tokenType, long expiresIn, Set<String> scopes,
-            String refreshToken, String idToken) {
-
-        /**
-         * Snapshots granted scopes.
-         *
-         * @param accessToken  issued access token
-         * @param tokenType    fixed token type
-         * @param expiresIn    lifetime in seconds
-         * @param scopes       granted scopes
-         * @param refreshToken optional refresh token
-         * @param idToken      optional ID token
-         */
-        public TokenResponse {
-            scopes = snapshotScopes(scopes);
-        }
-
-        /**
-         * Redacts issued tokens from diagnostic output.
-         *
-         * @return fixed redacted representation
-         */
-        @Override
-        public String toString() {
-            return "TokenResponse[REDACTED]";
-        }
-    }
-
-    /**
-     * Immutable device authorization endpoint input.
-     *
-     * @param clientId client identifier
-     * @param scopes   requested scopes
-     * @author Kimi Liu
-     */
-    public record DeviceAuthorizationRequest(String clientId, Set<String> scopes) {
-
-        /**
-         * Snapshots requested scopes.
-         *
-         * @param clientId client identifier
-         * @param scopes   requested scopes
-         */
-        public DeviceAuthorizationRequest {
-            scopes = snapshotScopes(scopes);
-        }
-    }
-
-    /**
-     * Immutable device authorization endpoint output.
-     *
-     * @param deviceCode              secret device code
-     * @param userCode                user-facing verification code
-     * @param verificationUri         verification page URI
-     * @param verificationUriComplete optional pre-populated verification URI
-     * @param expiresIn               lifetime in seconds
-     * @param interval                minimum polling interval in seconds
-     * @author Kimi Liu
-     */
-    public record DeviceAuthorizationResponse(String deviceCode, String userCode, URI verificationUri,
-            URI verificationUriComplete, long expiresIn, long interval) {
-
-        /**
-         * Redacts device credentials from diagnostic output.
-         *
-         * @return fixed redacted representation
-         */
-        @Override
-        public String toString() {
-            return "DeviceAuthorizationResponse[REDACTED]";
-        }
-    }
-
-    /**
-     * Immutable verification-page decision for a pending device transaction.
-     *
-     * @param userCode       user-entered verification code
-     * @param subjectId      authenticated subject identifier
-     * @param approvedScopes scopes approved by the subject and policy
-     * @param approved       whether device authorization was approved
-     * @author Kimi Liu
-     */
-    public record DeviceVerificationRequest(String userCode, String subjectId, Set<String> approvedScopes,
-            boolean approved) {
-
-        /**
-         * Snapshots approved scopes.
-         *
-         * @param userCode       user verification code
-         * @param subjectId      subject identifier
-         * @param approvedScopes approved scopes
-         * @param approved       approval decision
-         */
-        public DeviceVerificationRequest {
-            approvedScopes = snapshotScopes(approvedScopes);
-        }
-
-        /**
-         * Redacts the user code from diagnostic output.
-         *
-         * @return fixed redacted representation
-         */
-        @Override
-        public String toString() {
-            return "DeviceVerificationRequest[REDACTED]";
-        }
-    }
-
-    /**
-     * Immutable pushed authorization endpoint input.
-     *
-     * @param authorization authorization request to validate and store
-     * @param clientSecret  optional copied client authentication secret
-     * @author Kimi Liu
-     */
-    public record PushedAuthorizationRequest(AuthorizationRequest authorization, char[] clientSecret) {
-
-        /**
-         * Validates programming contracts and copies the client secret.
-         *
-         * @param authorization authorization request
-         * @param clientSecret  optional client secret
-         */
-        public PushedAuthorizationRequest {
-            authorization = Assert.notNull(authorization, "Authorization request must be not null!");
-            clientSecret = characters(clientSecret);
-        }
-
-        /**
-         * Returns an independent client-secret copy.
-         *
-         * @return copied client secret
-         */
-        @Override
-        public char[] clientSecret() {
-            return clientSecret.clone();
-        }
-
-        /**
-         * Redacts the pushed request and credential from diagnostic output.
-         *
-         * @return fixed redacted representation
-         */
-        @Override
-        public String toString() {
-            return "PushedAuthorizationRequest[REDACTED]";
-        }
-    }
-
-    /**
-     * Immutable pushed authorization endpoint output.
-     *
-     * @param requestUri one-time pushed request URI
-     * @param expiresIn  lifetime in seconds
-     * @author Kimi Liu
-     */
-    public record PushedAuthorizationResponse(String requestUri, long expiresIn) {
-
-        /**
-         * Redacts the one-time request URI from diagnostic output.
-         *
-         * @return fixed redacted representation
-         */
-        @Override
-        public String toString() {
-            return "PushedAuthorizationResponse[REDACTED]";
-        }
-    }
-
-    /**
-     * Immutable token introspection endpoint input.
-     *
-     * @param token        token presented for introspection
-     * @param hint         optional token type hint
-     * @param clientId     authenticated client identifier
-     * @param clientSecret copied client authentication secret
-     * @author Kimi Liu
-     */
-    public record IntrospectionRequest(String token, TokenTypeHint hint, String clientId, char[] clientSecret) {
-
-        /**
-         * Copies the client authentication secret.
-         *
-         * @param token        presented token
-         * @param hint         optional token hint
-         * @param clientId     client identifier
-         * @param clientSecret client secret
-         */
-        public IntrospectionRequest {
-            clientSecret = characters(clientSecret);
-        }
-
-        /**
-         * Returns an independent client-secret copy.
-         *
-         * @return copied client secret
-         */
-        @Override
-        public char[] clientSecret() {
-            return clientSecret.clone();
-        }
-
-        /**
-         * Redacts token and client credentials from diagnostic output.
-         *
-         * @return fixed redacted representation
-         */
-        @Override
-        public String toString() {
-            return "IntrospectionRequest[REDACTED]";
-        }
-    }
-
-    /**
-     * Immutable minimal token introspection output.
-     *
-     * @param active    whether the token is active and authorized for disclosure
-     * @param clientId  authorized client identifier
-     * @param subjectId authorized subject identifier
-     * @param scopes    granted scopes
-     * @param issuedAt  optional issue time
-     * @param expiresAt optional expiration time
-     * @param tokenType optional fixed token type
-     * @author Kimi Liu
-     */
-    public record IntrospectionResponse(boolean active, String clientId, String subjectId, Set<String> scopes,
-            Instant issuedAt, Instant expiresAt, TokenType tokenType) {
-
-        /**
-         * Snapshots disclosed scopes and suppresses fields for inactive tokens.
-         *
-         * @param active    active state
-         * @param clientId  client identifier
-         * @param subjectId subject identifier
-         * @param scopes    granted scopes
-         * @param issuedAt  issue time
-         * @param expiresAt expiration time
-         * @param tokenType fixed token type
-         */
-        public IntrospectionResponse {
-            scopes = snapshotScopes(scopes);
-            if (!active) {
-                clientId = null;
-                subjectId = null;
-                scopes = Set.of();
-                issuedAt = null;
-                expiresAt = null;
-                tokenType = null;
-            }
-        }
-    }
-
-    /**
-     * Immutable token revocation endpoint input.
-     *
-     * @param token        token presented for revocation
-     * @param hint         optional token type hint
-     * @param clientId     authenticated client identifier
-     * @param clientSecret copied client authentication secret
-     * @author Kimi Liu
-     */
-    public record RevocationRequest(String token, TokenTypeHint hint, String clientId, char[] clientSecret) {
-
-        /**
-         * Copies the client authentication secret.
-         *
-         * @param token        presented token
-         * @param hint         optional token hint
-         * @param clientId     client identifier
-         * @param clientSecret client secret
-         */
-        public RevocationRequest {
-            clientSecret = characters(clientSecret);
-        }
-
-        /**
-         * Returns an independent client-secret copy.
-         *
-         * @return copied client secret
-         */
-        @Override
-        public char[] clientSecret() {
-            return clientSecret.clone();
-        }
-
-        /**
-         * Redacts token and client credentials from diagnostic output.
-         *
-         * @return fixed redacted representation
-         */
-        @Override
-        public String toString() {
-            return "RevocationRequest[REDACTED]";
-        }
     }
 
 }

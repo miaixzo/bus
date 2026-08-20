@@ -1,13 +1,41 @@
-/* Copyright (c) 2015-2026 miaixz.org; licensed under the Apache License, Version 2.0. */
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
 /**
- * Implements the internal afdian third-party authentication client and its authorization-scope metadata.
- *
+ * Declares the Afdian creator-account Vendor definition and externally managed client settings.
  * <p>
- * Code here may depend on root and vendor contracts plus shared Bus transport, cache, JSON, and cryptography
- * components; it must not depend on protocol server implementations. It is a client-side implementation and must not
- * produce server protocol wire responses. This package is module-internal and is not exported by the {@code bus.auth}
- * module. Credentials, tokens, callback codes, state values, and other sensitive material must not be retained or
- * exposed by diagnostics.
+ * AfdianDefinition exposes the single {@code afdian/default} VENDOR_AUTH variant with fixed public authorization and
+ * identity-exchange endpoints, the {@code basic} default scope, CLIENT_SECRET credential type, and browser initiate and
+ * complete capabilities. AfdianSourceSettings accepts only the platform routing keys, public client identifier,
+ * credential reference, exact registered callback, and ordered requested scopes.
+ * </p>
+ * <p>
+ * Management catalogs and Vendor compilation consume this package. The concrete adapter remains in the non-exported
+ * internal package. Callers do not provide Afdian's fixed endpoints or its private response shape, and this package
+ * does not publish an OAuth TokenResponse, OAuth UserInfo, platform token DTO, custom scope enum, transport behavior,
+ * or credential value.
+ * </p>
+ * <p>
+ * Routing is fixed to one variant, credentials must reference CLIENT_SECRET, callback ownership is exact, and scopes
+ * are immutable non-blank platform values. The definition deliberately declares VENDOR_AUTH because the token
+ * endpoint's private JSON envelope returns {@code data.user_id} as the terminal identity rather than a
+ * standards-compliant OAuth token response. Only that verified stable user identifier may become the external subject.
  * </p>
  *
  * @author Kimi Liu

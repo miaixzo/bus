@@ -1,0 +1,234 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.auth.vendor.coding;
+
+import java.util.List;
+import java.util.Set;
+
+import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
+import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.vendor.Vendor;
+import org.miaixz.bus.auth.vendor.VendorDefinition;
+import org.miaixz.bus.auth.vendor.VendorDeviation;
+import org.miaixz.bus.auth.vendor.VendorTargets;
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.net.tls.TlsClientAuth;
+
+/**
+ * Declares the frozen tenant-scoped CODING OAuth 2.0 Vendor definition.
+ * <p>
+ * The definition keeps all three official endpoints under a constrained single-label tenant template. Its
+ * comma-delimited authorization scope, string token lifetime, and OpenAPI response envelope remain private Source
+ * adaptations, so no standard OAuth client capability is advertised.
+ * </p>
+ *
+ * @author Kimi Liu
+ */
+public final class CodingDefinition implements VendorDefinition<CodingSourceSettings> {
+
+    /**
+     * Stable platform routing identifier shared by catalog and runtime compilation.
+     */
+    public static final Vendor.Id ID = new Vendor.Id("coding");
+
+    /**
+     * Internal identifier of the sole CODING tenant authorization variant.
+     */
+    public static final Vendor.Variant DEFAULT = new Vendor.Variant("default");
+
+    /**
+     * Exact Source-authentication-only capability manifest.
+     */
+    private static final Capability.Manifest MANIFEST = new Capability.Manifest(List.of(
+            SourceAuthentication.initiate(Set.of(Capability.Interaction.REDIRECT)),
+            SourceAuthentication.complete(Set.of(Capability.Interaction.REDIRECT))));
+
+    /**
+     * Exact platform differences that prevent publication as standard OAuth or UserInfo operations.
+     */
+    private static final List<VendorDeviation> DEVIATIONS = List.of(
+            deviation(
+                    "source_authentication.initiate",
+                    VendorDeviation.Location.QUERY,
+                    OAuth2.Parameters.SCOPE,
+                    OAuth2.Parameters.SCOPE,
+                    Optional.empty(),
+                    Http.Method.GET,
+                    false),
+            deviation(
+                    "source_authentication.complete",
+                    VendorDeviation.Location.QUERY,
+                    "team",
+                    null,
+                    Optional.empty(),
+                    Http.Method.GET,
+                    false),
+            deviation(
+                    "source_authentication.complete",
+                    VendorDeviation.Location.JSON,
+                    OAuth2.Parameters.EXPIRES_IN,
+                    OAuth2.Parameters.EXPIRES_IN,
+                    Optional.of(MediaType.APPLICATION_JSON_TYPE),
+                    Http.Method.POST,
+                    false),
+            deviation(
+                    "source_authentication.complete",
+                    VendorDeviation.Location.RESPONSE,
+                    "Response",
+                    null,
+                    Optional.of(MediaType.APPLICATION_JSON_TYPE),
+                    Http.Method.POST,
+                    true));
+
+    /**
+     * Complete immutable endpoint, client policy, scope, capability, form, and deviation definition.
+     */
+    private static final VendorDefinition.Definition DEFINITION = new VendorDefinition.Definition(ID, DEFAULT,
+            Protocol.OAUTH2, List.of("user:profile:ro"),
+            new VendorTargets(
+                    Optional.of(
+                            template(
+                                    "https://{instance}.coding.net/oauth_authorize.html",
+                                    Http.Method.GET,
+                                    Endpoint.Authentication.NONE)),
+                    Optional.empty(),
+                    Optional.of(
+                            template(
+                                    "https://{instance}.coding.net/api/oauth/access_token",
+                                    Http.Method.POST,
+                                    Endpoint.Authentication.CLIENT_SECRET_POST)),
+                    Optional.of(
+                            template(
+                                    "https://{instance}.coding.net/open-api",
+                                    Http.Method.POST,
+                                    Endpoint.Authentication.BEARER)),
+                    Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                    Optional.empty(), Optional.empty()),
+            MANIFEST, DEVIATIONS);
+
+    /**
+     * Creates the stateless CODING definition used by Vendor directory assembly.
+     */
+    public CodingDefinition() {
+        // No initialization required.
+        // All definition state is held by immutable class constants.
+    }
+
+    /**
+     * Creates one constrained team-host endpoint template.
+     *
+     * @param value          official HTTPS endpoint template
+     * @param method         HTTP method used by the operation
+     * @param authentication endpoint authentication method
+     * @return immutable constrained endpoint target
+     */
+    private static VendorTargets.Template template(
+            final String value,
+            final Http.Method method,
+            final Endpoint.Authentication authentication) {
+        return new VendorTargets.Template(value, method, Set.of(authentication), Optional.empty(), TlsClientAuth.NONE);
+    }
+
+    /**
+     * Creates one immutable CODING wire deviation.
+     *
+     * @param operation    exact affected operation
+     * @param location     exact wire location
+     * @param vendorName   CODING field or envelope name
+     * @param standardName corresponding standard field, or {@code null}
+     * @param mediaType    exact representation when applicable
+     * @param method       exact HTTP method
+     * @param enveloped    whether the response uses a platform envelope
+     * @return immutable deviation declaration
+     */
+    private static VendorDeviation deviation(
+            final String operation,
+            final VendorDeviation.Location location,
+            final String vendorName,
+            final String standardName,
+            final Optional<MediaType> mediaType,
+            final Http.Method method,
+            final boolean enveloped) {
+        return new VendorDeviation(operation, location, vendorName, Optional.ofNullable(standardName), mediaType,
+                method, enveloped);
+    }
+
+    /**
+     * Returns the stable platform identifier used to select this definition.
+     *
+     * @return stable CODING routing identifier
+     */
+    @Override
+    public Vendor.Id type() {
+        return ID;
+    }
+
+    /**
+     * Returns non-sensitive CODING presentation metadata.
+     *
+     * @return immutable CODING management metadata
+     */
+    @Override
+    public Vendor.Metadata metadata() {
+        return new Vendor.Metadata("CODING", "CODING team account authorization", "coding");
+    }
+
+    /**
+     * Returns the exact immutable settings record accepted by this definition.
+     *
+     * @return CODING Source settings class
+     */
+    @Override
+    public Class<CodingSourceSettings> settingsType() {
+        return CodingSourceSettings.class;
+    }
+
+    /**
+     * Returns the sole supported CODING variant.
+     *
+     * @return immutable single-element definition list
+     */
+    @Override
+    public List<VendorDefinition.Definition> variants() {
+        return List.of(DEFINITION);
+    }
+
+    /**
+     * Returns the exact default CODING definition.
+     *
+     * @param variant requested variant
+     * @return exact CODING definition
+     * @throws ValidateException if the requested variant is unsupported
+     */
+    @Override
+    public VendorDefinition.Definition variant(final Vendor.Variant variant) {
+        if (!DEFAULT.equals(variant)) {
+            throw new ValidateException("CODING Vendor variant is not supported");
+        }
+        return DEFINITION;
+    }
+
+}

@@ -1,0 +1,136 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.auth.protocol.oidc.server;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+
+import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.Outcome;
+import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.protocol.oauth2.AuthorizationServerMetadata;
+import org.miaixz.bus.auth.protocol.oauth2.ResponseType;
+import org.miaixz.bus.auth.protocol.oauth2.server.OAuth2ProviderSettings;
+import org.miaixz.bus.auth.protocol.oidc.ClaimType;
+import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
+import org.miaixz.bus.auth.protocol.oidc.OpenIdProviderMetadata;
+import org.miaixz.bus.auth.shared.pkce.PkceMethod;
+import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.extra.json.JsonValue;
+
+/**
+ * Produces OpenID Provider Metadata exclusively from one frozen server-role Source settings object.
+ * <p>
+ * The service performs no registry, resolver, store, or network access. It advertises only the Authorization Code Flow,
+ * endpoint operations, client authentication methods, and extensions enabled in the compiled Source runtime.
+ * </p>
+ *
+ * @author Kimi Liu
+ */
+public final class DiscoveryService {
+
+    /**
+     * Frozen OpenID Provider settings used as the only metadata source.
+     */
+    private final OpenIdProviderSettings settings;
+
+    /**
+     * Creates a metadata service for one compiled OpenID Provider.
+     *
+     * @param settings validated and frozen OpenID Provider settings
+     * @throws IllegalArgumentException if {@code settings} is {@code null}
+     */
+    public DiscoveryService(final OpenIdProviderSettings settings) {
+        this.settings = Assert.notNull(settings, "OpenID Connect discovery settings must not be null");
+    }
+
+    /**
+     * Extracts a required endpoint URL from validated settings.
+     *
+     * @param endpoint endpoint container
+     * @param label    safe endpoint label
+     * @return exact configured URL
+     * @throws IllegalStateException if compiled settings violate their required endpoint invariant
+     */
+    private static String requiredUrl(final Optional<Endpoint> endpoint, final String label) {
+        final Endpoint value = endpoint.getOrNull();
+        if (value == null) {
+            throw new IllegalStateException("Compiled OpenID Provider has no " + label + " endpoint");
+        }
+        return value.url().toString();
+    }
+
+    /**
+     * Converts an optional endpoint into an optional exact URL.
+     *
+     * @param endpoint endpoint container
+     * @return optional configured URL
+     */
+    private static Optional<String> optionalUrl(final Optional<Endpoint> endpoint) {
+        final Endpoint value = endpoint.getOrNull();
+        return value == null ? Optional.empty() : Optional.of(value.url().toString());
+    }
+
+    /**
+     * Returns the deterministic OpenID Provider Metadata document model.
+     *
+     * @param context immutable invocation context
+     * @param timeout shared end-to-end operation budget
+     * @return completed metadata outcome
+     */
+    public CompletionStage<Outcome<OpenIdProviderMetadata>> discover(
+            final Context context,
+            final Timeout.Budget timeout) {
+        Assert.notNull(context, "OpenID Connect discovery context must not be null");
+        Assert.notNull(timeout, "OpenID Connect discovery time budget must not be null");
+        if (timeout.expired()) {
+            return CompletableFuture.completedFuture(
+                    Outcome.failed(
+                            new Outcome.Failure(ErrorCode._408, "OpenID Connect discovery has no remaining time budget",
+                                    new JsonValue.ObjectValue(Map.of()))));
+        }
+        final OAuth2ProviderSettings oauth = settings.oauth2Settings();
+        final AuthorizationServerMetadata authorizationServer = new AuthorizationServerMetadata(settings.issuer(),
+                Optional.of(requiredUrl(oauth.authorizationEndpoint(), "authorization")),
+                Optional.of(requiredUrl(oauth.tokenEndpoint(), "token")),
+                Optional.of(requiredUrl(settings.jwkSetEndpoint(), "JWK Set")),
+                oauth.scopesSupported().stream().sorted().toList(), List.of(ResponseType.CODE),
+                List.of(OpenIdConnect.ResponseModes.QUERY), oauth.grantTypesSupported().stream().toList(),
+                oauth.tokenEndpointAuthMethodsSupported().stream().toList(), List.of(), Optional.empty(), List.of(),
+                Optional.empty(), Optional.empty(), optionalUrl(oauth.revocationEndpoint()), List.of(), List.of(),
+                optionalUrl(oauth.introspectionEndpoint()), List.of(), List.of(),
+                oauth.pkceRequired() ? List.of(PkceMethod.S256) : List.of(), Optional.empty(),
+                optionalUrl(oauth.deviceAuthorizationEndpoint()), Optional.of(Boolean.TRUE), List.of(),
+                new JsonValue.ObjectValue(Map.of()));
+        final OpenIdProviderMetadata metadata = new OpenIdProviderMetadata(authorizationServer,
+                optionalUrl(settings.userInfoEndpoint()), List.of(), List.copyOf(settings.subjectTypesSupported()),
+                List.of(settings.idTokenSigningAlgorithm()), List.of(), List.of(), List.of(), List.of(), List.of(),
+                List.of(), List.of(ClaimType.NORMAL), List.copyOf(settings.claimsSupported()), List.of(),
+                Optional.of(Boolean.TRUE), Optional.of(Boolean.FALSE), Optional.of(Boolean.FALSE), Optional.empty(),
+                optionalUrl(settings.endSessionEndpoint()), new JsonValue.ObjectValue(Map.of()));
+        return CompletableFuture.completedFuture(Outcome.succeeded(metadata));
+    }
+
+}

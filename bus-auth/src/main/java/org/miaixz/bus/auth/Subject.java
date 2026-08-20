@@ -20,28 +20,76 @@
 package org.miaixz.bus.auth;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Immutable subject resolved by an authentication provider.
+ * Represents a stable framework identity subject independently of protocol wire subjects and active sessions.
+ * <p>
+ * The key identifies the stored subject, the reference is the value passed to external subject and attribute resolvers,
+ * and attributes are an immutable provider-neutral snapshot. This type must not be used in place of the formal SAML
+ * Subject model or as a container for session and token state.
+ * </p>
  *
- * @param id      stable subject identifier
- * @param claims  immutable resolved claims
- * @param options immutable resolver metadata
+ * @param key        stable framework subject key
+ * @param reference  external subject resolver reference
+ * @param attributes immutable subject attribute snapshot
  * @author Kimi Liu
  */
-public record Subject(String id, Claims claims, Options options) {
+public record Subject(Key key, Reference reference, JsonValue.ObjectValue attributes) {
 
     /**
-     * Validates the identifier and replaces null snapshots with empty values.
+     * Creates an immutable stable identity subject.
      *
-     * @throws ValidateException if {@code id} is null or blank
+     * @param key        stable framework subject key
+     * @param reference  external subject resolver reference
+     * @param attributes provider-neutral subject attributes
+     * @throws IllegalArgumentException if any component is {@code null}
      */
     public Subject {
-        id = Assert.notBlank(id, () -> new ValidateException("Subject identifier must not be blank")).trim();
-        claims = claims == null ? Claims.empty() : claims;
-        options = options == null ? Options.empty() : options;
+        Assert.notNull(key, "Subject key must not be null");
+        Assert.notNull(reference, "Subject reference must not be null");
+        Assert.notNull(attributes, "Subject attributes must not be null");
+        attributes = new JsonValue.ObjectValue(attributes.values());
+    }
+
+    /**
+     * Wraps the stable internal identifier of a subject.
+     *
+     * @param value stable internal subject identifier
+     * @author Kimi Liu
+     */
+    public record Key(String value) {
+
+        /**
+         * Creates a stable subject key.
+         *
+         * @param value non-blank stable internal identifier
+         * @throws IllegalArgumentException if the value is blank
+         */
+        public Key {
+            Assert.notBlank(value, "Subject key value must not be blank");
+        }
+
+    }
+
+    /**
+     * Wraps the opaque identifier used by external subject-related resolver implementations.
+     *
+     * @param value opaque external subject reference
+     * @author Kimi Liu
+     */
+    public record Reference(String value) {
+
+        /**
+         * Creates an external subject reference.
+         *
+         * @param value non-blank opaque reference value
+         * @throws IllegalArgumentException if the value is blank
+         */
+        public Reference {
+            Assert.notBlank(value, "Subject reference value must not be blank");
+        }
+
     }
 
 }

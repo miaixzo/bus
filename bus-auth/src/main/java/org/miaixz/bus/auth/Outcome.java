@@ -21,160 +21,137 @@ package org.miaixz.bus.auth;
 
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Closed result algebra shared by authentication providers, protocol handlers, and runtime operations.
+ * Represents the closed internal result of an asynchronous authentication operation.
+ * <p>
+ * {@link Rejected} denotes an expected refusal caused by invalid input, policy, credentials, or protocol state.
+ * {@link Failed} denotes an operational failure such as unavailable dependencies or exhausted time budget. Normal
+ * authentication failures are values rather than exceptional stage completions; cancellation and unrecoverable
+ * programming errors may still complete a {@code CompletionStage} exceptionally.
+ * </p>
+ * <p>
+ * Outcome is an internal orchestration value. Protocol response encoders accept their formal standard response or error
+ * models and must never serialize an Outcome directly.
+ * </p>
  *
- * @param <T> successful value type
+ * @param <T> success value type
  * @author Kimi Liu
  */
-public sealed interface Outcome<T> permits Outcome.Success, Outcome.Rejected, Outcome.Failed {
+public sealed interface Outcome<T> permits Outcome.Succeeded, Outcome.Rejected, Outcome.Failed {
 
     /**
-     * Creates the successful result of an operation without a value.
+     * Creates a successful outcome.
      *
-     * @return successful void outcome
+     * @param value success value; {@code null} is permitted for {@link Void} operations
+     * @param <T>   success value type
+     * @return successful internal outcome
      */
-    static Outcome<Void> completed() {
-        return new Success<>(null);
+    static <T> Outcome<T> succeeded(final T value) {
+        return new Succeeded<>(value);
     }
 
     /**
-     * Stable failure classifications shared by every protocol mapper.
+     * Creates an expected authentication or protocol rejection.
      *
+     * @param failure safe structured rejection detail
+     * @param <T>     success value type that would have been returned
+     * @return rejected internal outcome
+     * @throws IllegalArgumentException if the failure is {@code null}
+     */
+    static <T> Outcome<T> rejected(final Failure failure) {
+        return new Rejected<>(failure);
+    }
+
+    /**
+     * Creates an operational authentication failure.
+     *
+     * @param failure safe structured operational failure detail
+     * @param <T>     success value type that would have been returned
+     * @return failed internal outcome
+     * @throws IllegalArgumentException if the failure is {@code null}
+     */
+    static <T> Outcome<T> failed(final Failure failure) {
+        return new Failed<>(failure);
+    }
+
+    /**
+     * Carries a successfully produced internal value.
+     *
+     * @param value success value; {@code null} is permitted for {@link Void} operations
+     * @param <T>   success value type
      * @author Kimi Liu
      */
-    enum Kind {
-        /**
-         * Input or structural validation failure.
-         */
-        VALIDATION,
-        /**
-         * Credential or proof authentication failure.
-         */
-        AUTHENTICATION,
-        /**
-         * Authenticated caller lacks authorization.
-         */
-        AUTHORIZATION,
-        /**
-         * Operation conflicts with current state.
-         */
-        CONFLICT,
-        /**
-         * Policy or remote service rate limit was exceeded.
-         */
-        RATE_LIMIT,
-        /**
-         * Remote authentication dependency failed.
-         */
-        REMOTE,
-        /**
-         * Required authentication configuration is invalid or absent.
-         */
-        CONFIGURATION,
-        /**
-         * Unclassified internal implementation failure.
-         */
-        INTERNAL
-    }
-
-    /**
-     * Immutable safe failure description.
-     *
-     * @param kind      failure classification
-     * @param error     copied Bus error entry
-     * @param retryable whether a later attempt may succeed
-     * @author Kimi Liu
-     */
-    record Failure(Kind kind, Errors error, boolean retryable) {
-
-        /**
-         * Validates the classification and copies the public error entry.
-         *
-         * @throws ValidateException if required failure metadata is missing
-         */
-        public Failure {
-            kind = Assert.notNull(kind, () -> new ValidateException("Failure kind must not be null"));
-            final Errors current = Assert.notNull(error, () -> new ValidateException("Failure error must not be null"));
-            error = new Errors.Entry(required(current.getKey(), "Failure error key"),
-                    required(current.getValue(), "Failure error value"));
-        }
-
-        /**
-         * Validates required safe error text.
-         *
-         * @param value error text
-         * @param label field label
-         * @return trimmed safe text
-         * @throws ValidateException if the value is null or blank
-         */
-        private static String required(final String value, final String label) {
-            return StringKit.trim(Assert.notBlank(value, () -> new ValidateException(label + " must not be blank")));
-        }
+    record Succeeded<T>(T value) implements Outcome<T> {
 
     }
 
     /**
-     * Successful operation result.
+     * Carries an expected authentication, validation, policy, or protocol refusal.
      *
-     * @param value successful value, including null for completed void operations
-     * @param <T>   successful value type
-     * @author Kimi Liu
-     */
-    record Success<T>(T value) implements Outcome<T> {
-    }
-
-    /**
-     * Rejected operation result without a system cause.
-     *
-     * @param failure safe failure description
-     * @param <T>     expected success value type
+     * @param failure safe structured rejection detail
+     * @param <T>     success value type that would have been returned
      * @author Kimi Liu
      */
     record Rejected<T>(Failure failure) implements Outcome<T> {
 
         /**
-         * Validates the required failure description.
+         * Creates a rejected outcome.
          *
-         * @throws ValidateException if {@code failure} is null
+         * @param failure safe structured rejection detail
+         * @throws IllegalArgumentException if the failure is {@code null}
          */
         public Rejected {
-            failure = Assert.notNull(failure, () -> new ValidateException("Rejected failure must not be null"));
+            Assert.notNull(failure, "Rejected outcome failure must not be null");
         }
 
     }
 
     /**
-     * Failed operation result retaining its non-serialized cause.
+     * Carries an operational failure that prevented the authentication operation from completing.
      *
-     * @param failure safe failure description
-     * @param cause   non-serialized internal cause
-     * @param <T>     expected success value type
+     * @param failure safe structured operational failure detail
+     * @param <T>     success value type that would have been returned
      * @author Kimi Liu
      */
-    record Failed<T>(Failure failure, Throwable cause) implements Outcome<T> {
+    record Failed<T>(Failure failure) implements Outcome<T> {
 
         /**
-         * Validates required failure details.
+         * Creates a failed outcome.
          *
-         * @throws ValidateException if {@code failure} or {@code cause} is null
+         * @param failure safe structured operational failure detail
+         * @throws IllegalArgumentException if the failure is {@code null}
          */
         public Failed {
-            failure = Assert.notNull(failure, () -> new ValidateException("Failed failure must not be null"));
-            cause = Assert.notNull(cause, () -> new ValidateException("Failed cause must not be null"));
+            Assert.notNull(failure, "Failed outcome failure must not be null");
         }
 
+    }
+
+    /**
+     * Carries a Bus error and safe structured detail without becoming an exception or defining another error code.
+     *
+     * @param error           existing Bus error definition
+     * @param safeDescription non-sensitive description suitable for framework diagnostics
+     * @param details         provider-neutral non-sensitive structured details
+     * @author Kimi Liu
+     */
+    record Failure(Errors error, String safeDescription, JsonValue.ObjectValue details) {
+
         /**
-         * Returns a representation that excludes the internal cause.
+         * Creates an immutable safe failure value.
          *
-         * @return redacted failure representation
+         * @param error           existing Bus error definition
+         * @param safeDescription non-sensitive diagnostic description
+         * @param details         non-sensitive structured details
+         * @throws IllegalArgumentException if a component is {@code null} or the safe description is blank
          */
-        @Override
-        public String toString() {
-            return "Failed[REDACTED]";
+        public Failure {
+            Assert.notNull(error, "Outcome failure error must not be null");
+            Assert.notBlank(safeDescription, "Outcome failure description must not be blank");
+            Assert.notNull(details, "Outcome failure details must not be null");
+            details = new JsonValue.ObjectValue(details.values());
         }
 
     }

@@ -1,13 +1,42 @@
-/* Copyright (c) 2015-2026 miaixz.org; licensed under the Apache License, Version 2.0. */
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
 /**
- * Implements the internal ximalaya third-party authentication client and its authorization-scope metadata.
- *
+ * Declares the public Ximalaya OAuth Vendor definition and externally loaded settings.
  * <p>
- * Code here may depend on root and vendor contracts plus shared Bus transport, cache, JSON, and cryptography
- * components; it must not depend on protocol server implementations. It is a client-side implementation and must not
- * produce server protocol wire responses. This package is module-internal and is not exported by the {@code bus.auth}
- * module. Credentials, tokens, callback codes, state values, and other sensitive material must not be retained or
- * exposed by diagnostics.
+ * XimalayaDefinition fixes {@code ximalaya/default}, authorization, token, and profile endpoints, CLIENT_SECRET_POST,
+ * prohibited PKCE, empty scope, and redirect Source authentication plus standard OAuth authorization. It does not
+ * publish token capability because the historical token response omits mandatory {@code token_type}. Authorization and
+ * callback device binding, private token fields, signed profile query, closed error vocabularies, and profile identity
+ * fields remain registered private deviations.
+ * </p>
+ * <p>
+ * XimalayaSourceSettings contains routing, application ID, external Client Secret reference, exact registered HTTP or
+ * HTTPS callback, empty scopes, and bounded official {@code deviceId}, {@code clientOsType}, and {@code packageId}
+ * selectors. The OS type must be one of 1, 2, or 3. Fixed endpoints, signature construction, response parsing, and
+ * identity binding cannot be externally supplied.
+ * </p>
+ * <p>
+ * This exported package is registration metadata; execution enters a Registry-obtained Provider. Callback device ID
+ * must equal settings, and profile {@code id} must equal token {@code uid}; only that bound ID becomes subject.
+ * Secrets, state, codes, tokens, device/package identifiers, signature material, bodies, and diagnostics must not enter
+ * Context, tracing, logs, or public failures.
  * </p>
  *
  * @author Kimi Liu

@@ -19,281 +19,140 @@
 */
 package org.miaixz.bus.auth.protocol.radius.server;
 
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import java.util.Set;
 import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Outcome.Failed;
-import org.miaixz.bus.auth.Outcome.Failure;
-import org.miaixz.bus.auth.Outcome.Kind;
-import org.miaixz.bus.auth.Outcome.Success;
-import org.miaixz.bus.auth.protocol.Handler;
-import org.miaixz.bus.auth.protocol.radius.RADIUS.*;
-import org.miaixz.bus.auth.protocol.radius.packet.RadiusPacket;
-import org.miaixz.bus.auth.protocol.radius.packet.RadiusPacketCodec;
-import org.miaixz.bus.auth.protocol.radius.security.MessageAuthenticator;
-import org.miaixz.bus.auth.protocol.radius.security.RadiusAuthenticator;
-import org.miaixz.bus.auth.resolver.SecretResolver;
-import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Credential;
+import org.miaixz.bus.auth.Outcome;
+import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.protocol.radius.*;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.core.xyz.ExceptionKit;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Options;
-import org.miaixz.bus.fabric.Payload;
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * Verifies one complete packet before product dispatch and emits a signed response or an RFC silent drop.
+ * Defines the external client-data, access-decision, and accounting port for one server-role RADIUS Source.
+ * <p>
+ * Bus-auth validates the wire packet and hop-by-hop security before invoking Access or Accounting. The external
+ * implementation owns client lookup, user authentication data, authorization policy, and durable accounting data; it
+ * performs no packet cryptography, network I/O, or reverse Registry lookup through this contract.
+ * </p>
  *
  * @author Kimi Liu
  */
-public final class RadiusRequestHandler implements Handler<Message, Optional<Payload>> {
+public interface RadiusRequestHandler {
 
     /**
-     * Protocol capability selecting accounting packet dispatch.
-     */
-    private static final Capability ACCOUNT = Capability.of("account");
-
-    /**
-     * Immutable protocol handler description used by the central mediator.
-     */
-    private static final Descriptor DESCRIPTOR = new Descriptor("radius", "RADIUS", Protocol.UDP,
-            java.util.Set.of(Builder.CAPABILITY_AUTHENTICATE, ACCOUNT), java.util.Map.of(), Options.empty());
-
-    /**
-     * Access-Request code.
-     */
-    private static final int ACCESS_REQUEST = Normal._1;
-
-    /**
-     * Accounting-Request code.
-     */
-    private static final int ACCOUNTING_REQUEST = Normal._4;
-
-    /**
-     * Accounting-Response code.
-     */
-    private static final int ACCOUNTING_RESPONSE = 5;
-
-    /**
-     * Configuration.
-     */
-    private final ServerConfig configuration;
-
-    /**
-     * Tenant-aware shared-secret resolver.
-     */
-    private final SecretResolver secrets;
-
-    /**
-     * Access product handler.
-     */
-    private final AccessHandler access;
-
-    /**
-     * Accounting product handler.
-     */
-    private final AccountingHandler accounting;
-
-    /**
-     * Creates one request handler.
+     * Resolves the RADIUS client bound to the trusted transport source and complete request.
      *
-     * @param configuration configuration
-     * @param secrets       shared-secret resolver
-     * @param access        access handler
-     * @param accounting    accounting handler
-     * @throws ValidateException if any configuration or collaborator is {@code null}
+     * @param providerId    exact current server-role Source identifier
+     * @param remoteAddress trusted remote address observed by the transport boundary
+     * @param request       complete Access or Accounting packet
+     * @param context       immutable non-secret invocation context
+     * @param timeout       shared end-to-end operation budget
+     * @return stage containing the resolved client or a silent-discard failure
      */
-    public RadiusRequestHandler(final ServerConfig configuration, final SecretResolver secrets,
-            final AccessHandler access, final AccountingHandler accounting) {
-        this.configuration = Assert
-                .notNull(configuration, () -> new ValidateException("RADIUS server configuration must not be null"));
-        this.secrets = Assert.notNull(secrets, () -> new ValidateException("RADIUS secret resolver must not be null"));
-        this.access = Assert.notNull(access, () -> new ValidateException("RADIUS access handler must not be null"));
-        this.accounting = Assert
-                .notNull(accounting, () -> new ValidateException("RADIUS accounting handler must not be null"));
-    }
+    CompletionStage<Outcome<Client>> resolve(
+            String providerId,
+            String remoteAddress,
+            RadiusPacket request,
+            Context context,
+            Timeout.Budget timeout);
 
     /**
-     * Builds a signed response datagram.
+     * Processes one wire-validated Access-Request.
+     * <p>
+     * An authentication or authorization denial is a successful {@code AccessReject} packet, not an exceptional stage
+     * or failed Outcome. The framework validates, correlates, and authenticates the returned packet before transport.
+     * </p>
      *
-     * @param datagram   source datagram
-     * @param request    request packet
-     * @param code       response code
-     * @param attributes response attributes
-     * @param secret     shared secret
-     * @return optional response
-     * @throws ValidateException if packet, response code, attributes, or shared secret is invalid
+     * @param providerId exact current server-role Source identifier
+     * @param client     resolved RADIUS client binding
+     * @param request    validated standard Access-Request
+     * @param context    immutable invocation context carrying verified client identity only after resolution
+     * @param timeout    shared end-to-end operation budget
+     * @return stage containing Access-Accept, Access-Reject, or Access-Challenge as a standard packet
      */
-    static Optional<Payload> response(
-            final RadiusPacket request,
-            final int code,
-            final java.util.List<org.miaixz.bus.auth.protocol.radius.packet.RadiusAttribute> attributes,
-            final byte[] secret) {
-        final RadiusPacket unsigned = new RadiusPacket(code, request.identifier(),
-                new byte[RadiusPacket.AUTHENTICATOR_BYTES], attributes);
-        final RadiusPacket signed = new RadiusPacket(code, request.identifier(),
-                RadiusAuthenticator.response(unsigned, request.authenticator(), secret), attributes);
-        return Optional.of(Payload.of(RadiusPacketCodec.encode(signed)));
-    }
+    CompletionStage<Outcome<RadiusPacket>> access(
+            String providerId,
+            Client client,
+            AccessRequest request,
+            Context context,
+            Timeout.Budget timeout);
 
     /**
-     * Maps one product access decision.
+     * Durably processes one wire-validated Accounting-Request.
+     * <p>
+     * If the external implementation cannot successfully record the request, it returns a failed Outcome so the
+     * framework emits no Accounting-Response, as required by RFC 2866.
+     * </p>
      *
-     * @param decision decision
-     * @return RADIUS code
-     * @throws NullPointerException if the decision is {@code null}
+     * @param providerId exact current server-role Source identifier
+     * @param client     resolved RADIUS client binding
+     * @param request    validated standard Accounting-Request
+     * @param context    immutable invocation context carrying verified client identity only after resolution
+     * @param timeout    shared end-to-end operation budget
+     * @return stage containing the standard Accounting-Response after durable processing
      */
-    static int accessCode(final AccessDecision decision) {
-        return switch (decision.type()) {
-            case ACCEPT -> Normal._2;
-            case REJECT -> Normal._3;
-            case CHALLENGE -> 11;
-        };
-    }
+    CompletionStage<Outcome<AccountingResponse>> accounting(
+            String providerId,
+            Client client,
+            AccountingRequest request,
+            Context context,
+            Timeout.Budget timeout);
 
     /**
-     * Returns the immutable RADIUS handler descriptor.
+     * Carries one resolved RADIUS client and its hop-by-hop protocol policy.
      *
-     * @return UDP descriptor declaring authentication and accounting capabilities
+     * @param id           stable external RADIUS client identifier
+     * @param sharedSecret optional historic RADIUS shared-secret reference; absent for RADIUS/1.1
+     * @param allowedCodes non-empty allowed request Codes
+     * @author Kimi Liu
      */
-    @Override
-    public Descriptor descriptor() {
-        return DESCRIPTOR;
-    }
+    record Client(String id, Optional<Credential.Reference> sharedSecret, Set<RadiusCode> allowedCodes) {
 
-    /**
-     * Dispatches one complete RADIUS message by its standard packet code through the protocol handler contract.
-     *
-     * @param invocation non-null operation context
-     * @param input      non-null Fabric UDP message
-     * @return non-null stage containing a standard response payload or RFC silent drop
-     * @throws ValidateException if an input is {@code null}
-     */
-    @Override
-    public CompletionStage<Outcome<Optional<Payload>>> handle(final Context invocation, final Message input) {
-        final Context context = Assert.notNull(invocation, () -> new ValidateException("Context must not be null"));
-        final Message datagram = Assert.notNull(input, () -> new ValidateException("RADIUS message must not be null"));
-        final int code;
-        try {
-            code = RadiusPacketCodec.decode(datagram.payload().bytes(RadiusPacketCodec.MAXIMUM_PACKET_BYTES)).code();
-        } catch (final RuntimeException invalid) {
-            return CompletableFuture.completedFuture(new Success<>(Optional.empty()));
+        /**
+         * Validates and freezes a resolved client binding.
+         *
+         * @param id           non-blank external client identifier
+         * @param sharedSecret optional SHARED_SECRET reference
+         * @param allowedCodes non-empty subset of Access-Request and Accounting-Request
+         * @throws IllegalArgumentException if any component violates the client boundary
+         */
+        public Client {
+            Assert.notBlank(id, "RADIUS client id must not be blank");
+            Assert.notNull(sharedSecret, "RADIUS client shared-secret container must not be null");
+            final Credential.Reference reference = sharedSecret.getOrNull();
+            if (reference != null) {
+                Assert.isTrue(
+                        reference.type() == Credential.Type.SHARED_SECRET,
+                        "RADIUS client credential must reference a shared secret");
+            }
+            sharedSecret = Optional.ofNullable(reference);
+            Assert.notNull(allowedCodes, "RADIUS client allowed Codes must not be null");
+            Assert.notEmpty(allowedCodes, "RADIUS client allowed Codes must not be empty");
+            allowedCodes = Set.copyOf(allowedCodes);
+            for (RadiusCode code : allowedCodes) {
+                Assert.notNull(code, "RADIUS client allowed Code must not be null");
+                Assert.isTrue(
+                        code.equals(new RadiusCode(Radius.Codes.ACCESS_REQUEST))
+                                || code.equals(new RadiusCode(Radius.Codes.ACCOUNTING_REQUEST)),
+                        "RADIUS client may allow only Access-Request or Accounting-Request");
+            }
         }
-        final CompletionStage<Optional<Payload>> stage = code == ACCESS_REQUEST ? authentication(context, datagram)
-                : code == ACCOUNTING_REQUEST ? accounting(context, datagram)
-                        : CompletableFuture.completedFuture(Optional.empty());
-        return Assert.notNull(stage, "RADIUS handler stage must be not null!").handle((value, failure) -> {
-            if (failure == null) {
-                return new Success<>(Assert.notNull(value, "RADIUS handler result must be not null!"));
-            }
-            return new Failed<>(new Failure(Kind.REMOTE, ErrorCode._100805, true), ExceptionKit.unwrap(failure));
-        });
-    }
 
-    /**
-     * Handles one authentication datagram.
-     *
-     * @param invocation context
-     * @param datagram   datagram
-     * @return optional response
-     * @throws ValidateException if the context or message is {@code null}
-     */
-    public CompletionStage<Optional<Payload>> authentication(final Context invocation, final Message datagram) {
-        final Context context = Assert.notNull(invocation, () -> new ValidateException("Context must not be null"));
-        final Message message = Assert
-                .notNull(datagram, () -> new ValidateException("RADIUS message must not be null"));
-        final RadiusPacket request;
-        try {
-            request = RadiusPacketCodec.decode(message.payload().bytes(RadiusPacketCodec.MAXIMUM_PACKET_BYTES));
-            if (request.code() != ACCESS_REQUEST) {
-                return CompletableFuture.completedFuture(Optional.empty());
-            }
-        } catch (final RuntimeException invalid) {
-            return CompletableFuture.completedFuture(Optional.empty());
+        /**
+         * Returns safe diagnostics without exposing the credential reference identifier.
+         *
+         * @return client id, shared-secret presence, and allowed Codes
+         */
+        @Override
+        public String toString() {
+            return "Client[id=" + id + ", sharedSecretPresent=" + sharedSecret.isPresent() + ", allowedCodes="
+                    + allowedCodes + Symbol.BRACKET_RIGHT;
         }
-        return secret(context).thenCompose(secret -> {
-            final boolean protectedPacket = request.attributes().stream()
-                    .anyMatch(attribute -> attribute.type() == 79 || attribute.type() == MessageAuthenticator.TYPE);
-            if (protectedPacket && !MessageAuthenticator.verify(request, secret)) {
-                Arrays.fill(secret, (byte) Normal._0);
-                return CompletableFuture.completedFuture(Optional.empty());
-            }
-            final CompletionStage<AccessDecision> handled = Assert.notNull(
-                    access.handle(context, new AccessRequest(request.attributes())),
-                    "RADIUS access handler stage must be not null!");
-            return handled.thenApply(decision -> response(request, accessCode(decision), decision.attributes(), secret))
-                    .whenComplete((ignored, failure) -> Arrays.fill(secret, (byte) Normal._0));
-        });
-    }
 
-    /**
-     * Handles one accounting datagram.
-     *
-     * @param invocation context
-     * @param datagram   datagram
-     * @return optional response
-     * @throws ValidateException if the context or message is {@code null}
-     */
-    public CompletionStage<Optional<Payload>> accounting(final Context invocation, final Message datagram) {
-        final Context context = Assert.notNull(invocation, () -> new ValidateException("Context must not be null"));
-        final Message message = Assert
-                .notNull(datagram, () -> new ValidateException("RADIUS message must not be null"));
-        final RadiusPacket request;
-        try {
-            request = RadiusPacketCodec.decode(message.payload().bytes(RadiusPacketCodec.MAXIMUM_PACKET_BYTES));
-            if (request.code() != ACCOUNTING_REQUEST) {
-                return CompletableFuture.completedFuture(Optional.empty());
-            }
-        } catch (final RuntimeException invalid) {
-            return CompletableFuture.completedFuture(Optional.empty());
-        }
-        return secret(context).thenCompose(secret -> {
-            final byte[] expected = RadiusAuthenticator.accounting(request, secret);
-            if (!RadiusAuthenticator.verify(expected, request.authenticator())) {
-                Arrays.fill(secret, (byte) Normal._0);
-                return CompletableFuture.completedFuture(Optional.empty());
-            }
-            final CompletionStage<Void> handled = Assert.notNull(
-                    accounting.handle(context, new AccountingRequest(request.attributes())),
-                    "RADIUS accounting handler stage must be not null!");
-            return handled.thenApply(ignored -> response(request, ACCOUNTING_RESPONSE, java.util.List.of(), secret))
-                    .whenComplete((ignored, failure) -> Arrays.fill(secret, (byte) Normal._0));
-        });
-    }
-
-    /**
-     * Resolves and converts a shared secret.
-     *
-     * @param invocation context
-     * @return secret bytes
-     * @throws ValidateException if context, resolver stage, or secret value is {@code null}
-     */
-    CompletionStage<byte[]> secret(final Context invocation) {
-        final Context context = Assert.notNull(invocation, () -> new ValidateException("Context must not be null"));
-        final CompletionStage<char[]> resolved = Assert.notNull(
-                secrets.resolve(context, "radius", configuration.secretKey()),
-                "RADIUS secret resolver stage must be not null!");
-        return resolved.thenApply(value -> {
-            final char[] characters = Assert.notNull(value, "RADIUS shared secret must be not null!");
-            final char[] copy = Arrays.copyOf(characters, characters.length);
-            Arrays.fill(characters, (char) Normal._0);
-            try {
-                final ByteBuffer encoded = StandardCharsets.UTF_8.encode(CharBuffer.wrap(copy));
-                final byte[] result = new byte[encoded.remaining()];
-                encoded.get(result);
-                return result;
-            } finally {
-                Arrays.fill(copy, (char) Normal._0);
-            }
-        });
     }
 
 }
