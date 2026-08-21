@@ -468,6 +468,16 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     }
 
     /**
+     * Reports whether this instance was constructed in atomic mode.
+     *
+     * @return {@code true} only for the explicit clock-based atomic configuration
+     */
+    @Override
+    public boolean atomic() {
+        return atomicMode;
+    }
+
+    /**
      * Reads one entry at the atomic cache's deadline boundary and lazily removes it when expired. Mutable byte-array
      * values are copied before being returned. This operation is available only to instances created with the
      * {@link #MemoryCache(LongSupplier)} constructor.

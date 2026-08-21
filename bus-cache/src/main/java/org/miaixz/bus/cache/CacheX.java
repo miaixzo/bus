@@ -285,6 +285,22 @@ public interface CacheX<K, V> extends AutoCloseable {
     }
 
     /**
+     * Reports whether this instance implements the complete asynchronous atomic entry contract declared below.
+     * <p>
+     * The default is deliberately {@code false}. An implementation may return {@code true} only when
+     * {@link #create(Object, Object, long)}, {@link #get(Object)}, {@link #take(Object)},
+     * {@link #replace(Object, Object, Object, long)}, and {@link #delete(Object)} are all supported with backend-level
+     * atomicity. Consumers use this assembly-time capability check instead of discovering an unsupported operation in
+     * the middle of a security flow.
+     * </p>
+     *
+     * @return {@code true} when the complete atomic entry contract is available on this instance
+     */
+    default boolean atomic() {
+        return false;
+    }
+
+    /**
      * Atomically stores a value when no unexpired value exists.
      *
      * @param key       cache key
