@@ -459,7 +459,7 @@ public final class StringBuilderPool {
         /**
          * The serial version UID for serialization compatibility.
          */
-        private static final long serialVersionUID = -1L;
+        private static final long serialVersionUID = 2810328965018L;
 
         /**
          * The threshold for the small pool. Requests for size up to this value use the small pool.
@@ -665,7 +665,7 @@ public final class StringBuilderPool {
         /**
          * The serial version UID for serialization compatibility.
          */
-        private static final long serialVersionUID = -1L;
+        private static final long serialVersionUID = 2821568390215L;
 
         /**
          * Count of acquisitions from the small pool tier (default capacity: 64).

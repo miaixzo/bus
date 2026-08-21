@@ -1046,7 +1046,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
         /**
          * Serialization identifier.
          */
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 2801356892053L;
         /**
          * Stored value.
          */

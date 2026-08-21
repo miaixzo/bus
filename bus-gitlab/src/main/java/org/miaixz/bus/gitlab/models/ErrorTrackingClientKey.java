@@ -42,7 +42,7 @@ public class ErrorTrackingClientKey implements Serializable {
     /**
      * The serial version uid value.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2826910583269L;
 
     /**
      * The id value.

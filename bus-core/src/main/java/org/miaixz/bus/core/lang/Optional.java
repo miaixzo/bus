@@ -45,7 +45,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Optional<T> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2880935612803L;
 
     /**
      * An empty {@code Optional} instance.

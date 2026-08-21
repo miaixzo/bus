@@ -35,7 +35,7 @@ import org.miaixz.bus.logger.magic.AbstractProvider;
  */
 public class Slf4jLoggingProvider extends AbstractProvider {
 
-    private static final long serialVersionUID = -1L;
+    private static final long serialVersionUID = 2806829135068L;
 
     /**
      * The underlying SLF4J logger instance.
