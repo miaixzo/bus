@@ -212,8 +212,8 @@ public class JsonFactory {
     private static String providerType(JsonProvider provider) {
         final String type = provider.type();
         if (type == null || type.isBlank()) {
-            throw new InternalException("JSON provider type must not be null or blank: "
-                    + provider.getClass().getName());
+            throw new InternalException(
+                    "JSON provider type must not be null or blank: " + provider.getClass().getName());
         }
         return normalize(type);
     }

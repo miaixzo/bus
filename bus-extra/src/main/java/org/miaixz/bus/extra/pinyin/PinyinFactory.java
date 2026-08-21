@@ -90,8 +90,8 @@ public class PinyinFactory {
      *             `TinyPinyin`.
      * @return The {@link PinyinProvider} instance corresponding to the given name.
      * @throws IllegalArgumentException if the provider name is null or blank
-     * @throws InternalException        if no provider with the specified name is available via SPI, a provider
-     *                                  declares an invalid type, or duplicate types are discovered
+     * @throws InternalException        if no provider with the specified name is available via SPI, a provider declares
+     *                                  an invalid type, or duplicate types are discovered
      */
     public static PinyinProvider of(String name) throws InternalException {
         Logger.debug(true, "Extra", "Named pinyin provider lookup started: requestedProvider={}", name);
@@ -120,8 +120,8 @@ public class PinyinFactory {
             if (provider != null) {
                 final String type = provider.type();
                 if (type == null || type.isBlank()) {
-                    throw new InternalException("Pinyin provider type must not be null or blank: "
-                            + provider.getClass().getName());
+                    throw new InternalException(
+                            "Pinyin provider type must not be null or blank: " + provider.getClass().getName());
                 }
                 if (!type.equalsIgnoreCase(requested)) {
                     continue;

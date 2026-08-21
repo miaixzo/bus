@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.extra.json;
 
-import java.lang.reflect.Type;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
@@ -282,11 +282,15 @@ public interface JsonProvider extends Provider<String> {
         final JsonValue.ObjectValue object = Assert.notNull(value, "JSON record source must not be null");
         final Class<T> recordType = Assert.notNull(type, "JSON record type must not be null");
         Assert.isTrue(recordType.isRecord(), "JSON record type must declare a record: {}", recordType.getName());
-        Assert.isTrue(Modifier.isPublic(recordType.getModifiers()), "JSON record type must be public: {}",
+        Assert.isTrue(
+                Modifier.isPublic(recordType.getModifiers()),
+                "JSON record type must be public: {}",
                 recordType.getName());
         final Module owner = recordType.getModule();
-        Assert.isTrue(!owner.isNamed() || owner.isExported(recordType.getPackageName(), JsonProvider.class.getModule()),
-                "JSON record package must be exported to the provider module: {}", recordType.getName());
+        Assert.isTrue(
+                !owner.isNamed() || owner.isExported(recordType.getPackageName(), JsonProvider.class.getModule()),
+                "JSON record package must be exported to the provider module: {}",
+                recordType.getName());
         JsonRecordVerifier.of(recordType).validate(object);
         return Assert.notNull(read(writeValue(object), recordType), "JSON provider returned a null record");
     }
@@ -309,11 +313,15 @@ public interface JsonProvider extends Provider<String> {
     default <T extends Record> JsonValue.ObjectValue toObject(final T record) {
         final T value = Assert.notNull(record, "JSON record value must not be null");
         final Class<T> recordType = (Class<T>) value.getClass();
-        Assert.isTrue(Modifier.isPublic(recordType.getModifiers()), "JSON record type must be public: {}",
+        Assert.isTrue(
+                Modifier.isPublic(recordType.getModifiers()),
+                "JSON record type must be public: {}",
                 recordType.getName());
         final Module owner = recordType.getModule();
-        Assert.isTrue(!owner.isNamed() || owner.isExported(recordType.getPackageName(), JsonProvider.class.getModule()),
-                "JSON record package must be exported to the provider module: {}", recordType.getName());
+        Assert.isTrue(
+                !owner.isNamed() || owner.isExported(recordType.getPackageName(), JsonProvider.class.getModule()),
+                "JSON record package must be exported to the provider module: {}",
+                recordType.getName());
         final JsonValue encoded = readValue(write(value));
         if (!(encoded instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("JSON record must encode as an object: " + recordType.getName());

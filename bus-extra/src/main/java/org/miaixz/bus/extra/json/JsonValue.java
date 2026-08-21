@@ -162,6 +162,7 @@ public sealed interface JsonValue extends Serializable permits JsonValue.ObjectV
          * Prevents creation of additional JSON null values.
          */
         private NullValue() {
+            // No initialization required.
         }
 
         /**

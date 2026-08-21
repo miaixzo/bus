@@ -94,8 +94,10 @@ public final class JsonRecordVerifier<T extends Record> {
             final Member annotation = component.getAnnotation(Member.class);
             final String member = annotation == null ? component.getName()
                     : Assert.notBlank(annotation.value(), "JSON record verifier member name must not be blank");
-            Assert.isTrue(derived.putIfAbsent(member, component) == null,
-                    "JSON record verifier contains a duplicate member: {}", member);
+            Assert.isTrue(
+                    derived.putIfAbsent(member, component) == null,
+                    "JSON record verifier contains a duplicate member: {}",
+                    member);
         }
         this.members = Map.copyOf(derived);
     }
@@ -169,8 +171,10 @@ public final class JsonRecordVerifier<T extends Record> {
         }
         if (type instanceof WildcardType wildcardType) {
             final Type[] upperBounds = wildcardType.getUpperBounds();
-            Assert.isTrue(upperBounds.length == 1,
-                    "JSON record verifier wildcard must declare one upper bound: {}", path);
+            Assert.isTrue(
+                    upperBounds.length == 1,
+                    "JSON record verifier wildcard must declare one upper bound: {}",
+                    path);
             validateValue(path, value, upperBounds[0]);
             return;
         }
@@ -189,7 +193,9 @@ public final class JsonRecordVerifier<T extends Record> {
      * @param parameterizedType declared parameterized type
      * @throws ValidateException if the parameterized declaration or JSON value is unsupported
      */
-    private static void validateParameterized(final String path, final JsonValue value,
+    private static void validateParameterized(
+            final String path,
+            final JsonValue value,
             final ParameterizedType parameterizedType) {
         final Type rawType = parameterizedType.getRawType();
         if (!(rawType instanceof Class<?> rawClass)) {
@@ -255,15 +261,18 @@ public final class JsonRecordVerifier<T extends Record> {
         } else if (Collection.class.isAssignableFrom(declaredType)) {
             throw new ValidateException("JSON record verifier collection must declare its element type at " + path);
         } else if (Map.class.isAssignableFrom(declaredType)) {
-            throw new ValidateException("JSON record verifier map must declare String keys and its value type at " + path);
+            throw new ValidateException(
+                    "JSON record verifier map must declare String keys and its value type at " + path);
         } else if (declaredType == boolean.class || declaredType == Boolean.class) {
             require(path, value, JsonValue.BooleanValue.class);
         } else if (isNumber(declaredType)) {
             require(path, value, JsonValue.NumberValue.class);
         } else if (declaredType == char.class || declaredType == Character.class) {
             require(path, value, JsonValue.StringValue.class);
-            Assert.isTrue(((JsonValue.StringValue) value).value().length() == 1,
-                    "JSON character member must contain exactly one character: {}", path);
+            Assert.isTrue(
+                    ((JsonValue.StringValue) value).value().length() == 1,
+                    "JSON character member must contain exactly one character: {}",
+                    path);
         } else if (declaredType.isEnum()) {
             require(path, value, JsonValue.StringValue.class);
             final String enumName = ((JsonValue.StringValue) value).value();
@@ -337,8 +346,8 @@ public final class JsonRecordVerifier<T extends Record> {
      */
     private static void require(final String path, final JsonValue value, final Class<?> expectedType) {
         if (!expectedType.isInstance(value)) {
-            throw new ValidateException("JSON member " + path + " requires " + expectedType.getSimpleName() + " but received "
-                    + value.getClass().getSimpleName());
+            throw new ValidateException("JSON member " + path + " requires " + expectedType.getSimpleName()
+                    + " but received " + value.getClass().getSimpleName());
         }
     }
 
