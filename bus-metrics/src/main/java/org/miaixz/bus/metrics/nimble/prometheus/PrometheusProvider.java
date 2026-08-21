@@ -187,12 +187,12 @@ public class PrometheusProvider implements Provider {
      * @return a Meter backed by a Prometheus Counter with local EWMA rate tracking
      */
     @Override
-    public org.miaixz.bus.metrics.nimble.Meter meter(String name, Tag... tags) {
+    public Meter meter(String name, Tag... tags) {
         tags = CardinalityGuard.enforce(name, tags);
         Tag[] finalTags = tags;
         Counter c = Counter.builder().name(prometheusName(name)).labelNames(labelNames(tags)).register(registry);
         NativeMeter nm = new NativeMeter();
-        return new org.miaixz.bus.metrics.nimble.Meter() {
+        return new Meter() {
 
             /**
              * Increments the meter by 1.
@@ -273,11 +273,11 @@ public class PrometheusProvider implements Provider {
      * @return a RatePair tracking success/error rates
      */
     @Override
-    public org.miaixz.bus.metrics.nimble.RatePair ratePair(String name, Tag... tags) {
-        org.miaixz.bus.metrics.nimble.Meter total = meter(name + ".total", tags);
-        org.miaixz.bus.metrics.nimble.Meter errors = meter(name + ".errors", tags);
-        org.miaixz.bus.metrics.nimble.Meter successes = meter(name + ".successes", tags);
-        return new org.miaixz.bus.metrics.nimble.RatePair() {
+    public RatePair ratePair(String name, Tag... tags) {
+        Meter total = meter(name + ".total", tags);
+        Meter errors = meter(name + ".errors", tags);
+        Meter successes = meter(name + ".successes", tags);
+        return new RatePair() {
 
             /**
              * Records a successful operation, incrementing both total and success meters.
@@ -325,7 +325,7 @@ public class PrometheusProvider implements Provider {
              * @return total meter
              */
             @Override
-            public org.miaixz.bus.metrics.nimble.Meter total() {
+            public Meter total() {
                 return total;
             }
 
@@ -335,7 +335,7 @@ public class PrometheusProvider implements Provider {
              * @return errors meter
              */
             @Override
-            public org.miaixz.bus.metrics.nimble.Meter errors() {
+            public Meter errors() {
                 return errors;
             }
 
@@ -345,7 +345,7 @@ public class PrometheusProvider implements Provider {
              * @return successes meter
              */
             @Override
-            public org.miaixz.bus.metrics.nimble.Meter successes() {
+            public Meter successes() {
                 return successes;
             }
         };
@@ -380,13 +380,13 @@ public class PrometheusProvider implements Provider {
      * @return a Timer backed by a Prometheus Summary
      */
     @Override
-    public org.miaixz.bus.metrics.nimble.Timer timer(String name, Tag... tags) {
+    public Timer timer(String name, Tag... tags) {
         tags = CardinalityGuard.enforce(name, tags);
         Tag[] finalTags = tags;
         Summary s = Summary.builder().name(prometheusName(name) + "_seconds").labelNames(labelNames(tags))
                 .quantile(0.5, 0.05).quantile(0.95, 0.01).quantile(0.99, 0.001).quantile(0.999, 0.0001)
                 .register(registry);
-        return new org.miaixz.bus.metrics.nimble.Timer() {
+        return new Timer() {
 
             /**
              * Starts a timer sample and returns a handle that records the duration on stop.
@@ -485,7 +485,7 @@ public class PrometheusProvider implements Provider {
              * @return this timer
              */
             @Override
-            public org.miaixz.bus.metrics.nimble.Timer onViolation(
+            public Timer onViolation(
                     double percentile,
                     long threshold,
                     TimeUnit unit,
@@ -593,11 +593,11 @@ public class PrometheusProvider implements Provider {
      * @return an LlmTimer for tracking LLM request latency, tokens, and errors
      */
     @Override
-    public org.miaixz.bus.metrics.nimble.LlmTimer llmTimer(String name, Tag... tags) {
+    public LlmTimer llmTimer(String name, Tag... tags) {
         Tag[] finalTags = tags;
         return (model, provider_, operation) -> {
             long startNs = System.nanoTime();
-            return new org.miaixz.bus.metrics.nimble.LlmSample() {
+            return new LlmSample() {
 
                 /**
                  * Nanosecond timestamp of the first token; -1 if not yet recorded.
@@ -695,7 +695,7 @@ public class PrometheusProvider implements Provider {
      * Returns an empty iterable; Prometheus registry enumeration is not supported.
      */
     @Override
-    public Iterable<org.miaixz.bus.metrics.nimble.Meter> meters() {
+    public Iterable<Meter> meters() {
         return Collections.emptyList();
     }
 
@@ -711,7 +711,7 @@ public class PrometheusProvider implements Provider {
      * Returns an empty iterable; Prometheus registry enumeration is not supported.
      */
     @Override
-    public Iterable<org.miaixz.bus.metrics.nimble.Timer> timers() {
+    public Iterable<Timer> timers() {
         return Collections.emptyList();
     }
 
@@ -727,7 +727,7 @@ public class PrometheusProvider implements Provider {
      * Returns an empty iterable; Prometheus registry enumeration is not supported.
      */
     @Override
-    public Iterable<org.miaixz.bus.metrics.nimble.LlmTimer> llmTimers() {
+    public Iterable<LlmTimer> llmTimers() {
         return Collections.emptyList();
     }
 

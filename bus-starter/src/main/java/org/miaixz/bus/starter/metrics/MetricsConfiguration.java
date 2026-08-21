@@ -28,6 +28,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.miaixz.bus.cache.Collector;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.bridge.HealthMetrics;
 import org.miaixz.bus.metrics.builtin.CacheMetricsAdapter;
@@ -128,7 +129,7 @@ public class MetricsConfiguration {
      */
     @Bean
     @ConditionalOnClass(name = "org.miaixz.bus.cache.Collector")
-    @ConditionalOnMissingBean(org.miaixz.bus.cache.Collector.class)
+    @ConditionalOnMissingBean(Collector.class)
     public CacheMetricsAdapter cacheMetricsAdapter() {
         return new CacheMetricsAdapter();
     }

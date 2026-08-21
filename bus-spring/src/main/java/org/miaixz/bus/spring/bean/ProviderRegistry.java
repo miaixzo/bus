@@ -79,9 +79,9 @@ public class ProviderRegistry implements ApplicationListener<ContextClosedEvent>
                     () -> "Provider type must not be null: " + provider.getClass().getName());
             if (Objects.equals(type, support)) {
                 if (match != null) {
-                    throw new IllegalStateException("Duplicate Provider type " + support + " for contract "
-                            + providerClass.getName() + ": " + match.getClass().getName() + " and "
-                            + provider.getClass().getName());
+                    throw new IllegalStateException(
+                            "Duplicate Provider type " + support + " for contract " + providerClass.getName() + ": "
+                                    + match.getClass().getName() + " and " + provider.getClass().getName());
                 }
                 match = provider;
             }

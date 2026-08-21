@@ -58,8 +58,7 @@ public final class Registry {
     }
 
     /**
-     * Registers a cryptographic service provider under the stable algorithm name returned by
-     * {@link Provider#type()}.
+     * Registers a cryptographic service provider under the stable algorithm name returned by {@link Provider#type()}.
      *
      * @param provider The {@link Provider} instance to register.
      * @throws IllegalArgumentException if the provider or its algorithm name is null or blank

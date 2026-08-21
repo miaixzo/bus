@@ -22,9 +22,9 @@ package org.miaixz.bus.core;
 /**
  * Identifies one selectable implementation by the key used by its own provider contract.
  * <p>
- * The key identifies an implementation within one contract, not the component category shared by every
- * implementation. Implementations must return a non-null, stable value whose equality semantics match the registry or
- * discovery mechanism that selects the provider.
+ * The key identifies an implementation within one contract, not the component category shared by every implementation.
+ * Implementations must return a non-null, stable value whose equality semantics match the registry or discovery
+ * mechanism that selects the provider.
  * </p>
  *
  * @param <T> exact selection-key type

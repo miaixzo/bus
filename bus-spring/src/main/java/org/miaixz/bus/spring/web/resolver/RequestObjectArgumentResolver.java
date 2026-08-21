@@ -44,6 +44,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.spring.web.wrapper.CachedBodyRequestWrapper;
@@ -195,7 +196,7 @@ public class RequestObjectArgumentResolver implements HandlerMethodArgumentResol
      * @return {@code true} for JSON POST, PUT, or PATCH requests
      */
     private static boolean isJsonBodyRequest(HttpServletRequest request) {
-        if (!org.miaixz.bus.core.net.MediaType.isJson(request.getContentType())) {
+        if (!MediaType.isJson(request.getContentType())) {
             return false;
         }
         String method = request.getMethod();

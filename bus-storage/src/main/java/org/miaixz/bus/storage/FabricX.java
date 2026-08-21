@@ -38,6 +38,7 @@ import org.miaixz.bus.fabric.Fabric;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
+import org.miaixz.bus.fabric.protocol.http.HttpX;
 
 /**
  * Fabric-backed HTTP support for storage providers.
@@ -284,7 +285,7 @@ public abstract class FabricX {
      * @param headers headers
      * @param builder builder
      */
-    private static void apply(final Header[] headers, final org.miaixz.bus.fabric.protocol.http.HttpX.Builder builder) {
+    private static void apply(final Header[] headers, final HttpX.Builder builder) {
         if (headers == null || headers.length == 0) {
             return;
         }

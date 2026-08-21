@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
 
 import org.miaixz.bus.cache.Collector;
+import org.miaixz.bus.metrics.Metrics;
 
 /**
  * Bridges the {@link org.miaixz.bus.cache.Collector} interface to the bus-metrics observability backend.
@@ -89,7 +90,7 @@ public class CacheMetricsAdapter implements Collector {
     @Override
     public void reqIncr(String pattern, int count) {
         getOrCreate(pattern)[1].add(count);
-        org.miaixz.bus.metrics.Metrics.counter("cache.requests", "pattern", pattern).increment(count);
+        Metrics.counter("cache.requests", "pattern", pattern).increment(count);
     }
 
     /**
@@ -101,7 +102,7 @@ public class CacheMetricsAdapter implements Collector {
     @Override
     public void hitIncr(String pattern, int count) {
         getOrCreate(pattern)[0].add(count);
-        org.miaixz.bus.metrics.Metrics.counter("cache.hits", "pattern", pattern).increment(count);
+        Metrics.counter("cache.hits", "pattern", pattern).increment(count);
     }
 
     /**
