@@ -53,16 +53,6 @@ public record LineOptions(Vendor.Id vendor, Vendor.Variant variant, String clien
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<LineOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<LineOptions> type() {
-        return LineOptions.class;
-    }
-
-    /**
      * Validates and freezes one LINE Login registration without resolving its channel secret.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
@@ -130,6 +120,16 @@ public record LineOptions(Vendor.Id vendor, Vendor.Variant variant, String clien
         } catch (URISyntaxException cause) {
             throw new ValidateException("LINE redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<LineOptions> type() {
+        return LineOptions.class;
     }
 
     /**

@@ -53,16 +53,6 @@ public record QqOptions(Vendor.Id vendor, Vendor.Variant variant, String clientI
         Optional<String> redirectUri, List<String> scopes, boolean preferUnionId) implements VendorOptions<QqOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<QqOptions> type() {
-        return QqOptions.class;
-    }
-
-    /**
      * Validates and freezes one QQ registration without resolving secret material.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
@@ -137,6 +127,16 @@ public record QqOptions(Vendor.Id vendor, Vendor.Variant variant, String clientI
         if (!scopes.isEmpty() && !scopes.contains("get_user_info")) {
             throw new ValidateException("Explicit QQ open scopes must contain get_user_info");
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<QqOptions> type() {
+        return QqOptions.class;
     }
 
     /**

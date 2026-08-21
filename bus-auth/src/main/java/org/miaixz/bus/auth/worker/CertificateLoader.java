@@ -26,12 +26,16 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.crypto.builtin.CertificateChain;
+import org.miaixz.bus.crypto.builtin.TrustRootIndex;
 
-/** Loads certificate material from project-owned storage. */
+/**
+ * Loads certificate material from project-owned storage.
+ */
 @FunctionalInterface
 public interface CertificateLoader {
 
-    CompletionStage<Outcome<CertificateRecord>> load(Request request, Context context, Timeout.Budget timeout);
+    CompletionStage<Outcome<Record>> load(Request request, Context context, Timeout.Budget timeout);
 
     record Request(String issuer, String use, Instant at) {
 
@@ -40,5 +44,12 @@ public interface CertificateLoader {
             Assert.notBlank(use, "Certificate request use must not be blank");
             Assert.notNull(at, "Certificate request validity instant must not be null");
         }
+    }
+
+    /**
+     * Loaded certificate chain and trust-root boundary awaiting parsing.
+     */
+    record Record(String issuer, String use, CertificateChain chain, TrustRootIndex trustRoots, Instant notBefore,
+            Instant notAfter) {
     }
 }

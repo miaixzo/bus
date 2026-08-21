@@ -51,16 +51,6 @@ public record AlipayOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
         implements VendorOptions<AlipayOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<AlipayOptions> type() {
-        return AlipayOptions.class;
-    }
-
-    /**
      * Validates and freezes one Alipay Source registration without resolving key material.
      *
      * @throws IllegalArgumentException if a required value is null or blank
@@ -90,6 +80,16 @@ public record AlipayOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
         }
         scopes = List.copyOf(copy);
         Assert.notBlank(verificationKeyId, "Alipay verification key id must not be blank");
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<AlipayOptions> type() {
+        return AlipayOptions.class;
     }
 
 }

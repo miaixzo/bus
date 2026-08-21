@@ -36,10 +36,9 @@ import org.miaixz.bus.auth.codec.QueryCodec;
 import org.miaixz.bus.auth.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceAuthentication;
-import org.miaixz.bus.auth.source.SourceAuthenticationRequest;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
@@ -92,7 +91,7 @@ public final class AlipaySourceAdapter implements VendorAdapter {
     /**
      * External runtime dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
     /**
      * Shared browser security lifecycle.
      */
@@ -117,7 +116,7 @@ public final class AlipaySourceAdapter implements VendorAdapter {
      * @param services    external runtime dependencies
      */
     public AlipaySourceAdapter(final String namespaceId, final String sourceId, final AlipayManifest manifest,
-            final VariantManifest.Variant variant, final AlipayOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final AlipayOptions options, final DriverServices services) {
         Assert.notNull(manifest, "Alipay manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Alipay Source id must not be blank");
         this.variant = Assert.notNull(variant, "Alipay manifest must not be null");
@@ -260,11 +259,11 @@ public final class AlipaySourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability))
             return missing();
         if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserStart start) {
+                && request instanceof SourceAuthentication.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
         if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserCallback callback) {
+                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -414,8 +413,8 @@ public final class AlipaySourceAdapter implements VendorAdapter {
         final Instant now = timeout.clock().now();
         final KeyLoader.Request query = new KeyLoader.Request(AUTHORITY, Optional.of(options.credential().id()), "sig",
                 Algorithm.SHA256WITHRSA.getValue(), now);
-        return org.miaixz.bus.auth.runtime.LoadResult.parse(
-                services.keyLoader().load(query, context, timeout),
+        return Outcome.mapStage(
+                () -> services.keyLoader().load(query, context, timeout),
                 loaded -> services.keyParser().parse(query, loaded)).thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<KeyMaterial> success -> send(
                             method,
@@ -532,8 +531,8 @@ public final class AlipaySourceAdapter implements VendorAdapter {
         final KeyLoader.Request query = new KeyLoader.Request(AUTHORITY, Optional.of(options.verificationKeyId()),
                 "sig", Algorithm.SHA256WITHRSA.getValue(), now);
         try {
-            return org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.keyLoader().load(query, context, timeout),
+            return Outcome.mapStage(
+                    () -> services.keyLoader().load(query, context, timeout),
                     loaded -> services.keyParser().parse(query, loaded)).handle((resolved, cause) -> {
                         try {
                             if (cause != null)

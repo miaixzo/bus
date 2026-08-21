@@ -33,6 +33,11 @@ import org.miaixz.bus.core.basic.entity.Tracer;
  * selection and protocol options belong exclusively to each Source.
  * </p>
  * <p>
+ * Provider has no second persistent {@code namespace_id}: its resource namespace is resolved through
+ * {@code library_id -> Library.namespace_id}. The inherited Tracer {@code x_namespace_id} remains transient request
+ * context and must not be used as registration ownership.
+ * </p>
+ * <p>
  * This mutable persistence model is intended for external projects to extend and map to their storage model. It has no
  * reverse collection, protocol identifier, protocol Discovery document, or runtime settings object.
  * </p>
@@ -72,13 +77,6 @@ public class Provider extends Tracer {
      * be zero or greater, and lower values are displayed first.
      */
     private Integer sort;
-
-    /**
-     * Optional JSON object encoded as text for Provider-level Source selection and aggregation settings. {@code null}
-     * or blank means no Provider-level overrides. Protocol identifiers, endpoints, credentials, and protocol parameters
-     * must not be stored here because those values belong to Source.
-     */
-    private String settings;
 
     /**
      * Optional JSON object encoded as text for external management extensions. {@code null} or blank means no metadata;

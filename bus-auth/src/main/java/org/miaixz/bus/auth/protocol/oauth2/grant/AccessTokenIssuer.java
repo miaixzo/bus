@@ -33,20 +33,16 @@ import org.miaixz.bus.auth.guard.ScopeValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
 import org.miaixz.bus.auth.resolver.ProtectedResource;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.pkce.CodeChallenge;
 import org.miaixz.bus.auth.shared.pkce.CodeVerifier;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
 import org.miaixz.bus.auth.shared.pkce.PkceValidator;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.worker.ResourceLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
-import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.core.xyz.RandomKit;
-import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -60,11 +56,6 @@ import org.miaixz.bus.extra.json.JsonValue;
  * @author Kimi Liu
  */
 public final class AccessTokenIssuer {
-
-    /**
-     * Minimum entropy applied to every generated OAuth token regardless of a weaker external baseline.
-     */
-    private static final int MINIMUM_TOKEN_BITS = 256;
 
     /**
      * Maximum create-if-absent attempts used for an opaque token digest collision.
@@ -94,7 +85,7 @@ public final class AccessTokenIssuer {
     /**
      * Externally implemented registration, resource, and atomic state ports.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Standard scope subset validator shared across all supported grants.
@@ -112,9 +103,9 @@ public final class AccessTokenIssuer {
     private final Augmenter augmenter;
 
     /**
-     * Number of secure random bytes required by the OAuth security baseline.
+     * Provider-isolated opaque token generation and irreversible key derivation.
      */
-    private final int tokenBytes;
+    private final TokenMaterial tokenMaterial;
 
     /**
      * Creates an initial token issuer for one compiled OAuth Provider.
@@ -127,26 +118,18 @@ public final class AccessTokenIssuer {
      * @param augmenter      compile-time selected token-response augmenter
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public AccessTokenIssuer(final String providerId, final GrantPolicy options, final ExecutionServices services,
-            final ScopeValidator scopeValidator, final PkceValidator pkceValidator, final Augmenter augmenter) {
+    public AccessTokenIssuer(final String providerId, final GrantPolicy options, final DriverServices services,
+            final ScopeValidator scopeValidator, final PkceValidator pkceValidator, final Augmenter augmenter,
+            final TokenMaterial tokenMaterial) {
         this.providerId = Assert.notBlank(providerId, "OAuth 2.x Provider id must not be blank");
         this.options = Assert.notNull(options, "OAuth 2.x Provider options must not be null");
         this.services = Assert.notNull(services, "OAuth 2.x execution services must not be null");
         this.scopeValidator = Assert.notNull(scopeValidator, "OAuth 2.x scope validator must not be null");
         this.pkceValidator = Assert.notNull(pkceValidator, "OAuth 2.x PKCE validator must not be null");
         this.augmenter = Assert.notNull(augmenter, "OAuth 2.x token response augmenter must not be null");
-        final int entropyBits = Math
-                .max(MINIMUM_TOKEN_BITS, services.securityBaseline().require(Protocol.OAUTH2).minimumEntropyBits());
-        this.tokenBytes = (entropyBits + Byte.SIZE - 1) / Byte.SIZE;
+        this.tokenMaterial = Assert.notNull(tokenMaterial, "OAuth 2.x token material service must not be null");
     }
 
-    /**
-     * Confirms that an augmenter changed only the optional OpenID Connect ID Token component.
-     *
-     * @param base      original persisted-token response
-     * @param augmented candidate augmented response
-     * @return whether every OAuth member and extension remains exactly unchanged
-     */
     /**
      * Maps one concrete request grant to its registered grant type.
      *
@@ -274,8 +257,8 @@ public final class AccessTokenIssuer {
 
         final CompletionStage<Outcome<ConsumerMetadata>> resolution;
         try {
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.consumerLoader().load(clientId, context, timeout),
+            resolution = Outcome.mapStage(
+                    () -> services.consumerLoader().load(clientId, context, timeout),
                     loaded -> services.consumerParser().parse(clientId, loaded));
         } catch (RuntimeException exception) {
             return completed(
@@ -373,7 +356,7 @@ public final class AccessTokenIssuer {
             final Timeout.Budget timeout) {
         final CompletionStage<ExpiringValue<AuthorizationCodeCache.Entry>> consumption;
         try {
-            consumption = services.authorizationCodeCache().take(tokenKey(grant.code()));
+            consumption = services.authorizationCodeCache().consume(tokenMaterial.key(grant.code()));
         } catch (RuntimeException exception) {
             return completed(storeFailure("OAuth 2.x authorization code consumption failed"));
         }
@@ -601,8 +584,8 @@ public final class AccessTokenIssuer {
         try {
             final ResourceLoader.Request request = new ResourceLoader.Request(providerId, grant.audience(),
                     grant.resource());
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.resourceLoader().load(request, context, timeout),
+            resolution = Outcome.mapStage(
+                    () -> services.resourceLoader().load(request, context, timeout),
                     loaded -> services.resourceParser().parse(request, loaded));
         } catch (RuntimeException exception) {
             return completed(storeFailure("OAuth 2.x exchange target resolution failed"));
@@ -711,27 +694,54 @@ public final class AccessTokenIssuer {
             final Timeout.Budget timeout) {
         final CompletionStage<ExpiringValue<AccessTokenCache.Entry>> lookup;
         try {
-            lookup = services.accessTokenCache().get(tokenKey(token));
+            lookup = services.accessTokenCache().find(tokenMaterial.key(token));
         } catch (RuntimeException exception) {
             return completedValue(storeFailure("OAuth 2.x exchange token lookup failed"));
         }
-        return lookup.handle((stored, thrown) -> {
-            if (thrown != null) {
-                return Outcome.<AccessTokenCache.Entry>failed(
+        return lookup.handle((stored, thrown) -> new CacheResult<>(stored, thrown)).thenCompose(result -> {
+            if (result.failure() != null) {
+                return completedValue(Outcome.<AccessTokenCache.Entry>failed(
                         failure(
                                 ErrorCode._500,
                                 OAuth2ErrorCode.SERVER_ERROR,
-                                "OAuth 2.x exchange token lookup failed"));
+                                "OAuth 2.x exchange token lookup failed")));
             }
+            final ExpiringValue<AccessTokenCache.Entry> stored = result.value();
             if (stored == null || !stored.expiresAt().isAfter(timeout.clock().now())
                     || !providerId.equals(stored.value().providerId()) || !clientId.equals(stored.value().clientId())) {
-                return Outcome.<AccessTokenCache.Entry>rejected(
+                return completedValue(Outcome.<AccessTokenCache.Entry>rejected(
                         failure(
                                 ErrorCode._400,
                                 OAuth2ErrorCode.INVALID_REQUEST,
-                                "OAuth 2.x exchange token is invalid"));
+                                "OAuth 2.x exchange token is invalid")));
             }
-            return Outcome.succeeded(stored.value());
+            final CompletionStage<ExpiringValue<AuthorizationCache.Entry>> authorization;
+            try {
+                authorization = services.authorizationCache()
+                        .find(AuthorizationCache.key(providerId, stored.value().authorizationId()));
+            } catch (RuntimeException exception) {
+                return completedValue(storeFailure("OAuth 2.x exchange authorization lookup failed"));
+            }
+            return authorization.handle((state, thrown) -> {
+                if (thrown != null) {
+                    return Outcome.<AccessTokenCache.Entry>failed(
+                            failure(
+                                    ErrorCode._500,
+                                    OAuth2ErrorCode.SERVER_ERROR,
+                                    "OAuth 2.x exchange authorization lookup failed"));
+                }
+                if (state == null || !state.expiresAt().isAfter(timeout.clock().now())
+                        || state.value().status() != AuthorizationCache.Status.ACTIVE
+                        || !providerId.equals(state.value().providerId())
+                        || !clientId.equals(state.value().clientId())) {
+                    return Outcome.<AccessTokenCache.Entry>rejected(
+                            failure(
+                                    ErrorCode._400,
+                                    OAuth2ErrorCode.INVALID_REQUEST,
+                                    "OAuth 2.x exchange authorization is inactive"));
+                }
+                return Outcome.succeeded(stored.value());
+            });
         });
     }
 
@@ -755,10 +765,10 @@ public final class AccessTokenIssuer {
         if (suppliedClient != null && !client.id().equals(suppliedClient)) {
             return completed(invalidGrant("OAuth 2.x device code client binding is invalid"));
         }
-        final String key = tokenKey(grant.deviceCode());
+        final String key = tokenMaterial.key(grant.deviceCode());
         final CompletionStage<ExpiringValue<DeviceCodeCache.Entry>> lookup;
         try {
-            lookup = services.deviceCodeCache().get(key);
+            lookup = services.deviceCodeCache().find(key);
         } catch (RuntimeException exception) {
             return completed(storeFailure("OAuth 2.x device code lookup failed"));
         }
@@ -914,8 +924,7 @@ public final class AccessTokenIssuer {
             return CompletableFuture.completedFuture(false);
         }
         try {
-            return services.deviceCodeCache()
-                    .replace(key, expected, new ExpiringValue<>(update, expected.expiresAt()), ttlMillis)
+            return services.deviceCodeCache().update(key, expected, new ExpiringValue<>(update, expected.expiresAt()))
                     .handle((replaced, thrown) -> thrown == null ? Boolean.TRUE.equals(replaced) : null);
         } catch (RuntimeException exception) {
             return CompletableFuture.completedFuture(null);
@@ -937,7 +946,53 @@ public final class AccessTokenIssuer {
         Assert.notNull(grant, "OAuth 2.x internal token grant must not be null");
         Assert.notNull(context, "OAuth 2.x token context must not be null");
         Assert.notNull(timeout, "OAuth 2.x token time budget must not be null");
-        return createAccess(grant, context, timeout, 1);
+        if (grant.authorizationId().isPresent()) {
+            return createAccess(grant, context, timeout, 1);
+        }
+        return createAuthorization(grant, context, timeout, 1);
+    }
+
+    private CompletionStage<Outcome<TokenEndpointResponse>> createAuthorization(
+            final Grant grant,
+            final Context context,
+            final Timeout.Budget timeout,
+            final int attempt) {
+        final String authorizationId = tokenMaterial.create();
+        final Instant expiresAt = timeout.clock().now()
+                .plus(grant.refreshToken() ? options.refreshTokenLifetime() : options.accessTokenLifetime());
+        final AuthorizationCache.Entry entry = new AuthorizationCache.Entry(providerId, grant.clientId(),
+                AuthorizationCache.Status.ACTIVE);
+        final CompletionStage<Boolean> creation;
+        try {
+            creation = services.authorizationCache().issue(AuthorizationCache.key(providerId, authorizationId),
+                    new ExpiringValue<>(entry, expiresAt));
+        } catch (RuntimeException exception) {
+            return completed(storeFailure("OAuth 2.x authorization state persistence failed"));
+        }
+        return creation.handle((created, thrown) -> new CreateResult(Boolean.TRUE.equals(created), thrown))
+                .thenCompose(result -> {
+                    if (result.failure() != null) {
+                        return completed(storeFailure("OAuth 2.x authorization state persistence failed"));
+                    }
+                    if (!result.created() && attempt < MAXIMUM_CREATE_ATTEMPTS) {
+                        return createAuthorization(grant, context, timeout, attempt + 1);
+                    }
+                    if (!result.created()) {
+                        return completed(storeFailure("OAuth 2.x authorization state allocation failed"));
+                    }
+                    final Grant authorized = grant.withAuthorizationId(authorizationId);
+                    return createAccess(authorized, context, timeout, 1).thenCompose(outcome -> {
+                        if (outcome instanceof Outcome.Succeeded<?>) {
+                            return completed(outcome);
+                        }
+                        try {
+                            return services.authorizationCache().delete(AuthorizationCache.key(providerId,
+                                    authorizationId)).handle((ignored, failure) -> outcome);
+                        } catch (RuntimeException exception) {
+                            return completed(outcome);
+                        }
+                    });
+                });
     }
 
     /**
@@ -962,16 +1017,17 @@ public final class AccessTokenIssuer {
                                     OAuth2ErrorCode.TEMPORARILY_UNAVAILABLE,
                                     "OAuth 2.x token issuance has no remaining time budget")));
         }
-        final String accessToken = opaqueToken();
-        final String accessKey = tokenKey(accessToken);
+        final String accessToken = tokenMaterial.create();
+        final String accessKey = tokenMaterial.key(accessToken);
         final Instant expiresAt = timeout.clock().now().plus(options.accessTokenLifetime());
         final ExpiringValue<AccessTokenCache.Entry> value = new ExpiringValue<>(
-                new AccessTokenCache.Entry(providerId, grant.clientId(), grant.subjectId(), grant.scope(),
+                new AccessTokenCache.Entry(providerId, grant.clientId(), grant.subjectId(),
+                        grant.authorizationId().getOrNull(), grant.scope(),
                         grant.audience(), grant.actorSubjectId(), grant.confirmation(), grant.openIdBinding()),
                 expiresAt);
         final CompletionStage<Boolean> creation;
         try {
-            creation = services.accessTokenCache().create(accessKey, value, options.accessTokenLifetime().toMillis());
+            creation = services.accessTokenCache().issue(accessKey, value);
         } catch (RuntimeException exception) {
             return completed(storeFailure("OAuth 2.x access token persistence failed"));
         }
@@ -1014,16 +1070,15 @@ public final class AccessTokenIssuer {
             final Context context,
             final Timeout.Budget timeout,
             final int attempt) {
-        final String refreshToken = opaqueToken();
-        final String familyId = opaqueToken();
+        final String refreshToken = tokenMaterial.create();
+        final String familyId = grant.authorizationId().getOrNull();
         final Instant expiresAt = timeout.clock().now().plus(options.refreshTokenLifetime());
         final ExpiringValue<RefreshTokenCache.Entry> value = new ExpiringValue<>(new RefreshTokenCache.Entry(providerId,
                 grant.clientId(), grant.subjectId(), familyId, 0L, grant.scope(), grant.audience(),
                 grant.confirmation(), grant.openIdBinding(), RefreshTokenCache.Status.ACTIVE), expiresAt);
         final CompletionStage<Boolean> creation;
         try {
-            creation = services.refreshTokenCache()
-                    .create(tokenKey(refreshToken), value, options.refreshTokenLifetime().toMillis());
+            creation = services.refreshTokenCache().issue(tokenMaterial.key(refreshToken), value);
         } catch (RuntimeException exception) {
             return cleanupAccess(accessKey, "OAuth 2.x refresh token persistence failed");
         }
@@ -1042,7 +1097,7 @@ public final class AccessTokenIssuer {
                             (TokenResponse) response(accessToken, refreshToken, grant),
                             grant,
                             accessKey,
-                            tokenKey(refreshToken),
+                            tokenMaterial.key(refreshToken),
                             context,
                             timeout);
                 });
@@ -1112,14 +1167,14 @@ public final class AccessTokenIssuer {
             final Outcome<TokenEndpointResponse> outcome) {
         CompletionStage<Boolean> cleanup;
         try {
-            cleanup = services.accessTokenCache().delete(accessKey);
+            cleanup = services.accessTokenCache().revoke(accessKey);
         } catch (RuntimeException exception) {
             return completed(outcome);
         }
         if (refreshKey != null) {
             cleanup = cleanup.handle((ignored, thrown) -> Boolean.TRUE).thenCompose(ignored -> {
                 try {
-                    return services.refreshTokenCache().delete(refreshKey);
+                    return services.refreshTokenCache().revoke(refreshKey);
                 } catch (RuntimeException exception) {
                     return CompletableFuture.completedFuture(false);
                 }
@@ -1139,7 +1194,7 @@ public final class AccessTokenIssuer {
             final String accessKey,
             final String description) {
         try {
-            return services.accessTokenCache().delete(accessKey).handle((ignored, thrown) -> storeFailure(description));
+            return services.accessTokenCache().revoke(accessKey).handle((ignored, thrown) -> storeFailure(description));
         } catch (RuntimeException exception) {
             return completed(storeFailure(description));
         }
@@ -1182,30 +1237,6 @@ public final class AccessTokenIssuer {
         } catch (RuntimeException exception) {
             return false;
         }
-    }
-
-    /**
-     * Generates an unpadded Base64URL token and clears its temporary random bytes.
-     *
-     * @return opaque high-entropy token value
-     */
-    String opaqueToken() {
-        final byte[] bytes = RandomKit.randomBytes(tokenBytes, RandomKit.getSecureRandom());
-        try {
-            return Base64.encodeUrlSafe(bytes);
-        } finally {
-            Arrays.fill(bytes, (byte) 0);
-        }
-    }
-
-    /**
-     * Produces a Provider-isolated irreversible lookup key for opaque credential material.
-     *
-     * @param token opaque token or code
-     * @return hexadecimal SHA-256 cache key
-     */
-    String tokenKey(final String token) {
-        return Builder.sha256Hex(providerId + '\0' + token);
     }
 
     /**
@@ -1296,12 +1327,21 @@ public final class AccessTokenIssuer {
      * @param actorSubjectId  optional RFC 8693 acting-subject identifier
      * @param confirmation    optional safe sender-constraining confirmation identifier
      * @param openIdBinding   optional OpenID Connect authorization context inherited from the original code
+     * @param authorizationId optional existing authorization identifier; initial grants allocate one before issuance
      * @author Kimi Liu
      */
     public record Grant(String clientId, String subjectId, List<String> scope, List<String> audience,
             GrantType grantType, boolean refreshToken, Optional<String> issuedTokenType,
             Optional<String> actorSubjectId, Optional<String> confirmation,
-            Optional<AuthorizationCodeCache.OpenIdBinding> openIdBinding) {
+            Optional<AuthorizationCodeCache.OpenIdBinding> openIdBinding, Optional<String> authorizationId) {
+
+        public Grant(String clientId, String subjectId, List<String> scope, List<String> audience,
+                GrantType grantType, boolean refreshToken, Optional<String> issuedTokenType,
+                Optional<String> actorSubjectId, Optional<String> confirmation,
+                Optional<AuthorizationCodeCache.OpenIdBinding> openIdBinding) {
+            this(clientId, subjectId, scope, audience, grantType, refreshToken, issuedTokenType, actorSubjectId,
+                    confirmation, openIdBinding, Optional.empty());
+        }
 
         /**
          * Validates and freezes the internal authorized grant.
@@ -1322,10 +1362,20 @@ public final class AccessTokenIssuer {
             confirmation = Optional.ofNullable(confirmation.getOrNull());
             Assert.notNull(openIdBinding, "OAuth 2.x OpenID Connect binding container must not be null");
             openIdBinding = Optional.ofNullable(openIdBinding.getOrNull());
+            Assert.notNull(authorizationId, "OAuth 2.x authorization id container must not be null");
+            if (authorizationId.isPresent()) {
+                Assert.notBlank(authorizationId.getOrNull(), "OAuth 2.x authorization id must not be blank");
+            }
+            authorizationId = Optional.ofNullable(authorizationId.getOrNull());
             Assert.isTrue(
                     openIdBinding.isEmpty() || grantType == GrantType.AUTHORIZATION_CODE
                             || grantType == GrantType.REFRESH_TOKEN,
                     "OpenID Connect binding is permitted only for authorization-code and refresh grants");
+        }
+
+        private Grant withAuthorizationId(final String value) {
+            return new Grant(clientId, subjectId, scope, audience, grantType, refreshToken, issuedTokenType,
+                    actorSubjectId, confirmation, openIdBinding, Optional.of(value));
         }
 
         /**

@@ -29,9 +29,9 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.jose.Jwk;
 import org.miaixz.bus.auth.shared.jose.JwkSet;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.worker.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -64,7 +64,7 @@ public final class JwkSetService {
     /**
      * External key inventory and shared clock dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Creates a public JWK Set service for one compiled OpenID Provider.
@@ -73,7 +73,7 @@ public final class JwkSetService {
      * @param services externally implemented runtime dependencies
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public JwkSetService(final OpenIdServerOptions options, final ExecutionServices services) {
+    public JwkSetService(final OpenIdServerOptions options, final DriverServices services) {
         this.options = Assert.notNull(options, "OpenID Connect JWK Set options must not be null");
         this.services = Assert.notNull(services, "OpenID Connect JWK Set execution services must not be null");
     }
@@ -118,8 +118,8 @@ public final class JwkSetService {
         final CompletionStage<Outcome<JwkSet>> resolution;
         try {
             final KeyLoader.PublicRequest request = new KeyLoader.PublicRequest(options.issuer(), SIGNATURE_USE, now);
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.keyLoader().loadPublic(request, context, timeout),
+            resolution = Outcome.mapStage(
+                    () -> services.keyLoader().loadPublic(request, context, timeout),
                     loaded -> services.keyParser().parsePublic(request, loaded));
         } catch (RuntimeException exception) {
             return completed(Outcome.failed(failure(ErrorCode._500, "OpenID Connect public key resolution failed")));

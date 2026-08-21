@@ -77,7 +77,7 @@ public final class HuaweiManifest implements VariantManifest<HuaweiOptions> {
      * Complete immutable manifest for Huawei's default web Authorization Code Flow.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OIDC,
-            List.of("openid", "profile", "email"),
+            VariantManifest.Pkce.REQUIRED, List.of("openid", "profile", "email"),
             new VendorTargets(
                     Optional.of(
                             fixed(

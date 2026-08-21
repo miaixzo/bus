@@ -19,16 +19,16 @@
 */
 package org.miaixz.bus.auth.registry;
 
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.List;
 
+import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
  * Implements the read-only public view of committed registration state.
  * <p>
- * This class exposes only the current snapshot, revision, and lifecycle. It never routes or executes capabilities,
+ * This class exposes only the current snapshot, revision, and registration indexes. It never routes capabilities,
  * compiles registrations, performs security checks, emits audit events, or accesses persistence.
  * </p>
  *
@@ -42,11 +42,6 @@ public final class DefaultRegistry implements Registry {
     private final AtomicRegistryState registryState;
 
     /**
-     * Independent Registry lifecycle state used to reject calls after close.
-     */
-    private final AtomicReference<Lifecycle.State> lifecycle;
-
-    /**
      * Creates a running Registry over an already complete initial view.
      *
      * @param registryState atomic state initialized by runtime assembly
@@ -54,7 +49,6 @@ public final class DefaultRegistry implements Registry {
      */
     public DefaultRegistry(final AtomicRegistryState registryState) {
         this.registryState = Assert.notNull(registryState, "Atomic Registry state must not be null");
-        this.lifecycle = new AtomicReference<>(Lifecycle.State.RUNNING);
     }
 
     /**
@@ -78,21 +72,25 @@ public final class DefaultRegistry implements Registry {
     }
 
     /**
-     * Returns whether this Registry view remains available.
+     * Returns every configured Source owned by one Provider from a single current immutable view.
      *
-     * @return {@link Lifecycle.State#RUNNING} before close, otherwise {@link Lifecycle.State#CLOSED}
+     * @param providerId owning Provider identifier
+     * @return immutable configured Source entries
      */
     @Override
-    public Lifecycle.State state() {
-        return lifecycle.get();
+    public List<Registration.SourceEntry> sources(final String providerId) {
+        return registryState.current().sources(providerId);
     }
 
     /**
-     * Idempotently closes this registration view without closing externally owned components.
+     * Returns enabled Sources owned by one Provider from a single current immutable view.
+     *
+     * @param providerId owning Provider identifier
+     * @return immutable enabled Source entries
      */
     @Override
-    public void close() {
-        lifecycle.compareAndSet(Lifecycle.State.RUNNING, Lifecycle.State.CLOSED);
+    public List<Registration.SourceEntry> enabledSources(final String providerId) {
+        return registryState.current().enabledSources(providerId);
     }
 
 }

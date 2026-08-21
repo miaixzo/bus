@@ -44,16 +44,6 @@ public record AfdianOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<AfdianOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<AfdianOptions> type() {
-        return AfdianOptions.class;
-    }
-
-    /**
      * Validates and freezes one Afdian Source registration.
      *
      * @throws IllegalArgumentException if a required component is null or blank
@@ -79,6 +69,16 @@ public record AfdianOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
             copy.add(Assert.notBlank(scope, "Afdian scope must not be blank"));
         }
         scopes = List.copyOf(copy);
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<AfdianOptions> type() {
+        return AfdianOptions.class;
     }
 
 }

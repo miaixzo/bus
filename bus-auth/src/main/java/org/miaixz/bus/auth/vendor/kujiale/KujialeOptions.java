@@ -52,16 +52,6 @@ public record KujialeOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<KujialeOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<KujialeOptions> type() {
-        return KujialeOptions.class;
-    }
-
-    /**
      * Validates and freezes one Kujiale registration without resolving its secret.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
@@ -126,6 +116,16 @@ public record KujialeOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
         } catch (URISyntaxException cause) {
             throw new ValidateException("Kujiale redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<KujialeOptions> type() {
+        return KujialeOptions.class;
     }
 
     /**

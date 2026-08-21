@@ -19,13 +19,20 @@
 */
 package org.miaixz.bus.auth.worker;
 
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.extra.json.JsonValue;
 
-/** Loads one externally managed protocol consumer record. */
+/**
+ * Loads one externally managed protocol consumer record.
+ */
 @FunctionalInterface
 public interface ConsumerLoader {
 
@@ -37,6 +44,13 @@ public interface ConsumerLoader {
      * @param timeout    shared end-to-end operation budget
      * @return asynchronous external loading outcome
      */
-    CompletionStage<Outcome<ConsumerRecord>> load(String consumerId, Context context, Timeout.Budget timeout);
+    CompletionStage<Outcome<Record>> load(String consumerId, Context context, Timeout.Budget timeout);
+
+    /**
+     * Project-adapted consumer data that has not yet been parsed by bus-auth.
+     */
+    record Record(String id, Optional<Credential.Reference> credential, List<String> redirectUris,
+            Set<String> grantTypes, Set<String> responseTypes, Set<String> scopes, JsonValue.ObjectValue metadata) {
+    }
 
 }

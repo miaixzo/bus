@@ -49,16 +49,6 @@ public record SlackOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<SlackOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<SlackOptions> type() {
-        return SlackOptions.class;
-    }
-
-    /**
      * Scope required by the frozen {@code users.info} identity operation.
      */
     private static final String USERS_READ = "users:read";
@@ -122,6 +112,16 @@ public record SlackOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
         } catch (URISyntaxException cause) {
             throw new ValidateException("Slack redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<SlackOptions> type() {
+        return SlackOptions.class;
     }
 
     /**

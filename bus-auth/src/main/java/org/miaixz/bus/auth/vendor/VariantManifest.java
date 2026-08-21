@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 
@@ -73,19 +75,83 @@ public interface VariantManifest<O extends VendorOptions<?>> {
     Variant variant(Vendor.Variant variant);
 
     /**
+     * Returns the management form for this platform's immutable options type.
+     * <p>
+     * A platform may override the common Vendor fields when it has additional template inputs.
+     * </p>
+     *
+     * @return immutable platform options form
+     */
+    default Scheme.Form form() {
+        return Forms.common(variants().stream().anyMatch(variant -> variant.pkce() == Pkce.OPTIONAL));
+    }
+
+    /**
+     * Holds the immutable common Vendor options form.
+     */
+    final class Forms {
+
+        private Forms() {
+        }
+
+        private static Scheme.Form common(final boolean optionalPkce) {
+            final List<Scheme.Form.Field> fields = new ArrayList<>();
+            fields.add(field("clientId", "Client identifier", Scheme.Form.Type.TEXT, true));
+            fields.add(field("credential", "Credential reference", Scheme.Form.Type.TEXT, true));
+            fields.add(field("redirectUri", "Redirect URI", Scheme.Form.Type.URL, false));
+            fields.add(field("scopes", "Scopes", Scheme.Form.Type.MULTI_SELECT, false));
+            if (optionalPkce) {
+                fields.add(field("pkce", "Enable optional PKCE", Scheme.Form.Type.BOOLEAN, false));
+            }
+            return new Scheme.Form(List.of(new Scheme.Form.Section("client", "Vendor client", fields)));
+        }
+
+        private static Scheme.Form.Field field(
+                final String key,
+                final String label,
+                final Scheme.Form.Type type,
+                final boolean required) {
+            return new Scheme.Form.Field(key, label, type, required, Optional.empty(), List.of());
+        }
+    }
+
+    /**
      * Carries the framework-owned immutable authentication facts for one exact platform variant.
      *
      * @param platform           stable identifier of the owning platform manifest
      * @param variant            stable platform variant identifier
      * @param protocol           actual industry-standard or proprietary wire protocol
+     * @param pkce               immutable platform PKCE policy
      * @param defaultScopes      ordered framework defaults for authorization requests
      * @param targets            official fixed or constrained-template platform targets
      * @param capabilityManifest fully implemented capability manifest
      * @param deviations         documented platform deviations from the selected protocol
      * @author Kimi Liu
      */
-    record Variant(Vendor.Id platform, Vendor.Variant variant, Protocol protocol, List<String> defaultScopes,
-            VendorTargets targets, Capability.Manifest capabilityManifest, List<VendorDeviation> deviations) {
+    record Variant(Vendor.Id platform, Vendor.Variant variant, Protocol protocol, Pkce pkce,
+            List<String> defaultScopes, VendorTargets targets, Capability.Manifest capabilityManifest,
+            List<VendorDeviation> deviations) {
+
+        /**
+         * Creates a variant that does not support PKCE.
+         * <p>
+         * This compatibility constructor deliberately defaults to {@link Pkce#DISABLED}; manifests must opt in to
+         * optional or required PKCE explicitly so deployment options cannot invent a platform capability.
+         * </p>
+         *
+         * @param platform           stable owning platform
+         * @param variant            stable platform variant
+         * @param protocol           actual wire protocol
+         * @param defaultScopes      ordered framework scope defaults
+         * @param targets            fixed or constrained platform targets
+         * @param capabilityManifest implemented capability manifest
+         * @param deviations         documented protocol deviations
+         */
+        public Variant(final Vendor.Id platform, final Vendor.Variant variant, final Protocol protocol,
+                final List<String> defaultScopes, final VendorTargets targets,
+                final Capability.Manifest capabilityManifest, final List<VendorDeviation> deviations) {
+            this(platform, variant, protocol, Pkce.DISABLED, defaultScopes, targets, capabilityManifest, deviations);
+        }
 
         /**
          * Validates and freezes one platform variant.
@@ -96,6 +162,7 @@ public interface VariantManifest<O extends VendorOptions<?>> {
             platform = Assert.notNull(platform, "Variant manifest platform must not be null");
             variant = Assert.notNull(variant, "Variant manifest identifier must not be null");
             protocol = Assert.notNull(protocol, "Variant manifest protocol must not be null");
+            pkce = Assert.notNull(pkce, "Variant manifest PKCE policy must not be null");
             Assert.notNull(defaultScopes, "Variant manifest default scopes must not be null");
             final List<String> scopes = new ArrayList<>(defaultScopes.size());
             for (String scope : defaultScopes) {
@@ -112,6 +179,41 @@ public interface VariantManifest<O extends VendorOptions<?>> {
             deviations = List.copyOf(copy);
         }
 
+    }
+
+    /**
+     * Defines whether one platform variant forbids, permits, or requires S256 PKCE.
+     * <p>
+     * This is a platform protocol fact. Project options participate only when the manifest explicitly declares
+     * {@link #OPTIONAL}; they can never disable {@link #REQUIRED} or enable {@link #DISABLED}.
+     * </p>
+     */
+    enum Pkce {
+
+        DISABLED,
+        OPTIONAL,
+        REQUIRED;
+
+        /**
+         * Resolves the final PKCE decision from this immutable policy and deployment options.
+         *
+         * @param options selected immutable deployment options
+         * @return whether S256 PKCE must be generated for this Source
+         * @throws ValidateException if options try to enable PKCE for a disabled variant
+         */
+        public boolean resolve(final VendorOptions<?> options) {
+            final VendorOptions<?> checked = Assert.notNull(options, "Vendor PKCE options must not be null");
+            return switch (this) {
+                case DISABLED -> {
+                    if (checked.pkce()) {
+                        throw new ValidateException("Selected Vendor variant does not support PKCE");
+                    }
+                    yield false;
+                }
+                case OPTIONAL -> checked.pkce();
+                case REQUIRED -> true;
+            };
+        }
     }
 
 }

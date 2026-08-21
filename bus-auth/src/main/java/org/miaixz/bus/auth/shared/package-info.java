@@ -21,7 +21,7 @@
  * Hosts security capabilities shared by multiple authentication protocols without defining another protocol.
  * <p>
  * The root exports {@link org.miaixz.bus.auth.shared.SecurityBaseline}, an immutable selection of algorithm, time,
- * replay, address, and protocol-specific limits supplied through {@link org.miaixz.bus.auth.runtime.ExecutionServices}.
+ * replay, address, and protocol-specific limits supplied through {@link org.miaixz.bus.auth.runtime.RuntimeServices}.
  * Subpackages implement reusable audit, JOSE, JWT, PKCE, DPoP, claim, and consent building blocks that formal protocol
  * services compose under their own standard contracts.
  * </p>

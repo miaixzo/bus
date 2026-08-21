@@ -20,9 +20,11 @@
 package org.miaixz.bus.auth.vendor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.core.lang.Assert;
@@ -59,6 +61,15 @@ public final class VendorModule {
     private VendorModule(final VendorDirectory vendorDirectory, final AdapterBindings adapterBindings) {
         this.vendorDirectory = Assert.notNull(vendorDirectory, "Vendor module directory must not be null");
         this.adapterBindings = Assert.notNull(adapterBindings, "Vendor module adapter bindings must not be null");
+        final Set<AdapterBindings.Key> expected = new HashSet<>();
+        for (VariantManifest<?> manifest : vendorDirectory.manifests()) {
+            for (VariantManifest.Variant variant : manifest.variants()) {
+                expected.add(new AdapterBindings.Key(manifest.vendor(), variant.variant()));
+            }
+        }
+        if (!expected.equals(adapterBindings.bindings().keySet())) {
+            throw new ValidateException("Vendor manifests and adapter bindings must have exact variant coverage");
+        }
     }
 
     /**
@@ -103,7 +114,7 @@ public final class VendorModule {
         /**
          * Collected exact platform-variant adapter bindings.
          */
-        private final Map<AdapterBindings.Key, VendorAdapter.Factory<?>> adapterBindings = new LinkedHashMap<>();
+        private final Map<AdapterBindings.Key, AdapterBindings.Binding> adapterBindings = new LinkedHashMap<>();
 
         /**
          * Whether the built-in platform baseline has already been contributed.
@@ -129,14 +140,54 @@ public final class VendorModule {
          * @throws ValidateException if the baseline was already added or the builder is frozen
          */
         public synchronized Builder builtins() {
+            return builtins((Set<Vendor.Id>) null);
+        }
+
+        /**
+         * Adds only the selected built-in platforms.
+         *
+         * @param vendors selected platform identifiers
+         * @return this builder
+         */
+        public synchronized Builder builtins(final Set<Vendor.Id> vendors) {
             mutable();
             if (builtins) {
                 throw new ValidateException("Built-in Vendor platforms have already been added");
             }
             builtins = true;
-            manifests.addAll(VendorSuite.directory().manifests());
-            mergeBindings(VendorSuite.bindings().bindings());
+            final VendorDirectory directory = VendorSuite.directory();
+            final Set<Vendor.Id> selected = vendors == null ? null : Set.copyOf(vendors);
+            final Set<Vendor.Id> unresolved = selected == null ? Set.of() : new HashSet<>(selected);
+            for (VariantManifest<?> manifest : directory.manifests()) {
+                if (selected == null || selected.contains(manifest.vendor())) {
+                    manifests.add(manifest);
+                    if (selected != null) {
+                        unresolved.remove(manifest.vendor());
+                    }
+                }
+            }
+            if (!unresolved.isEmpty()) {
+                throw new ValidateException("Unknown built-in Vendor platform selection");
+            }
+            final Map<AdapterBindings.Key, AdapterBindings.Binding> selectedBindings = new LinkedHashMap<>();
+            VendorSuite.bindings().bindings().forEach((key, binding) -> {
+                if (selected == null || selected.contains(key.vendor())) {
+                    selectedBindings.put(key, binding);
+                }
+            });
+            mergeBindings(selectedBindings);
             return this;
+        }
+
+        /**
+         * Adds only the selected built-in platforms.
+         *
+         * @param vendors selected platform identifiers
+         * @return this builder
+         */
+        public synchronized Builder builtins(final Vendor.Id... vendors) {
+            Assert.notNull(vendors, "Built-in Vendor selection must not be null");
+            return builtins(Set.of(vendors));
         }
 
         /**
@@ -196,9 +247,11 @@ public final class VendorModule {
                 }
             }
             manifests.add(manifest);
-            final Map<AdapterBindings.Key, VendorAdapter.Factory<?>> contributed = new LinkedHashMap<>();
+            final Map<AdapterBindings.Key, AdapterBindings.Binding> contributed = new LinkedHashMap<>();
             for (Map.Entry<Vendor.Variant, VendorAdapter.Factory<S>> entry : driver.factories().entrySet()) {
-                contributed.put(new AdapterBindings.Key(manifest.vendor(), entry.getKey()), entry.getValue());
+                contributed.put(
+                        new AdapterBindings.Key(manifest.vendor(), entry.getKey()),
+                        driver.binding(entry.getKey()));
             }
             mergeBindings(contributed);
         }
@@ -208,8 +261,8 @@ public final class VendorModule {
          *
          * @param contributed immutable adapter bindings to merge
          */
-        private void mergeBindings(final Map<AdapterBindings.Key, VendorAdapter.Factory<?>> contributed) {
-            for (Map.Entry<AdapterBindings.Key, VendorAdapter.Factory<?>> entry : contributed.entrySet()) {
+        private void mergeBindings(final Map<AdapterBindings.Key, AdapterBindings.Binding> contributed) {
+            for (Map.Entry<AdapterBindings.Key, AdapterBindings.Binding> entry : contributed.entrySet()) {
                 if (adapterBindings.putIfAbsent(entry.getKey(), entry.getValue()) != null) {
                     throw new ValidateException("Duplicate Vendor adapter factory: " + entry.getKey().vendor().value()
                             + Symbol.C_SLASH + entry.getKey().variant().value());

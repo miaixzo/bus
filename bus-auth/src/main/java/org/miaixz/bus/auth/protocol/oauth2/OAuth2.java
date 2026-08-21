@@ -26,7 +26,7 @@ import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
- * Exposes direction-neutral OAuth 2.x operation keys and explicit Provider and Source driver factories.
+ * Exposes direction-neutral OAuth 2.x operation keys and explicit server and client driver factories.
  *
  * @author Kimi Liu
  */
@@ -69,19 +69,19 @@ public final class OAuth2 {
     /**
      * Creates the server-side OAuth 2.x driver.
      *
-     * @return new OAuth 2.x Provider driver
+     * @return new OAuth 2.x Server driver
      */
-    public static SourceDriver<OAuth2ServerOptions> provider() {
-        return new OAuth2ProviderDriver();
+    public static SourceDriver<OAuth2ServerOptions> server() {
+        return new OAuth2ServerDriver();
     }
 
     /**
      * Creates the client-side OAuth 2.x driver.
      *
-     * @return new OAuth 2.x Source driver
+     * @return new OAuth 2.x Client driver
      */
-    public static SourceDriver<OAuth2ClientOptions> source() {
-        return new OAuth2SourceDriver();
+    public static SourceDriver<OAuth2ClientOptions> client() {
+        return new OAuth2ClientDriver();
     }
 
     /**

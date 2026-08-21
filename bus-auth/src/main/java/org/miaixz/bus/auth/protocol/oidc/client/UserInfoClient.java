@@ -29,7 +29,7 @@ import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oidc.UserInfoRequest;
 import org.miaixz.bus.auth.protocol.oidc.UserInfoResponse;
 import org.miaixz.bus.auth.protocol.oidc.codec.UserInfoCodec;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -54,7 +54,7 @@ public final class UserInfoClient {
     /**
      * Caller-owned runtime dependencies and Fabric context.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Strict UserInfo response and bearer-error codec.
@@ -69,8 +69,7 @@ public final class UserInfoClient {
      * @param codec    strict UserInfo codec
      * @throws IllegalArgumentException if a collaborator is {@code null} or UserInfo is not configured
      */
-    public UserInfoClient(final OpenIdClientOptions options, final ExecutionServices services,
-            final UserInfoCodec codec) {
+    public UserInfoClient(final OpenIdClientOptions options, final DriverServices services, final UserInfoCodec codec) {
         this.options = Assert.notNull(options, "OpenID Connect client options must not be null");
         Assert.notNull(options.userInfoEndpoint().getOrNull(), "OpenID Connect UserInfo endpoint must be configured");
         this.services = Assert.notNull(services, "OpenID Connect execution services must not be null");

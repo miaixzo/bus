@@ -31,6 +31,7 @@ import org.miaixz.bus.auth.protocol.oauth2.OAuth2ErrorCode;
 import org.miaixz.bus.auth.protocol.oauth2.grant.AuthorizationCodeIssuer;
 import org.miaixz.bus.auth.protocol.oidc.AuthenticationRequest;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
+import org.miaixz.bus.auth.source.SessionCoordinator;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -69,15 +70,18 @@ public final class AuthenticationService {
      * Internal OAuth authorization-code issuer that persists the typed OpenID Connect binding.
      */
     private final AuthorizationCodeIssuer issuer;
+    private final SessionCoordinator sessions;
 
     /**
      * Creates the OpenID Connect authentication service.
      *
-     * @param issuer shared OAuth authorization-code issuer
+     * @param issuer   shared OAuth authorization-code issuer
+     * @param sessions Source-isolated authentication Session coordinator
      * @throws IllegalArgumentException if {@code issuer} is {@code null}
      */
-    public AuthenticationService(final AuthorizationCodeIssuer issuer) {
+    public AuthenticationService(final AuthorizationCodeIssuer issuer, final SessionCoordinator sessions) {
         this.issuer = Assert.notNull(issuer, "OpenID Connect authorization code issuer must not be null");
+        this.sessions = Assert.notNull(sessions, "OpenID Connect Session coordinator must not be null");
     }
 
     /**
@@ -254,16 +258,19 @@ public final class AuthenticationService {
         final AuthorizationCodeCache.OpenIdBinding binding = new AuthorizationCodeCache.OpenIdBinding(request.nonce(),
                 session.issuedAt(), authentication.authenticationContextClass(), authentication.authenticationMethods(),
                 session.key(), request.claims());
-        return issuer.authorize(
-                AuthorizationCodeIssuer.Request.openId(request.authorizationRequest(), binding),
-                context,
-                timeout).thenApply(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<AuthorizationCodeIssuer.Result> success -> Outcome
-                            .succeeded(success.value().response());
-                    case Outcome.Rejected<AuthorizationCodeIssuer.Result> rejected -> Outcome
-                            .rejected(rejected.failure());
-                    case Outcome.Failed<AuthorizationCodeIssuer.Result> failed -> Outcome.failed(failed.failure());
-                });
+        return sessions.establish(session, context, timeout).thenCompose(established -> switch (established) {
+            case Outcome.Succeeded<Void> ignored -> issuer.authorize(
+                    AuthorizationCodeIssuer.Request.openId(request.authorizationRequest(), binding), context, timeout)
+                    .thenApply(outcome -> switch (outcome) {
+                        case Outcome.Succeeded<AuthorizationCodeIssuer.Result> success -> Outcome
+                                .succeeded(success.value().response());
+                        case Outcome.Rejected<AuthorizationCodeIssuer.Result> rejected -> Outcome
+                                .rejected(rejected.failure());
+                        case Outcome.Failed<AuthorizationCodeIssuer.Result> failed -> Outcome.failed(failed.failure());
+                    });
+            case Outcome.Rejected<Void> rejected -> completed(Outcome.rejected(rejected.failure()));
+            case Outcome.Failed<Void> failed -> completed(Outcome.failed(failed.failure()));
+        });
     }
 
 }

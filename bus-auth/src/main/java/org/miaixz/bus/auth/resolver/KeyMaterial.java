@@ -25,7 +25,9 @@ import java.time.Instant;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
-/** Parsed exact cryptographic key material and validity interval. */
+/**
+ * Parsed exact cryptographic key material and validity interval.
+ */
 public record KeyMaterial(String keyId, String algorithm, Key key, Instant notBefore, Instant notAfter) {
 
     public KeyMaterial {

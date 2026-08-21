@@ -34,11 +34,10 @@ import org.miaixz.bus.auth.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.ResponseType;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceAuthentication;
-import org.miaixz.bus.auth.source.SourceAuthenticationRequest;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -105,7 +104,7 @@ public final class MeituanSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime, secret, JSON, transport, clock, and executor dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Unified router for Meituan's public standard OAuth authorization capability.
@@ -135,7 +134,7 @@ public final class MeituanSourceAdapter implements VendorAdapter {
      * @throws ValidateException        if routing, protocol, manifest, or options differ from the frozen manifest
      */
     public MeituanSourceAdapter(final String namespaceId, final String sourceId, final MeituanManifest manifest,
-            final VariantManifest.Variant variant, final MeituanOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final MeituanOptions options, final DriverServices services) {
         final MeituanManifest selectedProfile = Assert.notNull(manifest, "Meituan manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Meituan Source id must not be blank");
         this.variant = Assert.notNull(variant, "Meituan manifest must not be null");
@@ -455,11 +454,11 @@ public final class MeituanSourceAdapter implements VendorAdapter {
             return completed(rejected("Meituan capability is not declared"));
         }
         if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserStart start) {
+                && request instanceof SourceAuthentication.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
         if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserCallback callback) {
+                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -581,8 +580,8 @@ public final class MeituanSourceAdapter implements VendorAdapter {
         }
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.secretLoader().load(options.credential(), context, timeout),
+            resolution = Outcome.mapStage(
+                    () -> services.secretLoader().load(options.credential(), context, timeout),
                     loaded -> services.secretParser().parse(options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "Meituan application-secret resolution failed"));
@@ -664,8 +663,8 @@ public final class MeituanSourceAdapter implements VendorAdapter {
         Assert.notNull(current, "Meituan current private token must not be null");
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.secretLoader().load(options.credential(), context, timeout),
+            resolution = Outcome.mapStage(
+                    () -> services.secretLoader().load(options.credential(), context, timeout),
                     loaded -> services.secretParser().parse(options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "Meituan refresh secret resolution failed"));

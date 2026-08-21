@@ -19,15 +19,18 @@
 */
 package org.miaixz.bus.auth.cache;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Session;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
@@ -43,20 +46,29 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class AuthorizationCodeCache extends AuthCache<ExpiringValue<AuthorizationCodeCache.Entry>> {
+public final class AuthorizationCodeCache extends AuthCache<AuthorizationCodeCache.Entry> {
 
     /**
      * Isolates authorization-code state from every other bus-cache consumer.
      */
-    private static final String NAMESPACE = "auth:authorization-code:";
+    private static final String PURPOSE = "authorization-code";
 
     /**
      * Creates an authorization-code cache view backed entirely by bus-cache.
      *
      * @param cache shared bus-cache backend
      */
-    public AuthorizationCodeCache(final CacheX<String, Object> cache) {
-        super(cache, NAMESPACE);
+    public AuthorizationCodeCache(final CacheX<String, Object> cache, final String deployment,
+            final Clock clock) {
+        super(cache, deployment, PURPOSE, Entry.class, clock);
+    }
+
+    public CompletionStage<Boolean> issue(final String key, final ExpiringValue<Entry> value) {
+        return super.doIssue(key, value);
+    }
+
+    public CompletionStage<ExpiringValue<Entry>> consume(final String key) {
+        return super.doConsume(key);
     }
 
     /**
@@ -76,7 +88,7 @@ public final class AuthorizationCodeCache extends AuthCache<ExpiringValue<Author
      */
     public record Entry(String providerId, String clientId, String subjectId, String redirectUri,
             boolean redirectUriRequired, List<String> scope, List<String> resource, Optional<String> codeChallenge,
-            Optional<String> codeChallengeMethod, Optional<OpenIdBinding> openIdBinding) {
+            Optional<String> codeChallengeMethod, Optional<OpenIdBinding> openIdBinding) implements Serializable {
 
         /**
          * Creates an immutable authorization-code binding.
@@ -151,7 +163,7 @@ public final class AuthorizationCodeCache extends AuthCache<ExpiringValue<Author
      */
     public record OpenIdBinding(Optional<String> nonce, Instant authenticatedAt,
             Optional<String> authenticationContextClass, List<String> authenticationMethods, Session.Key sessionKey,
-            Optional<JsonValue.ObjectValue> requestedClaims) {
+            Optional<JsonValue.ObjectValue> requestedClaims) implements Serializable {
 
         /**
          * Validates and freezes one authorization-code-bound OpenID Connect context.

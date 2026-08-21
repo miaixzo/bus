@@ -28,6 +28,7 @@ import org.miaixz.bus.auth.codec.Parameter;
 import org.miaixz.bus.auth.codec.QueryCodec;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
@@ -369,7 +370,7 @@ public final class OAuth2ErrorMapper {
      * @param error   shared Bus error definition
      * @return whether the stable keys are equal
      */
-    private static boolean same(final Outcome.Failure failure, final org.miaixz.bus.core.basic.normal.Errors error) {
+    private static boolean same(final Outcome.Failure failure, final Errors error) {
         return failure.error().getKey().equals(error.getKey());
     }
 

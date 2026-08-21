@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.auth.protocol.oidc.server;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,7 +30,6 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Session;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.guard.TimeGuard;
 import org.miaixz.bus.auth.protocol.oidc.EndSessionRequest;
 import org.miaixz.bus.auth.protocol.oidc.IdToken;
@@ -39,8 +37,9 @@ import org.miaixz.bus.auth.protocol.oidc.IdTokenClaims;
 import org.miaixz.bus.auth.protocol.oidc.codec.IdTokenCodec;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
+import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SessionCoordinator;
 import org.miaixz.bus.auth.worker.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -48,7 +47,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -74,16 +72,6 @@ public final class EndSessionService {
     private static final String POST_LOGOUT_REDIRECT_URIS = "post_logout_redirect_uris";
 
     /**
-     * Maximum compare-and-replace attempts after concurrent session updates.
-     */
-    private static final int MAXIMUM_REPLACE_ATTEMPTS = 3;
-
-    /**
-     * Provider identifier used to isolate Session cache keys.
-     */
-    private final String providerId;
-
-    /**
      * Frozen issuer and signing options.
      */
     private final OpenIdServerOptions options;
@@ -91,12 +79,17 @@ public final class EndSessionService {
     /**
      * External key, client, session, clock, and security dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * JOSE-aware typed ID Token codec.
      */
     private final IdTokenCodec codec;
+
+    /**
+     * Source-isolated framework and project Session lifecycle coordinator.
+     */
+    private final SessionCoordinator sessions;
 
     /**
      * Shared clock-skew validator scoped to OIDC.
@@ -106,18 +99,18 @@ public final class EndSessionService {
     /**
      * Creates an end-session service for one compiled OpenID Provider.
      *
-     * @param providerId compiled server-role Source identifier
-     * @param options    validated OpenID Provider options
-     * @param services   externally implemented runtime dependencies
-     * @param codec      JOSE-aware typed ID Token codec
+     * @param options  validated OpenID Provider options
+     * @param services externally implemented runtime dependencies
+     * @param codec    JOSE-aware typed ID Token codec
+     * @param sessions Source-isolated Session lifecycle coordinator
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public EndSessionService(final String providerId, final OpenIdServerOptions options,
-            final ExecutionServices services, final IdTokenCodec codec) {
-        this.providerId = Assert.notBlank(providerId, "OpenID Connect end-session Provider id must not be blank");
+    public EndSessionService(final OpenIdServerOptions options, final DriverServices services,
+            final IdTokenCodec codec, final SessionCoordinator sessions) {
         this.options = Assert.notNull(options, "OpenID Connect end-session options must not be null");
         this.services = Assert.notNull(services, "OpenID Connect end-session execution services must not be null");
         this.codec = Assert.notNull(codec, "OpenID Connect end-session ID Token codec must not be null");
+        this.sessions = Assert.notNull(sessions, "OpenID Connect Session coordinator must not be null");
         this.timeGuard = services.securityBaseline().timeGuard(Protocol.OIDC, services.fabricContext().clock());
     }
 
@@ -252,8 +245,8 @@ public final class EndSessionService {
                 now);
         final CompletionStage<Outcome<KeyMaterial>> resolution;
         try {
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.keyLoader().load(query, context, timeout),
+            resolution = Outcome.mapStage(
+                    () -> services.keyLoader().load(query, context, timeout),
                     loaded -> services.keyParser().parse(query, loaded));
         } catch (RuntimeException exception) {
             return completed(
@@ -356,8 +349,8 @@ public final class EndSessionService {
         }
         final CompletionStage<Outcome<ConsumerMetadata>> resolution;
         try {
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.consumerLoader().load(clientId, context, timeout),
+            resolution = Outcome.mapStage(
+                    () -> services.consumerLoader().load(clientId, context, timeout),
                     loaded -> services.consumerParser().parse(clientId, loaded));
         } catch (RuntimeException exception) {
             return completed(Outcome.failed(failure(ErrorCode._500, "OpenID Connect logout client resolution failed")));
@@ -411,97 +404,11 @@ public final class EndSessionService {
             return completed(
                     Outcome.rejected(failure(ErrorCode._400, "OpenID Connect logout has no verified session binding")));
         }
-        return replaceSession(new Session.Key(sessionId), timeout, 1);
-    }
-
-    /**
-     * Atomically transitions one active stored session to {@code ENDED}, retrying only concurrent replacement races.
-     *
-     * @param sessionKey verified framework session key
-     * @param timeout    shared operation budget
-     * @param attempt    one-based replacement attempt
-     * @return asynchronously completed idempotent transition outcome
-     */
-    private CompletionStage<Outcome<Void>> replaceSession(
-            final Session.Key sessionKey,
-            final Timeout.Budget timeout,
-            final int attempt) {
-        if (timeout.expired()) {
-            return completed(
-                    Outcome.failed(failure(ErrorCode._408, "OpenID Connect session ending exhausted its time budget")));
-        }
-        final String key = Builder.sha256Hex(providerId + '\0' + sessionKey.value());
-        final CompletionStage<ExpiringValue<Session>> lookup;
-        try {
-            lookup = services.sessionCache().get(key);
-        } catch (RuntimeException exception) {
-            return completed(Outcome.failed(failure(ErrorCode._500, "OpenID Connect Session cache lookup failed")));
-        }
-        return lookup.handle((stored, thrown) -> new SessionResult(stored, thrown))
-                .thenCompose(result -> replaceLoadedSession(key, sessionKey, result, timeout, attempt));
-    }
-
-    /**
-     * Validates a loaded session and performs its compare-and-replace transition.
-     *
-     * @param key          isolated Session cache key
-     * @param requestedKey verified session key
-     * @param result       completed cache lookup
-     * @param timeout      shared operation budget
-     * @param attempt      one-based replacement attempt
-     * @return asynchronously completed transition outcome
-     */
-    private CompletionStage<Outcome<Void>> replaceLoadedSession(
-            final String key,
-            final Session.Key requestedKey,
-            final SessionResult result,
-            final Timeout.Budget timeout,
-            final int attempt) {
-        if (result.failure() != null) {
-            return completed(Outcome.failed(failure(ErrorCode._500, "OpenID Connect Session cache lookup failed")));
-        }
-        final ExpiringValue<Session> stored = result.value();
-        final Instant now = timeout.clock().now();
-        if (stored == null || stored.value() == null || !stored.expiresAt().isAfter(now)) {
-            return completed(Outcome.succeeded(null));
-        }
-        final Session session = stored.value();
-        if (!requestedKey.equals(session.key())) {
-            return completed(
-                    Outcome.rejected(
-                            failure(
-                                    ErrorCode._400,
-                                    "OpenID Connect stored session binding does not match the logout request")));
-        }
-        if (session.state() != Session.State.ACTIVE) {
-            return completed(Outcome.succeeded(null));
-        }
-        final Session ended = new Session(session.key(), Session.State.ENDED, session.issuedAt(), session.expiresAt());
-        final ExpiringValue<Session> update = new ExpiringValue<>(ended, stored.expiresAt());
-        final long ttlMillis = Math.max(1L, Duration.between(now, stored.expiresAt()).toMillis());
-        final CompletionStage<Boolean> replacement;
-        try {
-            replacement = services.sessionCache().replace(key, stored, update, ttlMillis);
-        } catch (RuntimeException exception) {
-            return completed(
-                    Outcome.failed(failure(ErrorCode._500, "OpenID Connect Session cache replacement failed")));
-        }
-        return replacement.handle((replaced, thrown) -> new ReplaceResult(replaced, thrown))
-                .thenCompose(resultValue -> {
-                    if (resultValue.failure() != null || resultValue.replaced() == null) {
-                        return completed(
-                                Outcome.failed(
-                                        failure(ErrorCode._500, "OpenID Connect Session cache replacement failed")));
-                    }
-                    if (resultValue.replaced()) {
-                        return completed(Outcome.succeeded(null));
-                    }
-                    if (attempt >= MAXIMUM_REPLACE_ATTEMPTS) {
-                        return completed(
-                                Outcome.failed(failure(ErrorCode._500, "OpenID Connect session changed concurrently")));
-                    }
-                    return replaceSession(requestedKey, timeout, attempt + 1);
-                });
+        return sessions.end(new Session.Key(sessionId), context, timeout).thenApply(outcome -> switch (outcome) {
+            case Outcome.Succeeded<SessionCoordinator.End> ignored -> Outcome.succeeded(null);
+            case Outcome.Rejected<SessionCoordinator.End> rejected -> Outcome.rejected(rejected.failure());
+            case Outcome.Failed<SessionCoordinator.End> failed -> Outcome.failed(failed.failure());
+        });
     }
 
     /**
@@ -536,28 +443,6 @@ public final class EndSessionService {
         private static Hint absent() {
             return new Hint(Optional.empty(), Optional.empty(), Optional.empty());
         }
-
-    }
-
-    /**
-     * Carries one Session cache lookup without leaking exceptional completion.
-     *
-     * @param value   stored session or {@code null}
-     * @param failure store failure or {@code null}
-     * @author Kimi Liu
-     */
-    private record SessionResult(ExpiringValue<Session> value, Throwable failure) {
-
-    }
-
-    /**
-     * Carries one atomic replacement result without leaking exceptional completion.
-     *
-     * @param replaced whether the expected value was replaced
-     * @param failure  store failure or {@code null}
-     * @author Kimi Liu
-     */
-    private record ReplaceResult(Boolean replaced, Throwable failure) {
 
     }
 

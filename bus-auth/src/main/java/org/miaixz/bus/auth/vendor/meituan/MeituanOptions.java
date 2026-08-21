@@ -51,16 +51,6 @@ public record MeituanOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<MeituanOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<MeituanOptions> type() {
-        return MeituanOptions.class;
-    }
-
-    /**
      * Validates and freezes one Meituan registration without resolving its application secret.
      *
      * @throws IllegalArgumentException if a required component or container is {@code null} or blank
@@ -128,6 +118,16 @@ public record MeituanOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
         } catch (URISyntaxException cause) {
             throw new ValidateException("Meituan redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<MeituanOptions> type() {
+        return MeituanOptions.class;
     }
 
     /**

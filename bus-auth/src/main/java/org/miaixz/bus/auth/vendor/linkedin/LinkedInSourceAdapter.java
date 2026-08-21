@@ -41,19 +41,19 @@ import org.miaixz.bus.auth.protocol.oidc.client.UserInfoClient;
 import org.miaixz.bus.auth.protocol.oidc.codec.IdTokenCodec;
 import org.miaixz.bus.auth.protocol.oidc.codec.JwkSetCodec;
 import org.miaixz.bus.auth.protocol.oidc.codec.UserInfoCodec;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.shared.jose.*;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceAuthentication;
-import org.miaixz.bus.auth.source.SourceAuthenticationRequest;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
@@ -137,7 +137,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime dependencies and transport resources.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Unified router for LinkedIn's public Authentication, JWK Set, and UserInfo capabilities.
@@ -213,7 +213,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
      *                                  from the frozen LinkedIn OIDC variant
      */
     public LinkedInSourceAdapter(final String namespaceId, final String sourceId, final LinkedInManifest manifest,
-            final VariantManifest.Variant variant, final LinkedInOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final LinkedInOptions options, final DriverServices services) {
         Assert.notNull(manifest, "LinkedIn manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "LinkedIn Source id must not be blank");
         this.variant = Assert.notNull(variant, "LinkedIn manifest must not be null");
@@ -541,7 +541,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
      * @param <T>         expected successful value type
      * @return failed outcome
      */
-    private static <T> Outcome<T> failed(final org.miaixz.bus.core.basic.normal.Errors code, final String description) {
+    private static <T> Outcome<T> failed(final Errors code, final String description) {
         return Outcome.failed(new Outcome.Failure(code, description, emptyObject()));
     }
 
@@ -555,7 +555,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
      * @return failed outcome
      */
     private static <T> Outcome<T> failed(
-            final org.miaixz.bus.core.basic.normal.Errors code,
+            final Errors code,
             final String description,
             final Map<String, JsonValue> details) {
         return Outcome.failed(new Outcome.Failure(code, description, new JsonValue.ObjectValue(details)));
@@ -595,11 +595,11 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
             return missing();
         }
         if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserStart start) {
+                && request instanceof SourceAuthentication.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
         if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserCallback callback) {
+                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -764,8 +764,8 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
         final String code = values.code();
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.secretLoader().load(options.credential(), context, timeout),
+            resolution = Outcome.mapStage(
+                    () -> services.secretLoader().load(options.credential(), context, timeout),
                     loaded -> services.secretParser().parse(options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "LinkedIn client-secret resolution failed"));

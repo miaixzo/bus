@@ -20,14 +20,16 @@
 package org.miaixz.bus.auth.resolver;
 
 import org.miaixz.bus.auth.shared.claim.ClaimSet;
-import org.miaixz.bus.auth.worker.identity.ClaimRecord;
+import org.miaixz.bus.auth.worker.identity.ClaimLoader;
 import org.miaixz.bus.core.lang.Assert;
 
-/** Pure parser for project-loaded claim records. */
+/**
+ * Pure parser for project-loaded claim records.
+ */
 public final class ClaimParser {
 
-    public ClaimSet parse(final ClaimRecord record) {
-        final ClaimRecord loaded = Assert.notNull(record, "Loaded claim record must not be null");
+    public ClaimSet parse(final ClaimLoader.Record record) {
+        final ClaimLoader.Record loaded = Assert.notNull(record, "Loaded claim record must not be null");
         return new ClaimSet(loaded.entries());
     }
 }

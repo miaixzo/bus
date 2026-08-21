@@ -26,13 +26,14 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
+import org.miaixz.bus.auth.Session;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.saml.AuthnRequest;
 import org.miaixz.bus.auth.protocol.saml.Response;
 import org.miaixz.bus.auth.protocol.saml.SamlBinding;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
-import org.miaixz.bus.auth.runtime.LoadResult;
+import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SessionCoordinator;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -68,7 +69,7 @@ public final class SingleSignOnService {
     /**
      * External loaders and framework-owned parsers used by this service.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Internal standard assertion and response issuer.
@@ -79,6 +80,7 @@ public final class SingleSignOnService {
      * Standard SAML protocol error-response mapper.
      */
     private final SamlErrorMapper errorMapper;
+    private final SessionCoordinator sessions;
 
     /**
      * Creates a SingleSignOnService from its policy, execution services, issuer, and error mapper.
@@ -87,14 +89,17 @@ public final class SingleSignOnService {
      * @param services        external loaders and pure parsers
      * @param assertionIssuer internal SAML assertion issuer
      * @param errorMapper     standard SAML error-response mapper
+     * @param sessions        Source-isolated Session lifecycle coordinator
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public SingleSignOnService(final SamlServerOptions options, final ExecutionServices services,
-            final AssertionIssuer assertionIssuer, final SamlErrorMapper errorMapper) {
+    public SingleSignOnService(final SamlServerOptions options, final DriverServices services,
+            final AssertionIssuer assertionIssuer, final SamlErrorMapper errorMapper,
+            final SessionCoordinator sessions) {
         this.options = Assert.notNull(options, "SAML Provider options must not be null");
         this.services = Assert.notNull(services, "SAML execution services must not be null");
         this.assertionIssuer = Assert.notNull(assertionIssuer, "SAML Assertion issuer must not be null");
         this.errorMapper = Assert.notNull(errorMapper, "SAML error mapper must not be null");
+        this.sessions = Assert.notNull(sessions, "SAML Session coordinator must not be null");
     }
 
     /**
@@ -137,9 +142,8 @@ public final class SingleSignOnService {
         Assert.notNull(timeout, "SAML Single Sign-On time budget must not be null");
         final Outcome<String> requester = requester(request, timeout);
         return switch (requester) {
-            case Outcome.Succeeded<String> success -> LoadResult
-                    .parse(
-                            services.consumerLoader().load(success.value(), context, timeout),
+            case Outcome.Succeeded<String> success -> Outcome.mapStage(
+                            () -> services.consumerLoader().load(success.value(), context, timeout),
                             loaded -> services.consumerParser().parse(success.value(), loaded))
                     .thenCompose(resolved -> switch (resolved) {
                         case Outcome.Succeeded<ConsumerMetadata> client -> issue(
@@ -231,7 +235,12 @@ public final class SingleSignOnService {
                                     "Authenticated subject context is required",
                                     timeout.clock().now())));
         }
-        return assertionIssuer.singleSignOn(request, client, context, timeout);
+        final Session session = context.authentication().getOrNull().session();
+        return sessions.establish(session, context, timeout).thenCompose(established -> switch (established) {
+            case Outcome.Succeeded<Void> ignored -> assertionIssuer.singleSignOn(request, client, context, timeout);
+            case Outcome.Rejected<Void> rejected -> completed(Outcome.rejected(rejected.failure()));
+            case Outcome.Failed<Void> failed -> completed(Outcome.failed(failed.failure()));
+        });
     }
 
 }

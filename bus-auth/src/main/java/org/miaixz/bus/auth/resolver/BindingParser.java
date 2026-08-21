@@ -20,15 +20,18 @@
 package org.miaixz.bus.auth.resolver;
 
 import org.miaixz.bus.auth.Registration;
+import org.miaixz.bus.auth.worker.BindingLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
-/** Pure parser for externally loaded runtime bindings. */
+/**
+ * Pure parser for externally loaded runtime bindings.
+ */
 public final class BindingParser {
 
-    public <T> T parse(final Registration.Record<?> registration, final Class<T> contract, final T binding) {
+    public <T> T parse(final Registration.SourceEntry registration, final BindingLoader.Key<T> key, final T binding) {
         Assert.notNull(registration, "Binding registration must not be null");
-        final Class<T> expected = Assert.notNull(contract, "Binding contract must not be null");
+        final Class<T> expected = Assert.notNull(key, "Binding key must not be null").type();
         final T loaded = Assert.notNull(binding, "Loaded binding must not be null");
         if (!expected.isInstance(loaded)) {
             throw new ValidateException("Loaded binding does not implement the required contract");

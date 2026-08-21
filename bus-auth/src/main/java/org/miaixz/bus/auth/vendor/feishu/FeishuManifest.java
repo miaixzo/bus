@@ -107,7 +107,7 @@ public final class FeishuManifest implements VariantManifest<FeishuOptions> {
      * Complete immutable endpoint, client, scope, capability, form, and deviation manifest.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OAUTH2,
-            List.of(),
+            VariantManifest.Pkce.REQUIRED, List.of(),
             new VendorTargets(
                     Optional.of(
                             fixed(

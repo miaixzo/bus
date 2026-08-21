@@ -52,16 +52,6 @@ public record MiOptions(Vendor.Id vendor, Vendor.Variant variant, String clientI
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<MiOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<MiOptions> type() {
-        return MiOptions.class;
-    }
-
-    /**
      * Validates and freezes one Xiaomi registration without resolving its Client Secret.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
@@ -127,6 +117,16 @@ public record MiOptions(Vendor.Id vendor, Vendor.Variant variant, String clientI
         } catch (URISyntaxException cause) {
             throw new ValidateException("Xiaomi redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<MiOptions> type() {
+        return MiOptions.class;
     }
 
     /**

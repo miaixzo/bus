@@ -25,7 +25,7 @@ import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
- * Exposes the standard RADIUS Access and Accounting operation keys and the explicit Provider-driver factory.
+ * Exposes the standard RADIUS Access and Accounting operation keys and the explicit Server-driver factory.
  * <p>
  * The namespace deliberately excludes Dynamic Authorization because the runtime implements RFC 2865 Access, RFC 2866
  * Accounting, and RFC 3579 EAP pass-through operations only.
@@ -100,10 +100,10 @@ public final class Radius {
     /**
      * Creates the server-side RADIUS driver.
      *
-     * @return new RADIUS Provider driver
+     * @return new RADIUS Server driver
      */
-    public static SourceDriver<RadiusServerOptions> provider() {
-        return new RadiusProviderDriver();
+    public static SourceDriver<RadiusServerOptions> server() {
+        return new RadiusServerDriver();
     }
 
     /**

@@ -52,16 +52,6 @@ public record CodingOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
         Optional<String> redirectUri, List<String> scopes, String team) implements VendorOptions<CodingOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<CodingOptions> type() {
-        return CodingOptions.class;
-    }
-
-    /**
      * Validates and freezes one CODING registration without resolving its client secret.
      *
      * @throws IllegalArgumentException if a required component, container, scope, or team is null or blank
@@ -116,6 +106,16 @@ public record CodingOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
             throw new ValidateException("CODING team must be one canonical DNS label");
         }
         return ascii.toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<CodingOptions> type() {
+        return CodingOptions.class;
     }
 
     /**

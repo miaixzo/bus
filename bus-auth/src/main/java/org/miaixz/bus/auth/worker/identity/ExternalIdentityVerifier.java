@@ -20,7 +20,6 @@
 package org.miaixz.bus.auth.worker.identity;
 
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthenticationResult;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -32,57 +31,51 @@ import org.miaixz.bus.extra.json.JsonValue;
  */
 final class ExternalIdentityVerifier {
 
-    /** Maximum accepted nesting below the external attribute root. */
+    /**
+     * Maximum accepted nesting below the external attribute root.
+     */
     private static final int MAXIMUM_DEPTH = 32;
 
-    /** Maximum accepted JSON values in the complete external attribute tree. */
+    /**
+     * Maximum accepted JSON values in the complete external attribute tree.
+     */
     private static final int MAXIMUM_NODES = 4096;
 
-    /** Maximum accepted members in one JSON object. */
+    /**
+     * Maximum accepted members in one JSON object.
+     */
     private static final int MAXIMUM_MEMBERS = 256;
 
-    /** Maximum accepted elements in one JSON array. */
+    /**
+     * Maximum accepted elements in one JSON array.
+     */
     private static final int MAXIMUM_ELEMENTS = 1024;
 
-    /** Maximum accepted JSON member-name length. */
+    /**
+     * Maximum accepted JSON member-name length.
+     */
     private static final int MAXIMUM_NAME_LENGTH = 256;
 
-    /** Maximum accepted JSON string length. */
+    /**
+     * Maximum accepted JSON string length.
+     */
     private static final int MAXIMUM_STRING_LENGTH = 65536;
 
-    /** Maximum accepted evidence entries for one authentication result. */
+    /**
+     * Maximum accepted evidence entries for one authentication result.
+     */
     private static final int MAXIMUM_EVIDENCE = 32;
 
-    /** Creates the stateless verifier. */
+    /**
+     * Creates the stateless verifier.
+     */
     ExternalIdentityVerifier() {
         // No initialization required.
     }
 
     /**
-     * Validates and returns the exact completed external identity.
-     *
-     * @param expectedSourceId Source selected for the completed invocation
-     * @param result           completed Source result
-     * @return verified external identity
-     * @throws IllegalArgumentException if an input is {@code null} or the expected identifier is blank
-     * @throws ValidateException        if Source binding, evidence, or attribute bounds are invalid
+     * Validates one bounded provider-neutral JSON value tree.
      */
-    ExternalIdentity verify(final String expectedSourceId, final SourceAuthenticationResult result) {
-        final String expected = Assert.notBlank(expectedSourceId, "Expected Source id must not be blank");
-        final ExternalIdentity identity = Assert.notNull(result, "Source authentication result must not be null")
-                .identity();
-        if (!expected.equals(identity.sourceId())) {
-            throw new ValidateException("Completed external identity does not belong to the selected Source");
-        }
-        if (identity.evidence().isEmpty() || identity.evidence().size() > MAXIMUM_EVIDENCE) {
-            throw new ValidateException("Completed external identity evidence count is invalid");
-        }
-        final int[] nodes = { 0 };
-        structure(identity.attributes(), 0, nodes);
-        return identity;
-    }
-
-    /** Validates one bounded provider-neutral JSON value tree. */
     private static void structure(final JsonValue value, final int depth, final int[] nodes) {
         if (depth > MAXIMUM_DEPTH || ++nodes[0] > MAXIMUM_NODES) {
             throw new ValidateException("External identity attributes exceed structural bounds");
@@ -105,6 +98,29 @@ final class ExternalIdentityVerifier {
         } else if (value instanceof JsonValue.StringValue text && text.value().length() > MAXIMUM_STRING_LENGTH) {
             throw new ValidateException("External identity attribute string is too long");
         }
+    }
+
+    /**
+     * Validates and returns the exact completed external identity.
+     *
+     * @param expectedSourceId Source selected for the completed invocation
+     * @param identity         completed external identity
+     * @return verified external identity
+     * @throws IllegalArgumentException if an input is {@code null} or the expected identifier is blank
+     * @throws ValidateException        if Source binding, evidence, or attribute bounds are invalid
+     */
+    ExternalIdentity verify(final String expectedSourceId, final ExternalIdentity identity) {
+        final String expected = Assert.notBlank(expectedSourceId, "Expected Source id must not be blank");
+        final ExternalIdentity verified = Assert.notNull(identity, "Source authentication identity must not be null");
+        if (!expected.equals(verified.sourceId())) {
+            throw new ValidateException("Completed external identity does not belong to the selected Source");
+        }
+        if (verified.evidence().isEmpty() || verified.evidence().size() > MAXIMUM_EVIDENCE) {
+            throw new ValidateException("Completed external identity evidence count is invalid");
+        }
+        final int[] nodes = { 0 };
+        structure(verified.attributes(), 0, nodes);
+        return verified;
     }
 
 }

@@ -50,16 +50,6 @@ public record StackOverflowOptions(Vendor.Id vendor, Vendor.Variant variant, Str
         implements VendorOptions<StackOverflowOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<StackOverflowOptions> type() {
-        return StackOverflowOptions.class;
-    }
-
-    /**
      * Validates and freezes one Stack Overflow registration without resolving its secret.
      *
      * @throws IllegalArgumentException if a required component, container, scope, or site is {@code null} or blank
@@ -145,6 +135,16 @@ public record StackOverflowOptions(Vendor.Id vendor, Vendor.Variant variant, Str
             throw new ValidateException("Stack Exchange site identifier contains unsupported characters");
         }
         return checked;
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<StackOverflowOptions> type() {
+        return StackOverflowOptions.class;
     }
 
     /**

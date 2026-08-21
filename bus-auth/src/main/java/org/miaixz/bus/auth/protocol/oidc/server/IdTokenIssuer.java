@@ -39,15 +39,14 @@ import org.miaixz.bus.auth.protocol.oidc.IdTokenClaims;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdTokenResponse;
 import org.miaixz.bus.auth.protocol.oidc.codec.IdTokenCodec;
-import org.miaixz.bus.auth.resolver.Attributes;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.jose.JoseHeader;
 import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
 import org.miaixz.bus.auth.shared.jose.JwsService;
 import org.miaixz.bus.auth.shared.jwt.Jwt;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtIssuer;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.worker.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -91,7 +90,7 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
     /**
      * External key, attribute, clock, JSON, and policy dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Shared signed JWT issuer scoped to the Provider's exact algorithm.
@@ -111,8 +110,7 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
      * @param codec    typed ID Token codec
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public IdTokenIssuer(final OpenIdServerOptions options, final ExecutionServices services,
-            final IdTokenCodec codec) {
+    public IdTokenIssuer(final OpenIdServerOptions options, final DriverServices services, final IdTokenCodec codec) {
         this.options = Assert.notNull(options, "OpenID Provider options must not be null");
         this.services = Assert.notNull(services, "OpenID Provider execution services must not be null");
         this.codec = Assert.notNull(codec, "OpenID Connect ID Token codec must not be null");
@@ -267,10 +265,10 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
                                     "OpenID Connect ID Token issuance has no remaining time budget")));
         }
 
-        final CompletionStage<Outcome<Attributes>> attributes;
+        final CompletionStage<Outcome<JsonValue.ObjectValue>> attributes;
         try {
-            attributes = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.attributeLoader().load(new Subject.Key(grant.subjectId()), context, timeout),
+            attributes = Outcome.mapStage(
+                    () -> services.attributeLoader().load(new Subject.Key(grant.subjectId()), context, timeout),
                     loaded -> services.attributeParser().parse(new Subject.Key(grant.subjectId()), loaded));
         } catch (RuntimeException exception) {
             return completed(
@@ -283,13 +281,13 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
         return attributes
                 .handle(
                         (outcome, thrown) -> thrown == null && outcome != null ? outcome
-                                : Outcome.<Attributes>failed(
+                                : Outcome.<JsonValue.ObjectValue>failed(
                                         failure(
                                                 ErrorCode._500,
                                                 OAuth2ErrorCode.SERVER_ERROR,
                                                 "OpenID Connect subject attribute resolution failed")))
                 .thenCompose(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<Attributes> success -> success.value() == null
+                    case Outcome.Succeeded<JsonValue.ObjectValue> success -> success.value() == null
                             ? completed(
                                     Outcome.failed(
                                             failure(
@@ -297,13 +295,13 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
                                                     OAuth2ErrorCode.SERVER_ERROR,
                                                     "OpenID Connect attribute resolution returned no value")))
                             : resolveKey(response, grant, binding, success.value(), context, timeout);
-                    case Outcome.Rejected<Attributes> rejected -> completed(
+                    case Outcome.Rejected<JsonValue.ObjectValue> rejected -> completed(
                             Outcome.rejected(
                                     failure(
                                             rejected.failure().error(),
                                             OAuth2ErrorCode.INVALID_GRANT,
                                             "OpenID Connect subject attributes are unavailable")));
-                    case Outcome.Failed<Attributes> failed -> completed(
+                    case Outcome.Failed<JsonValue.ObjectValue> failed -> completed(
                             Outcome.failed(
                                     failure(
                                             failed.failure().error(),
@@ -327,7 +325,7 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
             final TokenResponse response,
             final AccessTokenIssuer.Grant grant,
             final AuthorizationCodeCache.OpenIdBinding binding,
-            final Attributes attributes,
+            final JsonValue.ObjectValue attributes,
             final Context context,
             final Timeout.Budget timeout) {
         final Instant now = timeout.clock().now();
@@ -336,8 +334,8 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
                 now);
         final CompletionStage<Outcome<KeyMaterial>> resolution;
         try {
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.keyLoader().load(query, context, timeout),
+            resolution = Outcome.mapStage(
+                    () -> services.keyLoader().load(query, context, timeout),
                     loaded -> services.keyParser().parse(query, loaded));
         } catch (RuntimeException exception) {
             return completed(
@@ -391,7 +389,7 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
             final TokenResponse response,
             final AccessTokenIssuer.Grant grant,
             final AuthorizationCodeCache.OpenIdBinding binding,
-            final Attributes attributes,
+            final JsonValue.ObjectValue attributes,
             final KeyMaterial resolvedKey,
             final Instant now) {
         try {
@@ -454,7 +452,7 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
      */
     private JsonValue.ObjectValue requestedClaims(
             final AuthorizationCodeCache.OpenIdBinding binding,
-            final Attributes attributes) {
+            final JsonValue.ObjectValue attributes) {
         final Map<String, JsonValue> selected = new LinkedHashMap<>();
         final JsonValue.ObjectValue root = binding.requestedClaims().getOrNull();
         if (root == null || root.values().get(OpenIdConnect.Claims.ID_TOKEN) == null) {
@@ -474,7 +472,7 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
                 }
                 continue;
             }
-            final JsonValue value = attributes.values().values().get(name);
+            final JsonValue value = attributes.values().get(name);
             if (value == null) {
                 if (essential(entry.getValue())) {
                     throw new ValidateException("OpenID Connect essential claim is unavailable");

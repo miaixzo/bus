@@ -94,7 +94,7 @@ public final class FigmaManifest implements VariantManifest<FigmaOptions> {
      * Complete immutable endpoint, client, scope, capability, form, and deviation manifest.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OAUTH2,
-            List.of("current_user:read"),
+            VariantManifest.Pkce.REQUIRED, List.of("current_user:read"),
             new VendorTargets(
                     Optional.of(fixed("https://www.figma.com/oauth", Http.Method.GET, Endpoint.Authentication.NONE)),
                     Optional.of(

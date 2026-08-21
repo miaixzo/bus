@@ -23,11 +23,21 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
+import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Credential;
+import org.miaixz.bus.auth.Library;
+import org.miaixz.bus.auth.Options;
+import org.miaixz.bus.auth.Outcome;
+import org.miaixz.bus.auth.Provider;
+import org.miaixz.bus.auth.Registration;
+import org.miaixz.bus.auth.Source;
+import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.SourceAuthentication;
 import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.auth.worker.SourceWorker;
+import org.miaixz.bus.auth.worker.WorkerSlots;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -70,7 +80,7 @@ final class VendorCompiler implements SourceDriver<VendorOptions<?>> {
     VendorCompiler(final VendorDirectory directory, final AdapterBindings bindings) {
         this.directory = Assert.notNull(directory, "Vendor compiler directory must not be null");
         this.bindings = Assert.notNull(bindings, "Vendor compiler adapter bindings must not be null");
-        this.scheme = new VendorScheme();
+        this.scheme = new VendorScheme(directory);
     }
 
     /**
@@ -83,8 +93,9 @@ final class VendorCompiler implements SourceDriver<VendorOptions<?>> {
      */
     private static void requireRegistration(final Source source, final Provider provider, final Library library) {
         final Source checked = Assert.notNull(source, "Vendor Source must not be null");
-        if (!"vendor".equals(checked.getType()) || checked.getProtocol() == null || checked.getNamespace_id() == null
-                || checked.getNamespace_id().isBlank() || !provider.getId().equals(checked.getProvider_id())
+        if (!VendorScheme.ID.equals(checked.getType()) || checked.getProtocol() == null
+                || library.getNamespace_id() == null || library.getNamespace_id().isBlank()
+                || !provider.getId().equals(checked.getProvider_id())
                 || !library.getId().equals(provider.getLibrary_id())) {
             throw new ValidateException("Vendor compiler requires a matching Source registration");
         }
@@ -123,6 +134,7 @@ final class VendorCompiler implements SourceDriver<VendorOptions<?>> {
         Assert.notBlank(options.clientId(), "Vendor client identifier must not be blank");
         Assert.notNull(options.credential(), "Vendor credential reference must not be null");
         Assert.notNull(options.scopes(), "Vendor scopes must not be null");
+        variant.pkce().resolve(options);
         final Set<String> scopes = new HashSet<>(options.scopes().size());
         for (String scope : options.scopes()) {
             if (!scopes.add(Assert.notBlank(scope, "Vendor scope must not be blank"))) {
@@ -180,8 +192,7 @@ final class VendorCompiler implements SourceDriver<VendorOptions<?>> {
      */
     @Override
     public boolean supports(final String protocol) {
-        return Protocol.OAUTH2.name().equalsIgnoreCase(protocol) || Protocol.OIDC.name().equalsIgnoreCase(protocol)
-                || Protocol.VENDOR_AUTH.name().equalsIgnoreCase(protocol);
+        return SourceDriver.super.supports(protocol);
     }
 
     /**
@@ -202,13 +213,50 @@ final class VendorCompiler implements SourceDriver<VendorOptions<?>> {
         throw new ValidateException("Vendor compiler requires VendorOptions");
     }
 
+    @Override
+    public VendorOptions<?> validate(final Source source) {
+        final Source checked = Assert.notNull(source, "Vendor Source must not be null");
+        final VendorOptions<?> options = require(checked.getOptions());
+        final VariantManifest<?> manifest = directory.require(options.vendor());
+        final VariantManifest.Variant variant = directory.require(options.vendor(), options.variant());
+        requireRoute(checked, manifest, variant, options);
+        requireOptions(variant, options);
+        requireManifest(manifest, variant);
+        variant.targets().resolve(options);
+        return options;
+    }
+
+    @Override
+    public WorkerSlots slots(final Source source, final VendorOptions<?> options) {
+        final VariantManifest.Variant variant = directory.require(options.vendor(), options.variant());
+        final Set<WorkerSlots.Slot> slots = new HashSet<>();
+        slots.add(switch (options.credential().type()) {
+            case PRIVATE_KEY -> WorkerSlots.Slot.KEY;
+            case CERTIFICATE -> WorkerSlots.Slot.CERTIFICATE;
+            case PASSWORD, CLIENT_SECRET, SHARED_SECRET -> WorkerSlots.Slot.SECRET;
+        });
+        if (variant.pkce().resolve(options)) {
+            slots.add(WorkerSlots.Slot.CREDENTIAL);
+        }
+        return new WorkerSlots(slots);
+    }
+
+    @Override
+    public Dependencies dependencies(final Source source, final VendorOptions<?> options) {
+        return Dependencies.of(
+                Dependencies.Service.FABRIC_CONTEXT,
+                Dependencies.Service.JSON_PROVIDER,
+                Dependencies.Service.EXECUTOR,
+                Dependencies.Service.STATE_CACHE,
+                Dependencies.Service.REPLAY_CACHE,
+                Dependencies.Service.SECURITY_BASELINE);
+    }
+
     /**
      * Compiles one validated Source registration into a Source worker.
      *
-     * @param registration complete Vendor Source registration
-     * @param provider     resolved owning Provider
-     * @param library      Library resolved through the owning Provider
-     * @param services     externally supplied execution services
+     * @param prepared one-time validated Source graph, Options and dependency declaration
+     * @param services dependency-scoped runtime services
      * @return immutable executable entry wrapping the exact selected adapter
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if registration, relationships, routing, options, manifest, or selected variant
@@ -216,18 +264,16 @@ final class VendorCompiler implements SourceDriver<VendorOptions<?>> {
      */
     @Override
     public SourceWorker compile(
-            final Registration.Record<Source> registration,
-            final Provider provider,
-            final Library library,
-            final ExecutionServices services) {
-        final Registration.Record<Source> record = Assert
-                .notNull(registration, "Vendor Source registration must not be null");
-        Assert.notNull(provider, "Vendor Source Provider must not be null");
-        Assert.notNull(library, "Vendor Source Library must not be null");
-        final ExecutionServices runtime = Assert.notNull(services, "Vendor execution services must not be null");
+            final Prepared<VendorOptions<?>> prepared,
+            final DriverServices services) {
+        Assert.notNull(prepared, "Vendor Source preparation must not be null");
+        final Registration.SourceEntry record = prepared.registration();
+        final Provider provider = prepared.provider();
+        final Library library = prepared.library();
+        final DriverServices runtime = Assert.notNull(services, "Vendor execution services must not be null");
         final Source source = record.resource();
         requireRegistration(source, provider, library);
-        final VendorOptions<?> options = require(source.getOptions());
+        final VendorOptions<?> options = prepared.options();
         final VariantManifest<?> manifest = directory.require(options.vendor());
         final VariantManifest.Variant variant = directory.require(options.vendor(), options.variant());
         requireRoute(source, manifest, variant, options);
@@ -235,7 +281,7 @@ final class VendorCompiler implements SourceDriver<VendorOptions<?>> {
         requireManifest(manifest, variant);
         variant.targets().resolve(options);
         return new CompiledAdapter(
-                bindings.create(source.getNamespace_id(), source.getId(), manifest, variant, options, runtime));
+                bindings.create(library.getNamespace_id(), source.getId(), manifest, variant, options, runtime));
     }
 
     /**
@@ -285,6 +331,11 @@ final class VendorCompiler implements SourceDriver<VendorOptions<?>> {
                 final Context context,
                 final Timeout.Budget timeout) {
             return adapter.invoke(capability, request, context, timeout);
+        }
+
+        @Override
+        public void close() {
+            adapter.close();
         }
 
     }

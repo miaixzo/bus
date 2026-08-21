@@ -24,6 +24,7 @@ import java.util.List;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Options;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Defines project-supplied immutable deployment inputs for one third-party platform Source.
@@ -39,6 +40,22 @@ import org.miaixz.bus.core.lang.Optional;
  * @author Kimi Liu
  */
 public interface VendorOptions<O extends VendorOptions<O>> extends Options<O> {
+
+    /**
+     * Retains built-in record options as their immutable generation snapshot.
+     * <p>
+     * A project-defined non-record implementation must override this method and return a detached immutable value.
+     * </p>
+     *
+     * @return immutable typed Vendor options
+     */
+    @Override
+    default O snapshot() {
+        if (!getClass().isRecord()) {
+            throw new ValidateException("Mutable Vendor options must provide an immutable snapshot");
+        }
+        return type().cast(this);
+    }
 
     /**
      * Returns the stable platform routing identifier.
@@ -83,9 +100,13 @@ public interface VendorOptions<O extends VendorOptions<O>> extends Options<O> {
     List<String> scopes();
 
     /**
-     * Returns whether this deployment enables S256 when the selected variant permits optional PKCE.
+     * Returns whether this deployment selects S256 when the manifest declares PKCE optional.
+     * <p>
+     * The selected {@link VariantManifest.Variant} remains the only authority for whether PKCE is disabled, optional,
+     * or required. This value cannot enable a disabled variant or disable a required variant.
+     * </p>
      *
-     * @return {@code false} unless a platform options record explicitly overrides the selector
+     * @return {@code false} unless an optional-PKCE options value explicitly selects it
      */
     default boolean pkce() {
         return false;

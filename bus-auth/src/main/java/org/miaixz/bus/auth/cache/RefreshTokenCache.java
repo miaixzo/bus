@@ -19,37 +19,60 @@
 */
 package org.miaixz.bus.auth.cache;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 
 /**
  * Stores OAuth refresh-token family state for rotation and reuse detection.
  * <p>
- * Each backend key is an isolated irreversible refresh-token digest. Atomic replace advances one active generation to
- * its rotated state while a new generation is created; observing a rotated token again permits policy to mark reuse and
- * revoke the family. Plaintext refresh tokens are never retained in this value.
+ * Each backend key is an isolated irreversible refresh-token digest. Atomic replace advances one token generation,
+ * while {@link AuthorizationCache} is the authoritative lifecycle shared by the complete family and its access tokens.
+ * Plaintext refresh tokens are never retained in this value.
  * </p>
  *
  * @author Kimi Liu
  */
-public final class RefreshTokenCache extends AuthCache<ExpiringValue<RefreshTokenCache.Entry>> {
+public final class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
 
     /**
      * Isolates refresh-token state from every other bus-cache consumer.
      */
-    private static final String NAMESPACE = "auth:refresh-token:";
+    private static final String PURPOSE = "refresh-token";
 
     /**
      * Creates a refresh-token cache view backed entirely by bus-cache.
      *
      * @param cache shared bus-cache backend
      */
-    public RefreshTokenCache(final CacheX<String, Object> cache) {
-        super(cache, NAMESPACE);
+    public RefreshTokenCache(final CacheX<String, Object> cache, final String deployment,
+            final Clock clock) {
+        super(cache, deployment, PURPOSE, Entry.class, clock);
+    }
+
+    public CompletionStage<Boolean> issue(final String key, final ExpiringValue<Entry> value) {
+        return super.doIssue(key, value);
+    }
+
+    public CompletionStage<ExpiringValue<Entry>> find(final String key) {
+        return super.doFind(key);
+    }
+
+    public CompletionStage<Boolean> rotate(
+            final String key,
+            final ExpiringValue<Entry> expected,
+            final ExpiringValue<Entry> update) {
+        return super.doUpdate(key, expected, update);
+    }
+
+    public CompletionStage<Boolean> revoke(final String key) {
+        return super.doRevoke(key);
     }
 
     /**
@@ -98,7 +121,7 @@ public final class RefreshTokenCache extends AuthCache<ExpiringValue<RefreshToke
      */
     public record Entry(String providerId, String clientId, String subjectId, String familyId, long generation,
             List<String> scope, List<String> audience, Optional<String> confirmation,
-            Optional<AuthorizationCodeCache.OpenIdBinding> openIdBinding, Status status) {
+            Optional<AuthorizationCodeCache.OpenIdBinding> openIdBinding, Status status) implements Serializable {
 
         /**
          * Creates immutable refresh-token state.

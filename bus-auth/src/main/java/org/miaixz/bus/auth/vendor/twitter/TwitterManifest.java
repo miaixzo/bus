@@ -84,7 +84,7 @@ public final class TwitterManifest implements VariantManifest<TwitterOptions> {
      * Complete immutable endpoint, client, scope, capability, form, and deviation manifest.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OAUTH2,
-            List.of("tweet.read", "users.read"),
+            VariantManifest.Pkce.REQUIRED, List.of("tweet.read", "users.read"),
             new VendorTargets(
                     Optional.of(
                             fixed("https://x.com/i/oauth2/authorize", Http.Method.GET, Endpoint.Authentication.NONE)),

@@ -46,16 +46,6 @@ public record TaobaoOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<TaobaoOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<TaobaoOptions> type() {
-        return TaobaoOptions.class;
-    }
-
-    /**
      * Validates and freezes one Taobao registration without resolving its secret.
      *
      * @throws IllegalArgumentException if a required component or container is {@code null} or blank
@@ -104,6 +94,16 @@ public record TaobaoOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
         } catch (URISyntaxException cause) {
             throw new ValidateException("Taobao redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<TaobaoOptions> type() {
+        return TaobaoOptions.class;
     }
 
     /**

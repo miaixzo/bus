@@ -19,6 +19,13 @@
 */
 package org.miaixz.bus.auth;
 
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -40,6 +47,85 @@ import org.miaixz.bus.extra.json.JsonValue;
  * @author Kimi Liu
  */
 public sealed interface Outcome<T> permits Outcome.Succeeded, Outcome.Rejected, Outcome.Failed {
+
+    /**
+     * Maps a successful value while preserving rejection and operational failure outcomes.
+     *
+     * @param mapper successful-value mapper
+     * @param <R>    mapped success type
+     * @return mapped outcome
+     */
+    default <R> Outcome<R> map(final Function<? super T, ? extends R> mapper) {
+        Assert.notNull(mapper, "Outcome mapper must not be null");
+        return switch (this) {
+            case Succeeded<T> success -> Outcome.succeeded(mapper.apply(success.value()));
+            case Rejected<T> rejected -> Outcome.rejected(rejected.failure());
+            case Failed<T> failed -> Outcome.failed(failed.failure());
+        };
+    }
+
+    /**
+     * Maps a successful value to another Outcome while preserving rejection and operational failure outcomes.
+     *
+     * @param mapper successful-value outcome mapper
+     * @param <R>    mapped success type
+     * @return mapped outcome
+     */
+    default <R> Outcome<R> flatMap(final Function<? super T, ? extends Outcome<R>> mapper) {
+        Assert.notNull(mapper, "Outcome mapper must not be null");
+        return switch (this) {
+            case Succeeded<T> success -> Assert.notNull(mapper.apply(success.value()),
+                    "Outcome mapper returned no outcome");
+            case Rejected<T> rejected -> Outcome.rejected(rejected.failure());
+            case Failed<T> failed -> Outcome.failed(failed.failure());
+        };
+    }
+
+    /**
+     * Invokes one asynchronous Outcome operation and maps its successful value while closing ordinary invocation,
+     * stage, null-value, and mapper failures into a failed Outcome.
+     *
+     * @param operation asynchronous Outcome supplier
+     * @param mapper    successful-value mapper
+     * @param <S>       source success type
+     * @param <R>       mapped success type
+     * @return asynchronous mapped outcome
+     */
+    static <S, R> CompletionStage<Outcome<R>> mapStage(
+            final Supplier<CompletionStage<Outcome<S>>> operation,
+            final Function<? super S, ? extends R> mapper) {
+        Assert.notNull(operation, "Outcome operation supplier must not be null");
+        Assert.notNull(mapper, "Outcome mapper must not be null");
+        final CompletionStage<Outcome<S>> stage;
+        try {
+            stage = operation.get();
+        } catch (RuntimeException ignored) {
+            return CompletableFuture.completedFuture(operationFailed("Operation failed before returning a stage"));
+        }
+        if (stage == null) {
+            return CompletableFuture.completedFuture(operationFailed("Operation returned no stage"));
+        }
+        return stage.handle((outcome, cause) -> {
+            if (cause != null) {
+                return operationFailed("Operation stage failed");
+            }
+            if (outcome == null) {
+                return operationFailed("Operation returned no outcome");
+            }
+            try {
+                return outcome.map(value -> Assert.notNull(
+                        mapper.apply(Assert.notNull(value, "Operation returned no value")),
+                        "Outcome mapper returned no value"));
+            } catch (RuntimeException ignored) {
+                return operationFailed("Operation result could not be mapped");
+            }
+        });
+    }
+
+    private static <R> Outcome<R> operationFailed(final String description) {
+        return Outcome.failed(
+                new Outcome.Failure(ErrorCode._500, description, new JsonValue.ObjectValue(Map.of())));
+    }
 
     /**
      * Creates a successful outcome.

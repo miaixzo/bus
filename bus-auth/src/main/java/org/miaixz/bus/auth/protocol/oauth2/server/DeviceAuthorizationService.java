@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.auth.protocol.oauth2.server;
 
+import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +35,7 @@ import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.guard.ScopeValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -102,7 +103,7 @@ public final class DeviceAuthorizationService {
     /**
      * External client loader and framework atomic device-code cache.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Standard scope validator used for client and Provider subset checks.
@@ -124,7 +125,7 @@ public final class DeviceAuthorizationService {
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
     public DeviceAuthorizationService(final String providerId, final OAuth2ServerOptions options,
-            final ExecutionServices services, final ScopeValidator scopeValidator) {
+            final DriverServices services, final ScopeValidator scopeValidator) {
         this.providerId = Assert.notBlank(providerId, "OAuth 2.x Provider id must not be blank");
         this.options = Assert.notNull(options, "OAuth 2.x Provider options must not be null");
         this.services = Assert.notNull(services, "OAuth 2.x execution services must not be null");
@@ -142,7 +143,7 @@ public final class DeviceAuthorizationService {
      */
     private static String userCode() {
         final StringBuilder value = new StringBuilder(USER_CODE_CHARACTERS + 1);
-        final java.security.SecureRandom random = RandomKit.getSecureRandom();
+        final SecureRandom random = RandomKit.getSecureRandom();
         for (int index = 0; index < USER_CODE_CHARACTERS; index++) {
             if (index == USER_CODE_GROUP) {
                 value.append(Symbol.C_MINUS);
@@ -223,8 +224,8 @@ public final class DeviceAuthorizationService {
 
         final CompletionStage<Outcome<ConsumerMetadata>> resolution;
         try {
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.consumerLoader().load(clientId, context, timeout),
+            resolution = Outcome.mapStage(
+                    () -> services.consumerLoader().load(clientId, context, timeout),
                     loaded -> services.consumerParser().parse(clientId, loaded));
         } catch (RuntimeException exception) {
             return completed(
@@ -317,10 +318,7 @@ public final class DeviceAuthorizationService {
                 DeviceCodeCache.Status.PENDING, options.devicePollingInterval(), Optional.empty(), Optional.empty());
         final CompletionStage<Boolean> creation;
         try {
-            creation = services.deviceCodeCache().create(
-                    key(deviceCode),
-                    new ExpiringValue<>(entry, expiresAt),
-                    options.deviceCodeLifetime().toMillis());
+            creation = services.deviceCodeCache().issue(key(deviceCode), new ExpiringValue<>(entry, expiresAt));
         } catch (RuntimeException exception) {
             return completed(
                     Outcome.failed(

@@ -23,7 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.auth.runtime.ExecutionServices;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.vendor.afdian.AfdianManifest;
 import org.miaixz.bus.auth.vendor.afdian.AfdianSourceAdapter;
 import org.miaixz.bus.auth.vendor.alipay.AlipayManifest;
@@ -100,11 +100,7 @@ import org.miaixz.bus.auth.vendor.twitter.TwitterManifest;
 import org.miaixz.bus.auth.vendor.twitter.TwitterSourceAdapter;
 import org.miaixz.bus.auth.vendor.vk.VkManifest;
 import org.miaixz.bus.auth.vendor.vk.VkSourceAdapter;
-import org.miaixz.bus.auth.vendor.wechat.WeChatEeAdapter;
-import org.miaixz.bus.auth.vendor.wechat.WeChatManifest;
-import org.miaixz.bus.auth.vendor.wechat.WeChatMiniAdapter;
-import org.miaixz.bus.auth.vendor.wechat.WeChatMpAdapter;
-import org.miaixz.bus.auth.vendor.wechat.WeChatOpenAdapter;
+import org.miaixz.bus.auth.vendor.wechat.*;
 import org.miaixz.bus.auth.vendor.weibo.WeiboManifest;
 import org.miaixz.bus.auth.vendor.weibo.WeiboSourceAdapter;
 import org.miaixz.bus.auth.vendor.ximalaya.XimalayaManifest;
@@ -206,7 +202,7 @@ final class VendorSuite {
      * @return immutable fifty-variant adapter factory directory
      */
     private static AdapterBindings buildAdapterBindings() {
-        final Map<AdapterBindings.Key, VendorAdapter.Factory<?>> bindings = new LinkedHashMap<>(50);
+        final Map<AdapterBindings.Key, AdapterBindings.Binding> bindings = new LinkedHashMap<>(50);
         register(
                 bindings,
                 AfdianManifest.ID,
@@ -433,16 +429,16 @@ final class VendorSuite {
      * @param bindings mutable build-scoped adapter bindings
      * @param vendor   exact platform identifier
      * @param variant  exact platform variant identifier
-     * @param factory  exact typed adapter factory
+     * @param binding  exact typed adapter binding
      * @throws ValidateException if the platform-variant key already exists
      */
     private static void register(
-            final Map<AdapterBindings.Key, VendorAdapter.Factory<?>> bindings,
+            final Map<AdapterBindings.Key, AdapterBindings.Binding> bindings,
             final Vendor.Id vendor,
             final Vendor.Variant variant,
-            final VendorAdapter.Factory<?> factory) {
+            final AdapterBindings.Binding binding) {
         final AdapterBindings.Key key = new AdapterBindings.Key(vendor, variant);
-        if (bindings.putIfAbsent(key, factory) != null) {
+        if (bindings.putIfAbsent(key, binding) != null) {
             throw new ValidateException(
                     "Duplicate Vendor adapter factory: " + vendor.value() + Symbol.C_SLASH + variant.value());
         }
@@ -455,15 +451,17 @@ final class VendorSuite {
      * @param constructor  exact concrete adapter constructor
      * @param <D>          concrete platform manifest type
      * @param <S>          concrete platform options type
-     * @return type-safe adapter factory with runtime manifest-class verification
+     * @return type-safe adapter binding with runtime manifest and options verification
      */
-    private static <D extends VariantManifest<S>, S extends VendorOptions<?>> VendorAdapter.Factory<S> factory(
+    private static <D extends VariantManifest<S>, S extends VendorOptions<?>> AdapterBindings.Binding factory(
             final Class<D> manifestType,
             final AdapterConstructor<D, S> constructor) {
         Assert.notNull(manifestType, "Vendor manifest class must not be null");
         Assert.notNull(constructor, "Vendor adapter constructor must not be null");
-        return (namespaceId, sourceId, manifest, variant, options, services) -> constructor
-                .create(namespaceId, sourceId, manifestType.cast(manifest), variant, options, services);
+        return AdapterBindings.binding(
+                manifestType,
+                (namespaceId, sourceId, manifest, variant, options, services) -> constructor
+                        .create(namespaceId, sourceId, manifestType.cast(manifest), variant, options, services));
     }
 
     /**
@@ -493,7 +491,7 @@ final class VendorSuite {
                 D manifest,
                 VariantManifest.Variant variant,
                 S options,
-                ExecutionServices services);
+                DriverServices services);
 
     }
 

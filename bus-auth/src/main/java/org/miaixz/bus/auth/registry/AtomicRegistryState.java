@@ -59,6 +59,28 @@ public final class AtomicRegistryState {
     }
 
     /**
+     * Acquires the currently published non-retired generation.
+     * <p>
+     * A concurrent replacement may retire the first observed value. In that case acquisition retries against the new
+     * current value so callers never execute a retired Source worker.
+     * </p>
+     *
+     * @return current generation lease, or {@code null} only when the current runtime generation was explicitly retired
+     */
+    public RegistryView.Lease acquire() {
+        while (true) {
+            final RegistryView observed = current.get();
+            final RegistryView.Lease lease = observed.acquire();
+            if (lease != null) {
+                return lease;
+            }
+            if (observed == current.get()) {
+                return null;
+            }
+        }
+    }
+
+    /**
      * Atomically publishes a replacement only if the expected view remains current.
      *
      * @param expected    exact view observed before compilation

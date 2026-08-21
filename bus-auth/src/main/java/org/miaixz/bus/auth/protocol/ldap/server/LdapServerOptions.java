@@ -52,16 +52,6 @@ public record LdapServerOptions(boolean anonymousBindSupported, boolean simpleBi
         int maximumBerDepth) implements Options<LdapServerOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<LdapServerOptions> type() {
-        return LdapServerOptions.class;
-    }
-
-    /**
      * Freezes mechanism names and verifies that the Provider has a usable Bind and positive resource limits.
      *
      * @throws IllegalArgumentException if the mechanism set or one of its members is {@code null}
@@ -83,6 +73,21 @@ public record LdapServerOptions(boolean anonymousBindSupported, boolean simpleBi
                 || maximumBerDepth <= 0) {
             throw new ValidateException("LDAP Provider search, message, and BER depth limits must be positive");
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<LdapServerOptions> type() {
+        return LdapServerOptions.class;
+    }
+
+    @Override
+    public LdapServerOptions snapshot() {
+        return this;
     }
 
 }

@@ -32,16 +32,16 @@ import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.Parameter;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceAuthentication;
-import org.miaixz.bus.auth.source.SourceAuthenticationRequest;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -119,7 +119,7 @@ public final class JdSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned loaders, parsers, clock, JSON, executor, and Fabric dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Unified public OAuth capability router for the JD authorization operation.
@@ -149,7 +149,7 @@ public final class JdSourceAdapter implements VendorAdapter {
      * @throws ValidateException        if routing or protocol differs from jd/default
      */
     public JdSourceAdapter(final String namespaceId, final String sourceId, final JdManifest manifest,
-            final VariantManifest.Variant variant, final JdOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final JdOptions options, final DriverServices services) {
         Assert.notNull(manifest, "JD manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "JD Source id must not be blank");
         this.variant = Assert.notNull(variant, "JD manifest must not be null");
@@ -501,7 +501,7 @@ public final class JdSourceAdapter implements VendorAdapter {
      * @param <T>         expected success type
      * @return failed outcome
      */
-    private static <T> Outcome<T> failed(final org.miaixz.bus.core.basic.normal.Errors code, final String description) {
+    private static <T> Outcome<T> failed(final Errors code, final String description) {
         return Outcome.failed(new Outcome.Failure(code, description, emptyObject()));
     }
 
@@ -515,7 +515,7 @@ public final class JdSourceAdapter implements VendorAdapter {
      * @return failed outcome
      */
     private static <T> Outcome<T> failed(
-            final org.miaixz.bus.core.basic.normal.Errors code,
+            final Errors code,
             final String description,
             final Map<String, JsonValue> details) {
         return Outcome.failed(new Outcome.Failure(code, description, new JsonValue.ObjectValue(details)));
@@ -555,11 +555,11 @@ public final class JdSourceAdapter implements VendorAdapter {
             return completed(rejected("JD capability is not declared"));
         }
         if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserStart start) {
+                && request instanceof SourceAuthentication.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
         if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserCallback callback) {
+                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::complete, context, timeout),
                     capability.responseType());
@@ -707,9 +707,8 @@ public final class JdSourceAdapter implements VendorAdapter {
         if (completion.correlation().nonce().isPresent() || completion.codeVerifier().isPresent()) {
             return completed(failed(ErrorCode._500, "JD callback contains unexpected OIDC or PKCE material"));
         }
-        return org.miaixz.bus.auth.runtime.LoadResult
-                .parse(
-                        services.secretLoader().load(options.credential(), context, timeout),
+        return Outcome.mapStage(
+                        () -> services.secretLoader().load(options.credential(), context, timeout),
                         loaded -> services.secretParser().parse(options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> authenticate(

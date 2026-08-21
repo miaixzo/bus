@@ -30,16 +30,16 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationResponseDecoder;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceAuthentication;
-import org.miaixz.bus.auth.source.SourceAuthenticationRequest;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
@@ -108,7 +108,7 @@ public final class PinterestSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime, secret, JSON, network, clock, and execution dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Shared one-time browser-state coordinator.
@@ -138,7 +138,7 @@ public final class PinterestSourceAdapter implements VendorAdapter {
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
     public PinterestSourceAdapter(final String namespaceId, final String sourceId, final PinterestManifest manifest,
-            final VariantManifest.Variant variant, final PinterestOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final PinterestOptions options, final DriverServices services) {
         final PinterestManifest selected = Assert.notNull(manifest, "Pinterest manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Pinterest Source id must not be blank");
         this.variant = Assert.notNull(variant, "Pinterest manifest must not be null");
@@ -393,7 +393,7 @@ public final class PinterestSourceAdapter implements VendorAdapter {
      * @param <T>         expected successful value type
      * @return failed outcome
      */
-    private static <T> Outcome<T> failed(final org.miaixz.bus.core.basic.normal.Errors code, final String description) {
+    private static <T> Outcome<T> failed(final Errors code, final String description) {
         return Outcome.failed(new Outcome.Failure(code, description, emptyObject()));
     }
 
@@ -431,11 +431,11 @@ public final class PinterestSourceAdapter implements VendorAdapter {
             return completed(rejected("Pinterest capability is not declared"));
         }
         if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserStart start) {
+                && request instanceof SourceAuthentication.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
         if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserCallback callback) {
+                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -583,9 +583,8 @@ public final class PinterestSourceAdapter implements VendorAdapter {
         if (!valid(request)) {
             return completed(rejected("Pinterest token request differs from the registered grant contract"));
         }
-        return org.miaixz.bus.auth.runtime.LoadResult
-                .parse(
-                        services.secretLoader().load(options.credential(), context, timeout),
+        return Outcome.mapStage(
+                        () -> services.secretLoader().load(options.credential(), context, timeout),
                         loaded -> services.secretParser().parse(options.credential(), loaded))
                 .thenCompose(outcome -> switch (outcome) {
                     case Outcome.Succeeded<SecretLease> success -> CompletableFuture.supplyAsync(() -> {

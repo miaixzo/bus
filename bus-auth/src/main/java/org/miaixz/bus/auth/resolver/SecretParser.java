@@ -21,16 +21,18 @@ package org.miaixz.bus.auth.resolver;
 
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.worker.SecretRecord;
+import org.miaixz.bus.auth.worker.SecretLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
-/** Pure parser for externally leased character-based secrets. */
+/**
+ * Pure parser for externally leased character-based secrets.
+ */
 public final class SecretParser {
 
-    public SecretLease parse(final Credential.Reference expected, final SecretRecord record) {
+    public SecretLease parse(final Credential.Reference expected, final SecretLoader.Record record) {
         final Credential.Reference reference = Assert.notNull(expected, "Expected secret reference must not be null");
-        final SecretRecord loaded = Assert.notNull(record, "Loaded secret record must not be null");
+        final SecretLoader.Record loaded = Assert.notNull(record, "Loaded secret record must not be null");
         if (!reference.equals(loaded.reference())) {
             throw new ValidateException("Loaded secret reference does not match the requested reference");
         }

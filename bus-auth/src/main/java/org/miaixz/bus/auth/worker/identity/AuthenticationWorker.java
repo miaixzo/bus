@@ -24,16 +24,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Principal;
-import org.miaixz.bus.auth.Subject;
-import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.resolver.ClaimParser;
 import org.miaixz.bus.auth.resolver.SubjectParser;
 import org.miaixz.bus.auth.shared.claim.ClaimSet;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthenticationResult;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -51,22 +46,34 @@ import org.miaixz.bus.extra.json.JsonValue;
  */
 public final class AuthenticationWorker {
 
-    /** Project-supplied external-account and Subject loading port. */
+    /**
+     * Project-supplied external-account and Subject loading port.
+     */
     private final IdentityLoader identityLoader;
 
-    /** Project-supplied claim lookup and disclosure port. */
+    /**
+     * Project-supplied claim lookup and disclosure port.
+     */
     private final ClaimLoader claimLoader;
 
-    /** Pure parser for project-loaded Subject records. */
+    /**
+     * Pure parser for project-loaded Subject records.
+     */
     private final SubjectParser subjectParser;
 
-    /** Pure parser for project-loaded claim records. */
+    /**
+     * Pure parser for project-loaded claim records.
+     */
     private final ClaimParser claimParser;
 
-    /** Framework-owned external identity structural verifier. */
+    /**
+     * Framework-owned external identity structural verifier.
+     */
     private final ExternalIdentityVerifier identityVerifier;
 
-    /** Framework-owned Principal constructor. */
+    /**
+     * Framework-owned Principal constructor.
+     */
     private final PrincipalFactory principalFactory;
 
     /**
@@ -86,68 +93,8 @@ public final class AuthenticationWorker {
     }
 
     /**
-     * Completes one Source result through identity loading, claim loading, parsing, and Principal construction.
-     *
-     * @param sourceId selected registered Source identifier
-     * @param result   completed verified Source authentication result
-     * @param context  immutable non-secret invocation context
-     * @param timeout  shared end-to-end operation budget
-     * @return stage containing the completed authentication result, expected rejection, or operational failure
+     * Invokes one project port without allowing null stages or dependency exceptions to escape as normal flow.
      */
-    public CompletionStage<Outcome<AuthenticationResult>> complete(
-            final String sourceId,
-            final SourceAuthenticationResult result,
-            final Context context,
-            final Timeout.Budget timeout) {
-        Assert.notBlank(sourceId, "Authentication worker Source id must not be blank");
-        Assert.notNull(result, "Authentication worker Source result must not be null");
-        Assert.notNull(context, "Authentication worker context must not be null");
-        Assert.notNull(timeout, "Authentication worker budget must not be null");
-        if (timeout.expired()) {
-            return completed(expired());
-        }
-
-        final ExternalIdentity identity;
-        try {
-            identity = identityVerifier.verify(sourceId, result);
-        } catch (RuntimeException cause) {
-            return completed(failed("Completed Source identity is invalid"));
-        }
-
-        return flatMap(
-                invoke(() -> identityLoader.load(identity, context, timeout), timeout, "Identity loading failed"),
-                record -> {
-                    final Subject subject = subjectParser.parse(record);
-                    return flatMap(
-                            invoke(
-                                    () -> claimLoader
-                                            .load(new ClaimLoader.Request(subject, identity), context, timeout),
-                                    timeout,
-                                    "Claim loading failed"),
-                            claims -> principal(subject, identity, claimParser.parse(claims), timeout));
-                });
-    }
-
-    /** Completes framework-owned Principal and result construction. */
-    private CompletionStage<Outcome<AuthenticationResult>> principal(
-            final Subject subject,
-            final ExternalIdentity identity,
-            final ClaimSet claims,
-            final Timeout.Budget timeout) {
-        if (timeout.expired()) {
-            return completed(expired());
-        }
-        try {
-            final Subject checked = Assert.notNull(subject, "Identity parser returned no Subject");
-            final ClaimSet verified = Assert.notNull(claims, "Claim parser returned no ClaimSet");
-            final Principal principal = principalFactory.create(checked, verified);
-            return completed(Outcome.succeeded(new AuthenticationResult(checked, principal, identity, verified)));
-        } catch (RuntimeException cause) {
-            return completed(failed("Authentication result construction failed"));
-        }
-    }
-
-    /** Invokes one project port without allowing null stages or dependency exceptions to escape as normal flow. */
     private static <T> CompletionStage<Outcome<T>> invoke(
             final StageSupplier<T> supplier,
             final Timeout.Budget timeout,
@@ -166,7 +113,9 @@ public final class AuthenticationWorker {
         }
     }
 
-    /** Composes a successful value while preserving rejection and operational failure outcomes. */
+    /**
+     * Composes a successful value while preserving rejection and operational failure outcomes.
+     */
     private static <A, B> CompletionStage<Outcome<B>> flatMap(
             final CompletionStage<Outcome<A>> stage,
             final Function<? super A, ? extends CompletionStage<Outcome<B>>> next) {
@@ -185,24 +134,96 @@ public final class AuthenticationWorker {
         });
     }
 
-    /** Creates one already completed outcome stage. */
+    /**
+     * Creates one already completed outcome stage.
+     */
     private static <T> CompletionStage<Outcome<T>> completed(final Outcome<T> outcome) {
         return CompletableFuture.completedFuture(outcome);
     }
 
-    /** Creates one safe operation-budget failure. */
+    /**
+     * Creates one safe operation-budget failure.
+     */
     private static <T> Outcome<T> expired() {
         return Outcome.failed(
                 new Outcome.Failure(ErrorCode._408, "Authentication worker budget has expired",
                         new JsonValue.ObjectValue(Map.of())));
     }
 
-    /** Creates one safe dependency or framework failure. */
+    /**
+     * Creates one safe dependency or framework failure.
+     */
     private static <T> Outcome<T> failed(final String description) {
         return Outcome.failed(new Outcome.Failure(ErrorCode._500, description, new JsonValue.ObjectValue(Map.of())));
     }
 
-    /** Supplies one asynchronous project-port invocation. */
+    /**
+     * Completes one Source result through identity loading, claim loading, parsing, and Principal construction.
+     *
+     * @param sourceId selected registered Source identifier
+     * @param identity completed verified external identity
+     * @param context  immutable non-secret invocation context
+     * @param timeout  shared end-to-end operation budget
+     * @return stage containing the completed authentication result, expected rejection, or operational failure
+     */
+    public CompletionStage<Outcome<AuthenticationResult>> complete(
+            final String sourceId,
+            final ExternalIdentity identity,
+            final Context context,
+            final Timeout.Budget timeout) {
+        Assert.notBlank(sourceId, "Authentication worker Source id must not be blank");
+        Assert.notNull(identity, "Authentication worker external identity must not be null");
+        Assert.notNull(context, "Authentication worker context must not be null");
+        Assert.notNull(timeout, "Authentication worker budget must not be null");
+        if (timeout.expired()) {
+            return completed(expired());
+        }
+
+        final ExternalIdentity verified;
+        try {
+            verified = identityVerifier.verify(sourceId, identity);
+        } catch (RuntimeException cause) {
+            return completed(failed("Completed Source identity is invalid"));
+        }
+
+        return flatMap(
+                invoke(() -> identityLoader.load(verified, context, timeout), timeout, "Identity loading failed"),
+                record -> {
+                    final Subject subject = subjectParser.parse(record);
+                    return flatMap(
+                            invoke(
+                                    () -> claimLoader
+                                            .load(new ClaimLoader.Request(subject, verified), context, timeout),
+                                    timeout,
+                                    "Claim loading failed"),
+                            claims -> principal(subject, verified, claimParser.parse(claims), timeout));
+                });
+    }
+
+    /**
+     * Completes framework-owned Principal and result construction.
+     */
+    private CompletionStage<Outcome<AuthenticationResult>> principal(
+            final Subject subject,
+            final ExternalIdentity identity,
+            final ClaimSet claims,
+            final Timeout.Budget timeout) {
+        if (timeout.expired()) {
+            return completed(expired());
+        }
+        try {
+            final Subject checked = Assert.notNull(subject, "Identity parser returned no Subject");
+            final ClaimSet verified = Assert.notNull(claims, "Claim parser returned no ClaimSet");
+            final Principal principal = principalFactory.create(checked, verified);
+            return completed(Outcome.succeeded(new AuthenticationResult(checked, principal, identity, verified)));
+        } catch (RuntimeException cause) {
+            return completed(failed("Authentication result construction failed"));
+        }
+    }
+
+    /**
+     * Supplies one asynchronous project-port invocation.
+     */
     @FunctionalInterface
     private interface StageSupplier<T> {
 

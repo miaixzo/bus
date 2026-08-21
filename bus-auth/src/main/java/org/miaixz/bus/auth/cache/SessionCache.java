@@ -19,8 +19,11 @@
 */
 package org.miaixz.bus.auth.cache;
 
+import java.util.concurrent.CompletionStage;
+
 import org.miaixz.bus.auth.Session;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.fabric.Clock;
 
 /**
  * Stores the framework's single root Session model by an isolated session-key digest.
@@ -32,20 +35,40 @@ import org.miaixz.bus.cache.CacheX;
  *
  * @author Kimi Liu
  */
-public final class SessionCache extends AuthCache<ExpiringValue<Session>> {
+public final class SessionCache extends AuthCache<Session> {
 
     /**
      * Isolates authentication sessions from every other bus-cache consumer.
      */
-    private static final String NAMESPACE = "auth:session:";
+    private static final String PURPOSE = "session";
 
     /**
      * Creates a Session cache view backed entirely by bus-cache.
      *
      * @param cache shared bus-cache backend
      */
-    public SessionCache(final CacheX<String, Object> cache) {
-        super(cache, NAMESPACE);
+    public SessionCache(final CacheX<String, Object> cache, final String deployment,
+            final Clock clock) {
+        super(cache, deployment, PURPOSE, Session.class, clock);
+    }
+
+    public CompletionStage<Boolean> establish(final String key, final ExpiringValue<Session> value) {
+        return super.doIssue(key, value);
+    }
+
+    public CompletionStage<ExpiringValue<Session>> find(final String key) {
+        return super.doFind(key);
+    }
+
+    public CompletionStage<Boolean> refresh(
+            final String key,
+            final ExpiringValue<Session> expected,
+            final ExpiringValue<Session> update) {
+        return super.doUpdate(key, expected, update);
+    }
+
+    public CompletionStage<Boolean> invalidate(final String key) {
+        return super.doRevoke(key);
     }
 
 }

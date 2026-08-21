@@ -19,33 +19,32 @@
 */
 package org.miaixz.bus.auth;
 
+import org.miaixz.bus.auth.registry.RegistryIssue;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.auth.registry.RegistryIssue;
-import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
  * Provides read-only access to the currently committed registration state.
  * <p>
- * The {@link #snapshot()} method exposes the committed registration records, including their persistence entities.
- * Implementations atomically replace structurally immutable compiled views and preserve the previous view when
- * validation or compilation fails. Capability execution belongs exclusively to {@link Authenticator}.
+ * The {@link #snapshot()} method exposes detached framework registration records. Implementations atomically replace
+ * immutable compiled views and preserve the previous view when validation or compilation fails. Capability execution
+ * belongs exclusively to {@link Authenticator}.
  * </p>
  *
  * @author Kimi Liu
  */
-public interface Registry extends Lifecycle, AutoCloseable {
+public interface Registry {
 
     /**
      * Returns the complete registration snapshot associated with the committed Registry view.
      * <p>
-     * The snapshot owns an unmodifiable record list, but each record still references the mutable persistence entity
-     * supplied by the external project.
+     * The snapshot owns an unmodifiable record list. Each record returns a detached framework entity copy.
      * </p>
      *
-     * @return current structurally frozen registration snapshot
+     * @return current immutable registration snapshot
      */
     Snapshot snapshot();
 
@@ -57,10 +56,20 @@ public interface Registry extends Lifecycle, AutoCloseable {
     Revision revision();
 
     /**
-     * Closes the Registry without transferring ownership of externally supplied stores, loaders, or transports.
+     * Returns every configured Source owned by one Provider in snapshot order.
+     *
+     * @param providerId owning Provider identifier
+     * @return detached configured Source registrations, including disabled records
      */
-    @Override
-    void close();
+    List<Registration.SourceEntry> sources(String providerId);
+
+    /**
+     * Returns enabled Source registrations owned by one Provider in snapshot order.
+     *
+     * @param providerId owning Provider identifier
+     * @return detached enabled Source registrations
+     */
+    List<Registration.SourceEntry> enabledSources(String providerId);
 
     /**
      * Identifies the monotonically increasing version of a complete committed Registry snapshot.
@@ -123,13 +132,10 @@ public interface Registry extends Lifecycle, AutoCloseable {
      * @param records  all Library, Provider, and Source records in loading order
      * @author Kimi Liu
      */
-    record Snapshot(Revision revision, List<Registration.Record<?>> records) {
+    record Snapshot(Revision revision, List<Registration.Entry> records) {
 
         /**
          * Creates a snapshot with a detached unmodifiable record list.
-         * <p>
-         * Record wrappers and contained persistence entities are not deep-copied.
-         * </p>
          *
          * @param revision snapshot revision
          * @param records  complete registration records
@@ -138,9 +144,9 @@ public interface Registry extends Lifecycle, AutoCloseable {
         public Snapshot {
             Assert.notNull(revision, "Registry snapshot revision must not be null");
             Assert.notNull(records, "Registry snapshot records must not be null");
-            final List<Registration.Record<?>> copy = new ArrayList<>(records.size());
-            for (Registration.Record<?> record : records) {
-                copy.add(Assert.notNull(record, "Registry snapshot record must not be null"));
+            final List<Registration.Entry> copy = new ArrayList<>(records.size());
+            for (Registration.Entry record : records) {
+                copy.add(Assert.notNull(record, "Registry snapshot entry must not be null"));
             }
             records = List.copyOf(copy);
         }
@@ -148,18 +154,21 @@ public interface Registry extends Lifecycle, AutoCloseable {
     }
 
     /**
-     * Carries immutable validation or compilation issues for a rejected Registry snapshot.
+     * Carries immutable processing issues for one attempted Registry snapshot.
+     * <p>
+     * A successful validation and commit is represented by an empty issue list for the committed revision.
+     * </p>
      *
-     * @param revision rejected snapshot revision
+     * @param revision attempted snapshot revision
      * @param issues   ordered safe issues that identify their resource and processing stage
      * @author Kimi Liu
      */
     record Report(Revision revision, List<RegistryIssue> issues) {
 
         /**
-         * Creates an immutable rejected-snapshot report.
+         * Creates an immutable snapshot-processing report.
          *
-         * @param revision rejected snapshot revision
+         * @param revision attempted snapshot revision
          * @param issues   ordered Registry issues
          * @throws IllegalArgumentException if a component or issue is {@code null}
          */

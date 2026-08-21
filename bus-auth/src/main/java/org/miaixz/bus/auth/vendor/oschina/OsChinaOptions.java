@@ -54,16 +54,6 @@ public record OsChinaOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<OsChinaOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<OsChinaOptions> type() {
-        return OsChinaOptions.class;
-    }
-
-    /**
      * Validates and freezes one OSChina registration without resolving its client secret.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
@@ -118,6 +108,16 @@ public record OsChinaOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
         } catch (URISyntaxException cause) {
             throw new ValidateException("OSChina redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<OsChinaOptions> type() {
+        return OsChinaOptions.class;
     }
 
     /**

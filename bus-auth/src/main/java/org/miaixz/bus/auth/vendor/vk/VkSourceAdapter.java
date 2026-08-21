@@ -34,11 +34,10 @@ import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationRequestEncoder;
 import org.miaixz.bus.auth.protocol.oauth2.codec.TokenRequestEncoder;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceAuthentication;
-import org.miaixz.bus.auth.source.SourceAuthenticationRequest;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -103,7 +102,7 @@ public final class VkSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime, JSON, network, clock, and state dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Shared standard OAuth authorization implementation.
@@ -138,7 +137,7 @@ public final class VkSourceAdapter implements VendorAdapter {
      * @throws ValidateException        if routing, protocol, manifest, callback, or PKCE options are inconsistent
      */
     public VkSourceAdapter(final String namespaceId, final String sourceId, final VkManifest manifest,
-            final VariantManifest.Variant variant, final VkOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final VkOptions options, final DriverServices services) {
         final VkManifest selected = Assert.notNull(manifest, "VK manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "VK Source id must not be blank");
         this.variant = Assert.notNull(variant, "VK manifest must not be null");
@@ -459,11 +458,11 @@ public final class VkSourceAdapter implements VendorAdapter {
             return completed(rejected("VK capability is not declared by the selected manifest"));
         }
         if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserStart start) {
+                && request instanceof SourceAuthentication.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
         if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserCallback callback) {
+                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());

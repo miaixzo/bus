@@ -19,10 +19,12 @@
 */
 package org.miaixz.bus.auth;
 
+import org.miaixz.bus.auth.protocol.Conformance;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import org.miaixz.bus.auth.protocol.Conformance;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.net.Protocol;
@@ -54,6 +56,19 @@ public interface Scheme<O extends Options<?>> {
      * @return protocol classification
      */
     Protocol protocol();
+
+    /**
+     * Returns every protocol accepted by this scheme.
+     * <p>
+     * Ordinary schemes accept only their primary protocol. Aggregate schemes may override this method while retaining
+     * {@link #protocol()} as their management classification.
+     * </p>
+     *
+     * @return immutable non-empty accepted protocol set
+     */
+    default Set<Protocol> protocols() {
+        return Set.of(protocol());
+    }
 
     /**
      * Returns only the capabilities implemented by the matching runtime.

@@ -52,16 +52,6 @@ public record DouyinOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<DouyinOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<DouyinOptions> type() {
-        return DouyinOptions.class;
-    }
-
-    /**
      * Validates and freezes one Douyin registration without resolving secret material.
      *
      * @throws IllegalArgumentException if a required component or collection member is {@code null} or blank
@@ -133,6 +123,16 @@ public record DouyinOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
         if (scopes.isEmpty() || !scopes.contains("user_info")) {
             throw new ValidateException("Douyin open scopes must explicitly contain user_info");
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<DouyinOptions> type() {
+        return DouyinOptions.class;
     }
 
     /**

@@ -20,10 +20,28 @@
 package org.miaixz.bus.auth.worker;
 
 import org.miaixz.bus.auth.Registration;
+import org.miaixz.bus.core.lang.Assert;
 
-/** Loads one project-owned runtime binding for an exact registration and contract. */
+/**
+ * Loads one project-owned runtime binding for an exact registration and contract.
+ */
 @FunctionalInterface
 public interface BindingLoader {
 
-    <T> T load(Registration.Record<?> registration, Class<T> contract);
+    <T> T load(Registration.SourceEntry registration, Key<T> key);
+
+    /**
+     * Identifies one project binding without using a raw class as a service-locator key.
+     *
+     * @param name stable binding name
+     * @param type exact binding contract
+     * @param <T>  binding type
+     */
+    record Key<T>(String name, Class<T> type) {
+
+        public Key {
+            Assert.notBlank(name, "Binding key name must not be blank");
+            Assert.notNull(type, "Binding key type must not be null");
+        }
+    }
 }

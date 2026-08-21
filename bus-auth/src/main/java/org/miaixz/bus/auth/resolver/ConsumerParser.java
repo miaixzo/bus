@@ -19,17 +19,21 @@
 */
 package org.miaixz.bus.auth.resolver;
 
-import org.miaixz.bus.auth.worker.ConsumerRecord;
+import org.miaixz.bus.auth.worker.ConsumerLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
-/** Pure parser for externally loaded consumer records. */
+/**
+ * Pure parser for externally loaded consumer records.
+ */
 public final class ConsumerParser {
 
-    /** Parses one loaded record without performing data access. */
-    public ConsumerMetadata parse(final String expectedId, final ConsumerRecord record) {
+    /**
+     * Parses one loaded record without performing data access.
+     */
+    public ConsumerMetadata parse(final String expectedId, final ConsumerLoader.Record record) {
         final String expected = Assert.notBlank(expectedId, "Expected consumer identifier must not be blank");
-        final ConsumerRecord loaded = Assert.notNull(record, "Loaded consumer record must not be null");
+        final ConsumerLoader.Record loaded = Assert.notNull(record, "Loaded consumer record must not be null");
         if (!expected.equals(loaded.id())) {
             throw new ValidateException("Loaded consumer identifier does not match the requested identifier");
         }

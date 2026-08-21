@@ -28,7 +28,6 @@ import org.miaixz.bus.auth.Evidence;
 import org.miaixz.bus.auth.protocol.ldap.LdapAttribute;
 import org.miaixz.bus.auth.protocol.ldap.SearchResultEntry;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.IdentityMapper;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -46,7 +45,7 @@ import org.miaixz.bus.fabric.Clock;
  *
  * @author Kimi Liu
  */
-public final class LdapIdentityParser implements IdentityMapper<SearchResultEntry> {
+public final class LdapIdentityParser {
 
     /**
      * Immutable LDAP Source mapping options.
@@ -95,7 +94,6 @@ public final class LdapIdentityParser implements IdentityMapper<SearchResultEntr
      * @throws IllegalArgumentException if an argument is invalid
      * @throws ValidateException        if a configured attribute value is not valid UTF-8
      */
-    @Override
     public ExternalIdentity map(final String sourceId, final SearchResultEntry input) {
         Assert.notBlank(sourceId, "LDAP identity Source id must not be blank");
         Assert.notNull(input, "LDAP identity Search result entry must not be null");

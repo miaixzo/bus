@@ -29,11 +29,10 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationResponseDecoder;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceAuthentication;
-import org.miaixz.bus.auth.source.SourceAuthenticationRequest;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -112,7 +111,7 @@ public final class MiSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime, JSON, network, secret, and execution dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Unified router for Xiaomi's public standard authorization and token capabilities.
@@ -142,7 +141,7 @@ public final class MiSourceAdapter implements VendorAdapter {
      * @throws ValidateException        if routing, protocol, manifest, or callback options are inconsistent
      */
     public MiSourceAdapter(final String namespaceId, final String sourceId, final MiManifest manifest,
-            final VariantManifest.Variant variant, final MiOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final MiOptions options, final DriverServices services) {
         final MiManifest selected = Assert.notNull(manifest, "Xiaomi manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Xiaomi Source id must not be blank");
         this.variant = Assert.notNull(variant, "Xiaomi manifest must not be null");
@@ -450,11 +449,11 @@ public final class MiSourceAdapter implements VendorAdapter {
             return missing();
         }
         if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserStart start) {
+                && request instanceof SourceAuthentication.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
         if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserCallback callback) {
+                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -601,9 +600,8 @@ public final class MiSourceAdapter implements VendorAdapter {
         if (!request.extensions().values().isEmpty() || !valid(request.grant())) {
             return completed(rejected("Xiaomi token request does not match its registered grant contract"));
         }
-        return org.miaixz.bus.auth.runtime.LoadResult
-                .parse(
-                        services.secretLoader().load(options.credential(), context, timeout),
+        return Outcome.mapStage(
+                        () -> services.secretLoader().load(options.credential(), context, timeout),
                         loaded -> services.secretParser().parse(options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> CompletableFuture.supplyAsync(() -> {

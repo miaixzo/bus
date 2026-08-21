@@ -57,20 +57,9 @@ public record XimalayaOptions(Vendor.Id vendor, Vendor.Variant variant, String c
         String clientOsType, String packageId) implements VendorOptions<XimalayaOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<XimalayaOptions> type() {
-        return XimalayaOptions.class;
-    }
-
-    /**
      * Closed official client operating-system vocabulary.
      */
     private static final Set<String> CLIENT_OS_TYPES = Set.of(Symbol.ONE, Symbol.TWO, Symbol.THREE);
-
     /**
      * Maximum accepted length of a device or package wire value.
      */
@@ -154,6 +143,16 @@ public record XimalayaOptions(Vendor.Id vendor, Vendor.Variant variant, String c
             }
         }
         return checked;
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<XimalayaOptions> type() {
+        return XimalayaOptions.class;
     }
 
     /**

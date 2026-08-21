@@ -47,16 +47,6 @@ public record TeambitionOptions(Vendor.Id vendor, Vendor.Variant variant, String
         implements VendorOptions<TeambitionOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<TeambitionOptions> type() {
-        return TeambitionOptions.class;
-    }
-
-    /**
      * Validates and freezes one Teambition registration without resolving its secret.
      *
      * @throws IllegalArgumentException if a required component or container is {@code null} or blank
@@ -105,6 +95,16 @@ public record TeambitionOptions(Vendor.Id vendor, Vendor.Variant variant, String
         } catch (URISyntaxException cause) {
             throw new ValidateException("Teambition redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<TeambitionOptions> type() {
+        return TeambitionOptions.class;
     }
 
     /**

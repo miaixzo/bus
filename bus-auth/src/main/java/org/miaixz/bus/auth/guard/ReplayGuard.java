@@ -154,7 +154,7 @@ public final class ReplayGuard {
                 effectiveExpiry);
         final long ttlMillis = ttlMillis(now, effectiveExpiry);
         try {
-            final CompletionStage<Boolean> creation = cache.create(key, value, ttlMillis);
+            final CompletionStage<Boolean> creation = cache.mark(key, value);
             if (creation == null) {
                 return completed(Outcome.failed(failure(ErrorCode._500, "Replay cache returned no creation stage")));
             }

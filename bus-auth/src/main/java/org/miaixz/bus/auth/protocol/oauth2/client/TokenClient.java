@@ -37,8 +37,8 @@ import org.miaixz.bus.auth.protocol.oauth2.TokenEndpointResponse;
 import org.miaixz.bus.auth.protocol.oauth2.TokenRequest;
 import org.miaixz.bus.auth.protocol.oauth2.codec.TokenRequestEncoder;
 import org.miaixz.bus.auth.protocol.oauth2.codec.TokenResponseDecoder;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -66,7 +66,7 @@ public final class TokenClient {
     /**
      * Caller-owned execution services and Fabric context.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Strict standard token request encoder.
@@ -92,7 +92,7 @@ public final class TokenClient {
      * @param responseDecoder standard token response decoder
      * @throws IllegalArgumentException if a collaborator is {@code null} or no token endpoint is configured
      */
-    public TokenClient(final OAuth2ClientOptions options, final ExecutionServices services,
+    public TokenClient(final OAuth2ClientOptions options, final DriverServices services,
             final TokenRequestEncoder requestEncoder, final TokenResponseDecoder responseDecoder) {
         this.options = Assert.notNull(options, "OAuth 2.x client options must not be null");
         Assert.notNull(options.tokenEndpoint().getOrNull(), "OAuth 2.x token endpoint must be configured");
@@ -174,9 +174,8 @@ public final class TokenClient {
         if (Endpoint.Authentication.NONE.equals(options.clientAuthenticationMethod())) {
             return execute(request, null, timeout);
         }
-        return org.miaixz.bus.auth.runtime.LoadResult
-                .parse(
-                        services.secretLoader().load(options.clientCredential().getOrNull(), context, timeout),
+        return Outcome.mapStage(
+                        () -> services.secretLoader().load(options.clientCredential().getOrNull(), context, timeout),
                         loaded -> services.secretParser().parse(options.clientCredential().getOrNull(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> execute(request, success.value(), timeout);

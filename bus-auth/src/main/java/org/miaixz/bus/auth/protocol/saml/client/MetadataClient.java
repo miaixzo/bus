@@ -32,7 +32,7 @@ import org.miaixz.bus.auth.protocol.saml.SamlBinding;
 import org.miaixz.bus.auth.protocol.saml.codec.MetadataCodec;
 import org.miaixz.bus.auth.protocol.saml.codec.SamlMessageCodec;
 import org.miaixz.bus.auth.protocol.saml.security.SamlSignatureValidator;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -61,7 +61,7 @@ public final class MetadataClient {
     /**
      * Caller-owned runtime and Fabric dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Strict secure XML Metadata codec.
@@ -82,7 +82,7 @@ public final class MetadataClient {
      * @param signatureValidator SAML XML signature validator
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public MetadataClient(final SamlClientOptions options, final ExecutionServices services, final MetadataCodec codec,
+    public MetadataClient(final SamlClientOptions options, final DriverServices services, final MetadataCodec codec,
             final SamlSignatureValidator signatureValidator) {
         this.options = Assert.notNull(options, "SAML Source options must not be null");
         this.services = Assert.notNull(services, "SAML execution services must not be null");

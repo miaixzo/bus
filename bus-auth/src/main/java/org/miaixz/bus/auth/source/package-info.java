@@ -21,18 +21,26 @@
  * Defines management and compilation contracts for protocol and Vendor Sources.
  * <p>
  * {@link org.miaixz.bus.auth.Scheme}, {@link org.miaixz.bus.auth.Options},
- * {@link org.miaixz.bus.auth.source.SourceDriver}, and {@link org.miaixz.bus.auth.source.SourceValidator} define the
- * typed complete-registration compilation boundary shared by client-role and server-role protocol Sources.
- * {@link org.miaixz.bus.auth.source.SourceAuthentication} supplies the single redirect or direct sign-in capability;
- * its request, initiation, and result types converge a successfully verified platform account on
- * {@link org.miaixz.bus.auth.source.ExternalIdentity}. An {@link org.miaixz.bus.auth.source.IdentityMapper} then maps
- * that evidence-bearing identity without changing its verified subject.
+ * {@link org.miaixz.bus.auth.source.SourceDriver}, {@link org.miaixz.bus.auth.registry.SourceValidator}, and
+ * {@link org.miaixz.bus.auth.runtime.RuntimeDescriptor} define the typed compilation and supported-implementation
+ * boundary shared by client-role and server-role protocol Sources.
+ * {@link org.miaixz.bus.auth.source.SourceAuthentication}
+ * supplies the redirect, device, or direct authentication capabilities; its nested Request and Stage contracts
+ * converge every successfully verified platform account directly on
+ * {@link org.miaixz.bus.auth.source.ExternalIdentity}. Each protocol or Vendor implementation owns its private mapping
+ * code and cannot use this package as an account-linking layer.
  * </p>
  * <p>
- * Protocol clients, protocol servers, and Vendor adapters depend on these contracts. This package depends only on the
- * root domain language and does not import a concrete Vendor, protocol implementation, token model, UserInfo model, or
- * wire codec. Vendor definitions remain in VendorDirectory while VendorModule exposes their single aggregate Source
- * driver for runtime assembly.
+ * Protocol clients, protocol servers, and Vendor adapters depend on these contracts. RuntimeDescriptor exposes only
+ * public immutable Vendor manifest contracts and never imports a concrete platform implementation, protocol
+ * implementation, token model, UserInfo model, or wire codec. Vendor definitions remain in VendorDirectory while
+ * VendorModule exposes their single aggregate Source driver for runtime assembly.
+ * </p>
+ * <p>
+ * This package owns driver selection, one-time preparation, dependency declarations, the Driver-visible service
+ * contract, and session coordination. The runtime package owns enforcement of each scoped service view. The compiled
+ * executable remains {@link org.miaixz.bus.auth.worker.SourceWorker} in {@code worker}; moving it here would merge the
+ * compilation contract with its execution result and invert the project-port boundary.
  * </p>
  * <p>
  * {@code Scheme} declares immutable authentication metadata, while {@code Options} carries typed deployment input and

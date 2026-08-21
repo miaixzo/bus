@@ -32,11 +32,10 @@ import org.miaixz.bus.auth.protocol.oauth2.client.AuthorizationClient;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientOptions;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationRequestEncoder;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceAuthentication;
-import org.miaixz.bus.auth.source.SourceAuthenticationRequest;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -99,7 +98,7 @@ public final class BaiduSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime, secret, JSON, network, and execution dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Shared one-time state lifecycle for the browser flow.
@@ -125,7 +124,7 @@ public final class BaiduSourceAdapter implements VendorAdapter {
      *                                  profile
      */
     public BaiduSourceAdapter(final String namespaceId, final String sourceId, final BaiduManifest manifest,
-            final VariantManifest.Variant variant, final BaiduOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final BaiduOptions options, final DriverServices services) {
         Assert.notNull(manifest, "Baidu manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Baidu Source id must not be blank");
         this.variant = Assert.notNull(variant, "Baidu manifest must not be null");
@@ -341,11 +340,11 @@ public final class BaiduSourceAdapter implements VendorAdapter {
             return completed(rejected("Baidu capability is not declared"));
         }
         if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserStart start) {
+                && request instanceof SourceAuthentication.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
         if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserCallback callback) {
+                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -438,8 +437,8 @@ public final class BaiduSourceAdapter implements VendorAdapter {
         }
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.secretLoader().load(options.credential(), context, timeout),
+            resolution = Outcome.mapStage(
+                    () -> services.secretLoader().load(options.credential(), context, timeout),
                     loaded -> services.secretParser().parse(options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed("Baidu client-secret resolution failed"));

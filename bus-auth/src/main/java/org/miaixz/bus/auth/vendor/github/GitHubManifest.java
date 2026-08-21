@@ -94,7 +94,7 @@ public final class GitHubManifest implements VariantManifest<GitHubOptions> {
      * Complete immutable endpoint, client, scope, capability, form, and deviation manifest.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OAUTH2,
-            List.of("read:user"),
+            VariantManifest.Pkce.REQUIRED, List.of("read:user"),
             new VendorTargets(Optional.of(
                     fixed("https://github.com/login/oauth/authorize", Http.Method.GET, Endpoint.Authentication.NONE)),
                     Optional.of(

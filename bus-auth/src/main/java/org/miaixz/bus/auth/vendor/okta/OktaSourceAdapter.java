@@ -36,18 +36,18 @@ import org.miaixz.bus.auth.protocol.oauth2.codec.*;
 import org.miaixz.bus.auth.protocol.oidc.*;
 import org.miaixz.bus.auth.protocol.oidc.client.*;
 import org.miaixz.bus.auth.protocol.oidc.codec.*;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.jose.*;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceAuthentication;
-import org.miaixz.bus.auth.source.SourceAuthenticationRequest;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
@@ -91,7 +91,7 @@ public final class OktaSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime dependencies and security services.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Resolved exact issuer shared by callback, Discovery, and ID Token validation.
@@ -147,7 +147,7 @@ public final class OktaSourceAdapter implements VendorAdapter {
      *                                  variant
      */
     public OktaSourceAdapter(final String namespaceId, final String sourceId, final OktaManifest manifest,
-            final VariantManifest.Variant variant, final OktaOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final OktaOptions options, final DriverServices services) {
         Assert.notNull(manifest, "Okta manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Okta Source id must not be blank");
         this.variant = Assert.notNull(variant, "Okta manifest must not be null");
@@ -322,7 +322,7 @@ public final class OktaSourceAdapter implements VendorAdapter {
      * @param <T>         expected successful value type
      * @return failed outcome
      */
-    private static <T> Outcome<T> failed(final org.miaixz.bus.core.basic.normal.Errors code, final String description) {
+    private static <T> Outcome<T> failed(final Errors code, final String description) {
         return Outcome.failed(new Outcome.Failure(code, description, emptyObject()));
     }
 
@@ -360,11 +360,11 @@ public final class OktaSourceAdapter implements VendorAdapter {
             return completed(rejected("Okta capability is not declared"));
         }
         if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserStart start) {
+                && request instanceof SourceAuthentication.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
         if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserCallback callback) {
+                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());

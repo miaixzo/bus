@@ -25,13 +25,22 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.shared.SecretLease;
 
-/** Loads a fresh externally owned secret lease. */
+/**
+ * Loads a fresh externally owned secret lease.
+ */
 @FunctionalInterface
 public interface SecretLoader {
 
-    CompletionStage<Outcome<SecretRecord>> load(
+    CompletionStage<Outcome<Record>> load(
             Credential.Reference reference,
             Context context,
             Timeout.Budget timeout);
+
+    /**
+     * Loaded secret lease paired with its exact external reference.
+     */
+    record Record(Credential.Reference reference, SecretLease lease) {
+    }
 }

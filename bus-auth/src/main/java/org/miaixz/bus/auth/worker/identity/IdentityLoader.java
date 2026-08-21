@@ -23,13 +23,22 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
+import org.miaixz.bus.auth.Subject;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.worker.SubjectRecord;
+import org.miaixz.bus.extra.json.JsonValue;
 
-/** Project identity input port that loads or explicitly establishes one stable subject record. */
+/**
+ * Project identity input port that loads or explicitly establishes one stable subject record.
+ */
 @FunctionalInterface
 public interface IdentityLoader {
 
-    CompletionStage<Outcome<SubjectRecord>> load(ExternalIdentity identity, Context context, Timeout.Budget timeout);
+    CompletionStage<Outcome<Record>> load(ExternalIdentity identity, Context context, Timeout.Budget timeout);
+
+    /**
+     * Project-adapted subject data awaiting framework parsing.
+     */
+    record Record(Subject.Key key, Subject.Reference reference, JsonValue.ObjectValue attributes) {
+    }
 }

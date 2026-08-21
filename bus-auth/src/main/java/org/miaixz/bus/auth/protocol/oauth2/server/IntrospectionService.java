@@ -28,13 +28,14 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.cache.AccessTokenCache;
+import org.miaixz.bus.auth.cache.AuthorizationCache;
 import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.protocol.oauth2.IntrospectionRequest;
 import org.miaixz.bus.auth.protocol.oauth2.IntrospectionResponse;
 import org.miaixz.bus.auth.protocol.oauth2.Scope;
 import org.miaixz.bus.auth.protocol.oauth2.TokenType;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -62,7 +63,7 @@ public final class IntrospectionService {
     /**
      * Runtime dependencies including the access-token cache.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Creates a token introspection service for one compiled server-role Source runtime.
@@ -73,7 +74,7 @@ public final class IntrospectionService {
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
     public IntrospectionService(final String providerId, final OAuth2ServerOptions options,
-            final ExecutionServices services) {
+            final DriverServices services) {
         this.providerId = Assert.notBlank(providerId, "OAuth 2.x Provider id must not be blank");
         this.options = Assert.notNull(options, "OAuth 2.x Provider options must not be null");
         this.services = Assert.notNull(services, "OAuth 2.x execution services must not be null");
@@ -136,20 +137,40 @@ public final class IntrospectionService {
         }
         final CompletionStage<ExpiringValue<AccessTokenCache.Entry>> lookup;
         try {
-            lookup = services.accessTokenCache().get(key(request.token()));
+            lookup = services.accessTokenCache().find(key(request.token()));
         } catch (RuntimeException exception) {
             return completed(Outcome.failed(failure(ErrorCode._500, "OAuth 2.x access token lookup failed")));
         }
-        return lookup.handle((stored, thrown) -> {
-            if (thrown != null) {
-                return Outcome
-                        .<IntrospectionResponse>failed(failure(ErrorCode._500, "OAuth 2.x access token lookup failed"));
+        return lookup.handle((stored, thrown) -> new CacheResult(stored, thrown)).thenCompose(result -> {
+            if (result.failure() != null) {
+                return completed(Outcome
+                        .<IntrospectionResponse>failed(failure(ErrorCode._500, "OAuth 2.x access token lookup failed")));
             }
+            final ExpiringValue<AccessTokenCache.Entry> stored = result.value();
             final Instant now = timeout.clock().now();
             if (stored == null || !stored.expiresAt().isAfter(now) || !providerId.equals(stored.value().providerId())) {
-                return Outcome.succeeded(inactive());
+                return completed(Outcome.succeeded(inactive()));
             }
-            return Outcome.succeeded(active(stored));
+            final CompletionStage<ExpiringValue<AuthorizationCache.Entry>> authorization;
+            try {
+                authorization = services.authorizationCache()
+                        .find(AuthorizationCache.key(providerId, stored.value().authorizationId()));
+            } catch (RuntimeException exception) {
+                return completed(Outcome.failed(failure(ErrorCode._500, "OAuth 2.x authorization lookup failed")));
+            }
+            return authorization.handle((state, thrown) -> {
+                if (thrown != null) {
+                    return Outcome.<IntrospectionResponse>failed(
+                            failure(ErrorCode._500, "OAuth 2.x authorization lookup failed"));
+                }
+                if (state == null || !state.expiresAt().isAfter(now)
+                        || state.value().status() != AuthorizationCache.Status.ACTIVE
+                        || !providerId.equals(state.value().providerId())
+                        || !stored.value().clientId().equals(state.value().clientId())) {
+                    return Outcome.succeeded(inactive());
+                }
+                return Outcome.succeeded(active(stored));
+            });
         });
     }
 
@@ -182,6 +203,10 @@ public final class IntrospectionService {
      */
     private String key(final String token) {
         return Builder.sha256Hex(providerId + '\0' + token);
+    }
+
+    private record CacheResult(ExpiringValue<AccessTokenCache.Entry> value, Throwable failure) {
+
     }
 
 }

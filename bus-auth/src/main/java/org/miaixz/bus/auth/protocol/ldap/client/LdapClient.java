@@ -37,6 +37,7 @@ import org.miaixz.bus.auth.protocol.ldap.codec.BerCodec;
 import org.miaixz.bus.auth.protocol.ldap.codec.LdapMessageDecoder;
 import org.miaixz.bus.auth.protocol.ldap.codec.LdapMessageEncoder;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -167,7 +168,7 @@ public final class LdapClient implements AutoCloseable {
      * @return failed operation outcome
      */
     private static <T> Outcome<T> failed(
-            final org.miaixz.bus.core.basic.normal.Errors error,
+            final Errors error,
             final String description) {
         return Outcome.failed(new Outcome.Failure(error, description, new JsonValue.ObjectValue(Map.of())));
     }

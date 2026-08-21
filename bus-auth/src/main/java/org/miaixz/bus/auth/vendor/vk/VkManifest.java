@@ -136,7 +136,7 @@ public final class VkManifest implements VariantManifest<VkOptions> {
      * Complete immutable VK endpoint, client, scope, capability, form, and deviation manifest.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OAUTH2,
-            List.of("vkid.personal_info", "email"),
+            VariantManifest.Pkce.REQUIRED, List.of("vkid.personal_info", "email"),
             new VendorTargets(
                     Optional.of(fixed("https://id.vk.com/authorize", Http.Method.GET, Endpoint.Authentication.NONE)),
                     Optional.of(fixed("https://id.vk.com/oauth2/auth", Http.Method.POST, Endpoint.Authentication.NONE)),

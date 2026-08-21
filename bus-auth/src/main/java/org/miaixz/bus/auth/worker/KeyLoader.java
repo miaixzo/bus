@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.auth.worker;
 
+import java.security.Key;
 import java.time.Instant;
 import java.util.concurrent.CompletionStage;
 
@@ -30,10 +31,12 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
-/** Loads cryptographic key records from project-owned key storage. */
+/**
+ * Loads cryptographic key records from project-owned key storage.
+ */
 public interface KeyLoader {
 
-    CompletionStage<Outcome<KeyRecord>> load(Request request, Context context, Timeout.Budget timeout);
+    CompletionStage<Outcome<Record>> load(Request request, Context context, Timeout.Budget timeout);
 
     CompletionStage<Outcome<JwkSet>> loadPublic(PublicRequest request, Context context, Timeout.Budget timeout);
 
@@ -60,5 +63,12 @@ public interface KeyLoader {
             Assert.notBlank(use, "Public key request use must not be blank");
             Assert.notNull(at, "Public key request validity instant must not be null");
         }
+    }
+
+    /**
+     * Project-adapted key material awaiting framework parsing.
+     */
+    record Record(String issuer, String keyId, String use, String algorithm, Key key, Instant notBefore,
+            Instant notAfter) {
     }
 }

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.miaixz.bus.auth.protocol.scim.Group;
 import org.miaixz.bus.auth.protocol.scim.Resource;
@@ -901,7 +902,7 @@ public final class ScimResourceCodec {
             final Map<String, JsonValue> values,
             final String name,
             final Optional<T> value,
-            final java.util.function.Function<T, JsonValue.ObjectValue> encoder) {
+            final Function<T, JsonValue.ObjectValue> encoder) {
         if (!value.isEmpty()) {
             values.put(name, encoder.apply(value.getOrThrow()));
         }

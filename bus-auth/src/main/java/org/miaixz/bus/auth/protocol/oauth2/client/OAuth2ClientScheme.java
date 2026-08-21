@@ -24,7 +24,6 @@ import java.util.Set;
 
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Scheme;
-import org.miaixz.bus.auth.Scheme.Form;
 import org.miaixz.bus.auth.protocol.Conformance;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.core.Version;

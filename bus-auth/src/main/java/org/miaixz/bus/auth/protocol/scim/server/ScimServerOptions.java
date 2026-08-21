@@ -47,16 +47,6 @@ public record ScimServerOptions(URI baseUri, ServiceProviderConfig serviceProvid
         implements Options<ScimServerOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<ScimServerOptions> type() {
-        return ScimServerOptions.class;
-    }
-
-    /**
      * Validates the secure service URI, typed discovery associations, and safety limits.
      *
      * @throws IllegalArgumentException if a component or resource type is {@code null}
@@ -105,6 +95,21 @@ public record ScimServerOptions(URI baseUri, ServiceProviderConfig serviceProvid
                     "SCIM Provider base URI must be absolute credential-free HTTPS without query or fragment");
         }
         return uri;
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<ScimServerOptions> type() {
+        return ScimServerOptions.class;
+    }
+
+    @Override
+    public ScimServerOptions snapshot() {
+        return this;
     }
 
     /**

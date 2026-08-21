@@ -30,12 +30,11 @@ import org.miaixz.bus.auth.protocol.oauth2.client.AuthorizationClient;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientOptions;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationRequestEncoder;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceAuthentication;
-import org.miaixz.bus.auth.source.SourceAuthenticationRequest;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -97,7 +96,7 @@ public final class FeishuSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned secret, JSON, network, clock, and execution dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Shared standard OAuth authorization implementation.
@@ -122,7 +121,7 @@ public final class FeishuSourceAdapter implements VendorAdapter {
      * @throws ValidateException        if routing, protocol, manifest, callback, or authorization is inconsistent
      */
     public FeishuSourceAdapter(final String namespaceId, final String sourceId, final FeishuManifest manifest,
-            final VariantManifest.Variant variant, final FeishuOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final FeishuOptions options, final DriverServices services) {
         final FeishuManifest selectedProfile = Assert.notNull(manifest, "Feishu manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Feishu Source id must not be blank");
         this.variant = Assert.notNull(variant, "Feishu manifest must not be null");
@@ -545,11 +544,11 @@ public final class FeishuSourceAdapter implements VendorAdapter {
             return missing();
         }
         if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserStart start) {
+                && request instanceof SourceAuthentication.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
         if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserCallback callback) {
+                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -639,9 +638,8 @@ public final class FeishuSourceAdapter implements VendorAdapter {
             return completed(failed(ErrorCode._500, "Feishu callback lacks its required PKCE verifier"));
         }
         final String verifier = completion.codeVerifier().getOrNull().value();
-        return org.miaixz.bus.auth.runtime.LoadResult
-                .parse(
-                        services.secretLoader().load(options.credential(), context, timeout),
+        return Outcome.mapStage(
+                        () -> services.secretLoader().load(options.credential(), context, timeout),
                         loaded -> services.secretParser().parse(options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> authenticate(

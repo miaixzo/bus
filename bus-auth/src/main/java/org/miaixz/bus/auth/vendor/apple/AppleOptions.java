@@ -51,16 +51,6 @@ public record AppleOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
         implements VendorOptions<AppleOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<AppleOptions> type() {
-        return AppleOptions.class;
-    }
-
-    /**
      * Validates and freezes one Sign in with Apple registration without resolving its private key.
      *
      * @throws IllegalArgumentException if a required component, container, scope, or Apple identifier is null or blank
@@ -106,6 +96,16 @@ public record AppleOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
             case "name", "email" -> true;
             default -> false;
         };
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<AppleOptions> type() {
+        return AppleOptions.class;
     }
 
     /**

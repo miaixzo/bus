@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.auth.vendor.wechat;
 
-import org.miaixz.bus.auth.runtime.ExecutionServices;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
@@ -42,7 +42,7 @@ public final class WeChatMpAdapter extends WeChatAdapterSupport {
      * @throws ValidateException if the selected variant is not {@code mp}
      */
     public WeChatMpAdapter(final String namespaceId, final String sourceId, final WeChatManifest manifest,
-            final VariantManifest.Variant variant, final WeChatOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final WeChatOptions options, final DriverServices services) {
         super(namespaceId, sourceId, manifest, variant, options, services);
         if (!WeChatManifest.MP.equals(options.variant())) {
             throw new ValidateException("WeChat MP adapter requires the mp variant");

@@ -71,20 +71,9 @@ public record SamlClientOptions(String entityId, String identityProviderEntityId
         implements Options<SamlClientOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<SamlClientOptions> type() {
-        return SamlClientOptions.class;
-    }
-
-    /**
      * Maximum clock difference permitted by the SAML Source validation policy.
      */
     private static final Duration MAXIMUM_CLOCK_SKEW = Duration.ofMinutes(5);
-
     /**
      * Maximum assertion age permitted by the SAML Source validation policy.
      */
@@ -242,6 +231,21 @@ public record SamlClientOptions(String entityId, String identityProviderEntityId
      */
     private static String present(final Optional<Endpoint> endpoint) {
         return endpoint.isPresent() ? "[CONFIGURED]" : "[ABSENT]";
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<SamlClientOptions> type() {
+        return SamlClientOptions.class;
+    }
+
+    @Override
+    public SamlClientOptions snapshot() {
+        return this;
     }
 
     /**

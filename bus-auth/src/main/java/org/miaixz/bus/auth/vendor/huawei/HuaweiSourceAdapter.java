@@ -43,19 +43,19 @@ import org.miaixz.bus.auth.protocol.oidc.client.*;
 import org.miaixz.bus.auth.protocol.oidc.codec.AuthenticationRequestEncoder;
 import org.miaixz.bus.auth.protocol.oidc.codec.IdTokenCodec;
 import org.miaixz.bus.auth.protocol.oidc.codec.OpenIdProviderMetadataCodec;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.shared.jose.*;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceAuthentication;
-import org.miaixz.bus.auth.source.SourceAuthenticationRequest;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
@@ -117,7 +117,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime, loaders, parsers, JSON, executor, clock, and Fabric dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Standard OpenID Connect operations composed from protocol-owned clients.
@@ -168,7 +168,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
      *                                  profile
      */
     public HuaweiSourceAdapter(final String namespaceId, final String sourceId, final HuaweiManifest manifest,
-            final VariantManifest.Variant variant, final HuaweiOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final HuaweiOptions options, final DriverServices services) {
         Assert.notNull(manifest, "Huawei manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Huawei Source id must not be blank");
         this.variant = Assert.notNull(variant, "Huawei manifest must not be null");
@@ -651,7 +651,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
      * @param <T>         expected success type
      * @return failed outcome
      */
-    private static <T> Outcome<T> failed(final org.miaixz.bus.core.basic.normal.Errors code, final String description) {
+    private static <T> Outcome<T> failed(final Errors code, final String description) {
         return Outcome.failed(new Outcome.Failure(code, description, emptyObject()));
     }
 
@@ -665,7 +665,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
      * @return failed outcome
      */
     private static <T> Outcome<T> failed(
-            final org.miaixz.bus.core.basic.normal.Errors code,
+            final Errors code,
             final String description,
             final Map<String, JsonValue> details) {
         return Outcome.failed(new Outcome.Failure(code, description, new JsonValue.ObjectValue(details)));
@@ -705,11 +705,11 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
             return completed(rejected("Huawei capability is not declared"));
         }
         if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserStart start) {
+                && request instanceof SourceAuthentication.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
         if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserCallback callback) {
+                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::complete, context, timeout),
                     capability.responseType());
@@ -843,9 +843,8 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
         final TokenRequest request = new TokenRequest(new AuthorizationCodeGrant(values.code(), options.redirectUri(),
                 Optional.of(options.clientId()), Optional.of(completion.codeVerifier().getOrNull().value())),
                 emptyObject());
-        return org.miaixz.bus.auth.runtime.LoadResult
-                .parse(
-                        services.secretLoader().load(options.credential(), context, timeout),
+        return Outcome.mapStage(
+                        () -> services.secretLoader().load(options.credential(), context, timeout),
                         loaded -> services.secretParser().parse(options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> authenticate(

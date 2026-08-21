@@ -20,16 +20,17 @@
 package org.miaixz.bus.auth.resolver;
 
 import org.miaixz.bus.auth.worker.ResourceLoader;
-import org.miaixz.bus.auth.worker.ResourceRecord;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
-/** Pure parser for project-loaded protected-resource records. */
+/**
+ * Pure parser for project-loaded protected-resource records.
+ */
 public final class ResourceParser {
 
-    public ProtectedResource parse(final ResourceLoader.Request request, final ResourceRecord record) {
+    public ProtectedResource parse(final ResourceLoader.Request request, final ResourceLoader.Record record) {
         final ResourceLoader.Request expected = Assert.notNull(request, "Resource request must not be null");
-        final ResourceRecord loaded = Assert.notNull(record, "Loaded resource record must not be null");
+        final ResourceLoader.Record loaded = Assert.notNull(record, "Loaded resource record must not be null");
         if (!expected.namespaceId().equals(loaded.namespaceId())) {
             throw new ValidateException("Loaded resource does not belong to the requested namespace");
         }

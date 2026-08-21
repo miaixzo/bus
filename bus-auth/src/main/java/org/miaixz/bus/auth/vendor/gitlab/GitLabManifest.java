@@ -104,7 +104,7 @@ public final class GitLabManifest implements VariantManifest<GitLabOptions> {
      * Complete immutable endpoint, client, scope, capability, form, and deviation manifest.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OAUTH2,
-            List.of("read_user"),
+            VariantManifest.Pkce.REQUIRED, List.of("read_user"),
             new VendorTargets(
                     Optional.of(
                             fixed("https://gitlab.com/oauth/authorize", Http.Method.GET, Endpoint.Authentication.NONE)),

@@ -30,11 +30,10 @@ import org.miaixz.bus.auth.codec.QueryCodec;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationRequestEncoder;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceAuthentication;
-import org.miaixz.bus.auth.source.SourceAuthenticationRequest;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
@@ -101,7 +100,7 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned loaders, parsers, JSON, network, crypto-policy, clock, and execution dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Shared one-time state lifecycle for both browser variants.
@@ -131,7 +130,7 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
      * @throws ValidateException        if profile, variant, protocol, or options routing is inconsistent
      */
     public DingTalkSourceAdapter(final String namespaceId, final String sourceId, final DingTalkManifest manifest,
-            final VariantManifest.Variant variant, final DingTalkOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final DingTalkOptions options, final DriverServices services) {
         final DingTalkManifest selectedProfile = Assert.notNull(manifest, "DingTalk manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "DingTalk Source id must not be blank");
         this.variant = Assert.notNull(variant, "DingTalk manifest must not be null");
@@ -481,11 +480,11 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
             return completed(rejected("DingTalk capability is not declared by the selected variant"));
         }
         if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserStart start) {
+                && request instanceof SourceAuthentication.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
         if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserCallback callback) {
+                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -655,8 +654,8 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
         }
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.secretLoader().load(options.credential(), context, timeout),
+            resolution = Outcome.mapStage(
+                    () -> services.secretLoader().load(options.credential(), context, timeout),
                     loaded -> services.secretParser().parse(options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed("DingTalk credential resolution failed"));

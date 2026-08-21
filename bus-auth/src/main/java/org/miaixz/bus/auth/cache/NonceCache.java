@@ -19,7 +19,11 @@
 */
 package org.miaixz.bus.auth.cache;
 
+import java.io.Serializable;
+import java.util.concurrent.CompletionStage;
+
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
@@ -31,20 +35,33 @@ import org.miaixz.bus.core.lang.Assert;
  *
  * @author Kimi Liu
  */
-public final class NonceCache extends AuthCache<ExpiringValue<NonceCache.Nonce>> {
+public final class NonceCache extends AuthCache<NonceCache.Nonce> {
 
     /**
      * Isolates nonce state from every other bus-cache consumer.
      */
-    private static final String NAMESPACE = "auth:nonce:";
+    private static final String PURPOSE = "nonce";
 
     /**
      * Creates a nonce cache view backed entirely by bus-cache.
      *
      * @param cache shared bus-cache backend
      */
-    public NonceCache(final CacheX<String, Object> cache) {
-        super(cache, NAMESPACE);
+    public NonceCache(final CacheX<String, Object> cache, final String deployment,
+            final Clock clock) {
+        super(cache, deployment, PURPOSE, Nonce.class, clock);
+    }
+
+    public CompletionStage<Boolean> issue(final String key, final ExpiringValue<Nonce> value) {
+        return super.doIssue(key, value);
+    }
+
+    public CompletionStage<ExpiringValue<Nonce>> consume(final String key) {
+        return super.doConsume(key);
+    }
+
+    public CompletionStage<Boolean> discard(final String key) {
+        return super.doRevoke(key);
     }
 
     /**
@@ -54,7 +71,7 @@ public final class NonceCache extends AuthCache<ExpiringValue<NonceCache.Nonce>>
      * @param nonce    opaque nonce value expected in the ID Token
      * @author Kimi Liu
      */
-    public record Nonce(String sourceId, String nonce) {
+    public record Nonce(String sourceId, String nonce) implements Serializable {
 
         /**
          * Creates an immutable Source nonce binding.

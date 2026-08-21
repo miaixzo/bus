@@ -31,7 +31,9 @@ import org.miaixz.bus.core.lang.Assert;
  */
 final class PrincipalFactory {
 
-    /** Creates the stateless factory. */
+    /**
+     * Creates the stateless factory.
+     */
     PrincipalFactory() {
         // No initialization required.
     }

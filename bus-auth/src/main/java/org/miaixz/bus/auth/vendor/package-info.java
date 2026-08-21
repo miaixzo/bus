@@ -37,6 +37,11 @@
  * execute.
  * </p>
  * <p>
+ * {@link org.miaixz.bus.auth.vendor.RedirectManager} orchestrates the platform redirect flow. Its package-private
+ * correlation collaborator owns only atomic state, nonce, and PKCE persistence and rollback, keeping cache mechanics
+ * out of adapters and flow orchestration.
+ * </p>
+ * <p>
  * Vendor is a Source specialization, not a replacement authentication protocol. Standards-conforming operations
  * delegate to their protocol packages; a platform package owns only documented extensions or proprietary flows. This
  * package contains no mutable global registration, project data loader, persistence, controller, user or account
@@ -46,7 +51,7 @@
  * <p>
  * The direct subdirectories of this package are reserved exclusively for named third-party platforms. Cross-platform
  * contracts and package-private implementations remain in this root package; every platform keeps its manifest,
- * options, and executable adapter together in one non-exported platform package.
+ * options, and executable adapter together in one platform package.
  * </p>
  *
  * @author Kimi Liu

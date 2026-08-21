@@ -29,13 +29,14 @@ import org.miaixz.bus.core.lang.Enumers;
 /**
  * Represents the single authentication application displayed by administrative and end-user application hubs.
  * <p>
- * The inherited {@link Namespace} fields provide identity, lifecycle, audit, query, caller, trace, and namespace scope.
+ * The inherited {@link Namespace} contract provides the single persistent namespace scope together with identity and
+ * audit metadata.
  * This entity adds only authentication application presentation and launch metadata. A {@code Library} does not own
  * collections of providers or sources; those resources reference it through their direct identifiers.
  * </p>
  * <p>
  * Instances are mutable persistence models intended for external projects to extend and map to their storage model.
- * Request-scoped launch URL resolution is returned directly by the Library launch service and is never stored here.
+ * Request-scoped launch URL resolution belongs to the integrating project and is never stored here.
  * </p>
  *
  * @author Kimi Liu
@@ -62,7 +63,7 @@ public class Library extends Namespace {
     /**
      * Required non-blank launch template. The value must be a relative location or absolute HTTP(S) URL and may contain
      * claim placeholders such as {@code {sub}} whose names use only letters, digits, dot, dash, or underscore. Allowed
-     * placeholders are resolved and percent-encoded by {@link org.miaixz.bus.auth.library.LibraryLaunchService}.
+     * placeholders are interpreted only by the integrating project.
      */
     private String url;
     /**

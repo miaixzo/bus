@@ -19,73 +19,190 @@
 */
 package org.miaixz.bus.auth.worker;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.miaixz.bus.auth.worker.identity.ClaimLoader;
-import org.miaixz.bus.auth.worker.identity.IdentityLoader;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * Immutable aggregation of project-owned authentication data input and output ports.
+ * Freezes the project data ports selected for one authentication runtime.
  * <p>
- * This type only freezes explicitly supplied ports for runtime assembly. It performs no loading, parsing, registration,
- * security decision, consent decision, audit delivery, or service lookup by arbitrary type.
+ * A project supplies only ports required by its selected Source drivers. Accessing an absent port fails immediately
+ * during compilation of the Source that requires it; this class never installs permissive or silent no-op behavior.
+ * Registration loading, Registry listeners, identity completion, parsing, security, and auditing are outside this
+ * aggregation.
  * </p>
  *
- * @param registrationLoader complete registration-state input
- * @param bindingLoader      project runtime-binding input
- * @param consumerLoader     registered consumer input
- * @param subjectLoader      subject input
- * @param credentialLoader   credential-description input
- * @param secretLoader       protected secret input
- * @param credentialStore    generated dynamic-credential output and input
- * @param keyLoader          cryptographic key input
- * @param certificateLoader  certificate and trust-root input
- * @param attributeLoader    subject-attribute input
- * @param groupLoader        group-membership input
- * @param resourceLoader     protected-resource input
- * @param identityLoader     project identity input
- * @param claimLoader        project claim input
- * @param auditSink          sanitized audit-event output
- * @param consentService     project consent input and output
- * @param registryListeners  Registry publication observers
  * @author Kimi Liu
  */
-public record WorkerSet(RegistrationLoader registrationLoader, BindingLoader bindingLoader,
-        ConsumerLoader consumerLoader, SubjectLoader subjectLoader, CredentialLoader credentialLoader,
-        SecretLoader secretLoader, CredentialStore credentialStore, KeyLoader keyLoader,
-        CertificateLoader certificateLoader, AttributeLoader attributeLoader, GroupLoader groupLoader,
-        ResourceLoader resourceLoader, IdentityLoader identityLoader, ClaimLoader claimLoader, AuditSink auditSink,
-        ConsentService consentService, List<RegistryListener> registryListeners) {
+public final class WorkerSet {
+
+    private final BindingLoader bindingLoader;
+    private final ConsumerLoader consumerLoader;
+    private final SecretLoader secretLoader;
+    private final CredentialStore credentialStore;
+    private final KeyLoader keyLoader;
+    private final CertificateLoader certificateLoader;
+    private final AttributeLoader attributeLoader;
+    private final ResourceLoader resourceLoader;
+    private final ConsentService consentService;
+    private final SessionWorker sessionWorker;
+
+    private WorkerSet(final Builder builder) {
+        this.bindingLoader = builder.bindingLoader;
+        this.consumerLoader = builder.consumerLoader;
+        this.secretLoader = builder.secretLoader;
+        this.credentialStore = builder.credentialStore;
+        this.keyLoader = builder.keyLoader;
+        this.certificateLoader = builder.certificateLoader;
+        this.attributeLoader = builder.attributeLoader;
+        this.resourceLoader = builder.resourceLoader;
+        this.consentService = builder.consentService;
+        this.sessionWorker = builder.sessionWorker;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    private static <T> T required(final T value, final String message) {
+        return Assert.notNull(value, message);
+    }
+
+    public BindingLoader bindingLoader() {
+        return required(bindingLoader, "Binding loader is required by the selected Source driver");
+    }
+
+    public ConsumerLoader consumerLoader() {
+        return required(consumerLoader, "Consumer loader is required by the selected Source driver");
+    }
+
+    public SecretLoader secretLoader() {
+        return required(secretLoader, "Secret loader is required by the selected Source driver");
+    }
+
+    public CredentialStore credentialStore() {
+        return required(credentialStore, "Credential store is required by the selected Source driver");
+    }
+
+    public KeyLoader keyLoader() {
+        return required(keyLoader, "Key loader is required by the selected Source driver");
+    }
+
+    public CertificateLoader certificateLoader() {
+        return required(certificateLoader, "Certificate loader is required by the selected Source driver");
+    }
+
+    public AttributeLoader attributeLoader() {
+        return required(attributeLoader, "Attribute loader is required by the selected Source driver");
+    }
+
+    public ResourceLoader resourceLoader() {
+        return required(resourceLoader, "Resource loader is required by the selected Source driver");
+    }
+
+    public ConsentService consentService() {
+        return required(consentService, "Consent service is required by the selected Source driver");
+    }
+
+    public SessionWorker sessionWorker() {
+        return required(sessionWorker, "Session worker is required by the selected Source driver");
+    }
 
     /**
-     * Validates and freezes the complete project integration boundary.
+     * Verifies the complete project data contract of one Source during snapshot compilation.
      *
-     * @throws IllegalArgumentException if a port, listener list, or listener is {@code null}
+     * @param slots required Worker slots
      */
-    public WorkerSet {
-        Assert.notNull(registrationLoader, "Registration loader must not be null");
-        Assert.notNull(bindingLoader, "Binding loader must not be null");
-        Assert.notNull(consumerLoader, "Consumer loader must not be null");
-        Assert.notNull(subjectLoader, "Subject loader must not be null");
-        Assert.notNull(credentialLoader, "Credential loader must not be null");
-        Assert.notNull(secretLoader, "Secret loader must not be null");
-        Assert.notNull(credentialStore, "Credential store must not be null");
-        Assert.notNull(keyLoader, "Key loader must not be null");
-        Assert.notNull(certificateLoader, "Certificate loader must not be null");
-        Assert.notNull(attributeLoader, "Attribute loader must not be null");
-        Assert.notNull(groupLoader, "Group loader must not be null");
-        Assert.notNull(resourceLoader, "Resource loader must not be null");
-        Assert.notNull(identityLoader, "Identity loader must not be null");
-        Assert.notNull(claimLoader, "Claim loader must not be null");
-        Assert.notNull(auditSink, "Audit sink must not be null");
-        Assert.notNull(consentService, "Consent service must not be null");
-        Assert.notNull(registryListeners, "Registry listener list must not be null");
-        final List<RegistryListener> copy = new ArrayList<>(registryListeners.size());
-        for (RegistryListener listener : registryListeners) {
-            copy.add(Assert.notNull(listener, "Registry listener must not be null"));
+    public void require(final WorkerSlots slots) {
+        Assert.notNull(slots, "Source Worker slots must not be null");
+        for (WorkerSlots.Slot slot : slots.slots()) {
+            switch (slot) {
+                case BINDING -> bindingLoader();
+                case CONSUMER -> consumerLoader();
+                case SECRET -> secretLoader();
+                case CREDENTIAL -> credentialStore();
+                case KEY -> keyLoader();
+                case CERTIFICATE -> certificateLoader();
+                case ATTRIBUTE -> attributeLoader();
+                case RESOURCE -> resourceLoader();
+                case CONSENT -> consentService();
+                case SESSION -> sessionWorker();
+            }
         }
-        registryListeners = List.copyOf(copy);
     }
+
+    /**
+     * Collects explicit project ports without deciding which protocols are enabled.
+     */
+    public static final class Builder {
+
+        private BindingLoader bindingLoader;
+        private ConsumerLoader consumerLoader;
+        private SecretLoader secretLoader;
+        private CredentialStore credentialStore;
+        private KeyLoader keyLoader;
+        private CertificateLoader certificateLoader;
+        private AttributeLoader attributeLoader;
+        private ResourceLoader resourceLoader;
+        private ConsentService consentService;
+        private SessionWorker sessionWorker;
+
+        private Builder() {
+            // Created through WorkerSet.builder().
+        }
+
+        public Builder bindingLoader(final BindingLoader value) {
+            this.bindingLoader = Assert.notNull(value, "Binding loader must not be null");
+            return this;
+        }
+
+        public Builder consumerLoader(final ConsumerLoader value) {
+            this.consumerLoader = Assert.notNull(value, "Consumer loader must not be null");
+            return this;
+        }
+
+        public Builder secretLoader(final SecretLoader value) {
+            this.secretLoader = Assert.notNull(value, "Secret loader must not be null");
+            return this;
+        }
+
+        public Builder credentialStore(final CredentialStore value) {
+            this.credentialStore = Assert.notNull(value, "Credential store must not be null");
+            return this;
+        }
+
+        public Builder keyLoader(final KeyLoader value) {
+            this.keyLoader = Assert.notNull(value, "Key loader must not be null");
+            return this;
+        }
+
+        public Builder certificateLoader(final CertificateLoader value) {
+            this.certificateLoader = Assert.notNull(value, "Certificate loader must not be null");
+            return this;
+        }
+
+        public Builder attributeLoader(final AttributeLoader value) {
+            this.attributeLoader = Assert.notNull(value, "Attribute loader must not be null");
+            return this;
+        }
+
+        public Builder resourceLoader(final ResourceLoader value) {
+            this.resourceLoader = Assert.notNull(value, "Resource loader must not be null");
+            return this;
+        }
+
+        public Builder consentService(final ConsentService value) {
+            this.consentService = Assert.notNull(value, "Consent service must not be null");
+            return this;
+        }
+
+        public Builder sessionWorker(final SessionWorker value) {
+            this.sessionWorker = Assert.notNull(value, "Session worker must not be null");
+            return this;
+        }
+
+        public WorkerSet build() {
+            return new WorkerSet(this);
+        }
+
+    }
+
 }

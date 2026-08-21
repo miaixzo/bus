@@ -53,16 +53,6 @@ public record FacebookOptions(Vendor.Id vendor, Vendor.Variant variant, String c
         implements VendorOptions<FacebookOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<FacebookOptions> type() {
-        return FacebookOptions.class;
-    }
-
-    /**
      * Validates and freezes one Facebook Login registration without resolving its app secret.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
@@ -129,6 +119,16 @@ public record FacebookOptions(Vendor.Id vendor, Vendor.Variant variant, String c
         } catch (URISyntaxException cause) {
             throw new ValidateException("Facebook redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<FacebookOptions> type() {
+        return FacebookOptions.class;
     }
 
     /**

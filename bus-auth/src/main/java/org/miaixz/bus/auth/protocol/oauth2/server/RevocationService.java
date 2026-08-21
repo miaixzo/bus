@@ -28,10 +28,11 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.cache.AccessTokenCache;
+import org.miaixz.bus.auth.cache.AuthorizationCache;
 import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.cache.RefreshTokenCache;
 import org.miaixz.bus.auth.protocol.oauth2.RevocationRequest;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -40,10 +41,17 @@ import org.miaixz.bus.extra.json.JsonValue;
 
 /**
  * Revokes client-bound opaque access and refresh tokens according to RFC 7009.
+ * <p>
+ * The service first atomically transitions the shared {@link AuthorizationCache} state. Access and refresh token cache
+ * deletion is only idempotent derived-index cleanup, so a partial cleanup cannot preserve credential validity.
+ * </p>
  *
  * @author Kimi Liu
  */
 public final class RevocationService {
+
+    /** Maximum compare-and-replace attempts for one authoritative authorization transition. */
+    private static final int MAXIMUM_UPDATE_ATTEMPTS = 3;
 
     /**
      * Provider identifier used to isolate opaque token digests.
@@ -53,7 +61,7 @@ public final class RevocationService {
     /**
      * Runtime dependencies containing both token caches.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Creates a revocation service for one compiled server-role Source runtime.
@@ -62,7 +70,7 @@ public final class RevocationService {
      * @param services   externally owned runtime dependencies
      * @throws IllegalArgumentException if the identifier is blank or services are {@code null}
      */
-    public RevocationService(final String providerId, final ExecutionServices services) {
+    public RevocationService(final String providerId, final DriverServices services) {
         this.providerId = Assert.notBlank(providerId, "OAuth 2.x Provider id must not be blank");
         this.services = Assert.notNull(services, "OAuth 2.x execution services must not be null");
     }
@@ -118,13 +126,13 @@ public final class RevocationService {
         final CompletionStage<ExpiringValue<AccessTokenCache.Entry>> access;
         final CompletionStage<ExpiringValue<RefreshTokenCache.Entry>> refresh;
         try {
-            access = services.accessTokenCache().get(key);
-            refresh = services.refreshTokenCache().get(key);
+            access = services.accessTokenCache().find(key);
+            refresh = services.refreshTokenCache().find(key);
         } catch (RuntimeException exception) {
             return completed(Outcome.failed(failure(ErrorCode._500, "OAuth 2.x token lookup failed")));
         }
         return access.thenCombine(refresh, TokenState::new)
-                .thenCompose(state -> delete(key, state, clientId, timeout.clock().now())).handle(
+                .thenCompose(state -> revoke(key, state, clientId, timeout)).handle(
                         (ignored, thrown) -> thrown == null ? Outcome.<Void>succeeded(null)
                                 : Outcome.<Void>failed(
                                         failure(ErrorCode._500, "OAuth 2.x token revocation cache failed")));
@@ -136,21 +144,87 @@ public final class RevocationService {
      * @param key      isolated token digest key
      * @param state    current access and refresh token state
      * @param clientId authenticated client identifier
-     * @param now      current operation instant
+     * @param timeout  shared end-to-end operation budget
      * @return stage completed after all applicable atomic deletes
      */
-    private CompletionStage<Void> delete(
+    private CompletionStage<Void> revoke(
             final String key,
             final TokenState state,
             final String clientId,
-            final Instant now) {
+            final Timeout.Budget timeout) {
+        final Instant now = timeout.clock().now();
         final boolean deleteAccess = accessOwned(state.access(), clientId, now);
         final boolean deleteRefresh = refreshOwned(state.refresh(), clientId, now);
-        final CompletionStage<Boolean> accessDelete = deleteAccess ? services.accessTokenCache().delete(key)
-                : CompletableFuture.completedFuture(false);
-        final CompletionStage<Boolean> refreshDelete = deleteRefresh ? services.refreshTokenCache().delete(key)
-                : CompletableFuture.completedFuture(false);
-        return accessDelete.thenCombine(refreshDelete, (first, second) -> null);
+        CompletionStage<Void> authority = CompletableFuture.completedFuture(null);
+        if (deleteAccess) {
+            authority = authority.thenCompose(ignored -> revokeAuthorization(
+                    state.access().value().authorizationId(), clientId, timeout, 1));
+        }
+        if (deleteRefresh && (!deleteAccess || !state.refresh().value().familyId()
+                .equals(state.access().value().authorizationId()))) {
+            authority = authority.thenCompose(ignored -> revokeAuthorization(
+                    state.refresh().value().familyId(), clientId, timeout, 1));
+        }
+        return authority.thenCompose(ignored -> {
+            final CompletionStage<Boolean> accessDelete = deleteAccess ? services.accessTokenCache().revoke(key)
+                    : CompletableFuture.completedFuture(false);
+            final CompletionStage<Boolean> refreshDelete = deleteRefresh ? services.refreshTokenCache().revoke(key)
+                    : CompletableFuture.completedFuture(false);
+            return accessDelete.handle((value, failure) -> null)
+                    .thenCombine(refreshDelete.handle((value, failure) -> null), (first, second) -> null);
+        });
+    }
+
+    private CompletionStage<Void> revokeAuthorization(
+            final String authorizationId,
+            final String clientId,
+            final Timeout.Budget timeout,
+            final int attempt) {
+        if (timeout.expired()) {
+            return CompletableFuture.failedFuture(
+                    new IllegalStateException("OAuth 2.x authorization revocation exhausted its time budget"));
+        }
+        final Instant now = timeout.clock().now();
+        final String authorizationKey = AuthorizationCache.key(providerId, authorizationId);
+        return services.authorizationCache().find(authorizationKey).thenCompose(stored -> {
+            if (stored == null || !stored.expiresAt().isAfter(now)
+                    || !providerId.equals(stored.value().providerId())
+                    || !clientId.equals(stored.value().clientId())
+                    || stored.value().status() != AuthorizationCache.Status.ACTIVE) {
+                return CompletableFuture.completedFuture(null);
+            }
+            final AuthorizationCache.Entry revoked = new AuthorizationCache.Entry(providerId, clientId,
+                    AuthorizationCache.Status.REVOKED);
+            return services.authorizationCache().update(authorizationKey, stored,
+                    new ExpiringValue<>(revoked, stored.expiresAt())).thenCompose(updated -> {
+                        if (Boolean.TRUE.equals(updated)) {
+                            return CompletableFuture.completedFuture(null);
+                        }
+                        if (attempt >= MAXIMUM_UPDATE_ATTEMPTS) {
+                            return confirmAuthorizationInactive(authorizationKey, clientId, timeout);
+                        }
+                        return revokeAuthorization(authorizationId, clientId, timeout, attempt + 1);
+                    });
+        });
+    }
+
+    /**
+     * Confirms that a failed final CAS was caused by another successful non-active transition.
+     */
+    private CompletionStage<Void> confirmAuthorizationInactive(
+            final String authorizationKey,
+            final String clientId,
+            final Timeout.Budget timeout) {
+        return services.authorizationCache().find(authorizationKey).thenCompose(stored -> {
+            if (stored != null && stored.expiresAt().isAfter(timeout.clock().now())
+                    && providerId.equals(stored.value().providerId())
+                    && clientId.equals(stored.value().clientId())
+                    && stored.value().status() != AuthorizationCache.Status.ACTIVE) {
+                return CompletableFuture.completedFuture(null);
+            }
+            return CompletableFuture.failedFuture(
+                    new IllegalStateException("OAuth 2.x authorization revocation changed concurrently"));
+        });
     }
 
     /**

@@ -36,8 +36,8 @@ import org.miaixz.bus.auth.protocol.oauth2.IntrospectionRequest;
 import org.miaixz.bus.auth.protocol.oauth2.IntrospectionResponse;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.codec.IntrospectionCodec;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -65,7 +65,7 @@ public final class IntrospectionClient {
     /**
      * Caller-owned execution services and Fabric context.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Strict RFC 7662 request and response codec.
@@ -85,7 +85,7 @@ public final class IntrospectionClient {
      * @param codec    strict RFC 7662 codec
      * @throws IllegalArgumentException if a collaborator is {@code null} or no introspection endpoint is configured
      */
-    public IntrospectionClient(final OAuth2ClientOptions options, final ExecutionServices services,
+    public IntrospectionClient(final OAuth2ClientOptions options, final DriverServices services,
             final IntrospectionCodec codec) {
         this.options = Assert.notNull(options, "OAuth 2.x client options must not be null");
         Assert.notNull(
@@ -169,9 +169,8 @@ public final class IntrospectionClient {
         if (Endpoint.Authentication.NONE.equals(options.clientAuthenticationMethod())) {
             return execute(request, null, timeout);
         }
-        return org.miaixz.bus.auth.runtime.LoadResult
-                .parse(
-                        services.secretLoader().load(options.clientCredential().getOrNull(), context, timeout),
+        return Outcome.mapStage(
+                        () -> services.secretLoader().load(options.clientCredential().getOrNull(), context, timeout),
                         loaded -> services.secretParser().parse(options.clientCredential().getOrNull(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> execute(request, success.value(), timeout);

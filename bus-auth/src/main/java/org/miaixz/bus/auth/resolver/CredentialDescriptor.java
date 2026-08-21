@@ -26,7 +26,9 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.extra.json.JsonValue;
 
-/** Parsed immutable non-sensitive credential descriptor. */
+/**
+ * Parsed immutable non-sensitive credential descriptor.
+ */
 public record CredentialDescriptor(Credential.Reference reference, boolean enabled, Optional<Instant> expiresAt,
         JsonValue.ObjectValue attributes) {
 

@@ -36,11 +36,11 @@ import org.miaixz.bus.auth.guard.RedirectUriValidator;
 import org.miaixz.bus.auth.guard.ScopeValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.consent.Consent;
 import org.miaixz.bus.auth.shared.consent.ConsentDecision;
 import org.miaixz.bus.auth.shared.consent.ConsentRequest;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.worker.ConsentService;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -112,7 +112,7 @@ public final class AuthorizationCodeIssuer {
     /**
      * Caller-owned runtime ports used for registration, consent, and atomic state.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Exact registered redirect URI validator shared with other OAuth operations.
@@ -134,7 +134,7 @@ public final class AuthorizationCodeIssuer {
      * @param scopeValidator       standard scope validator
      * @throws IllegalArgumentException if the identifier is blank or a collaborator is {@code null}
      */
-    public AuthorizationCodeIssuer(final String providerId, final GrantPolicy options, final ExecutionServices services,
+    public AuthorizationCodeIssuer(final String providerId, final GrantPolicy options, final DriverServices services,
             final RedirectUriValidator redirectUriValidator, final ScopeValidator scopeValidator) {
         this.providerId = Assert.notBlank(providerId, "OAuth 2.x Provider id must not be blank");
         this.options = Assert.notNull(options, "OAuth 2.x Provider options must not be null");
@@ -347,8 +347,8 @@ public final class AuthorizationCodeIssuer {
 
         final CompletionStage<Outcome<ConsumerMetadata>> resolution;
         try {
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.consumerLoader().load(authorizationRequest.clientId(), context, timeout),
+            resolution = Outcome.mapStage(
+                    () -> services.consumerLoader().load(authorizationRequest.clientId(), context, timeout),
                     loaded -> services.consumerParser().parse(authorizationRequest.clientId(), loaded));
         } catch (RuntimeException exception) {
             return completed(
@@ -846,8 +846,7 @@ public final class AuthorizationCodeIssuer {
         final ExpiringValue<AuthorizationCodeCache.Entry> stored = new ExpiringValue<>(entry, expiresAt);
         final CompletionStage<Boolean> creation;
         try {
-            creation = services.authorizationCodeCache()
-                    .create(codeKey(code), stored, options.authorizationCodeLifetime().toMillis());
+            creation = services.authorizationCodeCache().issue(codeKey(code), stored);
         } catch (RuntimeException exception) {
             return completed(
                     Outcome.failed(

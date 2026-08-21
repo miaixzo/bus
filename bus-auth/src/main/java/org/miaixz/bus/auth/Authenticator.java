@@ -21,7 +21,7 @@ package org.miaixz.bus.auth;
 
 import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.core.Lifecycle;
+import org.miaixz.bus.core.lang.Optional;
 
 /**
  * Executes strongly typed capabilities against the current compiled authentication runtime.
@@ -32,7 +32,23 @@ import org.miaixz.bus.core.Lifecycle;
  *
  * @author Kimi Liu
  */
-public interface Authenticator extends Lifecycle, AutoCloseable {
+public interface Authenticator {
+
+    /**
+     * Reports whether the current generation contains a compiled worker for a Source reference.
+     *
+     * @param reference Source reference
+     * @return {@code true} when the reference is currently invocable
+     */
+    boolean available(Registry.Reference reference);
+
+    /**
+     * Returns the capabilities exposed by a Source in the current generation.
+     *
+     * @param reference Source reference
+     * @return immutable manifest, or empty when the Source is unavailable
+     */
+    Optional<Capability.Manifest> manifest(Registry.Reference reference);
 
     /**
      * Executes one capability declared by the referenced Source.
@@ -52,11 +68,5 @@ public interface Authenticator extends Lifecycle, AutoCloseable {
             Q request,
             Context context,
             Timeout.Budget timeout);
-
-    /**
-     * Stops accepting new invocations without closing externally owned services.
-     */
-    @Override
-    void close();
 
 }

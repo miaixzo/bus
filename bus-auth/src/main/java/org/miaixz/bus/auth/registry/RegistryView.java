@@ -19,7 +19,9 @@
 */
 package org.miaixz.bus.auth.registry;
 
-import org.miaixz.bus.auth.Library;
+import java.util.List;
+
+import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.worker.SourceWorker;
 import org.miaixz.bus.core.lang.Optional;
@@ -36,6 +38,18 @@ import org.miaixz.bus.core.lang.Optional;
 public interface RegistryView {
 
     /**
+     * Acquires this exact compiled generation for one operation.
+     *
+     * @return generation lease, or {@code null} after this view has been retired
+     */
+    Lease acquire();
+
+    /**
+     * Prevents new leases and closes generation-owned workers after existing leases finish.
+     */
+    void retire();
+
+    /**
      * Returns the revision shared by all indexes and the source snapshot.
      *
      * @return immutable view revision
@@ -50,12 +64,20 @@ public interface RegistryView {
     Registry.Snapshot snapshot();
 
     /**
-     * Looks up one enabled Library in this immutable view.
+     * Returns every Source entry owned by one Provider in snapshot order.
      *
-     * @param id Library resource identifier
-     * @return Library when the enabled record exists in this revision
+     * @param providerId Provider identifier
+     * @return immutable Source entry list
      */
-    Optional<Library> library(String id);
+    List<Registration.SourceEntry> sources(String providerId);
+
+    /**
+     * Returns enabled Source entries owned by one Provider in snapshot order.
+     *
+     * @param providerId Provider identifier
+     * @return immutable enabled Source entry list
+     */
+    List<Registration.SourceEntry> enabledSources(String providerId);
 
     /**
      * Looks up one compiled Source worker by its kind-safe Registry reference.
@@ -64,5 +86,22 @@ public interface RegistryView {
      * @return Source worker when the enabled record compiled in this revision
      */
     Optional<SourceWorker> worker(Registry.Reference reference);
+
+    /**
+     * Represents one invocation holding the exact Registry generation from lookup through asynchronous completion.
+     */
+    interface Lease extends AutoCloseable {
+
+        /**
+         * Returns the immutable view held by this lease.
+         *
+         * @return leased Registry view
+         */
+        RegistryView view();
+
+        /** Releases this generation lease exactly once. */
+        @Override
+        void close();
+    }
 
 }

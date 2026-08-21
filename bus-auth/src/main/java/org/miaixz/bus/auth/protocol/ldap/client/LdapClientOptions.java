@@ -59,16 +59,6 @@ public record LdapClientOptions(String host, int port, SecurityMode securityMode
         int maximumBerDepth) implements Options<LdapClientOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<LdapClientOptions> type() {
-        return LdapClientOptions.class;
-    }
-
-    /**
      * Validates protected transport, search mapping, external credential pairing, and local positive limits.
      *
      * @throws IllegalArgumentException if a required component or optional container is {@code null}
@@ -155,6 +145,21 @@ public record LdapClientOptions(String host, int port, SecurityMode securityMode
             throw new ValidateException("LDAP Source identity attributes must include the username attribute");
         }
         return List.copyOf(copy);
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<LdapClientOptions> type() {
+        return LdapClientOptions.class;
+    }
+
+    @Override
+    public LdapClientOptions snapshot() {
+        return this;
     }
 
     /**
