@@ -26,7 +26,7 @@ import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
- * Exposes the standard LDAPv3 protocol-operation keys and explicit Provider and Source driver factories.
+ * Exposes the standard LDAPv3 protocol-operation keys and explicit server and client driver factories.
  * <p>
  * The keys correspond one-to-one with the LDAP protocol operations defined by RFC 4511. StartTLS is represented by
  * {@link #EXTENDED}, because RFC 4511 defines it as an ExtendedRequest rather than a separate protocol operation.
@@ -401,19 +401,19 @@ public final class Ldap {
     /**
      * Creates the server-side LDAPv3 driver.
      *
-     * @return new LDAP Provider driver
+     * @return new LDAP Server driver
      */
-    public static SourceDriver<LdapServerOptions> provider() {
-        return new LdapProviderDriver();
+    public static SourceDriver<LdapServerOptions> server() {
+        return new LdapServerDriver();
     }
 
     /**
      * Creates the client-side LDAPv3 driver.
      *
-     * @return new LDAP Source driver
+     * @return new LDAP Client driver
      */
-    public static SourceDriver<LdapClientOptions> source() {
-        return new LdapSourceDriver();
+    public static SourceDriver<LdapClientOptions> client() {
+        return new LdapClientDriver();
     }
 
 }

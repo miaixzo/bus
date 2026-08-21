@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.auth.registry;
 
-import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 
@@ -32,8 +32,8 @@ import org.miaixz.bus.core.lang.Optional;
  * response.
  * </p>
  *
- * @param kind            kind of registration record that failed
- * @param id              resource identifier of the failing record
+ * @param kind            optional kind of the registration entry that failed
+ * @param id              optional resource identifier of the failing entry
  * @param stage           snapshot processing stage that detected the issue
  * @param standard        optional formal standard reference relevant to the issue
  * @param field           optional safe registration or standard field name
@@ -41,8 +41,8 @@ import org.miaixz.bus.core.lang.Optional;
  * @param safeDescription non-sensitive diagnostic description
  * @author Kimi Liu
  */
-public record RegistryIssue(Registration.Kind kind, String id, Stage stage, Optional<String> standard,
-        Optional<String> field, Errors error, String safeDescription) {
+public record RegistryIssue(Optional<Registration.Kind> kind, Optional<String> id, Stage stage,
+        Optional<String> standard, Optional<String> field, Errors error, String safeDescription) {
 
     /**
      * Creates an immutable safe Registry issue.
@@ -57,8 +57,13 @@ public record RegistryIssue(Registration.Kind kind, String id, Stage stage, Opti
      * @throws IllegalArgumentException if a required value is missing or an optional text value is blank
      */
     public RegistryIssue {
-        Assert.notNull(kind, "Registry issue kind must not be null");
-        Assert.notBlank(id, "Registry issue resource id must not be blank");
+        Assert.notNull(kind, "Registry issue kind container must not be null");
+        kind = Optional.ofNullable(kind.getOrNull());
+        Assert.notNull(id, "Registry issue resource id container must not be null");
+        if (!id.isEmpty()) {
+            Assert.notBlank(id.getOrNull(), "Registry issue resource id must not be blank");
+        }
+        id = Optional.ofNullable(id.getOrNull());
         Assert.notNull(stage, "Registry issue stage must not be null");
         Assert.notNull(standard, "Registry issue standard container must not be null");
         if (!standard.isEmpty()) {
@@ -72,6 +77,32 @@ public record RegistryIssue(Registration.Kind kind, String id, Stage stage, Opti
         field = Optional.ofNullable(field.getOrNull());
         Assert.notNull(error, "Registry issue Bus error must not be null");
         Assert.notBlank(safeDescription, "Registry issue safe description must not be blank");
+    }
+
+    /**
+     * Creates an issue associated with one exact registration entry.
+     */
+    public static RegistryIssue entry(
+            final Registration.Kind kind,
+            final String id,
+            final Stage stage,
+            final Optional<String> field,
+            final Errors error,
+            final String description) {
+        return new RegistryIssue(Optional.of(kind), Optional.of(id), stage, Optional.empty(), field, error,
+                description);
+    }
+
+    /**
+     * Creates an issue associated with the complete reload attempt rather than one entry.
+     */
+    public static RegistryIssue snapshot(
+            final Stage stage,
+            final Optional<String> field,
+            final Errors error,
+            final String description) {
+        return new RegistryIssue(Optional.empty(), Optional.empty(), stage, Optional.empty(), field, error,
+                description);
     }
 
     /**
@@ -90,11 +121,6 @@ public record RegistryIssue(Registration.Kind kind, String id, Stage stage, Opti
          * Raw registration validation failed.
          */
         VALIDATE,
-
-        /**
-         * Typed options or resource decoding failed.
-         */
-        DECODE,
 
         /**
          * Source worker compilation failed.

@@ -59,16 +59,6 @@ public record OktaOptions(Vendor.Id vendor, Vendor.Variant variant, String clien
         implements VendorOptions<OktaOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<OktaOptions> type() {
-        return OktaOptions.class;
-    }
-
-    /**
      * Maximum length accepted by the frozen authorization-server path selector.
      */
     private static final int MAXIMUM_AUTHORIZATION_SERVER_ID_LENGTH = 128;
@@ -188,6 +178,16 @@ public record OktaOptions(Vendor.Id vendor, Vendor.Variant variant, String clien
             throw new ValidateException("Okta authorization server identifier contains unsupported characters");
         }
         return checked;
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<OktaOptions> type() {
+        return OktaOptions.class;
     }
 
     /**

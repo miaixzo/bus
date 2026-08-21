@@ -54,16 +54,6 @@ public record GoogleOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<GoogleOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<GoogleOptions> type() {
-        return GoogleOptions.class;
-    }
-
-    /**
      * Validates and freezes one Google registration without resolving its Client Secret.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
@@ -133,6 +123,16 @@ public record GoogleOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
         } catch (URISyntaxException cause) {
             throw new ValidateException("Google redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<GoogleOptions> type() {
+        return GoogleOptions.class;
     }
 
     /**

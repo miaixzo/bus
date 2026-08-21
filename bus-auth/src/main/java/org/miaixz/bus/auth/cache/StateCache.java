@@ -19,8 +19,11 @@
 */
 package org.miaixz.bus.auth.cache;
 
+import java.util.concurrent.CompletionStage;
+
 import org.miaixz.bus.auth.Callback;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.fabric.Clock;
 
 /**
  * Stores one-time callback correlation for OAuth, OpenID Connect, SAML, and Vendor browser interactions.
@@ -32,20 +35,29 @@ import org.miaixz.bus.cache.CacheX;
  *
  * @author Kimi Liu
  */
-public final class StateCache extends AuthCache<ExpiringValue<Callback.Correlation>> {
+public final class StateCache extends AuthCache<Callback.Correlation> {
 
     /**
      * Isolates callback correlation state from every other bus-cache consumer.
      */
-    private static final String NAMESPACE = "auth:state:";
+    private static final String PURPOSE = "state";
 
     /**
      * Creates a callback-state cache view backed entirely by bus-cache.
      *
      * @param cache shared bus-cache backend
      */
-    public StateCache(final CacheX<String, Object> cache) {
-        super(cache, NAMESPACE);
+    public StateCache(final CacheX<String, Object> cache, final String deployment,
+            final Clock clock) {
+        super(cache, deployment, PURPOSE, Callback.Correlation.class, clock);
+    }
+
+    public CompletionStage<Boolean> issue(final String key, final ExpiringValue<Callback.Correlation> value) {
+        return super.doIssue(key, value);
+    }
+
+    public CompletionStage<ExpiringValue<Callback.Correlation>> consume(final String key) {
+        return super.doConsume(key);
     }
 
 }

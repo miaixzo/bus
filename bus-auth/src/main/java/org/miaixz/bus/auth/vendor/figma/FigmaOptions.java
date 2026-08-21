@@ -53,16 +53,6 @@ public record FigmaOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<FigmaOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<FigmaOptions> type() {
-        return FigmaOptions.class;
-    }
-
-    /**
      * Minimum identity scope required by the frozen Figma login manifest.
      */
     private static final String CURRENT_USER_READ = "current_user:read";
@@ -127,6 +117,16 @@ public record FigmaOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
         } catch (URISyntaxException cause) {
             throw new ValidateException("Figma redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<FigmaOptions> type() {
+        return FigmaOptions.class;
     }
 
     /**

@@ -30,11 +30,15 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonValue;
 
-/** Immutable protocol consumer metadata accepted by authentication services. */
+/**
+ * Immutable protocol consumer metadata accepted by authentication services.
+ */
 public record ConsumerMetadata(String id, Optional<Credential.Reference> credential, List<String> redirectUris,
         Set<String> grantTypes, Set<String> responseTypes, Set<String> scopes, JsonValue.ObjectValue metadata) {
 
-    /** Creates and freezes validated consumer metadata. */
+    /**
+     * Creates and freezes validated consumer metadata.
+     */
     public ConsumerMetadata {
         Assert.notBlank(id, "Consumer identifier must not be blank");
         Assert.notNull(credential, "Consumer credential container must not be null");

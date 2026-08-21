@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.auth;
 
+import org.miaixz.bus.core.basic.entity.Audit;
 import org.miaixz.bus.core.basic.entity.Entity;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Enumers;
@@ -28,8 +29,8 @@ import org.miaixz.bus.core.lang.Enumers;
  * <p>
  * External projects create complete records from databases, files, or remote services. The framework validates and
  * compiles one complete snapshot; this container performs no loading, persistence, protocol option materialization, or
- * Registry access. Each record carries the complete managed entity instead of duplicating entity fields or transporting
- * persistence representations.
+ * Registry access. Each record detaches the framework-owned fields of the complete managed entity so project mutation
+ * cannot change a published generation.
  * </p>
  *
  * @author Kimi Liu
@@ -92,76 +93,161 @@ public final class Registration {
     }
 
     /**
-     * Represents the monotonically increasing version of one registration record.
+     * Represents one type-safe registration entry accepted by the framework boundary.
      * <p>
-     * This value is not a Registry snapshot revision and is unrelated to any protocol version.
+     * Projects may load subclasses of the three framework entities, but an entry always projects them to their exact
+     * framework base type. This prevents a project subtype from being advertised after its project-owned fields have
+     * intentionally been discarded.
      * </p>
      *
-     * @param value non-negative record generation
      * @author Kimi Liu
      */
-    public record Generation(long value) {
+    public sealed interface Entry permits LibraryEntry, ProviderEntry, SourceEntry {
 
         /**
-         * Creates a record generation.
+         * Returns the exact resource category.
          *
-         * @param value non-negative record generation
-         * @throws IllegalArgumentException if the generation is negative
+         * @return registration kind
          */
-        public Generation {
-            Assert.isTrue(value >= 0, "Registration generation must not be negative");
-        }
+        Kind kind();
 
+        /**
+         * Returns whether this entry participates in the compiled runtime view.
+         *
+         * @return {@code true} when enabled
+         */
+        boolean enabled();
+
+        /**
+         * Returns a detached framework entity.
+         *
+         * @return mutable copy that cannot change this entry
+         */
+        Entity resource();
     }
 
     /**
-     * Carries one resource registration loaded by an external project.
-     * <p>
-     * Resource identity, namespace, protocol, relationships, presentation data, and materialized options remain on the
-     * mutable resource object that owns them. The record components are fixed, but this wrapper does not freeze or copy
-     * the enclosed project-supplied entity; it adds only registration state and generation information.
-     * </p>
+     * Carries one detached Library registration.
      *
-     * @param kind       managed resource kind
-     * @param enabled    whether the record participates in the compiled Registry view
-     * @param generation version of this individual record
-     * @param resource   complete Library, Provider, or Source entity supplied by the external project
-     * @param <R>        concrete managed resource type
-     * @author Kimi Liu
+     * @param enabled  whether the Library participates in the compiled view
+     * @param resource project-supplied Library or subclass
      */
-    public record Record<R extends Entity>(Kind kind, boolean enabled, Generation generation, R resource) {
+    public record LibraryEntry(boolean enabled, Library resource) implements Entry {
 
-        /**
-         * Creates a fixed registration wrapper whose kind matches its complete resource object.
-         *
-         * @param kind       managed resource kind
-         * @param enabled    whether the record participates in the compiled Registry view
-         * @param generation version of this individual record
-         * @param resource   complete managed resource entity
-         * @throws IllegalArgumentException if a required value is null or the kind does not match the resource type
-         */
-        public Record {
-            Assert.notNull(kind, "Registration kind must not be null");
-            Assert.notNull(generation, "Registration generation must not be null");
-            Assert.notNull(resource, "Registration resource must not be null");
-            Assert.isTrue(matches(kind, resource), "Registration kind does not match resource type: {}", kind);
+        public LibraryEntry {
+            resource = copy(Assert.notNull(resource, "Library registration must not be null"));
         }
 
-        /**
-         * Determines whether a resource kind owns the supplied concrete entity category.
-         *
-         * @param kind     declared resource kind
-         * @param resource complete resource entity
-         * @return {@code true} when the kind and entity category match
-         */
-        private static boolean matches(final Kind kind, final Entity resource) {
-            return switch (kind) {
-                case LIBRARY -> resource instanceof Library;
-                case PROVIDER -> resource instanceof Provider;
-                case SOURCE -> resource instanceof Source;
-            };
+        @Override
+        public Kind kind() {
+            return Kind.LIBRARY;
         }
 
+        @Override
+        public Library resource() {
+            return copy(resource);
+        }
+    }
+
+    /**
+     * Carries one detached Provider registration.
+     *
+     * @param enabled  whether the Provider participates in the compiled view
+     * @param resource project-supplied Provider or subclass
+     */
+    public record ProviderEntry(boolean enabled, Provider resource) implements Entry {
+
+        public ProviderEntry {
+            resource = copy(Assert.notNull(resource, "Provider registration must not be null"));
+        }
+
+        @Override
+        public Kind kind() {
+            return Kind.PROVIDER;
+        }
+
+        @Override
+        public Provider resource() {
+            return copy(resource);
+        }
+    }
+
+    /**
+     * Carries one detached Source registration.
+     *
+     * @param enabled  whether the Source participates in the compiled view
+     * @param resource project-supplied Source or subclass
+     */
+    public record SourceEntry(boolean enabled, Source resource) implements Entry {
+
+        public SourceEntry {
+            resource = copy(Assert.notNull(resource, "Source registration must not be null"));
+        }
+
+        @Override
+        public Kind kind() {
+            return Kind.SOURCE;
+        }
+
+        @Override
+        public Source resource() {
+            return copy(resource);
+        }
+    }
+
+    private static void copyAudit(final Audit source, final Audit target) {
+        target.setId(source.getId());
+        target.setCreator(source.getCreator());
+        target.setCreated(source.getCreated());
+        target.setModifier(source.getModifier());
+        target.setModified(source.getModified());
+    }
+
+    private static Library copy(final Library source) {
+        final Library target = new Library();
+        copyAudit(source, target);
+        target.setNamespace_id(source.getNamespace_id());
+        target.setCode(source.getCode());
+        target.setName(source.getName());
+        target.setIcon(source.getIcon());
+        target.setUrl(source.getUrl());
+        target.setTarget(source.getTarget());
+        target.setSort(source.getSort());
+        target.setCategory(source.getCategory());
+        target.setMetadata(source.getMetadata());
+        target.setPublisher(source.getPublisher());
+        target.setDescription(source.getDescription());
+        return target;
+    }
+
+    private static Provider copy(final Provider source) {
+        final Provider target = new Provider();
+        copyAudit(source, target);
+        target.setLibrary_id(source.getLibrary_id());
+        target.setCode(source.getCode());
+        target.setName(source.getName());
+        target.setIcon(source.getIcon());
+        target.setSort(source.getSort());
+        target.setMetadata(source.getMetadata());
+        target.setDescription(source.getDescription());
+        return target;
+    }
+
+    private static Source copy(final Source source) {
+        final Source target = new Source();
+        copyAudit(source, target);
+        target.setProvider_id(source.getProvider_id());
+        target.setCode(source.getCode());
+        target.setName(source.getName());
+        target.setType(source.getType());
+        target.setIcon(source.getIcon());
+        target.setSort(source.getSort());
+        target.setProtocol(source.getProtocol());
+        final Options<?> options = source.getOptions();
+        target.setOptions(options == null ? null : Assert.notNull(options.snapshot(), "Source options snapshot must not be null"));
+        target.setMetadata(source.getMetadata());
+        target.setDescription(source.getDescription());
+        return target;
     }
 
 }

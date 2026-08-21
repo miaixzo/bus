@@ -19,12 +19,15 @@
 */
 package org.miaixz.bus.auth.cache;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 
@@ -39,20 +42,36 @@ import org.miaixz.bus.core.lang.Optional;
  *
  * @author Kimi Liu
  */
-public final class DeviceCodeCache extends AuthCache<ExpiringValue<DeviceCodeCache.Entry>> {
+public final class DeviceCodeCache extends AuthCache<DeviceCodeCache.Entry> {
 
     /**
      * Isolates device-code state from every other bus-cache consumer.
      */
-    private static final String NAMESPACE = "auth:device-code:";
+    private static final String PURPOSE = "device-code";
 
     /**
      * Creates a device-code cache view backed entirely by bus-cache.
      *
      * @param cache shared bus-cache backend
      */
-    public DeviceCodeCache(final CacheX<String, Object> cache) {
-        super(cache, NAMESPACE);
+    public DeviceCodeCache(final CacheX<String, Object> cache, final String deployment,
+            final Clock clock) {
+        super(cache, deployment, PURPOSE, Entry.class, clock);
+    }
+
+    public CompletionStage<Boolean> issue(final String key, final ExpiringValue<Entry> value) {
+        return super.doIssue(key, value);
+    }
+
+    public CompletionStage<ExpiringValue<Entry>> find(final String key) {
+        return super.doFind(key);
+    }
+
+    public CompletionStage<Boolean> update(
+            final String key,
+            final ExpiringValue<Entry> expected,
+            final ExpiringValue<Entry> update) {
+        return super.doUpdate(key, expected, update);
     }
 
     /**
@@ -98,7 +117,7 @@ public final class DeviceCodeCache extends AuthCache<ExpiringValue<DeviceCodeCac
      * @author Kimi Liu
      */
     public record Entry(String providerId, String clientId, String userCode, List<String> scope, Status status,
-            Duration interval, Optional<Instant> lastPolledAt, Optional<String> subjectId) {
+            Duration interval, Optional<Instant> lastPolledAt, Optional<String> subjectId) implements Serializable {
 
         /**
          * Creates an immutable device authorization state value.

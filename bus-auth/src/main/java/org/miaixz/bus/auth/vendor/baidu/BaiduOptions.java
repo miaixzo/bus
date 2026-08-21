@@ -49,16 +49,6 @@ public record BaiduOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<BaiduOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<BaiduOptions> type() {
-        return BaiduOptions.class;
-    }
-
-    /**
      * Validates and freezes one Baidu registration without resolving its client secret.
      *
      * @throws IllegalArgumentException if a required component, optional container, or scope is null or blank
@@ -104,6 +94,16 @@ public record BaiduOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
             case "basic", "super_msg", "netdisk", "public", "hao123" -> true;
             default -> false;
         };
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<BaiduOptions> type() {
+        return BaiduOptions.class;
     }
 
     /**

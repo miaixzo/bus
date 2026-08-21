@@ -19,10 +19,13 @@
 */
 package org.miaixz.bus.auth.cache;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 
@@ -30,26 +33,40 @@ import org.miaixz.bus.core.lang.Optional;
  * Stores the server-side validation state of an issued OAuth access token.
  * <p>
  * The backend key is an isolated irreversible token digest. The value contains only the Provider, client, subject,
- * scope, audience, and optional sender-constraining confirmation required for validation and revocation; it never
- * stores the plaintext access token or refresh-token lifecycle state.
+ * authorization id, scope, audience, and optional sender-constraining confirmation required for validation. The
+ * referenced {@link AuthorizationCache} entry is the lifecycle authority; this cache is only a token index and never
+ * stores plaintext access tokens.
  * </p>
  *
  * @author Kimi Liu
  */
-public final class AccessTokenCache extends AuthCache<ExpiringValue<AccessTokenCache.Entry>> {
+public final class AccessTokenCache extends AuthCache<AccessTokenCache.Entry> {
 
     /**
      * Isolates access-token state from every other bus-cache consumer.
      */
-    private static final String NAMESPACE = "auth:access-token:";
+    private static final String PURPOSE = "access-token";
 
     /**
      * Creates an access-token cache view backed entirely by bus-cache.
      *
      * @param cache shared bus-cache backend
      */
-    public AccessTokenCache(final CacheX<String, Object> cache) {
-        super(cache, NAMESPACE);
+    public AccessTokenCache(final CacheX<String, Object> cache, final String deployment,
+            final Clock clock) {
+        super(cache, deployment, PURPOSE, Entry.class, clock);
+    }
+
+    public CompletionStage<Boolean> issue(final String key, final ExpiringValue<Entry> value) {
+        return super.doIssue(key, value);
+    }
+
+    public CompletionStage<ExpiringValue<Entry>> find(final String key) {
+        return super.doFind(key);
+    }
+
+    public CompletionStage<Boolean> revoke(final String key) {
+        return super.doRevoke(key);
     }
 
     /**
@@ -58,6 +75,7 @@ public final class AccessTokenCache extends AuthCache<ExpiringValue<AccessTokenC
      * @param providerId     OAuth Provider identifier
      * @param clientId       OAuth client identifier
      * @param subjectId      authorized subject identifier
+     * @param authorizationId authoritative authorization identifier shared by derived credentials
      * @param scope          granted OAuth scope values
      * @param audience       intended resource server audience values
      * @param actorSubjectId optional RFC 8693 acting-subject identifier for delegated token exchange
@@ -65,9 +83,9 @@ public final class AccessTokenCache extends AuthCache<ExpiringValue<AccessTokenC
      * @param openIdBinding  optional OpenID Connect authorization context inherited from an authorization code
      * @author Kimi Liu
      */
-    public record Entry(String providerId, String clientId, String subjectId, List<String> scope, List<String> audience,
-            Optional<String> actorSubjectId, Optional<String> confirmation,
-            Optional<AuthorizationCodeCache.OpenIdBinding> openIdBinding) {
+    public record Entry(String providerId, String clientId, String subjectId, String authorizationId,
+            List<String> scope, List<String> audience, Optional<String> actorSubjectId, Optional<String> confirmation,
+            Optional<AuthorizationCodeCache.OpenIdBinding> openIdBinding) implements Serializable {
 
         /**
          * Creates immutable access-token validation metadata.
@@ -87,6 +105,7 @@ public final class AccessTokenCache extends AuthCache<ExpiringValue<AccessTokenC
             Assert.notBlank(providerId, "Access token Provider id must not be blank");
             Assert.notBlank(clientId, "Access token client id must not be blank");
             Assert.notBlank(subjectId, "Access token subject id must not be blank");
+            Assert.notBlank(authorizationId, "Access token authorization id must not be blank");
             scope = immutableText(scope, "Access token scope");
             audience = immutableText(audience, "Access token audience");
             Assert.notNull(actorSubjectId, "Access token actor subject container must not be null");

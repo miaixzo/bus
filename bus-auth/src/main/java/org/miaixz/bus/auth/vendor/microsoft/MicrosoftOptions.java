@@ -58,16 +58,6 @@ public record MicrosoftOptions(Vendor.Id vendor, Vendor.Variant variant, String 
         implements VendorOptions<MicrosoftOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<MicrosoftOptions> type() {
-        return MicrosoftOptions.class;
-    }
-
-    /**
      * Delegated permission required by the private Microsoft Graph current-user operation.
      */
     private static final String USER_READ = "User.Read";
@@ -238,6 +228,16 @@ public record MicrosoftOptions(Vendor.Id vendor, Vendor.Variant variant, String 
             }
         }
         return ascii;
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<MicrosoftOptions> type() {
+        return MicrosoftOptions.class;
     }
 
     /**

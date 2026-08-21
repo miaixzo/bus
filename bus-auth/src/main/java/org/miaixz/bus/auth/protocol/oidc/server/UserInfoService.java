@@ -31,6 +31,7 @@ import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Subject;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.cache.AccessTokenCache;
+import org.miaixz.bus.auth.cache.AuthorizationCache;
 import org.miaixz.bus.auth.cache.AuthorizationCodeCache;
 import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2ErrorCode;
@@ -38,9 +39,8 @@ import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.auth.protocol.oidc.UserInfoRequest;
 import org.miaixz.bus.auth.protocol.oidc.UserInfoResponse;
 import org.miaixz.bus.auth.protocol.oidc.codec.UserInfoCodec;
-import org.miaixz.bus.auth.resolver.Attributes;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -77,7 +77,7 @@ public final class UserInfoService {
     /**
      * Access-token cache, external attribute loader, and pure attribute parser.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Standard Claims object decoder used after authorization filtering.
@@ -92,8 +92,7 @@ public final class UserInfoService {
      * @param services   externally implemented runtime dependencies
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public UserInfoService(final String providerId, final OpenIdServerOptions options,
-            final ExecutionServices services) {
+    public UserInfoService(final String providerId, final OpenIdServerOptions options, final DriverServices services) {
         this.providerId = Assert.notBlank(providerId, "OpenID Connect UserInfo Provider id must not be blank");
         this.options = Assert.notNull(options, "OpenID Connect UserInfo Provider options must not be null");
         this.services = Assert.notNull(services, "OpenID Connect UserInfo execution services must not be null");
@@ -238,7 +237,7 @@ public final class UserInfoService {
         }
         final CompletionStage<ExpiringValue<AccessTokenCache.Entry>> lookup;
         try {
-            lookup = services.accessTokenCache().get(tokenKey(request.accessToken()));
+            lookup = services.accessTokenCache().find(tokenKey(request.accessToken()));
         } catch (RuntimeException exception) {
             return completed(
                     Outcome.failed(
@@ -291,10 +290,51 @@ public final class UserInfoService {
                                     OAuth2ErrorCode.INVALID_TOKEN,
                                     "OpenID Connect UserInfo bearer token has no OpenID authorization binding")));
         }
-        final CompletionStage<Outcome<Attributes>> resolution;
+        final CompletionStage<ExpiringValue<AuthorizationCache.Entry>> authorization;
         try {
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.attributeLoader().load(new Subject.Key(entry.subjectId()), context, timeout),
+            authorization = services.authorizationCache()
+                    .find(AuthorizationCache.key(providerId, entry.authorizationId()));
+        } catch (RuntimeException exception) {
+            return completed(
+                    Outcome.failed(
+                            failure(
+                                    ErrorCode._500,
+                                    OAuth2ErrorCode.SERVER_ERROR,
+                                    "OpenID Connect UserInfo authorization lookup failed")));
+        }
+        return authorization.handle((value, thrown) -> new AuthorizationResult(value, thrown))
+                .thenCompose(authorizationResult -> resolveAuthorized(authorizationResult, entry, context, timeout));
+    }
+
+    private CompletionStage<Outcome<UserInfoResponse>> resolveAuthorized(
+            final AuthorizationResult result,
+            final AccessTokenCache.Entry entry,
+            final Context context,
+            final Timeout.Budget timeout) {
+        if (result.failure() != null) {
+            return completed(
+                    Outcome.failed(
+                            failure(
+                                    ErrorCode._500,
+                                    OAuth2ErrorCode.SERVER_ERROR,
+                                    "OpenID Connect UserInfo authorization lookup failed")));
+        }
+        final ExpiringValue<AuthorizationCache.Entry> authorization = result.value();
+        if (authorization == null || !authorization.expiresAt().isAfter(timeout.clock().now())
+                || authorization.value().status() != AuthorizationCache.Status.ACTIVE
+                || !providerId.equals(authorization.value().providerId())
+                || !entry.clientId().equals(authorization.value().clientId())) {
+            return completed(
+                    Outcome.rejected(
+                            failure(
+                                    ErrorCode._401,
+                                    OAuth2ErrorCode.INVALID_TOKEN,
+                                    "OpenID Connect UserInfo authorization is inactive")));
+        }
+        final CompletionStage<Outcome<JsonValue.ObjectValue>> resolution;
+        try {
+            resolution = Outcome.mapStage(
+                    () -> services.attributeLoader().load(new Subject.Key(entry.subjectId()), context, timeout),
                     loaded -> services.attributeParser().parse(new Subject.Key(entry.subjectId()), loaded));
         } catch (RuntimeException exception) {
             return completed(
@@ -307,7 +347,7 @@ public final class UserInfoService {
         return resolution
                 .handle(
                         (outcome, thrown) -> thrown == null && outcome != null ? outcome
-                                : Outcome.<Attributes>failed(
+                                : Outcome.<JsonValue.ObjectValue>failed(
                                         failure(
                                                 ErrorCode._500,
                                                 OAuth2ErrorCode.SERVER_ERROR,
@@ -323,22 +363,22 @@ public final class UserInfoService {
      * @return standard UserInfo outcome
      */
     private Outcome<UserInfoResponse> mapAttributes(
-            final Outcome<Attributes> outcome,
+            final Outcome<JsonValue.ObjectValue> outcome,
             final AccessTokenCache.Entry entry) {
         return switch (outcome) {
-            case Outcome.Succeeded<Attributes> success -> success.value() == null
+            case Outcome.Succeeded<JsonValue.ObjectValue> success -> success.value() == null
                     ? Outcome.failed(
                             failure(
                                     ErrorCode._500,
                                     OAuth2ErrorCode.SERVER_ERROR,
                                     "OpenID Connect UserInfo attribute resolution returned no value"))
                     : response(entry, success.value());
-            case Outcome.Rejected<Attributes> rejected -> Outcome.rejected(
+            case Outcome.Rejected<JsonValue.ObjectValue> rejected -> Outcome.rejected(
                     failure(
                             rejected.failure().error(),
                             OAuth2ErrorCode.INVALID_TOKEN,
                             "OpenID Connect UserInfo subject is unavailable"));
-            case Outcome.Failed<Attributes> failed -> Outcome.failed(
+            case Outcome.Failed<JsonValue.ObjectValue> failed -> Outcome.failed(
                     failure(
                             failed.failure().error(),
                             OAuth2ErrorCode.SERVER_ERROR,
@@ -353,7 +393,9 @@ public final class UserInfoService {
      * @param attributes current subject attributes
      * @return successful response or failure for an unavailable essential claim
      */
-    private Outcome<UserInfoResponse> response(final AccessTokenCache.Entry entry, final Attributes attributes) {
+    private Outcome<UserInfoResponse> response(
+            final AccessTokenCache.Entry entry,
+            final JsonValue.ObjectValue attributes) {
         final LinkedHashSet<String> requested = claimsForScopes(entry);
         final Map<String, JsonValue> individual = requestedUserInfoClaims(entry.openIdBinding().getOrNull());
         requested.addAll(individual.keySet());
@@ -372,7 +414,7 @@ public final class UserInfoService {
                 }
                 continue;
             }
-            final JsonValue value = attributes.values().values().get(name);
+            final JsonValue value = attributes.values().get(name);
             if (value == null) {
                 if (essential(individual.get(name))) {
                     return Outcome.failed(
@@ -415,6 +457,10 @@ public final class UserInfoService {
      * @author Kimi Liu
      */
     private record CacheResult(ExpiringValue<AccessTokenCache.Entry> value, Throwable failure) {
+
+    }
+
+    private record AuthorizationResult(ExpiringValue<AuthorizationCache.Entry> value, Throwable failure) {
 
     }
 

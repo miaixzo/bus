@@ -21,9 +21,9 @@
  * Defines the loading, validation, publication, and read-only state boundary of the Registry.
  * <p>
  * External projects implement {@link org.miaixz.bus.auth.worker.RegistrationLoader} to supply complete registration
- * snapshots. CRUD and management data access remain project responsibilities. Snapshot record lists are structurally
- * frozen, while their Library, Provider, and Source entities remain mutable project-supplied models owned by the
- * external project. The loader converts persisted Source configuration into typed Options before this boundary.
+ * snapshots. CRUD and management data access remain project responsibilities. Registration entries detach the
+ * framework-owned Library, Provider, and Source fields on entry and return detached copies, while snapshot record lists
+ * are structurally frozen. The loader converts persisted Source configuration into typed Options before this boundary.
  * {@link org.miaixz.bus.auth.registry.RegistrationValidator} applies cross-entity Library, Provider, Source, namespace,
  * and Library-to-Provider-to-Source ownership rules before compilation.
  * {@link org.miaixz.bus.auth.worker.RegistryListener} observes publication lifecycle, while

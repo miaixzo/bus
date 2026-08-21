@@ -43,20 +43,9 @@ public record RadiusServerOptions(Set<RadiusPacket.Version> versions, boolean ea
         boolean requireMessageAuthenticator, int maximumPacketBytes) implements Options<RadiusServerOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<RadiusServerOptions> type() {
-        return RadiusServerOptions.class;
-    }
-
-    /**
      * Smallest valid RADIUS packet containing only the fixed header.
      */
     public static final int MINIMUM_PACKET_BYTES = 20;
-
     /**
      * RFC 2865 default maximum packet size enforced by the packet codecs.
      */
@@ -78,6 +67,21 @@ public record RadiusServerOptions(Set<RadiusPacket.Version> versions, boolean ea
         Assert.isTrue(
                 maximumPacketBytes >= MINIMUM_PACKET_BYTES && maximumPacketBytes <= MAXIMUM_PACKET_BYTES,
                 "RADIUS maximum packet bytes must be between 20 and 4096");
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<RadiusServerOptions> type() {
+        return RadiusServerOptions.class;
+    }
+
+    @Override
+    public RadiusServerOptions snapshot() {
+        return this;
     }
 
 }

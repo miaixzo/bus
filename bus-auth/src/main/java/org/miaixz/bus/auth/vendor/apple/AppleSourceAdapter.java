@@ -45,17 +45,17 @@ import org.miaixz.bus.auth.protocol.oidc.codec.IdTokenCodec;
 import org.miaixz.bus.auth.protocol.oidc.codec.JwkSetCodec;
 import org.miaixz.bus.auth.protocol.oidc.codec.OpenIdProviderMetadataCodec;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.jose.*;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceAuthentication;
-import org.miaixz.bus.auth.source.SourceAuthenticationRequest;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
 import org.miaixz.bus.auth.worker.KeyLoader;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
@@ -114,7 +114,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime, cryptographic, network, and JSON dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Shared one-time state and OpenID Connect nonce lifecycle.
@@ -195,7 +195,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
      *                                  profile
      */
     public AppleSourceAdapter(final String namespaceId, final String sourceId, final AppleManifest manifest,
-            final VariantManifest.Variant variant, final AppleOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final AppleOptions options, final DriverServices services) {
         Assert.notNull(manifest, "Sign in with Apple manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Sign in with Apple Source id must not be blank");
         this.variant = Assert.notNull(variant, "Sign in with Apple manifest must not be null");
@@ -436,7 +436,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
      * @param <T>         expected successful value type
      * @return failed outcome
      */
-    private static <T> Outcome<T> failed(final org.miaixz.bus.core.basic.normal.Errors code, final String description) {
+    private static <T> Outcome<T> failed(final Errors code, final String description) {
         return Outcome.failed(new Outcome.Failure(code, description, new JsonValue.ObjectValue(Map.of())));
     }
 
@@ -489,11 +489,11 @@ public final class AppleSourceAdapter implements VendorAdapter {
             return completed(rejected("Sign in with Apple capability is not declared"));
         }
         if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserStart start) {
+                && request instanceof SourceAuthentication.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
         if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserCallback callback) {
+                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::complete, context, timeout),
                     capability.responseType());
@@ -782,8 +782,8 @@ public final class AppleSourceAdapter implements VendorAdapter {
                 SIGNATURE_USE, JwaAlgorithm.ES256.name(), now);
         final CompletionStage<Outcome<KeyMaterial>> resolution;
         try {
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.keyLoader().load(query, context, timeout),
+            resolution = Outcome.mapStage(
+                    () -> services.keyLoader().load(query, context, timeout),
                     loaded -> services.keyParser().parse(query, loaded));
         } catch (RuntimeException cause) {
             return completed(failed("Sign in with Apple signing key resolution failed"));

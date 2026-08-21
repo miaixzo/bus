@@ -28,9 +28,8 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.protocol.radius.*;
 import org.miaixz.bus.auth.protocol.radius.codec.EapMessageCodec;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
-import org.miaixz.bus.auth.runtime.LoadResult;
 import org.miaixz.bus.auth.shared.SecretLease;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -66,7 +65,7 @@ public final class AccessService {
     /**
      * External short-lived shared-secret loader and framework-owned parser.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Historic security and RADIUS/1.1 response correlator.
@@ -90,7 +89,7 @@ public final class AccessService {
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
     public AccessService(final String providerId, final RadiusServerOptions options, final RadiusRequestHandler handler,
-            final ExecutionServices services, final RadiusAuthenticator authenticator, final EapMessageCodec eapCodec) {
+            final DriverServices services, final RadiusAuthenticator authenticator, final EapMessageCodec eapCodec) {
         this.providerId = Assert.notBlank(providerId, "RADIUS Access Provider id must not be blank");
         this.options = Assert.notNull(options, "RADIUS Access options must not be null");
         this.handler = Assert.notNull(handler, "RADIUS Access handler must not be null");
@@ -460,8 +459,8 @@ public final class AccessService {
             final Context context,
             final Timeout.Budget timeout) {
         try {
-            return LoadResult.parse(
-                    services.secretLoader().load(reference, context, timeout),
+            return Outcome.mapStage(
+                    () -> services.secretLoader().load(reference, context, timeout),
                     loaded -> services.secretParser().parse(reference, loaded));
         } catch (RuntimeException exception) {
             return completed(Outcome.failed(failure(ErrorCode._503, "RADIUS shared-secret resolution failed")));

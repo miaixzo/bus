@@ -53,16 +53,6 @@ public record VkOptions(Vendor.Id vendor, Vendor.Variant variant, String clientI
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<VkOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<VkOptions> type() {
-        return VkOptions.class;
-    }
-
-    /**
      * Complete scope vocabulary retained from the historical VK scope declaration.
      */
     private static final Set<String> ALLOWED_SCOPES = Set.of(
@@ -88,8 +78,7 @@ public record VkOptions(Vendor.Id vendor, Vendor.Variant variant, String clientI
      * Validates and freezes one VK ID registration without resolving credential material.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
-     * @throws ValidateException        if routing, credential, callback, scope, or PKCE state violates the frozen
-     *                                  profile
+     * @throws ValidateException        if routing, credential, callback, or scope state violates the frozen profile
      */
     public VkOptions {
         if (!VkManifest.ID.equals(vendor) || !VkManifest.DEFAULT.equals(variant)) {
@@ -150,13 +139,13 @@ public record VkOptions(Vendor.Id vendor, Vendor.Variant variant, String clientI
     }
 
     /**
-     * Reports the immutable S256 requirement of every VK ID Source.
+     * Returns this immutable configuration implementation type.
      *
-     * @return {@code true} because VK ID authorization always requires PKCE
+     * @return exact Options implementation class
      */
     @Override
-    public boolean pkce() {
-        return true;
+    public Class<VkOptions> type() {
+        return VkOptions.class;
     }
 
     /**

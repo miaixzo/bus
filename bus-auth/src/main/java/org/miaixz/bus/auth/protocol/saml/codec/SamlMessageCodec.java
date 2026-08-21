@@ -21,6 +21,7 @@ package org.miaixz.bus.auth.protocol.saml.codec;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.net.URI;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -1028,7 +1029,7 @@ public final class SamlMessageCodec {
          */
         private static Element statusCode(
                 final org.w3c.dom.Document document,
-                final org.miaixz.bus.auth.protocol.saml.StatusCode value) {
+                final StatusCode value) {
             final Element element = protocol(document, Saml.Xml.STATUS_CODE);
             element.setAttribute(Saml.Xml.VALUE, value.value());
             if (value.nested().isPresent()) {
@@ -1703,7 +1704,7 @@ public final class SamlMessageCodec {
          */
         private static java.net.URI absoluteUri(final String value, final String label) {
             try {
-                final java.net.URI uri = new java.net.URI(Assert.notBlank(value, label + " must not be blank"));
+                final URI uri = new URI(Assert.notBlank(value, label + " must not be blank"));
                 if (!uri.isAbsolute()) {
                     throw new ValidateException(label + " must be an absolute URI");
                 }

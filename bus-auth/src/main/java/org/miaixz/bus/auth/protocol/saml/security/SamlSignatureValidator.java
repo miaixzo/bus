@@ -52,6 +52,7 @@ import org.miaixz.bus.auth.protocol.saml.codec.SamlMessageCodec;
 import org.miaixz.bus.auth.protocol.saml.server.SamlServerOptions;
 import org.miaixz.bus.auth.resolver.CertificateMaterial;
 import org.miaixz.bus.auth.shared.SecurityBaseline;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.worker.CertificateLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -92,7 +93,7 @@ public final class SamlSignatureValidator {
     /**
      * External certificate loader and framework-owned certificate parser.
      */
-    private final org.miaixz.bus.auth.runtime.ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Shared non-relaxable algorithm and resource policy.
@@ -106,7 +107,7 @@ public final class SamlSignatureValidator {
      * @param securityBaseline shared SAML security baseline
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public SamlSignatureValidator(final org.miaixz.bus.auth.runtime.ExecutionServices services,
+    public SamlSignatureValidator(final DriverServices services,
             final SecurityBaseline securityBaseline) {
         this.services = Assert.notNull(services, "SAML execution services must not be null");
         this.securityBaseline = Assert.notNull(securityBaseline, "SAML security baseline must not be null");
@@ -666,8 +667,8 @@ public final class SamlSignatureValidator {
             return completed(failed("SAML signature validation has no remaining time budget"));
         final CertificateLoader.Request request = new CertificateLoader.Request(issuer, SIGNING_USE,
                 timeout.clock().now());
-        final CompletionStage<Outcome<CertificateMaterial>> resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                services.certificateLoader().load(request, context, timeout),
+        final CompletionStage<Outcome<CertificateMaterial>> resolution = Outcome.mapStage(
+                () -> services.certificateLoader().load(request, context, timeout),
                 loaded -> services.certificateParser().parse(request, loaded));
         if (resolution == null)
             return completed(failed("SAML certificate loader returned no result stage"));

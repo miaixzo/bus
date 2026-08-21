@@ -23,6 +23,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -30,24 +31,24 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.cache.ExpiringValue;
+import org.miaixz.bus.auth.cache.AuthorizationCache;
 import org.miaixz.bus.auth.cache.RefreshTokenCache;
 import org.miaixz.bus.auth.guard.ScopeValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
  * Rotates OAuth refresh-token families with reuse detection and fixed absolute family expiration.
  * <p>
- * A ReplayCache family marker closes the lookup gap created by token-digest indexing: once any rotated generation is
- * reused, every later active generation observes the marker and is rejected. New access and refresh values remain
- * unreturned until the old active generation is atomically replaced with its rotated state.
+ * The authoritative {@link AuthorizationCache} record is checked before every rotation and atomically becomes
+ * compromised when a rotated generation is reused. Access and refresh caches remain derived token indexes. New token
+ * values remain unreturned until the old active generation is atomically replaced with its rotated state.
  * </p>
  *
  * @author Kimi Liu
@@ -59,15 +60,8 @@ public final class RefreshTokenRotator {
      */
     private static final int MAXIMUM_CREATE_ATTEMPTS = 3;
 
-    /**
-     * Domain-separation label used in the irreversible refresh-family replay key.
-     */
-    private static final String FAMILY_KEY_PURPOSE = "refresh-family";
-
-    /**
-     * Non-sensitive ReplayCache value identifying a compromised refresh-token family.
-     */
-    private static final String FAMILY_REUSED = "oauth2-refresh-family-reused";
+    /** Maximum compare-and-replace attempts for one authoritative family-state transition. */
+    private static final int MAXIMUM_STATE_ATTEMPTS = 3;
 
     /**
      * Safe failure detail member carrying a registered OAuth error code.
@@ -87,7 +81,7 @@ public final class RefreshTokenRotator {
     /**
      * Externally implemented client, token, and replay ports.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Standard scope validator used to enforce non-expanding rotation.
@@ -100,6 +94,11 @@ public final class RefreshTokenRotator {
     private final AccessTokenIssuer issuer;
 
     /**
+     * Provider-isolated opaque token generation and irreversible key derivation.
+     */
+    private final TokenMaterial tokenMaterial;
+
+    /**
      * Creates a refresh-token rotator for one compiled OAuth Provider.
      *
      * @param providerId     compiled server-role Source identifier
@@ -107,15 +106,17 @@ public final class RefreshTokenRotator {
      * @param services       caller-owned runtime dependencies
      * @param scopeValidator standard scope validator
      * @param issuer         common internal access-token issuer
+     * @param tokenMaterial  shared opaque token material service
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public RefreshTokenRotator(final String providerId, final GrantPolicy options, final ExecutionServices services,
-            final ScopeValidator scopeValidator, final AccessTokenIssuer issuer) {
+    public RefreshTokenRotator(final String providerId, final GrantPolicy options, final DriverServices services,
+            final ScopeValidator scopeValidator, final AccessTokenIssuer issuer, final TokenMaterial tokenMaterial) {
         this.providerId = Assert.notBlank(providerId, "OAuth 2.x Provider id must not be blank");
         this.options = Assert.notNull(options, "OAuth 2.x Provider options must not be null");
         this.services = Assert.notNull(services, "OAuth 2.x execution services must not be null");
         this.scopeValidator = Assert.notNull(scopeValidator, "OAuth 2.x scope validator must not be null");
         this.issuer = Assert.notNull(issuer, "OAuth 2.x access token issuer must not be null");
+        this.tokenMaterial = Assert.notNull(tokenMaterial, "OAuth 2.x token material service must not be null");
     }
 
     /**
@@ -228,8 +229,8 @@ public final class RefreshTokenRotator {
 
         final CompletionStage<Outcome<ConsumerMetadata>> resolution;
         try {
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.consumerLoader().load(clientId, context, timeout),
+            resolution = Outcome.mapStage(
+                    () -> services.consumerLoader().load(clientId, context, timeout),
                     loaded -> services.consumerParser().parse(clientId, loaded));
         } catch (RuntimeException exception) {
             return completed(storeFailure("OAuth 2.x refresh client resolution failed"));
@@ -292,10 +293,10 @@ public final class RefreshTokenRotator {
             final ConsumerMetadata client,
             final Context context,
             final Timeout.Budget timeout) {
-        final String oldKey = issuer.tokenKey(grant.refreshToken());
+        final String oldKey = tokenMaterial.key(grant.refreshToken());
         final CompletionStage<ExpiringValue<RefreshTokenCache.Entry>> lookup;
         try {
-            lookup = services.refreshTokenCache().get(oldKey);
+            lookup = services.refreshTokenCache().find(oldKey);
         } catch (RuntimeException exception) {
             return completed(storeFailure("OAuth 2.x refresh token lookup failed"));
         }
@@ -321,7 +322,7 @@ public final class RefreshTokenRotator {
     }
 
     /**
-     * Checks the family replay marker before permitting an active generation to rotate.
+     * Checks the authoritative authorization family before permitting an active generation to rotate.
      *
      * @param grant   standard refresh-token grant
      * @param client  resolved client registration
@@ -340,17 +341,23 @@ public final class RefreshTokenRotator {
             final RefreshTokenCache.Entry entry,
             final Context context,
             final Timeout.Budget timeout) {
-        final CompletionStage<ExpiringValue<String>> lookup;
+        final CompletionStage<ExpiringValue<AuthorizationCache.Entry>> lookup;
         try {
-            lookup = services.replayCache().get(familyKey(entry.familyId()));
+            lookup = services.authorizationCache().find(AuthorizationCache.key(providerId, entry.familyId()));
         } catch (RuntimeException exception) {
             return completed(storeFailure("OAuth 2.x refresh family state lookup failed"));
         }
-        return lookup.handle((marker, thrown) -> new MarkerResult(marker, thrown)).thenCompose(result -> {
+        return lookup.handle((family, thrown) -> new FamilyResult(family, thrown)).thenCompose(result -> {
             if (result.failure() != null) {
                 return completed(storeFailure("OAuth 2.x refresh family state lookup failed"));
             }
-            if (result.marker() != null && result.marker().expiresAt().isAfter(timeout.clock().now())) {
+            final ExpiringValue<AuthorizationCache.Entry> family = result.family();
+            if (family == null || !family.expiresAt().isAfter(timeout.clock().now())
+                    || !providerId.equals(family.value().providerId())
+                    || !client.id().equals(family.value().clientId())) {
+                return completed(invalidGrant("OAuth 2.x refresh token authorization is invalid or expired"));
+            }
+            if (family.value().status() != AuthorizationCache.Status.ACTIVE) {
                 return revokeCompromised(oldKey, stored, entry, timeout);
             }
             final List<String> scope = grant.scope().isEmpty() ? entry.scope() : grant.scope().getOrNull().values();
@@ -395,15 +402,15 @@ public final class RefreshTokenRotator {
         if (ttlMillis <= 0L) {
             return completed(invalidGrant("OAuth 2.x refresh token is expired"));
         }
-        final String refreshToken = issuer.opaqueToken();
-        final String refreshKey = issuer.tokenKey(refreshToken);
+        final String refreshToken = tokenMaterial.create();
+        final String refreshKey = tokenMaterial.key(refreshToken);
         final RefreshTokenCache.Entry successor = new RefreshTokenCache.Entry(providerId, client.id(),
                 entry.subjectId(), entry.familyId(), entry.generation() + 1L, scope, entry.audience(),
                 entry.confirmation(), entry.openIdBinding(), RefreshTokenCache.Status.ACTIVE);
         final CompletionStage<Boolean> creation;
         try {
             creation = services.refreshTokenCache()
-                    .create(refreshKey, new ExpiringValue<>(successor, stored.expiresAt()), ttlMillis);
+                    .issue(refreshKey, new ExpiringValue<>(successor, stored.expiresAt()));
         } catch (RuntimeException exception) {
             return completed(storeFailure("OAuth 2.x refresh successor persistence failed"));
         }
@@ -420,7 +427,8 @@ public final class RefreshTokenRotator {
                     }
                     final AccessTokenIssuer.Grant accessGrant = new AccessTokenIssuer.Grant(client.id(),
                             entry.subjectId(), scope, entry.audience(), GrantType.REFRESH_TOKEN, false,
-                            Optional.empty(), Optional.empty(), entry.confirmation(), entry.openIdBinding());
+                            Optional.empty(), Optional.empty(), entry.confirmation(), entry.openIdBinding(),
+                            Optional.of(entry.familyId()));
                     return issuer.issue(accessGrant, context, timeout)
                             .thenCompose(accessOutcome -> switch (accessOutcome) {
                                 case Outcome.Succeeded<TokenEndpointResponse> success -> success
@@ -480,7 +488,7 @@ public final class RefreshTokenRotator {
         final CompletionStage<Boolean> replacement;
         try {
             replacement = services.refreshTokenCache()
-                    .replace(oldKey, stored, new ExpiringValue<>(rotated, stored.expiresAt()), ttlMillis);
+                    .rotate(oldKey, stored, new ExpiringValue<>(rotated, stored.expiresAt()));
         } catch (RuntimeException exception) {
             return cleanupIssued(
                     refreshKey,
@@ -511,13 +519,13 @@ public final class RefreshTokenRotator {
     }
 
     /**
-     * Marks a reused generation and creates the family replay marker for every later generation.
+     * Marks the authoritative authorization compromised and records reuse on the presented token generation.
      *
      * @param oldKey  isolated reused token digest
      * @param stored  current reused generation state
      * @param entry   reused generation entry
      * @param timeout shared operation budget
-     * @return asynchronous invalid-grant outcome after marker persistence
+     * @return asynchronous invalid-grant outcome after authoritative family-state persistence
      */
     private CompletionStage<Outcome<TokenResponse>> markReuse(
             final String oldKey,
@@ -528,16 +536,7 @@ public final class RefreshTokenRotator {
         if (ttlMillis <= 0L) {
             return completed(invalidGrant("OAuth 2.x refresh token is expired"));
         }
-        final CompletionStage<Boolean> marker;
-        try {
-            marker = services.replayCache().create(
-                    familyKey(entry.familyId()),
-                    new ExpiringValue<>(FAMILY_REUSED, stored.expiresAt()),
-                    ttlMillis);
-        } catch (RuntimeException exception) {
-            return completed(storeFailure("OAuth 2.x refresh family reuse persistence failed"));
-        }
-        return marker.handle((ignored, thrown) -> thrown).thenCompose(thrown -> {
+        return compromiseFamily(entry, timeout, 1).handle((confirmed, thrown) -> thrown).thenCompose(thrown -> {
             if (thrown != null) {
                 return completed(storeFailure("OAuth 2.x refresh family reuse persistence failed"));
             }
@@ -547,13 +546,89 @@ public final class RefreshTokenRotator {
                         entry.confirmation(), entry.openIdBinding(), RefreshTokenCache.Status.REUSED);
                 try {
                     return services.refreshTokenCache()
-                            .replace(oldKey, stored, new ExpiringValue<>(reused, stored.expiresAt()), ttlMillis)
+                            .rotate(oldKey, stored, new ExpiringValue<>(reused, stored.expiresAt()))
                             .handle((ignored, failure) -> invalidGrant("OAuth 2.x refresh token reuse was detected"));
                 } catch (RuntimeException exception) {
                     return completed(invalidGrant("OAuth 2.x refresh token reuse was detected"));
                 }
             }
             return completed(invalidGrant("OAuth 2.x refresh token reuse was detected"));
+        });
+    }
+
+    /**
+     * Conclusively transitions an active authorization family to compromised or observes an already non-active state.
+     */
+    private CompletionStage<Boolean> compromiseFamily(
+            final RefreshTokenCache.Entry entry,
+            final Timeout.Budget timeout,
+            final int attempt) {
+        if (timeout.expired()) {
+            return CompletableFuture.failedFuture(
+                    new IllegalStateException("OAuth 2.x refresh family transition exhausted its time budget"));
+        }
+        final String key = AuthorizationCache.key(providerId, entry.familyId());
+        final CompletionStage<ExpiringValue<AuthorizationCache.Entry>> lookup;
+        try {
+            lookup = services.authorizationCache().find(key);
+        } catch (RuntimeException exception) {
+            return CompletableFuture.failedFuture(exception);
+        }
+        if (lookup == null) {
+            return CompletableFuture.failedFuture(
+                    new IllegalStateException("OAuth 2.x refresh family lookup returned no stage"));
+        }
+        return lookup.thenCompose(family -> {
+            if (family == null || !family.expiresAt().isAfter(timeout.clock().now())
+                    || !providerId.equals(family.value().providerId())
+                    || !entry.clientId().equals(family.value().clientId())) {
+                return CompletableFuture.failedFuture(
+                        new IllegalStateException("OAuth 2.x refresh family binding is invalid"));
+            }
+            if (family.value().status() != AuthorizationCache.Status.ACTIVE) {
+                return CompletableFuture.completedFuture(true);
+            }
+            final AuthorizationCache.Entry compromised = new AuthorizationCache.Entry(providerId, entry.clientId(),
+                    AuthorizationCache.Status.COMPROMISED);
+            final CompletionStage<Boolean> transition;
+            try {
+                transition = services.authorizationCache().update(key, family,
+                        new ExpiringValue<>(compromised, family.expiresAt()));
+            } catch (RuntimeException exception) {
+                return CompletableFuture.failedFuture(exception);
+            }
+            if (transition == null) {
+                return CompletableFuture.failedFuture(
+                        new IllegalStateException("OAuth 2.x refresh family transition returned no stage"));
+            }
+            return transition.thenCompose(updated -> {
+                if (Boolean.TRUE.equals(updated)) {
+                    return CompletableFuture.completedFuture(true);
+                }
+                if (attempt >= MAXIMUM_STATE_ATTEMPTS) {
+                    return confirmFamilyInactive(key, entry, timeout);
+                }
+                return compromiseFamily(entry, timeout, attempt + 1);
+            });
+        });
+    }
+
+    /**
+     * Confirms that the final failed family CAS observed another completed non-active transition.
+     */
+    private CompletionStage<Boolean> confirmFamilyInactive(
+            final String key,
+            final RefreshTokenCache.Entry entry,
+            final Timeout.Budget timeout) {
+        return services.authorizationCache().find(key).thenCompose(family -> {
+            if (family != null && family.expiresAt().isAfter(timeout.clock().now())
+                    && providerId.equals(family.value().providerId())
+                    && entry.clientId().equals(family.value().clientId())
+                    && family.value().status() != AuthorizationCache.Status.ACTIVE) {
+                return CompletableFuture.completedFuture(true);
+            }
+            return CompletableFuture.failedFuture(
+                    new IllegalStateException("OAuth 2.x refresh family changed concurrently"));
         });
     }
 
@@ -579,8 +654,7 @@ public final class RefreshTokenRotator {
             return completed(invalidGrant("OAuth 2.x refresh token family is expired"));
         }
         try {
-            return services.refreshTokenCache()
-                    .replace(oldKey, stored, new ExpiringValue<>(revoked, stored.expiresAt()), ttlMillis)
+            return services.refreshTokenCache().rotate(oldKey, stored, new ExpiringValue<>(revoked, stored.expiresAt()))
                     .handle((ignored, thrown) -> invalidGrant("OAuth 2.x refresh token family reuse was detected"));
         } catch (RuntimeException exception) {
             return completed(invalidGrant("OAuth 2.x refresh token family reuse was detected"));
@@ -598,7 +672,7 @@ public final class RefreshTokenRotator {
             final String refreshKey,
             final Outcome<TokenResponse> outcome) {
         try {
-            return services.refreshTokenCache().delete(refreshKey).handle((ignored, thrown) -> outcome);
+            return services.refreshTokenCache().revoke(refreshKey).handle((ignored, thrown) -> outcome);
         } catch (RuntimeException exception) {
             return completed(outcome);
         }
@@ -619,8 +693,8 @@ public final class RefreshTokenRotator {
         final CompletionStage<Boolean> refreshDelete;
         final CompletionStage<Boolean> accessDelete;
         try {
-            refreshDelete = services.refreshTokenCache().delete(refreshKey);
-            accessDelete = services.accessTokenCache().delete(issuer.tokenKey(accessToken));
+            refreshDelete = services.refreshTokenCache().revoke(refreshKey);
+            accessDelete = services.accessTokenCache().revoke(tokenMaterial.key(accessToken));
         } catch (RuntimeException exception) {
             return completed(outcome);
         }
@@ -640,8 +714,8 @@ public final class RefreshTokenRotator {
     private boolean validScope(
             final List<String> scope,
             final List<String> original,
-            final java.util.Set<String> client,
-            final java.util.Set<String> provider) {
+            final Set<String> client,
+            final Set<String> provider) {
         try {
             scopeValidator.validateReduced(scope, original);
             scopeValidator.validateRequested(scope, client);
@@ -650,16 +724,6 @@ public final class RefreshTokenRotator {
         } catch (RuntimeException exception) {
             return false;
         }
-    }
-
-    /**
-     * Produces the irreversible domain-separated replay marker key for one family identifier.
-     *
-     * @param familyId internal random family identifier
-     * @return hexadecimal SHA-256 ReplayCache key
-     */
-    private String familyKey(final String familyId) {
-        return Builder.sha256Hex(providerId + '\0' + FAMILY_KEY_PURPOSE + '\0' + familyId);
     }
 
     /**
@@ -674,13 +738,13 @@ public final class RefreshTokenRotator {
     }
 
     /**
-     * Couples a family marker with its completion failure.
+     * Couples an authoritative authorization-family value with its completion failure.
      *
-     * @param marker  returned replay marker
+     * @param family  returned authorization-family state
      * @param failure completion failure, or {@code null}
      * @author Kimi Liu
      */
-    private record MarkerResult(ExpiringValue<String> marker, Throwable failure) {
+    private record FamilyResult(ExpiringValue<AuthorizationCache.Entry> family, Throwable failure) {
 
     }
 

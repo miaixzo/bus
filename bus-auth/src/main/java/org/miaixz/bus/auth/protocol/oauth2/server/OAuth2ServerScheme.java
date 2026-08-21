@@ -24,12 +24,13 @@ import java.util.Set;
 
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Scheme;
-import org.miaixz.bus.auth.Scheme.Form;
 import org.miaixz.bus.auth.protocol.Conformance;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.fabric.protocol.http.HttpRequest;
+import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Describes the standards-based OAuth 2.x authorization server server scheme.
@@ -45,55 +46,55 @@ public final class OAuth2ServerScheme implements Scheme<OAuth2ServerOptions> {
     /**
      * Processes an authorization request for an authenticated resource owner.
      */
-    public static final Capability<AuthorizationRequest, AuthorizationResponse> AUTHORIZATION = capability(
+    public static final Capability<HttpRequest, HttpResponse> AUTHORIZATION = capability(
             OAuth2.AUTHORIZATION,
-            AuthorizationRequest.class,
-            AuthorizationResponse.class,
+            HttpRequest.class,
+            HttpResponse.class,
             Capability.Interaction.REDIRECT,
             Capability.Security.SUBJECT_AUTHENTICATED);
     /**
      * Executes every enabled grant at the single token endpoint.
      */
-    public static final Capability<TokenRequest, TokenEndpointResponse> TOKEN = capability(
+    public static final Capability<HttpRequest, HttpResponse> TOKEN = capability(
             OAuth2.TOKEN,
-            TokenRequest.class,
-            TokenEndpointResponse.class,
+            HttpRequest.class,
+            HttpResponse.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
     /**
      * Returns RFC 7662 token state to an authenticated protected resource.
      */
-    public static final Capability<IntrospectionRequest, IntrospectionResponse> INTROSPECTION = capability(
+    public static final Capability<HttpRequest, HttpResponse> INTROSPECTION = capability(
             OAuth2.INTROSPECTION,
-            IntrospectionRequest.class,
-            IntrospectionResponse.class,
+            HttpRequest.class,
+            HttpResponse.class,
             Capability.Interaction.DIRECT,
-            Capability.Security.CLIENT_AUTHENTICATED);
+            Capability.Security.PUBLIC);
     /**
      * Revokes a token according to RFC 7009 client rules.
      */
-    public static final Capability<RevocationRequest, Void> REVOCATION = capability(
+    public static final Capability<HttpRequest, HttpResponse> REVOCATION = capability(
             OAuth2.REVOCATION,
-            RevocationRequest.class,
-            Void.class,
+            HttpRequest.class,
+            HttpResponse.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
     /**
      * Issues device and user codes for RFC 8628 authorization.
      */
-    public static final Capability<DeviceAuthorizationRequest, DeviceAuthorizationResponse> DEVICE_AUTHORIZATION = capability(
+    public static final Capability<HttpRequest, HttpResponse> DEVICE_AUTHORIZATION = capability(
             OAuth2.DEVICE_AUTHORIZATION,
-            DeviceAuthorizationRequest.class,
-            DeviceAuthorizationResponse.class,
+            HttpRequest.class,
+            HttpResponse.class,
             Capability.Interaction.DEVICE,
             Capability.Security.PUBLIC);
     /**
      * Publishes RFC 8414 authorization server metadata.
      */
-    public static final Capability<Void, AuthorizationServerMetadata> AUTHORIZATION_SERVER_METADATA = capability(
+    public static final Capability<HttpRequest, HttpResponse> AUTHORIZATION_SERVER_METADATA = capability(
             OAuth2.AUTHORIZATION_SERVER_METADATA,
-            Void.class,
-            AuthorizationServerMetadata.class,
+            HttpRequest.class,
+            HttpResponse.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
     /**

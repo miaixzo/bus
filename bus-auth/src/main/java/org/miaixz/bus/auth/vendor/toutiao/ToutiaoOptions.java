@@ -46,16 +46,6 @@ public record ToutiaoOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<ToutiaoOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<ToutiaoOptions> type() {
-        return ToutiaoOptions.class;
-    }
-
-    /**
      * Validates and freezes one Toutiao registration without resolving its secret.
      *
      * @throws IllegalArgumentException if a required component or container is {@code null} or blank
@@ -104,6 +94,16 @@ public record ToutiaoOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
         } catch (URISyntaxException cause) {
             throw new ValidateException("Toutiao redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<ToutiaoOptions> type() {
+        return ToutiaoOptions.class;
     }
 
     /**

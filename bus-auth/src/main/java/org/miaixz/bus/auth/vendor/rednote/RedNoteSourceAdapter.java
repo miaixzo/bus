@@ -32,8 +32,8 @@ import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.Parameter;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
 import org.miaixz.bus.auth.vendor.rednote.RedNoteManifest.MarketingAuthorizationRequest;
@@ -88,7 +88,7 @@ public final class RedNoteSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned secret, JSON, network, and execution dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Shared strict application-form encoder.
@@ -108,7 +108,7 @@ public final class RedNoteSourceAdapter implements VendorAdapter {
      * @throws ValidateException        if routing, protocol, manifest, or options differ from marketing
      */
     public RedNoteSourceAdapter(final String namespaceId, final String sourceId, final RedNoteManifest manifest,
-            final VariantManifest.Variant variant, final RedNoteOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final RedNoteOptions options, final DriverServices services) {
         Assert.notBlank(namespaceId, "RedNote namespace id must not be blank");
         Assert.notBlank(sourceId, "RedNote Source id must not be blank");
         final RedNoteManifest selected = Assert.notNull(manifest, "RedNote manifest must not be null");
@@ -374,8 +374,8 @@ public final class RedNoteSourceAdapter implements VendorAdapter {
             final Context context,
             final Timeout.Budget timeout) {
         try {
-            final CompletionStage<Outcome<SecretLease>> stage = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.secretLoader().load(options.credential(), context, timeout),
+            final CompletionStage<Outcome<SecretLease>> stage = Outcome.mapStage(
+                    () -> services.secretLoader().load(options.credential(), context, timeout),
                     loaded -> services.secretParser().parse(options.credential(), loaded));
             if (stage == null) {
                 return completed(failed(ErrorCode._502, "RedNote secret loader returned no stage"));

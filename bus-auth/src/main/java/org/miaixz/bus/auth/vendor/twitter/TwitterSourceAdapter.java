@@ -27,21 +27,16 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.Parameter;
-import org.miaixz.bus.auth.protocol.oauth2.AuthorizationRequest;
-import org.miaixz.bus.auth.protocol.oauth2.GrantType;
-import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
-import org.miaixz.bus.auth.protocol.oauth2.ResponseType;
-import org.miaixz.bus.auth.protocol.oauth2.Scope;
+import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.AuthorizationClient;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientOptions;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationRequestEncoder;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceAuthentication;
-import org.miaixz.bus.auth.source.SourceAuthenticationRequest;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -49,11 +44,8 @@ import org.miaixz.bus.auth.vendor.VendorAdapter;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -111,7 +103,7 @@ public final class TwitterSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned execution services.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Shared standard OAuth authorization implementation.
@@ -141,7 +133,7 @@ public final class TwitterSourceAdapter implements VendorAdapter {
      * @throws ValidateException        if routing, protocol, manifest, callback, or authorization is inconsistent
      */
     public TwitterSourceAdapter(final String namespaceId, final String sourceId, final TwitterManifest manifest,
-            final VariantManifest.Variant variant, final TwitterOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final TwitterOptions options, final DriverServices services) {
         final TwitterManifest selected = Assert.notNull(manifest, "Twitter manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Twitter Source id must not be blank");
         this.variant = Assert.notNull(variant, "Twitter manifest must not be null");
@@ -234,7 +226,9 @@ public final class TwitterSourceAdapter implements VendorAdapter {
                 && (!refreshable || object.values().containsKey(OAuth2.Parameters.REFRESH_TOKEN));
     }
 
-    /** Constructs the mutable RFC 7617 credential bytes used only for the token request. */
+    /**
+     * Constructs the mutable RFC 7617 credential bytes used only for the token request.
+     */
     private static byte[] basic(final String clientId, final char[] secret) {
         final byte[] prefix = (clientId + Symbol.C_COLON).getBytes(Charset.UTF_8);
         final byte[] suffix = new String(secret).getBytes(Charset.UTF_8);
@@ -414,11 +408,11 @@ public final class TwitterSourceAdapter implements VendorAdapter {
             return completed(rejected("Twitter capability is not declared by the selected manifest"));
         }
         if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserStart start) {
+                && request instanceof SourceAuthentication.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
         if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserCallback callback) {
+                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -499,9 +493,8 @@ public final class TwitterSourceAdapter implements VendorAdapter {
             return completed(failed(ErrorCode._500, "Twitter callback lacks its required PKCE verifier"));
         }
         final String verifier = completion.codeVerifier().getOrNull().value();
-        return org.miaixz.bus.auth.runtime.LoadResult
-                .parse(
-                        services.secretLoader().load(options.credential(), context, timeout),
+        return Outcome.mapStage(
+                        () -> services.secretLoader().load(options.credential(), context, timeout),
                         loaded -> services.secretParser().parse(options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> authenticate(

@@ -25,7 +25,7 @@ import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
- * Exposes standard SCIM 2.0 Service Provider operation keys, schema identifiers, and the Provider-driver factory.
+ * Exposes standard SCIM 2.0 Service Provider operation keys, schema identifiers, and the Server-driver factory.
  *
  * @author Kimi Liu
  */
@@ -152,10 +152,10 @@ public final class Scim {
     /**
      * Creates a fresh SCIM 2.0 Service Provider runtime contribution.
      *
-     * @return new SCIM Provider driver
+     * @return new SCIM Server driver
      */
-    public static SourceDriver<ScimServerOptions> provider() {
-        return new ScimProviderDriver();
+    public static SourceDriver<ScimServerOptions> server() {
+        return new ScimServerDriver();
     }
 
     /**

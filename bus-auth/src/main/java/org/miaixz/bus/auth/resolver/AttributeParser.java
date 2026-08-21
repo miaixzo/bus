@@ -20,19 +20,23 @@
 package org.miaixz.bus.auth.resolver;
 
 import org.miaixz.bus.auth.Subject;
-import org.miaixz.bus.auth.worker.AttributeRecord;
+import org.miaixz.bus.auth.worker.AttributeLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.extra.json.JsonValue;
 
-/** Pure parser for project-loaded subject attributes. */
+/**
+ * Pure parser for project-loaded subject attributes.
+ */
 public final class AttributeParser {
 
-    public Attributes parse(final Subject.Key subject, final AttributeRecord record) {
+    public JsonValue.ObjectValue parse(final Subject.Key subject, final AttributeLoader.Record record) {
         final Subject.Key expected = Assert.notNull(subject, "Subject key must not be null");
-        final AttributeRecord loaded = Assert.notNull(record, "Loaded attribute record must not be null");
+        final AttributeLoader.Record loaded = Assert.notNull(record, "Loaded attribute record must not be null");
         if (!expected.equals(loaded.subject())) {
             throw new ValidateException("Loaded attributes do not belong to the requested subject");
         }
-        return new Attributes(loaded.values());
+        final JsonValue.ObjectValue values = Assert.notNull(loaded.values(), "Subject attributes must not be null");
+        return new JsonValue.ObjectValue(values.values());
     }
 }

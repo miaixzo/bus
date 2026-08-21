@@ -55,16 +55,6 @@ public record LinkedInOptions(Vendor.Id vendor, Vendor.Variant variant, String c
         implements VendorOptions<LinkedInOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<LinkedInOptions> type() {
-        return LinkedInOptions.class;
-    }
-
-    /**
      * Validates and freezes one LinkedIn registration without resolving its client secret.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
@@ -132,6 +122,16 @@ public record LinkedInOptions(Vendor.Id vendor, Vendor.Variant variant, String c
         } catch (URISyntaxException cause) {
             throw new ValidateException("LinkedIn redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<LinkedInOptions> type() {
+        return LinkedInOptions.class;
     }
 
     /**

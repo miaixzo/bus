@@ -24,7 +24,9 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.crypto.builtin.CertificateChain;
 import org.miaixz.bus.crypto.builtin.TrustRootIndex;
 
-/** Parsed certificate material with an explicit trust-root boundary. */
+/**
+ * Parsed certificate material with an explicit trust-root boundary.
+ */
 public record CertificateMaterial(CertificateChain chain, TrustRootIndex trustRoots) {
 
     public CertificateMaterial {

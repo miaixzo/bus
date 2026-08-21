@@ -53,16 +53,6 @@ public record WeiboOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<WeiboOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<WeiboOptions> type() {
-        return WeiboOptions.class;
-    }
-
-    /**
      * Complete historical Weibo scope vocabulary.
      */
     private static final Set<String> REGISTERED_SCOPES = Set.of(
@@ -129,6 +119,16 @@ public record WeiboOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
         } catch (URISyntaxException cause) {
             throw new ValidateException("Weibo redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<WeiboOptions> type() {
+        return WeiboOptions.class;
     }
 
     /**

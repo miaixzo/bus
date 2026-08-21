@@ -28,6 +28,7 @@ import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.scim.*;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -99,7 +100,7 @@ public final class ScimUserService {
      * @return closed failure value
      */
     private static Outcome.Failure failure(
-            final org.miaixz.bus.core.basic.normal.Errors code,
+            final Errors code,
             final String description) {
         return new Outcome.Failure(code, description, new JsonValue.ObjectValue(Map.of()));
     }

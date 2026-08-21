@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.auth;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -38,7 +39,7 @@ import org.miaixz.bus.core.lang.Enumers;
  * @param expiresAt exclusive session expiration instant
  * @author Kimi Liu
  */
-public record Session(Key key, State state, Instant issuedAt, Instant expiresAt) {
+public record Session(Key key, State state, Instant issuedAt, Instant expiresAt) implements Serializable {
 
     /**
      * Creates an immutable session with a strictly positive validity interval.
@@ -77,7 +78,13 @@ public record Session(Key key, State state, Instant issuedAt, Instant expiresAt)
         /**
          * Session was explicitly ended before or at expiration.
          */
-        ENDED(3);
+        ENDED(3),
+
+        /**
+         * Session ending is owned by the framework but the project login state has not yet confirmed termination.
+         * Repeated logout operations must resume this transition until it reaches {@link #ENDED}.
+         */
+        ENDING(4);
 
         /**
          * Stable persistence code independent of declaration order.
@@ -111,7 +118,7 @@ public record Session(Key key, State state, Instant issuedAt, Instant expiresAt)
      * @param value stable opaque session identifier
      * @author Kimi Liu
      */
-    public record Key(String value) {
+    public record Key(String value) implements Serializable {
 
         /**
          * Creates a session key.

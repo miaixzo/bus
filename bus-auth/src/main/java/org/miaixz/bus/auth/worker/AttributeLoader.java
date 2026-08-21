@@ -25,10 +25,19 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Subject;
 import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.extra.json.JsonValue;
 
-/** Loads project-maintained subject attributes. */
+/**
+ * Loads project-maintained subject attributes.
+ */
 @FunctionalInterface
 public interface AttributeLoader {
 
-    CompletionStage<Outcome<AttributeRecord>> load(Subject.Key subject, Context context, Timeout.Budget timeout);
+    CompletionStage<Outcome<Record>> load(Subject.Key subject, Context context, Timeout.Budget timeout);
+
+    /**
+     * Loaded subject attributes awaiting framework parsing.
+     */
+    record Record(Subject.Key subject, JsonValue.ObjectValue values) {
+    }
 }

@@ -32,9 +32,9 @@ import org.miaixz.bus.auth.Timeout;
  * Implementations may obtain records from databases, files, remote services, or project settings, but those loading
  * details remain outside bus-auth. Before returning, an implementation must convert every persisted Source options
  * representation into the matching typed {@link org.miaixz.bus.auth.Options} value. Every invocation returns one
- * complete batch whose record list is structurally frozen; incremental events, persistence decoding, and
- * protocol-specific resource loading are not part of the framework boundary. The loader retains ownership of the
- * mutable project entities referenced by those records.
+ * complete batch whose entry list is structurally frozen; incremental events, persistence decoding, and
+ * protocol-specific resource loading are not part of the framework boundary. Each Registration entry immediately
+ * detaches the framework fields from the project entity, so later project mutation cannot alter the returned batch.
  * </p>
  *
  * @author Kimi Liu
@@ -54,12 +54,25 @@ public interface RegistrationLoader {
      * Carries one complete externally loaded registration revision without constructing Registry state.
      *
      * @param revision      monotonically increasing external data revision
-     * @param registrations complete desired registration records
+     * @param registrations complete desired registration entries
      */
-    record Batch(long revision, List<Registration.Record<?>> registrations) {
+    record Batch(long revision, List<Registration.Entry> registrations) {
 
-        /** Creates an immutable externally loaded registration batch. */
+        /**
+         * Creates an immutable externally loaded registration batch.
+         */
         public Batch {
+            if (revision < 0L) {
+                throw new IllegalArgumentException("Registration revision must not be negative");
+            }
+            if (registrations == null) {
+                throw new IllegalArgumentException("Registration entries must not be null");
+            }
+            for (Registration.Entry registration : registrations) {
+                if (registration == null) {
+                    throw new IllegalArgumentException("Registration entry must not be null");
+                }
+            }
             registrations = List.copyOf(registrations);
         }
     }

@@ -139,7 +139,7 @@ public final class JwsService {
             final JwaAlgorithm.Registration registration,
             final Key key,
             final byte[] input) {
-        final org.miaixz.bus.core.lang.Algorithm core = registration.coreAlgorithm()
+        final Algorithm core = registration.coreAlgorithm()
                 .orElseThrow(() -> new ValidateException("JWS algorithm has no exact bus-crypto mapping"));
         if (key instanceof SecretKey secretKey) {
             return Builder.hmac(core, secretKey).digest(input);
@@ -165,7 +165,7 @@ public final class JwsService {
             final Key key,
             final byte[] input,
             final byte[] signature) {
-        final org.miaixz.bus.core.lang.Algorithm core = registration.coreAlgorithm()
+        final Algorithm core = registration.coreAlgorithm()
                 .orElseThrow(() -> new ValidateException("JWS algorithm has no exact bus-crypto mapping"));
         if (key instanceof SecretKey secretKey) {
             final HMac mac = Builder.hmac(core, secretKey);

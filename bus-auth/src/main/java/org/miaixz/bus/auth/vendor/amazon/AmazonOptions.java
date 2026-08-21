@@ -50,16 +50,6 @@ public record AmazonOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
         Optional<String> redirectUri, List<String> scopes, boolean pkce) implements VendorOptions<AmazonOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<AmazonOptions> type() {
-        return AmazonOptions.class;
-    }
-
-    /**
      * Validates and freezes one Login with Amazon registration without resolving its client secret.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is null or blank
@@ -107,6 +97,16 @@ public record AmazonOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
             case "profile", "profile:user_id", "postal_code" -> true;
             default -> false;
         };
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<AmazonOptions> type() {
+        return AmazonOptions.class;
     }
 
     /**

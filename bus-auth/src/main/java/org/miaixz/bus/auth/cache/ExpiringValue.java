@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.auth.cache;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.Instant;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -27,8 +29,8 @@ import org.miaixz.bus.core.lang.Assert;
  * Associates an immutable authentication state value with its absolute expiration time.
  * <p>
  * The wrapper does not read system time or reset a caller's time budget. Consumers compare {@code expiresAt} with the
- * Clock supplied by ExecutionServices and cap backend TTL by the existing Timeout Budget. Values containing mutable
- * secret arrays are prohibited from this storage boundary.
+ * Clock supplied by RuntimeServices. {@link AuthCache} derives the backend TTL from this absolute deadline without
+ * resetting it. Values containing mutable secret arrays are prohibited from this storage boundary.
  * </p>
  *
  * @param value     immutable authentication state value
@@ -36,7 +38,10 @@ import org.miaixz.bus.core.lang.Assert;
  * @param <T>       authentication state value type
  * @author Kimi Liu
  */
-public record ExpiringValue<T>(T value, Instant expiresAt) {
+public record ExpiringValue<T>(T value, Instant expiresAt) implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * Creates an expiring immutable state value.

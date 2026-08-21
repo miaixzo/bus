@@ -26,7 +26,7 @@ import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
- * Exposes direction-neutral OpenID Connect operation keys and explicit Provider and Source driver factories.
+ * Exposes direction-neutral OpenID Connect operation keys and explicit server and client driver factories.
  *
  * @author Kimi Liu
  */
@@ -63,19 +63,19 @@ public final class OpenIdConnect {
     /**
      * Creates the server-side OpenID Connect driver.
      *
-     * @return new OpenID Provider driver
+     * @return new OpenID Server driver
      */
-    public static SourceDriver<OpenIdServerOptions> provider() {
-        return new OpenIdProviderDriver();
+    public static SourceDriver<OpenIdServerOptions> server() {
+        return new OpenIdServerDriver();
     }
 
     /**
      * Creates the client-side OpenID Connect driver.
      *
-     * @return new OpenID Source driver
+     * @return new OpenID Client driver
      */
-    public static SourceDriver<OpenIdClientOptions> source() {
-        return new OpenIdSourceDriver();
+    public static SourceDriver<OpenIdClientOptions> client() {
+        return new OpenIdClientDriver();
     }
 
     /**

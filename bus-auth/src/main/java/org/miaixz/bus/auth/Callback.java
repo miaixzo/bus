@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.auth;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,8 @@ public final class Callback {
      * @param expiresAt absolute correlation expiration time
      * @author Kimi Liu
      */
-    public record Correlation(String sourceId, String state, Optional<String> nonce, Instant expiresAt) {
+    public record Correlation(String sourceId, String state, Optional<String> nonce, Instant expiresAt)
+            implements Serializable {
 
         /**
          * Creates an immutable callback correlation value.

@@ -36,11 +36,10 @@ import org.miaixz.bus.auth.protocol.oauth2.ResponseType;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationRequestEncoder;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationResponseDecoder;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceAuthentication;
-import org.miaixz.bus.auth.source.SourceAuthenticationRequest;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -107,7 +106,7 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned secret, JSON, network, clock, and execution dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Shared one-time browser-state lifecycle.
@@ -147,7 +146,7 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
     public TeambitionSourceAdapter(final String namespaceId, final String sourceId, final TeambitionManifest manifest,
-            final VariantManifest.Variant variant, final TeambitionOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final TeambitionOptions options, final DriverServices services) {
         final TeambitionManifest selected = Assert.notNull(manifest, "Teambition manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Teambition Source id must not be blank");
         this.variant = Assert.notNull(variant, "Teambition manifest must not be null");
@@ -385,11 +384,11 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
             return completed(rejected("Teambition capability is not declared"));
         }
         if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserStart start) {
+                && request instanceof SourceAuthentication.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
         if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserCallback callback) {
+                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -502,8 +501,8 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
         }
         final AuthorizationCodeResponse response = ((AuthorizationResponseDecoder.Success) decoded).response();
         try {
-            final CompletionStage<Outcome<SecretLease>> resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.secretLoader().load(options.credential(), context, timeout),
+            final CompletionStage<Outcome<SecretLease>> resolution = Outcome.mapStage(
+                    () -> services.secretLoader().load(options.credential(), context, timeout),
                     loaded -> services.secretParser().parse(options.credential(), loaded));
             if (resolution == null) {
                 return completed(failed(ErrorCode._502, "Teambition secret loader returned no stage"));

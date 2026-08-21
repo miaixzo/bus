@@ -54,16 +54,6 @@ public record TwitterOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<TwitterOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<TwitterOptions> type() {
-        return TwitterOptions.class;
-    }
-
-    /**
      * Validates and freezes one Twitter registration without resolving its Client Secret.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
@@ -134,6 +124,16 @@ public record TwitterOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
         } catch (URISyntaxException cause) {
             throw new ValidateException("Twitter redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<TwitterOptions> type() {
+        return TwitterOptions.class;
     }
 
     /**

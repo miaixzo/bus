@@ -106,6 +106,15 @@ public final class VendorDriver<O extends VendorOptions<?>> {
     }
 
     /**
+     * Creates the checked adapter binding for one declared variant.
+     */
+    AdapterBindings.Binding binding(final Vendor.Variant variant) {
+        final VendorAdapter.Factory<O> factory = factories
+                .get(Assert.notNull(variant, "Vendor driver variant must not be null"));
+        return AdapterBindings.binding(manifest, Assert.notNull(factory, "Vendor driver factory must not be null"));
+    }
+
+    /**
      * Returns the immutable exact per-variant factory map.
      *
      * @return variant factories

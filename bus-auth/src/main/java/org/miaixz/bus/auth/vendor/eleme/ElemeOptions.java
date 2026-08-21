@@ -52,16 +52,6 @@ public record ElemeOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<ElemeOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<ElemeOptions> type() {
-        return ElemeOptions.class;
-    }
-
-    /**
      * Validates and freezes one Eleme registration without resolving its application secret.
      *
      * @throws IllegalArgumentException if a required component or collection member is {@code null} or blank
@@ -111,6 +101,16 @@ public record ElemeOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
         } catch (URISyntaxException cause) {
             throw new ValidateException("Eleme redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<ElemeOptions> type() {
+        return ElemeOptions.class;
     }
 
     /**

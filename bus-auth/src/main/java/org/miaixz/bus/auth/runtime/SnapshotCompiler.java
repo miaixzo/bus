@@ -20,16 +20,24 @@
 package org.miaixz.bus.auth.runtime;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Library;
+import org.miaixz.bus.auth.Options;
+import org.miaixz.bus.auth.Provider;
+import org.miaixz.bus.auth.Registration;
+import org.miaixz.bus.auth.Registry;
+import org.miaixz.bus.auth.Source;
 import org.miaixz.bus.auth.registry.ImmutableRegistryView;
+import org.miaixz.bus.auth.registry.RegistryIssue;
 import org.miaixz.bus.auth.registry.RegistryView;
+import org.miaixz.bus.auth.source.DriverDirectory;
 import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.auth.worker.SourceWorker;
+import org.miaixz.bus.auth.worker.WorkerSlots;
+import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
+import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
 
 /**
@@ -44,47 +52,28 @@ import org.miaixz.bus.core.lang.exception.NotFoundException;
  *
  * @author Kimi Liu
  */
-public final class SnapshotCompiler {
+final class SnapshotCompiler {
 
     /**
      * Frozen Source driver index keyed by stable Source scheme identifier.
      */
-    private final Map<String, SourceDriver<?>> sources;
+    private final DriverDirectory sources;
 
     /**
      * Externally supplied execution services passed unchanged to selected drivers.
      */
-    private final ExecutionServices services;
+    private final RuntimeServices services;
 
     /**
      * Creates a pure snapshot compiler.
      *
-     * @param sources  complete Source driver list
+     * @param sources  frozen Source driver directory
      * @param services externally owned execution services
      * @throws IllegalArgumentException if a dependency is {@code null}
      */
-    public SnapshotCompiler(final List<SourceDriver<?>> sources, final ExecutionServices services) {
-        this.sources = sourceIndex(sources);
+    SnapshotCompiler(final DriverDirectory sources, final RuntimeServices services) {
+        this.sources = Assert.notNull(sources, "Source driver directory must not be null");
         this.services = Assert.notNull(services, "Execution services must not be null");
-    }
-
-    /**
-     * Builds the immutable Source driver index while rejecting duplicate registration types.
-     *
-     * @param drivers complete Source driver list
-     * @return immutable Source driver index
-     */
-    private static Map<String, SourceDriver<?>> sourceIndex(final List<SourceDriver<?>> drivers) {
-        Assert.notNull(drivers, "Source drivers must not be null");
-        final Map<String, SourceDriver<?>> index = new LinkedHashMap<>();
-        for (SourceDriver<?> driver : drivers) {
-            final SourceDriver<?> checked = Assert.notNull(driver, "Source driver must not be null");
-            final String type = Assert.notBlank(checked.scheme().id(), "Source driver scheme id must not be blank");
-            if (index.putIfAbsent(type, checked) != null) {
-                throw new AlreadyExistsException("Duplicate Source driver type: " + type);
-            }
-        }
-        return Map.copyOf(index);
     }
 
     /**
@@ -94,7 +83,7 @@ public final class SnapshotCompiler {
      * @param libraries mutable local Library index
      */
     private static void compileLibraries(final Registry.Snapshot snapshot, final Map<String, Library> libraries) {
-        for (Registration.Record<?> record : snapshot.records()) {
+        for (Registration.Entry record : snapshot.records()) {
             if (record.kind() == Registration.Kind.LIBRARY && record.enabled()) {
                 final Library library = (Library) record.resource();
                 libraries.put(library.getId(), library);
@@ -112,16 +101,17 @@ public final class SnapshotCompiler {
     private static void indexProviders(
             final Registry.Snapshot snapshot,
             final Map<String, Library> libraries,
-            final Map<String, Registration.Record<Provider>> providerRecords) {
-        for (Registration.Record<?> candidate : snapshot.records()) {
+            final Map<String, Registration.ProviderEntry> providerRecords) {
+        for (Registration.Entry candidate : snapshot.records()) {
             if (candidate.kind() != Registration.Kind.PROVIDER || !candidate.enabled()) {
                 continue;
             }
-            final Registration.Record<Provider> record = (Registration.Record<Provider>) candidate;
+            final Registration.ProviderEntry record = (Registration.ProviderEntry) candidate;
             final Provider provider = record.resource();
             final Library library = libraries.get(provider.getLibrary_id());
             if (library == null) {
-                throw new NotFoundException("Enabled Provider Library not found: " + provider.getLibrary_id());
+                throw new CompilationFailure(Registration.Kind.PROVIDER, provider.getId(), "library_id",
+                        "Enabled Provider could not resolve its Library");
             }
             providerRecords.put(provider.getId(), record);
         }
@@ -133,17 +123,32 @@ public final class SnapshotCompiler {
      * @param snapshot complete snapshot that has passed {@code RegistrationValidator}
      * @return structurally immutable Registry view with the same revision and full registration snapshot
      * @throws IllegalArgumentException if the snapshot, a required type, or a driver result is invalid
-     * @throws RuntimeException         if Library decoding or a selected driver rejects a record
+     * @throws RuntimeException         if a required relationship or selected driver rejects a record
      */
-    public RegistryView compile(final Registry.Snapshot snapshot) {
+    RegistryView compile(final Registry.Snapshot snapshot) {
         Assert.notNull(snapshot, "Registry snapshot must not be null");
         final Map<String, Library> libraries = new LinkedHashMap<>();
-        final Map<String, Registration.Record<Provider>> providerRecords = new LinkedHashMap<>();
+        final Map<String, Registration.ProviderEntry> providerRecords = new LinkedHashMap<>();
         final Map<Registry.Reference, SourceWorker> workers = new LinkedHashMap<>();
-        compileLibraries(snapshot, libraries);
-        indexProviders(snapshot, libraries, providerRecords);
-        compileSources(snapshot, libraries, providerRecords, workers);
-        return new ImmutableRegistryView(snapshot.revision(), snapshot, libraries, workers);
+        try {
+            compileLibraries(snapshot, libraries);
+            indexProviders(snapshot, libraries, providerRecords);
+            compileSources(snapshot, libraries, providerRecords, workers);
+            return new ImmutableRegistryView(snapshot.revision(), snapshot, workers);
+        } catch (RuntimeException failure) {
+            close(workers);
+            throw failure;
+        }
+    }
+
+    private static void close(final Map<Registry.Reference, SourceWorker> workers) {
+        for (SourceWorker worker : workers.values()) {
+            try {
+                worker.close();
+            } catch (RuntimeException ignored) {
+                // Compilation failure remains primary while every already-created worker is given a close attempt.
+            }
+        }
     }
 
     /**
@@ -157,31 +162,78 @@ public final class SnapshotCompiler {
     private void compileSources(
             final Registry.Snapshot snapshot,
             final Map<String, Library> libraries,
-            final Map<String, Registration.Record<Provider>> providerRecords,
+            final Map<String, Registration.ProviderEntry> providerRecords,
             final Map<Registry.Reference, SourceWorker> workers) {
-        for (Registration.Record<?> candidate : snapshot.records()) {
+        for (Registration.Entry candidate : snapshot.records()) {
             if (candidate.kind() != Registration.Kind.SOURCE || !candidate.enabled()) {
                 continue;
             }
-            final Registration.Record<Source> record = (Registration.Record<Source>) candidate;
+            final Registration.SourceEntry record = (Registration.SourceEntry) candidate;
             final Source source = record.resource();
-            final SourceDriver<?> driver = sources.get(source.getType());
-            if (driver == null) {
-                throw new NotFoundException("Source driver not found: " + source.getType());
+            try {
+                final SourceDriver<?> driver = sources.require(source.getType());
+                final Registration.ProviderEntry providerRecord = providerRecords.get(source.getProvider_id());
+                if (providerRecord == null) {
+                    throw new NotFoundException("Enabled Source Provider was not indexed");
+                }
+                final Provider provider = providerRecord.resource();
+                final Library library = libraries.get(provider.getLibrary_id());
+                if (library == null) {
+                    throw new NotFoundException("Enabled Source Library was not indexed");
+                }
+                final SourceWorker worker = compile(driver, record, provider, library);
+                workers.put(Registry.Reference.source(source.getId()), worker);
+            } catch (CompilationFailure failure) {
+                throw failure;
+            } catch (RuntimeException cause) {
+                throw new CompilationFailure(Registration.Kind.SOURCE, source.getId(), "worker",
+                        "Enabled Source worker could not be compiled", cause);
             }
-            final Registration.Record<Provider> providerRecord = providerRecords.get(source.getProvider_id());
-            if (providerRecord == null) {
-                throw new NotFoundException("Enabled Source Provider not found: " + source.getProvider_id());
-            }
-            final Provider provider = providerRecord.resource();
-            final Library library = libraries.get(provider.getLibrary_id());
-            if (library == null) {
-                throw new NotFoundException("Enabled Source Library not found: " + provider.getLibrary_id());
-            }
-            final SourceWorker worker = Assert.notNull(
-                    driver.compile(record, provider, library, services),
-                    "Source driver result must not be null");
-            workers.put(Registry.Reference.source(source.getId()), worker);
+        }
+    }
+
+    /**
+     * Captures a wildcard driver and compiles from one exact preparation and its matching scoped services.
+     */
+    private <O extends Options<?>> SourceWorker compile(
+            final SourceDriver<O> driver,
+            final Registration.SourceEntry record,
+            final Provider provider,
+            final Library library) {
+        final SourceDriver.Prepared<O> prepared = driver.prepare(record, provider, library);
+        return Assert.notNull(
+                driver.compile(prepared, services.scope(prepared.slots(), prepared.dependencies())),
+                "Source driver result must not be null");
+    }
+
+    /**
+     * Carries safe entry coordinates from local compilation to the reload report boundary.
+     */
+    static final class CompilationFailure extends RuntimeException {
+
+        private final Registration.Kind kind;
+        private final String id;
+        private final String field;
+        private final String safeDescription;
+
+        CompilationFailure(final Registration.Kind kind, final String id, final String field,
+                final String safeDescription) {
+            this(kind, id, field, safeDescription, null);
+        }
+
+        CompilationFailure(final Registration.Kind kind, final String id, final String field,
+                final String safeDescription, final Throwable cause) {
+            super(safeDescription, cause);
+            this.kind = Assert.notNull(kind, "Compilation failure kind must not be null");
+            this.id = Assert.notBlank(id, "Compilation failure resource id must not be blank");
+            this.field = Assert.notBlank(field, "Compilation failure field must not be blank");
+            this.safeDescription = Assert
+                    .notBlank(safeDescription, "Compilation failure safe description must not be blank");
+        }
+
+        RegistryIssue issue() {
+            return RegistryIssue
+                    .entry(kind, id, RegistryIssue.Stage.COMPILE, Optional.of(field), ErrorCode._500, safeDescription);
         }
     }
 

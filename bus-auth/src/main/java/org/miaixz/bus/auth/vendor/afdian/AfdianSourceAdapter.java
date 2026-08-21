@@ -35,11 +35,10 @@ import org.miaixz.bus.auth.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.ResponseType;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationResponseDecoder;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceAuthentication;
-import org.miaixz.bus.auth.source.SourceAuthenticationRequest;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
@@ -76,7 +75,7 @@ public final class AfdianSourceAdapter implements VendorAdapter {
     /**
      * External runtime dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
     /**
      * Shared browser security lifecycle.
      */
@@ -105,7 +104,7 @@ public final class AfdianSourceAdapter implements VendorAdapter {
      * @param services    external runtime dependencies
      */
     public AfdianSourceAdapter(final String namespaceId, final String sourceId, final AfdianManifest manifest,
-            final VariantManifest.Variant variant, final AfdianOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final AfdianOptions options, final DriverServices services) {
         Assert.notNull(manifest, "Afdian manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Afdian Source id must not be blank");
         this.variant = Assert.notNull(variant, "Afdian manifest must not be null");
@@ -216,11 +215,11 @@ public final class AfdianSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability))
             return missing();
         if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserStart start) {
+                && request instanceof SourceAuthentication.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
         if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserCallback callback) {
+                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -286,9 +285,8 @@ public final class AfdianSourceAdapter implements VendorAdapter {
         } catch (RuntimeException cause) {
             return completed(rejected("Afdian callback is invalid"));
         }
-        return org.miaixz.bus.auth.runtime.LoadResult
-                .parse(
-                        services.secretLoader().load(options.credential(), context, timeout),
+        return Outcome.mapStage(
+                        () -> services.secretLoader().load(options.credential(), context, timeout),
                         loaded -> services.secretParser().parse(options.credential(), loaded))
                 .thenCompose(outcome -> switch (outcome) {
                     case Outcome.Succeeded<SecretLease> success -> exchange(code, success.value(), timeout);

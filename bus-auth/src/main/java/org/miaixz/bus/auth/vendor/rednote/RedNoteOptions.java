@@ -48,16 +48,6 @@ public record RedNoteOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<RedNoteOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<RedNoteOptions> type() {
-        return RedNoteOptions.class;
-    }
-
-    /**
      * Validates and freezes one RedNote marketing registration without resolving its secret.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
@@ -125,6 +115,16 @@ public record RedNoteOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
         } catch (URISyntaxException cause) {
             throw new ValidateException("RedNote marketing redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<RedNoteOptions> type() {
+        return RedNoteOptions.class;
     }
 
     /**

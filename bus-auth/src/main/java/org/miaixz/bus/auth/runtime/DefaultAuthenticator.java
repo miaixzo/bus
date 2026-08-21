@@ -22,7 +22,6 @@ package org.miaixz.bus.auth.runtime;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.auth.Authenticator;
 import org.miaixz.bus.auth.Capability;
@@ -33,10 +32,10 @@ import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.registry.AtomicRegistryState;
 import org.miaixz.bus.auth.registry.RegistryView;
 import org.miaixz.bus.auth.worker.SourceWorker;
-import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -48,20 +47,20 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class DefaultAuthenticator implements Authenticator {
+final class DefaultAuthenticator implements Authenticator {
 
     private final AtomicRegistryState registryState;
 
-    private final AtomicReference<Lifecycle.State> lifecycle;
+    private final RuntimeLifecycle lifecycle;
 
     /**
      * Creates a running authenticator over the shared current runtime view.
      *
      * @param registryState atomic runtime view holder
      */
-    public DefaultAuthenticator(final AtomicRegistryState registryState) {
+    DefaultAuthenticator(final AtomicRegistryState registryState, final RuntimeLifecycle lifecycle) {
         this.registryState = Assert.notNull(registryState, "Authenticator Registry state must not be null");
-        this.lifecycle = new AtomicReference<>(Lifecycle.State.RUNNING);
+        this.lifecycle = Assert.notNull(lifecycle, "Authenticator runtime lifecycle must not be null");
     }
 
     private static <S> CompletionStage<Outcome<S>> failed(final Errors error, final String description) {
@@ -74,6 +73,27 @@ public final class DefaultAuthenticator implements Authenticator {
 
     private static Outcome.Failure failure(final Errors error, final String description) {
         return new Outcome.Failure(error, description, new JsonValue.ObjectValue(Map.of()));
+    }
+
+    /**
+     * Checks the authentication boundary declared by one compiled capability.
+     * <p>
+     * The invocation boundary owns this check because it is the last framework-controlled point before arbitrary
+     * Source-worker code executes. Registry remains responsible only for registration state and lookup.
+     * </p>
+     *
+     * @param security declared minimum authentication boundary
+     * @param context  trusted invocation context
+     * @return {@code null} when invocation is allowed, otherwise a safe rejection description
+     */
+    private static String securityRejection(final Capability.Security security, final Context context) {
+        return switch (security) {
+            case PUBLIC -> null;
+            case CLIENT_AUTHENTICATED -> context.clientId().isPresent() ? null
+                    : "Capability requires an authenticated protocol client";
+            case SUBJECT_AUTHENTICATED -> context.authenticatedSubject().isPresent()
+                    && context.authentication().isPresent() ? null : "Capability requires an authenticated subject";
+        };
     }
 
     private static <Q, S> Capability<Q, S> declared(
@@ -92,6 +112,39 @@ public final class DefaultAuthenticator implements Authenticator {
         return null;
     }
 
+    @Override
+    public boolean available(final Registry.Reference reference) {
+        if (!lifecycle.running() || reference == null) {
+            return false;
+        }
+        final RegistryView.Lease generation = registryState.acquire();
+        if (generation == null) {
+            return false;
+        }
+        try {
+            return generation.view().worker(reference).isPresent();
+        } finally {
+            generation.close();
+        }
+    }
+
+    @Override
+    public Optional<Capability.Manifest> manifest(final Registry.Reference reference) {
+        if (!lifecycle.running() || reference == null) {
+            return Optional.empty();
+        }
+        final RegistryView.Lease generation = registryState.acquire();
+        if (generation == null) {
+            return Optional.empty();
+        }
+        try {
+            final SourceWorker worker = generation.view().worker(reference).getOrNull();
+            return Optional.ofNullable(worker == null ? null : worker.manifest());
+        } finally {
+            generation.close();
+        }
+    }
+
     /**
      * Resolves and invokes one exact capability in the current immutable view.
      */
@@ -102,7 +155,7 @@ public final class DefaultAuthenticator implements Authenticator {
             final Q request,
             final Context context,
             final Timeout.Budget timeout) {
-        if (lifecycle.get() != Lifecycle.State.RUNNING) {
+        if (!lifecycle.running()) {
             return failed(ErrorCode._503, "Authenticator is closed");
         }
         if (reference == null || capability == null || context == null || timeout == null) {
@@ -111,34 +164,73 @@ public final class DefaultAuthenticator implements Authenticator {
         if (timeout.expired()) {
             return failed(ErrorCode._408, "Authentication invocation time budget is exhausted");
         }
-        final RegistryView view = registryState.current();
+        final RuntimeLifecycle.Lease lease = lifecycle.enter();
+        if (lease == null) {
+            return failed(ErrorCode._503, "Authentication runtime is closing");
+        }
+        final RegistryView.Lease generation = registryState.acquire();
+        if (generation == null) {
+            lease.close();
+            return failed(ErrorCode._503, "Authentication Registry generation is retired");
+        }
+        final RegistryView view = generation.view();
         final SourceWorker worker = view.worker(reference).getOrNull();
         if (worker == null) {
+            generation.close();
+            lease.close();
             return rejected(ErrorCode._404, "Registry reference is not available in the current revision");
         }
         final Capability<Q, S> declared = declared(worker.manifest(), capability);
         if (declared == null) {
+            generation.close();
+            lease.close();
             return rejected(ErrorCode._100101, "Capability is not declared by the selected Registry reference");
         }
         if (request == null ? declared.requestType() != Void.class : !declared.requestType().isInstance(request)) {
+            generation.close();
+            lease.close();
             return rejected(ErrorCode._100101, "Capability request does not match its declared request type");
+        }
+        final String securityRejection = securityRejection(declared.security(), context);
+        if (securityRejection != null) {
+            generation.close();
+            lease.close();
+            return rejected(ErrorCode._401, securityRejection);
         }
         try {
             final CompletionStage<Outcome<S>> result = worker.invoke(declared, request, context, timeout);
-            return result == null ? failed(ErrorCode._500, "Source worker returned no invocation stage") : result;
+            if (result == null) {
+                generation.close();
+                lease.close();
+                return failed(ErrorCode._500, "Source worker returned no invocation stage");
+            }
+            return result.handle((outcome, cause) -> {
+                try {
+                    if (cause != null || outcome == null) {
+                        return Outcome.failed(failure(ErrorCode._500, "Source worker invocation failed"));
+                    }
+                    if (outcome instanceof Outcome.Succeeded<?> success) {
+                        final Object value = success.value();
+                        final boolean matches = declared.responseType() == Void.class ? value == null
+                                : value != null && declared.responseType().isInstance(value);
+                        if (!matches) {
+                            return Outcome.failed(
+                                    failure(
+                                            ErrorCode._500,
+                                            "Source worker result does not match the declared response type"));
+                        }
+                    }
+                    return outcome;
+                } finally {
+                    generation.close();
+                    lease.close();
+                }
+            });
         } catch (RuntimeException ignored) {
+            generation.close();
+            lease.close();
             return failed(ErrorCode._500, "Source worker failed before returning an invocation stage");
         }
-    }
-
-    @Override
-    public Lifecycle.State state() {
-        return lifecycle.get();
-    }
-
-    @Override
-    public void close() {
-        lifecycle.compareAndSet(Lifecycle.State.RUNNING, Lifecycle.State.CLOSED);
     }
 
 }

@@ -26,9 +26,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.protocol.radius.*;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
-import org.miaixz.bus.auth.runtime.LoadResult;
 import org.miaixz.bus.auth.shared.SecretLease;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -63,7 +62,7 @@ public final class AccountingService {
     /**
      * External short-lived shared-secret loader and framework-owned parser.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Historic security and RADIUS/1.1 response correlator.
@@ -81,7 +80,7 @@ public final class AccountingService {
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
     public AccountingService(final String providerId, final RadiusServerOptions options,
-            final RadiusRequestHandler handler, final ExecutionServices services,
+            final RadiusRequestHandler handler, final DriverServices services,
             final RadiusAuthenticator authenticator) {
         this.providerId = Assert.notBlank(providerId, "RADIUS Accounting Provider id must not be blank");
         this.options = Assert.notNull(options, "RADIUS Accounting options must not be null");
@@ -428,8 +427,8 @@ public final class AccountingService {
             final Context context,
             final Timeout.Budget timeout) {
         try {
-            return LoadResult.parse(
-                    services.secretLoader().load(reference, context, timeout),
+            return Outcome.mapStage(
+                    () -> services.secretLoader().load(reference, context, timeout),
                     loaded -> services.secretParser().parse(reference, loaded));
         } catch (RuntimeException exception) {
             return completed(

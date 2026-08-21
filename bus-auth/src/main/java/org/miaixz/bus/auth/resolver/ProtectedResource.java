@@ -25,7 +25,9 @@ import java.util.List;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.extra.json.JsonValue;
 
-/** Parsed immutable protected-resource metadata. */
+/**
+ * Parsed immutable protected-resource metadata.
+ */
 public record ProtectedResource(String id, List<String> audience, List<String> scopes,
         JsonValue.ObjectValue attributes) {
 

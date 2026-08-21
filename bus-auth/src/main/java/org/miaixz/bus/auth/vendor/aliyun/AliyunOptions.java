@@ -50,16 +50,6 @@ public record AliyunOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<AliyunOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<AliyunOptions> type() {
-        return AliyunOptions.class;
-    }
-
-    /**
      * Validates and freezes one Alibaba Cloud Source registration without resolving its client secret.
      *
      * @throws IllegalArgumentException if a required component, container, or collection member is null or blank
@@ -107,6 +97,16 @@ public record AliyunOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
             case OpenIdConnect.Scopes.OPENID, OpenIdConnect.Scopes.PROFILE, "aliuid" -> true;
             default -> false;
         };
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<AliyunOptions> type() {
+        return AliyunOptions.class;
     }
 
     /**

@@ -19,22 +19,22 @@
 */
 package org.miaixz.bus.auth.registry;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.miaixz.bus.auth.Library;
+import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.worker.SourceWorker;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.xyz.SerializeKit;
 
 /**
- * Stores one immutable revision-consistent set of Library and Source-worker indexes.
+ * Stores one immutable revision-consistent Source-worker index and its detached registration snapshot.
  * <p>
- * The mutable Bus Library persistence entity is deep-copied on entry and lookup through the shared Bus serialization
- * utility, preventing request-scoped launch data or external mutation from changing the committed view. Source workers
- * are public framework contracts held behind an unmodifiable map for generation consistency.
+ * Source workers are public framework contracts held behind an unmodifiable map for generation consistency.
  * </p>
  *
  * @author Kimi Liu
@@ -52,36 +52,41 @@ public final class ImmutableRegistryView implements RegistryView {
     private final Registry.Snapshot snapshot;
 
     /**
-     * Deep-copied enabled Library entities indexed by resource identifier.
-     */
-    private final Map<String, Library> libraries;
-
-    /**
      * Compiled enabled Source workers indexed by kind-safe reference.
      */
     private final Map<Registry.Reference, SourceWorker> workers;
 
     /**
+     * Complete Source registrations grouped by Provider identifier.
+     */
+    private final Map<String, List<Registration.SourceEntry>> sourcesByProvider;
+
+    /**
+     * Enabled Source registrations grouped by Provider identifier.
+     */
+    private final Map<String, List<Registration.SourceEntry>> enabledSourcesByProvider;
+
+    private final Object lifecycle = new Object();
+
+    private boolean retired;
+
+    private boolean closed;
+
+    private int leases;
+
+    /**
      * Creates a detached immutable view after successful local compilation.
      *
-     * @param revision  compiled snapshot revision
-     * @param snapshot  complete source snapshot with the same revision
-     * @param libraries enabled Library index
-     * @param workers   enabled compiled Source-worker index
+     * @param revision compiled snapshot revision
+     * @param snapshot complete source snapshot with the same revision
+     * @param workers  enabled compiled Source-worker index
      * @throws IllegalArgumentException if a container, entry, key, or revision relationship is invalid
      */
     public ImmutableRegistryView(final Registry.Revision revision, final Registry.Snapshot snapshot,
-            final Map<String, Library> libraries, final Map<Registry.Reference, SourceWorker> workers) {
+            final Map<Registry.Reference, SourceWorker> workers) {
         this.revision = Assert.notNull(revision, "Registry view revision must not be null");
         this.snapshot = Assert.notNull(snapshot, "Registry view snapshot must not be null");
         Assert.equals(revision, snapshot.revision(), "Registry view and snapshot revisions must match");
-        Assert.notNull(libraries, "Registry view Library index must not be null");
-        final Map<String, Library> libraryCopies = new LinkedHashMap<>(libraries.size());
-        libraries.forEach(
-                (id, library) -> libraryCopies.put(
-                        Assert.notBlank(id, "Registry view Library id must not be blank"),
-                        copy(Assert.notNull(library, "Registry view Library must not be null"))));
-        this.libraries = Map.copyOf(libraryCopies);
         Assert.notNull(workers, "Registry view Source worker index must not be null");
         final Map<Registry.Reference, SourceWorker> workerCopies = new LinkedHashMap<>(workers.size());
         workers.forEach(
@@ -89,16 +94,78 @@ public final class ImmutableRegistryView implements RegistryView {
                         Assert.notNull(reference, "Registry view Source worker reference must not be null"),
                         Assert.notNull(worker, "Registry view Source worker must not be null")));
         this.workers = Map.copyOf(workerCopies);
+        final Map<String, List<Registration.SourceEntry>> all = new LinkedHashMap<>();
+        final Map<String, List<Registration.SourceEntry>> enabled = new LinkedHashMap<>();
+        for (Registration.Entry entry : snapshot.records()) {
+            if (entry instanceof Registration.SourceEntry sourceEntry) {
+                final String providerId = sourceEntry.resource().getProvider_id();
+                all.computeIfAbsent(providerId, ignored -> new ArrayList<>()).add(sourceEntry);
+                if (sourceEntry.enabled()) {
+                    enabled.computeIfAbsent(providerId, ignored -> new ArrayList<>()).add(sourceEntry);
+                }
+            }
+        }
+        this.sourcesByProvider = immutableLists(all);
+        this.enabledSourcesByProvider = immutableLists(enabled);
     }
 
-    /**
-     * Deep-copies a mutable Library entity using the shared Bus serialization facility.
-     *
-     * @param library Library entity to detach
-     * @return detached Library copy
-     */
-    private static Library copy(final Library library) {
-        return Assert.notNull(SerializeKit.clone(library), "Registry view Library copy must not be null");
+    private static Map<String, List<Registration.SourceEntry>> immutableLists(
+            final Map<String, List<Registration.SourceEntry>> source) {
+        final Map<String, List<Registration.SourceEntry>> copy = new LinkedHashMap<>(source.size());
+        source.forEach((key, value) -> copy.put(key, List.copyOf(value)));
+        return Map.copyOf(copy);
+    }
+
+    @Override
+    public Lease acquire() {
+        synchronized (lifecycle) {
+            if (retired) {
+                return null;
+            }
+            leases++;
+            return new GenerationLease(this);
+        }
+    }
+
+    @Override
+    public void retire() {
+        final boolean close;
+        synchronized (lifecycle) {
+            retired = true;
+            close = leases == 0 && !closed;
+            if (close) {
+                closed = true;
+            }
+        }
+        if (close) {
+            closeWorkers();
+        }
+    }
+
+    private void release() {
+        final boolean close;
+        synchronized (lifecycle) {
+            if (leases > 0) {
+                leases--;
+            }
+            close = retired && leases == 0 && !closed;
+            if (close) {
+                closed = true;
+            }
+        }
+        if (close) {
+            closeWorkers();
+        }
+    }
+
+    private void closeWorkers() {
+        for (SourceWorker worker : workers.values()) {
+            try {
+                worker.close();
+            } catch (RuntimeException ignored) {
+                // Retirement must continue so one faulty worker cannot leak every remaining worker.
+            }
+        }
     }
 
     /**
@@ -114,24 +181,23 @@ public final class ImmutableRegistryView implements RegistryView {
     /**
      * Returns the complete source snapshot retained by this compiled view.
      *
-     * @return complete snapshot whose entity references are not deep-copied
+     * @return complete detached snapshot
      */
     @Override
     public Registry.Snapshot snapshot() {
         return snapshot;
     }
 
-    /**
-     * Returns a detached copy of an enabled Library so caller mutation cannot alter this view.
-     *
-     * @param id Library resource identifier
-     * @return detached Library when present
-     */
     @Override
-    public Optional<Library> library(final String id) {
-        Assert.notBlank(id, "Registry view Library lookup id must not be blank");
-        final Library library = libraries.get(id);
-        return Optional.ofNullable(library == null ? null : copy(library));
+    public List<Registration.SourceEntry> sources(final String providerId) {
+        Assert.notBlank(providerId, "Provider identifier must not be blank");
+        return sourcesByProvider.getOrDefault(providerId, List.of());
+    }
+
+    @Override
+    public List<Registration.SourceEntry> enabledSources(final String providerId) {
+        Assert.notBlank(providerId, "Provider identifier must not be blank");
+        return enabledSourcesByProvider.getOrDefault(providerId, List.of());
     }
 
     /**
@@ -144,6 +210,29 @@ public final class ImmutableRegistryView implements RegistryView {
     public Optional<SourceWorker> worker(final Registry.Reference reference) {
         Assert.notNull(reference, "Registry view Source worker reference must not be null");
         return Optional.ofNullable(workers.get(reference));
+    }
+
+    private static final class GenerationLease implements Lease {
+
+        private final ImmutableRegistryView view;
+
+        private final AtomicBoolean closed = new AtomicBoolean();
+
+        private GenerationLease(final ImmutableRegistryView view) {
+            this.view = view;
+        }
+
+        @Override
+        public RegistryView view() {
+            return view;
+        }
+
+        @Override
+        public void close() {
+            if (closed.compareAndSet(false, true)) {
+                view.release();
+            }
+        }
     }
 
 }

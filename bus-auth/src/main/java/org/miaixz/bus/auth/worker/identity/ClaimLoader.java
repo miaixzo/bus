@@ -19,20 +19,24 @@
 */
 package org.miaixz.bus.auth.worker.identity;
 
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Subject;
 import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.shared.claim.ClaimSet;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.core.lang.Assert;
 
-/** Loads project-disclosed claim records for one verified identity and stable subject. */
+/**
+ * Loads project-disclosed claim records for one verified identity and stable subject.
+ */
 @FunctionalInterface
 public interface ClaimLoader {
 
-    CompletionStage<Outcome<ClaimRecord>> load(Request request, Context context, Timeout.Budget timeout);
+    CompletionStage<Outcome<Record>> load(Request request, Context context, Timeout.Budget timeout);
 
     record Request(Subject subject, ExternalIdentity identity) {
 
@@ -40,5 +44,11 @@ public interface ClaimLoader {
             Assert.notNull(subject, "Claim loading Subject must not be null");
             Assert.notNull(identity, "Claim loading external identity must not be null");
         }
+    }
+
+    /**
+     * Project-loaded claim entries awaiting framework parsing.
+     */
+    record Record(List<ClaimSet.Entry> entries) {
     }
 }

@@ -25,7 +25,7 @@ import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
+import org.miaixz.bus.auth.source.DriverServices;
 
 /**
  * Defines the executable contract implemented by one compiled third-party platform {@link VariantManifest.Variant}.
@@ -37,7 +37,7 @@ import org.miaixz.bus.auth.runtime.ExecutionServices;
  *
  * @author Kimi Liu
  */
-public interface VendorAdapter {
+public interface VendorAdapter extends AutoCloseable {
 
     /**
      * Returns the exact immutable capabilities implemented by this adapter.
@@ -62,6 +62,17 @@ public interface VendorAdapter {
             Q request,
             Context context,
             Timeout.Budget timeout);
+
+    /**
+     * Releases resources owned exclusively by this compiled adapter generation.
+     *
+     * Stateless adapters use the default implementation. Project services and runtime infrastructure are never closed
+     * by an adapter.
+     */
+    @Override
+    default void close() {
+        // Built-in Vendor adapters are stateless.
+    }
 
     /**
      * Creates the exact adapter paired with one platform variant during immutable Source compilation.
@@ -89,7 +100,7 @@ public interface VendorAdapter {
                 VariantManifest<O> manifest,
                 VariantManifest.Variant variant,
                 O options,
-                ExecutionServices services);
+                DriverServices services);
 
     }
 

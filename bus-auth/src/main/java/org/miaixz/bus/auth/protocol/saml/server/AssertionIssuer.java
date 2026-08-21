@@ -31,8 +31,8 @@ import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.saml.*;
 import org.miaixz.bus.auth.protocol.saml.codec.SamlMessageCodec;
-import org.miaixz.bus.auth.resolver.Attributes;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.data.id.UUID;
@@ -81,7 +81,7 @@ public final class AssertionIssuer {
     /**
      * External attribute loader and framework-owned attribute parser.
      */
-    private final org.miaixz.bus.auth.runtime.ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Strict SAML XML value codec.
@@ -96,8 +96,8 @@ public final class AssertionIssuer {
      * @param messageCodec strict SAML message and AttributeValue codec
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public AssertionIssuer(final SamlServerOptions options,
-            final org.miaixz.bus.auth.runtime.ExecutionServices services, final SamlMessageCodec messageCodec) {
+    public AssertionIssuer(final SamlServerOptions options, final DriverServices services,
+            final SamlMessageCodec messageCodec) {
         this.options = Assert.notNull(options, "SAML Provider options must not be null");
         this.services = Assert.notNull(services, "SAML execution services must not be null");
         this.messageCodec = Assert.notNull(messageCodec, "SAML message codec must not be null");
@@ -150,15 +150,14 @@ public final class AssertionIssuer {
                                     ErrorCode._408,
                                     "SAML assertion issuance lacks authenticated context or remaining time")));
         }
-        return org.miaixz.bus.auth.runtime.LoadResult
-                .parse(
-                        services.attributeLoader().load(subject.key(), context, timeout),
+        return Outcome.mapStage(
+                        () -> services.attributeLoader().load(subject.key(), context, timeout),
                         loaded -> services.attributeParser().parse(subject.key(), loaded))
                 .thenApply(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<Attributes> success -> Outcome.succeeded(
+                    case Outcome.Succeeded<JsonValue.ObjectValue> success -> Outcome.succeeded(
                             response(request, client, subject, authentication, success.value(), context, timeout));
-                    case Outcome.Rejected<Attributes> rejected -> Outcome.rejected(rejected.failure());
-                    case Outcome.Failed<Attributes> failed -> Outcome.failed(failed.failure());
+                    case Outcome.Rejected<JsonValue.ObjectValue> rejected -> Outcome.rejected(rejected.failure());
+                    case Outcome.Failed<JsonValue.ObjectValue> failed -> Outcome.failed(failed.failure());
                 });
     }
 
@@ -179,7 +178,7 @@ public final class AssertionIssuer {
             final ConsumerMetadata client,
             final org.miaixz.bus.auth.Subject frameworkSubject,
             final Context.Authentication authentication,
-            final Attributes attributes,
+            final JsonValue.ObjectValue attributes,
             final Context context,
             final Timeout.Budget timeout) {
         final Instant now = timeout.clock().now();
@@ -208,7 +207,7 @@ public final class AssertionIssuer {
                 new AuthnContext(Optional.of(contextClass), Optional.empty(), Optional.empty(), List.of()));
         final List<Assertion.StatementContent> statements = new ArrayList<>();
         statements.add(new Assertion.AuthenticationStatement(authenticationStatement));
-        final List<AttributeStatement.AttributeContent> attributeValues = attributes(attributes.values());
+        final List<AttributeStatement.AttributeContent> attributeValues = attributes(attributes);
         if (!attributeValues.isEmpty()) {
             statements.add(new Assertion.AttributesStatement(new AttributeStatement(attributeValues)));
         }

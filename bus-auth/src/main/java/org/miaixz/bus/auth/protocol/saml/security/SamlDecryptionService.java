@@ -49,6 +49,7 @@ import org.miaixz.bus.auth.protocol.saml.client.SamlClientOptions;
 import org.miaixz.bus.auth.protocol.saml.codec.SamlMessageCodec;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
 import org.miaixz.bus.auth.shared.SecurityBaseline;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.worker.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.*;
@@ -134,7 +135,7 @@ public final class SamlDecryptionService {
     /**
      * External private-key loader and framework-owned key parser.
      */
-    private final org.miaixz.bus.auth.runtime.ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Strict plaintext SAML XML codec.
@@ -160,7 +161,7 @@ public final class SamlDecryptionService {
      * @param securityBaseline   shared SAML security baseline
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public SamlDecryptionService(final org.miaixz.bus.auth.runtime.ExecutionServices services,
+    public SamlDecryptionService(final DriverServices services,
             final SamlMessageCodec messageCodec, final SamlSignatureValidator signatureValidator,
             final SecurityBaseline securityBaseline) {
         this.services = Assert.notNull(services, "SAML execution services must not be null");
@@ -556,8 +557,8 @@ public final class SamlDecryptionService {
         }
         final KeyLoader.Request query = new KeyLoader.Request(options.entityId(), Optional.of(payload.keyName()),
                 "decryption", payload.keyAlgorithm(), timeout.clock().now());
-        final CompletionStage<Outcome<KeyMaterial>> resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                services.keyLoader().load(query, context, timeout),
+        final CompletionStage<Outcome<KeyMaterial>> resolution = Outcome.mapStage(
+                () -> services.keyLoader().load(query, context, timeout),
                 loaded -> services.keyParser().parse(query, loaded));
         if (resolution == null)
             return completed(failed("SAML decryption key loader returned no result stage"));

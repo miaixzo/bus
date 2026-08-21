@@ -62,16 +62,6 @@ public record OAuth2ClientOptions(Optional<Endpoint> authorizationEndpoint, Opti
         boolean pkceRequired, boolean dpopRequired) implements Options<OAuth2ClientOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<OAuth2ClientOptions> type() {
-        return OAuth2ClientOptions.class;
-    }
-
-    /**
      * Normalizes optional containers and enforces transport, registration, credential, and security invariants.
      */
     public OAuth2ClientOptions {
@@ -288,6 +278,21 @@ public record OAuth2ClientOptions(Optional<Endpoint> authorizationEndpoint, Opti
     private static String endpoint(final Optional<Endpoint> value) {
         final Endpoint endpoint = value.getOrNull();
         return endpoint == null ? "empty" : endpoint.url().redact();
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<OAuth2ClientOptions> type() {
+        return OAuth2ClientOptions.class;
+    }
+
+    @Override
+    public OAuth2ClientOptions snapshot() {
+        return this;
     }
 
     /**

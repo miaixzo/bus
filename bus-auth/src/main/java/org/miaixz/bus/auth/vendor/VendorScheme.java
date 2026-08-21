@@ -19,7 +19,9 @@
 */
 package org.miaixz.bus.auth.vendor;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Scheme;
@@ -57,6 +59,23 @@ public final class VendorScheme implements Scheme<VendorOptions<?>> {
      */
     private static final Form FORM = new Form(List.of());
 
+    private final Set<Protocol> protocols;
+
+    /**
+     * Creates an aggregate scheme from the exact assembled Vendor directory.
+     *
+     * @param directory assembled Vendor directory
+     */
+    public VendorScheme(final VendorDirectory directory) {
+        final Set<Protocol> selected = new LinkedHashSet<>();
+        for (VariantManifest<?> manifest : directory.manifests()) {
+            for (VariantManifest.Variant variant : manifest.variants()) {
+                selected.add(variant.protocol());
+            }
+        }
+        this.protocols = Set.copyOf(selected);
+    }
+
     @Override
     public String id() {
         return ID;
@@ -65,6 +84,11 @@ public final class VendorScheme implements Scheme<VendorOptions<?>> {
     @Override
     public Protocol protocol() {
         return Protocol.VENDOR_AUTH;
+    }
+
+    @Override
+    public Set<Protocol> protocols() {
+        return protocols;
     }
 
     @Override

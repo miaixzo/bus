@@ -76,35 +76,21 @@ public record OAuth2ServerOptions(String issuer, Optional<Endpoint> authorizatio
         boolean dpopSupported) implements Options<OAuth2ServerOptions>, GrantPolicy {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<OAuth2ServerOptions> type() {
-        return OAuth2ServerOptions.class;
-    }
-
-    /**
      * Maximum authorization code lifetime permitted by the frozen server policy.
      */
     private static final Duration MAXIMUM_AUTHORIZATION_CODE_LIFETIME = Duration.ofMinutes(10);
-
     /**
      * Maximum device authorization lifetime permitted by the frozen server policy.
      */
     private static final Duration MAXIMUM_DEVICE_CODE_LIFETIME = Duration.ofMinutes(15);
-
     /**
      * Minimum RFC 8628 device polling interval permitted by the frozen server policy.
      */
     private static final Duration MINIMUM_DEVICE_POLLING_INTERVAL = Duration.ofSeconds(5);
-
     /**
      * Minimum whole-second lifetime representable by standard expires_in and positive Store TTL values.
      */
     private static final Duration MINIMUM_TOKEN_LIFETIME = Duration.ofSeconds(1);
-
     /**
      * Grant variants implemented by the Provider token service.
      */
@@ -114,7 +100,6 @@ public record OAuth2ServerOptions(String issuer, Optional<Endpoint> authorizatio
             GrantType.CLIENT_CREDENTIALS,
             GrantType.TOKEN_EXCHANGE,
             GrantType.DEVICE_CODE);
-
     /**
      * Client authentication methods implemented by the Provider endpoint adapter.
      */
@@ -383,6 +368,21 @@ public record OAuth2ServerOptions(String issuer, Optional<Endpoint> authorizatio
         } catch (URISyntaxException exception) {
             throw new ValidateException(label + " is not a valid URI", exception);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<OAuth2ServerOptions> type() {
+        return OAuth2ServerOptions.class;
+    }
+
+    @Override
+    public OAuth2ServerOptions snapshot() {
+        return this;
     }
 
 }

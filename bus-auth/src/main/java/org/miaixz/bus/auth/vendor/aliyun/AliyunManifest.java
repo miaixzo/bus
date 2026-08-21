@@ -71,6 +71,7 @@ public final class AliyunManifest implements VariantManifest<AliyunOptions> {
      * Complete immutable endpoint, client-policy, scope, capability, and form manifest for the default variant.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OIDC,
+            VariantManifest.Pkce.REQUIRED,
             List.of(OpenIdConnect.Scopes.OPENID, OpenIdConnect.Scopes.PROFILE),
             new VendorTargets(Optional.of(
                     fixed("https://signin.aliyun.com/oauth2/v1/auth", Http.Method.GET, Endpoint.Authentication.NONE)),

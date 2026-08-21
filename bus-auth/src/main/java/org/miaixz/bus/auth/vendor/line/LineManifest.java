@@ -78,7 +78,7 @@ public final class LineManifest implements VariantManifest<LineOptions> {
      * Complete immutable LINE web endpoint, client, scope, capability, form, and deviation manifest.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OIDC,
-            List.of("profile", "openid"),
+            VariantManifest.Pkce.REQUIRED, List.of("profile", "openid"),
             new VendorTargets(
                     Optional.of(
                             fixed(

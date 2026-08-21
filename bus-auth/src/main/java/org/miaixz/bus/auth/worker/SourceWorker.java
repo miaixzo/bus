@@ -42,7 +42,7 @@ import org.miaixz.bus.auth.Timeout;
  *
  * @author Kimi Liu
  */
-public interface SourceWorker {
+public interface SourceWorker extends AutoCloseable {
 
     /**
      * Returns the immutable capabilities implemented by this compiled registration.
@@ -67,5 +67,18 @@ public interface SourceWorker {
             Q request,
             Context context,
             Timeout.Budget timeout);
+
+    /**
+     * Releases resources owned exclusively by this compiled Source generation.
+     * <p>
+     * Stateless workers use the default no-op implementation. A worker that owns a connection pool, remote client, or
+     * another generation-scoped resource overrides this method. Caller-owned execution services and project workers
+     * must never be closed here.
+     * </p>
+     */
+    @Override
+    default void close() {
+        // Most compiled workers are immutable and stateless.
+    }
 
 }

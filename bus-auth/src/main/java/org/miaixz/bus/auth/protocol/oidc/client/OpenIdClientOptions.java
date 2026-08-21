@@ -51,16 +51,6 @@ public record OpenIdClientOptions(OAuth2ClientOptions oauth2Options, Optional<En
         Set<JwaAlgorithm> idTokenSigningAlgorithms) implements Options<OpenIdClientOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<OpenIdClientOptions> type() {
-        return OpenIdClientOptions.class;
-    }
-
-    /**
      * Normalizes endpoint containers and enforces OIDC code-flow transport and algorithm invariants.
      *
      * @throws IllegalArgumentException if a required component, container, or set item is {@code null}
@@ -147,6 +137,21 @@ public record OpenIdClientOptions(OAuth2ClientOptions oauth2Options, Optional<En
      */
     private static String present(final Optional<Endpoint> endpoint) {
         return endpoint.isPresent() ? "[CONFIGURED]" : "[ABSENT]";
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<OpenIdClientOptions> type() {
+        return OpenIdClientOptions.class;
+    }
+
+    @Override
+    public OpenIdClientOptions snapshot() {
+        return this;
     }
 
     /**

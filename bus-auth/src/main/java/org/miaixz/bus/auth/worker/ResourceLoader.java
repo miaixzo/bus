@@ -27,12 +27,15 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.extra.json.JsonValue;
 
-/** Loads project-maintained protected-resource records. */
+/**
+ * Loads project-maintained protected-resource records.
+ */
 @FunctionalInterface
 public interface ResourceLoader {
 
-    CompletionStage<Outcome<ResourceRecord>> load(Request request, Context context, Timeout.Budget timeout);
+    CompletionStage<Outcome<Record>> load(Request request, Context context, Timeout.Budget timeout);
 
     record Request(String namespaceId, List<String> audience, List<String> resource) {
 
@@ -50,5 +53,12 @@ public interface ResourceLoader {
             }
             return List.copyOf(copy);
         }
+    }
+
+    /**
+     * Loaded protected-resource data awaiting framework parsing.
+     */
+    record Record(String namespaceId, String id, List<String> audience, List<String> scopes,
+            JsonValue.ObjectValue attributes) {
     }
 }

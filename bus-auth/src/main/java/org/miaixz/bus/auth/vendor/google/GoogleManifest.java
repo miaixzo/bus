@@ -75,7 +75,7 @@ public final class GoogleManifest implements VariantManifest<GoogleOptions> {
      * Complete immutable endpoint, client-policy, scope, capability, and form manifest for the default variant.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OIDC,
-            List.of("openid", "profile", "email"),
+            VariantManifest.Pkce.REQUIRED, List.of("openid", "profile", "email"),
             new VendorTargets(
                     Optional.of(
                             fixed(

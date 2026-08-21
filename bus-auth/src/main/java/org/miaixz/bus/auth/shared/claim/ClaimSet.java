@@ -44,7 +44,7 @@ public record ClaimSet(List<Entry> claims) {
     public ClaimSet {
         Assert.notNull(claims, "ClaimSet entries must not be null");
         final List<Entry> copy = new ArrayList<>(claims.size());
-        final Set<String> names = new java.util.HashSet<>(claims.size());
+        final Set<String> names = new HashSet<>(claims.size());
         for (Entry entry : claims) {
             final Entry checked = Assert.notNull(entry, "ClaimSet entry must not be null");
             if (!names.add(checked.name())) {

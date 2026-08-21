@@ -52,16 +52,6 @@ public record FeishuOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<FeishuOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<FeishuOptions> type() {
-        return FeishuOptions.class;
-    }
-
-    /**
      * Validates and freezes one Feishu registration without resolving its App Secret.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
@@ -114,6 +104,16 @@ public record FeishuOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
         } catch (URISyntaxException cause) {
             throw new ValidateException("Feishu redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<FeishuOptions> type() {
+        return FeishuOptions.class;
     }
 
     /**

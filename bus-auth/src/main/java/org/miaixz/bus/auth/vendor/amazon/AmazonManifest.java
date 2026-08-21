@@ -66,7 +66,7 @@ public final class AmazonManifest implements VariantManifest<AmazonOptions> {
      * Complete immutable endpoint, policy, scope, capability, and form manifest.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OAUTH2,
-            List.of("profile", "profile:user_id", "postal_code"),
+            VariantManifest.Pkce.OPTIONAL, List.of("profile", "profile:user_id", "postal_code"),
             new VendorTargets(
                     Optional.of(fixed("https://www.amazon.com/ap/oa", Http.Method.GET, Endpoint.Authentication.NONE)),
                     Optional.of(

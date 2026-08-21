@@ -30,6 +30,7 @@ import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.saml.*;
 import org.miaixz.bus.auth.protocol.saml.codec.MetadataCodec;
 import org.miaixz.bus.auth.resolver.CertificateMaterial;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.worker.CertificateLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
@@ -56,7 +57,7 @@ public final class MetadataService {
     /**
      * External certificate loader and framework-owned certificate parser.
      */
-    private final org.miaixz.bus.auth.runtime.ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Strict SAML Metadata codec and KeyInfo encoder.
@@ -71,8 +72,8 @@ public final class MetadataService {
      * @param metadataCodec strict SAML Metadata codec
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public MetadataService(final SamlServerOptions options,
-            final org.miaixz.bus.auth.runtime.ExecutionServices services, final MetadataCodec metadataCodec) {
+    public MetadataService(final SamlServerOptions options, final DriverServices services,
+            final MetadataCodec metadataCodec) {
         this.options = Assert.notNull(options, "SAML Provider options must not be null");
         this.services = Assert.notNull(services, "SAML execution services must not be null");
         this.metadataCodec = Assert.notNull(metadataCodec, "SAML Metadata codec must not be null");
@@ -97,9 +98,8 @@ public final class MetadataService {
         }
         final CertificateLoader.Request query = new CertificateLoader.Request(options.entityId(), "signing",
                 timeout.clock().now());
-        return org.miaixz.bus.auth.runtime.LoadResult
-                .parse(
-                        services.certificateLoader().load(query, context, timeout),
+        return Outcome.mapStage(
+                        () -> services.certificateLoader().load(query, context, timeout),
                         loaded -> services.certificateParser().parse(query, loaded))
                 .thenApply(outcome -> switch (outcome) {
                     case Outcome.Succeeded<CertificateMaterial> success -> Outcome

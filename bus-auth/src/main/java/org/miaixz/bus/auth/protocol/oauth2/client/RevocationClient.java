@@ -37,8 +37,8 @@ import org.miaixz.bus.auth.protocol.oauth2.OAuth2ErrorCode;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2ErrorResponse;
 import org.miaixz.bus.auth.protocol.oauth2.RevocationRequest;
 import org.miaixz.bus.auth.protocol.oauth2.codec.RevocationRequestEncoder;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -79,7 +79,7 @@ public final class RevocationClient {
     /**
      * Caller-owned execution services and Fabric context.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Strict RFC 7009 request encoder.
@@ -99,7 +99,7 @@ public final class RevocationClient {
      * @param encoder  strict RFC 7009 request encoder
      * @throws IllegalArgumentException if a collaborator is {@code null} or no revocation endpoint is configured
      */
-    public RevocationClient(final OAuth2ClientOptions options, final ExecutionServices services,
+    public RevocationClient(final OAuth2ClientOptions options, final DriverServices services,
             final RevocationRequestEncoder encoder) {
         this.options = Assert.notNull(options, "OAuth 2.x client options must not be null");
         Assert.notNull(options.revocationEndpoint().getOrNull(), "OAuth 2.x revocation endpoint must be configured");
@@ -187,9 +187,8 @@ public final class RevocationClient {
         if (Endpoint.Authentication.NONE.equals(options.clientAuthenticationMethod())) {
             return execute(request, null, timeout);
         }
-        return org.miaixz.bus.auth.runtime.LoadResult
-                .parse(
-                        services.secretLoader().load(options.clientCredential().getOrNull(), context, timeout),
+        return Outcome.mapStage(
+                        () -> services.secretLoader().load(options.clientCredential().getOrNull(), context, timeout),
                         loaded -> services.secretParser().parse(options.clientCredential().getOrNull(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> execute(request, success.value(), timeout);

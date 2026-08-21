@@ -40,15 +40,14 @@ import org.miaixz.bus.auth.protocol.oidc.client.OpenIdClientScheme;
 import org.miaixz.bus.auth.protocol.oidc.codec.IdTokenCodec;
 import org.miaixz.bus.auth.protocol.oidc.codec.JwkSetCodec;
 import org.miaixz.bus.auth.protocol.oidc.codec.OpenIdProviderMetadataCodec;
-import org.miaixz.bus.auth.runtime.ExecutionServices;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.shared.jose.*;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
+import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceAuthentication;
-import org.miaixz.bus.auth.source.SourceAuthenticationRequest;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -139,7 +138,7 @@ public final class LineSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime, secret, JSON, crypto, network, clock, and execution dependencies.
      */
-    private final ExecutionServices services;
+    private final DriverServices services;
 
     /**
      * Unified router for LINE's public standard OIDC and OAuth capabilities.
@@ -215,7 +214,7 @@ public final class LineSourceAdapter implements VendorAdapter {
      *                                  LINE web profile
      */
     public LineSourceAdapter(final String namespaceId, final String sourceId, final LineManifest manifest,
-            final VariantManifest.Variant variant, final LineOptions options, final ExecutionServices services) {
+            final VariantManifest.Variant variant, final LineOptions options, final DriverServices services) {
         final LineManifest selectedProfile = Assert.notNull(manifest, "LINE manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "LINE Source id must not be blank");
         this.variant = Assert.notNull(variant, "LINE manifest must not be null");
@@ -646,11 +645,11 @@ public final class LineSourceAdapter implements VendorAdapter {
             return completed(rejected("LINE capability is not declared"));
         }
         if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserStart start) {
+                && request instanceof SourceAuthentication.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
         if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthenticationRequest.BrowserCallback callback) {
+                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -796,8 +795,8 @@ public final class LineSourceAdapter implements VendorAdapter {
                 options.redirectUri(), Optional.empty(), Optional.of(verifier)), emptyObject());
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.secretLoader().load(options.credential(), context, timeout),
+            resolution = Outcome.mapStage(
+                    () -> services.secretLoader().load(options.credential(), context, timeout),
                     loaded -> services.secretParser().parse(options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "LINE channel-secret resolution failed"));
@@ -872,8 +871,8 @@ public final class LineSourceAdapter implements VendorAdapter {
         }
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.secretLoader().load(options.credential(), context, timeout),
+            resolution = Outcome.mapStage(
+                    () -> services.secretLoader().load(options.credential(), context, timeout),
                     loaded -> services.secretParser().parse(options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "LINE channel-secret resolution failed"));
@@ -1333,8 +1332,8 @@ public final class LineSourceAdapter implements VendorAdapter {
         }
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
-            resolution = org.miaixz.bus.auth.runtime.LoadResult.parse(
-                    services.secretLoader().load(options.credential(), context, timeout),
+            resolution = Outcome.mapStage(
+                    () -> services.secretLoader().load(options.credential(), context, timeout),
                     loaded -> services.secretParser().parse(options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "LINE channel-secret resolution failed"));

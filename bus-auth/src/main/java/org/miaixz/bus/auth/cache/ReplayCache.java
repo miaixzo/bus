@@ -19,7 +19,10 @@
 */
 package org.miaixz.bus.auth.cache;
 
+import java.util.concurrent.CompletionStage;
+
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.fabric.Clock;
 
 /**
  * Records isolated authentication artifact digests for atomic replay detection.
@@ -33,20 +36,29 @@ import org.miaixz.bus.cache.CacheX;
  *
  * @author Kimi Liu
  */
-public final class ReplayCache extends AuthCache<ExpiringValue<String>> {
+public final class ReplayCache extends AuthCache<String> {
 
     /**
      * Isolates replay markers from every other bus-cache consumer.
      */
-    private static final String NAMESPACE = "auth:replay:";
+    private static final String PURPOSE = "replay";
 
     /**
      * Creates a replay-marker cache view backed entirely by bus-cache.
      *
      * @param cache shared bus-cache backend
      */
-    public ReplayCache(final CacheX<String, Object> cache) {
-        super(cache, NAMESPACE);
+    public ReplayCache(final CacheX<String, Object> cache, final String deployment,
+            final Clock clock) {
+        super(cache, deployment, PURPOSE, String.class, clock);
+    }
+
+    public CompletionStage<Boolean> mark(final String key, final ExpiringValue<String> value) {
+        return super.doIssue(key, value);
+    }
+
+    public CompletionStage<ExpiringValue<String>> find(final String key) {
+        return super.doFind(key);
     }
 
 }

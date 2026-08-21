@@ -52,16 +52,6 @@ public record JdOptions(Vendor.Id vendor, Vendor.Variant variant, String clientI
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<JdOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<JdOptions> type() {
-        return JdOptions.class;
-    }
-
-    /**
      * Validates and freezes one JD application registration without resolving its secret.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
@@ -125,6 +115,16 @@ public record JdOptions(Vendor.Id vendor, Vendor.Variant variant, String clientI
         } catch (URISyntaxException cause) {
             throw new ValidateException("JD redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<JdOptions> type() {
+        return JdOptions.class;
     }
 
     /**

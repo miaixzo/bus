@@ -20,21 +20,23 @@
 package org.miaixz.bus.auth.resolver;
 
 import org.miaixz.bus.auth.Subject;
-import org.miaixz.bus.auth.worker.SubjectRecord;
+import org.miaixz.bus.auth.worker.identity.IdentityLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
-/** Pure parser for project subject records. */
+/**
+ * Pure parser for project subject records.
+ */
 public final class SubjectParser {
 
-    public Subject parse(final SubjectRecord record) {
-        final SubjectRecord loaded = Assert.notNull(record, "Loaded Subject record must not be null");
+    public Subject parse(final IdentityLoader.Record record) {
+        final IdentityLoader.Record loaded = Assert.notNull(record, "Loaded Subject record must not be null");
         return new Subject(loaded.key(), loaded.reference(), loaded.attributes());
     }
 
-    public Subject parse(final Subject.Reference expected, final SubjectRecord record) {
+    public Subject parse(final Subject.Reference expected, final IdentityLoader.Record record) {
         final Subject.Reference reference = Assert.notNull(expected, "Expected Subject reference must not be null");
-        final SubjectRecord loaded = Assert.notNull(record, "Loaded Subject record must not be null");
+        final IdentityLoader.Record loaded = Assert.notNull(record, "Loaded Subject record must not be null");
         if (!reference.equals(loaded.reference())) {
             throw new ValidateException("Loaded Subject reference does not match the requested reference");
         }

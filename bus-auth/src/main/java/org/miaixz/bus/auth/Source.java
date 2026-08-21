@@ -23,13 +23,18 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.core.basic.entity.Namespace;
+import org.miaixz.bus.core.basic.entity.Tracer;
 
 /**
  * Represents one registered authentication protocol source owned by a Provider.
  * <p>
  * Every source belongs to exactly one {@link Provider} through {@link #provider_id}. A Provider may own multiple
  * Sources, each independently selecting its adapter type, actual protocol, and typed protocol options.
+ * </p>
+ * <p>
+ * A Source does not own a persistent {@code namespace_id}. Its resource namespace is resolved only through
+ * {@code provider_id -> Provider.library_id -> Library.namespace_id}; inherited Tracer fields are transient request
+ * context and are not registration ownership.
  * </p>
  * <p>
  * This mutable registration model exposes no runtime operation, protocol implementation, vendor-specific field, or
@@ -42,7 +47,7 @@ import org.miaixz.bus.core.basic.entity.Namespace;
 @Getter
 @Setter
 @SuperBuilder
-public class Source extends Namespace {
+public class Source extends Tracer {
 
     /**
      * Required non-blank identifier of the owning Provider. The referenced Provider must exist; when this Source is

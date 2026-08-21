@@ -19,17 +19,29 @@
 */
 package org.miaixz.bus.auth.cache;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.Duration;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Clock;
 
 /**
- * Package-private typed view over one bus-cache backend.
+ * Typed authentication-state view over one bus-cache backend.
  * <p>
  * This class owns no cache implementation, connection, serialization, expiration scheduler, or atomic algorithm. It
  * only isolates one authentication purpose with a fixed key namespace and delegates every operation to {@link CacheX}.
  * Purpose-specific public caches expose this view with their exact immutable value type.
+ * Every value is stored inside a versioned {@link Envelope}; the complete envelope graph must be serializable by the
+ * configured bus-cache serializer and must produce a stable representation when the same immutable value is encoded
+ * again, because distributed {@link CacheX#replace(Object, Object, Object, long)} implementations compare the encoded
+ * expected value atomically.
+ * The ordinary {@code deployment:auth:purpose:key} prefix intentionally contains no Redis hash tag: every operation is
+ * single-key atomic, so forcing a complete deployment into one cluster slot would create a hotspot without providing a
+ * stronger transaction boundary.
  * </p>
  *
  * @param <V> immutable authentication value type
@@ -48,26 +60,46 @@ public abstract class AuthCache<V> {
     private final String namespace;
 
     /**
+     * Runtime value class expected after backend decoding.
+     */
+    private final Class<V> valueType;
+    private final Clock clock;
+
+    /**
      * Creates one namespaced typed view over a bus-cache backend.
      *
-     * @param cache     shared bus-cache backend
-     * @param namespace non-empty authentication-purpose key prefix
+     * @param cache      shared bus-cache backend
+     * @param deployment deployment-unique cache namespace
+     * @param purpose    authentication-state purpose within the deployment
+     * @param valueType  exact outer value class stored for this purpose
+     * @param clock      shared runtime clock used to derive backend TTL
      */
-    protected AuthCache(final CacheX<String, Object> cache, final String namespace) {
+    protected AuthCache(final CacheX<String, Object> cache, final String deployment, final String purpose,
+            final Class<V> valueType, final Clock clock) {
         this.cache = Assert.notNull(cache, "Authentication cache must not be null");
-        this.namespace = Assert.notBlank(namespace, "Authentication cache namespace must not be blank");
+        final String deploymentName = Assert
+                .notBlank(deployment, "Authentication cache deployment namespace must not be blank");
+        Assert.isFalse(
+                deploymentName.indexOf('{') >= 0 || deploymentName.indexOf('}') >= 0,
+                "Authentication cache deployment namespace must not contain Redis hash-tag braces");
+        final String purposeName = Assert.notBlank(purpose, "Authentication cache purpose must not be blank");
+        Assert.isFalse(
+                purposeName.indexOf('{') >= 0 || purposeName.indexOf('}') >= 0,
+                "Authentication cache purpose must not contain Redis hash-tag braces");
+        this.namespace = deploymentName + ":auth:" + purposeName + ":";
+        this.valueType = Assert.notNull(valueType, "Authentication cache value type must not be null");
+        this.clock = Assert.notNull(clock, "Authentication cache clock must not be null");
     }
 
     /**
      * Delegates atomic create-if-absent to bus-cache.
      *
-     * @param key       purpose-local cache key
-     * @param value     immutable authentication value
-     * @param ttlMillis positive time to live in milliseconds
+     * @param key   purpose-local cache key
+     * @param value immutable authentication value
      * @return stage containing whether the value was created
      */
-    public final CompletionStage<Boolean> create(final String key, final V value, final long ttlMillis) {
-        return cache.create(key(key), Assert.notNull(value, "Authentication cache value must not be null"), ttlMillis);
+    protected final CompletionStage<Boolean> doIssue(final String key, final ExpiringValue<V> value) {
+        return cache.create(key(key), envelope(value), ttl(value));
     }
 
     /**
@@ -76,7 +108,7 @@ public abstract class AuthCache<V> {
      * @param key purpose-local cache key
      * @return stage containing the stored value or {@code null}
      */
-    public final CompletionStage<V> get(final String key) {
+    protected final CompletionStage<ExpiringValue<V>> doFind(final String key) {
         return cache.get(key(key)).thenApply(this::value);
     }
 
@@ -86,29 +118,23 @@ public abstract class AuthCache<V> {
      * @param key purpose-local one-time cache key
      * @return stage containing the consumed value or {@code null}
      */
-    public final CompletionStage<V> take(final String key) {
+    protected final CompletionStage<ExpiringValue<V>> doConsume(final String key) {
         return cache.take(key(key)).thenApply(this::value);
     }
 
     /**
      * Delegates atomic compare-and-replace to bus-cache.
      *
-     * @param key       purpose-local cache key
-     * @param expected  exact value required for replacement
-     * @param update    replacement value
-     * @param ttlMillis positive replacement time to live in milliseconds
+     * @param key      purpose-local cache key
+     * @param expected exact value required for replacement
+     * @param update   replacement value
      * @return stage containing whether the value was replaced
      */
-    public final CompletionStage<Boolean> replace(
+    protected final CompletionStage<Boolean> doUpdate(
             final String key,
-            final V expected,
-            final V update,
-            final long ttlMillis) {
-        return cache.replace(
-                key(key),
-                Assert.notNull(expected, "Expected authentication cache value must not be null"),
-                Assert.notNull(update, "Updated authentication cache value must not be null"),
-                ttlMillis);
+            final ExpiringValue<V> expected,
+            final ExpiringValue<V> update) {
+        return cache.replace(key(key), envelope(expected), envelope(update), ttl(update));
     }
 
     /**
@@ -117,7 +143,7 @@ public abstract class AuthCache<V> {
      * @param key purpose-local cache key
      * @return stage containing whether a value was removed
      */
-    public final CompletionStage<Boolean> delete(final String key) {
+    protected final CompletionStage<Boolean> doRevoke(final String key) {
         return cache.delete(key(key));
     }
 
@@ -128,7 +154,11 @@ public abstract class AuthCache<V> {
      * @return isolated bus-cache key
      */
     private String key(final String key) {
-        return namespace + Assert.notBlank(key, "Authentication cache key must not be blank");
+        final String localKey = Assert.notBlank(key, "Authentication cache key must not be blank");
+        Assert.isFalse(
+                localKey.indexOf('{') >= 0 || localKey.indexOf('}') >= 0,
+                "Authentication cache key must not contain Redis hash-tag braces");
+        return namespace + localKey;
     }
 
     /**
@@ -137,8 +167,44 @@ public abstract class AuthCache<V> {
      * @param value value returned by the shared object cache
      * @return typed value or {@code null}
      */
-    private V value(final Object value) {
-        return (V) value;
+    private Envelope envelope(final ExpiringValue<V> value) {
+        Assert.notNull(value, "Authentication cache value must not be null");
+        Assert.isTrue(valueType.isInstance(value.value()), "Authentication cache entry has an incompatible type");
+        return new Envelope(Envelope.VERSION, namespace, valueType.getName(),
+                Assert.notNull(value, "Authentication cache value must not be null"));
+    }
+
+    private long ttl(final ExpiringValue<V> value) {
+        final long millis = Duration.between(clock.now(), value.expiresAt()).toMillis();
+        if (millis <= 0L) {
+            throw new ValidateException("Authentication cache value is already expired");
+        }
+        return millis;
+    }
+
+    private ExpiringValue<V> value(final Object stored) {
+        if (stored == null) {
+            return null;
+        }
+        if (!(stored instanceof Envelope envelope) || envelope.version() != Envelope.VERSION
+                || !namespace.equals(envelope.purpose()) || !valueType.getName().equals(envelope.valueType())
+                || !(envelope.value() instanceof ExpiringValue<?> expiring)
+                || !valueType.isInstance(expiring.value())) {
+            throw new ValidateException("Authentication cache value has an incompatible type or version");
+        }
+        return new ExpiringValue<>(valueType.cast(expiring.value()), expiring.expiresAt());
+    }
+
+    /**
+     * Stable versioned boundary stored through the bus-cache serializer.
+     */
+    public record Envelope(int version, String purpose, String valueType, Object value) implements Serializable {
+
+        @Serial
+        private static final long serialVersionUID = 1L;
+
+        private static final int VERSION = 1;
+
     }
 
 }

@@ -56,16 +56,6 @@ public record DingTalkOptions(Vendor.Id vendor, Vendor.Variant variant, String c
         implements VendorOptions<DingTalkOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<DingTalkOptions> type() {
-        return DingTalkOptions.class;
-    }
-
-    /**
      * Official organization type currently accepted by DingTalk delegated login.
      */
     private static final String MANAGEMENT = "management";
@@ -185,6 +175,16 @@ public record DingTalkOptions(Vendor.Id vendor, Vendor.Variant variant, String c
             Assert.notBlank(normalized.getOrNull(), label + " must not be blank");
         }
         return normalized;
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<DingTalkOptions> type() {
+        return DingTalkOptions.class;
     }
 
     /**

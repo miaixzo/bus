@@ -63,20 +63,9 @@ public record SamlServerOptions(String entityId, Endpoint singleSignOnServiceEnd
         Duration clockSkew) implements Options<SamlServerOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<SamlServerOptions> type() {
-        return SamlServerOptions.class;
-    }
-
-    /**
      * Maximum assertion lifetime permitted by the SAML Provider issuance policy.
      */
     private static final Duration MAXIMUM_ASSERTION_LIFETIME = Duration.ofHours(24);
-
     /**
      * Maximum clock difference permitted by the SAML Provider validation policy.
      */
@@ -187,6 +176,21 @@ public record SamlServerOptions(String entityId, Endpoint singleSignOnServiceEnd
             throw new ValidateException(label + " is outside the permitted SAML security interval");
         }
         return value;
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<SamlServerOptions> type() {
+        return SamlServerOptions.class;
+    }
+
+    @Override
+    public SamlServerOptions snapshot() {
+        return this;
     }
 
     /**

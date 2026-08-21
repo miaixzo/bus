@@ -54,16 +54,6 @@ public record PinterestOptions(Vendor.Id vendor, Vendor.Variant variant, String 
         implements VendorOptions<PinterestOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<PinterestOptions> type() {
-        return PinterestOptions.class;
-    }
-
-    /**
      * Validates and freezes one Pinterest registration without resolving its secret.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
@@ -131,6 +121,16 @@ public record PinterestOptions(Vendor.Id vendor, Vendor.Variant variant, String 
         } catch (URISyntaxException cause) {
             throw new ValidateException("Pinterest redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<PinterestOptions> type() {
+        return PinterestOptions.class;
     }
 
     /**

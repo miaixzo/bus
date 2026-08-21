@@ -22,16 +22,17 @@ package org.miaixz.bus.auth.resolver;
 import java.time.Instant;
 
 import org.miaixz.bus.auth.worker.CertificateLoader;
-import org.miaixz.bus.auth.worker.CertificateRecord;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
-/** Pure parser for project-loaded certificate material. */
+/**
+ * Pure parser for project-loaded certificate material.
+ */
 public final class CertificateParser {
 
-    public CertificateMaterial parse(final CertificateLoader.Request request, final CertificateRecord record) {
+    public CertificateMaterial parse(final CertificateLoader.Request request, final CertificateLoader.Record record) {
         final CertificateLoader.Request expected = Assert.notNull(request, "Certificate request must not be null");
-        final CertificateRecord loaded = Assert.notNull(record, "Loaded certificate record must not be null");
+        final CertificateLoader.Record loaded = Assert.notNull(record, "Loaded certificate record must not be null");
         if (!expected.issuer()
                 .equals(Assert.notBlank(loaded.issuer(), "Loaded certificate issuer must not be blank"))) {
             throw new ValidateException("Loaded certificate issuer does not match the requested issuer");

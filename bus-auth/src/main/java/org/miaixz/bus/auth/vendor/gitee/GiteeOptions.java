@@ -53,16 +53,6 @@ public record GiteeOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<GiteeOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<GiteeOptions> type() {
-        return GiteeOptions.class;
-    }
-
-    /**
      * Minimum identity scope required by the frozen Gitee login manifest.
      */
     private static final String USER_INFO = "user_info";
@@ -127,6 +117,16 @@ public record GiteeOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
         } catch (URISyntaxException cause) {
             throw new ValidateException("Gitee redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<GiteeOptions> type() {
+        return GiteeOptions.class;
     }
 
     /**

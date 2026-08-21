@@ -28,7 +28,7 @@ import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
- * Exposes direction-neutral SAML 2.0 operation keys and explicit Provider and Source driver factories.
+ * Exposes direction-neutral SAML 2.0 operation keys and explicit server and client driver factories.
  *
  * @author Kimi Liu
  */
@@ -66,19 +66,19 @@ public final class Saml {
     /**
      * Creates the server-side SAML driver.
      *
-     * @return new SAML Provider driver
+     * @return new SAML Server driver
      */
-    public static SourceDriver<SamlServerOptions> provider() {
-        return new SamlProviderDriver();
+    public static SourceDriver<SamlServerOptions> server() {
+        return new SamlServerDriver();
     }
 
     /**
      * Creates the client-side SAML driver.
      *
-     * @return new SAML Source driver
+     * @return new SAML Client driver
      */
-    public static SourceDriver<SamlClientOptions> source() {
-        return new SamlSourceDriver();
+    public static SourceDriver<SamlClientOptions> client() {
+        return new SamlClientDriver();
     }
 
     /**

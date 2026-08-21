@@ -61,20 +61,9 @@ public record OpenIdServerOptions(OAuth2ServerOptions oauth2Options, Optional<En
         String idTokenSigningKeyId, Duration idTokenLifetime) implements Options<OpenIdServerOptions> {
 
     /**
-     * Returns this immutable configuration implementation type.
-     *
-     * @return exact Options implementation class
-     */
-    @Override
-    public Class<OpenIdServerOptions> type() {
-        return OpenIdServerOptions.class;
-    }
-
-    /**
      * Minimum whole-second lifetime representable as a JWT NumericDate interval.
      */
     private static final Duration MINIMUM_ID_TOKEN_LIFETIME = Duration.ofSeconds(1);
-
     /**
      * Maximum ID Token lifetime permitted by the Provider security policy.
      */
@@ -192,6 +181,21 @@ public record OpenIdServerOptions(OAuth2ServerOptions oauth2Options, Optional<En
      */
     private static String present(final Optional<Endpoint> endpoint) {
         return endpoint.isPresent() ? "[CONFIGURED]" : "[ABSENT]";
+    }
+
+    /**
+     * Returns this immutable configuration implementation type.
+     *
+     * @return exact Options implementation class
+     */
+    @Override
+    public Class<OpenIdServerOptions> type() {
+        return OpenIdServerOptions.class;
+    }
+
+    @Override
+    public OpenIdServerOptions snapshot() {
+        return this;
     }
 
     /**
