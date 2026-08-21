@@ -50,7 +50,7 @@ public class Config implements Serializable {
     }
 
     @Serial
-    private static final long serialVersionUID = -1L;
+    private static final long serialVersionUID = 2805231869025L;
 
     /**
      * The name of the organization.

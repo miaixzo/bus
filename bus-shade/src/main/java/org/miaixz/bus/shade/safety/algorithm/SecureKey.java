@@ -31,7 +31,7 @@ import java.io.Serializable;
 public abstract class SecureKey implements Key, Serializable {
 
     @Serial
-    private static final long serialVersionUID = -1L;
+    private static final long serialVersionUID = 2835089216305L;
 
     /**
      * The name of the cryptographic algorithm used with this key.

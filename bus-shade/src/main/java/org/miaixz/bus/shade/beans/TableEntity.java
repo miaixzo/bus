@@ -42,7 +42,7 @@ import org.miaixz.bus.logger.Logger;
 public class TableEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = -1L;
+    private static final long serialVersionUID = 2823816590283L;
 
     /**
      * The project name.
