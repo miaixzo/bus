@@ -27,13 +27,14 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationResponseDecoder;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -73,12 +74,12 @@ public final class WeiboSourceAdapter implements VendorAdapter {
     /**
      * Maximum bounded Weibo response size.
      */
-    private static final long MAXIMUM_RESPONSE_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_RESPONSE_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum accepted Weibo JSON nesting.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 32;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._32;
 
     /**
      * Registered Source identifier copied into verified identities.
@@ -332,8 +333,9 @@ public final class WeiboSourceAdapter implements VendorAdapter {
     private static <T> Outcome<T> oauthError(final AuthorizationResponseDecoder.Error error) {
         return Outcome.rejected(
                 new Outcome.Failure(ErrorCode._400, "Weibo authorization endpoint returned a standard error",
-                        new JsonValue.ObjectValue(
-                                Map.of("oauth_error", new JsonValue.StringValue(error.response().error().value())))));
+                        new JsonValue.ObjectValue(Map.of(
+                                Builder.OAUTH_ERROR,
+                                new JsonValue.StringValue(error.response().error().value())))));
     }
 
     /**
@@ -385,7 +387,7 @@ public final class WeiboSourceAdapter implements VendorAdapter {
         try {
             return new String(material);
         } finally {
-            Arrays.fill(material, '\0');
+            Arrays.fill(material, Symbol.C_NUL);
         }
     }
 
@@ -445,12 +447,12 @@ public final class WeiboSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("Weibo capability is not declared"));
         }
-        if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -809,8 +811,8 @@ public final class WeiboSourceAdapter implements VendorAdapter {
     private CompletionStage<Outcome<SecretLease>> resolve(final Context context, final Timeout.Budget timeout) {
         try {
             final CompletionStage<Outcome<SecretLease>> stage = Outcome.mapStage(
-                    () -> services.secretLoader().load(options.credential(), context, timeout),
-                    loaded -> services.secretParser().parse(options.credential(), loaded));
+                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
             if (stage == null) {
                 return completed(failed(ErrorCode._502, "Weibo client-secret loader returned no stage"));
             }

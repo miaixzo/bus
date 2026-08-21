@@ -19,19 +19,18 @@
 */
 package org.miaixz.bus.auth;
 
-import org.miaixz.bus.auth.registry.RegistryIssue;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.auth.registry.SnapshotFault;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
  * Provides read-only access to the currently committed registration state.
  * <p>
  * The {@link #snapshot()} method exposes detached framework registration records. Implementations atomically replace
- * immutable compiled views and preserve the previous view when validation or compilation fails. Capability execution
- * belongs exclusively to {@link Authenticator}.
+ * immutable Snapshot Registries and preserve the previous Registry when validation or compilation fails. Capability
+ * execution belongs exclusively to {@link Dispatcher}.
  * </p>
  *
  * @author Kimi Liu
@@ -39,7 +38,7 @@ import org.miaixz.bus.core.lang.Assert;
 public interface Registry {
 
     /**
-     * Returns the complete registration snapshot associated with the committed Registry view.
+     * Returns the complete registration snapshot associated with the currently committed Registry.
      * <p>
      * The snapshot owns an unmodifiable record list. Each record returns a detached framework entity copy.
      * </p>
@@ -49,7 +48,7 @@ public interface Registry {
     Snapshot snapshot();
 
     /**
-     * Returns the revision of the currently committed Registry view.
+     * Returns the revision of the currently committed Registry.
      *
      * @return current Registry snapshot revision
      */
@@ -154,32 +153,32 @@ public interface Registry {
     }
 
     /**
-     * Carries immutable processing issues for one attempted Registry snapshot.
+     * Carries immutable faults for one attempted Registry snapshot.
      * <p>
-     * A successful validation and commit is represented by an empty issue list for the committed revision.
+     * A successful validation and commit is represented by an empty fault list for the committed revision.
      * </p>
      *
      * @param revision attempted snapshot revision
-     * @param issues   ordered safe issues that identify their resource and processing stage
+     * @param faults   ordered safe faults that identify their resource and processing stage
      * @author Kimi Liu
      */
-    record Report(Revision revision, List<RegistryIssue> issues) {
+    record Report(Revision revision, List<SnapshotFault> faults) {
 
         /**
          * Creates an immutable snapshot-processing report.
          *
          * @param revision attempted snapshot revision
-         * @param issues   ordered Registry issues
-         * @throws IllegalArgumentException if a component or issue is {@code null}
+         * @param faults   ordered Snapshot faults
+         * @throws IllegalArgumentException if a component or fault is {@code null}
          */
         public Report {
             Assert.notNull(revision, "Registry report revision must not be null");
-            Assert.notNull(issues, "Registry report issues must not be null");
-            final List<RegistryIssue> copy = new ArrayList<>(issues.size());
-            for (RegistryIssue issue : issues) {
-                copy.add(Assert.notNull(issue, "Registry report issue must not be null"));
+            Assert.notNull(faults, "Registry report faults must not be null");
+            final List<SnapshotFault> copy = new ArrayList<>(faults.size());
+            for (SnapshotFault fault : faults) {
+                copy.add(Assert.notNull(fault, "Registry report fault must not be null"));
             }
-            issues = List.copyOf(copy);
+            faults = List.copyOf(copy);
         }
 
     }

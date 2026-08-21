@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.auth.resolver;
 
+import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.worker.ResourceLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -28,12 +29,30 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  */
 public final class ResourceParser {
 
-    public ProtectedResource parse(final ResourceLoader.Request request, final ResourceLoader.Record record) {
+    /** Creates a stateless protected-resource parser. */
+    public ResourceParser() {
+    }
+
+    /**
+     * Validates Source ownership and the exact resource lookup coordinates.
+     *
+     * @param registration exact Source registration that requested the resource
+     * @param request      exact resource lookup request
+     * @param record       project-loaded resource record
+     * @return validated immutable protected-resource metadata
+     */
+    public ProtectedResource parse(
+            final Registration.SourceEntry registration,
+            final ResourceLoader.Request request,
+            final ResourceLoader.Record record) {
+        final String sourceId = Assert.notNull(registration, "Resource Source registration must not be null").resource()
+                .getId();
         final ResourceLoader.Request expected = Assert.notNull(request, "Resource request must not be null");
         final ResourceLoader.Record loaded = Assert.notNull(record, "Loaded resource record must not be null");
-        if (!expected.namespaceId().equals(loaded.namespaceId())) {
-            throw new ValidateException("Loaded resource does not belong to the requested namespace");
+        if (!sourceId.equals(loaded.sourceId()) || !expected.equals(loaded.request())) {
+            throw new ValidateException("Loaded resource does not belong to the requested Source and request");
         }
         return new ProtectedResource(loaded.id(), loaded.audience(), loaded.scopes(), loaded.attributes());
     }
+
 }

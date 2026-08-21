@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
@@ -96,11 +97,12 @@ public final class MetadataService {
                                     "SAML Metadata publication has no remaining time budget",
                                     new JsonValue.ObjectValue(Map.of()))));
         }
-        final CertificateLoader.Request query = new CertificateLoader.Request(options.entityId(), "signing",
+        final CertificateLoader.Request query = new CertificateLoader.Request(options.entityId(), Builder.SIGNING,
                 timeout.clock().now());
-        return Outcome.mapStage(
-                        () -> services.certificateLoader().load(query, context, timeout),
-                        loaded -> services.certificateParser().parse(query, loaded))
+        return Outcome
+                .mapStage(
+                        () -> services.certificateLoader().load(services.registration(), query, context, timeout),
+                        loaded -> services.certificateParser().parse(services.registration(), query, loaded))
                 .thenApply(outcome -> switch (outcome) {
                     case Outcome.Succeeded<CertificateMaterial> success -> Outcome
                             .succeeded(descriptor(success.value()));

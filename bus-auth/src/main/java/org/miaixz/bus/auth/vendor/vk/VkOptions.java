@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.protocol.oauth2.Scope;
 import org.miaixz.bus.auth.vendor.Vendor;
@@ -155,8 +156,8 @@ public record VkOptions(Vendor.Id vendor, Vendor.Variant variant, String clientI
      */
     @Override
     public String toString() {
-        return "VkOptions[vendor=" + vendor + ", variant=" + variant
-                + ", clientId=[REDACTED], credential=[REDACTED], redirectUri=[REDACTED], scopes=" + scopes + "]";
+        return "VkOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS + scopes
+                + "]";
     }
 
 }

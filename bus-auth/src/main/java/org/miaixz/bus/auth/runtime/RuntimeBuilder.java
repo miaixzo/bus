@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.auth.Authenticator;
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Dispatcher;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.ldap.Ldap;
@@ -33,10 +33,8 @@ import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.auth.protocol.radius.Radius;
 import org.miaixz.bus.auth.protocol.saml.Saml;
 import org.miaixz.bus.auth.protocol.scim.Scim;
-import org.miaixz.bus.auth.registry.AtomicRegistryState;
-import org.miaixz.bus.auth.registry.DefaultRegistry;
-import org.miaixz.bus.auth.registry.RegistrationValidator;
-import org.miaixz.bus.auth.registry.RegistryView;
+import org.miaixz.bus.auth.registry.CurrentRegistry;
+import org.miaixz.bus.auth.registry.SnapshotValidator;
 import org.miaixz.bus.auth.registry.SourceValidator;
 import org.miaixz.bus.auth.source.DriverDirectory;
 import org.miaixz.bus.auth.source.SourceDriver;
@@ -115,9 +113,7 @@ public final class RuntimeBuilder {
      * @return builder with the complete built-in implementation set
      * @throws IllegalArgumentException if an argument is {@code null} or a built-in contribution is invalid
      */
-    public static RuntimeBuilder standard(
-            final RuntimeServices services,
-            final RegistrationLoader registrationLoader) {
+    public static RuntimeBuilder standard(final RuntimeServices services, final RegistrationLoader registrationLoader) {
         final RuntimeBuilder builder = new RuntimeBuilder(services, registrationLoader);
         final VendorModule vendors = Vendor.module();
         builder.sources(
@@ -222,10 +218,10 @@ public final class RuntimeBuilder {
         Assert.notNull(timeout, "Runtime startup budget must not be null");
         final RuntimeManager runtime = assemble();
         return runtime.reload(context, timeout).thenApply(report -> {
-            if (!report.issues().isEmpty()) {
+            if (!report.faults().isEmpty()) {
                 runtime.close();
                 throw new ValidateException("Initial authentication registration snapshot was rejected: "
-                        + report.issues().size() + " issue(s)");
+                        + report.faults().size() + " fault(s)");
             }
             return runtime;
         }).whenComplete((started, failure) -> {
@@ -262,16 +258,16 @@ public final class RuntimeBuilder {
         final SnapshotCompiler snapshotCompiler = new SnapshotCompiler(directory, services);
         final Registry.Revision revision = new Registry.Revision(0L);
         final Registry.Snapshot snapshot = new Registry.Snapshot(revision, List.of());
-        final RegistryView initial = snapshotCompiler.compile(snapshot);
-        final AtomicRegistryState state = new AtomicRegistryState(initial);
+        final RuntimeContainer initial = snapshotCompiler.compile(snapshot);
+        final RuntimeContainer.Cell containers = new RuntimeContainer.Cell(initial);
         final RuntimeLifecycle lifecycle = new RuntimeLifecycle();
-        final Registry registry = new DefaultRegistry(state);
-        final Authenticator authenticator = new DefaultAuthenticator(state, lifecycle);
+        final Registry registry = new CurrentRegistry(() -> containers.current().registry());
+        final Dispatcher dispatcher = new DefaultDispatcher(containers, lifecycle);
         final RegistryNotifier notifier = new RegistryNotifier(List.copyOf(listeners), services.executor());
         final RuntimeReloadService reloadService = new RuntimeReloadService(registrationLoader,
-                new RegistrationValidator(new SourceValidator(directory)), snapshotCompiler, state, notifier,
+                new SnapshotValidator(new SourceValidator(directory)), snapshotCompiler, containers, notifier,
                 lifecycle);
-        return new RuntimeManager(registry, authenticator, reloadService, descriptor, lifecycle, state);
+        return new RuntimeManager(registry, dispatcher, reloadService, descriptor, lifecycle, containers);
     }
 
     /**

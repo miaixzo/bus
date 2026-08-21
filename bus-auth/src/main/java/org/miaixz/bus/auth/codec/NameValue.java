@@ -17,19 +17,34 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.auth.registry;
+package org.miaixz.bus.auth.codec;
 
-import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * Carries one direct entity invariant without assigning registration ownership or processing stage.
+ * Represents one decoded text name/value pair in an ordered form, URI query, or authentication-header parameter
+ * sequence.
+ * <p>
+ * Empty names and values remain distinct from missing pairs, and duplicate names remain separate list entries. This
+ * transport value does not interpret OAuth, OpenID Connect, SAML, SCIM, or Vendor parameter semantics.
+ * </p>
+ *
+ * @param name  decoded parameter name, which may be empty
+ * @param value decoded parameter value, which may be empty
+ * @author Kimi Liu
  */
-record EntityViolation(String field, Errors error, String description) {
+public record NameValue(String name, String value) {
 
-    EntityViolation {
-        Assert.notBlank(field, "Entity violation field must not be blank");
-        Assert.notNull(error, "Entity violation error must not be null");
-        Assert.notBlank(description, "Entity violation description must not be blank");
+    /**
+     * Creates one decoded name/value pair without normalizing empty text.
+     *
+     * @param name  decoded parameter name
+     * @param value decoded parameter value
+     * @throws IllegalArgumentException if either component is {@code null}
+     */
+    public NameValue {
+        Assert.notNull(name, "Codec name must not be null");
+        Assert.notNull(value, "Codec value must not be null");
     }
+
 }

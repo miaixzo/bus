@@ -24,6 +24,7 @@ import java.util.Locale;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -193,19 +194,19 @@ public record PatchOperation(Op op, Optional<Path> path, Optional<Value> value) 
          */
         public Path {
             value = Assert.notBlank(value, "SCIM PATCH path must not be blank");
-            final int open = value.indexOf('[');
+            final int open = value.indexOf(Symbol.C_BRACKET_LEFT);
             if (open < 0) {
                 Filter.AttributePath.parse(value);
             } else {
-                final int close = value.lastIndexOf(']');
-                if (open == 0 || close <= open + 1 || value.indexOf('[', open + 1) >= 0
-                        || value.indexOf(']', close + 1) >= 0) {
+                final int close = value.lastIndexOf(Symbol.C_BRACKET_RIGHT);
+                if (open == 0 || close <= open + 1 || value.indexOf(Symbol.C_BRACKET_LEFT, open + 1) >= 0
+                        || value.indexOf(Symbol.C_BRACKET_RIGHT, close + 1) >= 0) {
                     throw new ValidateException("SCIM PATCH valuePath has invalid bracket structure");
                 }
                 Filter.AttributePath.parse(value.substring(0, open));
                 Assert.notBlank(value.substring(open + 1, close), "SCIM PATCH valuePath filter must not be blank");
                 if (close + 1 < value.length()) {
-                    if (value.charAt(close + 1) != '.') {
+                    if (value.charAt(close + 1) != Symbol.C_DOT) {
                         throw new ValidateException("SCIM PATCH valuePath suffix must be a sub-attribute");
                     }
                     Filter.AttributePath.parse(value.substring(close + 2));

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.auth.resolver;
 
+import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.Subject;
 import org.miaixz.bus.auth.worker.AttributeLoader;
 import org.miaixz.bus.core.lang.Assert;
@@ -30,13 +31,36 @@ import org.miaixz.bus.extra.json.JsonValue;
  */
 public final class AttributeParser {
 
-    public JsonValue.ObjectValue parse(final Subject.Key subject, final AttributeLoader.Record record) {
+    /**
+     * Creates a stateless subject-attribute parser.
+     */
+    public AttributeParser() {
+    }
+
+    /**
+     * Validates Source and subject ownership and detaches the returned attribute object.
+     *
+     * @param registration exact Source registration that requested the data
+     * @param subject      exact requested subject key
+     * @param record       project-loaded attribute record
+     * @return detached validated attributes
+     */
+    public JsonValue.ObjectValue parse(
+            final Registration.SourceEntry registration,
+            final Subject.Key subject,
+            final AttributeLoader.Record record) {
+        final String sourceId = Assert.notNull(registration, "Attribute Source registration must not be null")
+                .resource().getId();
         final Subject.Key expected = Assert.notNull(subject, "Subject key must not be null");
         final AttributeLoader.Record loaded = Assert.notNull(record, "Loaded attribute record must not be null");
+        if (!sourceId.equals(loaded.sourceId())) {
+            throw new ValidateException("Loaded attributes do not belong to the requested Source");
+        }
         if (!expected.equals(loaded.subject())) {
             throw new ValidateException("Loaded attributes do not belong to the requested subject");
         }
         final JsonValue.ObjectValue values = Assert.notNull(loaded.values(), "Subject attributes must not be null");
         return new JsonValue.ObjectValue(values.values());
     }
+
 }

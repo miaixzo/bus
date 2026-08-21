@@ -26,10 +26,11 @@ import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.auth.protocol.oidc.client.OpenIdClientScheme;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorTargets;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -52,14 +53,14 @@ public final class AliyunManifest implements VariantManifest<AliyunOptions> {
     /**
      * Internal identifier of the single Alibaba Cloud OpenID Connect variant.
      */
-    public static final Vendor.Variant DEFAULT = new Vendor.Variant("default");
+    public static final Vendor.Variant DEFAULT = new Vendor.Variant(Normal.DEFAULT);
 
     /**
      * Exact public operations supported by the compiled Alibaba Cloud Source.
      */
     private static final Capability.Manifest CAPABILITIES = new Capability.Manifest(List.of(
-            SourceAuthentication.initiate(Set.of(Capability.Interaction.REDIRECT)),
-            SourceAuthentication.complete(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT)),
             OpenIdClientScheme.AUTHENTICATION,
             OpenIdClientScheme.TOKEN,
             OpenIdClientScheme.REVOCATION,
@@ -71,8 +72,7 @@ public final class AliyunManifest implements VariantManifest<AliyunOptions> {
      * Complete immutable endpoint, client-policy, scope, capability, and form manifest for the default variant.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OIDC,
-            VariantManifest.Pkce.REQUIRED,
-            List.of(OpenIdConnect.Scopes.OPENID, OpenIdConnect.Scopes.PROFILE),
+            VariantManifest.Pkce.REQUIRED, List.of(OpenIdConnect.Scopes.OPENID, OpenIdConnect.Scopes.PROFILE),
             new VendorTargets(Optional.of(
                     fixed("https://signin.aliyun.com/oauth2/v1/auth", Http.Method.GET, Endpoint.Authentication.NONE)),
                     Optional.of(

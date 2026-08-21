@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.Assert;
 public record ExpiringValue<T>(T value, Instant expiresAt) implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2852230011506L;
 
     /**
      * Creates an expiring immutable state value.

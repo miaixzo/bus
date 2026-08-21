@@ -22,6 +22,7 @@ package org.miaixz.bus.auth.shared;
 import java.util.Arrays;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
@@ -70,7 +71,7 @@ public final class SecretLease implements AutoCloseable {
     @Override
     public synchronized void close() {
         if (material != null) {
-            Arrays.fill(material, '\0');
+            Arrays.fill(material, Symbol.C_NUL);
             material = null;
         }
     }

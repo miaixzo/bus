@@ -22,14 +22,16 @@ package org.miaixz.bus.auth.vendor.ximalaya;
 import java.util.List;
 import java.util.Set;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorDeviation;
 import org.miaixz.bus.auth.vendor.VendorTargets;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -58,7 +60,7 @@ public final class XimalayaManifest implements VariantManifest<XimalayaOptions> 
     /**
      * Sole Ximalaya browser variant identifier.
      */
-    public static final Vendor.Variant DEFAULT = new Vendor.Variant("default");
+    public static final Vendor.Variant DEFAULT = new Vendor.Variant(Normal.DEFAULT);
     /**
      * Standard client-secret form authentication used by the token endpoint.
      */
@@ -72,8 +74,8 @@ public final class XimalayaManifest implements VariantManifest<XimalayaOptions> 
      * Exact Source authentication and OAuth authorization capabilities.
      */
     private static final Capability.Manifest CAPABILITIES = new Capability.Manifest(List.of(
-            SourceAuthentication.initiate(Set.of(Capability.Interaction.REDIRECT)),
-            SourceAuthentication.complete(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT)),
             OAuth2ClientScheme.AUTHORIZATION));
     /**
      * Exact Ximalaya wire deviations confined to its private adapter.
@@ -96,7 +98,7 @@ public final class XimalayaManifest implements VariantManifest<XimalayaOptions> 
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     "device_id",
                     null,
@@ -104,7 +106,7 @@ public final class XimalayaManifest implements VariantManifest<XimalayaOptions> 
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.FORM,
                     "device_id",
                     null,
@@ -112,7 +114,7 @@ public final class XimalayaManifest implements VariantManifest<XimalayaOptions> 
                     Http.Method.POST,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.RESPONSE,
                     "access_token/refresh_token/expires_in/uid/device_id/scope without token_type",
                     "OAuth token response",
@@ -120,7 +122,7 @@ public final class XimalayaManifest implements VariantManifest<XimalayaOptions> 
                     Http.Method.POST,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     "access_token/app_key/client_os_type/device_id/pack_id/sig",
                     "Bearer resource request",
@@ -128,7 +130,7 @@ public final class XimalayaManifest implements VariantManifest<XimalayaOptions> 
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.RESPONSE,
                     "errcode/error_no/error_desc or error_no/error_code/error_desc/service",
                     "OAuth error response",
@@ -136,7 +138,7 @@ public final class XimalayaManifest implements VariantManifest<XimalayaOptions> 
                     Http.Method.POST,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.RESPONSE,
                     "id/nickname/avatar_url",
                     "External identity",

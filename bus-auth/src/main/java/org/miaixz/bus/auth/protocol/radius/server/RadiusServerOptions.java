@@ -24,6 +24,7 @@ import java.util.Set;
 import org.miaixz.bus.auth.Options;
 import org.miaixz.bus.auth.protocol.radius.RadiusPacket;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Defines the bounded wire versions and security behavior of one server-role RADIUS Source registration.
@@ -45,11 +46,11 @@ public record RadiusServerOptions(Set<RadiusPacket.Version> versions, boolean ea
     /**
      * Smallest valid RADIUS packet containing only the fixed header.
      */
-    public static final int MINIMUM_PACKET_BYTES = 20;
+    public static final int MINIMUM_PACKET_BYTES = Normal._20;
     /**
      * RFC 2865 default maximum packet size enforced by the packet codecs.
      */
-    public static final int MAXIMUM_PACKET_BYTES = 4096;
+    public static final int MAXIMUM_PACKET_BYTES = Normal._4096;
 
     /**
      * Validates and freezes the RADIUS Provider options.

@@ -30,6 +30,7 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.saml.*;
+import org.miaixz.bus.auth.protocol.saml.Saml;
 import org.miaixz.bus.auth.protocol.saml.codec.SamlMessageCodec;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
 import org.miaixz.bus.auth.source.DriverServices;
@@ -56,12 +57,12 @@ public final class AssertionIssuer {
     /**
      * Persistent NameID format emitted by the identity-provider assertion issuer.
      */
-    private static final String PERSISTENT_NAME_ID = "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent";
+    private static final String PERSISTENT_NAME_ID = Saml.NameIdFormats.PERSISTENT;
 
     /**
      * Entity NameID format used by SAML Issuer values.
      */
-    private static final String ENTITY_NAME_ID = "urn:oasis:names:tc:SAML:2.0:nameid-format:entity";
+    private static final String ENTITY_NAME_ID = Saml.NameIdFormats.ENTITY;
 
     /**
      * Unspecified attribute-name format used when external attributes do not declare another SAML format.
@@ -150,9 +151,10 @@ public final class AssertionIssuer {
                                     ErrorCode._408,
                                     "SAML assertion issuance lacks authenticated context or remaining time")));
         }
-        return Outcome.mapStage(
-                        () -> services.attributeLoader().load(subject.key(), context, timeout),
-                        loaded -> services.attributeParser().parse(subject.key(), loaded))
+        return Outcome
+                .mapStage(
+                        () -> services.attributeLoader().load(services.registration(), subject.key(), context, timeout),
+                        loaded -> services.attributeParser().parse(services.registration(), subject.key(), loaded))
                 .thenApply(outcome -> switch (outcome) {
                     case Outcome.Succeeded<JsonValue.ObjectValue> success -> Outcome.succeeded(
                             response(request, client, subject, authentication, success.value(), context, timeout));

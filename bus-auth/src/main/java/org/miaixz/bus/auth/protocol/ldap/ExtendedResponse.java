@@ -40,7 +40,7 @@ public record ExtendedResponse(LdapResult result, Optional<String> responseName,
     /**
      * RFC 4511 Notice of Disconnection unsolicited-notification object identifier.
      */
-    public static final String NOTICE_OF_DISCONNECTION_OID = "1.3.6.1.4.1.1466.20036";
+    public static final String NOTICE_OF_DISCONNECTION_OID = Ldap.NOTICE_OF_DISCONNECTION_OID;
 
     /**
      * Creates an immutable extended response.

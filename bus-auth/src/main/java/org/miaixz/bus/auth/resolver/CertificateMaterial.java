@@ -26,9 +26,15 @@ import org.miaixz.bus.crypto.builtin.TrustRootIndex;
 
 /**
  * Parsed certificate material with an explicit trust-root boundary.
+ *
+ * @param chain      ordered certificate chain beginning with the leaf certificate
+ * @param trustRoots explicit trust anchors used to validate the chain
  */
 public record CertificateMaterial(CertificateChain chain, TrustRootIndex trustRoots) {
 
+    /**
+     * Validates the non-empty certificate chain and explicit trust-root boundary.
+     */
     public CertificateMaterial {
         Assert.notNull(chain, "Certificate chain must not be null");
         Assert.notNull(trustRoots, "Certificate trust roots must not be null");
@@ -36,4 +42,5 @@ public record CertificateMaterial(CertificateChain chain, TrustRootIndex trustRo
             throw new ValidateException("Certificate chain must contain a leaf certificate");
         }
     }
+
 }

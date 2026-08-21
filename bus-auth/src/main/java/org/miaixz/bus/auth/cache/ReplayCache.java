@@ -46,17 +46,31 @@ public final class ReplayCache extends AuthCache<String> {
     /**
      * Creates a replay-marker cache view backed entirely by bus-cache.
      *
-     * @param cache shared bus-cache backend
+     * @param cache      shared bus-cache backend
+     * @param deployment deployment-unique cache namespace
+     * @param clock      shared runtime clock used to derive entry lifetimes
      */
-    public ReplayCache(final CacheX<String, Object> cache, final String deployment,
-            final Clock clock) {
+    public ReplayCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
         super(cache, deployment, PURPOSE, String.class, clock);
     }
 
+    /**
+     * Records a replay marker when absent.
+     *
+     * @param key   replay digest
+     * @param value marker and expiry
+     * @return creation stage
+     */
     public CompletionStage<Boolean> mark(final String key, final ExpiringValue<String> value) {
         return super.doIssue(key, value);
     }
 
+    /**
+     * Finds an active replay marker.
+     *
+     * @param key replay digest
+     * @return stored marker stage
+     */
     public CompletionStage<ExpiringValue<String>> find(final String key) {
         return super.doFind(key);
     }

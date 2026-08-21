@@ -53,6 +53,7 @@ import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.worker.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
@@ -125,12 +126,12 @@ public final class SamlDecryptionService {
     /**
      * AES-GCM initialization vector length defined by XML Encryption 1.1.
      */
-    private static final int GCM_IV_BYTES = 12;
+    private static final int GCM_IV_BYTES = Normal._12;
 
     /**
      * AES-GCM authentication tag length defined by XML Encryption 1.1.
      */
-    private static final int GCM_TAG_BITS = 128;
+    private static final int GCM_TAG_BITS = Normal._128;
 
     /**
      * External private-key loader and framework-owned key parser.
@@ -161,9 +162,8 @@ public final class SamlDecryptionService {
      * @param securityBaseline   shared SAML security baseline
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public SamlDecryptionService(final DriverServices services,
-            final SamlMessageCodec messageCodec, final SamlSignatureValidator signatureValidator,
-            final SecurityBaseline securityBaseline) {
+    public SamlDecryptionService(final DriverServices services, final SamlMessageCodec messageCodec,
+            final SamlSignatureValidator signatureValidator, final SecurityBaseline securityBaseline) {
         this.services = Assert.notNull(services, "SAML execution services must not be null");
         this.messageCodec = Assert.notNull(messageCodec, "SAML message codec must not be null");
         this.signatureValidator = Assert.notNull(signatureValidator, "SAML signature validator must not be null");
@@ -558,8 +558,8 @@ public final class SamlDecryptionService {
         final KeyLoader.Request query = new KeyLoader.Request(options.entityId(), Optional.of(payload.keyName()),
                 "decryption", payload.keyAlgorithm(), timeout.clock().now());
         final CompletionStage<Outcome<KeyMaterial>> resolution = Outcome.mapStage(
-                () -> services.keyLoader().load(query, context, timeout),
-                loaded -> services.keyParser().parse(query, loaded));
+                () -> services.keyLoader().load(services.registration(), query, context, timeout),
+                loaded -> services.keyParser().parse(services.registration(), query, loaded));
         if (resolution == null)
             return completed(failed("SAML decryption key loader returned no result stage"));
         return resolution

@@ -26,7 +26,7 @@ import java.util.Set;
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.Conformance;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.net.Protocol;
 
@@ -52,13 +52,14 @@ public final class VendorScheme implements Scheme<VendorOptions<?>> {
      * Capabilities common to every Vendor Source before a concrete variant is selected.
      */
     private static final Capability.Manifest CAPABILITIES = new Capability.Manifest(
-            List.of(SourceAuthentication.INITIATE, SourceAuthentication.COMPLETE));
+            List.of(SourceWorkflow.INITIATE, SourceWorkflow.COMPLETE));
 
     /**
      * Empty aggregate form because concrete option fields depend on the selected platform options type.
      */
     private static final Form FORM = new Form(List.of());
 
+    /** Immutable protocols represented by all assembled Vendor variants. */
     private final Set<Protocol> protocols;
 
     /**

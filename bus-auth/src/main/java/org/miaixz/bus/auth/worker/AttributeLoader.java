@@ -23,6 +23,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
+import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.Subject;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -33,11 +34,30 @@ import org.miaixz.bus.extra.json.JsonValue;
 @FunctionalInterface
 public interface AttributeLoader {
 
-    CompletionStage<Outcome<Record>> load(Subject.Key subject, Context context, Timeout.Budget timeout);
+    /**
+     * Loads subject attributes within the exact Source registration scope.
+     *
+     * @param registration exact Source registration requesting the data
+     * @param subject      exact external subject key
+     * @param context      immutable non-secret invocation context
+     * @param timeout      shared end-to-end operation budget
+     * @return asynchronous project loading outcome
+     */
+    CompletionStage<Outcome<Record>> load(
+            Registration.SourceEntry registration,
+            Subject.Key subject,
+            Context context,
+            Timeout.Budget timeout);
 
     /**
      * Loaded subject attributes awaiting framework parsing.
+     *
+     * @param sourceId exact Source identifier that owns the returned data
+     * @param subject  exact subject key resolved by the project
+     * @param values   project-provided attribute object
      */
-    record Record(Subject.Key subject, JsonValue.ObjectValue values) {
+    record Record(String sourceId, Subject.Key subject, JsonValue.ObjectValue values) {
+
     }
+
 }

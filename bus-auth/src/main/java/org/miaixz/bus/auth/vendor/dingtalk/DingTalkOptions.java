@@ -22,6 +22,7 @@ package org.miaixz.bus.auth.vendor.dingtalk;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorOptions;
@@ -194,12 +195,11 @@ public record DingTalkOptions(Vendor.Id vendor, Vendor.Variant variant, String c
      */
     @Override
     public String toString() {
-        return "DingTalkOptions[vendor=" + vendor + ", variant=" + variant
-                + ", clientId=[REDACTED], credential=[REDACTED], redirectUri=[REDACTED], scopes=" + scopes
-                + ", orgType=" + (orgType.isPresent() ? "[PRESENT]" : "[EMPTY]") + ", corpId="
-                + (corpId.isPresent() ? "[REDACTED]" : "[EMPTY]") + ", exclusiveLogin=" + exclusiveLogin
-                + ", exclusiveCorpId=" + (exclusiveCorpId.isPresent() ? "[REDACTED]" : "[EMPTY]")
-                + Symbol.C_BRACKET_RIGHT;
+        return "DingTalkOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS + scopes
+                + ", orgType=" + (orgType.isPresent() ? "[PRESENT]" : Builder.EMPTY_VALUE) + ", corpId="
+                + (corpId.isPresent() ? Builder.REDACTED_VALUE : Builder.EMPTY_VALUE) + ", exclusiveLogin="
+                + exclusiveLogin + ", exclusiveCorpId="
+                + (exclusiveCorpId.isPresent() ? Builder.REDACTED_VALUE : Builder.EMPTY_VALUE) + Symbol.C_BRACKET_RIGHT;
     }
 
 }

@@ -21,6 +21,7 @@ package org.miaixz.bus.auth.protocol.saml;
 
 import java.util.List;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -75,7 +76,7 @@ public record KeyDescriptor(Optional<Use> use, KeyInfo keyInfo, List<EncryptionM
         /**
          * Key material used for XML signatures.
          */
-        SIGNING("signing"),
+        SIGNING(Builder.SIGNING),
 
         /**
          * Key material used for XML encryption.

@@ -28,8 +28,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.guard.IssuerValidator;
 import org.miaixz.bus.auth.guard.TimeGuard;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -47,7 +48,7 @@ import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -59,6 +60,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -94,12 +96,12 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
     /**
      * Maximum bounded JSON document accepted from a LinkedIn endpoint.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum JSON nesting admitted for private LinkedIn wire documents.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 16;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._16;
 
     /**
      * Standard and LinkedIn token errors classified as request rejection.
@@ -460,7 +462,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
         try {
             return new String(material);
         } finally {
-            Arrays.fill(material, '\0');
+            Arrays.fill(material, Symbol.C_NUL);
         }
     }
 
@@ -594,12 +596,12 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return missing();
         }
-        if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -765,8 +767,8 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(options.credential(), context, timeout),
-                    loaded -> services.secretParser().parse(options.credential(), loaded));
+                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "LinkedIn client-secret resolution failed"));
         }
@@ -827,12 +829,12 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
             }
             body = formCodec.encode(
                     List.of(
-                            new Parameter(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()),
-                            new Parameter(OAuth2.Parameters.CODE,
+                            new NameValue(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()),
+                            new NameValue(OAuth2.Parameters.CODE,
                                     Assert.notBlank(code, "LinkedIn authorization code must not be blank")),
-                            new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()),
-                            new Parameter(OAuth2.Parameters.CLIENT_SECRET, secret(secret)),
-                            new Parameter(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull())));
+                            new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()),
+                            new NameValue(OAuth2.Parameters.CLIENT_SECRET, secret(secret)),
+                            new NameValue(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull())));
             final var endpoint = variant.targets().resolve(options).token().getOrNull();
             try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
                     .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
@@ -1019,10 +1021,10 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
         final Jwk selected = jwkSelector.requireUnique(
                 keys,
                 new JwkSelector.Selection(Optional.of(keyId), JwaAlgorithm.RS256.name(), JwaAlgorithm.Kind.SIGNATURE,
-                        Optional.of("sig"), Optional.of("verify"), Optional.of("RSA")));
+                        Optional.of(Builder.SIGNATURE), Optional.of(Builder.VERIFY), Optional.of("RSA")));
         if (selected.hasPrivateMaterial() || selected.keyId().filter(keyId::equals).isEmpty()
                 || selected.algorithm().filter(value -> !JwaAlgorithm.RS256.name().equals(value)).isPresent()
-                || selected.publicKeyUse().filter(value -> !"sig".equals(value)).isPresent()) {
+                || selected.publicKeyUse().filter(value -> !Builder.SIGNATURE.equals(value)).isPresent()) {
             throw new ValidateException("LinkedIn JWK contradicts the protected RS256 selection");
         }
         return selected;

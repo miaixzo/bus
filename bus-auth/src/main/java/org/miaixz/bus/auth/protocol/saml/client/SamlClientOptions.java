@@ -23,6 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.Options;
 import org.miaixz.bus.auth.protocol.saml.SamlBinding;
@@ -230,7 +231,7 @@ public record SamlClientOptions(String entityId, String identityProviderEntityId
      * @return configured or absent marker
      */
     private static String present(final Optional<Endpoint> endpoint) {
-        return endpoint.isPresent() ? "[CONFIGURED]" : "[ABSENT]";
+        return endpoint.isPresent() ? Builder.CONFIGURED_VALUE : Builder.ABSENT_VALUE;
     }
 
     /**
@@ -260,7 +261,7 @@ public record SamlClientOptions(String entityId, String identityProviderEntityId
                 + ", singleLogoutServiceEndpoint=" + present(singleLogoutServiceEndpoint)
                 + ", assertionConsumerServiceUrl=" + assertionConsumerServiceUrl
                 + ", serviceProviderSingleLogoutServiceUrl="
-                + (serviceProviderSingleLogoutServiceUrl.isPresent() ? "[CONFIGURED]" : "[ABSENT]")
+                + (serviceProviderSingleLogoutServiceUrl.isPresent() ? Builder.CONFIGURED_VALUE : Builder.ABSENT_VALUE)
                 + ", requestBinding=" + requestBinding.value() + ", signingKeyId=[REDACTED], signatureAlgorithm="
                 + signatureAlgorithm + ", signAuthnRequests=" + signAuthnRequests + ", signLogoutRequests="
                 + signLogoutRequests + ", wantAssertionsSigned=" + wantAssertionsSigned + ", wantResponsesSigned="

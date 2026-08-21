@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.fabric.Clock;
 
 /**
  * Stores OAuth refresh-token family state for rotation and reuse detection.
@@ -49,21 +49,43 @@ public final class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> 
     /**
      * Creates a refresh-token cache view backed entirely by bus-cache.
      *
-     * @param cache shared bus-cache backend
+     * @param cache      shared bus-cache backend
+     * @param deployment deployment-unique cache namespace
+     * @param clock      shared runtime clock used to derive entry lifetimes
      */
-    public RefreshTokenCache(final CacheX<String, Object> cache, final String deployment,
-            final Clock clock) {
+    public RefreshTokenCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
         super(cache, deployment, PURPOSE, Entry.class, clock);
     }
 
+    /**
+     * Stores a new refresh-token generation.
+     *
+     * @param key   token digest
+     * @param value state and expiry
+     * @return creation stage
+     */
     public CompletionStage<Boolean> issue(final String key, final ExpiringValue<Entry> value) {
         return super.doIssue(key, value);
     }
 
+    /**
+     * Finds one refresh-token generation.
+     *
+     * @param key token digest
+     * @return stored state stage
+     */
     public CompletionStage<ExpiringValue<Entry>> find(final String key) {
         return super.doFind(key);
     }
 
+    /**
+     * Atomically rotates one exact token generation.
+     *
+     * @param key      token digest
+     * @param expected current state
+     * @param update   replacement state
+     * @return replacement stage
+     */
     public CompletionStage<Boolean> rotate(
             final String key,
             final ExpiringValue<Entry> expected,
@@ -71,6 +93,12 @@ public final class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> 
         return super.doUpdate(key, expected, update);
     }
 
+    /**
+     * Revokes one refresh-token generation.
+     *
+     * @param key token digest
+     * @return removal stage
+     */
     public CompletionStage<Boolean> revoke(final String key) {
         return super.doRevoke(key);
     }

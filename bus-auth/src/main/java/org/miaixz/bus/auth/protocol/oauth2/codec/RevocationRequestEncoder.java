@@ -22,7 +22,7 @@ package org.miaixz.bus.auth.protocol.oauth2.codec;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.RevocationRequest;
 import org.miaixz.bus.core.codec.Encoder;
@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Assert;
  *
  * @author Kimi Liu
  */
-public final class RevocationRequestEncoder implements Encoder<RevocationRequest, List<Parameter>> {
+public final class RevocationRequestEncoder implements Encoder<RevocationRequest, List<NameValue>> {
 
     /**
      * Creates a stateless revocation request encoder.
@@ -50,12 +50,12 @@ public final class RevocationRequestEncoder implements Encoder<RevocationRequest
      * @throws IllegalArgumentException if data is {@code null}
      */
     @Override
-    public List<Parameter> encode(final RevocationRequest data) {
+    public List<NameValue> encode(final RevocationRequest data) {
         Assert.notNull(data, "OAuth 2.x revocation request must not be null");
-        final List<Parameter> parameters = new ArrayList<>(2);
-        parameters.add(new Parameter(OAuth2.Parameters.TOKEN, data.token()));
+        final List<NameValue> parameters = new ArrayList<>(2);
+        parameters.add(new NameValue(OAuth2.Parameters.TOKEN, data.token()));
         data.tokenTypeHint()
-                .ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.TOKEN_TYPE_HINT, value)));
+                .ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.TOKEN_TYPE_HINT, value)));
         return List.copyOf(parameters);
     }
 

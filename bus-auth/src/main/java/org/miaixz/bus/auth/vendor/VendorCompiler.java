@@ -25,7 +25,6 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Library;
 import org.miaixz.bus.auth.Options;
 import org.miaixz.bus.auth.Outcome;
@@ -34,8 +33,8 @@ import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.Source;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.source.DriverServices;
-import org.miaixz.bus.auth.source.SourceAuthentication;
 import org.miaixz.bus.auth.source.SourceDriver;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.worker.SourceWorker;
 import org.miaixz.bus.auth.worker.WorkerSlots;
 import org.miaixz.bus.core.lang.Assert;
@@ -174,8 +173,8 @@ final class VendorCompiler implements SourceDriver<VendorOptions<?>> {
             }
             if (protocol == null) {
                 final String operation = capability.key().operation();
-                final boolean sourceAuthentication = operation.equals(SourceAuthentication.INITIATE.key().operation())
-                        || operation.equals(SourceAuthentication.COMPLETE.key().operation());
+                final boolean sourceAuthentication = operation.equals(SourceWorkflow.INITIATE.key().operation())
+                        || operation.equals(SourceWorkflow.COMPLETE.key().operation());
                 final boolean platform = operation.startsWith("vendor." + manifest.vendor().value() + Symbol.DOT);
                 if (!sourceAuthentication && !platform) {
                     throw new ValidateException("Vendor application capability belongs to another platform");
@@ -263,9 +262,7 @@ final class VendorCompiler implements SourceDriver<VendorOptions<?>> {
      *                                  is inconsistent
      */
     @Override
-    public SourceWorker compile(
-            final Prepared<VendorOptions<?>> prepared,
-            final DriverServices services) {
+    public SourceWorker compile(final Prepared<VendorOptions<?>> prepared, final DriverServices services) {
         Assert.notNull(prepared, "Vendor Source preparation must not be null");
         final Registration.SourceEntry record = prepared.registration();
         final Provider provider = prepared.provider();

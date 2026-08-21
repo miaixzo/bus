@@ -35,7 +35,7 @@ import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.guard.ClientAuthenticator;
 import org.miaixz.bus.auth.guard.SecretGuard;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
@@ -47,6 +47,7 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -55,20 +56,25 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 /**
  * Authenticates the OAuth 2.x client evidence carried by one Fabric HTTP endpoint request.
  * <p>
- * The implementation owns only RFC 6749 {@code none}, {@code client_secret_basic}, and
- * {@code client_secret_post} processing. Consumer and secret persistence remain project worker responsibilities;
- * comparison, method selection, duplicate rejection, and secret lifetime remain framework responsibilities.
+ * The implementation owns only RFC 6749 {@code none}, {@code client_secret_basic}, and {@code client_secret_post}
+ * processing. Consumer and secret persistence remain project worker responsibilities; comparison, method selection,
+ * duplicate rejection, and secret lifetime remain framework responsibilities.
  * </p>
  *
  * @author Kimi Liu
  */
 public final class OAuth2ClientAuthenticator implements ClientAuthenticator<HttpRequest> {
 
+    /** Maximum buffered form body accepted for client authentication. */
     private static final long MAXIMUM_FORM_BYTES = 64 * Normal.KIBI;
 
+    /** Configured endpoint and its accepted client-authentication methods. */
     private final Endpoint endpoint;
+    /** Source-scoped project loaders and framework parsers. */
     private final DriverServices services;
+    /** Strict application/x-www-form-urlencoded codec. */
     private final FormCodec formCodec;
+    /** Constant-time secret comparison guard. */
     private final SecretGuard secretGuard;
 
     /**
@@ -84,24 +90,50 @@ public final class OAuth2ClientAuthenticator implements ClientAuthenticator<Http
         this.secretGuard = new SecretGuard();
     }
 
+    /**
+     * Creates a safe client-authentication rejection or operational failure.
+     *
+     * @param operational whether the failure belongs to an unavailable dependency
+     * @param description safe failure description
+     * @return immutable failure value
+     */
     private static Outcome.Failure failure(final boolean operational, final String description) {
         return new Outcome.Failure(operational ? ErrorCode._500 : ErrorCode._401, description,
                 new JsonValue.ObjectValue(Map.of()));
     }
 
+    /**
+     * Wraps an outcome in an already completed stage.
+     *
+     * @param <T>     outcome value type
+     * @param outcome outcome to expose
+     * @return completed outcome stage
+     */
     private static <T> CompletionStage<Outcome<T>> completed(final Outcome<T> outcome) {
         return CompletableFuture.completedFuture(outcome);
     }
 
+    /**
+     * Applies RFC 6749 form decoding to one Basic credential component.
+     *
+     * @param value encoded credential component
+     * @return decoded component
+     */
     private static String decoded(final String value) {
         final byte[] encoded = ("value=" + value).getBytes(Charset.UTF_8);
-        final List<Parameter> parameters = new FormCodec().decode(encoded);
+        final List<NameValue> parameters = new FormCodec().decode(encoded);
         if (parameters.size() != 1 || !"value".equals(parameters.getFirst().name())) {
             throw new ValidateException("OAuth 2.x Basic credential contains invalid form encoding");
         }
         return parameters.getFirst().value();
     }
 
+    /**
+     * Decodes and validates one client_secret_basic Authorization value.
+     *
+     * @param authorization complete Authorization header value
+     * @return caller-owned client evidence
+     */
     private static Evidence basic(final String authorization) {
         if (!authorization.regionMatches(true, 0, "Basic ", 0, 6) || authorization.length() == 6) {
             throw new ValidateException("OAuth 2.x client authorization scheme is unsupported");
@@ -115,19 +147,19 @@ public final class OAuth2ClientAuthenticator implements ClientAuthenticator<Http
         try {
             final String credentials;
             try {
-                credentials = Charset.newDecoder(Charset.UTF_8, CodingErrorAction.REPORT)
-                        .decode(ByteBuffer.wrap(bytes)).toString();
+                credentials = Charset.newDecoder(Charset.UTF_8, CodingErrorAction.REPORT).decode(ByteBuffer.wrap(bytes))
+                        .toString();
             } catch (CharacterCodingException cause) {
                 throw new ValidateException("OAuth 2.x Basic credentials are not valid UTF-8", cause);
             }
-            final int separator = credentials.indexOf(':');
+            final int separator = credentials.indexOf(Symbol.C_COLON);
             if (separator <= 0) {
                 throw new ValidateException("OAuth 2.x Basic credentials require client id and secret");
             }
             final String clientId = decoded(credentials.substring(0, separator));
             final char[] secret = decoded(credentials.substring(separator + 1)).toCharArray();
             if (clientId.isEmpty() || secret.length == 0) {
-                Arrays.fill(secret, '\0');
+                Arrays.fill(secret, Symbol.C_NUL);
                 throw new ValidateException("OAuth 2.x Basic credentials require client id and secret");
             }
             return new Evidence(clientId, secret, Endpoint.Authentication.CLIENT_SECRET_BASIC);
@@ -136,13 +168,19 @@ public final class OAuth2ClientAuthenticator implements ClientAuthenticator<Http
         }
     }
 
+    /**
+     * Decodes a bounded request form and rejects repeated parameters.
+     *
+     * @param request buffered endpoint request
+     * @return unique form parameter map
+     */
     private Map<String, String> form(final HttpRequest request) {
         if (!request.body().repeatable() || request.body().length() < 0L
                 || request.body().length() > MAXIMUM_FORM_BYTES) {
             throw new ValidateException("OAuth 2.x client authentication requires a bounded buffered form");
         }
         final Map<String, String> values = new LinkedHashMap<>();
-        for (Parameter parameter : formCodec.decode(request.body().bytes(MAXIMUM_FORM_BYTES))) {
+        for (NameValue parameter : formCodec.decode(request.body().bytes(MAXIMUM_FORM_BYTES))) {
             if (values.putIfAbsent(parameter.name(), parameter.value()) != null) {
                 throw new ValidateException("OAuth 2.x client authentication parameters must not be repeated");
             }
@@ -150,6 +188,12 @@ public final class OAuth2ClientAuthenticator implements ClientAuthenticator<Http
         return values;
     }
 
+    /**
+     * Selects exactly one supported client-authentication evidence source.
+     *
+     * @param request endpoint request
+     * @return validated caller-owned evidence
+     */
     private Evidence evidence(final HttpRequest request) {
         final List<String> authorization = request.headers().values(Http.Header.AUTHORIZATION);
         if (authorization.size() > 1) {
@@ -176,13 +220,21 @@ public final class OAuth2ClientAuthenticator implements ClientAuthenticator<Http
         return new Evidence(clientId, null, Endpoint.Authentication.NONE);
     }
 
+    /**
+     * Loads the exact registered consumer identified by client evidence.
+     *
+     * @param evidence validated client evidence
+     * @param context  invocation context
+     * @param timeout  operation budget
+     * @return authenticated consumer outcome stage
+     */
     private CompletionStage<Outcome<ConsumerMetadata>> load(
             final Evidence evidence,
             final Context context,
             final Timeout.Budget timeout) {
         final CompletionStage<Outcome<ConsumerLoader.Record>> loading;
         try {
-            loading = services.consumerLoader().load(evidence.clientId(), context, timeout);
+            loading = services.consumerLoader().load(services.registration(), evidence.clientId(), context, timeout);
         } catch (RuntimeException cause) {
             return completed(Outcome.failed(failure(true, "OAuth 2.x consumer loading failed")));
         }
@@ -207,6 +259,15 @@ public final class OAuth2ClientAuthenticator implements ClientAuthenticator<Http
         });
     }
 
+    /**
+     * Parses consumer metadata and verifies public or confidential client evidence.
+     *
+     * @param evidence validated client evidence
+     * @param record   project-loaded consumer record
+     * @param context  invocation context
+     * @param timeout  operation budget
+     * @return authenticated consumer outcome stage
+     */
     private CompletionStage<Outcome<ConsumerMetadata>> verify(
             final Evidence evidence,
             final ConsumerLoader.Record record,
@@ -214,7 +275,7 @@ public final class OAuth2ClientAuthenticator implements ClientAuthenticator<Http
             final Timeout.Budget timeout) {
         final ConsumerMetadata consumer;
         try {
-            consumer = services.consumerParser().parse(evidence.clientId(), record);
+            consumer = services.consumerParser().parse(services.registration(), evidence.clientId(), record);
         } catch (RuntimeException cause) {
             return completed(Outcome.failed(failure(true, "OAuth 2.x consumer data is invalid")));
         }
@@ -228,7 +289,7 @@ public final class OAuth2ClientAuthenticator implements ClientAuthenticator<Http
         }
         final CompletionStage<Outcome<SecretLoader.Record>> loading;
         try {
-            loading = services.secretLoader().load(reference, context, timeout);
+            loading = services.secretLoader().load(services.registration(), reference, context, timeout);
         } catch (RuntimeException cause) {
             return completed(Outcome.failed(failure(true, "OAuth 2.x client secret loading failed")));
         }
@@ -244,7 +305,8 @@ public final class OAuth2ClientAuthenticator implements ClientAuthenticator<Http
             final SecretLoader.Record secretRecord = success.value();
             final SecretLease lease = secretRecord.lease();
             try (lease) {
-                final SecretLease parsed = services.secretParser().parse(reference, secretRecord);
+                final SecretLease parsed = services.secretParser()
+                        .parse(services.registration(), reference, secretRecord);
                 return secretGuard.matches(parsed.material(), evidence.secret()) ? Outcome.succeeded(consumer)
                         : Outcome.rejected(failure(false, "OAuth 2.x client authentication failed"));
             } catch (RuntimeException cause) {
@@ -272,7 +334,8 @@ public final class OAuth2ClientAuthenticator implements ClientAuthenticator<Http
             evidence = evidence(request);
             if (!endpoint.authentication().contains(evidence.method())) {
                 evidence.close();
-                return completed(Outcome.rejected(failure(false, "OAuth 2.x client authentication method is disabled")));
+                return completed(
+                        Outcome.rejected(failure(false, "OAuth 2.x client authentication method is disabled")));
             }
         } catch (RuntimeException cause) {
             return completed(Outcome.rejected(failure(false, "OAuth 2.x client authentication evidence is invalid")));
@@ -280,8 +343,16 @@ public final class OAuth2ClientAuthenticator implements ClientAuthenticator<Http
         return load(evidence, context, timeout).whenComplete((ignored, cause) -> evidence.close());
     }
 
+    /**
+     * Holds one selected client-authentication method and caller-owned secret material.
+     *
+     * @param clientId asserted client identifier
+     * @param secret   mutable client secret, or {@code null} for public clients
+     * @param method   selected endpoint authentication method
+     */
     private record Evidence(String clientId, char[] secret, Endpoint.Authentication method) implements AutoCloseable {
 
+        /** Validates that evidence shape matches the selected authentication method. */
         private Evidence {
             Assert.notBlank(clientId, "OAuth 2.x client identifier must not be blank");
             Assert.notNull(method, "OAuth 2.x client authentication method must not be null");
@@ -290,11 +361,14 @@ public final class OAuth2ClientAuthenticator implements ClientAuthenticator<Http
             }
         }
 
+        /** Erases caller-owned secret material after authentication completes. */
         @Override
         public void close() {
             if (secret != null) {
-                Arrays.fill(secret, '\0');
+                Arrays.fill(secret, Symbol.C_NUL);
             }
         }
+
     }
+
 }

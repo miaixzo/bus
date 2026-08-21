@@ -91,9 +91,17 @@ public interface VariantManifest<O extends VendorOptions<?>> {
      */
     final class Forms {
 
+        /** Prevents construction of the Vendor form utility. */
         private Forms() {
+            // No initialization required.
         }
 
+        /**
+         * Builds the common Vendor client configuration form.
+         *
+         * @param optionalPkce whether to expose the optional PKCE toggle
+         * @return immutable form
+         */
         private static Scheme.Form common(final boolean optionalPkce) {
             final List<Scheme.Form.Field> fields = new ArrayList<>();
             fields.add(field("clientId", "Client identifier", Scheme.Form.Type.TEXT, true));
@@ -106,6 +114,15 @@ public interface VariantManifest<O extends VendorOptions<?>> {
             return new Scheme.Form(List.of(new Scheme.Form.Section("client", "Vendor client", fields)));
         }
 
+        /**
+         * Creates one common Vendor form field without a default or constraints.
+         *
+         * @param key      formal option key
+         * @param label    display label
+         * @param type     presentation type
+         * @param required whether required
+         * @return immutable field
+         */
         private static Scheme.Form.Field field(
                 final String key,
                 final String label,
@@ -113,6 +130,7 @@ public interface VariantManifest<O extends VendorOptions<?>> {
                 final boolean required) {
             return new Scheme.Form.Field(key, label, type, required, Optional.empty(), List.of());
         }
+
     }
 
     /**
@@ -128,9 +146,8 @@ public interface VariantManifest<O extends VendorOptions<?>> {
      * @param deviations         documented platform deviations from the selected protocol
      * @author Kimi Liu
      */
-    record Variant(Vendor.Id platform, Vendor.Variant variant, Protocol protocol, Pkce pkce,
-            List<String> defaultScopes, VendorTargets targets, Capability.Manifest capabilityManifest,
-            List<VendorDeviation> deviations) {
+    record Variant(Vendor.Id platform, Vendor.Variant variant, Protocol protocol, Pkce pkce, List<String> defaultScopes,
+            VendorTargets targets, Capability.Manifest capabilityManifest, List<VendorDeviation> deviations) {
 
         /**
          * Creates a variant that does not support PKCE.
@@ -190,8 +207,11 @@ public interface VariantManifest<O extends VendorOptions<?>> {
      */
     enum Pkce {
 
+        /** Platform forbids PKCE. */
         DISABLED,
+        /** Deployment may enable PKCE. */
         OPTIONAL,
+        /** Platform always requires PKCE. */
         REQUIRED;
 
         /**
@@ -214,6 +234,7 @@ public interface VariantManifest<O extends VendorOptions<?>> {
                 case REQUIRED -> true;
             };
         }
+
     }
 
 }

@@ -24,8 +24,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
 import org.miaixz.bus.auth.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
@@ -34,7 +35,7 @@ import org.miaixz.bus.auth.protocol.oauth2.TokenType;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
@@ -70,12 +71,12 @@ public final class CodingSourceAdapter implements VendorAdapter {
     /**
      * Maximum accepted CODING JSON document size.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum accepted CODING JSON nesting depth.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 64;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
 
     /**
      * Registered Source identifier copied into the verified identity.
@@ -397,12 +398,12 @@ public final class CodingSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("CODING capability is not declared"));
         }
-        if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -426,12 +427,12 @@ public final class CodingSourceAdapter implements VendorAdapter {
         if (timeout.expired() || initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(failed("CODING authorization security material violates the frozen manifest"));
         }
-        final List<Parameter> parameters = List.of(
-                new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()),
-                new Parameter(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()),
-                new Parameter(OAuth2.Parameters.RESPONSE_TYPE, ResponseType.CODE.value()),
-                new Parameter(OAuth2.Parameters.STATE, initiation.state()),
-                new Parameter(OAuth2.Parameters.SCOPE, String.join(Symbol.COMMA, requestedScopes())));
+        final List<NameValue> parameters = List.of(
+                new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()),
+                new NameValue(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()),
+                new NameValue(OAuth2.Parameters.RESPONSE_TYPE, ResponseType.CODE.value()),
+                new NameValue(OAuth2.Parameters.STATE, initiation.state()),
+                new NameValue(OAuth2.Parameters.SCOPE, String.join(Symbol.COMMA, requestedScopes())));
         final String endpoint = variant.targets().resolve(options).authorization().getOrNull().url().toString();
         final String redirect = endpoint + Symbol.C_QUESTION_MARK + queryCodec.encode(parameters);
         return completed(Outcome.succeeded(new RedirectManager.Prepared(redirect, initiation.state())));
@@ -471,8 +472,8 @@ public final class CodingSourceAdapter implements VendorAdapter {
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(options.credential(), context, timeout),
-                    loaded -> services.secretParser().parse(options.credential(), loaded));
+                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed("CODING client-secret resolution failed"));
         }
@@ -510,10 +511,10 @@ public final class CodingSourceAdapter implements VendorAdapter {
                 }
                 body = formCodec.encode(
                         List.of(
-                                new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()),
-                                new Parameter(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())),
-                                new Parameter(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()),
-                                new Parameter(OAuth2.Parameters.CODE, code)));
+                                new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()),
+                                new NameValue(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())),
+                                new NameValue(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()),
+                                new NameValue(OAuth2.Parameters.CODE, code)));
                 final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
                 try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint)
                         .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
@@ -857,7 +858,7 @@ public final class CodingSourceAdapter implements VendorAdapter {
          */
         @Override
         public String toString() {
-            return "Access[accessToken=[REDACTED], expiresIn=" + expiresIn + Symbol.BRACKET_RIGHT;
+            return Builder.REDACTED_ACCESS_TOKEN + expiresIn + Symbol.BRACKET_RIGHT;
         }
 
     }

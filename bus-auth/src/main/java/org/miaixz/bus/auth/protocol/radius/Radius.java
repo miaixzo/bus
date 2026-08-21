@@ -22,6 +22,7 @@ package org.miaixz.bus.auth.protocol.radius;
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.protocol.radius.server.RadiusServerOptions;
 import org.miaixz.bus.auth.source.SourceDriver;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
@@ -38,37 +39,37 @@ public final class Radius {
     /**
      * Fixed number of octets in either supported RADIUS packet header.
      */
-    public static final int HEADER_BYTES = 20;
+    public static final int HEADER_BYTES = Normal._20;
 
     /**
      * Maximum packet size for Access and explicitly enabled RADIUS/1.1 packets.
      */
-    public static final int MAXIMUM_PACKET_BYTES = 4096;
+    public static final int MAXIMUM_PACKET_BYTES = Normal._4096;
 
     /**
      * Maximum historic RFC 2866 Accounting packet size.
      */
-    public static final int HISTORIC_ACCOUNTING_MAXIMUM_BYTES = 4095;
+    public static final int HISTORIC_ACCOUNTING_MAXIMUM_BYTES = Normal._4096 - Normal._1;
 
     /**
      * Number of octets in a historic Request or Response Authenticator.
      */
-    public static final int AUTHENTICATOR_BYTES = 16;
+    public static final int AUTHENTICATOR_BYTES = Normal._16;
 
     /**
      * Number of octets in an RFC 9765 RADIUS/1.1 correlation token.
      */
-    public static final int TOKEN_BYTES = 4;
+    public static final int TOKEN_BYTES = Normal._4;
 
     /**
      * Maximum complete Attribute size including Type and Length.
      */
-    public static final int MAXIMUM_ATTRIBUTE_BYTES = 255;
+    public static final int MAXIMUM_ATTRIBUTE_BYTES = Normal._256 - Normal._1;
 
     /**
      * Maximum Attribute Value size after Type and Length.
      */
-    public static final int MAXIMUM_ATTRIBUTE_VALUE_BYTES = 253;
+    public static final int MAXIMUM_ATTRIBUTE_VALUE_BYTES = Normal._256 - Normal._3;
 
     /**
      * Registered UDP authentication service port.
@@ -114,27 +115,27 @@ public final class Radius {
         /**
          * Access-Request Code.
          */
-        public static final int ACCESS_REQUEST = 1;
+        public static final int ACCESS_REQUEST = Normal._1;
         /**
          * Access-Accept Code.
          */
-        public static final int ACCESS_ACCEPT = 2;
+        public static final int ACCESS_ACCEPT = Normal._2;
         /**
          * Access-Reject Code.
          */
-        public static final int ACCESS_REJECT = 3;
+        public static final int ACCESS_REJECT = Normal._3;
         /**
          * Accounting-Request Code.
          */
-        public static final int ACCOUNTING_REQUEST = 4;
+        public static final int ACCOUNTING_REQUEST = Normal._4;
         /**
          * Accounting-Response Code.
          */
-        public static final int ACCOUNTING_RESPONSE = 5;
+        public static final int ACCOUNTING_RESPONSE = Normal._5;
         /**
          * Access-Challenge Code.
          */
-        public static final int ACCESS_CHALLENGE = 11;
+        public static final int ACCESS_CHALLENGE = Normal._11;
 
         /**
          * Prevents construction of the packet Code namespace.
@@ -153,55 +154,55 @@ public final class Radius {
         /**
          * User-Name Attribute Type.
          */
-        public static final int USER_NAME = 1;
+        public static final int USER_NAME = Normal._1;
         /**
          * User-Password Attribute Type.
          */
-        public static final int USER_PASSWORD = 2;
+        public static final int USER_PASSWORD = Normal._2;
         /**
          * CHAP-Password Attribute Type.
          */
-        public static final int CHAP_PASSWORD = 3;
+        public static final int CHAP_PASSWORD = Normal._3;
         /**
          * NAS-IP-Address Attribute Type.
          */
-        public static final int NAS_IP_ADDRESS = 4;
+        public static final int NAS_IP_ADDRESS = Normal._4;
         /**
          * Reply-Message Attribute Type.
          */
-        public static final int REPLY_MESSAGE = 18;
+        public static final int REPLY_MESSAGE = Normal._18;
         /**
          * State Attribute Type.
          */
-        public static final int STATE = 24;
+        public static final int STATE = Normal._24;
         /**
          * Vendor-Specific Attribute Type.
          */
-        public static final int VENDOR_SPECIFIC = 26;
+        public static final int VENDOR_SPECIFIC = Normal._26;
         /**
          * NAS-Identifier Attribute Type.
          */
-        public static final int NAS_IDENTIFIER = 32;
+        public static final int NAS_IDENTIFIER = Normal._32;
         /**
          * Proxy-State Attribute Type.
          */
-        public static final int PROXY_STATE = 33;
+        public static final int PROXY_STATE = Normal._33;
         /**
          * Acct-Status-Type Attribute Type.
          */
-        public static final int ACCT_STATUS_TYPE = 40;
+        public static final int ACCT_STATUS_TYPE = Normal._40;
         /**
          * CHAP-Challenge Attribute Type.
          */
-        public static final int CHAP_CHALLENGE = 60;
+        public static final int CHAP_CHALLENGE = Normal._60;
         /**
          * EAP-Message Attribute Type.
          */
-        public static final int EAP_MESSAGE = 79;
+        public static final int EAP_MESSAGE = Normal._79;
         /**
          * Message-Authenticator Attribute Type.
          */
-        public static final int MESSAGE_AUTHENTICATOR = 80;
+        public static final int MESSAGE_AUTHENTICATOR = Normal._80;
         /**
          * Error-Cause Attribute Type.
          */

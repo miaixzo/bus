@@ -22,11 +22,12 @@ package org.miaixz.bus.auth.vendor.wechat;
 import java.util.List;
 import java.util.Set;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorDeviation;
@@ -113,22 +114,22 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
      * Browser Source authentication plus the public OAuth authorization operation.
      */
     private static final Capability.Manifest OAUTH_BROWSER_CAPABILITIES = new Capability.Manifest(List.of(
-            SourceAuthentication.initiate(Set.of(Capability.Interaction.REDIRECT)),
-            SourceAuthentication.complete(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT)),
             OAuth2ClientScheme.AUTHORIZATION));
 
     /**
      * Direct one-time-code Source authentication exposed by Mini Program.
      */
     private static final Capability.Manifest MINI_CAPABILITIES = new Capability.Manifest(
-            List.of(SourceAuthentication.initiate(Set.of(Capability.Interaction.DIRECT))));
+            List.of(SourceWorkflow.initiate(Set.of(Capability.Interaction.DIRECT))));
 
     /**
      * Browser Source authentication exposed by each proprietary WeCom variant.
      */
     private static final Capability.Manifest WORK_BROWSER_CAPABILITIES = new Capability.Manifest(List.of(
-            SourceAuthentication.initiate(Set.of(Capability.Interaction.REDIRECT)),
-            SourceAuthentication.complete(Set.of(Capability.Interaction.REDIRECT))));
+            SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT))));
 
     /**
      * Registered Open Platform deviations confined to authorization and private Source authentication.
@@ -143,7 +144,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     "code/appid/secret/grant_type",
                     "token request fields",
@@ -151,7 +152,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.RESPONSE,
                     "access_token/refresh_token/expires_in/openid without token_type",
                     "token response",
@@ -159,7 +160,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     "access_token/openid/lang",
                     "Bearer profile request",
@@ -196,7 +197,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     "code/appid/secret/grant_type",
                     "token request fields",
@@ -204,7 +205,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.RESPONSE,
                     "access_token/refresh_token/expires_in/openid/scope/is_snapshotuser without token_type",
                     "token response",
@@ -212,7 +213,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     "access_token/openid/lang",
                     "Bearer profile request",
@@ -220,7 +221,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.RESPONSE,
                     "snapshot user identity",
                     null,
@@ -233,7 +234,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
      */
     private static final List<VendorDeviation> MINI_DEVIATIONS = List.of(
             deviation(
-                    "source_authentication.initiate",
+                    Builder.SOURCE_AUTHENTICATION_INITIATE,
                     VendorDeviation.Location.QUERY,
                     "appid/secret/js_code/grant_type",
                     null,
@@ -241,7 +242,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.initiate",
+                    Builder.SOURCE_AUTHENTICATION_INITIATE,
                     VendorDeviation.Location.RESPONSE,
                     "session_key/openid/unionid/errcode/errmsg",
                     null,
@@ -254,7 +255,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
      */
     private static final List<VendorDeviation> EE_DEVIATIONS = List.of(
             deviation(
-                    "source_authentication.initiate",
+                    Builder.SOURCE_AUTHENTICATION_INITIATE,
                     VendorDeviation.Location.QUERY,
                     "login_type/appid/agentid/redirect_uri/state/lang",
                     null,
@@ -262,7 +263,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.initiate",
+                    Builder.SOURCE_AUTHENTICATION_INITIATE,
                     VendorDeviation.Location.RESPONSE,
                     "#wechat_redirect",
                     null,
@@ -270,7 +271,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     "corpid/corpsecret",
                     null,
@@ -278,7 +279,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     "access_token/code",
                     null,
@@ -286,7 +287,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.RESPONSE,
                     "userid/user_ticket/errcode/errmsg",
                     null,
@@ -299,7 +300,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
      */
     private static final List<VendorDeviation> EE_QRCODE_DEVIATIONS = List.of(
             deviation(
-                    "source_authentication.initiate",
+                    Builder.SOURCE_AUTHENTICATION_INITIATE,
                     VendorDeviation.Location.QUERY,
                     "appid/redirect_uri/state/usertype",
                     null,
@@ -307,7 +308,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.JSON,
                     "corpid/provider_secret",
                     null,
@@ -315,7 +316,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.POST,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     OAuth2.Parameters.ACCESS_TOKEN,
                     null,
@@ -323,7 +324,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.POST,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.JSON,
                     "auth_code",
                     OAuth2.Parameters.CODE,
@@ -331,7 +332,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.POST,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.RESPONSE,
                     "corp_info/user_info/redirect_login_info",
                     null,
@@ -344,7 +345,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
      */
     private static final List<VendorDeviation> EE_WEB_DEVIATIONS = List.of(
             deviation(
-                    "source_authentication.initiate",
+                    Builder.SOURCE_AUTHENTICATION_INITIATE,
                     VendorDeviation.Location.QUERY,
                     "appid/agentid/redirect_uri/response_type/scope/state",
                     null,
@@ -352,7 +353,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.initiate",
+                    Builder.SOURCE_AUTHENTICATION_INITIATE,
                     VendorDeviation.Location.RESPONSE,
                     "#wechat_redirect",
                     null,
@@ -360,7 +361,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     "corpid/corpsecret",
                     null,
@@ -368,7 +369,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     "access_token/code",
                     null,
@@ -376,7 +377,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.RESPONSE,
                     "UserId/DeviceId/errcode/errmsg",
                     null,

@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.fabric.Clock;
 
 /**
  * Stores OAuth 2.0 Device Authorization Grant state for atomic polling and token issuance.
@@ -52,21 +52,43 @@ public final class DeviceCodeCache extends AuthCache<DeviceCodeCache.Entry> {
     /**
      * Creates a device-code cache view backed entirely by bus-cache.
      *
-     * @param cache shared bus-cache backend
+     * @param cache      shared bus-cache backend
+     * @param deployment deployment-unique cache namespace
+     * @param clock      shared runtime clock used to derive entry lifetimes
      */
-    public DeviceCodeCache(final CacheX<String, Object> cache, final String deployment,
-            final Clock clock) {
+    public DeviceCodeCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
         super(cache, deployment, PURPOSE, Entry.class, clock);
     }
 
+    /**
+     * Stores a new device-authorization state when the digest key is absent.
+     *
+     * @param key   purpose-local irreversible device-code digest
+     * @param value device authorization state and its absolute expiry instant
+     * @return stage containing whether the state was stored
+     */
     public CompletionStage<Boolean> issue(final String key, final ExpiringValue<Entry> value) {
         return super.doIssue(key, value);
     }
 
+    /**
+     * Finds current device-authorization state for polling or verification.
+     *
+     * @param key purpose-local irreversible device-code digest
+     * @return stage containing current state or {@code null}
+     */
     public CompletionStage<ExpiringValue<Entry>> find(final String key) {
         return super.doFind(key);
     }
 
+    /**
+     * Atomically advances an exact device-authorization state.
+     *
+     * @param key      purpose-local irreversible device-code digest
+     * @param expected exact current state
+     * @param update   replacement state
+     * @return stage containing whether the transition succeeded
+     */
     public CompletionStage<Boolean> update(
             final String key,
             final ExpiringValue<Entry> expected,

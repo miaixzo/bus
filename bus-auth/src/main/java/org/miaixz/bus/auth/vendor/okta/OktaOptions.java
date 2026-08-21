@@ -26,11 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.protocol.oauth2.Scope;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorOptions;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -61,7 +63,7 @@ public record OktaOptions(Vendor.Id vendor, Vendor.Variant variant, String clien
     /**
      * Maximum length accepted by the frozen authorization-server path selector.
      */
-    private static final int MAXIMUM_AUTHORIZATION_SERVER_ID_LENGTH = 128;
+    private static final int MAXIMUM_AUTHORIZATION_SERVER_ID_LENGTH = Normal._128;
 
     /**
      * Validates and freezes one Okta registration without resolving its client secret.
@@ -217,8 +219,7 @@ public record OktaOptions(Vendor.Id vendor, Vendor.Variant variant, String clien
      */
     @Override
     public String toString() {
-        return "OktaOptions[vendor=" + vendor + ", variant=" + variant
-                + ", clientId=[REDACTED], credential=[REDACTED], redirectUri=[REDACTED], scopes=" + scopes
+        return "OktaOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS + scopes
                 + ", instance=" + instance + ", authorizationServerId=" + authorizationServerId
                 + Symbol.C_BRACKET_RIGHT;
     }

@@ -20,9 +20,9 @@
 /**
  * Defines provider-neutral encoding contracts and reusable HTTP value primitives.
  * <p>
- * {@link org.miaixz.bus.auth.codec.Codec} supplies a typed encode/decode boundary.
+ * {@link org.miaixz.bus.auth.codec.DualCodec} supplies a typed encode/decode boundary.
  * {@link org.miaixz.bus.auth.codec.FormCodec} and {@link org.miaixz.bus.auth.codec.QueryCodec} preserve ordered
- * {@link org.miaixz.bus.auth.codec.Parameter parameters}, duplicate names, empty values, strict percent escapes, and
+ * {@link org.miaixz.bus.auth.codec.NameValue parameters}, duplicate names, empty values, strict percent escapes, and
  * UTF-8 semantics. {@link org.miaixz.bus.auth.codec.HeaderCodec} and {@link org.miaixz.bus.auth.codec.HeaderValue}
  * handle validated field values without constructing an HTTP response.
  * </p>

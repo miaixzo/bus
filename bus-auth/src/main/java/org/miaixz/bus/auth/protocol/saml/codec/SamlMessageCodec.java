@@ -1027,9 +1027,7 @@ public final class SamlMessageCodec {
          * @param value    validated StatusCode model
          * @return complete recursively nested StatusCode element
          */
-        private static Element statusCode(
-                final org.w3c.dom.Document document,
-                final StatusCode value) {
+        private static Element statusCode(final org.w3c.dom.Document document, final StatusCode value) {
             final Element element = protocol(document, Saml.Xml.STATUS_CODE);
             element.setAttribute(Saml.Xml.VALUE, value.value());
             if (value.nested().isPresent()) {

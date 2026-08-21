@@ -34,11 +34,25 @@ import org.miaixz.bus.extra.json.JsonValue;
 @FunctionalInterface
 public interface IdentityLoader {
 
+    /**
+     * Loads or establishes one stable subject for a verified external identity.
+     *
+     * @param identity verified completed external identity
+     * @param context  immutable non-secret invocation context
+     * @param timeout  shared end-to-end operation budget
+     * @return asynchronous project identity-loading outcome
+     */
     CompletionStage<Outcome<Record>> load(ExternalIdentity identity, Context context, Timeout.Budget timeout);
 
     /**
      * Project-adapted subject data awaiting framework parsing.
+     *
+     * @param key        stable subject key established by the project
+     * @param reference  protocol-neutral subject reference
+     * @param attributes detached project-owned subject attributes
      */
     record Record(Subject.Key key, Subject.Reference reference, JsonValue.ObjectValue attributes) {
+
     }
+
 }

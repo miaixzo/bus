@@ -303,7 +303,8 @@ public sealed interface Filter
          * @return {@code true} for an ASCII letter
          */
         private static boolean asciiLetter(final char value) {
-            return value >= 'A' && value <= 'Z' || value >= 'a' && value <= 'z';
+            return value >= Symbol.C_UPPER_A && value <= Symbol.C_UPPER_Z
+                    || value >= Symbol.C_LOWER_A && value <= Symbol.C_LOWER_Z;
         }
 
         /**

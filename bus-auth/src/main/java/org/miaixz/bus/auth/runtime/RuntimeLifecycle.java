@@ -34,9 +34,16 @@ import org.miaixz.bus.core.Lifecycle;
  */
 final class RuntimeLifecycle {
 
+    /** Monitor guarding lifecycle state and operation count. */
     private final Object gate = new Object();
+    /** Current lifecycle state guarded by {@link #gate}. */
     private Lifecycle.State state = Lifecycle.State.RUNNING;
+    /** Number of admitted operations still holding leases. */
     private int operations;
+
+    /** Creates a lifecycle gate in the running state. */
+    RuntimeLifecycle() {
+    }
 
     /**
      * Returns the current runtime state.
@@ -101,6 +108,7 @@ final class RuntimeLifecycle {
         }
     }
 
+    /** Releases one admitted operation and completes deferred close when it was the last lease. */
     private void leave() {
         synchronized (gate) {
             if (operations > 0) {
@@ -117,19 +125,28 @@ final class RuntimeLifecycle {
      */
     public static final class Lease implements AutoCloseable {
 
+        /** Lifecycle gate that admitted this operation. */
         private final RuntimeLifecycle lifecycle;
+        /** Idempotent release marker. */
         private final AtomicBoolean closed = new AtomicBoolean();
 
+        /**
+         * Creates one lease owned by an exact lifecycle gate.
+         *
+         * @param lifecycle admitting lifecycle
+         */
         private Lease(final RuntimeLifecycle lifecycle) {
             this.lifecycle = lifecycle;
         }
 
+        /** Releases this operation lease at most once. */
         @Override
         public void close() {
             if (closed.compareAndSet(false, true)) {
                 lifecycle.leave();
             }
         }
+
     }
 
 }

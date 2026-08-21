@@ -23,8 +23,8 @@ import java.io.Serializable;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.fabric.Clock;
 
 /**
  * Stores one-time OpenID Connect nonce bindings independently from callback state.
@@ -45,21 +45,41 @@ public final class NonceCache extends AuthCache<NonceCache.Nonce> {
     /**
      * Creates a nonce cache view backed entirely by bus-cache.
      *
-     * @param cache shared bus-cache backend
+     * @param cache      shared bus-cache backend
+     * @param deployment deployment-unique cache namespace
+     * @param clock      shared runtime clock used to derive entry lifetimes
      */
-    public NonceCache(final CacheX<String, Object> cache, final String deployment,
-            final Clock clock) {
+    public NonceCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
         super(cache, deployment, PURPOSE, Nonce.class, clock);
     }
 
+    /**
+     * Stores a one-time nonce binding when the digest key is absent.
+     *
+     * @param key   purpose-local nonce digest
+     * @param value nonce binding and expiry instant
+     * @return stage containing whether the nonce was stored
+     */
     public CompletionStage<Boolean> issue(final String key, final ExpiringValue<Nonce> value) {
         return super.doIssue(key, value);
     }
 
+    /**
+     * Atomically consumes a one-time nonce binding.
+     *
+     * @param key purpose-local nonce digest
+     * @return stage containing the consumed nonce or {@code null}
+     */
     public CompletionStage<ExpiringValue<Nonce>> consume(final String key) {
         return super.doConsume(key);
     }
 
+    /**
+     * Removes a nonce that must no longer be accepted.
+     *
+     * @param key purpose-local nonce digest
+     * @return stage containing whether the nonce was removed
+     */
     public CompletionStage<Boolean> discard(final String key) {
         return super.doRevoke(key);
     }

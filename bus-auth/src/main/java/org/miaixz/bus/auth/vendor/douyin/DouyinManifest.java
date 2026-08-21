@@ -22,10 +22,11 @@ package org.miaixz.bus.auth.vendor.douyin;
 import java.util.List;
 import java.util.Set;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorDeviation;
@@ -75,21 +76,21 @@ public final class DouyinManifest implements VariantManifest<DouyinOptions> {
      * Exact browser Source-authentication manifest of the open variant.
      */
     private static final Capability.Manifest OPEN_CAPABILITIES = new Capability.Manifest(List.of(
-            SourceAuthentication.initiate(Set.of(Capability.Interaction.REDIRECT)),
-            SourceAuthentication.complete(Set.of(Capability.Interaction.REDIRECT))));
+            SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT))));
 
     /**
      * Exact direct one-time-code Source-authentication manifest of the mini-program variant.
      */
     private static final Capability.Manifest MINI_CAPABILITIES = new Capability.Manifest(
-            List.of(SourceAuthentication.initiate(Set.of(Capability.Interaction.DIRECT))));
+            List.of(SourceWorkflow.initiate(Set.of(Capability.Interaction.DIRECT))));
 
     /**
      * Exact open-platform wire deviations retained only inside Source authentication.
      */
     private static final List<VendorDeviation> OPEN_DEVIATIONS = List.of(
             deviation(
-                    "source_authentication.initiate",
+                    Builder.SOURCE_AUTHENTICATION_INITIATE,
                     VendorDeviation.Location.QUERY,
                     "client_key",
                     OAuth2.Parameters.CLIENT_ID,
@@ -97,7 +98,7 @@ public final class DouyinManifest implements VariantManifest<DouyinOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.initiate",
+                    Builder.SOURCE_AUTHENTICATION_INITIATE,
                     VendorDeviation.Location.QUERY,
                     OAuth2.Parameters.SCOPE,
                     OAuth2.Parameters.SCOPE,
@@ -105,7 +106,7 @@ public final class DouyinManifest implements VariantManifest<DouyinOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.FORM,
                     "client_key",
                     OAuth2.Parameters.CLIENT_ID,
@@ -113,7 +114,7 @@ public final class DouyinManifest implements VariantManifest<DouyinOptions> {
                     Http.Method.POST,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.RESPONSE,
                     "data",
                     null,
@@ -121,7 +122,7 @@ public final class DouyinManifest implements VariantManifest<DouyinOptions> {
                     Http.Method.POST,
                     true),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.FORM,
                     "open_id",
                     null,
@@ -134,7 +135,7 @@ public final class DouyinManifest implements VariantManifest<DouyinOptions> {
      */
     private static final List<VendorDeviation> MINI_DEVIATIONS = List.of(
             deviation(
-                    "source_authentication.initiate",
+                    Builder.SOURCE_AUTHENTICATION_INITIATE,
                     VendorDeviation.Location.JSON,
                     "appid",
                     OAuth2.Parameters.CLIENT_ID,
@@ -142,7 +143,7 @@ public final class DouyinManifest implements VariantManifest<DouyinOptions> {
                     Http.Method.POST,
                     false),
             deviation(
-                    "source_authentication.initiate",
+                    Builder.SOURCE_AUTHENTICATION_INITIATE,
                     VendorDeviation.Location.JSON,
                     "secret",
                     OAuth2.Parameters.CLIENT_SECRET,
@@ -150,7 +151,7 @@ public final class DouyinManifest implements VariantManifest<DouyinOptions> {
                     Http.Method.POST,
                     false),
             deviation(
-                    "source_authentication.initiate",
+                    Builder.SOURCE_AUTHENTICATION_INITIATE,
                     VendorDeviation.Location.RESPONSE,
                     "data",
                     null,

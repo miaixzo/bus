@@ -28,26 +28,24 @@ import org.miaixz.bus.auth.Provider;
 import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.Source;
-import org.miaixz.bus.auth.registry.ImmutableRegistryView;
-import org.miaixz.bus.auth.registry.RegistryIssue;
-import org.miaixz.bus.auth.registry.RegistryView;
+import org.miaixz.bus.auth.registry.SnapshotFault;
+import org.miaixz.bus.auth.registry.SnapshotRegistry;
 import org.miaixz.bus.auth.source.DriverDirectory;
 import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.auth.worker.SourceWorker;
-import org.miaixz.bus.auth.worker.WorkerSlots;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
 
 /**
- * Compiles a validated registration snapshot into one immutable Registry view.
+ * Compiles a validated registration snapshot into one complete executable runtime container.
  * <p>
- * The compiler builds all indexes in local state and returns a view only after every enabled record compiles. A failure
- * therefore exposes no partial view and leaves atomic publication to the reload service. Complete Library resources are
- * indexed first, followed by protocol-neutral Provider resources and executable Source resources. Each Source receives
- * its resolved owning Provider and Library. This class does not access Registry state or import protocol or Vendor
- * implementations.
+ * The compiler builds all indexes in local state and returns a container only after every enabled record compiles. A
+ * failure therefore exposes no partial container and leaves atomic publication to the reload service. Complete Library
+ * resources are indexed first, followed by protocol-neutral Provider resources and executable Source resources. Each
+ * Source receives its resolved owning Provider and Library. This class does not access committed Registry state or
+ * import protocol or Vendor implementations.
  * </p>
  *
  * @author Kimi Liu
@@ -120,12 +118,12 @@ final class SnapshotCompiler {
     /**
      * Compiles every enabled record in a previously validated snapshot.
      *
-     * @param snapshot complete snapshot that has passed {@code RegistrationValidator}
-     * @return structurally immutable Registry view with the same revision and full registration snapshot
+     * @param snapshot complete snapshot that has passed {@code SnapshotValidator}
+     * @return runtime container containing the Snapshot Registry and compiled Source workers
      * @throws IllegalArgumentException if the snapshot, a required type, or a driver result is invalid
      * @throws RuntimeException         if a required relationship or selected driver rejects a record
      */
-    RegistryView compile(final Registry.Snapshot snapshot) {
+    RuntimeContainer compile(final Registry.Snapshot snapshot) {
         Assert.notNull(snapshot, "Registry snapshot must not be null");
         final Map<String, Library> libraries = new LinkedHashMap<>();
         final Map<String, Registration.ProviderEntry> providerRecords = new LinkedHashMap<>();
@@ -134,13 +132,18 @@ final class SnapshotCompiler {
             compileLibraries(snapshot, libraries);
             indexProviders(snapshot, libraries, providerRecords);
             compileSources(snapshot, libraries, providerRecords, workers);
-            return new ImmutableRegistryView(snapshot.revision(), snapshot, workers);
+            return new RuntimeContainer(new SnapshotRegistry(snapshot.revision(), snapshot), workers);
         } catch (RuntimeException failure) {
             close(workers);
             throw failure;
         }
     }
 
+    /**
+     * Best-effort closes workers already created before compilation failed.
+     *
+     * @param workers partially compiled worker index
+     */
     private static void close(final Map<Registry.Reference, SourceWorker> workers) {
         for (SourceWorker worker : workers.values()) {
             try {
@@ -194,6 +197,13 @@ final class SnapshotCompiler {
 
     /**
      * Captures a wildcard driver and compiles from one exact preparation and its matching scoped services.
+     *
+     * @param <O>      concrete Source options type
+     * @param driver   exact typed Source driver
+     * @param record   Source registration
+     * @param provider resolved Provider
+     * @param library  resolved Library
+     * @return compiled Source worker
      */
     private <O extends Options<?>> SourceWorker compile(
             final SourceDriver<O> driver,
@@ -202,7 +212,9 @@ final class SnapshotCompiler {
             final Library library) {
         final SourceDriver.Prepared<O> prepared = driver.prepare(record, provider, library);
         return Assert.notNull(
-                driver.compile(prepared, services.scope(prepared.slots(), prepared.dependencies())),
+                driver.compile(
+                        prepared,
+                        services.scope(prepared.registration(), prepared.slots(), prepared.dependencies())),
                 "Source driver result must not be null");
     }
 
@@ -211,16 +223,37 @@ final class SnapshotCompiler {
      */
     static final class CompilationFailure extends RuntimeException {
 
+        /** Registration kind that failed compilation. */
         private final Registration.Kind kind;
+        /** Safe registration identifier. */
         private final String id;
+        /** Safe failing field name. */
         private final String field;
+        /** Safe failure description exposed in reports. */
         private final String safeDescription;
 
+        /**
+         * Creates a compilation failure without an underlying cause.
+         *
+         * @param kind            registration kind
+         * @param id              registration identifier
+         * @param field           failing field
+         * @param safeDescription safe description
+         */
         CompilationFailure(final Registration.Kind kind, final String id, final String field,
                 final String safeDescription) {
             this(kind, id, field, safeDescription, null);
         }
 
+        /**
+         * Creates a compilation failure retaining an internal cause.
+         *
+         * @param kind            registration kind
+         * @param id              registration identifier
+         * @param field           failing field
+         * @param safeDescription safe description
+         * @param cause           internal cause
+         */
         CompilationFailure(final Registration.Kind kind, final String id, final String field,
                 final String safeDescription, final Throwable cause) {
             super(safeDescription, cause);
@@ -231,10 +264,12 @@ final class SnapshotCompiler {
                     .notBlank(safeDescription, "Compilation failure safe description must not be blank");
         }
 
-        RegistryIssue issue() {
-            return RegistryIssue
-                    .entry(kind, id, RegistryIssue.Stage.COMPILE, Optional.of(field), ErrorCode._500, safeDescription);
+        /** {@return the safe structured snapshot fault} */
+        SnapshotFault fault() {
+            return SnapshotFault
+                    .entry(kind, id, SnapshotFault.Stage.COMPILE, Optional.of(field), ErrorCode._500, safeDescription);
         }
+
     }
 
 }

@@ -42,6 +42,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
@@ -83,7 +84,7 @@ public final class SamlSignatureValidator {
     /**
      * SAML certificate use passed to the external certificate loader.
      */
-    private static final String SIGNING_USE = "signing";
+    private static final String SIGNING_USE = Builder.SIGNING;
 
     /**
      * Allowed enveloped-signature transform URI.
@@ -107,8 +108,7 @@ public final class SamlSignatureValidator {
      * @param securityBaseline shared SAML security baseline
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public SamlSignatureValidator(final DriverServices services,
-            final SecurityBaseline securityBaseline) {
+    public SamlSignatureValidator(final DriverServices services, final SecurityBaseline securityBaseline) {
         this.services = Assert.notNull(services, "SAML execution services must not be null");
         this.securityBaseline = Assert.notNull(securityBaseline, "SAML security baseline must not be null");
     }
@@ -668,8 +668,8 @@ public final class SamlSignatureValidator {
         final CertificateLoader.Request request = new CertificateLoader.Request(issuer, SIGNING_USE,
                 timeout.clock().now());
         final CompletionStage<Outcome<CertificateMaterial>> resolution = Outcome.mapStage(
-                () -> services.certificateLoader().load(request, context, timeout),
-                loaded -> services.certificateParser().parse(request, loaded));
+                () -> services.certificateLoader().load(services.registration(), request, context, timeout),
+                loaded -> services.certificateParser().parse(services.registration(), request, loaded));
         if (resolution == null)
             return completed(failed("SAML certificate loader returned no result stage"));
         return resolution.handle((outcome, cause) -> {

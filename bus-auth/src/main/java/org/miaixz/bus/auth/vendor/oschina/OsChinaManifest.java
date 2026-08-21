@@ -22,15 +22,17 @@ package org.miaixz.bus.auth.vendor.oschina;
 import java.util.List;
 import java.util.Set;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorDeviation;
 import org.miaixz.bus.auth.vendor.VendorTargets;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -60,7 +62,7 @@ public final class OsChinaManifest implements VariantManifest<OsChinaOptions> {
     /**
      * Stable identifier of the only OSChina OAuth variant.
      */
-    public static final Vendor.Variant DEFAULT = new Vendor.Variant("default");
+    public static final Vendor.Variant DEFAULT = new Vendor.Variant(Normal.DEFAULT);
 
     /**
      * Platform authentication identifier for a client secret carried in the token query.
@@ -72,8 +74,8 @@ public final class OsChinaManifest implements VariantManifest<OsChinaOptions> {
      * Exact Source authentication and public OAuth operations exposed by the adapter.
      */
     private static final Capability.Manifest CAPABILITIES = new Capability.Manifest(List.of(
-            SourceAuthentication.initiate(Set.of(Capability.Interaction.REDIRECT)),
-            SourceAuthentication.complete(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT)),
             OAuth2ClientScheme.AUTHORIZATION,
             OAuth2ClientScheme.TOKEN));
 
@@ -106,7 +108,7 @@ public final class OsChinaManifest implements VariantManifest<OsChinaOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     OAuth2.Parameters.ACCESS_TOKEN,
                     Http.Header.AUTHORIZATION,
@@ -114,7 +116,7 @@ public final class OsChinaManifest implements VariantManifest<OsChinaOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     "dataType",
                     null,

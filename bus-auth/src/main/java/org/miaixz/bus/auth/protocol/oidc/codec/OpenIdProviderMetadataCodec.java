@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationServerMetadata;
 import org.miaixz.bus.auth.protocol.oauth2.ClientAuthenticationMethod;
 import org.miaixz.bus.auth.protocol.oauth2.GrantType;
@@ -62,12 +63,12 @@ public final class OpenIdProviderMetadataCodec {
     /**
      * Maximum accepted metadata document size.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum JSON container nesting accepted from a remote Discovery document.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 64;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
 
     /**
      * Externally selected provider-neutral JSON implementation.

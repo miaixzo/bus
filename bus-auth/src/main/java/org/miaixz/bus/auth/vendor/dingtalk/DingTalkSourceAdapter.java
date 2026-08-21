@@ -25,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
@@ -33,13 +33,14 @@ import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationRequestEncoder;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -75,12 +76,12 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
     /**
      * Maximum accepted DingTalk JSON response size.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = org.miaixz.bus.auth.Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum accepted DingTalk JSON nesting depth.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 64;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
 
     /**
      * Registered Source identifier copied into verified external identities.
@@ -479,12 +480,12 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("DingTalk capability is not declared by the selected variant"));
         }
-        if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -538,7 +539,7 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
         }
         try {
             final String endpoint = variant.targets().resolve(options).authorization().getOrNull().url().toString();
-            final List<Parameter> parameters = DingTalkManifest.OAUTH2.equals(options.variant())
+            final List<NameValue> parameters = DingTalkManifest.OAUTH2.equals(options.variant())
                     ? delegatedParameters(initiation.state())
                     : accountParameters(initiation.state());
             final String redirect = endpoint + Symbol.C_QUESTION_MARK + queryCodec.encode(parameters);
@@ -572,19 +573,19 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
      * @param state generated one-time state
      * @return ordered exact query parameters
      */
-    private List<Parameter> delegatedParameters(final String state) {
-        final List<Parameter> parameters = new ArrayList<>();
-        parameters.add(new Parameter(OAuth2.Parameters.RESPONSE_TYPE, ResponseType.CODE.value()));
-        parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()));
-        parameters.add(new Parameter(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()));
-        parameters.add(new Parameter(OAuth2.Parameters.SCOPE, String.join(Symbol.SPACE, requestedScopes())));
-        parameters.add(new Parameter("prompt", "consent"));
-        parameters.add(new Parameter(OAuth2.Parameters.STATE, state));
-        options.orgType().ifPresent(value -> parameters.add(new Parameter("org_type", value)));
-        options.corpId().ifPresent(value -> parameters.add(new Parameter("corpId", value)));
+    private List<NameValue> delegatedParameters(final String state) {
+        final List<NameValue> parameters = new ArrayList<>();
+        parameters.add(new NameValue(OAuth2.Parameters.RESPONSE_TYPE, ResponseType.CODE.value()));
+        parameters.add(new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()));
+        parameters.add(new NameValue(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()));
+        parameters.add(new NameValue(OAuth2.Parameters.SCOPE, String.join(Symbol.SPACE, requestedScopes())));
+        parameters.add(new NameValue("prompt", "consent"));
+        parameters.add(new NameValue(OAuth2.Parameters.STATE, state));
+        options.orgType().ifPresent(value -> parameters.add(new NameValue("org_type", value)));
+        options.corpId().ifPresent(value -> parameters.add(new NameValue("corpId", value)));
         if (options.exclusiveLogin()) {
-            parameters.add(new Parameter("exclusiveLogin", Normal.TRUE));
-            parameters.add(new Parameter("exclusiveCorpId", options.exclusiveCorpId().getOrNull()));
+            parameters.add(new NameValue("exclusiveLogin", Normal.TRUE));
+            parameters.add(new NameValue("exclusiveCorpId", options.exclusiveCorpId().getOrNull()));
         }
         return List.copyOf(parameters);
     }
@@ -595,13 +596,13 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
      * @param state generated one-time state
      * @return ordered exact query parameters
      */
-    private List<Parameter> accountParameters(final String state) {
+    private List<NameValue> accountParameters(final String state) {
         return List.of(
-                new Parameter("appid", options.clientId()),
-                new Parameter(OAuth2.Parameters.RESPONSE_TYPE, ResponseType.CODE.value()),
-                new Parameter(OAuth2.Parameters.SCOPE, "snsapi_login"),
-                new Parameter(OAuth2.Parameters.STATE, state),
-                new Parameter(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()));
+                new NameValue("appid", options.clientId()),
+                new NameValue(OAuth2.Parameters.RESPONSE_TYPE, ResponseType.CODE.value()),
+                new NameValue(OAuth2.Parameters.SCOPE, "snsapi_login"),
+                new NameValue(OAuth2.Parameters.STATE, state),
+                new NameValue(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()));
     }
 
     /**
@@ -655,8 +656,8 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(options.credential(), context, timeout),
-                    loaded -> services.secretParser().parse(options.credential(), loaded));
+                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed("DingTalk credential resolution failed"));
         }

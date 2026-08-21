@@ -111,9 +111,7 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
      * @throws ValidateException        if registration, options, or baseline validation fails
      */
     @Override
-    public SourceWorker compile(
-            final Prepared<LdapClientOptions> prepared,
-            final DriverServices services) {
+    public SourceWorker compile(final Prepared<LdapClientOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "LDAP Source preparation must not be null");
         Assert.notNull(services, "LDAP Source execution services must not be null");
         final Registration.SourceEntry record = prepared.registration();
@@ -148,8 +146,7 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
         /**
          * Exact application-level Source capability manifest.
          */
-        private static final Capability.Manifest MANIFEST = new Capability.Manifest(
-                List.of(SourceAuthentication.INITIATE));
+        private static final Capability.Manifest MANIFEST = new Capability.Manifest(List.of(SourceWorkflow.INITIATE));
 
         /**
          * Registered Source identifier.
@@ -259,12 +256,12 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
          * @param timeout shared budget
          * @return original outcome after deterministic cleanup
          */
-        private static CompletionStage<Outcome<SourceAuthentication.Stage>> finish(
+        private static CompletionStage<Outcome<SourceWorkflow.Stage>> finish(
                 final LdapClient client,
-                final Outcome<SourceAuthentication.Stage> outcome,
+                final Outcome<SourceWorkflow.Stage> outcome,
                 final Context context,
                 final Timeout.Budget timeout) {
-            if (!(outcome instanceof Outcome.Succeeded<SourceAuthentication.Stage>)) {
+            if (!(outcome instanceof Outcome.Succeeded<SourceWorkflow.Stage>)) {
                 client.close();
                 return completed(outcome);
             }
@@ -386,11 +383,10 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
             if (!MANIFEST.capabilities().contains(capability)) {
                 return missing();
             }
-            if (capability != SourceAuthentication.INITIATE
-                    || capability.requestType() != SourceAuthentication.Request.Start.class
-                    || capability.responseType() != SourceAuthentication.Stage.class
-                    || !(request instanceof SourceAuthentication.Request.Direct direct)
-                    || !sourceId.equals(direct.sourceId()) || direct.credential().type() != Credential.Type.PASSWORD) {
+            if (capability != SourceWorkflow.INITIATE || capability.requestType() != SourceWorkflow.Request.Start.class
+                    || capability.responseType() != SourceWorkflow.Stage.class
+                    || !(request instanceof SourceWorkflow.Request.Direct direct) || !sourceId.equals(direct.sourceId())
+                    || direct.credential().type() != Credential.Type.PASSWORD) {
                 return mismatch();
             }
             return narrow(authenticate(direct, context, timeout), capability.responseType());
@@ -404,8 +400,8 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
          * @param timeout shared operation budget
          * @return direct completed initiation outcome
          */
-        private CompletionStage<Outcome<SourceAuthentication.Stage>> authenticate(
-                final SourceAuthentication.Request.Direct request,
+        private CompletionStage<Outcome<SourceWorkflow.Stage>> authenticate(
+                final SourceWorkflow.Request.Direct request,
                 final Context context,
                 final Timeout.Budget timeout) {
             if (timeout.expired()) {
@@ -422,7 +418,7 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
                             options.bindCredential().getOrThrow(),
                             context,
                             timeout);
-            final CompletionStage<Outcome<SourceAuthentication.Stage>> flow = initial
+            final CompletionStage<Outcome<SourceWorkflow.Stage>> flow = initial
                     .thenCompose(outcome -> afterServiceBind(outcome, client, request, context, timeout)).exceptionally(
                             cause -> Outcome.failed(failure(ErrorCode._503, "LDAP Source authentication flow failed")));
             return flow.thenCompose(outcome -> finish(client, outcome, context, timeout));
@@ -438,10 +434,10 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
          * @param timeout shared budget
          * @return next-stage completed initiation outcome
          */
-        private CompletionStage<Outcome<SourceAuthentication.Stage>> afterServiceBind(
+        private CompletionStage<Outcome<SourceWorkflow.Stage>> afterServiceBind(
                 final Outcome<BindResponse> outcome,
                 final LdapClient client,
-                final SourceAuthentication.Request.Direct request,
+                final SourceWorkflow.Request.Direct request,
                 final Context context,
                 final Timeout.Budget timeout) {
             if (outcome instanceof Outcome.Rejected<BindResponse> rejected) {
@@ -477,10 +473,10 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
          * @param timeout shared budget
          * @return user-Bind continuation
          */
-        private CompletionStage<Outcome<SourceAuthentication.Stage>> afterSearch(
+        private CompletionStage<Outcome<SourceWorkflow.Stage>> afterSearch(
                 final Outcome<List<LdapMessage>> outcome,
                 final LdapClient client,
-                final SourceAuthentication.Request.Direct request,
+                final SourceWorkflow.Request.Direct request,
                 final Context context,
                 final Timeout.Budget timeout) {
             if (outcome instanceof Outcome.Rejected<List<LdapMessage>> rejected) {
@@ -504,7 +500,7 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
          * @param entry   uniquely selected Search entry
          * @return completed identity or a closed credential rejection/failure
          */
-        private Outcome<SourceAuthentication.Stage> afterUserBind(
+        private Outcome<SourceWorkflow.Stage> afterUserBind(
                 final Outcome<BindResponse> outcome,
                 final SearchResultEntry entry) {
             if (outcome instanceof Outcome.Rejected<BindResponse> rejected) {
@@ -519,8 +515,7 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
             }
             try {
                 final ExternalIdentity external = identity.map(sourceId, entry);
-                return Outcome.succeeded(
-                        new SourceAuthentication.Stage.Completed(external));
+                return Outcome.succeeded(new SourceWorkflow.Stage.Completed(external));
             } catch (RuntimeException exception) {
                 return Outcome.failed(failure(ErrorCode._503, "LDAP Source identity mapping failed"));
             }
@@ -545,8 +540,8 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
             final CompletionStage<Outcome<SecretLease>> resolution;
             try {
                 resolution = Outcome.mapStage(
-                        () -> services.secretLoader().load(reference, context, timeout),
-                        loaded -> services.secretParser().parse(reference, loaded));
+                        () -> services.secretLoader().load(services.registration(), reference, context, timeout),
+                        loaded -> services.secretParser().parse(services.registration(), reference, loaded));
             } catch (RuntimeException exception) {
                 return completed(Outcome.failed(failure(ErrorCode._503, "LDAP Source password resolution failed")));
             }

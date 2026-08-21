@@ -167,9 +167,7 @@ public final class LdapClient implements AutoCloseable {
      * @param <T>         absent success type
      * @return failed operation outcome
      */
-    private static <T> Outcome<T> failed(
-            final Errors error,
-            final String description) {
+    private static <T> Outcome<T> failed(final Errors error, final String description) {
         return Outcome.failed(new Outcome.Failure(error, description, new JsonValue.ObjectValue(Map.of())));
     }
 

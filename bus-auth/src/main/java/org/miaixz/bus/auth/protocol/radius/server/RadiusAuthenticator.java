@@ -51,7 +51,7 @@ public final class RadiusAuthenticator {
     /**
      * Exact Authenticator and Message-Authenticator size.
      */
-    private static final int AUTHENTICATOR_BYTES = 16;
+    private static final int AUTHENTICATOR_BYTES = Normal._16;
 
     /**
      * Complete-packet encoder used for standard digest input construction.

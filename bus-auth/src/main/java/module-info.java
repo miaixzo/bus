@@ -25,9 +25,9 @@
  * and immutable Vendor Source schemes. HTTP transport remains owned by {@code bus.fabric}.
  * </p>
  * <p>
- * Protocol drivers, server-side issuers, runtime assembly classes, and Registry view classes use explicit public
- * responsibility packages instead of hidden {@code internal} packages. Registration queries and capability execution
- * remain separate through Registry and Authenticator.
+ * Protocol drivers, server-side issuers, runtime assembly classes, and Snapshot Registry classes use explicit public
+ * responsibility packages instead of hidden {@code internal} packages. {@code Authorizer} provides the unified runtime
+ * assembly entry, while registration queries and capability execution remain separate through Registry and Dispatcher.
  * </p>
  *
  * @author Kimi Liu
@@ -73,7 +73,6 @@ module bus.auth {
     exports org.miaixz.bus.auth.runtime;
     exports org.miaixz.bus.auth.shared;
     exports org.miaixz.bus.auth.shared.claim;
-    exports org.miaixz.bus.auth.shared.consent;
     exports org.miaixz.bus.auth.shared.dpop;
     exports org.miaixz.bus.auth.shared.jose;
     exports org.miaixz.bus.auth.shared.jwt;

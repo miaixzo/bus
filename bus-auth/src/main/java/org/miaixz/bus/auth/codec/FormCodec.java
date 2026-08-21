@@ -43,7 +43,7 @@ import org.miaixz.bus.core.net.url.UrlQuery;
  *
  * @author Kimi Liu
  */
-public final class FormCodec implements Codec<List<Parameter>, byte[]> {
+public final class FormCodec implements DualCodec<List<NameValue>, byte[]> {
 
     /**
      * Creates a stateless form codec.
@@ -60,7 +60,7 @@ public final class FormCodec implements Codec<List<Parameter>, byte[]> {
      * @param end   exclusive sequence offset
      * @return decoded name/value parameter
      */
-    private static Parameter decodeParameter(final byte[] bytes, final int start, final int end) {
+    private static NameValue decodeParameter(final byte[] bytes, final int start, final int end) {
         int separator = end;
         for (int index = start; index < end; index++) {
             if (bytes[index] == Symbol.C_EQUAL) {
@@ -70,7 +70,7 @@ public final class FormCodec implements Codec<List<Parameter>, byte[]> {
         }
         final String name = decodeComponent(bytes, start, separator);
         final String value = separator == end ? Normal.EMPTY : decodeComponent(bytes, separator + 1, end);
-        return new Parameter(name, value);
+        return new NameValue(name, value);
     }
 
     /**
@@ -88,7 +88,7 @@ public final class FormCodec implements Codec<List<Parameter>, byte[]> {
             final int value = bytes[index] & 0xff;
             if (value == Symbol.C_PLUS) {
                 decoded.write(Symbol.C_SPACE);
-            } else if (value == '%') {
+            } else if (value == Symbol.C_PERCENT) {
                 if (index + 2 >= end) {
                     throw new ValidateException("Malformed form percent encoding");
                 }
@@ -121,11 +121,11 @@ public final class FormCodec implements Codec<List<Parameter>, byte[]> {
         if (value >= Symbol.C_ZERO && value <= Symbol.C_NINE) {
             return value - Symbol.C_ZERO;
         }
-        if (value >= 'A' && value <= 'F') {
-            return value - 'A' + 10;
+        if (value >= Symbol.C_UPPER_A && value <= Symbol.C_UPPER_F) {
+            return value - Symbol.C_UPPER_A + 10;
         }
-        if (value >= 'a' && value <= 'f') {
-            return value - 'a' + 10;
+        if (value >= Symbol.C_LOWER_A && value <= Symbol.C_LOWER_F) {
+            return value - Symbol.C_LOWER_A + 10;
         }
         return -1;
     }
@@ -138,11 +138,11 @@ public final class FormCodec implements Codec<List<Parameter>, byte[]> {
      * @throws IllegalArgumentException if the list or an entry is {@code null}
      */
     @Override
-    public byte[] encode(final List<Parameter> data) {
+    public byte[] encode(final List<NameValue> data) {
         Assert.notNull(data, "Form parameters must not be null");
         final UrlQuery query = UrlQuery.of(UrlQuery.EncodeMode.FORM_URL_ENCODED);
-        for (Parameter parameter : data) {
-            final Parameter value = Assert.notNull(parameter, "Form parameter must not be null");
+        for (NameValue parameter : data) {
+            final NameValue value = Assert.notNull(parameter, "Form parameter must not be null");
             query.add(value.name(), value.value());
         }
         return query.build(Charset.UTF_8).getBytes(Charset.UTF_8);
@@ -157,9 +157,9 @@ public final class FormCodec implements Codec<List<Parameter>, byte[]> {
      * @throws IllegalArgumentException if the byte array is {@code null}
      */
     @Override
-    public List<Parameter> decode(final byte[] encoded) {
+    public List<NameValue> decode(final byte[] encoded) {
         Assert.notNull(encoded, "Encoded form body must not be null");
-        final List<Parameter> parameters = new ArrayList<>();
+        final List<NameValue> parameters = new ArrayList<>();
         int start = 0;
         for (int index = 0; index <= encoded.length; index++) {
             if (index == encoded.length || encoded[index] == Symbol.C_AND) {

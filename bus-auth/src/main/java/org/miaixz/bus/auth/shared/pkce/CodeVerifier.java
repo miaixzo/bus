@@ -63,7 +63,8 @@ public record CodeVerifier(String value) {
     static boolean unreserved(final String value) {
         for (int index = 0; index < value.length(); index++) {
             final char character = value.charAt(index);
-            if (!(character >= 'A' && character <= 'Z') && !(character >= 'a' && character <= 'z')
+            if (!(character >= Symbol.C_UPPER_A && character <= Symbol.C_UPPER_Z)
+                    && !(character >= Symbol.C_LOWER_A && character <= Symbol.C_LOWER_Z)
                     && !(character >= Symbol.C_ZERO && character <= Symbol.C_NINE) && character != Symbol.C_MINUS
                     && character != Symbol.C_DOT && character != Symbol.C_UNDERLINE && character != Symbol.C_TILDE) {
                 return false;

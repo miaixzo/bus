@@ -41,7 +41,14 @@ import org.miaixz.bus.core.lang.exception.NotFoundException;
  */
 public final class DriverDirectory {
 
+    /**
+     * Drivers in deterministic runtime assembly order.
+     */
     private final List<SourceDriver<?>> drivers;
+
+    /**
+     * Exact Source scheme identifier index over the immutable driver list.
+     */
     private final Map<String, SourceDriver<?>> driversByScheme;
 
     /**
@@ -102,4 +109,5 @@ public final class DriverDirectory {
         }
         return driver;
     }
+
 }

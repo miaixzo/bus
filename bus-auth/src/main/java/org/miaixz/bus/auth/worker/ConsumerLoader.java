@@ -26,6 +26,7 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Outcome;
+import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -39,18 +40,33 @@ public interface ConsumerLoader {
     /**
      * Loads the record identified by the exact consumer identifier.
      *
-     * @param consumerId exact external consumer identifier
-     * @param context    immutable non-secret invocation context
-     * @param timeout    shared end-to-end operation budget
+     * @param registration exact Source registration requesting the data
+     * @param consumerId   exact external consumer identifier
+     * @param context      immutable non-secret invocation context
+     * @param timeout      shared end-to-end operation budget
      * @return asynchronous external loading outcome
      */
-    CompletionStage<Outcome<Record>> load(String consumerId, Context context, Timeout.Budget timeout);
+    CompletionStage<Outcome<Record>> load(
+            Registration.SourceEntry registration,
+            String consumerId,
+            Context context,
+            Timeout.Budget timeout);
 
     /**
      * Project-adapted consumer data that has not yet been parsed by bus-auth.
+     *
+     * @param sourceId      exact Source identifier that owns the returned data
+     * @param id            exact external consumer identifier
+     * @param credential    optional project credential reference
+     * @param redirectUris  registered exact redirect URI values
+     * @param grantTypes    registered OAuth grant types
+     * @param responseTypes registered OAuth response types
+     * @param scopes        registered scope-token set
+     * @param metadata      protocol-specific non-secret registration metadata
      */
-    record Record(String id, Optional<Credential.Reference> credential, List<String> redirectUris,
+    record Record(String sourceId, String id, Optional<Credential.Reference> credential, List<String> redirectUris,
             Set<String> grantTypes, Set<String> responseTypes, Set<String> scopes, JsonValue.ObjectValue metadata) {
+
     }
 
 }

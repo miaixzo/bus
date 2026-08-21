@@ -64,7 +64,8 @@ public record IntrospectionRequest(String token, Optional<String> tokenTypeHint)
         Assert.notEmpty(value, "OAuth 2.x introspection token type hint must not be empty when present");
         for (int index = 0; index < value.length(); index++) {
             final char character = value.charAt(index);
-            final boolean valid = character >= 'A' && character <= 'Z' || character >= 'a' && character <= 'z'
+            final boolean valid = character >= Symbol.C_UPPER_A && character <= Symbol.C_UPPER_Z
+                    || character >= Symbol.C_LOWER_A && character <= Symbol.C_LOWER_Z
                     || character >= Symbol.C_ZERO && character <= Symbol.C_NINE || character == Symbol.C_MINUS
                     || character == Symbol.C_DOT || character == Symbol.C_UNDERLINE;
             if (!valid) {

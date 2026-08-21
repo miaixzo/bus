@@ -40,7 +40,7 @@ public record SubjectConfirmation(Optional<Subject.Identifier> identifier, Optio
     /**
      * SAML bearer subject confirmation method used by Web Browser SSO.
      */
-    public static final String BEARER = "urn:oasis:names:tc:SAML:2.0:cm:bearer";
+    public static final String BEARER = Saml.ConfirmationMethods.BEARER;
 
     /**
      * Normalizes optional children and validates the required absolute method URI.

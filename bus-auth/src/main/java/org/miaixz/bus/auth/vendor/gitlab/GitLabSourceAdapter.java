@@ -25,8 +25,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.AuthorizationClient;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientOptions;
@@ -37,7 +38,7 @@ import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -76,12 +77,12 @@ public final class GitLabSourceAdapter implements VendorAdapter {
     /**
      * Maximum accepted private GitLab JSON response size.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum accepted private GitLab JSON nesting depth.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 64;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
 
     /**
      * Registered Source identifier copied into verified identities.
@@ -174,7 +175,7 @@ public final class GitLabSourceAdapter implements VendorAdapter {
     private static Outcome<TokenResponse> tokenError(final TokenResponseDecoder.Error error) {
         final String value = error.response().error().value();
         final Map<String, JsonValue> details = Map
-                .of("oauth_error", new JsonValue.StringValue(value), "status", number(error.status()));
+                .of(Builder.OAUTH_ERROR, new JsonValue.StringValue(value), "status", number(error.status()));
         if (error.status() == Http.Status.TOO_MANY_REQUESTS) {
             return failed(ErrorCode._429, "GitLab token endpoint rate limited the request", details);
         }
@@ -559,12 +560,12 @@ public final class GitLabSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return missing();
         }
-        if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -644,7 +645,7 @@ public final class GitLabSourceAdapter implements VendorAdapter {
                             new Outcome.Failure(ErrorCode._400,
                                     "GitLab authorization endpoint returned a standard OAuth error",
                                     new JsonValue.ObjectValue(
-                                            Map.of("oauth_error", new JsonValue.StringValue(values.error()))))));
+                                            Map.of(Builder.OAUTH_ERROR, new JsonValue.StringValue(values.error()))))));
         }
         if (completion.codeVerifier().isEmpty()) {
             return completed(failed(ErrorCode._500, "GitLab callback lacks its required PKCE verifier"));
@@ -652,9 +653,11 @@ public final class GitLabSourceAdapter implements VendorAdapter {
         final AuthorizationCodeGrant grant = new AuthorizationCodeGrant(values.code(), options.redirectUri(),
                 Optional.of(options.clientId()), Optional.of(completion.codeVerifier().getOrNull().value()));
         final TokenRequest request = new TokenRequest(grant, emptyObject());
-        return Outcome.mapStage(
-                        () -> services.secretLoader().load(options.credential(), context, timeout),
-                        loaded -> services.secretParser().parse(options.credential(), loaded))
+        return Outcome
+                .mapStage(
+                        () -> services.secretLoader()
+                                .load(services.registration(), options.credential(), context, timeout),
+                        loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> authenticate(request, success.value(), timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
@@ -702,9 +705,11 @@ public final class GitLabSourceAdapter implements VendorAdapter {
         if (!valid(request)) {
             return completed(rejected("GitLab token request does not match the registered grant contract"));
         }
-        return Outcome.mapStage(
-                        () -> services.secretLoader().load(options.credential(), context, timeout),
-                        loaded -> services.secretParser().parse(options.credential(), loaded))
+        return Outcome
+                .mapStage(
+                        () -> services.secretLoader()
+                                .load(services.registration(), options.credential(), context, timeout),
+                        loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> CompletableFuture.supplyAsync(() -> {
                         try (SecretLease secret = success.value()) {
@@ -757,23 +762,23 @@ public final class GitLabSourceAdapter implements VendorAdapter {
      * @param secret  open Client Secret lease
      * @return ordered form parameters
      */
-    private List<Parameter> tokenParameters(final TokenRequest request, final SecretLease secret) {
+    private List<NameValue> tokenParameters(final TokenRequest request, final SecretLease secret) {
         if (request.grant() instanceof AuthorizationCodeGrant grant) {
             return List.of(
-                    new Parameter(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()),
-                    new Parameter(OAuth2.Parameters.CODE, grant.code()),
-                    new Parameter(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()),
-                    new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()),
-                    new Parameter(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())),
-                    new Parameter(OAuth2.Parameters.CODE_VERIFIER, grant.codeVerifier().getOrNull()));
+                    new NameValue(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()),
+                    new NameValue(OAuth2.Parameters.CODE, grant.code()),
+                    new NameValue(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()),
+                    new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()),
+                    new NameValue(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())),
+                    new NameValue(OAuth2.Parameters.CODE_VERIFIER, grant.codeVerifier().getOrNull()));
         }
         final RefreshTokenGrant grant = (RefreshTokenGrant) request.grant();
         return List.of(
-                new Parameter(OAuth2.Parameters.GRANT_TYPE, GrantType.REFRESH_TOKEN.value()),
-                new Parameter(OAuth2.Parameters.REFRESH_TOKEN, grant.refreshToken()),
-                new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()),
-                new Parameter(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())),
-                new Parameter(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()));
+                new NameValue(OAuth2.Parameters.GRANT_TYPE, GrantType.REFRESH_TOKEN.value()),
+                new NameValue(OAuth2.Parameters.REFRESH_TOKEN, grant.refreshToken()),
+                new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()),
+                new NameValue(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())),
+                new NameValue(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()));
     }
 
     /**
@@ -831,9 +836,11 @@ public final class GitLabSourceAdapter implements VendorAdapter {
         if (!valid(request)) {
             return completed(rejected("GitLab revocation token type hint is unsupported"));
         }
-        return Outcome.mapStage(
-                        () -> services.secretLoader().load(options.credential(), context, timeout),
-                        loaded -> services.secretParser().parse(options.credential(), loaded))
+        return Outcome
+                .mapStage(
+                        () -> services.secretLoader()
+                                .load(services.registration(), options.credential(), context, timeout),
+                        loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> CompletableFuture.supplyAsync(() -> {
                         try (SecretLease secret = success.value()) {
@@ -864,13 +871,13 @@ public final class GitLabSourceAdapter implements VendorAdapter {
             if (timeout.expired()) {
                 return failed(ErrorCode._408, "GitLab revocation has no remaining time budget");
             }
-            final List<Parameter> parameters = new ArrayList<>();
-            parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()));
-            parameters.add(new Parameter(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())));
-            parameters.add(new Parameter("token", request.token()));
+            final List<NameValue> parameters = new ArrayList<>();
+            parameters.add(new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()));
+            parameters.add(new NameValue(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())));
+            parameters.add(new NameValue("token", request.token()));
             final String hint = request.tokenTypeHint().getOrNull();
             if (hint != null) {
-                parameters.add(new Parameter(OAuth2.Parameters.TOKEN_TYPE_HINT, hint));
+                parameters.add(new NameValue(OAuth2.Parameters.TOKEN_TYPE_HINT, hint));
             }
             body = formCodec.encode(parameters);
             final var endpoint = variant.targets().resolve(options).revocation().getOrNull();
@@ -913,8 +920,11 @@ public final class GitLabSourceAdapter implements VendorAdapter {
                 throw new ValidateException("GitLab revocation error envelope is invalid");
             }
             final OAuth2ErrorCode error = new OAuth2ErrorCode(requiredString(object, OAuth2.Parameters.ERROR));
-            final Map<String, JsonValue> details = Map
-                    .of("oauth_error", new JsonValue.StringValue(error.value()), "status", number(response.code()));
+            final Map<String, JsonValue> details = Map.of(
+                    Builder.OAUTH_ERROR,
+                    new JsonValue.StringValue(error.value()),
+                    "status",
+                    number(response.code()));
             if (response.code() == Http.Status.TOO_MANY_REQUESTS) {
                 return failed(ErrorCode._429, "GitLab revocation endpoint rate limited the request", details);
             }

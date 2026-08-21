@@ -19,12 +19,11 @@
 */
 package org.miaixz.bus.auth;
 
-import org.miaixz.bus.auth.protocol.Conformance;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.miaixz.bus.auth.protocol.Conformance;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.net.Protocol;
@@ -126,7 +125,22 @@ public interface Scheme<O extends Options<?>> {
          * @author Kimi Liu
          */
         public enum Type {
-            TEXT, SECRET, URL, BOOLEAN, NUMBER, SELECT, MULTI_SELECT
+
+            /** Single-line textual input. */
+            TEXT,
+            /** Secret input that must remain redacted. */
+            SECRET,
+            /** Absolute or relative URL input. */
+            URL,
+            /** Boolean toggle input. */
+            BOOLEAN,
+            /** Numeric input. */
+            NUMBER,
+            /** Single-choice selection input. */
+            SELECT,
+            /** Multiple-choice selection input. */
+            MULTI_SELECT
+
         }
 
         /**
@@ -139,6 +153,7 @@ public interface Scheme<O extends Options<?>> {
          */
         public record Section(String key, String title, List<Field> fields) {
 
+            /** Validates and freezes one management form section. */
             public Section {
                 Assert.notBlank(key, "Form section key must not be blank");
                 Assert.notBlank(title, "Form section title must not be blank");
@@ -149,6 +164,7 @@ public interface Scheme<O extends Options<?>> {
                 }
                 fields = List.copyOf(copy);
             }
+
         }
 
         /**
@@ -165,6 +181,7 @@ public interface Scheme<O extends Options<?>> {
         public record Field(String key, String label, Type type, boolean required, Optional<JsonValue> defaultValue,
                 List<Constraint> constraints) {
 
+            /** Validates and freezes one management input description. */
             public Field {
                 Assert.notBlank(key, "Form field key must not be blank");
                 Assert.notBlank(label, "Form field label must not be blank");
@@ -178,6 +195,7 @@ public interface Scheme<O extends Options<?>> {
                 }
                 constraints = List.copyOf(copy);
             }
+
         }
 
         /**
@@ -189,12 +207,15 @@ public interface Scheme<O extends Options<?>> {
          */
         public record Constraint(String validator, JsonValue.ObjectValue arguments) {
 
+            /** Validates and detaches one management field constraint. */
             public Constraint {
                 Assert.notBlank(validator, "Form constraint validator must not be blank");
                 Assert.notNull(arguments, "Form constraint arguments must not be null");
                 arguments = new JsonValue.ObjectValue(arguments.values());
             }
+
         }
+
     }
 
 }

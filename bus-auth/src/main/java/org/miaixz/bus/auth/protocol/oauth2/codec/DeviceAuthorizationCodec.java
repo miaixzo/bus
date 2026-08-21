@@ -25,8 +25,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
@@ -62,7 +63,7 @@ public final class DeviceAuthorizationCodec {
     /**
      * Maximum accepted device authorization JSON size in bytes.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Shared strict UTF-8 form codec.
@@ -143,9 +144,9 @@ public final class DeviceAuthorizationCodec {
      * @return mutable unique parameter map
      * @throws ValidateException if any name occurs more than once
      */
-    private static Map<String, String> unique(final List<Parameter> decoded) {
+    private static Map<String, String> unique(final List<NameValue> decoded) {
         final Map<String, String> values = new LinkedHashMap<>(decoded.size());
-        for (Parameter parameter : decoded) {
+        for (NameValue parameter : decoded) {
             if (values.putIfAbsent(parameter.name(), parameter.value()) != null) {
                 throw new ValidateException("OAuth 2.x device authorization parameters must not be repeated");
             }
@@ -318,11 +319,11 @@ public final class DeviceAuthorizationCodec {
      * @return immutable ordered form parameters
      * @throws IllegalArgumentException if request is {@code null}
      */
-    public List<Parameter> encode(final DeviceAuthorizationRequest request) {
+    public List<NameValue> encode(final DeviceAuthorizationRequest request) {
         Assert.notNull(request, "OAuth 2.x device authorization request must not be null");
-        final List<Parameter> parameters = new ArrayList<>(2);
-        parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, request.clientId()));
-        request.scope().ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.SCOPE, value.format())));
+        final List<NameValue> parameters = new ArrayList<>(2);
+        parameters.add(new NameValue(OAuth2.Parameters.CLIENT_ID, request.clientId()));
+        request.scope().ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.SCOPE, value.format())));
         return List.copyOf(parameters);
     }
 

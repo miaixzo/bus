@@ -24,6 +24,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
+import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.crypto.builtin.CertificateChain;
@@ -35,21 +36,55 @@ import org.miaixz.bus.crypto.builtin.TrustRootIndex;
 @FunctionalInterface
 public interface CertificateLoader {
 
-    CompletionStage<Outcome<Record>> load(Request request, Context context, Timeout.Budget timeout);
+    /**
+     * Loads certificate material within the exact Source registration scope.
+     *
+     * @param registration exact Source registration requesting the data
+     * @param request      validated certificate lookup coordinates
+     * @param context      immutable non-secret invocation context
+     * @param timeout      shared end-to-end operation budget
+     * @return asynchronous project loading outcome
+     */
+    CompletionStage<Outcome<Record>> load(
+            Registration.SourceEntry registration,
+            Request request,
+            Context context,
+            Timeout.Budget timeout);
 
+    /**
+     * Identifies certificate material required by one protocol operation.
+     *
+     * @param issuer expected certificate issuer
+     * @param use    expected protocol use
+     * @param at     required validity instant
+     */
     record Request(String issuer, String use, Instant at) {
 
+        /**
+         * Validates one complete certificate lookup request.
+         */
         public Request {
             Assert.notBlank(issuer, "Certificate request issuer must not be blank");
             Assert.notBlank(use, "Certificate request use must not be blank");
             Assert.notNull(at, "Certificate request validity instant must not be null");
         }
+
     }
 
     /**
      * Loaded certificate chain and trust-root boundary awaiting parsing.
+     *
+     * @param sourceId   exact Source identifier that owns the returned data
+     * @param issuer     returned issuer
+     * @param use        returned protocol use
+     * @param chain      returned certificate chain
+     * @param trustRoots project trust boundary used to validate the chain
+     * @param notBefore  inclusive validity start
+     * @param notAfter   exclusive validity end
      */
-    record Record(String issuer, String use, CertificateChain chain, TrustRootIndex trustRoots, Instant notBefore,
-            Instant notAfter) {
+    record Record(String sourceId, String issuer, String use, CertificateChain chain, TrustRootIndex trustRoots,
+            Instant notBefore, Instant notAfter) {
+
     }
+
 }

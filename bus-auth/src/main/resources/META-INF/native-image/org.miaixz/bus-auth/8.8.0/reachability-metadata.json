@@ -1,12 +1,27 @@
 {
   "reflection": [
     {
-      "type": "org.miaixz.bus.auth.Authenticator",
+      "type": "org.miaixz.bus.auth.Authorizer",
       "methods": [
         {
-          "name": "close",
-          "parameterTypes": []
+          "name": "custom",
+          "parameterTypes": [
+            "org.miaixz.bus.auth.runtime.RuntimeServices",
+            "org.miaixz.bus.auth.worker.RegistrationLoader"
+          ]
         },
+        {
+          "name": "standard",
+          "parameterTypes": [
+            "org.miaixz.bus.auth.runtime.RuntimeServices",
+            "org.miaixz.bus.auth.worker.RegistrationLoader"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.auth.Dispatcher",
+      "methods": [
         {
           "name": "invoke",
           "parameterTypes": [
@@ -2298,7 +2313,7 @@
       "type": "org.miaixz.bus.auth.Registry$Report",
       "fields": [
         {
-          "name": "issues"
+          "name": "faults"
         },
         {
           "name": "revision"
@@ -2316,7 +2331,7 @@
           "parameterTypes": []
         },
         {
-          "name": "issues",
+          "name": "faults",
           "parameterTypes": []
         },
         {
@@ -3540,7 +3555,7 @@
       "type": "org.miaixz.bus.auth.cache.StateCache"
     },
     {
-      "type": "org.miaixz.bus.auth.codec.Codec"
+      "type": "org.miaixz.bus.auth.codec.DualCodec"
     },
     {
       "type": "org.miaixz.bus.auth.codec.FormCodec",
@@ -3715,7 +3730,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.codec.Parameter",
+      "type": "org.miaixz.bus.auth.codec.NameValue",
       "fields": [
         {
           "name": "name"
@@ -4171,48 +4186,6 @@
           "name": "scalar",
           "parameterTypes": [
             "org.miaixz.bus.extra.json.JsonValue",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.auth.library.LibraryValidator",
-      "fields": [
-        {
-          "name": "MAX_CODE_LENGTH"
-        }
-      ],
-      "methods": [
-        {
-          "name": "replacePlaceholders",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "validate",
-          "parameterTypes": [
-            "org.miaixz.bus.auth.Library"
-          ]
-        },
-        {
-          "name": "validateClaimName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "validateCode",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "validateLocation",
-          "parameterTypes": [
-            "java.lang.String",
-            "boolean",
             "java.lang.String"
           ]
         }
@@ -7705,7 +7678,7 @@
           "parameterTypes": [
             "org.miaixz.bus.auth.Outcome",
             "org.miaixz.bus.auth.protocol.ldap.client.LdapClient",
-            "org.miaixz.bus.auth.source.SourceAuthentication$Request$Direct",
+            "org.miaixz.bus.auth.source.SourceWorkflow$Request$Direct",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
           ]
@@ -7715,7 +7688,7 @@
           "parameterTypes": [
             "org.miaixz.bus.auth.Outcome",
             "org.miaixz.bus.auth.protocol.ldap.client.LdapClient",
-            "org.miaixz.bus.auth.source.SourceAuthentication$Request$Direct",
+            "org.miaixz.bus.auth.source.SourceWorkflow$Request$Direct",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
           ]
@@ -7734,7 +7707,7 @@
         {
           "name": "authenticate",
           "parameterTypes": [
-            "org.miaixz.bus.auth.source.SourceAuthentication$Request$Direct",
+            "org.miaixz.bus.auth.source.SourceWorkflow$Request$Direct",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
           ]
@@ -13162,7 +13135,7 @@
             "org.miaixz.bus.auth.Subject",
             "org.miaixz.bus.auth.resolver.ConsumerMetadata",
             "java.lang.String",
-            "org.miaixz.bus.auth.shared.consent.ConsentRequest",
+            "org.miaixz.bus.auth.worker.ConsentService$Request",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
           ]
@@ -13177,8 +13150,8 @@
         {
           "name": "covering",
           "parameterTypes": [
-            "org.miaixz.bus.auth.shared.consent.Consent",
-            "org.miaixz.bus.auth.shared.consent.ConsentRequest",
+            "org.miaixz.bus.auth.worker.ConsentService$Snapshot",
+            "org.miaixz.bus.auth.worker.ConsentService$Request",
             "java.time.Instant"
           ]
         },
@@ -13190,7 +13163,7 @@
             "org.miaixz.bus.auth.Subject",
             "org.miaixz.bus.auth.resolver.ConsumerMetadata",
             "java.lang.String",
-            "org.miaixz.bus.auth.shared.consent.ConsentRequest",
+            "org.miaixz.bus.auth.worker.ConsentService$Request",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
           ]
@@ -13232,7 +13205,7 @@
             "org.miaixz.bus.auth.Subject",
             "org.miaixz.bus.auth.resolver.ConsumerMetadata",
             "java.lang.String",
-            "org.miaixz.bus.auth.shared.consent.ConsentDecision",
+            "org.miaixz.bus.auth.worker.ConsentService$Decision",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
           ]
@@ -13240,8 +13213,8 @@
         {
           "name": "recorded",
           "parameterTypes": [
-            "org.miaixz.bus.auth.shared.consent.Consent",
-            "org.miaixz.bus.auth.shared.consent.ConsentDecision",
+            "org.miaixz.bus.auth.worker.ConsentService$Snapshot",
+            "org.miaixz.bus.auth.worker.ConsentService$Decision",
             "java.time.Instant"
           ]
         },
@@ -26830,7 +26803,7 @@
         {
           "name": "complete",
           "parameterTypes": [
-            "org.miaixz.bus.auth.source.SourceAuthentication$Request$BrowserCallback",
+            "org.miaixz.bus.auth.source.SourceWorkflow$Request$BrowserCallback",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
           ]
@@ -26845,7 +26818,7 @@
         {
           "name": "initiate",
           "parameterTypes": [
-            "org.miaixz.bus.auth.source.SourceAuthentication$Request$BrowserStart",
+            "org.miaixz.bus.auth.source.SourceWorkflow$Request$BrowserStart",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
           ]
@@ -34370,28 +34343,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.provider.ProviderValidator",
-      "fields": [
-        {
-          "name": "profiles"
-        }
-      ],
-      "methods": [
-        {
-          "name": "expectedProtocol",
-          "parameterTypes": [
-            "org.miaixz.bus.core.net.Protocol"
-          ]
-        },
-        {
-          "name": "validate",
-          "parameterTypes": [
-            "org.miaixz.bus.auth.Provider"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.auth.worker.RegistrationLoader",
       "methods": [
         {
@@ -34404,7 +34355,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.registry.RegistrationValidator",
+      "type": "org.miaixz.bus.auth.registry.SnapshotValidator",
       "methods": [
         {
           "name": "isProviderProtocol",
@@ -34485,7 +34436,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.registry.RegistryIssue",
+      "type": "org.miaixz.bus.auth.registry.SnapshotFault",
       "fields": [
         {
           "name": "error"
@@ -34555,7 +34506,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.registry.RegistryIssue$Stage",
+      "type": "org.miaixz.bus.auth.registry.SnapshotFault$Stage",
       "fields": [
         {
           "name": "COMMIT"
@@ -34604,7 +34555,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.registry.AtomicRegistryState",
+      "type": "org.miaixz.bus.auth.registry.CurrentRegistry",
       "fields": [
         {
           "name": "current"
@@ -34612,32 +34563,10 @@
       ],
       "methods": [
         {
-          "name": "current",
-          "parameterTypes": []
-        },
-        {
-          "name": "replace",
+          "name": "enabledSources",
           "parameterTypes": [
-            "org.miaixz.bus.auth.registry.RegistryView",
-            "org.miaixz.bus.auth.registry.RegistryView"
+            "java.lang.String"
           ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.auth.registry.DefaultRegistry",
-      "fields": [
-        {
-          "name": "lifecycle"
-        },
-        {
-          "name": "registryState"
-        }
-      ],
-      "methods": [
-        {
-          "name": "close",
-          "parameterTypes": []
         },
         {
           "name": "revision",
@@ -34648,38 +34577,40 @@
           "parameterTypes": []
         },
         {
-          "name": "state",
-          "parameterTypes": []
+          "name": "sources",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.registry.ImmutableRegistryView",
+      "type": "org.miaixz.bus.auth.registry.SnapshotRegistry",
       "fields": [
         {
-          "name": "libraries"
+          "name": "enabledSourcesByProvider"
         },
         {
           "name": "revision"
         },
         {
-          "name": "workers"
+          "name": "snapshot"
         },
         {
-          "name": "snapshot"
+          "name": "sourcesByProvider"
         }
       ],
       "methods": [
         {
-          "name": "copy",
+          "name": "enabledSources",
           "parameterTypes": [
-            "org.miaixz.bus.auth.Library"
+            "java.lang.String"
           ]
         },
         {
-          "name": "library",
+          "name": "immutableLists",
           "parameterTypes": [
-            "java.lang.String"
+            "java.util.Map"
           ]
         },
         {
@@ -34687,39 +34618,14 @@
           "parameterTypes": []
         },
         {
-          "name": "worker",
-          "parameterTypes": [
-            "org.miaixz.bus.auth.Registry$Reference"
-          ]
-        },
-        {
           "name": "snapshot",
           "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.auth.registry.RegistryView",
-      "methods": [
+        },
         {
-          "name": "library",
+          "name": "sources",
           "parameterTypes": [
             "java.lang.String"
           ]
-        },
-        {
-          "name": "revision",
-          "parameterTypes": []
-        },
-        {
-          "name": "worker",
-          "parameterTypes": [
-            "org.miaixz.bus.auth.Registry$Reference"
-          ]
-        },
-        {
-          "name": "snapshot",
-          "parameterTypes": []
         }
       ]
     },
@@ -34729,6 +34635,7 @@
         {
           "name": "load",
           "parameterTypes": [
+            "org.miaixz.bus.auth.Registration$SourceEntry",
             "org.miaixz.bus.auth.Subject$Key",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
@@ -34742,6 +34649,7 @@
         {
           "name": "load",
           "parameterTypes": [
+            "org.miaixz.bus.auth.Registration$SourceEntry",
             "org.miaixz.bus.auth.worker.CertificateLoader$Request",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
@@ -34832,6 +34740,7 @@
         {
           "name": "load",
           "parameterTypes": [
+            "org.miaixz.bus.auth.Registration$SourceEntry",
             "java.lang.String",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
@@ -34915,68 +34824,6 @@
         },
         {
           "name": "scopes",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.auth.worker.CredentialLoader",
-      "methods": [
-        {
-          "name": "load",
-          "parameterTypes": [
-            "org.miaixz.bus.auth.Credential$Reference",
-            "org.miaixz.bus.auth.Context",
-            "org.miaixz.bus.auth.Timeout$Budget"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.auth.resolver.CredentialDescriptor",
-      "fields": [
-        {
-          "name": "enabled"
-        },
-        {
-          "name": "expiresAt"
-        },
-        {
-          "name": "metadata"
-        },
-        {
-          "name": "reference"
-        }
-      ],
-      "methods": [
-        {
-          "name": "enabled",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "expiresAt",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "metadata",
-          "parameterTypes": []
-        },
-        {
-          "name": "reference",
           "parameterTypes": []
         },
         {
@@ -35081,24 +34928,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.worker.GroupLoader",
-      "methods": [
-        {
-          "name": "load",
-          "parameterTypes": [
-            "org.miaixz.bus.auth.Subject$Reference",
-            "org.miaixz.bus.auth.Context",
-            "org.miaixz.bus.auth.Timeout$Budget"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.auth.worker.KeyLoader",
       "methods": [
         {
           "name": "load",
           "parameterTypes": [
+            "org.miaixz.bus.auth.Registration$SourceEntry",
             "org.miaixz.bus.auth.worker.KeyLoader$Request",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
@@ -35107,6 +34942,7 @@
         {
           "name": "loadPublic",
           "parameterTypes": [
+            "org.miaixz.bus.auth.Registration$SourceEntry",
             "org.miaixz.bus.auth.worker.KeyLoader$PublicRequest",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
@@ -35274,6 +35110,7 @@
         {
           "name": "load",
           "parameterTypes": [
+            "org.miaixz.bus.auth.Registration$SourceEntry",
             "org.miaixz.bus.auth.worker.ResourceLoader$Request",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
@@ -35378,20 +35215,8 @@
         {
           "name": "load",
           "parameterTypes": [
+            "org.miaixz.bus.auth.Registration$SourceEntry",
             "org.miaixz.bus.auth.Credential$Reference",
-            "org.miaixz.bus.auth.Context",
-            "org.miaixz.bus.auth.Timeout$Budget"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.auth.worker.SubjectLoader",
-      "methods": [
-        {
-          "name": "load",
-          "parameterTypes": [
-            "org.miaixz.bus.auth.Subject$Reference",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
           ]
@@ -35402,7 +35227,13 @@
       "type": "org.miaixz.bus.auth.runtime.RuntimeManager",
       "fields": [
         {
-          "name": "authenticator"
+          "name": "dispatcher"
+        },
+        {
+          "name": "descriptor"
+        },
+        {
+          "name": "containers"
         },
         {
           "name": "lifecycle"
@@ -35416,11 +35247,15 @@
       ],
       "methods": [
         {
-          "name": "authenticator",
+          "name": "dispatcher",
           "parameterTypes": []
         },
         {
           "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "descriptor",
           "parameterTypes": []
         },
         {
@@ -35441,19 +35276,21 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.runtime.DefaultAuthenticator",
+      "type": "org.miaixz.bus.auth.runtime.DefaultDispatcher",
       "fields": [
         {
-          "name": "lifecycle"
+          "name": "containers"
         },
         {
-          "name": "registryState"
+          "name": "lifecycle"
         }
       ],
       "methods": [
         {
-          "name": "close",
-          "parameterTypes": []
+          "name": "available",
+          "parameterTypes": [
+            "org.miaixz.bus.auth.Registry$Reference"
+          ]
         },
         {
           "name": "declared",
@@ -35487,6 +35324,12 @@
           ]
         },
         {
+          "name": "manifest",
+          "parameterTypes": [
+            "org.miaixz.bus.auth.Registry$Reference"
+          ]
+        },
+        {
           "name": "rejected",
           "parameterTypes": [
             "org.miaixz.bus.core.basic.normal.Errors",
@@ -35494,8 +35337,11 @@
           ]
         },
         {
-          "name": "state",
-          "parameterTypes": []
+          "name": "securityRejection",
+          "parameterTypes": [
+            "org.miaixz.bus.auth.Capability$Security",
+            "org.miaixz.bus.auth.Context"
+          ]
         }
       ]
     },
@@ -35516,17 +35362,28 @@
         },
         {
           "name": "sources"
+        },
+        {
+          "name": "vendors"
         }
       ],
       "methods": [
         {
           "name": "build",
+          "parameterTypes": [
+            "org.miaixz.bus.auth.Context",
+            "org.miaixz.bus.auth.Timeout$Budget"
+          ]
+        },
+        {
+          "name": "buildEmpty",
           "parameterTypes": []
         },
         {
           "name": "custom",
           "parameterTypes": [
-            "org.miaixz.bus.auth.runtime.RuntimeServices"
+            "org.miaixz.bus.auth.runtime.RuntimeServices",
+            "org.miaixz.bus.auth.worker.RegistrationLoader"
           ]
         },
         {
@@ -35554,7 +35411,14 @@
         {
           "name": "standard",
           "parameterTypes": [
-            "org.miaixz.bus.auth.runtime.RuntimeServices"
+            "org.miaixz.bus.auth.runtime.RuntimeServices",
+            "org.miaixz.bus.auth.worker.RegistrationLoader"
+          ]
+        },
+        {
+          "name": "vendors",
+          "parameterTypes": [
+            "org.miaixz.bus.auth.vendor.VendorModule"
           ]
         }
       ]
@@ -35566,13 +35430,16 @@
           "name": "compiler"
         },
         {
-          "name": "listeners"
+          "name": "containers"
+        },
+        {
+          "name": "lifecycle"
         },
         {
           "name": "loader"
         },
         {
-          "name": "registryState"
+          "name": "notifier"
         },
         {
           "name": "validator"
@@ -35580,23 +35447,21 @@
       ],
       "methods": [
         {
-          "name": "committed",
-          "parameterTypes": [
-            "org.miaixz.bus.auth.Registry$Revision"
-          ]
-        },
-        {
-          "name": "failed",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
+          "name": "close",
+          "parameterTypes": []
         },
         {
           "name": "process",
           "parameterTypes": [
             "org.miaixz.bus.auth.worker.RegistrationLoader$Batch",
-            "org.miaixz.bus.auth.registry.RegistryView",
+            "org.miaixz.bus.auth.runtime.RuntimeContainer",
             "org.miaixz.bus.auth.Timeout$Budget"
+          ]
+        },
+        {
+          "name": "reject",
+          "parameterTypes": [
+            "org.miaixz.bus.auth.Registry$Report"
           ]
         },
         {
@@ -35610,6 +35475,16 @@
           "parameterTypes": [
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
+          ]
+        },
+        {
+          "name": "report",
+          "parameterTypes": [
+            "long",
+            "org.miaixz.bus.auth.registry.SnapshotFault$Stage",
+            "java.lang.String",
+            "org.miaixz.bus.core.basic.normal.Errors",
+            "java.lang.String"
           ]
         }
       ]
@@ -35629,6 +35504,15 @@
           "name": "compile",
           "parameterTypes": [
             "org.miaixz.bus.auth.Registry$Snapshot"
+          ]
+        },
+        {
+          "name": "compile",
+          "parameterTypes": [
+            "org.miaixz.bus.auth.source.SourceDriver",
+            "org.miaixz.bus.auth.Registration$SourceEntry",
+            "org.miaixz.bus.auth.Provider",
+            "org.miaixz.bus.auth.Library"
           ]
         },
         {
@@ -35656,9 +35540,9 @@
           ]
         },
         {
-          "name": "sourceIndex",
+          "name": "close",
           "parameterTypes": [
-            "java.util.List"
+            "java.util.Map"
           ]
         }
       ]
@@ -35670,31 +35554,19 @@
           "name": "accessTokenCache"
         },
         {
-          "name": "attributeLoader"
+          "name": "attributeParser"
         },
         {
-          "name": "auditSink"
+          "name": "authorizationCache"
         },
         {
           "name": "authorizationCodeCache"
         },
         {
-          "name": "bindingLoader"
+          "name": "certificateParser"
         },
         {
-          "name": "certificateLoader"
-        },
-        {
-          "name": "consumerLoader"
-        },
-        {
-          "name": "consentService"
-        },
-        {
-          "name": "credentialLoader"
-        },
-        {
-          "name": "credentialStore"
+          "name": "consumerParser"
         },
         {
           "name": "deviceCodeCache"
@@ -35706,13 +35578,10 @@
           "name": "fabricContext"
         },
         {
-          "name": "groupLoader"
-        },
-        {
           "name": "jsonProvider"
         },
         {
-          "name": "keyLoader"
+          "name": "keyParser"
         },
         {
           "name": "nonceCache"
@@ -35724,10 +35593,10 @@
           "name": "replayCache"
         },
         {
-          "name": "resourceLoader"
+          "name": "resourceParser"
         },
         {
-          "name": "secretLoader"
+          "name": "secretParser"
         },
         {
           "name": "securityBaseline"
@@ -35739,7 +35608,7 @@
           "name": "stateCache"
         },
         {
-          "name": "subjectLoader"
+          "name": "workers"
         }
       ],
       "methods": [
@@ -35752,7 +35621,11 @@
           "parameterTypes": []
         },
         {
-          "name": "auditSink",
+          "name": "attributeParser",
+          "parameterTypes": []
+        },
+        {
+          "name": "authorizationCache",
           "parameterTypes": []
         },
         {
@@ -35768,15 +35641,19 @@
           "parameterTypes": []
         },
         {
+          "name": "certificateParser",
+          "parameterTypes": []
+        },
+        {
           "name": "consumerLoader",
           "parameterTypes": []
         },
         {
-          "name": "consentService",
+          "name": "consumerParser",
           "parameterTypes": []
         },
         {
-          "name": "credentialLoader",
+          "name": "consentService",
           "parameterTypes": []
         },
         {
@@ -35796,15 +35673,15 @@
           "parameterTypes": []
         },
         {
-          "name": "groupLoader",
-          "parameterTypes": []
-        },
-        {
           "name": "jsonProvider",
           "parameterTypes": []
         },
         {
           "name": "keyLoader",
+          "parameterTypes": []
+        },
+        {
+          "name": "keyParser",
           "parameterTypes": []
         },
         {
@@ -35824,7 +35701,15 @@
           "parameterTypes": []
         },
         {
+          "name": "resourceParser",
+          "parameterTypes": []
+        },
+        {
           "name": "secretLoader",
+          "parameterTypes": []
+        },
+        {
+          "name": "secretParser",
           "parameterTypes": []
         },
         {
@@ -35836,11 +35721,19 @@
           "parameterTypes": []
         },
         {
-          "name": "stateCache",
+          "name": "sessionWorker",
           "parameterTypes": []
         },
         {
-          "name": "subjectLoader",
+          "name": "scope",
+          "parameterTypes": [
+            "org.miaixz.bus.auth.Registration$SourceEntry",
+            "org.miaixz.bus.auth.worker.WorkerSlots",
+            "org.miaixz.bus.auth.source.SourceDriver$Dependencies"
+          ]
+        },
+        {
+          "name": "stateCache",
           "parameterTypes": []
         }
       ]
@@ -35851,9 +35744,50 @@
         {
           "name": "load",
           "parameterTypes": [
-            "org.miaixz.bus.auth.Registration$Record",
-            "java.lang.Class"
+            "org.miaixz.bus.auth.Registration$SourceEntry",
+            "org.miaixz.bus.auth.worker.BindingLoader$Key"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.auth.worker.BindingLoader$Key",
+      "fields": [
+        {
+          "name": "name"
+        },
+        {
+          "name": "type"
+        }
+      ],
+      "methods": [
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "name",
+          "parameterTypes": []
+        },
+        {
+          "name": "require",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "type",
+          "parameterTypes": []
         }
       ]
     },
@@ -36249,19 +36183,6 @@
         {
           "name": "members",
           "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.auth.worker.AuditSink",
-      "methods": [
-        {
-          "name": "accept",
-          "parameterTypes": [
-            "org.miaixz.bus.auth.shared.audit.AuditEvent",
-            "org.miaixz.bus.auth.Context",
-            "org.miaixz.bus.auth.Timeout$Budget"
-          ]
         }
       ]
     },
@@ -36729,7 +36650,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.shared.consent.Consent",
+      "type": "org.miaixz.bus.auth.worker.ConsentService$Snapshot",
       "fields": [
         {
           "name": "clientId"
@@ -36741,10 +36662,16 @@
           "name": "grantedAt"
         },
         {
+          "name": "providerId"
+        },
+        {
           "name": "resources"
         },
         {
           "name": "scopes"
+        },
+        {
+          "name": "sourceId"
         },
         {
           "name": "subject"
@@ -36786,11 +36713,19 @@
           ]
         },
         {
+          "name": "providerId",
+          "parameterTypes": []
+        },
+        {
           "name": "resources",
           "parameterTypes": []
         },
         {
           "name": "scopes",
+          "parameterTypes": []
+        },
+        {
+          "name": "sourceId",
           "parameterTypes": []
         },
         {
@@ -36804,7 +36739,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.shared.consent.ConsentDecision",
+      "type": "org.miaixz.bus.auth.worker.ConsentService$Decision",
       "fields": [
         {
           "name": "grantedScopes"
@@ -36820,14 +36755,14 @@
         {
           "name": "approve",
           "parameterTypes": [
-            "org.miaixz.bus.auth.shared.consent.ConsentRequest",
+            "org.miaixz.bus.auth.worker.ConsentService$Request",
             "java.util.Set"
           ]
         },
         {
           "name": "deny",
           "parameterTypes": [
-            "org.miaixz.bus.auth.shared.consent.ConsentRequest"
+            "org.miaixz.bus.auth.worker.ConsentService$Request"
           ]
         },
         {
@@ -36859,7 +36794,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.shared.consent.ConsentDecision$Status",
+      "type": "org.miaixz.bus.auth.worker.ConsentService$Status",
       "fields": [
         {
           "name": "APPROVED"
@@ -36882,13 +36817,16 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.shared.consent.ConsentRequest",
+      "type": "org.miaixz.bus.auth.worker.ConsentService$Request",
       "fields": [
         {
           "name": "clientId"
         },
         {
           "name": "clientName"
+        },
+        {
+          "name": "providerId"
         },
         {
           "name": "redirectUri"
@@ -36898,6 +36836,9 @@
         },
         {
           "name": "scopes"
+        },
+        {
+          "name": "sourceId"
         },
         {
           "name": "subject"
@@ -36923,6 +36864,10 @@
           "parameterTypes": []
         },
         {
+          "name": "providerId",
+          "parameterTypes": []
+        },
+        {
           "name": "redirectUri",
           "parameterTypes": []
         },
@@ -36932,6 +36877,10 @@
         },
         {
           "name": "scopes",
+          "parameterTypes": []
+        },
+        {
+          "name": "sourceId",
           "parameterTypes": []
         },
         {
@@ -36950,7 +36899,7 @@
         {
           "name": "decide",
           "parameterTypes": [
-            "org.miaixz.bus.auth.shared.consent.ConsentRequest",
+            "org.miaixz.bus.auth.worker.ConsentService$Request",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
           ]
@@ -36958,7 +36907,7 @@
         {
           "name": "find",
           "parameterTypes": [
-            "org.miaixz.bus.auth.shared.consent.ConsentRequest",
+            "org.miaixz.bus.auth.worker.ConsentService$Request",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
           ]
@@ -36966,7 +36915,7 @@
         {
           "name": "record",
           "parameterTypes": [
-            "org.miaixz.bus.auth.worker.ConsentService$Record",
+            "org.miaixz.bus.auth.worker.ConsentService$Save",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"
           ]
@@ -36974,7 +36923,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.worker.ConsentService$Record",
+      "type": "org.miaixz.bus.auth.worker.ConsentService$Save",
       "fields": [
         {
           "name": "decision"
@@ -40978,19 +40927,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.source.IdentityMapper",
-      "methods": [
-        {
-          "name": "map",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.auth.source.SourceAuthentication",
+      "type": "org.miaixz.bus.auth.source.SourceWorkflow",
       "fields": [
         {
           "name": "COMPLETE"
@@ -41015,10 +40952,10 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.source.SourceAuthentication$Stage"
+      "type": "org.miaixz.bus.auth.source.SourceWorkflow$Stage"
     },
     {
-      "type": "org.miaixz.bus.auth.source.SourceAuthentication$Stage$Completed",
+      "type": "org.miaixz.bus.auth.source.SourceWorkflow$Stage$Completed",
       "fields": [
         {
           "name": "identity"
@@ -41046,7 +40983,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.source.SourceAuthentication$Stage$Device",
+      "type": "org.miaixz.bus.auth.source.SourceWorkflow$Stage$Device",
       "fields": [
         {
           "name": "deviceCode"
@@ -41109,7 +41046,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.source.SourceAuthentication$Stage$Redirect",
+      "type": "org.miaixz.bus.auth.source.SourceWorkflow$Stage$Redirect",
       "fields": [
         {
           "name": "correlation"
@@ -41144,10 +41081,10 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.source.SourceAuthentication$Request"
+      "type": "org.miaixz.bus.auth.source.SourceWorkflow$Request"
     },
     {
-      "type": "org.miaixz.bus.auth.source.SourceAuthentication$Request$BrowserCallback",
+      "type": "org.miaixz.bus.auth.source.SourceWorkflow$Request$BrowserCallback",
       "fields": [
         {
           "name": "callback"
@@ -41182,7 +41119,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.source.SourceAuthentication$Request$BrowserStart",
+      "type": "org.miaixz.bus.auth.source.SourceWorkflow$Request$BrowserStart",
       "fields": [
         {
           "name": "callbackTarget"
@@ -41217,10 +41154,10 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.source.SourceAuthentication$Request$Completion"
+      "type": "org.miaixz.bus.auth.source.SourceWorkflow$Request$Completion"
     },
     {
-      "type": "org.miaixz.bus.auth.source.SourceAuthentication$Request$DevicePoll",
+      "type": "org.miaixz.bus.auth.source.SourceWorkflow$Request$DevicePoll",
       "fields": [
         {
           "name": "deviceCode"
@@ -41255,7 +41192,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.source.SourceAuthentication$Request$DeviceStart",
+      "type": "org.miaixz.bus.auth.source.SourceWorkflow$Request$DeviceStart",
       "fields": [
         {
           "name": "sourceId"
@@ -41283,7 +41220,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.source.SourceAuthentication$Request$Direct",
+      "type": "org.miaixz.bus.auth.source.SourceWorkflow$Request$Direct",
       "fields": [
         {
           "name": "credential"
@@ -41325,10 +41262,10 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.source.SourceAuthentication$Request$Start"
+      "type": "org.miaixz.bus.auth.source.SourceWorkflow$Request$Start"
     },
     {
-      "type": "org.miaixz.bus.auth.source.SourceAuthentication$Request$OneTimeCode",
+      "type": "org.miaixz.bus.auth.source.SourceWorkflow$Request$OneTimeCode",
       "fields": [
         {
           "name": "code"
@@ -41420,7 +41357,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.source.SourceValidator",
+      "type": "org.miaixz.bus.auth.registry.SourceValidator",
       "fields": [
         {
           "name": "drivers"
@@ -41574,7 +41511,7 @@
         {
           "name": "complete",
           "parameterTypes": [
-            "org.miaixz.bus.auth.source.SourceAuthentication$Request$BrowserCallback",
+            "org.miaixz.bus.auth.source.SourceWorkflow$Request$BrowserCallback",
             "org.miaixz.bus.auth.vendor.RedirectManager$CorrelationExtractor",
             "org.miaixz.bus.auth.vendor.RedirectManager$CompleteOperation",
             "org.miaixz.bus.auth.Context",
@@ -41674,7 +41611,7 @@
         {
           "name": "initiate",
           "parameterTypes": [
-            "org.miaixz.bus.auth.source.SourceAuthentication$Request$BrowserStart",
+            "org.miaixz.bus.auth.source.SourceWorkflow$Request$BrowserStart",
             "org.miaixz.bus.auth.vendor.RedirectManager$PrepareOperation",
             "org.miaixz.bus.auth.Context",
             "org.miaixz.bus.auth.Timeout$Budget"

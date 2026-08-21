@@ -33,6 +33,8 @@ import javax.crypto.spec.PSource;
 import org.miaixz.bus.auth.guard.AlgorithmGuard;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.RandomKit;
@@ -93,11 +95,11 @@ public final class JweService {
     /**
      * AES-GCM initialization vector size required by the JWA profile.
      */
-    private static final int GCM_IV_BYTES = 12;
+    private static final int GCM_IV_BYTES = Normal._12;
     /**
      * AES-GCM authentication tag size required by the JWA profile.
      */
-    private static final int GCM_TAG_BYTES = 16;
+    private static final int GCM_TAG_BYTES = Normal._16;
 
     /**
      * Runtime-supplied provider-neutral JSON codec.
@@ -373,7 +375,8 @@ public final class JweService {
         }
         for (int index = 0; index < value.length(); index++) {
             final char character = value.charAt(index);
-            if (!(character >= 'A' && character <= 'Z') && !(character >= 'a' && character <= 'z')
+            if (!(character >= Symbol.C_UPPER_A && character <= Symbol.C_UPPER_Z)
+                    && !(character >= Symbol.C_LOWER_A && character <= Symbol.C_LOWER_Z)
                     && !(character >= Symbol.C_ZERO && character <= Symbol.C_NINE) && character != Symbol.C_MINUS
                     && character != Symbol.C_UNDERLINE) {
                 throw new ValidateException("Base64URL value contains an invalid character");

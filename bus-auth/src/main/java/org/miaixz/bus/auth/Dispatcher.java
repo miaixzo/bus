@@ -24,7 +24,7 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.core.lang.Optional;
 
 /**
- * Executes strongly typed capabilities against the current compiled authentication runtime.
+ * Dispatches strongly typed capabilities against the current compiled authentication runtime.
  * <p>
  * This contract owns capability routing and invocation only. It does not load, register, validate, persist, or expose
  * registration data, and it does not perform project authorization, account binding, session management, or auditing.
@@ -32,10 +32,10 @@ import org.miaixz.bus.core.lang.Optional;
  *
  * @author Kimi Liu
  */
-public interface Authenticator {
+public interface Dispatcher {
 
     /**
-     * Reports whether the current generation contains a compiled worker for a Source reference.
+     * Reports whether the current runtime container contains a compiled worker for a Source reference.
      *
      * @param reference Source reference
      * @return {@code true} when the reference is currently invocable
@@ -43,7 +43,7 @@ public interface Authenticator {
     boolean available(Registry.Reference reference);
 
     /**
-     * Returns the capabilities exposed by a Source in the current generation.
+     * Returns the capabilities exposed by a Source in the current runtime container.
      *
      * @param reference Source reference
      * @return immutable manifest, or empty when the Source is unavailable

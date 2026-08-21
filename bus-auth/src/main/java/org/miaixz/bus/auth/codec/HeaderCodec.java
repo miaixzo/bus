@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class HeaderCodec implements Codec<HeaderValue, String> {
+public final class HeaderCodec implements DualCodec<HeaderValue, String> {
 
     /**
      * Creates a stateless authentication Header value codec.
@@ -102,7 +102,7 @@ public final class HeaderCodec implements Codec<HeaderValue, String> {
      * @return {@code true} for space or horizontal tab
      */
     private static boolean ows(final char value) {
-        return value == Symbol.C_SPACE || value == '\t';
+        return value == Symbol.C_SPACE || value == Symbol.C_TAB;
     }
 
     /**
@@ -148,7 +148,8 @@ public final class HeaderCodec implements Codec<HeaderValue, String> {
      * @return {@code true} for an ASCII letter or digit
      */
     private static boolean alphaNumeric(final char value) {
-        return value >= 'a' && value <= 'z' || value >= 'A' && value <= 'Z'
+        return value >= Symbol.C_LOWER_A && value <= Symbol.C_LOWER_Z
+                || value >= Symbol.C_UPPER_A && value <= Symbol.C_UPPER_Z
                 || value >= Symbol.C_ZERO && value <= Symbol.C_NINE;
     }
 
@@ -159,7 +160,7 @@ public final class HeaderCodec implements Codec<HeaderValue, String> {
      * @throws ValidateException if the character is a prohibited control or non-Latin-1 value
      */
     private static void validateFieldCharacter(final char value) {
-        if (value > 0xff || value < 0x20 && value != '\t' || value == 0x7f) {
+        if (value > 0xff || value < 0x20 && value != Symbol.C_TAB || value == 0x7f) {
             throw new ValidateException("Authentication Header contains a prohibited field character");
         }
     }
@@ -194,7 +195,7 @@ public final class HeaderCodec implements Codec<HeaderValue, String> {
         }
         for (int index = 0; index < data.parameters().size(); index++) {
             encoded.append(index == 0 ? Symbol.SPACE : ", ");
-            final Parameter parameter = data.parameters().get(index);
+            final NameValue parameter = data.parameters().get(index);
             encoded.append(parameter.name()).append("=\"").append(quote(parameter.value()))
                     .append(Symbol.C_DOUBLE_QUOTES);
         }
@@ -237,7 +238,7 @@ public final class HeaderCodec implements Codec<HeaderValue, String> {
         if (token68(credentials)) {
             return new HeaderValue(scheme, Optional.of(credentials), List.of());
         }
-        final List<Parameter> parameters = new ArrayList<>();
+        final List<NameValue> parameters = new ArrayList<>();
         while (index < end) {
             index = leadingOws(encoded, index, end);
             final int nameStart = index;
@@ -290,7 +291,7 @@ public final class HeaderCodec implements Codec<HeaderValue, String> {
                 }
                 value = encoded.substring(valueStart, index);
             }
-            parameters.add(new Parameter(name, value));
+            parameters.add(new NameValue(name, value));
             index = leadingOws(encoded, index, end);
             if (index == end) {
                 break;

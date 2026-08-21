@@ -25,6 +25,7 @@ import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.protocol.saml.client.SamlClientOptions;
 import org.miaixz.bus.auth.protocol.saml.server.SamlServerOptions;
 import org.miaixz.bus.auth.source.SourceDriver;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
@@ -42,7 +43,7 @@ public final class Saml {
     /**
      * Maximum UTF-8 octet length of RelayState in HTTP Bindings.
      */
-    public static final int MAXIMUM_RELAY_STATE_BYTES = 80;
+    public static final int MAXIMUM_RELAY_STATE_BYTES = Normal._80;
     /**
      * SAML Web Browser SSO profile operation backed by a SingleSignOnService endpoint.
      */

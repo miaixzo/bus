@@ -30,9 +30,8 @@ import org.miaixz.bus.core.lang.Enumers;
  * Represents the single authentication application displayed by administrative and end-user application hubs.
  * <p>
  * The inherited {@link Namespace} contract provides the single persistent namespace scope together with identity and
- * audit metadata.
- * This entity adds only authentication application presentation and launch metadata. A {@code Library} does not own
- * collections of providers or sources; those resources reference it through their direct identifiers.
+ * audit metadata. This entity adds only authentication application presentation and launch metadata. A {@code Library}
+ * does not own collections of providers or sources; those resources reference it through their direct identifiers.
  * </p>
  * <p>
  * Instances are mutable persistence models intended for external projects to extend and map to their storage model.
@@ -47,33 +46,29 @@ import org.miaixz.bus.core.lang.Enumers;
 public class Library extends Namespace {
 
     /**
-     * Required namespace-local stable application code. The value must be non-blank, at most 50 characters, contain
-     * only ASCII letters, digits, {@code -}, or {@code _}, and be unique within {@link #getNamespace_id()}.
+     * Project-managed namespace-local application code. Format and uniqueness policies belong to the external
+     * management implementation and do not affect authentication compilation.
      */
     private String code;
     /**
-     * Required non-blank human-readable application name displayed in management and end-user application hubs.
+     * Project-managed human-readable application name displayed in external application hubs.
      */
     private String name;
     /**
-     * Optional application icon location. {@code null} or blank means no icon; otherwise the value must be a relative
-     * location or an absolute HTTP(S) URL, must not be scheme-relative, and must not contain surrounding whitespace.
+     * Optional project-managed application icon location, never interpreted by authentication execution.
      */
     private String icon;
     /**
-     * Required non-blank launch template. The value must be a relative location or absolute HTTP(S) URL and may contain
-     * claim placeholders such as {@code {sub}} whose names use only letters, digits, dot, dash, or underscore. Allowed
-     * placeholders are interpreted only by the integrating project.
+     * Project-managed launch template interpreted and validated only by the integrating project.
      */
     private String url;
     /**
-     * Required persisted browser browsing-context code. {@code 1} means {@link Target#SELF}; {@code 2} means
-     * {@link Target#BLANK}. {@code null} and every other integer are unsupported.
+     * Project-managed browser browsing-context code. Built-in values map to {@link Target}, while project validation
+     * decides whether a missing or unsupported value is accepted.
      */
     private Integer target;
     /**
-     * Optional signed presentation order used by external application hubs. Lower values are displayed first;
-     * {@code null} means that no explicit order is configured and the external project chooses the fallback order.
+     * Optional project-managed presentation order used only by external application hubs.
      */
     private Integer sort;
     /**

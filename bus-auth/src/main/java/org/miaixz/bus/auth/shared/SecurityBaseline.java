@@ -29,6 +29,7 @@ import org.miaixz.bus.auth.guard.AlgorithmGuard;
 import org.miaixz.bus.auth.guard.ReplayGuard;
 import org.miaixz.bus.auth.guard.TimeGuard;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -244,7 +245,7 @@ public final class SecurityBaseline {
             Assert.notNull(algorithms, "Security policy algorithm set must not be null");
             for (String algorithm : algorithms) {
                 Assert.notBlank(algorithm, "Security policy algorithm must not be blank");
-                if ("none".equalsIgnoreCase(algorithm)) {
+                if (Normal.NONE.equalsIgnoreCase(algorithm)) {
                     throw new ValidateException("Security policy must not allow unsecured algorithm none");
                 }
             }

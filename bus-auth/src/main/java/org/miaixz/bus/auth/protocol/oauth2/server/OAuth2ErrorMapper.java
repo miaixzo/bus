@@ -23,8 +23,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
@@ -60,12 +61,12 @@ public final class OAuth2ErrorMapper {
     /**
      * Failure detail containing a registered OAuth error string.
      */
-    private static final String OAUTH_ERROR = "oauth_error";
+    private static final String OAUTH_ERROR = Builder.OAUTH_ERROR;
 
     /**
      * Failure detail confirming that the redirect URI passed exact client registration validation.
      */
-    private static final String REDIRECT_VALIDATED = "redirect_validated";
+    private static final String REDIRECT_VALIDATED = Builder.REDIRECT_VALIDATED;
 
     /**
      * Authorization endpoint error values defined by RFC 6749.
@@ -245,7 +246,7 @@ public final class OAuth2ErrorMapper {
                     "OAuth 2.x authorization error redirect must be absolute, userinfo-free, and fragment-free");
         }
         final QueryCodec codec = new QueryCodec();
-        final List<Parameter> existing = target.getRawQuery() == null ? List.of() : codec.decode(target.getRawQuery());
+        final List<NameValue> existing = target.getRawQuery() == null ? List.of() : codec.decode(target.getRawQuery());
         final Set<String> reserved = Set.of(
                 OAuth2.Parameters.ERROR,
                 OAuth2.Parameters.ERROR_DESCRIPTION,
@@ -254,12 +255,12 @@ public final class OAuth2ErrorMapper {
         if (existing.stream().anyMatch(parameter -> reserved.contains(parameter.name()))) {
             throw new ValidateException("OAuth 2.x redirect URI predefines an authorization error parameter");
         }
-        final List<Parameter> parameters = new ArrayList<>();
-        parameters.add(new Parameter(OAuth2.Parameters.ERROR, error.error().value()));
+        final List<NameValue> parameters = new ArrayList<>();
+        parameters.add(new NameValue(OAuth2.Parameters.ERROR, error.error().value()));
         error.errorDescription()
-                .ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.ERROR_DESCRIPTION, value)));
-        error.errorUri().ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.ERROR_URI, value)));
-        error.state().ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.STATE, value)));
+                .ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.ERROR_DESCRIPTION, value)));
+        error.errorUri().ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.ERROR_URI, value)));
+        error.state().ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.STATE, value)));
         final String query = codec.encode(parameters);
         final String separator = target.getRawQuery() == null ? Symbol.QUESTION_MARK
                 : target.getRawQuery().isEmpty() || target.getRawQuery().endsWith(Symbol.AND) ? Normal.EMPTY

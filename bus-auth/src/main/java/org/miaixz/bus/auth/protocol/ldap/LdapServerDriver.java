@@ -94,9 +94,7 @@ public final class LdapServerDriver implements SourceDriver<LdapServerOptions> {
      * @throws ValidateException        if registration, options, baseline, or binding validation fails
      */
     @Override
-    public SourceWorker compile(
-            final Prepared<LdapServerOptions> prepared,
-            final DriverServices services) {
+    public SourceWorker compile(final Prepared<LdapServerOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "LDAP Provider preparation must not be null");
         Assert.notNull(services, "LDAP Provider execution services must not be null");
         final Registration.SourceEntry record = prepared.registration();
@@ -115,7 +113,7 @@ public final class LdapServerDriver implements SourceDriver<LdapServerOptions> {
         final BindingLoader.Key<DirectoryStore> binding = new BindingLoader.Key<>("ldap-directory",
                 DirectoryStore.class);
         final DirectoryStore store = Assert.notNull(
-                services.bindingParser().parse(record, binding, services.bindingLoader().load(record, binding)),
+                binding.require(services.bindingLoader().load(record, binding)),
                 "LDAP external DirectoryStore binding must not be null");
         return new CompiledServer(new LdapServerScheme().manifest(), new BindService(source.getId(), options, store),
                 new UnbindService(source.getId(), options, store), new SearchService(source.getId(), options, store),

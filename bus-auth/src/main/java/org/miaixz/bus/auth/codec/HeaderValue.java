@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * @param parameters ordered decoded auth-param entries
  * @author Kimi Liu
  */
-public record HeaderValue(String scheme, Optional<String> token68, List<Parameter> parameters) {
+public record HeaderValue(String scheme, Optional<String> token68, List<NameValue> parameters) {
 
     /**
      * Creates an immutable single authentication Header value.
@@ -57,10 +57,10 @@ public record HeaderValue(String scheme, Optional<String> token68, List<Paramete
         }
         token68 = Optional.ofNullable(token68.getOrNull());
         Assert.notNull(parameters, "Authentication Header parameters must not be null");
-        final List<Parameter> copy = new ArrayList<>(parameters.size());
+        final List<NameValue> copy = new ArrayList<>(parameters.size());
         final Set<String> names = new HashSet<>(parameters.size());
-        for (Parameter parameter : parameters) {
-            final Parameter value = Assert.notNull(parameter, "Authentication Header parameter must not be null");
+        for (NameValue parameter : parameters) {
+            final NameValue value = Assert.notNull(parameter, "Authentication Header parameter must not be null");
             Assert.isTrue(token(value.name()), "Authentication Header parameter name must be an RFC 9110 token");
             Assert.isTrue(
                     names.add(value.name().toLowerCase(Locale.ROOT)),
@@ -125,7 +125,8 @@ public record HeaderValue(String scheme, Optional<String> token68, List<Paramete
      * @return {@code true} for an ASCII letter or digit
      */
     private static boolean alphaNumeric(final char value) {
-        return value >= 'a' && value <= 'z' || value >= 'A' && value <= 'Z'
+        return value >= Symbol.C_LOWER_A && value <= Symbol.C_LOWER_Z
+                || value >= Symbol.C_UPPER_A && value <= Symbol.C_UPPER_Z
                 || value >= Symbol.C_ZERO && value <= Symbol.C_NINE;
     }
 

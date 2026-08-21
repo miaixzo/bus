@@ -27,6 +27,7 @@ import java.util.Set;
 import javax.crypto.SecretKey;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.crypto.builtin.asymmetric.KeyType;
 
@@ -113,7 +114,7 @@ public final class AlgorithmGuard {
         if (algorithm.isBlank()) {
             throw new ValidateException("Algorithm identifier must not be blank");
         }
-        if ("none".equalsIgnoreCase(algorithm)) {
+        if (Normal.NONE.equalsIgnoreCase(algorithm)) {
             throw new ValidateException("Unsecured algorithm none is forbidden");
         }
         for (String candidate : allowed) {

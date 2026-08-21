@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.auth.source;
+package org.miaixz.bus.auth.worker;
 
 import java.time.Instant;
 import java.util.Map;
@@ -29,9 +29,11 @@ import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Session;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.cache.ExpiringValue;
-import org.miaixz.bus.auth.worker.SessionWorker;
+import org.miaixz.bus.auth.cache.SessionCache;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -44,33 +46,68 @@ import org.miaixz.bus.extra.json.JsonValue;
  */
 public final class SessionCoordinator {
 
-    private static final int MAXIMUM_REPLACE_ATTEMPTS = 3;
+    /** Maximum compare-and-replace attempts for one Session transition. */
+    private static final int MAXIMUM_REPLACE_ATTEMPTS = Normal._3;
 
+    /** Exact compiled Source identifier. */
     private final String sourceId;
-    private final DriverServices services;
+    /** Framework protocol Session cache. */
+    private final SessionCache sessionCache;
+    /** Project Session integration port. */
+    private final SessionWorker sessionWorker;
 
     /**
-     * Creates a coordinator isolated to one compiled Source.
+     * Creates a coordinator isolated to one compiled Source and only its required session capabilities.
+     *
+     * @param sourceId      exact compiled Source identifier
+     * @param sessionCache  framework protocol-session cache
+     * @param sessionWorker project session integration port
      */
-    public SessionCoordinator(final String sourceId, final DriverServices services) {
+    public SessionCoordinator(final String sourceId, final SessionCache sessionCache,
+            final SessionWorker sessionWorker) {
         this.sourceId = Assert.notBlank(sourceId, "Session coordinator Source id must not be blank");
-        this.services = Assert.notNull(services, "Session coordinator services must not be null");
+        this.sessionCache = Assert.notNull(sessionCache, "Session coordinator cache must not be null");
+        this.sessionWorker = Assert.notNull(sessionWorker, "Session coordinator worker must not be null");
     }
 
+    /**
+     * Creates a safe Session failure.
+     *
+     * @param description safe description
+     * @return failure
+     */
     private static Outcome.Failure failure(final String description) {
         return new Outcome.Failure(ErrorCode._500, description, new JsonValue.ObjectValue(Map.of()));
     }
 
+    /**
+     * Wraps an outcome in a completed stage.
+     *
+     * @param <T>     value type
+     * @param outcome outcome
+     * @return completed stage
+     */
     private static <T> CompletionStage<Outcome<T>> completed(final Outcome<T> outcome) {
         return CompletableFuture.completedFuture(outcome);
     }
 
+    /**
+     * Derives a Source-isolated Session key.
+     *
+     * @param sessionKey public Session key
+     * @return digest
+     */
     private String key(final Session.Key sessionKey) {
-        return Builder.sha256Hex(sourceId + '\0' + sessionKey.value());
+        return Builder.sha256Hex(sourceId + Symbol.C_NUL + sessionKey.value());
     }
 
     /**
      * Atomically establishes framework protocol state, then confirms the project integration state.
+     *
+     * @param session active Session to establish
+     * @param context invocation context
+     * @param timeout operation budget
+     * @return establishment outcome
      */
     public CompletionStage<Outcome<Void>> establish(
             final Session session,
@@ -81,26 +118,36 @@ public final class SessionCoordinator {
         Assert.notNull(timeout, "Authentication Session budget must not be null");
         final Instant now = timeout.clock().now();
         if (timeout.expired() || session.state() != Session.State.ACTIVE || !session.expiresAt().isAfter(now)) {
-            return completed(Outcome.failed(failure("Authentication Session is not active within the operation budget")));
+            return completed(
+                    Outcome.failed(failure("Authentication Session is not active within the operation budget")));
         }
         final String cacheKey = key(session.key());
         final ExpiringValue<Session> value = new ExpiringValue<>(session, session.expiresAt());
         final CompletionStage<Boolean> creating;
         try {
-            creating = services.sessionCache().establish(cacheKey, value);
+            creating = sessionCache.establish(cacheKey, value);
         } catch (RuntimeException cause) {
             return completed(Outcome.failed(failure("Authentication Session cache establishment failed")));
         }
         if (creating == null) {
             return completed(Outcome.failed(failure("Authentication Session cache returned no establishment stage")));
         }
-        return creating.handle((created, cause) -> cause == null ? created : null)
-                .thenCompose(created -> created == null
+        return creating.handle((created, cause) -> cause == null ? created : null).thenCompose(
+                created -> created == null
                         ? completed(Outcome.failed(failure("Authentication Session cache establishment failed")))
                         : created ? notifyEstablished(cacheKey, session, context, timeout, true)
                                 : confirmExisting(cacheKey, session, context, timeout));
     }
 
+    /**
+     * Confirms idempotent establishment when the Session cache key already exists.
+     *
+     * @param cacheKey derived cache key
+     * @param session  requested Session
+     * @param context  invocation context
+     * @param timeout  operation budget
+     * @return establishment outcome
+     */
     private CompletionStage<Outcome<Void>> confirmExisting(
             final String cacheKey,
             final Session session,
@@ -108,7 +155,7 @@ public final class SessionCoordinator {
             final Timeout.Budget timeout) {
         final CompletionStage<ExpiringValue<Session>> lookup;
         try {
-            lookup = services.sessionCache().find(cacheKey);
+            lookup = sessionCache.find(cacheKey);
         } catch (RuntimeException cause) {
             return completed(Outcome.failed(failure("Authentication Session cache lookup failed")));
         }
@@ -123,6 +170,16 @@ public final class SessionCoordinator {
         });
     }
 
+    /**
+     * Notifies the project of established framework Session state.
+     *
+     * @param cacheKey derived cache key
+     * @param session  established Session
+     * @param context  invocation context
+     * @param timeout  operation budget
+     * @param rollback whether framework state was newly created
+     * @return project notification outcome
+     */
     private CompletionStage<Outcome<Void>> notifyEstablished(
             final String cacheKey,
             final Session session,
@@ -131,20 +188,32 @@ public final class SessionCoordinator {
             final boolean rollback) {
         final CompletionStage<Outcome<Void>> stage;
         try {
-            stage = services.sessionWorker().establish(new SessionWorker.Binding(sourceId, session), context, timeout);
+            stage = sessionWorker.establish(new SessionWorker.Binding(sourceId, session), context, timeout);
         } catch (RuntimeException cause) {
             return rollback(cacheKey, rollback, Outcome.failed(failure("Project Session establishment failed")));
         }
         if (stage == null) {
-            return rollback(cacheKey, rollback,
+            return rollback(
+                    cacheKey,
+                    rollback,
                     Outcome.failed(failure("Project Session worker returned no establishment stage")));
         }
-        return stage.handle((outcome, cause) -> cause == null && outcome != null ? outcome
-                : Outcome.<Void>failed(failure("Project Session establishment failed")))
-                .thenCompose(outcome -> outcome instanceof Outcome.Succeeded<Void> ? completed(outcome)
-                        : rollback(cacheKey, rollback, outcome));
+        return stage.handle(
+                (outcome, cause) -> cause == null && outcome != null ? outcome
+                        : Outcome.<Void>failed(failure("Project Session establishment failed")))
+                .thenCompose(
+                        outcome -> outcome instanceof Outcome.Succeeded<Void> ? completed(outcome)
+                                : rollback(cacheKey, rollback, outcome));
     }
 
+    /**
+     * Best-effort removes newly created framework state after project failure.
+     *
+     * @param cacheKey derived cache key
+     * @param rollback whether deletion is required
+     * @param outcome  project outcome to preserve when rollback succeeds
+     * @return normalized outcome
+     */
     private CompletionStage<Outcome<Void>> rollback(
             final String cacheKey,
             final boolean rollback,
@@ -153,22 +222,31 @@ public final class SessionCoordinator {
             return completed(outcome);
         }
         try {
-            final CompletionStage<Boolean> deleting = services.sessionCache().invalidate(cacheKey);
+            final CompletionStage<Boolean> deleting = sessionCache.invalidate(cacheKey);
             if (deleting == null) {
-                return completed(Outcome.failed(failure(
-                        "Project Session establishment failed and framework rollback returned no stage")));
+                return completed(
+                        Outcome.failed(
+                                failure(
+                                        "Project Session establishment failed and framework rollback returned no stage")));
             }
-            return deleting.handle((deleted, cause) -> cause == null && Boolean.TRUE.equals(deleted) ? outcome
-                    : Outcome.<Void>failed(failure(
-                            "Project Session establishment failed and framework rollback was not confirmed")));
+            return deleting.handle(
+                    (deleted, cause) -> cause == null && Boolean.TRUE.equals(deleted) ? outcome
+                            : Outcome.<Void>failed(
+                                    failure(
+                                            "Project Session establishment failed and framework rollback was not confirmed")));
         } catch (RuntimeException ignored) {
-            return completed(Outcome.failed(failure(
-                    "Project Session establishment failed and framework rollback failed")));
+            return completed(
+                    Outcome.failed(failure("Project Session establishment failed and framework rollback failed")));
         }
     }
 
     /**
      * Ends an active framework session and then propagates the transition to the project integration.
+     *
+     * @param sessionKey Session key to end
+     * @param context    invocation context
+     * @param timeout    operation budget
+     * @return ending outcome
      */
     public CompletionStage<Outcome<End>> end(
             final Session.Key sessionKey,
@@ -180,6 +258,15 @@ public final class SessionCoordinator {
         return end(sessionKey, context, timeout, 1);
     }
 
+    /**
+     * Performs one bounded Session-ending transition attempt.
+     *
+     * @param sessionKey Session key
+     * @param context    invocation context
+     * @param timeout    operation budget
+     * @param attempt    one-based attempt
+     * @return ending outcome
+     */
     private CompletionStage<Outcome<End>> end(
             final Session.Key sessionKey,
             final Context context,
@@ -191,7 +278,7 @@ public final class SessionCoordinator {
         final String cacheKey = key(sessionKey);
         final CompletionStage<ExpiringValue<Session>> lookup;
         try {
-            lookup = services.sessionCache().find(cacheKey);
+            lookup = sessionCache.find(cacheKey);
         } catch (RuntimeException cause) {
             return completed(Outcome.failed(failure("Authentication Session cache lookup failed")));
         }
@@ -202,6 +289,17 @@ public final class SessionCoordinator {
                 .thenCompose(stored -> transition(cacheKey, sessionKey, stored, context, timeout, attempt));
     }
 
+    /**
+     * Performs one atomic transition from active to ending Session state.
+     *
+     * @param cacheKey     derived cache key
+     * @param requestedKey requested Session key
+     * @param stored       current cached state
+     * @param context      invocation context
+     * @param timeout      operation budget
+     * @param attempt      one-based attempt
+     * @return ending outcome
+     */
     private CompletionStage<Outcome<End>> transition(
             final String cacheKey,
             final Session.Key requestedKey,
@@ -226,11 +324,12 @@ public final class SessionCoordinator {
         if (session.state() != Session.State.ACTIVE) {
             return completed(Outcome.failed(failure("Authentication Session has an unsupported lifecycle state")));
         }
-        final Session ending = new Session(session.key(), Session.State.ENDING, session.issuedAt(), session.expiresAt());
+        final Session ending = new Session(session.key(), Session.State.ENDING, session.issuedAt(),
+                session.expiresAt());
         final ExpiringValue<Session> endingValue = new ExpiringValue<>(ending, stored.expiresAt());
         final CompletionStage<Boolean> replacement;
         try {
-            replacement = services.sessionCache().refresh(cacheKey, stored, endingValue);
+            replacement = sessionCache.refresh(cacheKey, stored, endingValue);
         } catch (RuntimeException cause) {
             return completed(Outcome.failed(failure("Authentication Session cache replacement failed")));
         }
@@ -250,6 +349,16 @@ public final class SessionCoordinator {
         });
     }
 
+    /**
+     * Notifies the project that a Session is ending.
+     *
+     * @param cacheKey derived cache key
+     * @param ending   current ending state
+     * @param context  invocation context
+     * @param timeout  operation budget
+     * @param attempt  one-based attempt
+     * @return ending outcome
+     */
     private CompletionStage<Outcome<End>> notifyEnded(
             final String cacheKey,
             final ExpiringValue<Session> ending,
@@ -258,8 +367,7 @@ public final class SessionCoordinator {
             final int attempt) {
         final CompletionStage<Outcome<Void>> stage;
         try {
-            stage = services.sessionWorker()
-                    .end(new SessionWorker.Binding(sourceId, ending.value()), context, timeout);
+            stage = sessionWorker.end(new SessionWorker.Binding(sourceId, ending.value()), context, timeout);
         } catch (RuntimeException cause) {
             return completed(Outcome.failed(failure("Project Session ending failed")));
         }
@@ -279,6 +387,13 @@ public final class SessionCoordinator {
 
     /**
      * Commits the framework terminal state only after the project has confirmed its idempotent ending operation.
+     *
+     * @param cacheKey derived Session cache key
+     * @param ending   current ending state
+     * @param context  invocation context
+     * @param timeout  operation budget
+     * @param attempt  one-based attempt
+     * @return finalization outcome
      */
     private CompletionStage<Outcome<End>> commitEnded(
             final String cacheKey,
@@ -293,8 +408,7 @@ public final class SessionCoordinator {
         final Session ended = new Session(current.key(), Session.State.ENDED, current.issuedAt(), current.expiresAt());
         final CompletionStage<Boolean> replacement;
         try {
-            replacement = services.sessionCache().refresh(cacheKey, ending,
-                    new ExpiringValue<>(ended, ending.expiresAt()));
+            replacement = sessionCache.refresh(cacheKey, ending, new ExpiringValue<>(ended, ending.expiresAt()));
         } catch (RuntimeException cause) {
             return completed(Outcome.failed(failure("Authentication Session finalization failed")));
         }
@@ -314,6 +428,13 @@ public final class SessionCoordinator {
 
     /**
      * Re-reads a concurrently changed session and accepts only the exact terminal state.
+     *
+     * @param cacheKey   derived Session cache key
+     * @param sessionKey public Session key
+     * @param context    invocation context
+     * @param timeout    operation budget
+     * @param attempt    one-based attempt
+     * @return confirmed terminal outcome
      */
     private CompletionStage<Outcome<End>> confirmFinalState(
             final String cacheKey,
@@ -323,7 +444,7 @@ public final class SessionCoordinator {
             final int attempt) {
         final CompletionStage<ExpiringValue<Session>> lookup;
         try {
-            lookup = services.sessionCache().find(cacheKey);
+            lookup = sessionCache.find(cacheKey);
         } catch (RuntimeException cause) {
             return completed(Outcome.failed(failure("Authentication Session finalization lookup failed")));
         }
@@ -346,9 +467,13 @@ public final class SessionCoordinator {
      * Reports the framework transition observed by a logout protocol.
      */
     public enum End {
+        /** Session transitioned to the terminal ended state. */
         ENDED,
+        /** Session was already in a terminal state. */
         ALREADY_ENDED,
+        /** No active Session existed for the requested key. */
         MISSING
+
     }
 
 }

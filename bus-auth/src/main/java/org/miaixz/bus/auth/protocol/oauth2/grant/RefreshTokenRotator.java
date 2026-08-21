@@ -27,11 +27,12 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.cache.AuthorizationCache;
+import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.cache.RefreshTokenCache;
 import org.miaixz.bus.auth.guard.ScopeValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -58,15 +59,15 @@ public final class RefreshTokenRotator {
     /**
      * Maximum create-if-absent attempts for a generated refresh-token digest collision.
      */
-    private static final int MAXIMUM_CREATE_ATTEMPTS = 3;
+    private static final int MAXIMUM_CREATE_ATTEMPTS = Builder.MAXIMUM_RETRY_ATTEMPTS;
 
     /** Maximum compare-and-replace attempts for one authoritative family-state transition. */
-    private static final int MAXIMUM_STATE_ATTEMPTS = 3;
+    private static final int MAXIMUM_STATE_ATTEMPTS = Builder.MAXIMUM_RETRY_ATTEMPTS;
 
     /**
      * Safe failure detail member carrying a registered OAuth error code.
      */
-    private static final String OAUTH_ERROR = "oauth_error";
+    private static final String OAUTH_ERROR = Builder.OAUTH_ERROR;
 
     /**
      * Provider identifier used in token and family key isolation.
@@ -230,8 +231,8 @@ public final class RefreshTokenRotator {
         final CompletionStage<Outcome<ConsumerMetadata>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.consumerLoader().load(clientId, context, timeout),
-                    loaded -> services.consumerParser().parse(clientId, loaded));
+                    () -> services.consumerLoader().load(services.registration(), clientId, context, timeout),
+                    loaded -> services.consumerParser().parse(services.registration(), clientId, loaded));
         } catch (RuntimeException exception) {
             return completed(storeFailure("OAuth 2.x refresh client resolution failed"));
         }
@@ -558,6 +559,11 @@ public final class RefreshTokenRotator {
 
     /**
      * Conclusively transitions an active authorization family to compromised or observes an already non-active state.
+     *
+     * @param entry   reused refresh-token generation identifying the authorization family
+     * @param timeout shared operation budget
+     * @param attempt one-based compare-and-set attempt
+     * @return stage completed with a conclusive non-active family state
      */
     private CompletionStage<Boolean> compromiseFamily(
             final RefreshTokenCache.Entry entry,
@@ -575,15 +581,15 @@ public final class RefreshTokenRotator {
             return CompletableFuture.failedFuture(exception);
         }
         if (lookup == null) {
-            return CompletableFuture.failedFuture(
-                    new IllegalStateException("OAuth 2.x refresh family lookup returned no stage"));
+            return CompletableFuture
+                    .failedFuture(new IllegalStateException("OAuth 2.x refresh family lookup returned no stage"));
         }
         return lookup.thenCompose(family -> {
             if (family == null || !family.expiresAt().isAfter(timeout.clock().now())
                     || !providerId.equals(family.value().providerId())
                     || !entry.clientId().equals(family.value().clientId())) {
-                return CompletableFuture.failedFuture(
-                        new IllegalStateException("OAuth 2.x refresh family binding is invalid"));
+                return CompletableFuture
+                        .failedFuture(new IllegalStateException("OAuth 2.x refresh family binding is invalid"));
             }
             if (family.value().status() != AuthorizationCache.Status.ACTIVE) {
                 return CompletableFuture.completedFuture(true);
@@ -592,8 +598,8 @@ public final class RefreshTokenRotator {
                     AuthorizationCache.Status.COMPROMISED);
             final CompletionStage<Boolean> transition;
             try {
-                transition = services.authorizationCache().update(key, family,
-                        new ExpiringValue<>(compromised, family.expiresAt()));
+                transition = services.authorizationCache()
+                        .update(key, family, new ExpiringValue<>(compromised, family.expiresAt()));
             } catch (RuntimeException exception) {
                 return CompletableFuture.failedFuture(exception);
             }
@@ -615,6 +621,11 @@ public final class RefreshTokenRotator {
 
     /**
      * Confirms that the final failed family CAS observed another completed non-active transition.
+     *
+     * @param key     Provider-isolated authorization family key
+     * @param entry   reused refresh-token generation
+     * @param timeout shared operation budget
+     * @return stage completed when the family is conclusively non-active
      */
     private CompletionStage<Boolean> confirmFamilyInactive(
             final String key,
@@ -627,8 +638,8 @@ public final class RefreshTokenRotator {
                     && family.value().status() != AuthorizationCache.Status.ACTIVE) {
                 return CompletableFuture.completedFuture(true);
             }
-            return CompletableFuture.failedFuture(
-                    new IllegalStateException("OAuth 2.x refresh family changed concurrently"));
+            return CompletableFuture
+                    .failedFuture(new IllegalStateException("OAuth 2.x refresh family changed concurrently"));
         });
     }
 

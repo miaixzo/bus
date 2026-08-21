@@ -56,13 +56,12 @@ public class Provider extends Tracer {
     private String library_id;
 
     /**
-     * Required non-blank stable Provider code. The value is used by external management interfaces and must be unique
-     * among Providers with the same {@link #library_id}.
+     * Project-managed stable Provider code used only by external management interfaces.
      */
     private String code;
 
     /**
-     * Required non-blank human-readable Provider name displayed by management and authentication interfaces.
+     * Project-managed human-readable Provider name displayed by external interfaces.
      */
     private String name;
 
@@ -73,8 +72,7 @@ public class Provider extends Tracer {
     private String icon;
 
     /**
-     * Optional presentation order within the owning Library. {@code null} means unspecified; otherwise the value must
-     * be zero or greater, and lower values are displayed first.
+     * Optional project-managed presentation order within the owning Library.
      */
     private Integer sort;
 

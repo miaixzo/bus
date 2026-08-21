@@ -23,19 +23,18 @@
  * {@link org.miaixz.bus.auth.runtime.RuntimeServices} combines caller-owned infrastructure with one immutable
  * {@link org.miaixz.bus.auth.worker.WorkerSet} and framework-owned pure parsers. It does not implement
  * {@link org.miaixz.bus.auth.source.DriverServices}; runtime compilation creates one capability-limited scoped view
- * from each prepared Source's Worker slots and framework dependencies.
+ * from each prepared Source registration, Worker slots, and framework dependencies.
  * {@link org.miaixz.bus.auth.runtime.RuntimeBuilder} accepts explicit Source drivers, freezes their indexes, and
  * returns a {@link org.miaixz.bus.auth.runtime.RuntimeManager};
- * {@link org.miaixz.bus.auth.runtime.RuntimeReloadService}
- * explicitly loads and atomically publishes later Registry revisions. {@link org.miaixz.bus.auth.worker.SourceWorker}
- * is the public compiled-capability contract returned by Source drivers and retained only inside a published runtime
- * generation.
+ * {@link org.miaixz.bus.auth.runtime.RuntimeReloadService} explicitly loads and atomically publishes later Registry
+ * revisions. {@link org.miaixz.bus.auth.worker.SourceWorker} is the public compiled-capability contract returned by
+ * Source drivers and retained only inside a published runtime container.
  * </p>
  * <p>
  * Applications select protocol and Vendor drivers explicitly, build once, and request later reloads as project data
  * changes. Normal build invokes the explicitly supplied RegistrationLoader once and exposes the runtime only after the
  * initial snapshot commits; {@code buildEmpty()} is the named exception. Runtime assembly consumes public driver
- * contracts and the immutable Registry view contract but contains no OAuth, OpenID Connect, SAML, SCIM, LDAP, RADIUS,
+ * contracts and the fixed Snapshot Registry contract but contains no OAuth, OpenID Connect, SAML, SCIM, LDAP, RADIUS,
  * or Vendor business operation. It performs no classpath discovery, implicit protocol-data loading, global singleton
  * installation, or creation of transport and persistence resources.
  * </p>

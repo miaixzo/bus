@@ -35,20 +35,60 @@ import org.miaixz.bus.auth.protocol.oauth2.GrantType;
  */
 public interface GrantPolicy {
 
+    /**
+     * Returns the canonical authorization-server issuer.
+     *
+     * @return issuer identifier
+     */
     String issuer();
 
+    /**
+     * Returns scopes supported by the authorization server.
+     *
+     * @return immutable supported scopes
+     */
     Set<String> scopesSupported();
 
+    /**
+     * Returns supported standard grant types.
+     *
+     * @return immutable supported grant types
+     */
     Set<GrantType> grantTypesSupported();
 
+    /**
+     * Returns the maximum one-time authorization-code lifetime.
+     *
+     * @return authorization-code lifetime
+     */
     Duration authorizationCodeLifetime();
 
+    /**
+     * Returns the maximum issued access-token lifetime.
+     *
+     * @return access-token lifetime
+     */
     Duration accessTokenLifetime();
 
+    /**
+     * Returns the maximum refresh-token authorization lifetime.
+     *
+     * @return refresh-token lifetime
+     */
     Duration refreshTokenLifetime();
 
+    /**
+     * Tests whether every authorization-code request requires PKCE.
+     *
+     * @return whether PKCE is required
+     */
     boolean pkceRequired();
 
+    /**
+     * Tests whether each refresh operation must rotate its token.
+     *
+     * @return whether rotation is required
+     */
     boolean refreshTokenRotationRequired();
 
 }

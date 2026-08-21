@@ -31,7 +31,7 @@ import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.TokenEndpointResponse;
 import org.miaixz.bus.auth.protocol.oauth2.TokenRequest;
@@ -175,8 +175,10 @@ public final class TokenClient {
             return execute(request, null, timeout);
         }
         return Outcome.mapStage(
-                        () -> services.secretLoader().load(options.clientCredential().getOrNull(), context, timeout),
-                        loaded -> services.secretParser().parse(options.clientCredential().getOrNull(), loaded))
+                () -> services.secretLoader()
+                        .load(services.registration(), options.clientCredential().getOrNull(), context, timeout),
+                loaded -> services.secretParser()
+                        .parse(services.registration(), options.clientCredential().getOrNull(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> execute(request, success.value(), timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
@@ -203,7 +205,7 @@ public final class TokenClient {
                     return Outcome.<TokenEndpointResponse>failed(
                             failure(ErrorCode._408, "OAuth 2.x token request exhausted its time budget"));
                 }
-                final List<Parameter> parameters = authenticated(requestEncoder.encode(request), secret);
+                final List<NameValue> parameters = authenticated(requestEncoder.encode(request), secret);
                 body = formCodec.encode(parameters);
                 final var endpoint = options.tokenEndpoint().getOrNull();
                 final var builder = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
@@ -239,14 +241,14 @@ public final class TokenClient {
      * @param secret  optional client-secret lease
      * @return immutable ordered form parameters
      */
-    private List<Parameter> authenticated(final List<Parameter> encoded, final SecretLease secret) {
-        final List<Parameter> parameters = new ArrayList<>(
+    private List<NameValue> authenticated(final List<NameValue> encoded, final SecretLease secret) {
+        final List<NameValue> parameters = new ArrayList<>(
                 Assert.notNull(encoded, "OAuth 2.x encoded token parameters must not be null"));
         if (Endpoint.Authentication.NONE.equals(options.clientAuthenticationMethod())) {
-            parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()));
+            parameters.add(new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()));
         } else if (Endpoint.Authentication.CLIENT_SECRET_POST.equals(options.clientAuthenticationMethod())) {
-            parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()));
-            parameters.add(new Parameter(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())));
+            parameters.add(new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()));
+            parameters.add(new NameValue(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())));
         }
         return List.copyOf(parameters);
     }
@@ -258,7 +260,7 @@ public final class TokenClient {
      * @return form-encoded credential component
      */
     private String formComponent(final String value) {
-        final byte[] encoded = formCodec.encode(List.of(new Parameter(Normal.EMPTY, value)));
+        final byte[] encoded = formCodec.encode(List.of(new NameValue(Normal.EMPTY, value)));
         try {
             return new String(encoded, 1, encoded.length - 1, Charset.UTF_8);
         } finally {

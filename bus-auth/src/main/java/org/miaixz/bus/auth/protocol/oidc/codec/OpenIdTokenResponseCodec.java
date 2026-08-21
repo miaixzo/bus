@@ -22,6 +22,7 @@ package org.miaixz.bus.auth.protocol.oidc.codec;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.protocol.oauth2.TokenErrorResponse;
 import org.miaixz.bus.auth.protocol.oauth2.TokenResponse;
 import org.miaixz.bus.auth.protocol.oauth2.codec.TokenResponseDecoder;
@@ -31,7 +32,6 @@ import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdTokenResponse;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -52,7 +52,7 @@ public final class OpenIdTokenResponseCodec {
     /**
      * Maximum accepted token endpoint JSON document size.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Provider-neutral JSON service.

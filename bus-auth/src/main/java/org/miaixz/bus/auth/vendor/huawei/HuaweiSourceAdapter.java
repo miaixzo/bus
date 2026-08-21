@@ -27,10 +27,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.guard.IssuerValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
+import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.AuthorizationClient;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2Client;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientOptions;
@@ -50,13 +52,13 @@ import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
-import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -92,12 +94,12 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
     /**
      * Maximum JSON response size accepted from Huawei endpoints.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum nested JSON depth accepted from Huawei endpoints.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 16;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._16;
 
     /**
      * Registered Source identifier written into verified external identities.
@@ -240,8 +242,9 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
         }
         for (int index = 0; index < value.length(); index++) {
             final char character = value.charAt(index);
-            if (!(character >= Symbol.C_ZERO && character <= Symbol.C_NINE) && !(character >= 'a' && character <= 'z')
-                    && !(character >= 'A' && character <= 'Z') && character != Symbol.C_COLON
+            if (!(character >= Symbol.C_ZERO && character <= Symbol.C_NINE)
+                    && !(character >= Symbol.C_LOWER_A && character <= Symbol.C_LOWER_Z)
+                    && !(character >= Symbol.C_UPPER_A && character <= Symbol.C_UPPER_Z) && character != Symbol.C_COLON
                     && character != Symbol.C_SLASH && character != Symbol.C_DOT) {
                 return false;
             }
@@ -599,7 +602,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
      */
     private static void clear(final char[] value) {
         if (value != null) {
-            Arrays.fill(value, '\0');
+            Arrays.fill(value, Symbol.C_NUL);
         }
     }
 
@@ -704,12 +707,12 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("Huawei capability is not declared"));
         }
-        if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::complete, context, timeout),
                     capability.responseType());
@@ -835,7 +838,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
                     Outcome.rejected(
                             new Outcome.Failure(ErrorCode._400, "Huawei authorization endpoint rejected the request",
                                     new JsonValue.ObjectValue(
-                                            Map.of("oauth_error", new JsonValue.StringValue(values.error()))))));
+                                            Map.of(Builder.OAUTH_ERROR, new JsonValue.StringValue(values.error()))))));
         }
         if (completion.codeVerifier().isEmpty() || completion.correlation().nonce().isEmpty()) {
             return completed(failed(ErrorCode._500, "Huawei browser correlation lacks nonce or PKCE verifier"));
@@ -843,9 +846,11 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
         final TokenRequest request = new TokenRequest(new AuthorizationCodeGrant(values.code(), options.redirectUri(),
                 Optional.of(options.clientId()), Optional.of(completion.codeVerifier().getOrNull().value())),
                 emptyObject());
-        return Outcome.mapStage(
-                        () -> services.secretLoader().load(options.credential(), context, timeout),
-                        loaded -> services.secretParser().parse(options.credential(), loaded))
+        return Outcome
+                .mapStage(
+                        () -> services.secretLoader()
+                                .load(services.registration(), options.credential(), context, timeout),
+                        loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> authenticate(
                             request,
@@ -912,13 +917,13 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
             final AuthorizationCodeGrant grant = (AuthorizationCodeGrant) request.grant();
             body = formCodec.encode(
                     List.of(
-                            new Parameter(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()),
-                            new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()),
-                            new Parameter(OAuth2.Parameters.CLIENT_SECRET, secret(secret)),
-                            new Parameter(OAuth2.Parameters.CODE, grant.code()),
-                            new Parameter(OAuth2.Parameters.REDIRECT_URI, grant.redirectUri().getOrNull()),
-                            new Parameter(OAuth2.Parameters.CODE_VERIFIER, grant.codeVerifier().getOrNull()),
-                            new Parameter("supportAlg", JwaAlgorithm.RS256.name())));
+                            new NameValue(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()),
+                            new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()),
+                            new NameValue(OAuth2.Parameters.CLIENT_SECRET, secret(secret)),
+                            new NameValue(OAuth2.Parameters.CODE, grant.code()),
+                            new NameValue(OAuth2.Parameters.REDIRECT_URI, grant.redirectUri().getOrNull()),
+                            new NameValue(OAuth2.Parameters.CODE_VERIFIER, grant.codeVerifier().getOrNull()),
+                            new NameValue("supportAlg", JwaAlgorithm.RS256.name())));
             final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
             try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
                     .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
@@ -1027,10 +1032,10 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
             final Jwk selected = jwkSelector.requireUnique(
                     keys,
                     new JwkSelector.Selection(header.keyId(), JwaAlgorithm.RS256.name(), JwaAlgorithm.Kind.SIGNATURE,
-                            Optional.of("sig"), Optional.of("verify"), Optional.of("RSA")));
+                            Optional.of(Builder.SIGNATURE), Optional.of(Builder.VERIFY), Optional.of("RSA")));
             if (selected.keyId().filter(keyId::equals).isEmpty()
                     || selected.algorithm().filter(JwaAlgorithm.RS256.name()::equals).isEmpty()
-                    || selected.publicKeyUse().filter("sig"::equals).isEmpty()) {
+                    || selected.publicKeyUse().filter(Builder.SIGNATURE::equals).isEmpty()) {
                 throw new ValidateException("Huawei JWK must explicitly bind kid, alg=RS256, and use=sig");
             }
             key = rsaPublicKey(selected);
@@ -1084,8 +1089,8 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
             }
             body = formCodec.encode(
                     List.of(
-                            new Parameter(OAuth2.Parameters.ACCESS_TOKEN, token.accessToken()),
-                            new Parameter("getNickName", Symbol.ONE)));
+                            new NameValue(OAuth2.Parameters.ACCESS_TOKEN, token.accessToken()),
+                            new NameValue("getNickName", Symbol.ONE)));
             final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
             try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
                     .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
@@ -1159,7 +1164,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
             if (!resolvedTargets.authorization().getOrNull().url().toString().equals(metadata.authorizationEndpoint())
                     || !resolvedTargets.token().getOrNull().url().toString().equals(metadata.tokenEndpoint())
                     || !resolvedTargets.jwks().getOrNull().url().toString().equals(metadata.jwksUri())
-                    || !extension(metadata, "revocation_endpoint")
+                    || !extension(metadata, OAuth2.Metadata.REVOCATION_ENDPOINT)
                             .equals(resolvedTargets.revocation().getOrNull().url().toString())
                     || !metadata.responseTypesSupported().contains(ResponseType.CODE)
                     || !metadata.responseModesSupported().contains("form_post")
@@ -1168,7 +1173,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
                     || !metadata.tokenEndpointAuthMethodsSupported()
                             .contains(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                     || !metadata.idTokenSigningAlgValuesSupported().contains(JwaAlgorithm.RS256)
-                    || !extensionArray(metadata, "code_challenge_methods_supported").contains("S256")) {
+                    || !extensionArray(metadata, OAuth2.Metadata.CODE_CHALLENGE_METHODS_SUPPORTED).contains("S256")) {
                 throw new ValidateException("Huawei Discovery metadata differs from the frozen manifest");
             }
             return Outcome.succeeded(metadata);
@@ -1237,7 +1242,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
             if (timeout.expired()) {
                 return failed(ErrorCode._408, "Huawei revocation has no remaining time budget");
             }
-            body = formCodec.encode(List.of(new Parameter("token", request.token())));
+            body = formCodec.encode(List.of(new NameValue("token", request.token())));
             final String endpoint = variant.targets().resolve(options).revocation().getOrNull().url().toString();
             try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
                     .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())

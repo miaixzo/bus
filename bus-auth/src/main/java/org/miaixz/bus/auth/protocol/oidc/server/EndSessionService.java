@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Session;
@@ -39,8 +40,8 @@ import org.miaixz.bus.auth.resolver.ConsumerMetadata;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
 import org.miaixz.bus.auth.source.DriverServices;
-import org.miaixz.bus.auth.source.SessionCoordinator;
 import org.miaixz.bus.auth.worker.KeyLoader;
+import org.miaixz.bus.auth.worker.SessionCoordinator;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -64,7 +65,7 @@ public final class EndSessionService {
     /**
      * Standard signing-key use passed to the external key inventory.
      */
-    private static final String SIGNATURE_USE = "sig";
+    private static final String SIGNATURE_USE = Builder.SIGNATURE;
 
     /**
      * Client metadata member registered by RP-Initiated Logout.
@@ -105,8 +106,8 @@ public final class EndSessionService {
      * @param sessions Source-isolated Session lifecycle coordinator
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public EndSessionService(final OpenIdServerOptions options, final DriverServices services,
-            final IdTokenCodec codec, final SessionCoordinator sessions) {
+    public EndSessionService(final OpenIdServerOptions options, final DriverServices services, final IdTokenCodec codec,
+            final SessionCoordinator sessions) {
         this.options = Assert.notNull(options, "OpenID Connect end-session options must not be null");
         this.services = Assert.notNull(services, "OpenID Connect end-session execution services must not be null");
         this.codec = Assert.notNull(codec, "OpenID Connect end-session ID Token codec must not be null");
@@ -246,8 +247,8 @@ public final class EndSessionService {
         final CompletionStage<Outcome<KeyMaterial>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.keyLoader().load(query, context, timeout),
-                    loaded -> services.keyParser().parse(query, loaded));
+                    () -> services.keyLoader().load(services.registration(), query, context, timeout),
+                    loaded -> services.keyParser().parse(services.registration(), query, loaded));
         } catch (RuntimeException exception) {
             return completed(
                     Outcome.failed(
@@ -350,8 +351,8 @@ public final class EndSessionService {
         final CompletionStage<Outcome<ConsumerMetadata>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.consumerLoader().load(clientId, context, timeout),
-                    loaded -> services.consumerParser().parse(clientId, loaded));
+                    () -> services.consumerLoader().load(services.registration(), clientId, context, timeout),
+                    loaded -> services.consumerParser().parse(services.registration(), clientId, loaded));
         } catch (RuntimeException exception) {
             return completed(Outcome.failed(failure(ErrorCode._500, "OpenID Connect logout client resolution failed")));
         }

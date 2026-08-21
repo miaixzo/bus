@@ -26,8 +26,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.guard.IssuerValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
+import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.*;
 import org.miaixz.bus.auth.protocol.oauth2.codec.*;
 import org.miaixz.bus.auth.protocol.oidc.*;
@@ -39,7 +41,7 @@ import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -76,12 +78,12 @@ public final class AliyunSourceAdapter implements VendorAdapter {
     /**
      * OIDC Discovery extension carrying the RFC 7009 revocation endpoint.
      */
-    private static final String REVOCATION_ENDPOINT = "revocation_endpoint";
+    private static final String REVOCATION_ENDPOINT = OAuth2.Metadata.REVOCATION_ENDPOINT;
 
     /**
      * OIDC Discovery extension carrying the supported PKCE transformation methods.
      */
-    private static final String CODE_CHALLENGE_METHODS = "code_challenge_methods_supported";
+    private static final String CODE_CHALLENGE_METHODS = OAuth2.Metadata.CODE_CHALLENGE_METHODS_SUPPORTED;
 
     /**
      * Registered Source identifier used for every produced external identity.
@@ -478,12 +480,12 @@ public final class AliyunSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return missing();
         }
-        if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -634,7 +636,7 @@ public final class AliyunSourceAdapter implements VendorAdapter {
         }
         if (decoded instanceof AuthorizationResponseDecoder.Error error) {
             final Map<String, JsonValue> details = Map
-                    .of("oauth_error", new JsonValue.StringValue(error.response().error().value()));
+                    .of(Builder.OAUTH_ERROR, new JsonValue.StringValue(error.response().error().value()));
             return completed(
                     Outcome.rejected(
                             new Outcome.Failure(ErrorCode._400,
@@ -737,10 +739,10 @@ public final class AliyunSourceAdapter implements VendorAdapter {
             final Jwk selected = jwkSelector.requireUnique(
                     keys,
                     new JwkSelector.Selection(header.keyId(), JwaAlgorithm.RS256.name(), JwaAlgorithm.Kind.SIGNATURE,
-                            Optional.of("sig"), Optional.of("verify"), Optional.of("RSA")));
+                            Optional.of(Builder.SIGNATURE), Optional.of(Builder.VERIFY), Optional.of("RSA")));
             if (selected.keyId().filter(keyId::equals).isEmpty()
                     || selected.algorithm().filter(JwaAlgorithm.RS256.name()::equals).isEmpty()
-                    || selected.publicKeyUse().filter("sig"::equals).isEmpty()) {
+                    || selected.publicKeyUse().filter(Builder.SIGNATURE::equals).isEmpty()) {
                 throw new ValidateException("Alibaba Cloud JWK must explicitly bind kid, alg=RS256, and use=sig");
             }
             key = rsaPublicKey(selected);

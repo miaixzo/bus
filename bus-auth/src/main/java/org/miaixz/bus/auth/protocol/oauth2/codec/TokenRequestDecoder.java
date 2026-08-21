@@ -25,10 +25,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -101,9 +102,9 @@ public final class TokenRequestDecoder implements Decoder<HttpRequest, TokenRequ
      * @return mutable insertion-ordered grouped parameters
      * @throws ValidateException if any other name occurs more than once
      */
-    private static Map<String, List<String>> parameters(final List<Parameter> decoded) {
+    private static Map<String, List<String>> parameters(final List<NameValue> decoded) {
         final Map<String, List<String>> parameters = new LinkedHashMap<>(decoded.size());
-        for (Parameter parameter : decoded) {
+        for (NameValue parameter : decoded) {
             if (!parameterName(parameter.name())) {
                 throw new ValidateException("OAuth 2.x token request contains an invalid parameter name");
             }
@@ -129,7 +130,8 @@ public final class TokenRequestDecoder implements Decoder<HttpRequest, TokenRequ
         }
         for (int index = 0; index < value.length(); index++) {
             final char character = value.charAt(index);
-            final boolean valid = character >= 'A' && character <= 'Z' || character >= 'a' && character <= 'z'
+            final boolean valid = character >= Symbol.C_UPPER_A && character <= Symbol.C_UPPER_Z
+                    || character >= Symbol.C_LOWER_A && character <= Symbol.C_LOWER_Z
                     || character >= Symbol.C_ZERO && character <= Symbol.C_NINE || character == Symbol.C_MINUS
                     || character == Symbol.C_DOT || character == Symbol.C_UNDERLINE;
             if (!valid) {

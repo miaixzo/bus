@@ -36,6 +36,7 @@ import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -51,7 +52,7 @@ import org.miaixz.bus.extra.json.JsonValue;
 public final class RevocationService {
 
     /** Maximum compare-and-replace attempts for one authoritative authorization transition. */
-    private static final int MAXIMUM_UPDATE_ATTEMPTS = 3;
+    private static final int MAXIMUM_UPDATE_ATTEMPTS = org.miaixz.bus.auth.Builder.MAXIMUM_RETRY_ATTEMPTS;
 
     /**
      * Provider identifier used to isolate opaque token digests.
@@ -131,8 +132,8 @@ public final class RevocationService {
         } catch (RuntimeException exception) {
             return completed(Outcome.failed(failure(ErrorCode._500, "OAuth 2.x token lookup failed")));
         }
-        return access.thenCombine(refresh, TokenState::new)
-                .thenCompose(state -> revoke(key, state, clientId, timeout)).handle(
+        return access.thenCombine(refresh, TokenState::new).thenCompose(state -> revoke(key, state, clientId, timeout))
+                .handle(
                         (ignored, thrown) -> thrown == null ? Outcome.<Void>succeeded(null)
                                 : Outcome.<Void>failed(
                                         failure(ErrorCode._500, "OAuth 2.x token revocation cache failed")));
@@ -157,13 +158,13 @@ public final class RevocationService {
         final boolean deleteRefresh = refreshOwned(state.refresh(), clientId, now);
         CompletionStage<Void> authority = CompletableFuture.completedFuture(null);
         if (deleteAccess) {
-            authority = authority.thenCompose(ignored -> revokeAuthorization(
-                    state.access().value().authorizationId(), clientId, timeout, 1));
+            authority = authority.thenCompose(
+                    ignored -> revokeAuthorization(state.access().value().authorizationId(), clientId, timeout, 1));
         }
-        if (deleteRefresh && (!deleteAccess || !state.refresh().value().familyId()
-                .equals(state.access().value().authorizationId()))) {
-            authority = authority.thenCompose(ignored -> revokeAuthorization(
-                    state.refresh().value().familyId(), clientId, timeout, 1));
+        if (deleteRefresh && (!deleteAccess
+                || !state.refresh().value().familyId().equals(state.access().value().authorizationId()))) {
+            authority = authority.thenCompose(
+                    ignored -> revokeAuthorization(state.refresh().value().familyId(), clientId, timeout, 1));
         }
         return authority.thenCompose(ignored -> {
             final CompletionStage<Boolean> accessDelete = deleteAccess ? services.accessTokenCache().revoke(key)
@@ -175,6 +176,15 @@ public final class RevocationService {
         });
     }
 
+    /**
+     * Atomically transitions an active authorization lifecycle to revoked.
+     *
+     * @param authorizationId internal authorization identifier
+     * @param clientId        authenticated client identifier
+     * @param timeout         shared operation budget
+     * @param attempt         one-based compare-and-set attempt
+     * @return stage completed after conclusive revocation or an already non-active state
+     */
     private CompletionStage<Void> revokeAuthorization(
             final String authorizationId,
             final String clientId,
@@ -187,16 +197,16 @@ public final class RevocationService {
         final Instant now = timeout.clock().now();
         final String authorizationKey = AuthorizationCache.key(providerId, authorizationId);
         return services.authorizationCache().find(authorizationKey).thenCompose(stored -> {
-            if (stored == null || !stored.expiresAt().isAfter(now)
-                    || !providerId.equals(stored.value().providerId())
+            if (stored == null || !stored.expiresAt().isAfter(now) || !providerId.equals(stored.value().providerId())
                     || !clientId.equals(stored.value().clientId())
                     || stored.value().status() != AuthorizationCache.Status.ACTIVE) {
                 return CompletableFuture.completedFuture(null);
             }
             final AuthorizationCache.Entry revoked = new AuthorizationCache.Entry(providerId, clientId,
                     AuthorizationCache.Status.REVOKED);
-            return services.authorizationCache().update(authorizationKey, stored,
-                    new ExpiringValue<>(revoked, stored.expiresAt())).thenCompose(updated -> {
+            return services.authorizationCache()
+                    .update(authorizationKey, stored, new ExpiringValue<>(revoked, stored.expiresAt()))
+                    .thenCompose(updated -> {
                         if (Boolean.TRUE.equals(updated)) {
                             return CompletableFuture.completedFuture(null);
                         }
@@ -210,6 +220,11 @@ public final class RevocationService {
 
     /**
      * Confirms that a failed final CAS was caused by another successful non-active transition.
+     *
+     * @param authorizationKey Provider-isolated authorization key
+     * @param clientId         authenticated client identifier
+     * @param timeout          shared operation budget
+     * @return stage completed when authorization is conclusively non-active
      */
     private CompletionStage<Void> confirmAuthorizationInactive(
             final String authorizationKey,
@@ -217,13 +232,12 @@ public final class RevocationService {
             final Timeout.Budget timeout) {
         return services.authorizationCache().find(authorizationKey).thenCompose(stored -> {
             if (stored != null && stored.expiresAt().isAfter(timeout.clock().now())
-                    && providerId.equals(stored.value().providerId())
-                    && clientId.equals(stored.value().clientId())
+                    && providerId.equals(stored.value().providerId()) && clientId.equals(stored.value().clientId())
                     && stored.value().status() != AuthorizationCache.Status.ACTIVE) {
                 return CompletableFuture.completedFuture(null);
             }
-            return CompletableFuture.failedFuture(
-                    new IllegalStateException("OAuth 2.x authorization revocation changed concurrently"));
+            return CompletableFuture
+                    .failedFuture(new IllegalStateException("OAuth 2.x authorization revocation changed concurrently"));
         });
     }
 
@@ -266,7 +280,7 @@ public final class RevocationService {
      * @return SHA-256 hexadecimal cache key
      */
     private String key(final String token) {
-        return Builder.sha256Hex(providerId + '\0' + token);
+        return Builder.sha256Hex(providerId + Symbol.C_NUL + token);
     }
 
     /**

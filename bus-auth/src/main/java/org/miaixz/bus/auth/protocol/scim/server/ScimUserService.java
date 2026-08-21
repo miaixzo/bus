@@ -99,9 +99,7 @@ public final class ScimUserService {
      * @param description safe diagnostic description
      * @return closed failure value
      */
-    private static Outcome.Failure failure(
-            final Errors code,
-            final String description) {
+    private static Outcome.Failure failure(final Errors code, final String description) {
         return new Outcome.Failure(code, description, new JsonValue.ObjectValue(Map.of()));
     }
 

@@ -29,6 +29,7 @@ import org.miaixz.bus.auth.protocol.scim.Scim;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonRecordVerifier;
@@ -174,9 +175,9 @@ public final class ScimPatchCodec {
      * @param path candidate PATCH path
      */
     private static void validatePatchPathFilter(final String path) {
-        final int open = path.indexOf('[');
+        final int open = path.indexOf(Symbol.C_BRACKET_LEFT);
         if (open >= 0) {
-            final int close = path.lastIndexOf(']');
+            final int close = path.lastIndexOf(Symbol.C_BRACKET_RIGHT);
             if (close > open) {
                 new ScimFilterParser(path.substring(open + 1, close), path.length(), 32).parse();
             }
@@ -244,6 +245,7 @@ public final class ScimPatchCodec {
      * @param Operations ordered patch operations
      */
     private record PatchDocument(JsonValue schemas, JsonValue Operations) {
+
     }
 
     /**
@@ -254,6 +256,7 @@ public final class ScimPatchCodec {
      * @param value optional operation value
      */
     private record OperationDocument(JsonValue op, JsonValue path, JsonValue value) {
+
     }
 
 }

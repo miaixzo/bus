@@ -114,7 +114,7 @@ public final class ScimBulkCodec {
      * Decodes typed User, Group, or PatchOp operation data for the selected method and path.
      *
      * @param method  standard Bulk operation method
-     * @param path    relative SCIM operation path
+     * @param target  parsed SCIM resource target
      * @param version optional conditional entity-tag
      * @param object  parsed data object
      * @return typed sensitive-data owner
@@ -164,7 +164,7 @@ public final class ScimBulkCodec {
     /**
      * Returns the writable resource class selected by a standard Bulk operation path.
      *
-     * @param path relative standard resource path
+     * @param target parsed standard resource target
      * @return User or Group model class
      */
     private static Class<? extends Resource> resourceClass(final ResourceTarget target) {
@@ -295,8 +295,7 @@ public final class ScimBulkCodec {
     /**
      * Resolves an exact mutation target from a two-segment relative Bulk path.
      *
-     * @param path    relative resource path
-     * @param version optional complete entity-tag
+     * @param path relative resource path
      * @return typed target reference
      */
     private ResourceTarget target(final String path) {

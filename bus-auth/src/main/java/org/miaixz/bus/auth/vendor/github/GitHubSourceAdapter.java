@@ -25,8 +25,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationRequest;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.ResponseType;
@@ -39,7 +40,7 @@ import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -88,12 +89,12 @@ public final class GitHubSourceAdapter implements VendorAdapter {
     /**
      * Maximum accepted GitHub JSON response size.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum accepted GitHub JSON nesting depth.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 64;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
 
     /**
      * Registered Source identifier copied into verified identities.
@@ -407,12 +408,12 @@ public final class GitHubSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("GitHub capability is not declared by the selected manifest"));
         }
-        if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -493,9 +494,11 @@ public final class GitHubSourceAdapter implements VendorAdapter {
             return completed(failed(ErrorCode._500, "GitHub callback lacks its required PKCE verifier"));
         }
         final String verifier = completion.codeVerifier().getOrNull().value();
-        return Outcome.mapStage(
-                        () -> services.secretLoader().load(options.credential(), context, timeout),
-                        loaded -> services.secretParser().parse(options.credential(), loaded))
+        return Outcome
+                .mapStage(
+                        () -> services.secretLoader()
+                                .load(services.registration(), options.credential(), context, timeout),
+                        loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> authenticate(
                             values.code(),
@@ -555,12 +558,12 @@ public final class GitHubSourceAdapter implements VendorAdapter {
             }
             body = formCodec.encode(
                     List.of(
-                            new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()),
-                            new Parameter(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())),
-                            new Parameter(OAuth2.Parameters.CODE,
+                            new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()),
+                            new NameValue(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())),
+                            new NameValue(OAuth2.Parameters.CODE,
                                     Assert.notBlank(code, "GitHub code must not be blank")),
-                            new Parameter(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()),
-                            new Parameter(OAuth2.Parameters.CODE_VERIFIER,
+                            new NameValue(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()),
+                            new NameValue(OAuth2.Parameters.CODE_VERIFIER,
                                     Assert.notBlank(verifier, "GitHub verifier must not be blank"))));
             final var endpoint = variant.targets().resolve(options).token().getOrNull();
             try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
@@ -591,7 +594,7 @@ public final class GitHubSourceAdapter implements VendorAdapter {
                 requiredString(object, OAuth2.Parameters.ERROR_DESCRIPTION);
                 requiredString(object, OAuth2.Parameters.ERROR_URI);
                 final Map<String, JsonValue> details = Map
-                        .of("oauth_error", new JsonValue.StringValue(error), "status", number(response.code()));
+                        .of(Builder.OAUTH_ERROR, new JsonValue.StringValue(error), "status", number(response.code()));
                 return rejectedError(error)
                         ? Outcome.rejected(
                                 new Outcome.Failure(ErrorCode._400, "GitHub token endpoint rejected the request",

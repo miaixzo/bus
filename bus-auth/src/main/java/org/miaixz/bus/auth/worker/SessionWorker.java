@@ -83,5 +83,7 @@ public interface SessionWorker {
             Assert.notBlank(sourceId, "Session worker Source id must not be blank");
             Assert.notNull(session, "Session worker Session must not be null");
         }
+
     }
+
 }

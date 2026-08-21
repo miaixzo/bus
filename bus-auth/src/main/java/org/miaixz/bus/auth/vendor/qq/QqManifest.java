@@ -22,11 +22,12 @@ package org.miaixz.bus.auth.vendor.qq;
 import java.util.List;
 import java.util.Set;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorDeviation;
@@ -76,15 +77,15 @@ public final class QqManifest implements VariantManifest<QqOptions> {
      * Exact QQ Open Platform Source and public authorization capabilities.
      */
     private static final Capability.Manifest OPEN_CAPABILITIES = new Capability.Manifest(List.of(
-            SourceAuthentication.initiate(Set.of(Capability.Interaction.REDIRECT)),
-            SourceAuthentication.complete(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT)),
             OAuth2ClientScheme.AUTHORIZATION));
 
     /**
      * Exact QQ Mini Program direct Source capability.
      */
     private static final Capability.Manifest MINI_CAPABILITIES = new Capability.Manifest(
-            List.of(SourceAuthentication.initiate(Set.of(Capability.Interaction.DIRECT))));
+            List.of(SourceWorkflow.initiate(Set.of(Capability.Interaction.DIRECT))));
 
     /**
      * Exact QQ Open Platform deviations retained inside the selected adapter.
@@ -99,7 +100,7 @@ public final class QqManifest implements VariantManifest<QqOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     "code/client_id/client_secret/grant_type/redirect_uri",
                     "token request fields",
@@ -107,7 +108,7 @@ public final class QqManifest implements VariantManifest<QqOptions> {
                     Http.Method.POST,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.FORM,
                     "empty form body",
                     null,
@@ -115,7 +116,7 @@ public final class QqManifest implements VariantManifest<QqOptions> {
                     Http.Method.POST,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.RESPONSE,
                     "text parameters without token_type",
                     "access token response",
@@ -123,7 +124,7 @@ public final class QqManifest implements VariantManifest<QqOptions> {
                     Http.Method.POST,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     "unionid",
                     null,
@@ -131,7 +132,7 @@ public final class QqManifest implements VariantManifest<QqOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.RESPONSE,
                     "callback JSONP",
                     null,
@@ -139,7 +140,7 @@ public final class QqManifest implements VariantManifest<QqOptions> {
                     Http.Method.GET,
                     true),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     "access_token/oauth_consumer_key/openid",
                     "Bearer profile request",
@@ -147,7 +148,7 @@ public final class QqManifest implements VariantManifest<QqOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.RESPONSE,
                     "ret/msg profile",
                     null,
@@ -160,7 +161,7 @@ public final class QqManifest implements VariantManifest<QqOptions> {
      */
     private static final List<VendorDeviation> MINI_DEVIATIONS = List.of(
             deviation(
-                    "source_authentication.initiate",
+                    Builder.SOURCE_AUTHENTICATION_INITIATE,
                     VendorDeviation.Location.QUERY,
                     "appid/secret/js_code/grant_type",
                     null,
@@ -168,7 +169,7 @@ public final class QqManifest implements VariantManifest<QqOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.initiate",
+                    Builder.SOURCE_AUTHENTICATION_INITIATE,
                     VendorDeviation.Location.RESPONSE,
                     "session_key/openid/unionid/errcode/errmsg",
                     null,

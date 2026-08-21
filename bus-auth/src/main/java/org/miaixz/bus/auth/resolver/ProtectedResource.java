@@ -27,10 +27,18 @@ import org.miaixz.bus.extra.json.JsonValue;
 
 /**
  * Parsed immutable protected-resource metadata.
+ *
+ * @param id         protected-resource identifier
+ * @param audience   accepted token audience values
+ * @param scopes     scopes exposed by the protected resource
+ * @param attributes detached protocol-specific metadata
  */
 public record ProtectedResource(String id, List<String> audience, List<String> scopes,
         JsonValue.ObjectValue attributes) {
 
+    /**
+     * Validates and detaches one protected-resource metadata value.
+     */
     public ProtectedResource {
         Assert.notBlank(id, "Protected-resource identifier must not be blank");
         audience = immutable(audience, "Protected-resource audience");
@@ -39,6 +47,13 @@ public record ProtectedResource(String id, List<String> audience, List<String> s
         attributes = new JsonValue.ObjectValue(attributes.values());
     }
 
+    /**
+     * Validates and freezes an ordered list of protocol text values.
+     *
+     * @param values values to validate and copy
+     * @param label  safe semantic label used in validation messages
+     * @return immutable ordered list
+     */
     private static List<String> immutable(final List<String> values, final String label) {
         Assert.notNull(values, label + " list must not be null");
         final List<String> copy = new ArrayList<>(values.size());
@@ -47,4 +62,5 @@ public record ProtectedResource(String id, List<String> audience, List<String> s
         }
         return List.copyOf(copy);
     }
+
 }

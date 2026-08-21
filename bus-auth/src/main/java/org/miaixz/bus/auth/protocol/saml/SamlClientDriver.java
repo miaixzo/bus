@@ -59,6 +59,8 @@ import org.miaixz.bus.auth.worker.WorkerSlots;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.crypto.Builder;
@@ -82,12 +84,12 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
     /**
      * Secure maximum DOM nesting depth shared by Source codecs.
      */
-    private static final int MAXIMUM_XML_DEPTH = 64;
+    private static final int MAXIMUM_XML_DEPTH = Normal._64;
 
     /**
      * Standard signing-key use supplied to the external key inventory.
      */
-    private static final String SIGNING_USE = "signing";
+    private static final String SIGNING_USE = org.miaixz.bus.auth.Builder.SIGNING;
 
     /**
      * Fixed lifetime of a one-time SAML browser interaction.
@@ -102,12 +104,12 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
     /**
      * Entity NameID format used by the service-provider Issuer.
      */
-    private static final String ENTITY_NAME_ID = "urn:oasis:names:tc:SAML:2.0:nameid-format:entity";
+    private static final String ENTITY_NAME_ID = Saml.NameIdFormats.ENTITY;
 
     /**
      * Persistent NameID format requested for stable external identity mapping.
      */
-    private static final String PERSISTENT_NAME_ID = "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent";
+    private static final String PERSISTENT_NAME_ID = Saml.NameIdFormats.PERSISTENT;
 
     /**
      * Creates a stateless SAML Source driver.
@@ -137,8 +139,8 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
             final CompletionStage<Outcome<KeyMaterial>> resolution;
             try {
                 resolution = Outcome.mapStage(
-                        () -> services.keyLoader().load(query, context, timeout),
-                        loaded -> services.keyParser().parse(query, loaded));
+                        () -> services.keyLoader().load(services.registration(), query, context, timeout),
+                        loaded -> services.keyParser().parse(services.registration(), query, loaded));
             } catch (RuntimeException exception) {
                 return completed(failed("SAML Redirect signing key resolution failed"));
             }
@@ -218,8 +220,8 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
         if (options.singleLogoutServiceEndpoint().isPresent())
             capabilities.add(SamlClientScheme.SINGLE_LOGOUT);
         capabilities.add(SamlClientScheme.METADATA);
-        capabilities.add(SourceAuthentication.INITIATE);
-        capabilities.add(SourceAuthentication.COMPLETE);
+        capabilities.add(SourceWorkflow.INITIATE);
+        capabilities.add(SourceWorkflow.COMPLETE);
         return new Capability.Manifest(capabilities);
     }
 
@@ -299,9 +301,7 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
      * @throws ValidateException        if routing, options, or security policy is invalid
      */
     @Override
-    public SourceWorker compile(
-            final Prepared<SamlClientOptions> prepared,
-            final DriverServices services) {
+    public SourceWorker compile(final Prepared<SamlClientOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "SAML Source preparation must not be null");
         Assert.notNull(services, "SAML Source execution services must not be null");
         final Registration.SourceEntry record = prepared.registration();
@@ -309,9 +309,8 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
         final Library library = prepared.library();
         final Source source = record.resource();
         final String namespace = library.getNamespace_id();
-        if (!scheme().id().equals(source.getType()) || !supports(source.getProtocol())
-                || namespace == null || namespace.isBlank()
-                || !provider.getId().equals(source.getProvider_id())
+        if (!scheme().id().equals(source.getType()) || !supports(source.getProtocol()) || namespace == null
+                || namespace.isBlank() || !provider.getId().equals(source.getProvider_id())
                 || !library.getId().equals(provider.getLibrary_id())) {
             throw new ValidateException("SAML Source driver requires a matching Source registration");
         }
@@ -340,8 +339,8 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
                 signingOperation(options, services));
         final SamlServiceProvider serviceProvider = new SamlServiceProvider(metadataClient, consumer, redirect,
                 options);
-        final SourceAdapter adapter = new SourceAdapter(source.getId(), namespace, options,
-                serviceProvider, post, signatureValidator, services.stateCache());
+        final SourceAdapter adapter = new SourceAdapter(source.getId(), namespace, options, serviceProvider, post,
+                signatureValidator, services.stateCache());
         return new CompiledClient(manifest(options), serviceProvider, adapter);
     }
 
@@ -480,16 +479,16 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
                     return mismatch();
                 return narrow(serviceProvider.metadata(context, timeout), capability.responseType());
             }
-            if (capability == SourceAuthentication.INITIATE) {
-                if (!(request instanceof SourceAuthentication.Request.BrowserStart start)
-                        || capability.requestType() != SourceAuthentication.Request.Start.class
-                        || capability.responseType() != SourceAuthentication.Stage.class)
+            if (capability == SourceWorkflow.INITIATE) {
+                if (!(request instanceof SourceWorkflow.Request.BrowserStart start)
+                        || capability.requestType() != SourceWorkflow.Request.Start.class
+                        || capability.responseType() != SourceWorkflow.Stage.class)
                     return mismatch();
                 return narrow(adapter.initiate(start, context, timeout), capability.responseType());
             }
-            if (capability == SourceAuthentication.COMPLETE) {
-                if (!(request instanceof SourceAuthentication.Request.BrowserCallback callback)
-                        || capability.requestType() != SourceAuthentication.Request.Completion.class
+            if (capability == SourceWorkflow.COMPLETE) {
+                if (!(request instanceof SourceWorkflow.Request.BrowserCallback callback)
+                        || capability.requestType() != SourceWorkflow.Request.Completion.class
                         || capability.responseType() != ExternalIdentity.class)
                     return mismatch();
                 return narrow(adapter.complete(callback, context, timeout), capability.responseType());
@@ -626,7 +625,7 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
                 factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, Normal.EMPTY);
                 final Element root = factory.newDocumentBuilder().parse(new ByteArrayInputStream(xml))
                         .getDocumentElement();
-                if (!"urn:oasis:names:tc:SAML:2.0:assertion".equals(root.getNamespaceURI())
+                if (!Saml.Namespaces.ASSERTION.equals(root.getNamespaceURI())
                         || !"AttributeValue".equals(root.getLocalName()))
                     return null;
                 for (Node child = root.getFirstChild(); child != null; child = child.getNextSibling()) {
@@ -659,8 +658,8 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
          * @param timeout shared end-to-end budget
          * @return stage containing a redirect and durable one-time correlation
          */
-        private CompletionStage<Outcome<SourceAuthentication.Stage>> initiate(
-                final SourceAuthentication.Request.BrowserStart request,
+        private CompletionStage<Outcome<SourceWorkflow.Stage>> initiate(
+                final SourceWorkflow.Request.BrowserStart request,
                 final Context context,
                 final Timeout.Budget timeout) {
             Assert.notNull(request, "SAML browser start request must not be null");
@@ -698,7 +697,7 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
          * @return stage containing a verified external identity
          */
         private CompletionStage<Outcome<ExternalIdentity>> complete(
-                final SourceAuthentication.Request.BrowserCallback request,
+                final SourceWorkflow.Request.BrowserCallback request,
                 final Context context,
                 final Timeout.Budget timeout) {
             Assert.notNull(request, "SAML browser callback request must not be null");
@@ -753,7 +752,7 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
          * @param timeout     shared end-to-end budget retained for deadline validation
          * @return stage containing the redirect only when atomic state creation succeeds
          */
-        private CompletionStage<Outcome<SourceAuthentication.Stage>> store(
+        private CompletionStage<Outcome<SourceWorkflow.Stage>> store(
                 final Callback.Correlation correlation,
                 final String location,
                 final Context context,
@@ -777,7 +776,7 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
                     return failed("SAML browser correlation cache failed");
                 if (!stored)
                     return failed("SAML browser correlation identifier collided");
-                return Outcome.succeeded(new SourceAuthentication.Stage.Redirect(location, correlation));
+                return Outcome.succeeded(new SourceWorkflow.Stage.Redirect(location, correlation));
             });
         }
 
@@ -885,7 +884,8 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
          * @return SHA-256 hexadecimal StateCache key
          */
         private String stateKey(final String state) {
-            return Builder.sha256Hex(namespace + '\0' + sourceId + '\0' + BROWSER_STATE_PURPOSE + '\0' + state);
+            return Builder.sha256Hex(
+                    namespace + Symbol.C_NUL + sourceId + Symbol.C_NUL + BROWSER_STATE_PURPOSE + Symbol.C_NUL + state);
         }
 
     }

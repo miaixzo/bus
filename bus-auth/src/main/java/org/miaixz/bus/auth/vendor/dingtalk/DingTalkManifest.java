@@ -22,11 +22,12 @@ package org.miaixz.bus.auth.vendor.dingtalk;
 import java.util.List;
 import java.util.Set;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorDeviation;
@@ -81,23 +82,23 @@ public final class DingTalkManifest implements VariantManifest<DingTalkOptions> 
      * Exact capabilities implemented by the delegated OAuth 2.0 variant.
      */
     private static final Capability.Manifest OAUTH2_CAPABILITIES = new Capability.Manifest(List.of(
-            SourceAuthentication.initiate(Set.of(Capability.Interaction.REDIRECT)),
-            SourceAuthentication.complete(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT)),
             OAuth2ClientScheme.AUTHORIZATION));
 
     /**
      * Exact capabilities implemented by the proprietary account variant.
      */
     private static final Capability.Manifest ACCOUNT_CAPABILITIES = new Capability.Manifest(List.of(
-            SourceAuthentication.initiate(Set.of(Capability.Interaction.REDIRECT)),
-            SourceAuthentication.complete(Set.of(Capability.Interaction.REDIRECT))));
+            SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT))));
 
     /**
      * Registered deviations confined to the delegated Source-authentication chain.
      */
     private static final List<VendorDeviation> OAUTH2_DEVIATIONS = List.of(
             deviation(
-                    "source_authentication.initiate",
+                    Builder.SOURCE_AUTHENTICATION_INITIATE,
                     VendorDeviation.Location.QUERY,
                     "org_type",
                     null,
@@ -105,7 +106,7 @@ public final class DingTalkManifest implements VariantManifest<DingTalkOptions> 
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.initiate",
+                    Builder.SOURCE_AUTHENTICATION_INITIATE,
                     VendorDeviation.Location.QUERY,
                     "corpId",
                     null,
@@ -113,7 +114,7 @@ public final class DingTalkManifest implements VariantManifest<DingTalkOptions> 
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     "authCode",
                     OAuth2.Parameters.CODE,
@@ -121,7 +122,7 @@ public final class DingTalkManifest implements VariantManifest<DingTalkOptions> 
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.JSON,
                     "clientSecret",
                     OAuth2.Parameters.CLIENT_SECRET,
@@ -129,7 +130,7 @@ public final class DingTalkManifest implements VariantManifest<DingTalkOptions> 
                     Http.Method.POST,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.RESPONSE,
                     "accessToken",
                     OAuth2.Parameters.ACCESS_TOKEN,
@@ -137,7 +138,7 @@ public final class DingTalkManifest implements VariantManifest<DingTalkOptions> 
                     Http.Method.POST,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.HEADER,
                     "x-acs-dingtalk-access-token",
                     Http.Header.AUTHORIZATION,
@@ -150,7 +151,7 @@ public final class DingTalkManifest implements VariantManifest<DingTalkOptions> 
      */
     private static final List<VendorDeviation> ACCOUNT_DEVIATIONS = List.of(
             deviation(
-                    "source_authentication.initiate",
+                    Builder.SOURCE_AUTHENTICATION_INITIATE,
                     VendorDeviation.Location.QUERY,
                     "appid",
                     OAuth2.Parameters.CLIENT_ID,
@@ -158,7 +159,7 @@ public final class DingTalkManifest implements VariantManifest<DingTalkOptions> 
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     "signature",
                     null,
@@ -166,7 +167,7 @@ public final class DingTalkManifest implements VariantManifest<DingTalkOptions> 
                     Http.Method.POST,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.JSON,
                     "tmp_auth_code",
                     OAuth2.Parameters.CODE,

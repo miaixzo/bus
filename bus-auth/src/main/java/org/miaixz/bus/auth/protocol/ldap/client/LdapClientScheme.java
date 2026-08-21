@@ -25,7 +25,7 @@ import java.util.Set;
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.Conformance;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
@@ -50,7 +50,7 @@ public final class LdapClientScheme implements Scheme<LdapClientOptions> {
     /**
      * Complete application-level capability manifest implemented by an LDAP Source runtime.
      */
-    private static final Capability.Manifest MANIFEST = new Capability.Manifest(List.of(SourceAuthentication.INITIATE));
+    private static final Capability.Manifest MANIFEST = new Capability.Manifest(List.of(SourceWorkflow.INITIATE));
     /**
      * Formal LDAPv3 specifications implemented by the directory Source.
      */

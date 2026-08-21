@@ -22,14 +22,16 @@ package org.miaixz.bus.auth.vendor.alipay;
 import java.util.List;
 import java.util.Set;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorDeviation;
 import org.miaixz.bus.auth.vendor.VendorTargets;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -52,19 +54,19 @@ public final class AlipayManifest implements VariantManifest<AlipayOptions> {
     /**
      * Stable variant identifier for Alipay public-application authorization.
      */
-    public static final Vendor.Variant DEFAULT = new Vendor.Variant("default");
+    public static final Vendor.Variant DEFAULT = new Vendor.Variant(Normal.DEFAULT);
     /**
      * Browser-only application capability manifest; the proprietary gateway is not published as OAuth 2.0.
      */
     private static final Capability.Manifest CAPABILITIES = new Capability.Manifest(List.of(
-            SourceAuthentication.initiate(Set.of(Capability.Interaction.REDIRECT)),
-            SourceAuthentication.complete(Set.of(Capability.Interaction.REDIRECT))));
+            SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT))));
     /**
      * Exact gateway deviations that prevent the Alipay flow from being advertised as standard OAuth 2.0.
      */
     private static final List<VendorDeviation> DEVIATIONS = List.of(
             deviation(
-                    "source_authentication.initiate",
+                    Builder.SOURCE_AUTHENTICATION_INITIATE,
                     VendorDeviation.Location.QUERY,
                     "app_id",
                     OAuth2.Parameters.CLIENT_ID,
@@ -72,7 +74,7 @@ public final class AlipayManifest implements VariantManifest<AlipayOptions> {
                     Http.Method.GET,
                     false),
             deviation(
-                    "source_authentication.complete",
+                    Builder.SOURCE_AUTHENTICATION_COMPLETE,
                     VendorDeviation.Location.QUERY,
                     "auth_code",
                     OAuth2.Parameters.CODE,

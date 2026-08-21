@@ -26,6 +26,7 @@ import org.miaixz.bus.auth.guard.SecretGuard;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.crypto.Builder;
 
@@ -94,8 +95,8 @@ public final class PkceValidator {
                 throw new ValidateException("PKCE code verifier does not match the stored challenge");
             }
         } finally {
-            Arrays.fill(expectedCharacters, '\0');
-            Arrays.fill(challengeCharacters, '\0');
+            Arrays.fill(expectedCharacters, Symbol.C_NUL);
+            Arrays.fill(challengeCharacters, Symbol.C_NUL);
         }
     }
 

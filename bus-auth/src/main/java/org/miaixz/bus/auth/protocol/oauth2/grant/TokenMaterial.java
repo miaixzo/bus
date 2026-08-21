@@ -24,6 +24,8 @@ import java.util.Arrays;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.crypto.Builder;
@@ -39,15 +41,25 @@ import org.miaixz.bus.crypto.Builder;
  */
 public final class TokenMaterial {
 
-    private static final int MINIMUM_TOKEN_BITS = 256;
+    /** Non-relaxable minimum entropy for generated opaque tokens. */
+    private static final int MINIMUM_TOKEN_BITS = Normal._256;
 
+    /** Exact Provider identifier included in derived storage keys. */
     private final String providerId;
 
+    /** Policy-derived number of random bytes per token. */
     private final int tokenBytes;
 
+    /**
+     * Creates a Provider-isolated token generator using the runtime security baseline.
+     *
+     * @param providerId exact Provider identifier
+     * @param services   Source-scoped runtime services
+     */
     public TokenMaterial(final String providerId, final DriverServices services) {
         this.providerId = Assert.notBlank(providerId, "OAuth 2.x Provider id must not be blank");
-        final int entropyBits = Math.max(MINIMUM_TOKEN_BITS,
+        final int entropyBits = Math.max(
+                MINIMUM_TOKEN_BITS,
                 Assert.notNull(services, "OAuth 2.x execution services must not be null").securityBaseline()
                         .require(Protocol.OAUTH2).minimumEntropyBits());
         this.tokenBytes = (entropyBits + Byte.SIZE - 1) / Byte.SIZE;
@@ -74,6 +86,8 @@ public final class TokenMaterial {
      * @return hexadecimal SHA-256 cache key
      */
     public String key(final String token) {
-        return Builder.sha256Hex(providerId + '\0' + Assert.notBlank(token, "OAuth 2.x token must not be blank"));
+        return Builder
+                .sha256Hex(providerId + Symbol.C_NUL + Assert.notBlank(token, "OAuth 2.x token must not be blank"));
     }
+
 }

@@ -20,6 +20,7 @@
 package org.miaixz.bus.auth.protocol.ldap;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Represents the RFC 4511 {@code BindRequest} protocol operation with application tag 0.
@@ -39,7 +40,7 @@ public record BindRequest(int version, DistinguishedName name, AuthenticationCho
     /**
      * LDAPv3 protocol version generated and accepted by the LDAP bind implementation.
      */
-    public static final int VERSION_3 = 3;
+    public static final int VERSION_3 = Normal._3;
 
     /**
      * Creates a bind request matching the complete standard sequence.

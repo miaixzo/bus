@@ -29,11 +29,28 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  */
 public final class SubjectParser {
 
+    /** Creates a stateless Subject parser. */
+    public SubjectParser() {
+    }
+
+    /**
+     * Parses one project-loaded stable Subject.
+     *
+     * @param record project identity record
+     * @return immutable Subject
+     */
     public Subject parse(final IdentityLoader.Record record) {
         final IdentityLoader.Record loaded = Assert.notNull(record, "Loaded Subject record must not be null");
         return new Subject(loaded.key(), loaded.reference(), loaded.attributes());
     }
 
+    /**
+     * Parses a Subject after verifying its requested reference.
+     *
+     * @param expected expected Subject reference
+     * @param record   project identity record
+     * @return immutable verified Subject
+     */
     public Subject parse(final Subject.Reference expected, final IdentityLoader.Record record) {
         final Subject.Reference reference = Assert.notNull(expected, "Expected Subject reference must not be null");
         final IdentityLoader.Record loaded = Assert.notNull(record, "Loaded Subject record must not be null");
@@ -42,4 +59,5 @@ public final class SubjectParser {
         }
         return new Subject(loaded.key(), loaded.reference(), loaded.attributes());
     }
+
 }

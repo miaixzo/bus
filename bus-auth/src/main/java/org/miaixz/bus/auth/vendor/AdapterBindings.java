@@ -35,8 +35,16 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  */
 final class AdapterBindings {
 
+    /**
+     * Immutable lookup from an exact Vendor variant key to its checked factory invocation.
+     */
     private final Map<Key, Binding> bindings;
 
+    /**
+     * Validates and freezes the complete Vendor adapter binding directory.
+     *
+     * @param bindings exact binding map assembled for the runtime
+     */
     AdapterBindings(final Map<Key, Binding> bindings) {
         Assert.notNull(bindings, "Vendor adapter bindings must not be null");
         final Map<Key, Binding> copy = new LinkedHashMap<>(bindings.size());
@@ -49,6 +57,12 @@ final class AdapterBindings {
 
     /**
      * Creates a checked binding for one built-in manifest class.
+     *
+     * @param <D>          concrete Vendor manifest type
+     * @param <O>          concrete Vendor options type
+     * @param manifestType runtime manifest class used to validate the selected manifest
+     * @param factory      typed adapter factory bound to the manifest
+     * @return checked erased binding stored by the directory
      */
     static <D extends VariantManifest<O>, O extends VendorOptions<?>> Binding binding(
             final Class<D> manifestType,
@@ -62,6 +76,11 @@ final class AdapterBindings {
 
     /**
      * Creates a checked binding for one externally contributed manifest instance.
+     *
+     * @param <O>      concrete Vendor options type
+     * @param manifest exact externally contributed manifest instance
+     * @param factory  typed adapter factory bound to that instance
+     * @return checked erased binding stored by the directory
      */
     static <O extends VendorOptions<?>> Binding binding(
             final VariantManifest<O> manifest,
@@ -87,6 +106,10 @@ final class AdapterBindings {
      * references establish the Manifest/Options/Factory relation at assembly time; any dishonest external generic
      * implementation is normalized by {@link #create} as a validation failure.
      * </p>
+     *
+     * @param <O>     concrete Vendor options type expected by the binding
+     * @param options runtime options value declaring its exact implementation class
+     * @return options narrowed to the binding's concrete type
      */
     @SuppressWarnings("unchecked")
     private static <O extends VendorOptions<?>> O narrow(final VendorOptions<?> options) {
@@ -97,10 +120,27 @@ final class AdapterBindings {
         return (O) checked;
     }
 
+    /**
+     * Returns the immutable exact-key binding directory.
+     *
+     * @return immutable Vendor adapter bindings
+     */
     Map<Key, Binding> bindings() {
         return bindings;
     }
 
+    /**
+     * Creates one Vendor adapter after validating the complete manifest, variant, options, and service relation.
+     *
+     * @param namespaceId runtime namespace identifier
+     * @param sourceId    configured Source identifier
+     * @param manifest    selected Vendor manifest
+     * @param variant     selected manifest variant
+     * @param options     validated options for the selected variant
+     * @param services    runtime services exposed to the adapter
+     * @return adapter exposing exactly the selected variant capabilities
+     * @throws ValidateException if routing is inconsistent, no factory exists, or factory construction fails
+     */
     VendorAdapter create(
             final String namespaceId,
             final String sourceId,
@@ -140,9 +180,23 @@ final class AdapterBindings {
         return adapter;
     }
 
+    /**
+     * Erased, package-private invocation boundary retained inside one checked binding.
+     */
     @FunctionalInterface
     interface Invoker {
 
+        /**
+         * Invokes the factory relation validated when the binding was assembled.
+         *
+         * @param namespaceId runtime namespace identifier
+         * @param sourceId    configured Source identifier
+         * @param manifest    selected Vendor manifest
+         * @param variant     selected manifest variant
+         * @param options     selected runtime options
+         * @param services    runtime services exposed to the adapter
+         * @return constructed Vendor adapter
+         */
         VendorAdapter create(
                 String namespaceId,
                 String sourceId,
@@ -150,21 +204,41 @@ final class AdapterBindings {
                 VariantManifest.Variant variant,
                 VendorOptions<?> options,
                 DriverServices services);
+
     }
 
+    /**
+     * Stores one checked erased factory invocation.
+     *
+     * @param invoker factory invocation boundary
+     */
     record Binding(Invoker invoker) {
 
+        /**
+         * Validates one factory invocation binding.
+         */
         Binding {
             Assert.notNull(invoker, "Vendor binding invoker must not be null");
         }
+
     }
 
+    /**
+     * Identifies one exact Vendor platform variant.
+     *
+     * @param vendor  Vendor platform identifier
+     * @param variant platform-specific variant identifier
+     */
     record Key(Vendor.Id vendor, Vendor.Variant variant) {
 
+        /**
+         * Validates one exact Vendor platform variant key.
+         */
         Key {
             Assert.notNull(vendor, "Vendor adapter key platform must not be null");
             Assert.notNull(variant, "Vendor adapter key variant must not be null");
         }
+
     }
 
 }

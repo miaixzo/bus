@@ -74,8 +74,8 @@ public sealed interface Outcome<T> permits Outcome.Succeeded, Outcome.Rejected, 
     default <R> Outcome<R> flatMap(final Function<? super T, ? extends Outcome<R>> mapper) {
         Assert.notNull(mapper, "Outcome mapper must not be null");
         return switch (this) {
-            case Succeeded<T> success -> Assert.notNull(mapper.apply(success.value()),
-                    "Outcome mapper returned no outcome");
+            case Succeeded<T> success -> Assert
+                    .notNull(mapper.apply(success.value()), "Outcome mapper returned no outcome");
             case Rejected<T> rejected -> Outcome.rejected(rejected.failure());
             case Failed<T> failed -> Outcome.failed(failed.failure());
         };
@@ -113,18 +113,25 @@ public sealed interface Outcome<T> permits Outcome.Succeeded, Outcome.Rejected, 
                 return operationFailed("Operation returned no outcome");
             }
             try {
-                return outcome.map(value -> Assert.notNull(
-                        mapper.apply(Assert.notNull(value, "Operation returned no value")),
-                        "Outcome mapper returned no value"));
+                return outcome.map(
+                        value -> Assert.notNull(
+                                mapper.apply(Assert.notNull(value, "Operation returned no value")),
+                                "Outcome mapper returned no value"));
             } catch (RuntimeException ignored) {
                 return operationFailed("Operation result could not be mapped");
             }
         });
     }
 
+    /**
+     * Creates a safe operational failure when outcome transformation itself fails.
+     *
+     * @param <R>         expected transformed value type
+     * @param description safe transformation failure description
+     * @return failed transformed outcome
+     */
     private static <R> Outcome<R> operationFailed(final String description) {
-        return Outcome.failed(
-                new Outcome.Failure(ErrorCode._500, description, new JsonValue.ObjectValue(Map.of())));
+        return Outcome.failed(new Outcome.Failure(ErrorCode._500, description, new JsonValue.ObjectValue(Map.of())));
     }
 
     /**

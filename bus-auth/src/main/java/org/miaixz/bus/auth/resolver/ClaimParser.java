@@ -28,8 +28,21 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public final class ClaimParser {
 
+    /**
+     * Creates a stateless claim parser.
+     */
+    public ClaimParser() {
+    }
+
+    /**
+     * Validates and freezes project-loaded claim entries.
+     *
+     * @param record project-loaded claim record
+     * @return immutable framework claim set
+     */
     public ClaimSet parse(final ClaimLoader.Record record) {
         final ClaimLoader.Record loaded = Assert.notNull(record, "Loaded claim record must not be null");
         return new ClaimSet(loaded.entries());
     }
+
 }

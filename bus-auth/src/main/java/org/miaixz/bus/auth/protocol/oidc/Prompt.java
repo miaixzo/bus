@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
@@ -43,7 +44,7 @@ public record Prompt(List<String> values) {
     /**
      * Prohibits user-interface display and must occur alone.
      */
-    public static final Prompt NONE = new Prompt(List.of("none"));
+    public static final Prompt NONE = new Prompt(List.of(Normal.NONE));
 
     /**
      * Requests explicit resource-owner consent.
@@ -71,7 +72,7 @@ public record Prompt(List<String> values) {
                 throw new ValidateException("OpenID Connect prompt values must not contain duplicates");
             }
         }
-        if (values.size() > 1 && unique.contains("none")) {
+        if (values.size() > 1 && unique.contains(Normal.NONE)) {
             throw new ValidateException("OpenID Connect prompt none must not be combined with another value");
         }
         values = List.copyOf(values);
@@ -99,7 +100,8 @@ public record Prompt(List<String> values) {
         Assert.notEmpty(value, "OpenID Connect prompt registration must not be empty");
         for (int index = 0; index < value.length(); index++) {
             final char character = value.charAt(index);
-            final boolean valid = character >= 'A' && character <= 'Z' || character >= 'a' && character <= 'z'
+            final boolean valid = character >= Symbol.C_UPPER_A && character <= Symbol.C_UPPER_Z
+                    || character >= Symbol.C_LOWER_A && character <= Symbol.C_LOWER_Z
                     || character >= Symbol.C_ZERO && character <= Symbol.C_NINE || character == Symbol.C_MINUS
                     || character == Symbol.C_DOT || character == Symbol.C_UNDERLINE;
             if (!valid) {

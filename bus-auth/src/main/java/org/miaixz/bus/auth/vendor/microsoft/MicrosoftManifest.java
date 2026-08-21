@@ -22,10 +22,11 @@ package org.miaixz.bus.auth.vendor.microsoft;
 import java.util.List;
 import java.util.Set;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorDeviation;
@@ -68,8 +69,8 @@ public final class MicrosoftManifest implements VariantManifest<MicrosoftOptions
      * Exact Source authentication and public OAuth operations shared by both clouds.
      */
     private static final Capability.Manifest CAPABILITIES = new Capability.Manifest(List.of(
-            SourceAuthentication.initiate(Set.of(Capability.Interaction.REDIRECT)),
-            SourceAuthentication.complete(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT)),
             OAuth2ClientScheme.AUTHORIZATION,
             OAuth2ClientScheme.TOKEN));
 
@@ -83,7 +84,7 @@ public final class MicrosoftManifest implements VariantManifest<MicrosoftOptions
      * Private Microsoft Graph identity mapping retained from the historical providers.
      */
     private static final List<VendorDeviation> GRAPH_IDENTITY = List.of(
-            new VendorDeviation("source_authentication.complete", VendorDeviation.Location.RESPONSE, "id",
+            new VendorDeviation(Builder.SOURCE_AUTHENTICATION_COMPLETE, VendorDeviation.Location.RESPONSE, "id",
                     Optional.empty(), Optional.of(MediaType.APPLICATION_JSON_TYPE), Http.Method.GET, false));
 
     /**
