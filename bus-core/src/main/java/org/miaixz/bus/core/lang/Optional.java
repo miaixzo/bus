@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.core.lang;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -40,7 +42,10 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @see java.util.Optional
  * @author Kimi Liu
  */
-public class Optional<T> {
+public class Optional<T> implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * An empty {@code Optional} instance.

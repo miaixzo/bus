@@ -339,6 +339,16 @@ public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
     }
 
     /**
+     * Reports whether a caller-owned executor was supplied for the complete atomic command set.
+     *
+     * @return {@code true} when asynchronous atomic operations are configured
+     */
+    @Override
+    public boolean atomic() {
+        return executor != null;
+    }
+
+    /**
      * Reads and deserializes one value on the caller-owned executor.
      *
      * @param key cache key

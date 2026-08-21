@@ -308,9 +308,13 @@ public class RedisClusterCache<K, V> implements CacheX<K, V>, AutoCloseable {
     }
 
     /**
-     * Atomically creates a tagged cluster entry with NX and PX semantics.
+     * Atomically creates one cluster entry with NX and PX semantics.
+     * <p>
+     * This command addresses exactly one key. A Redis hash tag is therefore optional and remains a caller-controlled
+     * routing choice; the cache does not force unrelated keys into one cluster slot.
+     * </p>
      *
-     * @param key       cache key containing one non-empty hash tag
+     * @param key       cache key
      * @param value     cache value
      * @param ttlMillis positive time to live in milliseconds
      * @return stage containing whether the entry was created
@@ -321,15 +325,25 @@ public class RedisClusterCache<K, V> implements CacheX<K, V>, AutoCloseable {
             return CacheX.super.create(key, value, ttlMillis);
         }
         requirePositiveTtl(ttlMillis);
-        byte[] keyBytes = taggedKeyBytes(key);
+        byte[] keyBytes = keyBytes(key);
         byte[] valueBytes = serializer.serialize(copyValue(Objects.requireNonNull(value, "value")));
         return submit(() -> jedisCluster.set(keyBytes, valueBytes, SetParams.setParams().nx().px(ttlMillis)) != null);
     }
 
     /**
-     * Reads and deserializes one tagged cluster entry.
+     * Reports whether a caller-owned executor was supplied for the complete atomic command set.
      *
-     * @param key cache key containing one non-empty hash tag
+     * @return {@code true} when asynchronous atomic operations are configured
+     */
+    @Override
+    public boolean atomic() {
+        return executor != null;
+    }
+
+    /**
+     * Reads and deserializes one cluster entry at its owning slot.
+     *
+     * @param key cache key
      * @return stage containing a defensive value copy or {@code null}
      */
     @Override
@@ -337,7 +351,7 @@ public class RedisClusterCache<K, V> implements CacheX<K, V>, AutoCloseable {
         if (executor == null) {
             return CacheX.super.get(key);
         }
-        byte[] keyBytes = taggedKeyBytes(key);
+        byte[] keyBytes = keyBytes(key);
         return submit(() -> {
             byte[] value = jedisCluster.get(keyBytes);
             return value == null ? null : copyValue(serializer.deserialize(value));
@@ -345,9 +359,9 @@ public class RedisClusterCache<K, V> implements CacheX<K, V>, AutoCloseable {
     }
 
     /**
-     * Atomically reads, removes, and deserializes one tagged cluster entry.
+     * Atomically reads, removes, and deserializes one cluster entry.
      *
-     * @param key cache key containing one non-empty hash tag
+     * @param key cache key
      * @return stage containing the removed value or {@code null}
      */
     @Override
@@ -355,7 +369,7 @@ public class RedisClusterCache<K, V> implements CacheX<K, V>, AutoCloseable {
         if (executor == null) {
             return CacheX.super.take(key);
         }
-        byte[] keyBytes = taggedKeyBytes(key);
+        byte[] keyBytes = keyBytes(key);
         return submit(() -> {
             byte[] value = jedisCluster.getDel(keyBytes);
             return value == null ? null : copyValue(serializer.deserialize(value));
@@ -363,9 +377,13 @@ public class RedisClusterCache<K, V> implements CacheX<K, V>, AutoCloseable {
     }
 
     /**
-     * Atomically replaces a tagged cluster entry whose serialized value equals the expected value.
+     * Atomically replaces one cluster entry whose serialized value equals the expected value.
+     * <p>
+     * The compare-and-replace script uses only {@code KEYS[1]}, so Redis Cluster can route it without requiring a
+     * shared hash tag.
+     * </p>
      *
-     * @param key       cache key containing one non-empty hash tag
+     * @param key       cache key
      * @param expected  expected cache value
      * @param update    replacement cache value
      * @param ttlMillis positive replacement time to live in milliseconds
@@ -377,7 +395,7 @@ public class RedisClusterCache<K, V> implements CacheX<K, V>, AutoCloseable {
             return CacheX.super.replace(key, expected, update, ttlMillis);
         }
         requirePositiveTtl(ttlMillis);
-        byte[] keyBytes = taggedKeyBytes(key);
+        byte[] keyBytes = keyBytes(key);
         byte[] expectedBytes = serializer.serialize(copyValue(Objects.requireNonNull(expected, "expected")));
         byte[] updateBytes = serializer.serialize(copyValue(Objects.requireNonNull(update, "update")));
         byte[] ttlBytes = Long.toString(ttlMillis).getBytes(Charset.US_ASCII);
@@ -391,9 +409,9 @@ public class RedisClusterCache<K, V> implements CacheX<K, V>, AutoCloseable {
     }
 
     /**
-     * Atomically deletes one tagged cluster entry.
+     * Atomically deletes one cluster entry.
      *
-     * @param key cache key containing one non-empty hash tag
+     * @param key cache key
      * @return stage containing whether an entry was deleted
      */
     @Override
@@ -401,7 +419,7 @@ public class RedisClusterCache<K, V> implements CacheX<K, V>, AutoCloseable {
         if (executor == null) {
             return CacheX.super.delete(key);
         }
-        byte[] keyBytes = taggedKeyBytes(key);
+        byte[] keyBytes = keyBytes(key);
         return submit(() -> jedisCluster.del(keyBytes) == 1L);
     }
 
@@ -522,21 +540,13 @@ public class RedisClusterCache<K, V> implements CacheX<K, V>, AutoCloseable {
     }
 
     /**
-     * Validates exactly one non-empty Redis hash tag and encodes the key as UTF-8.
+     * Encodes one non-null cluster key without imposing a hash-tag layout.
      *
      * @param key cluster cache key
-     * @return validated UTF-8 key bytes
+     * @return UTF-8 key bytes
      */
-    private static byte[] taggedKeyBytes(Object key) {
-        String text = Objects.requireNonNull(key, "key").toString();
-        int open = text.indexOf(Symbol.C_BRACE_LEFT);
-        int close = text.indexOf(Symbol.C_BRACE_RIGHT);
-        boolean valid = open >= 0 && close > open + 1 && open == text.lastIndexOf(Symbol.C_BRACE_LEFT)
-                && close == text.lastIndexOf(Symbol.C_BRACE_RIGHT);
-        if (!valid) {
-            throw new IllegalArgumentException("Redis Cluster key must contain exactly one non-empty hash tag");
-        }
-        return text.getBytes(Charset.UTF_8);
+    private static byte[] keyBytes(Object key) {
+        return Objects.requireNonNull(key, "key").toString().getBytes(Charset.UTF_8);
     }
 
     /**
