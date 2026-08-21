@@ -296,7 +296,7 @@ public interface CacheX<K, V> extends AutoCloseable {
      *
      * @return {@code true} when the complete atomic entry contract is available on this instance
      */
-    default boolean atomic() {
+    default boolean supports() {
         return false;
     }
 
