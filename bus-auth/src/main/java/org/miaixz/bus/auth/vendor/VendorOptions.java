@@ -42,7 +42,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public interface VendorOptions<O extends VendorOptions<O>> extends Options<O> {
 
     /**
-     * Retains built-in record options as their immutable generation snapshot.
+     * Retains built-in record options as their immutable runtime value.
      * <p>
      * A project-defined non-record implementation must override this method and return a detached immutable value.
      * </p>

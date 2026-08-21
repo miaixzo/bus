@@ -24,6 +24,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Subject;
@@ -75,12 +76,12 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
     /**
      * Standard JWK key-use value for signing keys.
      */
-    private static final String SIGNATURE_USE = "sig";
+    private static final String SIGNATURE_USE = Builder.SIGNATURE;
 
     /**
      * Safe failure-detail member consumed by the OAuth token error mapper.
      */
-    private static final String OAUTH_ERROR = "oauth_error";
+    private static final String OAUTH_ERROR = Builder.OAUTH_ERROR;
 
     /**
      * Frozen OpenID Provider options.
@@ -268,8 +269,10 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
         final CompletionStage<Outcome<JsonValue.ObjectValue>> attributes;
         try {
             attributes = Outcome.mapStage(
-                    () -> services.attributeLoader().load(new Subject.Key(grant.subjectId()), context, timeout),
-                    loaded -> services.attributeParser().parse(new Subject.Key(grant.subjectId()), loaded));
+                    () -> services.attributeLoader()
+                            .load(services.registration(), new Subject.Key(grant.subjectId()), context, timeout),
+                    loaded -> services.attributeParser()
+                            .parse(services.registration(), new Subject.Key(grant.subjectId()), loaded));
         } catch (RuntimeException exception) {
             return completed(
                     Outcome.failed(
@@ -335,8 +338,8 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
         final CompletionStage<Outcome<KeyMaterial>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.keyLoader().load(query, context, timeout),
-                    loaded -> services.keyParser().parse(query, loaded));
+                    () -> services.keyLoader().load(services.registration(), query, context, timeout),
+                    loaded -> services.keyParser().parse(services.registration(), query, loaded));
         } catch (RuntimeException exception) {
             return completed(
                     Outcome.failed(

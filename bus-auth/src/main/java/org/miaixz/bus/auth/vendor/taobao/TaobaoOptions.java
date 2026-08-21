@@ -23,6 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorOptions;
@@ -113,7 +114,7 @@ public record TaobaoOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
      */
     @Override
     public String toString() {
-        return "TaobaoOptions[vendor=" + vendor + ", variant=" + variant
+        return "TaobaoOptions[vendor=" + vendor + Builder.VARIANT + variant
                 + ", clientId=[REDACTED], credential=[REDACTED], redirectUri=[REDACTED], scopes=[]]";
     }
 

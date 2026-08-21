@@ -21,6 +21,8 @@ package org.miaixz.bus.auth.resolver;
 
 import java.time.Instant;
 
+import org.miaixz.bus.auth.Registration;
+import org.miaixz.bus.auth.shared.jose.Jwk;
 import org.miaixz.bus.auth.shared.jose.JwkSet;
 import org.miaixz.bus.auth.worker.KeyLoader;
 import org.miaixz.bus.core.lang.Assert;
@@ -31,9 +33,31 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  */
 public final class KeyParser {
 
-    public KeyMaterial parse(final KeyLoader.Request request, final KeyLoader.Record record) {
+    /**
+     * Creates a stateless cryptographic key parser.
+     */
+    public KeyParser() {
+    }
+
+    /**
+     * Validates Source ownership, key lookup coordinates, and validity interval.
+     *
+     * @param registration exact Source registration that requested the key
+     * @param request      exact key lookup request
+     * @param record       project-loaded key record
+     * @return validated key material
+     */
+    public KeyMaterial parse(
+            final Registration.SourceEntry registration,
+            final KeyLoader.Request request,
+            final KeyLoader.Record record) {
+        final String sourceId = Assert.notNull(registration, "Key Source registration must not be null").resource()
+                .getId();
         final KeyLoader.Request expected = Assert.notNull(request, "Key request must not be null");
         final KeyLoader.Record loaded = Assert.notNull(record, "Loaded key record must not be null");
+        if (!sourceId.equals(loaded.sourceId())) {
+            throw new ValidateException("Loaded key does not belong to the requested Source");
+        }
         if (!expected.issuer().equals(Assert.notBlank(loaded.issuer(), "Loaded key issuer must not be blank"))) {
             throw new ValidateException("Loaded key issuer does not match the requested issuer");
         }
@@ -55,8 +79,34 @@ public final class KeyParser {
         return new KeyMaterial(loaded.keyId(), loaded.algorithm(), loaded.key(), loaded.notBefore(), loaded.notAfter());
     }
 
-    public JwkSet parsePublic(final KeyLoader.PublicRequest request, final JwkSet keys) {
-        Assert.notNull(request, "Public key request must not be null");
-        return Assert.notNull(keys, "Loaded public JWK Set must not be null");
+    /**
+     * Validates Source ownership and rejects private or symmetric material from a public key set.
+     *
+     * @param registration exact Source registration that requested the keys
+     * @param request      exact public-key lookup request
+     * @param record       project-loaded public-key record
+     * @return detached public-only key set
+     */
+    public JwkSet parsePublic(
+            final Registration.SourceEntry registration,
+            final KeyLoader.PublicRequest request,
+            final KeyLoader.PublicRecord record) {
+        final String sourceId = Assert.notNull(registration, "Public key Source registration must not be null")
+                .resource().getId();
+        final KeyLoader.PublicRequest expected = Assert.notNull(request, "Public key request must not be null");
+        final KeyLoader.PublicRecord loaded = Assert.notNull(record, "Loaded public key record must not be null");
+        if (!sourceId.equals(loaded.sourceId()) || !expected.issuer().equals(loaded.issuer())
+                || !expected.use().equals(loaded.use())) {
+            throw new ValidateException("Loaded public keys do not match the requested Source, issuer, or use");
+        }
+        final JwkSet keys = Assert.notNull(loaded.keys(), "Loaded public JWK Set must not be null");
+        for (Jwk key : keys.keys()) {
+            final Jwk checked = Assert.notNull(key, "Loaded public JWK must not be null");
+            if (checked.hasPrivateMaterial() || "oct".equals(checked.keyType())) {
+                throw new ValidateException("Loaded public JWK Set contains non-public key material");
+            }
+        }
+        return new JwkSet(keys.keys(), keys.extensions());
     }
+
 }

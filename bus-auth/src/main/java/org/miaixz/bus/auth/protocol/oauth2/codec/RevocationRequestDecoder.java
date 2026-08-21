@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.RevocationRequest;
 import org.miaixz.bus.core.codec.Decoder;
@@ -102,9 +102,9 @@ public final class RevocationRequestDecoder implements Decoder<HttpRequest, Revo
      * @return mutable unique parameter map
      * @throws ValidateException if a parameter name occurs more than once
      */
-    private static Map<String, String> unique(final List<Parameter> decoded) {
+    private static Map<String, String> unique(final List<NameValue> decoded) {
         final Map<String, String> values = new LinkedHashMap<>(decoded.size());
-        for (Parameter parameter : decoded) {
+        for (NameValue parameter : decoded) {
             if (values.putIfAbsent(parameter.name(), parameter.value()) != null) {
                 throw new ValidateException("OAuth 2.x revocation parameters must not be repeated");
             }

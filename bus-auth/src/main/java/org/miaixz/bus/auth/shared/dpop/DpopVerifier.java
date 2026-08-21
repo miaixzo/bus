@@ -37,6 +37,7 @@ import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.crypto.Builder;
@@ -235,8 +236,8 @@ public final class DpopVerifier {
                 throw new ValidateException(message);
             }
         } finally {
-            Arrays.fill(expectedCharacters, '\0');
-            Arrays.fill(presentedCharacters, '\0');
+            Arrays.fill(expectedCharacters, Symbol.C_NUL);
+            Arrays.fill(presentedCharacters, Symbol.C_NUL);
         }
     }
 

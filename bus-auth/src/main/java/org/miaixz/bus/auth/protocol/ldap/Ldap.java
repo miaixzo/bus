@@ -23,6 +23,7 @@ import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.protocol.ldap.client.LdapClientOptions;
 import org.miaixz.bus.auth.protocol.ldap.server.LdapServerOptions;
 import org.miaixz.bus.auth.source.SourceDriver;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
@@ -39,7 +40,7 @@ public final class Ldap {
     /**
      * LDAP protocol version number required by LDAPv3 Bind requests.
      */
-    public static final int VERSION_3 = 3;
+    public static final int VERSION_3 = Normal._3;
 
     /**
      * RFC 4511 selector requesting every user attribute.

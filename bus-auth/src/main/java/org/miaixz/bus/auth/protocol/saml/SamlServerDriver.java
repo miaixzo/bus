@@ -43,19 +43,21 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.protocol.saml.codec.MetadataCodec;
 import org.miaixz.bus.auth.protocol.saml.codec.SamlMessageCodec;
 import org.miaixz.bus.auth.protocol.saml.server.*;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
 import org.miaixz.bus.auth.source.DriverServices;
-import org.miaixz.bus.auth.source.SessionCoordinator;
 import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.auth.worker.KeyLoader;
+import org.miaixz.bus.auth.worker.SessionCoordinator;
 import org.miaixz.bus.auth.worker.SourceWorker;
 import org.miaixz.bus.auth.worker.WorkerSlots;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -76,7 +78,7 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
     /**
      * Secure maximum DOM nesting depth used by the SAML codecs.
      */
-    private static final int MAXIMUM_XML_DEPTH = 64;
+    private static final int MAXIMUM_XML_DEPTH = Normal._64;
 
     /**
      * Creates a stateless SAML Provider driver.
@@ -131,9 +133,7 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
 
     @Override
     public Dependencies dependencies(final Source source, final SamlServerOptions options) {
-        return Dependencies.of(
-                Dependencies.Service.SESSION_CACHE,
-                Dependencies.Service.SECURITY_BASELINE);
+        return Dependencies.of(Dependencies.Service.SESSION_CACHE, Dependencies.Service.SECURITY_BASELINE);
     }
 
     /**
@@ -146,9 +146,7 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
      * @throws ValidateException        if registration routing, options, or algorithms are invalid
      */
     @Override
-    public SourceWorker compile(
-            final Prepared<SamlServerOptions> prepared,
-            final DriverServices services) {
+    public SourceWorker compile(final Prepared<SamlServerOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "SAML Provider preparation must not be null");
         Assert.notNull(services, "SAML Provider execution services must not be null");
         final Registration.SourceEntry record = prepared.registration();
@@ -171,7 +169,8 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
         final SamlMessageCodec messageCodec = new SamlMessageCodec(maximumBytes, MAXIMUM_XML_DEPTH);
         final MetadataCodec metadataCodec = new MetadataCodec(maximumBytes, MAXIMUM_XML_DEPTH);
         final SamlErrorMapper errorMapper = new SamlErrorMapper(options);
-        final SessionCoordinator sessions = new SessionCoordinator(source.getId(), services);
+        final SessionCoordinator sessions = new SessionCoordinator(source.getId(), services.sessionCache(),
+                services.sessionWorker());
         final AssertionIssuer assertionIssuer = new AssertionIssuer(options, services, messageCodec);
         final SingleSignOnService signOn = new SingleSignOnService(options, services, assertionIssuer, errorMapper,
                 sessions);
@@ -373,7 +372,7 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
         /**
          * Exact external key-inventory use for SAML signing material.
          */
-        private static final String SIGNING_USE = "signing";
+        private static final String SIGNING_USE = Builder.SIGNING;
 
         /**
          * Immutable Provider signing policy.
@@ -423,7 +422,7 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
             while (child != null) {
                 if (child.getNodeType() == Node.ELEMENT_NODE) {
                     final Element element = (Element) child;
-                    if (!("urn:oasis:names:tc:SAML:2.0:assertion".equals(element.getNamespaceURI())
+                    if (!(Saml.Namespaces.ASSERTION.equals(element.getNamespaceURI())
                             && "Issuer".equals(element.getLocalName())))
                         return child;
                 }
@@ -665,8 +664,8 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
                     timeout.clock().now());
             try {
                 final CompletionStage<Outcome<KeyMaterial>> stage = Outcome.mapStage(
-                        () -> services.keyLoader().load(query, context, timeout),
-                        loaded -> services.keyParser().parse(query, loaded));
+                        () -> services.keyLoader().load(services.registration(), query, context, timeout),
+                        loaded -> services.keyParser().parse(services.registration(), query, loaded));
                 if (stage == null)
                     return completed(failed("SAML signing key loader returned no stage"));
                 return stage.handle(

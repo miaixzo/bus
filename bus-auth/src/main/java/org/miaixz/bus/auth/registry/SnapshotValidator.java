@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.miaixz.bus.auth.Library;
 import org.miaixz.bus.auth.Provider;
 import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.Registry;
@@ -40,167 +39,141 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Validates one complete entity registration snapshot before runtime compilation.
+ * Validates one complete candidate Registry snapshot before runtime compilation.
  * <p>
- * External projects supply complete {@link Library}, {@link Provider}, and {@link Source} objects. Validation follows
- * their dependency order and checks identity, Library namespace scope, one-to-many relationships, lifecycle
- * compatibility, Source routing identifiers, and the presence of already materialized protocol options. Concrete
- * option invariants are validated later by the selected Source Driver.
+ * External projects supply complete {@link org.miaixz.bus.auth.Library}, {@link Provider}, and {@link Source} objects.
+ * Validation follows their dependency order and checks identity, ownership relationships, lifecycle compatibility,
+ * Source routing identifiers, and the presence of already materialized protocol options. Project presentation, launch,
+ * ordering, and management uniqueness rules are deliberately excluded. Concrete option invariants are validated later
+ * by the selected Source Driver.
  * </p>
  *
  * @author Kimi Liu
  */
-public final class RegistrationValidator {
+public final class SnapshotValidator {
 
     /**
      * Validates Source routing against the exact drivers assembled for this runtime.
      */
     private final SourceValidator sourceValidator;
-    private final LibraryValidator libraryValidator;
-    private final ProviderValidator providerValidator;
 
     /**
-     * Creates a validator for complete registration resources and the frozen runtime Source inventory.
+     * Creates a validator for complete candidate snapshots and the frozen runtime Source inventory.
      *
      * @param sourceValidator Source-specific validator bound to assembled drivers
      */
-    public RegistrationValidator(final SourceValidator sourceValidator) {
+    public SnapshotValidator(final SourceValidator sourceValidator) {
         this.sourceValidator = Assert.notNull(sourceValidator, "Source validator must not be null");
-        this.libraryValidator = new LibraryValidator();
-        this.providerValidator = new ProviderValidator();
     }
 
     /**
-     * Validates Library namespaces and namespace-local application code uniqueness.
-     *
-     * @param libraries unique Library records by identifier
-     * @param issues    mutable issue accumulator
-     */
-    private void validateLibraries(final Map<String, Registration.Entry> libraries, final List<RegistryIssue> issues) {
-        final Set<String> codes = new HashSet<>();
-        for (Registration.Entry record : libraries.values()) {
-            final Library library = (Library) record.resource();
-            violations(issues, record, libraryValidator.validate(library));
-            if (StringKit.isNotBlank(library.getCode()) && StringKit.isNotBlank(library.getNamespace_id())
-                    && !codes.add(library.getNamespace_id() + Symbol.C_COLON + library.getCode())) {
-                issue(issues, record, "code", ErrorCode._409, "Library code must be unique within its namespace");
-            }
-        }
-    }
-
-    /**
-     * Validates Provider identity, Library ownership, and Library-local code uniqueness.
+     * Validates required Provider-to-Library ownership and enabled-parent compatibility.
      *
      * @param providers unique Provider records by identifier
      * @param libraries unique Library records by identifier
-     * @param issues    mutable issue accumulator
+     * @param faults    mutable fault accumulator
      */
     private void validateProviders(
             final Map<String, Registration.Entry> providers,
             final Map<String, Registration.Entry> libraries,
-            final List<RegistryIssue> issues) {
-        final Set<String> codes = new HashSet<>();
+            final List<SnapshotFault> faults) {
         for (Registration.Entry record : providers.values()) {
             final Provider provider = (Provider) record.resource();
-            violations(issues, record, providerValidator.validate(provider));
             final String libraryId = provider.getLibrary_id();
-            if (StringKit.isNotBlank(libraryId)) {
+            if (StringKit.isBlank(libraryId)) {
+                fault(faults, record, "library_id", ErrorCode._100100, "Provider Library id must not be blank");
+            } else {
                 final Registration.Entry libraryRecord = libraries.get(libraryId);
                 if (libraryRecord == null) {
-                    issue(issues, record, "library_id", ErrorCode._404, "Provider references an unknown Library");
+                    fault(faults, record, "library_id", ErrorCode._404, "Provider references an unknown Library");
                 } else if (record.enabled() && !libraryRecord.enabled()) {
-                    issue(
-                            issues,
+                    fault(
+                            faults,
                             record,
                             "library_id",
                             ErrorCode._100101,
                             "An enabled Provider requires an enabled Library");
                 }
             }
-            if (StringKit.isNotBlank(provider.getCode()) && StringKit.isNotBlank(libraryId)
-                    && !codes.add(libraryId + Symbol.C_COLON + provider.getCode())) {
-                issue(issues, record, "code", ErrorCode._409, "Provider code must be unique within its Library");
-            }
         }
     }
 
     /**
-     * Adds one safe validation issue without including options or credential material.
+     * Adds one safe validation fault without including options or credential material.
      *
-     * @param issues      mutable issue accumulator
+     * @param faults      mutable fault accumulator
      * @param record      owning registration
      * @param field       safe entity field identifier
      * @param error       shared Bus error code
      * @param description non-sensitive diagnostic description
      */
-    private static void issue(
-            final List<RegistryIssue> issues,
+    private static void fault(
+            final List<SnapshotFault> faults,
             final Registration.Entry record,
             final String field,
             final Errors error,
             final String description) {
         final String id = StringKit.isBlank(record.resource().getId()) ? record.kind().name()
                 : record.resource().getId();
-        issues.add(
-                RegistryIssue.entry(
+        faults.add(
+                SnapshotFault.entry(
                         record.kind(),
                         id,
-                        RegistryIssue.Stage.VALIDATE,
+                        SnapshotFault.Stage.VALIDATE,
                         Optional.of(field),
                         error,
                         description));
     }
 
+    /**
+     * Converts field violations into structured snapshot faults.
+     *
+     * @param faults     destination fault list
+     * @param record     registration being validated
+     * @param violations field violations to convert
+     */
     private static void violations(
-            final List<RegistryIssue> issues,
+            final List<SnapshotFault> faults,
             final Registration.Entry record,
-            final List<EntityViolation> violations) {
-        for (EntityViolation violation : violations) {
-            issue(issues, record, violation.field(), violation.error(), violation.description());
+            final List<FieldViolation> violations) {
+        for (FieldViolation violation : violations) {
+            fault(faults, record, violation.field(), violation.error(), violation.description());
         }
     }
 
     /**
-     * Validates Source routing, required Provider association, and Provider-local code uniqueness.
+     * Validates Source routing, required Provider association, and enabled-parent compatibility.
      *
      * @param sources   unique Source records by identifier
      * @param providers unique Provider records by identifier
-     * @param issues    mutable issue accumulator
+     * @param faults    mutable fault accumulator
      */
     private void validateSources(
             final Map<String, Registration.Entry> sources,
             final Map<String, Registration.Entry> providers,
-            final List<RegistryIssue> issues) {
-        final Set<String> codes = new HashSet<>();
+            final List<SnapshotFault> faults) {
         for (Registration.Entry record : sources.values()) {
             final Source source = (Source) record.resource();
-            violations(issues, record, sourceValidator.validate(source));
+            violations(faults, record, sourceValidator.validate(source));
             final String providerId = source.getProvider_id();
             if (StringKit.isNotBlank(providerId)) {
                 final Registration.Entry providerRecord = providers.get(providerId);
                 if (providerRecord == null) {
-                    issue(issues, record, "provider_id", ErrorCode._404, "Source references an unknown Provider");
-                } else {
-                    final Provider provider = (Provider) providerRecord.resource();
-                    if (record.enabled() && !providerRecord.enabled()) {
-                        issue(
-                                issues,
-                                record,
-                                "provider_id",
-                                ErrorCode._100101,
-                                "An enabled Source requires an enabled Provider");
-                    }
+                    fault(faults, record, "provider_id", ErrorCode._404, "Source references an unknown Provider");
+                } else if (record.enabled() && !providerRecord.enabled()) {
+                    fault(
+                            faults,
+                            record,
+                            "provider_id",
+                            ErrorCode._100101,
+                            "An enabled Source requires an enabled Provider");
                 }
-            }
-            if (StringKit.isNotBlank(source.getCode()) && StringKit.isNotBlank(providerId)
-                    && !codes.add(providerId + Symbol.C_COLON + source.getCode())) {
-                issue(issues, record, "code", ErrorCode._409, "Source code must be unique within its Provider");
             }
         }
     }
 
     /**
-     * Validates a complete desired snapshot and returns safe resource-addressable issues.
+     * Validates a complete desired snapshot and returns safe resource-addressable faults.
      *
      * @param snapshot complete desired registration snapshot
      * @return report for the supplied revision
@@ -208,7 +181,7 @@ public final class RegistrationValidator {
      */
     public Registry.Report validate(final Registry.Snapshot snapshot) {
         Assert.notNull(snapshot, "Registry snapshot must not be null");
-        final List<RegistryIssue> issues = new ArrayList<>();
+        final List<SnapshotFault> faults = new ArrayList<>();
         final Map<String, Registration.Entry> libraries = new HashMap<>();
         final Map<String, Registration.Entry> providers = new HashMap<>();
         final Map<String, Registration.Entry> sources = new HashMap<>();
@@ -217,12 +190,12 @@ public final class RegistrationValidator {
             final Entity resource = record.resource();
             final String id = resource.getId();
             if (StringKit.isBlank(id)) {
-                issue(issues, record, "id", ErrorCode._100100, "Registration resource identifier must not be blank");
+                fault(faults, record, "id", ErrorCode._100100, "Registration resource identifier must not be blank");
                 continue;
             }
             final String identity = record.kind().name() + Symbol.C_COLON + id;
             if (!identities.add(identity)) {
-                issue(issues, record, "id", ErrorCode._409, "Duplicate registration resource identifier");
+                fault(faults, record, "id", ErrorCode._409, "Duplicate registration resource identifier");
                 continue;
             }
             switch (record.kind()) {
@@ -231,10 +204,9 @@ public final class RegistrationValidator {
                 case SOURCE -> sources.put(id, record);
             }
         }
-        validateLibraries(libraries, issues);
-        validateProviders(providers, libraries, issues);
-        validateSources(sources, providers, issues);
-        return new Registry.Report(snapshot.revision(), issues);
+        validateProviders(providers, libraries, faults);
+        validateSources(sources, providers, faults);
+        return new Registry.Report(snapshot.revision(), faults);
     }
 
 }

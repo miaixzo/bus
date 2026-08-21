@@ -36,13 +36,12 @@ public record SamlBinding(String value) {
     /**
      * OASIS SAML 2.0 HTTP-Redirect binding URI.
      */
-    public static final SamlBinding HTTP_REDIRECT = new SamlBinding(
-            "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect");
+    public static final SamlBinding HTTP_REDIRECT = new SamlBinding(Saml.Bindings.HTTP_REDIRECT);
 
     /**
      * OASIS SAML 2.0 HTTP-POST binding URI.
      */
-    public static final SamlBinding HTTP_POST = new SamlBinding("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST");
+    public static final SamlBinding HTTP_POST = new SamlBinding(Saml.Bindings.HTTP_POST);
 
     /**
      * Validates the lexical binding value without closing the OASIS extension registry.

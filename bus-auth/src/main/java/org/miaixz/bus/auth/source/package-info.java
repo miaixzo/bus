@@ -23,12 +23,11 @@
  * {@link org.miaixz.bus.auth.Scheme}, {@link org.miaixz.bus.auth.Options},
  * {@link org.miaixz.bus.auth.source.SourceDriver}, {@link org.miaixz.bus.auth.registry.SourceValidator}, and
  * {@link org.miaixz.bus.auth.runtime.RuntimeDescriptor} define the typed compilation and supported-implementation
- * boundary shared by client-role and server-role protocol Sources.
- * {@link org.miaixz.bus.auth.source.SourceAuthentication}
- * supplies the redirect, device, or direct authentication capabilities; its nested Request and Stage contracts
- * converge every successfully verified platform account directly on
- * {@link org.miaixz.bus.auth.source.ExternalIdentity}. Each protocol or Vendor implementation owns its private mapping
- * code and cannot use this package as an account-linking layer.
+ * boundary shared by client-role and server-role protocol Sources. {@link org.miaixz.bus.auth.source.SourceWorkflow}
+ * supplies the redirect, device, or direct authentication capabilities; its nested Request and Stage contracts converge
+ * every successfully verified platform account directly on {@link org.miaixz.bus.auth.source.ExternalIdentity}. Each
+ * protocol or Vendor implementation owns its private mapping code and cannot use this package as an account-linking
+ * layer.
  * </p>
  * <p>
  * Protocol clients, protocol servers, and Vendor adapters depend on these contracts. RuntimeDescriptor exposes only
@@ -37,10 +36,10 @@
  * VendorModule exposes their single aggregate Source driver for runtime assembly.
  * </p>
  * <p>
- * This package owns driver selection, one-time preparation, dependency declarations, the Driver-visible service
- * contract, and session coordination. The runtime package owns enforcement of each scoped service view. The compiled
- * executable remains {@link org.miaixz.bus.auth.worker.SourceWorker} in {@code worker}; moving it here would merge the
- * compilation contract with its execution result and invert the project-port boundary.
+ * This package owns driver selection, one-time preparation, dependency declarations, and the Driver-visible service
+ * contract. The runtime package owns enforcement of each scoped service view, while the worker package owns session
+ * coordination. The compiled executable remains {@link org.miaixz.bus.auth.worker.SourceWorker} in {@code worker};
+ * moving it here would merge the compilation contract with its execution result and invert the project-port boundary.
  * </p>
  * <p>
  * {@code Scheme} declares immutable authentication metadata, while {@code Options} carries typed deployment input and

@@ -18,27 +18,29 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines the loading, validation, publication, and read-only state boundary of the Registry.
+ * Defines registration validation, immutable indexes, fault reporting, and the read-only Registry query boundary.
  * <p>
  * External projects implement {@link org.miaixz.bus.auth.worker.RegistrationLoader} to supply complete registration
  * snapshots. CRUD and management data access remain project responsibilities. Registration entries detach the
  * framework-owned Library, Provider, and Source fields on entry and return detached copies, while snapshot record lists
  * are structurally frozen. The loader converts persisted Source configuration into typed Options before this boundary.
- * {@link org.miaixz.bus.auth.registry.RegistrationValidator} applies cross-entity Library, Provider, Source, namespace,
- * and Library-to-Provider-to-Source ownership rules before compilation.
+ * {@link org.miaixz.bus.auth.registry.SnapshotValidator} applies only framework-required identity,
+ * Library-to-Provider-to-Source ownership, enabled-parent, and Source routing rules before compilation. Presentation,
+ * launch, code, name, icon, ordering, CRUD, and project uniqueness policies remain outside bus-auth.
  * {@link org.miaixz.bus.auth.worker.RegistryListener} observes publication lifecycle, while
- * {@link org.miaixz.bus.auth.registry.RegistryIssue} reports non-secret reload failures.
+ * {@link org.miaixz.bus.auth.registry.SnapshotFault} reports non-secret reload failures.
  * </p>
  * <p>
- * Runtime assembly supplies already compiled immutable views. No concrete protocol service, platform adapter, Driver,
- * persistence implementation, security decision, audit operation, or capability execution belongs to this package.
- * {@link org.miaixz.bus.auth.Authenticator} consumes a Registry reference without adding execution duties to Registry.
+ * Runtime assembly supplies immutable registration views while retaining compiled workers, container leases, atomic
+ * publication, retirement, and worker lifecycle in the runtime package. No concrete protocol service, platform adapter,
+ * Driver, persistence implementation, security decision, audit operation, or capability execution belongs to this
+ * package. {@link org.miaixz.bus.auth.Dispatcher} consumes a Registry reference without adding execution duties to
+ * Registry.
  * </p>
  * <p>
  * A reload validates and compiles the complete candidate before one atomic publication; partial views and fallback to
- * an invalid candidate are forbidden. Issues and listener notifications must omit options bodies, credentials, tokens,
- * protocol messages, exceptions, and stack traces, and management resource access must preserve namespace isolation
- * established by the external project.
+ * an invalid candidate are forbidden. Faults and listener notifications must omit options bodies, credentials, tokens,
+ * protocol messages, exceptions, and stack traces.
  * </p>
  *
  * @author Kimi Liu

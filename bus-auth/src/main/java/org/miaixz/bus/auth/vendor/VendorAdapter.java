@@ -64,7 +64,7 @@ public interface VendorAdapter extends AutoCloseable {
             Timeout.Budget timeout);
 
     /**
-     * Releases resources owned exclusively by this compiled adapter generation.
+     * Releases resources owned exclusively by this compiled adapter retained in a runtime container.
      *
      * Stateless adapters use the default implementation. Project services and runtime infrastructure are never closed
      * by an adapter.

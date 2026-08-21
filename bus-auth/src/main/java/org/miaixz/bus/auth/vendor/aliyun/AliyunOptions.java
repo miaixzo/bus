@@ -22,6 +22,7 @@ package org.miaixz.bus.auth.vendor.aliyun;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.auth.vendor.Vendor;
@@ -117,8 +118,7 @@ public record AliyunOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
      */
     @Override
     public String toString() {
-        return "AliyunOptions[vendor=" + vendor + ", variant=" + variant
-                + ", clientId=[REDACTED], credential=[REDACTED], redirectUri=[REDACTED], scopes=" + scopes
+        return "AliyunOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS + scopes
                 + Symbol.BRACKET_RIGHT;
     }
 

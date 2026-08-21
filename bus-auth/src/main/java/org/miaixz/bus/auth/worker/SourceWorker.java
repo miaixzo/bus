@@ -30,9 +30,9 @@ import org.miaixz.bus.auth.Timeout;
  * Defines the executable capability worker produced for one compiled Source registration.
  * <p>
  * Protocol and Vendor {@code SourceDriver} implementations return this contract to runtime compilation. The runtime
- * retains each instance in one immutable generation and invokes it only after reference lookup, lifecycle, budget,
+ * retains each instance in one runtime container and invokes it only after reference lookup, lifecycle, budget,
  * manifest, and request-type checks. Applications execute registered capabilities through
- * {@link org.miaixz.bus.auth.Authenticator}; they do not construct or invoke Source workers directly.
+ * {@link org.miaixz.bus.auth.Dispatcher}; they do not construct or invoke Source workers directly.
  * </p>
  * <p>
  * This interface owns only the immutable capability declaration and typed execution entry. It does not load or mutate
@@ -69,11 +69,11 @@ public interface SourceWorker extends AutoCloseable {
             Timeout.Budget timeout);
 
     /**
-     * Releases resources owned exclusively by this compiled Source generation.
+     * Releases resources owned exclusively by this compiled Source worker.
      * <p>
      * Stateless workers use the default no-op implementation. A worker that owns a connection pool, remote client, or
-     * another generation-scoped resource overrides this method. Caller-owned execution services and project workers
-     * must never be closed here.
+     * another container-scoped resource overrides this method. Caller-owned execution services and project workers must
+     * never be closed here.
      * </p>
      */
     @Override

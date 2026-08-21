@@ -22,7 +22,7 @@ package org.miaixz.bus.auth.protocol.oauth2.codec;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.core.codec.Encoder;
 import org.miaixz.bus.core.lang.Assert;
@@ -38,7 +38,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class TokenRequestEncoder implements Encoder<TokenRequest, List<Parameter>> {
+public final class TokenRequestEncoder implements Encoder<TokenRequest, List<NameValue>> {
 
     /**
      * Creates a stateless standard token request encoder.
@@ -53,11 +53,11 @@ public final class TokenRequestEncoder implements Encoder<TokenRequest, List<Par
      * @param parameters destination parameter list
      * @param grant      authorization-code grant
      */
-    private static void authorizationCode(final List<Parameter> parameters, final AuthorizationCodeGrant grant) {
-        parameters.add(new Parameter(OAuth2.Parameters.CODE, grant.code()));
-        grant.redirectUri().ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.REDIRECT_URI, value)));
-        grant.clientId().ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, value)));
-        grant.codeVerifier().ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.CODE_VERIFIER, value)));
+    private static void authorizationCode(final List<NameValue> parameters, final AuthorizationCodeGrant grant) {
+        parameters.add(new NameValue(OAuth2.Parameters.CODE, grant.code()));
+        grant.redirectUri().ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.REDIRECT_URI, value)));
+        grant.clientId().ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.CLIENT_ID, value)));
+        grant.codeVerifier().ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.CODE_VERIFIER, value)));
     }
 
     /**
@@ -66,9 +66,9 @@ public final class TokenRequestEncoder implements Encoder<TokenRequest, List<Par
      * @param parameters destination parameter list
      * @param grant      refresh-token grant
      */
-    private static void refreshToken(final List<Parameter> parameters, final RefreshTokenGrant grant) {
-        parameters.add(new Parameter(OAuth2.Parameters.REFRESH_TOKEN, grant.refreshToken()));
-        grant.scope().ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.SCOPE, value.format())));
+    private static void refreshToken(final List<NameValue> parameters, final RefreshTokenGrant grant) {
+        parameters.add(new NameValue(OAuth2.Parameters.REFRESH_TOKEN, grant.refreshToken()));
+        grant.scope().ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.SCOPE, value.format())));
     }
 
     /**
@@ -77,8 +77,8 @@ public final class TokenRequestEncoder implements Encoder<TokenRequest, List<Par
      * @param parameters destination parameter list
      * @param grant      client-credentials grant
      */
-    private static void clientCredentials(final List<Parameter> parameters, final ClientCredentialsGrant grant) {
-        grant.scope().ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.SCOPE, value.format())));
+    private static void clientCredentials(final List<NameValue> parameters, final ClientCredentialsGrant grant) {
+        grant.scope().ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.SCOPE, value.format())));
     }
 
     /**
@@ -87,17 +87,17 @@ public final class TokenRequestEncoder implements Encoder<TokenRequest, List<Par
      * @param parameters destination parameter list
      * @param grant      token-exchange grant
      */
-    private static void exchange(final List<Parameter> parameters, final TokenExchangeGrant grant) {
-        grant.resource().forEach(value -> parameters.add(new Parameter(OAuth2.Parameters.RESOURCE, value)));
-        grant.audience().forEach(value -> parameters.add(new Parameter(OAuth2.Parameters.AUDIENCE, value)));
-        parameters.add(new Parameter(OAuth2.Parameters.SUBJECT_TOKEN, grant.subjectToken()));
-        parameters.add(new Parameter(OAuth2.Parameters.SUBJECT_TOKEN_TYPE, grant.subjectTokenType()));
+    private static void exchange(final List<NameValue> parameters, final TokenExchangeGrant grant) {
+        grant.resource().forEach(value -> parameters.add(new NameValue(OAuth2.Parameters.RESOURCE, value)));
+        grant.audience().forEach(value -> parameters.add(new NameValue(OAuth2.Parameters.AUDIENCE, value)));
+        parameters.add(new NameValue(OAuth2.Parameters.SUBJECT_TOKEN, grant.subjectToken()));
+        parameters.add(new NameValue(OAuth2.Parameters.SUBJECT_TOKEN_TYPE, grant.subjectTokenType()));
         grant.requestedTokenType()
-                .ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.REQUESTED_TOKEN_TYPE, value)));
-        grant.actorToken().ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.ACTOR_TOKEN, value)));
+                .ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.REQUESTED_TOKEN_TYPE, value)));
+        grant.actorToken().ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.ACTOR_TOKEN, value)));
         grant.actorTokenType()
-                .ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.ACTOR_TOKEN_TYPE, value)));
-        grant.scope().ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.SCOPE, value.format())));
+                .ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.ACTOR_TOKEN_TYPE, value)));
+        grant.scope().ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.SCOPE, value.format())));
     }
 
     /**
@@ -106,9 +106,9 @@ public final class TokenRequestEncoder implements Encoder<TokenRequest, List<Par
      * @param parameters destination parameter list
      * @param grant      device-code grant
      */
-    private static void deviceCode(final List<Parameter> parameters, final DeviceCodeGrant grant) {
-        parameters.add(new Parameter(OAuth2.Parameters.DEVICE_CODE, grant.deviceCode()));
-        grant.clientId().ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, value)));
+    private static void deviceCode(final List<NameValue> parameters, final DeviceCodeGrant grant) {
+        parameters.add(new NameValue(OAuth2.Parameters.DEVICE_CODE, grant.deviceCode()));
+        grant.clientId().ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.CLIENT_ID, value)));
     }
 
     /**
@@ -119,16 +119,16 @@ public final class TokenRequestEncoder implements Encoder<TokenRequest, List<Par
      * @param value      provider-neutral extension value
      * @throws ValidateException if the name is registered or the value is not a scalar
      */
-    private static void extension(final List<Parameter> parameters, final String name, final JsonValue value) {
+    private static void extension(final List<NameValue> parameters, final String name, final JsonValue value) {
         if (registered(name)) {
             throw new ValidateException("OAuth 2.x token request extension duplicates a registered parameter");
         }
         if (value instanceof JsonValue.StringValue text) {
-            parameters.add(new Parameter(name, text.value()));
+            parameters.add(new NameValue(name, text.value()));
         } else if (value instanceof JsonValue.NumberValue number) {
-            parameters.add(new Parameter(name, number.value().toString()));
+            parameters.add(new NameValue(name, number.value().toString()));
         } else if (value instanceof JsonValue.BooleanValue flag) {
-            parameters.add(new Parameter(name, Boolean.toString(flag.value())));
+            parameters.add(new NameValue(name, Boolean.toString(flag.value())));
         } else {
             throw new ValidateException("OAuth 2.x token request extensions must be JSON scalars");
         }
@@ -156,10 +156,10 @@ public final class TokenRequestEncoder implements Encoder<TokenRequest, List<Par
      * @throws ValidateException        if an extension is registered or is not a JSON scalar
      */
     @Override
-    public List<Parameter> encode(final TokenRequest data) {
+    public List<NameValue> encode(final TokenRequest data) {
         Assert.notNull(data, "OAuth 2.x token request must not be null");
-        final List<Parameter> parameters = new ArrayList<>();
-        parameters.add(new Parameter(OAuth2.Parameters.GRANT_TYPE, data.grant().type().value()));
+        final List<NameValue> parameters = new ArrayList<>();
+        parameters.add(new NameValue(OAuth2.Parameters.GRANT_TYPE, data.grant().type().value()));
         switch (data.grant()) {
             case AuthorizationCodeGrant grant -> authorizationCode(parameters, grant);
             case RefreshTokenGrant grant -> refreshToken(parameters, grant);

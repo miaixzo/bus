@@ -37,6 +37,7 @@ import org.miaixz.bus.auth.worker.CredentialStore;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -52,14 +53,28 @@ import org.miaixz.bus.extra.json.JsonValue;
  */
 final class RedirectState {
 
+    /** Cache-key purpose for authoritative callback correlation. */
     private static final String STATE_PURPOSE = "vendor-state";
+    /** Credential-store purpose for one-time PKCE verifier material. */
     private static final String PKCE_PURPOSE = "vendor-pkce";
 
+    /** Registration namespace isolating all derived keys. */
     private final String namespaceId;
+    /** Exact configured Source identifier. */
     private final String sourceId;
+    /** Source-scoped cache and credential services. */
     private final DriverServices services;
+    /** Whether this selected Vendor flow persists a PKCE verifier. */
     private final boolean pkceEnabled;
 
+    /**
+     * Creates one Source-isolated redirect correlation store.
+     *
+     * @param namespaceId registration namespace identifier
+     * @param sourceId    registration Source identifier
+     * @param services    Source-scoped runtime services
+     * @param pkceEnabled whether verifier persistence is required
+     */
     RedirectState(final String namespaceId, final String sourceId, final DriverServices services,
             final boolean pkceEnabled) {
         this.namespaceId = Assert.notBlank(namespaceId, "Vendor redirect namespace id must not be blank");
@@ -71,9 +86,15 @@ final class RedirectState {
     /**
      * Persists the optional secret verifier before publishing the single authoritative callback correlation.
      * <p>
-     * The correlation already carries its OIDC nonce, so a second NonceCache copy would create a redundant
-     * cross-cache transaction without adding an integrity boundary.
+     * The correlation already carries its OIDC nonce, so a second NonceCache copy would create a redundant cross-cache
+     * transaction without adding an integrity boundary.
      * </p>
+     *
+     * @param correlation generated authoritative callback correlation
+     * @param verifier    optional caller-owned PKCE verifier
+     * @param context     immutable invocation context
+     * @param timeout     shared end-to-end operation budget
+     * @return stage containing persistence success, expected collision rejection, or operational failure
      */
     CompletionStage<Outcome<Void>> store(
             final Callback.Correlation correlation,
@@ -87,15 +108,20 @@ final class RedirectState {
         Assert.equals(sourceId, correlation.sourceId(), "Vendor callback correlation Source must match");
         return storeVerifier(correlation.state(), verifier, correlation.expiresAt(), context, timeout)
                 .thenCompose(stored -> switch (stored) {
-                    case Outcome.Succeeded<Void> ignored -> createState(correlation).thenCompose(state -> switch (state) {
-                        case Outcome.Succeeded<Void> storedState -> completed(Outcome.succeeded(null));
-                        case Outcome.Rejected<Void> rejected -> rollback(
-                                correlation.state(), verifier.isPresent(), context, timeout)
-                                .thenApply(ignoredRollback -> Outcome.rejected(rejected.failure()));
-                        case Outcome.Failed<Void> failed -> rollback(
-                                correlation.state(), verifier.isPresent(), context, timeout)
-                                .thenApply(ignoredRollback -> Outcome.failed(failed.failure()));
-                    });
+                    case Outcome.Succeeded<Void> ignored -> createState(correlation)
+                            .thenCompose(state -> switch (state) {
+                                case Outcome.Succeeded<Void> storedState -> completed(Outcome.succeeded(null));
+                                case Outcome.Rejected<Void> rejected -> rollback(
+                                        correlation.state(),
+                                        verifier.isPresent(),
+                                        context,
+                                        timeout).thenApply(ignoredRollback -> Outcome.rejected(rejected.failure()));
+                                case Outcome.Failed<Void> failed -> rollback(
+                                        correlation.state(),
+                                        verifier.isPresent(),
+                                        context,
+                                        timeout).thenApply(ignoredRollback -> Outcome.failed(failed.failure()));
+                            });
                     case Outcome.Rejected<Void> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<Void> failed -> completed(Outcome.failed(failed.failure()));
                 });
@@ -108,6 +134,11 @@ final class RedirectState {
      * verifier failure therefore fails closed and triggers best-effort verifier deletion; it is not represented as a
      * retryable distributed transaction across two independently owned stores.
      * </p>
+     *
+     * @param correlationValue callback correlation value extracted by the adapter
+     * @param context          immutable invocation context
+     * @param timeout          shared end-to-end operation budget
+     * @return consumed correlation and optional verifier lease outcome
      */
     CompletionStage<Outcome<Consumed>> consume(
             final String correlationValue,
@@ -122,17 +153,29 @@ final class RedirectState {
                         case Outcome.Succeeded<Optional<SecretLease>> lease -> completed(
                                 Outcome.succeeded(new Consumed(success.value(), lease.value())));
                         case Outcome.Rejected<Optional<SecretLease>> rejected -> deleteVerifier(
-                                correlationValue, context, timeout)
-                                .thenApply(ignored -> Outcome.rejected(rejected.failure()));
+                                correlationValue,
+                                context,
+                                timeout).thenApply(ignored -> Outcome.rejected(rejected.failure()));
                         case Outcome.Failed<Optional<SecretLease>> failed -> deleteVerifier(
-                                correlationValue, context, timeout)
-                                .thenApply(ignored -> Outcome.failed(failed.failure()));
+                                correlationValue,
+                                context,
+                                timeout).thenApply(ignored -> Outcome.failed(failed.failure()));
                     });
             case Outcome.Rejected<Callback.Correlation> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<Callback.Correlation> failed -> completed(Outcome.failed(failed.failure()));
         });
     }
 
+    /**
+     * Stores an optional verifier as caller-owned secret material.
+     *
+     * @param correlationValue callback correlation binding
+     * @param verifier         optional PKCE verifier
+     * @param expiresAt        verifier expiry instant
+     * @param context          invocation context
+     * @param timeout          operation budget
+     * @return verifier persistence outcome
+     */
     private CompletionStage<Outcome<Void>> storeVerifier(
             final String correlationValue,
             final Optional<CodeVerifier> verifier,
@@ -161,6 +204,12 @@ final class RedirectState {
         });
     }
 
+    /**
+     * Creates the authoritative one-time callback correlation entry.
+     *
+     * @param correlation generated correlation
+     * @return correlation persistence outcome
+     */
     private CompletionStage<Outcome<Void>> createState(final Callback.Correlation correlation) {
         final CompletionStage<Boolean> stage;
         try {
@@ -173,6 +222,13 @@ final class RedirectState {
         return booleanCreation(stage, "Vendor callback state storage failed", "Vendor callback state collided");
     }
 
+    /**
+     * Atomically consumes and validates authoritative callback correlation.
+     *
+     * @param correlationValue callback correlation value
+     * @param timeout          operation budget used for expiry validation
+     * @return consumed valid correlation outcome
+     */
     private CompletionStage<Outcome<Callback.Correlation>> takeCorrelation(
             final String correlationValue,
             final Timeout.Budget timeout) {
@@ -199,6 +255,14 @@ final class RedirectState {
         });
     }
 
+    /**
+     * Atomically consumes the optional PKCE verifier when enabled.
+     *
+     * @param correlationValue callback correlation binding
+     * @param context          invocation context
+     * @param timeout          operation budget
+     * @return optional caller-owned verifier lease outcome
+     */
     private CompletionStage<Outcome<Optional<SecretLease>>> consumeVerifier(
             final String correlationValue,
             final Context context,
@@ -229,6 +293,15 @@ final class RedirectState {
         });
     }
 
+    /**
+     * Performs best-effort verifier rollback after correlation persistence fails.
+     *
+     * @param correlationValue callback correlation binding
+     * @param verifierStored   whether verifier persistence succeeded
+     * @param context          invocation context
+     * @param timeout          operation budget
+     * @return stage completed after rollback attempt
+     */
     private CompletionStage<Void> rollback(
             final String correlationValue,
             final boolean verifierStored,
@@ -241,6 +314,14 @@ final class RedirectState {
         return result;
     }
 
+    /**
+     * Best-effort deletes a persisted verifier.
+     *
+     * @param correlationValue callback correlation binding
+     * @param context          invocation context
+     * @param timeout          operation budget
+     * @return stage completed after deletion attempt
+     */
     private CompletionStage<Void> deleteVerifier(
             final String correlationValue,
             final Context context,
@@ -254,15 +335,37 @@ final class RedirectState {
         }
     }
 
+    /**
+     * Derives a namespace- and Source-isolated irreversible storage key.
+     *
+     * @param purpose exact storage purpose
+     * @param binding opaque correlation binding
+     * @return hexadecimal SHA-256 digest
+     */
     private String digest(final String purpose, final String binding) {
-        return Builder.sha256Hex(namespaceId + '\0' + sourceId + '\0' + purpose + '\0' + binding);
+        return Builder
+                .sha256Hex(namespaceId + Symbol.C_NUL + sourceId + Symbol.C_NUL + purpose + Symbol.C_NUL + binding);
     }
 
+    /**
+     * Creates the typed credential-store key for one verifier.
+     *
+     * @param correlationValue callback correlation binding
+     * @return Source-isolated shared-secret key
+     */
     private CredentialStore.Key credentialKey(final String correlationValue) {
         return new CredentialStore.Key(namespaceId, sourceId, PKCE_PURPOSE, digest(PKCE_PURPOSE, correlationValue),
                 Credential.Type.SHARED_SECRET);
     }
 
+    /**
+     * Normalizes a cache create-if-absent result into framework outcomes.
+     *
+     * @param stage                cache creation stage
+     * @param failureDescription   dependency failure description
+     * @param collisionDescription collision description
+     * @return normalized creation outcome
+     */
     private static CompletionStage<Outcome<Void>> booleanCreation(
             final CompletionStage<Boolean> stage,
             final String failureDescription,
@@ -278,27 +381,53 @@ final class RedirectState {
         });
     }
 
+    /**
+     * Wraps an outcome in an already completed stage.
+     *
+     * @param <T>     outcome value type
+     * @param outcome outcome to expose
+     * @return completed outcome stage
+     */
     private static <T> CompletionStage<Outcome<T>> completed(final Outcome<T> outcome) {
         return CompletableFuture.completedFuture(outcome);
     }
 
+    /**
+     * Creates a safe expected callback rejection.
+     *
+     * @param <T>         expected value type
+     * @param description safe rejection description
+     * @return rejected outcome
+     */
     private static <T> Outcome<T> rejected(final String description) {
         return Outcome.rejected(new Outcome.Failure(ErrorCode._400, description, new JsonValue.ObjectValue(Map.of())));
     }
 
+    /**
+     * Creates a safe operational callback failure.
+     *
+     * @param <T>         expected value type
+     * @param description safe failure description
+     * @return failed outcome
+     */
     private static <T> Outcome<T> failed(final String description) {
         return Outcome.failed(new Outcome.Failure(ErrorCode._500, description, new JsonValue.ObjectValue(Map.of())));
     }
 
     /**
      * Transfers consumed correlation and the caller-owned optional verifier lease to redirect orchestration.
+     *
+     * @param correlation consumed one-time callback correlation
+     * @param verifier    optional caller-owned PKCE verifier lease
      */
     record Consumed(Callback.Correlation correlation, Optional<SecretLease> verifier) {
 
+        /** Validates the consumed callback material transferred to orchestration. */
         Consumed {
             Assert.notNull(correlation, "Consumed Vendor callback correlation must not be null");
             Assert.notNull(verifier, "Consumed Vendor verifier container must not be null");
         }
+
     }
 
 }

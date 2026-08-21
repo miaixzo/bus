@@ -30,11 +30,11 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.guard.RedirectUriValidator;
 import org.miaixz.bus.auth.guard.ScopeValidator;
 import org.miaixz.bus.auth.guard.SecretGuard;
+import org.miaixz.bus.auth.protocol.oauth2.codec.*;
 import org.miaixz.bus.auth.protocol.oauth2.grant.AccessTokenIssuer;
 import org.miaixz.bus.auth.protocol.oauth2.grant.AuthorizationCodeIssuer;
 import org.miaixz.bus.auth.protocol.oauth2.grant.RefreshTokenRotator;
 import org.miaixz.bus.auth.protocol.oauth2.grant.TokenMaterial;
-import org.miaixz.bus.auth.protocol.oauth2.codec.*;
 import org.miaixz.bus.auth.protocol.oauth2.server.*;
 import org.miaixz.bus.auth.shared.pkce.PkceValidator;
 import org.miaixz.bus.auth.source.DriverServices;
@@ -96,6 +96,12 @@ public final class OAuth2ServerDriver implements SourceDriver<OAuth2ServerOption
         return new Capability.Manifest(capabilities);
     }
 
+    /**
+     * Tests whether an enabled endpoint accepts either client-secret method.
+     *
+     * @param endpoint optional configured endpoint
+     * @return whether client-secret loading is required
+     */
     private static boolean usesClientSecret(final Endpoint endpoint) {
         return endpoint != null && (endpoint.authentication().contains(Endpoint.Authentication.CLIENT_SECRET_BASIC)
                 || endpoint.authentication().contains(Endpoint.Authentication.CLIENT_SECRET_POST));
@@ -163,9 +169,7 @@ public final class OAuth2ServerDriver implements SourceDriver<OAuth2ServerOption
      * @throws ValidateException        if the registration routing fields do not match this driver
      */
     @Override
-    public SourceWorker compile(
-            final Prepared<OAuth2ServerOptions> prepared,
-            final DriverServices services) {
+    public SourceWorker compile(final Prepared<OAuth2ServerOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "OAuth 2.x Provider preparation must not be null");
         Assert.notNull(services, "OAuth 2.x Provider execution services must not be null");
         final Registration.SourceEntry record = prepared.registration();
@@ -241,12 +245,13 @@ public final class OAuth2ServerDriver implements SourceDriver<OAuth2ServerOption
          */
         private final Capability.Manifest manifest;
 
+        /** Exact endpoint handler indexed by its declared capability. */
         private final Map<Capability<?, ?>, EndpointHandler> endpoints;
 
         /**
          * Creates one compiled authorization-server Source runtime from its exact manifest and HTTP endpoints.
          *
-         * @param manifest            endpoint-accurate manifest
+         * @param manifest  endpoint-accurate manifest
          * @param endpoints endpoint handlers keyed by the exact declared capability
          */
         private CompiledServer(final Capability.Manifest manifest,
@@ -312,10 +317,20 @@ public final class OAuth2ServerDriver implements SourceDriver<OAuth2ServerOption
 
     }
 
+    /** Adapts one compiled HTTP endpoint to the common Source-worker invocation shape. */
     @FunctionalInterface
     private interface EndpointHandler {
 
+        /**
+         * Handles one validated endpoint request.
+         *
+         * @param request incoming HTTP request
+         * @param context immutable invocation context
+         * @param timeout shared operation budget
+         * @return asynchronous HTTP response
+         */
         CompletionStage<HttpResponse> handle(HttpRequest request, Context context, Timeout.Budget timeout);
+
     }
 
 }

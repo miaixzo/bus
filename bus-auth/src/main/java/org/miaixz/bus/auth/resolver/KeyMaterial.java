@@ -27,9 +27,18 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Parsed exact cryptographic key material and validity interval.
+ *
+ * @param keyId     stable key identifier
+ * @param algorithm declared cryptographic algorithm
+ * @param key       parsed JCA key material
+ * @param notBefore first instant at which the key is valid
+ * @param notAfter  exclusive upper validity boundary
  */
 public record KeyMaterial(String keyId, String algorithm, Key key, Instant notBefore, Instant notAfter) {
 
+    /**
+     * Validates one exact key and its positive validity interval.
+     */
     public KeyMaterial {
         Assert.notBlank(keyId, "Key identifier must not be blank");
         Assert.notBlank(algorithm, "Key algorithm must not be blank");
@@ -40,4 +49,5 @@ public record KeyMaterial(String keyId, String algorithm, Key key, Instant notBe
             throw new ValidateException("Key validity interval must be positive");
         }
     }
+
 }

@@ -27,6 +27,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.*;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationRequestEncoder;
@@ -37,7 +38,7 @@ import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -75,12 +76,12 @@ public final class AmazonSourceAdapter implements VendorAdapter {
     /**
      * Maximum accepted bytes for one Amazon JSON resource response.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum accepted JSON container depth for an Amazon resource response.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 64;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
 
     /**
      * Registered Source identifier copied into verified external identities.
@@ -245,7 +246,7 @@ public final class AmazonSourceAdapter implements VendorAdapter {
      */
     private static <T> Outcome<T> oauthError(final AuthorizationResponseDecoder.Error error) {
         final Map<String, JsonValue> details = new LinkedHashMap<>();
-        details.put("oauth_error", new JsonValue.StringValue(error.response().error().value()));
+        details.put(Builder.OAUTH_ERROR, new JsonValue.StringValue(error.response().error().value()));
         final String errorUri = error.response().errorUri().getOrNull();
         if (errorUri != null) {
             details.put(OAuth2.Parameters.ERROR_URI, new JsonValue.StringValue(errorUri));
@@ -370,12 +371,12 @@ public final class AmazonSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return missing();
         }
-        if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());

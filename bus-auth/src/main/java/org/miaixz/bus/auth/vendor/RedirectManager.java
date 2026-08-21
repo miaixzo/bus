@@ -35,11 +35,12 @@ import org.miaixz.bus.auth.shared.pkce.CodeVerifier;
 import org.miaixz.bus.auth.shared.pkce.PkceGenerator;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -57,16 +58,33 @@ import org.miaixz.bus.extra.json.JsonValue;
  */
 public final class RedirectManager {
 
+    /** Maximum lifetime of generated redirect correlation material. */
     private static final Duration LIFETIME = Duration.ofMinutes(10);
 
+    /** Exact configured Source identifier owning this redirect flow. */
     private final String sourceId;
+    /** Validated exact Vendor options for the configured Source. */
     private final VendorOptions<?> vendorOptions;
+    /** Whether the selected OpenID Connect variant requires a nonce. */
     private final boolean nonceEnabled;
+    /** Whether the selected variant and options require PKCE. */
     private final boolean pkceEnabled;
+    /** Policy-bound PKCE generator, or {@code null} when PKCE is disabled. */
     private final PkceGenerator pkceGenerator;
+    /** Number of random bytes used for generated state and nonce values. */
     private final int randomBytes;
+    /** Source-isolated one-time correlation persistence coordinator. */
     private final RedirectState state;
 
+    /**
+     * Creates one validated Source-bound redirect flow coordinator.
+     *
+     * @param namespaceId   registration namespace identifier
+     * @param sourceId      registration Source identifier
+     * @param variant       selected Vendor variant
+     * @param vendorOptions validated deployment options
+     * @param services      Source-scoped runtime services
+     */
     private RedirectManager(final String namespaceId, final String sourceId, final VariantManifest.Variant variant,
             final VendorOptions<?> vendorOptions, final DriverServices services) {
         this.sourceId = Assert.notBlank(sourceId, "Vendor redirect Source id must not be blank");
@@ -111,8 +129,8 @@ public final class RedirectManager {
      * @param timeout   shared end-to-end time budget
      * @return asynchronous redirect initiation outcome
      */
-    public CompletionStage<Outcome<SourceAuthentication.Stage>> initiate(
-            final SourceAuthentication.Request.BrowserStart request,
+    public CompletionStage<Outcome<SourceWorkflow.Stage>> initiate(
+            final SourceWorkflow.Request.BrowserStart request,
             final PrepareOperation operation,
             final Context context,
             final Timeout.Budget timeout) {
@@ -167,7 +185,7 @@ public final class RedirectManager {
      * @return asynchronous verified Source authentication outcome
      */
     public CompletionStage<Outcome<ExternalIdentity>> complete(
-            final SourceAuthentication.Request.BrowserCallback request,
+            final SourceWorkflow.Request.BrowserCallback request,
             final CorrelationExtractor extractor,
             final CompleteOperation operation,
             final Context context,
@@ -201,7 +219,17 @@ public final class RedirectManager {
         });
     }
 
-    private CompletionStage<Outcome<SourceAuthentication.Stage>> persist(
+    /**
+     * Persists generated correlation and optional verifier before publishing a redirect.
+     *
+     * @param initiation framework-generated public security material
+     * @param prepared   platform-prepared redirect
+     * @param verifier   optional caller-owned PKCE verifier
+     * @param context    invocation context
+     * @param timeout    operation budget
+     * @return redirect-stage outcome
+     */
+    private CompletionStage<Outcome<SourceWorkflow.Stage>> persist(
             final Initiation initiation,
             final Prepared prepared,
             final Optional<CodeVerifier> verifier,
@@ -220,12 +248,23 @@ public final class RedirectManager {
                 initiation.nonce(), timeout.clock().now().plus(LIFETIME));
         return state.store(correlation, verifier, context, timeout).thenApply(stored -> switch (stored) {
             case Outcome.Succeeded<Void> ignored -> Outcome
-                    .succeeded(new SourceAuthentication.Stage.Redirect(prepared.location(), correlation));
+                    .succeeded(new SourceWorkflow.Stage.Redirect(prepared.location(), correlation));
             case Outcome.Rejected<Void> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<Void> failed -> Outcome.failed(failed.failure());
         });
     }
 
+    /**
+     * Converts a consumed verifier lease and delegates final callback verification.
+     *
+     * @param callback    raw inbound callback
+     * @param correlation consumed correlation
+     * @param lease       optional caller-owned verifier lease
+     * @param operation   platform completion operation
+     * @param context     invocation context
+     * @param timeout     operation budget
+     * @return verified external identity outcome
+     */
     private CompletionStage<Outcome<ExternalIdentity>> finish(
             final Callback.Inbound callback,
             final Callback.Correlation correlation,
@@ -240,7 +279,7 @@ public final class RedirectManager {
                 try {
                     verifier = Optional.of(new CodeVerifier(new String(material)));
                 } finally {
-                    Arrays.fill(material, '\0');
+                    Arrays.fill(material, Symbol.C_NUL);
                 }
             } else {
                 verifier = Optional.empty();
@@ -275,6 +314,11 @@ public final class RedirectManager {
         });
     }
 
+    /**
+     * Generates a policy-sized opaque value.
+     *
+     * @return cryptographically random hexadecimal value
+     */
     private String random() {
         final byte[] random = RandomKit.randomBytes(randomBytes, RandomKit.getSecureRandom());
         try {
@@ -284,25 +328,57 @@ public final class RedirectManager {
         }
     }
 
+    /**
+     * Validates common redirect invocation collaborators.
+     *
+     * @param context invocation context
+     * @param timeout operation budget
+     */
     private static void invocation(final Context context, final Timeout.Budget timeout) {
         Assert.notNull(context, "Vendor redirect invocation context must not be null");
         Assert.notNull(timeout, "Vendor redirect invocation budget must not be null");
     }
 
+    /**
+     * Closes an optional caller-owned verifier lease.
+     *
+     * @param lease optional verifier lease
+     */
     private static void close(final Optional<SecretLease> lease) {
         if (lease.isPresent()) {
             lease.getOrNull().close();
         }
     }
 
+    /**
+     * Wraps an outcome in an already completed stage.
+     *
+     * @param <T>     outcome value type
+     * @param outcome outcome to expose
+     * @return completed outcome stage
+     */
     private static <T> CompletionStage<Outcome<T>> completed(final Outcome<T> outcome) {
         return CompletableFuture.completedFuture(outcome);
     }
 
+    /**
+     * Creates a safe expected redirect rejection.
+     *
+     * @param <T>         expected value type
+     * @param description safe rejection description
+     * @return rejected outcome
+     */
     private static <T> Outcome<T> rejected(final String description) {
         return Outcome.rejected(new Outcome.Failure(ErrorCode._400, description, new JsonValue.ObjectValue(Map.of())));
     }
 
+    /**
+     * Creates a safe operational redirect failure.
+     *
+     * @param <T>         expected value type
+     * @param description safe failure description
+     * @return failed outcome
+     */
     private static <T> Outcome<T> failed(final String description) {
         return Outcome.failed(new Outcome.Failure(ErrorCode._500, description, new JsonValue.ObjectValue(Map.of())));
     }
@@ -324,6 +400,7 @@ public final class RedirectManager {
          * @return platform redirect and exact callback correlation binding
          */
         CompletionStage<Outcome<Prepared>> prepare(Initiation initiation, Context context, Timeout.Budget timeout);
+
     }
 
     /**
@@ -341,6 +418,7 @@ public final class RedirectManager {
          * @return exact opaque correlation value
          */
         String extract(Callback.Inbound callback);
+
     }
 
     /**
@@ -363,6 +441,7 @@ public final class RedirectManager {
                 Completion completion,
                 Context context,
                 Timeout.Budget timeout);
+
     }
 
     /**
@@ -375,11 +454,13 @@ public final class RedirectManager {
      */
     public record Initiation(String state, Optional<String> nonce, Optional<CodeChallenge> codeChallenge) {
 
+        /** Validates generated redirect authorization material. */
         public Initiation {
             Assert.notBlank(state, "Vendor redirect state must not be blank");
             Assert.notNull(nonce, "Vendor redirect nonce container must not be null");
             Assert.notNull(codeChallenge, "Vendor redirect code challenge container must not be null");
         }
+
     }
 
     /**
@@ -391,10 +472,12 @@ public final class RedirectManager {
      */
     public record Prepared(String location, String correlationValue) {
 
+        /** Validates one platform-prepared authorization redirect. */
         public Prepared {
             Assert.notBlank(location, "Vendor authorization redirect location must not be blank");
             Assert.notBlank(correlationValue, "Vendor authorization correlation value must not be blank");
         }
+
     }
 
     /**
@@ -408,11 +491,13 @@ public final class RedirectManager {
     public record Completion(Callback.Inbound callback, Callback.Correlation correlation,
             Optional<CodeVerifier> codeVerifier) {
 
+        /** Validates consumed callback security material passed to the platform adapter. */
         public Completion {
             Assert.notNull(callback, "Vendor inbound callback must not be null");
             Assert.notNull(correlation, "Vendor callback correlation must not be null");
             Assert.notNull(codeVerifier, "Vendor PKCE verifier container must not be null");
         }
+
     }
 
 }

@@ -33,8 +33,8 @@
  * <p>
  * The selected bus-cache backend must support the atomic operations used by authentication. bus-auth never emulates an
  * unsupported atomic operation with multiple cache calls and never selects or manages a concrete cache backend. Its
- * serializer must preserve the versioned AuthCache envelope and immutable entry runtime types, and must deterministically
- * encode an equal expected value used by distributed compare-and-replace.
+ * serializer must preserve the versioned AuthCache envelope and immutable entry runtime types, and must
+ * deterministically encode an equal expected value used by distributed compare-and-replace.
  * </p>
  *
  * @author Kimi Liu

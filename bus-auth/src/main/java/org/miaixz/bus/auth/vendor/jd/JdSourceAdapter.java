@@ -29,13 +29,13 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -43,7 +43,9 @@ import org.miaixz.bus.auth.vendor.VendorAdapter;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -57,9 +59,9 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 /**
  * Implements JD's frozen OAuth authorization and Zeus account-profile Source flow.
  * <p>
- * The public boundary retains the standard OAuth Authorization Request and application-level SourceAuthentication
- * contracts. JD token responses without {@code token_type}, canonical {@code open_id}/{@code xid}, MD5 router signing,
- * and response envelopes remain private and cannot be mistaken for standard OAuth token or UserInfo responses.
+ * The public boundary retains the standard OAuth Authorization Request and application-level SourceWorkflow contracts.
+ * JD token responses without {@code token_type}, canonical {@code open_id}/{@code xid}, MD5 router signing, and
+ * response envelopes remain private and cannot be mistaken for standard OAuth token or UserInfo responses.
  * </p>
  *
  * @author Kimi Liu
@@ -94,12 +96,12 @@ public final class JdSourceAdapter implements VendorAdapter {
     /**
      * Maximum bounded JSON body accepted from JD endpoints.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = org.miaixz.bus.auth.Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum JSON nesting accepted from JD endpoints.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 16;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._16;
 
     /**
      * Registered Source identifier used by produced external identities.
@@ -449,7 +451,7 @@ public final class JdSourceAdapter implements VendorAdapter {
      */
     private static void clear(final char[] value) {
         if (value != null) {
-            Arrays.fill(value, '\0');
+            Arrays.fill(value, Symbol.C_NUL);
         }
     }
 
@@ -554,12 +556,12 @@ public final class JdSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("JD capability is not declared"));
         }
-        if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::complete, context, timeout),
                     capability.responseType());
@@ -701,15 +703,18 @@ public final class JdSourceAdapter implements VendorAdapter {
             return completed(
                     Outcome.rejected(
                             new Outcome.Failure(ErrorCode._400, "JD authorization endpoint rejected the request",
-                                    new JsonValue.ObjectValue(
-                                            Map.of("oauth_error", new JsonValue.StringValue(values.error()))))));
+                                    new JsonValue.ObjectValue(Map.of(
+                                            org.miaixz.bus.auth.Builder.OAUTH_ERROR,
+                                            new JsonValue.StringValue(values.error()))))));
         }
         if (completion.correlation().nonce().isPresent() || completion.codeVerifier().isPresent()) {
             return completed(failed(ErrorCode._500, "JD callback contains unexpected OIDC or PKCE material"));
         }
-        return Outcome.mapStage(
-                        () -> services.secretLoader().load(options.credential(), context, timeout),
-                        loaded -> services.secretParser().parse(options.credential(), loaded))
+        return Outcome
+                .mapStage(
+                        () -> services.secretLoader()
+                                .load(services.registration(), options.credential(), context, timeout),
+                        loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> authenticate(
                             values.code(),
@@ -761,10 +766,10 @@ public final class JdSourceAdapter implements VendorAdapter {
             }
             body = formCodec.encode(
                     List.of(
-                            new Parameter("app_key", options.clientId()),
-                            new Parameter("app_secret", secret(secret)),
-                            new Parameter(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()),
-                            new Parameter(OAuth2.Parameters.CODE, code)));
+                            new NameValue("app_key", options.clientId()),
+                            new NameValue("app_secret", secret(secret)),
+                            new NameValue(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()),
+                            new NameValue(OAuth2.Parameters.CODE, code)));
             final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
             try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
                     .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())

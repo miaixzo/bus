@@ -21,6 +21,7 @@ package org.miaixz.bus.auth.worker;
 
 import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Loads one project-owned runtime binding for an exact registration and contract.
@@ -28,6 +29,14 @@ import org.miaixz.bus.core.lang.Assert;
 @FunctionalInterface
 public interface BindingLoader {
 
+    /**
+     * Loads one project binding for the exact Source registration and typed key.
+     *
+     * @param <T>          binding contract type
+     * @param registration exact Source registration requesting the binding
+     * @param key          stable typed binding key
+     * @return loaded binding implementing the requested contract
+     */
     <T> T load(Registration.SourceEntry registration, Key<T> key);
 
     /**
@@ -39,9 +48,28 @@ public interface BindingLoader {
      */
     record Key<T>(String name, Class<T> type) {
 
+        /**
+         * Validates one stable typed project binding key.
+         */
         public Key {
             Assert.notBlank(name, "Binding key name must not be blank");
             Assert.notNull(type, "Binding key type must not be null");
         }
+
+        /**
+         * Requires one loaded binding to implement this exact project contract.
+         *
+         * @param binding loaded project binding
+         * @return binding narrowed to the exact contract
+         */
+        public T require(final Object binding) {
+            final Object loaded = Assert.notNull(binding, "Loaded binding must not be null");
+            if (!type.isInstance(loaded)) {
+                throw new ValidateException("Loaded binding does not implement the required contract");
+            }
+            return type.cast(loaded);
+        }
+
     }
+
 }

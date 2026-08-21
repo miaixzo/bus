@@ -388,10 +388,9 @@ public final class ScimResourceService {
     /**
      * Executes one validated search through the Bus pagination contract and maps it to ListResponse.
      *
-     * @param target     collection target
-     * @param parameters common search parameters
-     * @param context    invocation context
-     * @param timeout    end-to-end budget
+     * @param request validated collection target and common search parameters
+     * @param context invocation context
+     * @param timeout end-to-end budget
      * @return standard list response stage
      */
     private CompletionStage<Outcome<ListResponse>> searchValidated(

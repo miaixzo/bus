@@ -19,14 +19,14 @@
 */
 package org.miaixz.bus.auth.source;
 
+import java.util.Set;
+
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.worker.SourceWorker;
 import org.miaixz.bus.auth.worker.WorkerSlots;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
-
-import java.util.Set;
 
 /**
  * Binds one protocol or Vendor scheme to the only factory capable of compiling matching Source registrations.
@@ -101,8 +101,8 @@ public interface SourceDriver<O extends Options<?>> {
      * Returns the project integration slots required by one already narrowed Source options value.
      * <p>
      * Runtime calls this method only from {@link #prepare(Registration.SourceEntry, Provider, Library)} and retains the
-     * result with the exact options instance. Compilation therefore cannot independently select another requirement
-     * set for the same registration.
+     * result with the exact options instance. Compilation therefore cannot independently select another requirement set
+     * for the same registration.
      * </p>
      *
      * @param source  validated Source entity
@@ -173,7 +173,7 @@ public interface SourceDriver<O extends Options<?>> {
      * @param <O>          options type
      */
     record Prepared<O extends Options<?>>(Registration.SourceEntry registration, Provider provider, Library library,
-                                          O options, WorkerSlots slots, Dependencies dependencies) {
+            O options, WorkerSlots slots, Dependencies dependencies) {
 
         /**
          * Creates a complete immutable driver preparation.
@@ -186,6 +186,7 @@ public interface SourceDriver<O extends Options<?>> {
             Assert.notNull(slots, "Prepared Source Worker slots must not be null");
             Assert.notNull(dependencies, "Prepared Source framework dependencies must not be null");
         }
+
     }
 
     /**
@@ -205,6 +206,8 @@ public interface SourceDriver<O extends Options<?>> {
 
         /**
          * Returns an empty dependency set.
+         *
+         * @return empty dependency set
          */
         public static Dependencies none() {
             return new Dependencies(Set.of());
@@ -212,6 +215,9 @@ public interface SourceDriver<O extends Options<?>> {
 
         /**
          * Creates an immutable dependency set from exact services.
+         *
+         * @param services exact framework services
+         * @return immutable dependency set
          */
         public static Dependencies of(final Service... services) {
             Assert.notNull(services, "Source framework services must not be null");
@@ -220,6 +226,9 @@ public interface SourceDriver<O extends Options<?>> {
 
         /**
          * Returns whether one framework service was declared.
+         *
+         * @param service framework service
+         * @return whether declared
          */
         public boolean contains(final Service service) {
             return values.contains(Assert.notNull(service, "Source framework service must not be null"));
@@ -229,20 +238,35 @@ public interface SourceDriver<O extends Options<?>> {
          * Identifies one framework-owned infrastructure or protocol-state service.
          */
         public enum Service {
+            /** Shared Fabric execution context. */
             FABRIC_CONTEXT,
+            /** Provider-neutral JSON implementation. */
             JSON_PROVIDER,
+            /** Asynchronous Source executor. */
             EXECUTOR,
+            /** Callback-state cache. */
             STATE_CACHE,
+            /** One-time nonce cache. */
             NONCE_CACHE,
+            /** Authorization-code cache. */
             AUTHORIZATION_CODE_CACHE,
+            /** Device-code cache. */
             DEVICE_CODE_CACHE,
+            /** Authorization lifecycle cache. */
             AUTHORIZATION_CACHE,
+            /** Access-token cache. */
             ACCESS_TOKEN_CACHE,
+            /** Refresh-token cache. */
             REFRESH_TOKEN_CACHE,
+            /** Authentication Session cache. */
             SESSION_CACHE,
+            /** Replay-prevention cache. */
             REPLAY_CACHE,
+            /** Runtime security baseline. */
             SECURITY_BASELINE
+
         }
+
     }
 
 }

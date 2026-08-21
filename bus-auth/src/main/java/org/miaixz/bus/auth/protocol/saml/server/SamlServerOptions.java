@@ -23,6 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.Options;
 import org.miaixz.bus.auth.protocol.saml.SamlBinding;
@@ -202,7 +203,7 @@ public record SamlServerOptions(String entityId, Endpoint singleSignOnServiceEnd
     public String toString() {
         return "SamlServerOptions[entityId=" + entityId + ", singleSignOnServiceEndpoint=[CONFIGURED]"
                 + ", singleLogoutServiceEndpoint="
-                + (singleLogoutServiceEndpoint.isPresent() ? "[CONFIGURED]" : "[ABSENT]")
+                + (singleLogoutServiceEndpoint.isPresent() ? Builder.CONFIGURED_VALUE : Builder.ABSENT_VALUE)
                 + ", metadataEndpoint=[CONFIGURED]" + ", requestBinding=" + requestBinding.value()
                 + ", responseBinding=" + responseBinding.value() + ", signingKeyId=[REDACTED], signatureAlgorithm="
                 + signatureAlgorithm + ", wantAuthnRequestsSigned=" + wantAuthnRequestsSigned

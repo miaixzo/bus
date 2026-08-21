@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.auth.registry;
 
-import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.auth.Registration;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 
 /**
- * Describes one safe, resource-addressable issue that rejected a Registry snapshot.
+ * Describes one safe, resource-addressable fault that rejected a Registry snapshot.
  * <p>
  * The value uses shared Bus errors and contains no raw options, credentials, tokens, private payloads, exception stack,
  * or implementation class names. It is diagnostic data and does not define a custom exception or protocol error
@@ -41,11 +41,11 @@ import org.miaixz.bus.core.lang.Optional;
  * @param safeDescription non-sensitive diagnostic description
  * @author Kimi Liu
  */
-public record RegistryIssue(Optional<Registration.Kind> kind, Optional<String> id, Stage stage,
+public record SnapshotFault(Optional<Registration.Kind> kind, Optional<String> id, Stage stage,
         Optional<String> standard, Optional<String> field, Errors error, String safeDescription) {
 
     /**
-     * Creates an immutable safe Registry issue.
+     * Creates an immutable safe Snapshot fault.
      *
      * @param kind            failing registration kind
      * @param id              failing resource identifier
@@ -56,52 +56,66 @@ public record RegistryIssue(Optional<Registration.Kind> kind, Optional<String> i
      * @param safeDescription non-sensitive description
      * @throws IllegalArgumentException if a required value is missing or an optional text value is blank
      */
-    public RegistryIssue {
-        Assert.notNull(kind, "Registry issue kind container must not be null");
+    public SnapshotFault {
+        Assert.notNull(kind, "Snapshot fault kind container must not be null");
         kind = Optional.ofNullable(kind.getOrNull());
-        Assert.notNull(id, "Registry issue resource id container must not be null");
+        Assert.notNull(id, "Snapshot fault resource id container must not be null");
         if (!id.isEmpty()) {
-            Assert.notBlank(id.getOrNull(), "Registry issue resource id must not be blank");
+            Assert.notBlank(id.getOrNull(), "Snapshot fault resource id must not be blank");
         }
         id = Optional.ofNullable(id.getOrNull());
-        Assert.notNull(stage, "Registry issue stage must not be null");
-        Assert.notNull(standard, "Registry issue standard container must not be null");
+        Assert.notNull(stage, "Snapshot fault stage must not be null");
+        Assert.notNull(standard, "Snapshot fault standard container must not be null");
         if (!standard.isEmpty()) {
-            Assert.notBlank(standard.getOrNull(), "Registry issue standard must not be blank");
+            Assert.notBlank(standard.getOrNull(), "Snapshot fault standard must not be blank");
         }
         standard = Optional.ofNullable(standard.getOrNull());
-        Assert.notNull(field, "Registry issue field container must not be null");
+        Assert.notNull(field, "Snapshot fault field container must not be null");
         if (!field.isEmpty()) {
-            Assert.notBlank(field.getOrNull(), "Registry issue field must not be blank");
+            Assert.notBlank(field.getOrNull(), "Snapshot fault field must not be blank");
         }
         field = Optional.ofNullable(field.getOrNull());
-        Assert.notNull(error, "Registry issue Bus error must not be null");
-        Assert.notBlank(safeDescription, "Registry issue safe description must not be blank");
+        Assert.notNull(error, "Snapshot fault Bus error must not be null");
+        Assert.notBlank(safeDescription, "Snapshot fault safe description must not be blank");
     }
 
     /**
      * Creates an issue associated with one exact registration entry.
+     *
+     * @param kind        registration kind
+     * @param id          registration identifier
+     * @param stage       processing stage
+     * @param field       optional failing field
+     * @param error       stable error classification
+     * @param description safe description
+     * @return structured entry fault
      */
-    public static RegistryIssue entry(
+    public static SnapshotFault entry(
             final Registration.Kind kind,
             final String id,
             final Stage stage,
             final Optional<String> field,
             final Errors error,
             final String description) {
-        return new RegistryIssue(Optional.of(kind), Optional.of(id), stage, Optional.empty(), field, error,
+        return new SnapshotFault(Optional.of(kind), Optional.of(id), stage, Optional.empty(), field, error,
                 description);
     }
 
     /**
      * Creates an issue associated with the complete reload attempt rather than one entry.
+     *
+     * @param stage       processing stage
+     * @param field       optional failing field
+     * @param error       stable error classification
+     * @param description safe description
+     * @return structured snapshot fault
      */
-    public static RegistryIssue snapshot(
+    public static SnapshotFault snapshot(
             final Stage stage,
             final Optional<String> field,
             final Errors error,
             final String description) {
-        return new RegistryIssue(Optional.empty(), Optional.empty(), stage, Optional.empty(), field, error,
+        return new SnapshotFault(Optional.empty(), Optional.empty(), stage, Optional.empty(), field, error,
                 description);
     }
 

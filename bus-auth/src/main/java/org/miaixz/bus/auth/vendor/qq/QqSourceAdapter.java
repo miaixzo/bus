@@ -27,8 +27,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationResponseDecoder;
@@ -42,6 +43,8 @@ import org.miaixz.bus.auth.vendor.VendorAdapter;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -81,12 +84,12 @@ public final class QqSourceAdapter implements VendorAdapter {
     /**
      * Maximum bounded response size accepted from QQ.
      */
-    private static final long MAXIMUM_RESPONSE_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_RESPONSE_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum JSON nesting accepted from QQ.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 32;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._32;
 
     /**
      * Registration namespace used for Mini Program replay digest isolation.
@@ -184,7 +187,7 @@ public final class QqSourceAdapter implements VendorAdapter {
         try {
             return new String(material);
         } finally {
-            Arrays.fill(material, '\0');
+            Arrays.fill(material, Symbol.C_NUL);
         }
     }
 
@@ -315,8 +318,9 @@ public final class QqSourceAdapter implements VendorAdapter {
     private static <T> Outcome<T> oauthError(final AuthorizationResponseDecoder.Error error) {
         return Outcome.rejected(
                 new Outcome.Failure(ErrorCode._400, "QQ authorization endpoint returned a standard error",
-                        new JsonValue.ObjectValue(
-                                Map.of("oauth_error", new JsonValue.StringValue(error.response().error().value())))));
+                        new JsonValue.ObjectValue(Map.of(
+                                Builder.OAUTH_ERROR,
+                                new JsonValue.StringValue(error.response().error().value())))));
     }
 
     /**
@@ -413,12 +417,12 @@ public final class QqSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("QQ capability is not declared by the selected variant"));
         }
-        if (QqManifest.OPEN.equals(options.variant()) && capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (QqManifest.OPEN.equals(options.variant()) && capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (QqManifest.OPEN.equals(options.variant()) && capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (QqManifest.OPEN.equals(options.variant()) && capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::openIdentity, context, timeout),
                     capability.responseType());
@@ -426,9 +430,8 @@ public final class QqSourceAdapter implements VendorAdapter {
         if (standardAdapter.isPresent() && standardAdapter.getOrNull().manifest().capabilities().contains(capability)) {
             return standardAdapter.getOrNull().invoke(capability, request, context, timeout);
         }
-        if (QqManifest.MINI_PROGRAM.equals(options.variant())
-                && capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.OneTimeCode oneTimeCode
+        if (QqManifest.MINI_PROGRAM.equals(options.variant()) && capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.OneTimeCode oneTimeCode
                 && sourceId.equals(oneTimeCode.sourceId())) {
             return narrow(mini(oneTimeCode.code(), context, timeout), capability.responseType());
         }
@@ -785,7 +788,7 @@ public final class QqSourceAdapter implements VendorAdapter {
      * @param timeout shared end-to-end budget
      * @return completed direct Source initiation
      */
-    private CompletionStage<Outcome<SourceAuthentication.Stage>> mini(
+    private CompletionStage<Outcome<SourceWorkflow.Stage>> mini(
             final String code,
             final Context context,
             final Timeout.Budget timeout) {
@@ -823,14 +826,14 @@ public final class QqSourceAdapter implements VendorAdapter {
      * @param timeout shared end-to-end budget
      * @return completed direct Source initiation
      */
-    private CompletionStage<Outcome<SourceAuthentication.Stage>> codeSession(
+    private CompletionStage<Outcome<SourceWorkflow.Stage>> codeSession(
             final String code,
             final SecretLease secret,
             final Timeout.Budget timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try (secret) {
                 if (timeout.expired()) {
-                    return QqSourceAdapter.<SourceAuthentication.Stage>failed(
+                    return QqSourceAdapter.<SourceWorkflow.Stage>failed(
                             ErrorCode._408,
                             "QQ Mini Program request has no remaining time budget");
                 }
@@ -843,15 +846,14 @@ public final class QqSourceAdapter implements VendorAdapter {
                         .execute()) {
                     final Outcome<ExternalIdentity> identity = mini(response, timeout);
                     return switch (identity) {
-                        case Outcome.Succeeded<ExternalIdentity> success -> Outcome.succeeded(
-                                new SourceAuthentication.Stage.Completed(success.value()));
+                        case Outcome.Succeeded<ExternalIdentity> success -> Outcome
+                                .succeeded(new SourceWorkflow.Stage.Completed(success.value()));
                         case Outcome.Rejected<ExternalIdentity> rejected -> Outcome.rejected(rejected.failure());
                         case Outcome.Failed<ExternalIdentity> failed -> Outcome.failed(failed.failure());
                     };
                 }
             } catch (RuntimeException cause) {
-                return QqSourceAdapter
-                        .<SourceAuthentication.Stage>failed(ErrorCode._502, "QQ Mini Program request failed");
+                return QqSourceAdapter.<SourceWorkflow.Stage>failed(ErrorCode._502, "QQ Mini Program request failed");
             }
         }, services.executor());
     }
@@ -901,8 +903,8 @@ public final class QqSourceAdapter implements VendorAdapter {
     private CompletionStage<Outcome<SecretLease>> resolve(final Context context, final Timeout.Budget timeout) {
         try {
             final CompletionStage<Outcome<SecretLease>> stage = Outcome.mapStage(
-                    () -> services.secretLoader().load(options.credential(), context, timeout),
-                    loaded -> services.secretParser().parse(options.credential(), loaded));
+                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
             if (stage == null) {
                 return completed(failed(ErrorCode._502, "QQ client-secret loader returned no stage"));
             }
@@ -1003,13 +1005,13 @@ public final class QqSourceAdapter implements VendorAdapter {
          * @param parameters ordered decoded form parameters
          * @return validated success or error branch
          */
-        private static TextTokenWire decode(final List<Parameter> parameters) {
+        private static TextTokenWire decode(final List<NameValue> parameters) {
             String accessToken = null;
             String expiresIn = null;
             String refreshToken = null;
             String errorCode = null;
             String errorMessage = null;
-            for (Parameter parameter : parameters) {
+            for (NameValue parameter : parameters) {
                 final String name = Assert.notBlank(parameter.name(), "QQ token parameter name must not be blank");
                 final String value = parameter.value();
                 switch (name) {

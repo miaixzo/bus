@@ -24,10 +24,12 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorOptions;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -63,7 +65,7 @@ public record XimalayaOptions(Vendor.Id vendor, Vendor.Variant variant, String c
     /**
      * Maximum accepted length of a device or package wire value.
      */
-    private static final int MAXIMUM_SELECTOR_LENGTH = 255;
+    private static final int MAXIMUM_SELECTOR_LENGTH = Normal._256 - Normal._1;
 
     /**
      * Validates and freezes one Ximalaya registration without resolving its secret.
@@ -162,7 +164,7 @@ public record XimalayaOptions(Vendor.Id vendor, Vendor.Variant variant, String c
      */
     @Override
     public String toString() {
-        return "XimalayaOptions[vendor=" + vendor + ", variant=" + variant
+        return "XimalayaOptions[vendor=" + vendor + Builder.VARIANT + variant
                 + ", clientId=[REDACTED], credential=[REDACTED], redirectUri=[REDACTED], scopes=[]"
                 + ", deviceId=[REDACTED], clientOsType=" + clientOsType + ", packageId=[REDACTED]]";
     }

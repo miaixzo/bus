@@ -24,7 +24,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationCodeResponse;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationErrorResponse;
@@ -66,13 +66,13 @@ public final class AuthorizationResponseEncoder {
      * @param value      provider-neutral scalar value
      * @throws ValidateException if a non-scalar JSON shape is supplied
      */
-    private static void extension(final List<Parameter> parameters, final String name, final JsonValue value) {
+    private static void extension(final List<NameValue> parameters, final String name, final JsonValue value) {
         if (value instanceof JsonValue.StringValue text) {
-            parameters.add(new Parameter(name, text.value()));
+            parameters.add(new NameValue(name, text.value()));
         } else if (value instanceof JsonValue.NumberValue number) {
-            parameters.add(new Parameter(name, number.value().toString()));
+            parameters.add(new NameValue(name, number.value().toString()));
         } else if (value instanceof JsonValue.BooleanValue flag) {
-            parameters.add(new Parameter(name, Boolean.toString(flag.value())));
+            parameters.add(new NameValue(name, Boolean.toString(flag.value())));
         } else {
             throw new ValidateException("OAuth 2.x authorization response extensions must be JSON scalars");
         }
@@ -84,20 +84,20 @@ public final class AuthorizationResponseEncoder {
      * @param response standard authorization response
      * @return ordered response parameter list
      */
-    private static List<Parameter> parameters(final AuthorizationResponse response) {
-        final List<Parameter> parameters = new ArrayList<>();
+    private static List<NameValue> parameters(final AuthorizationResponse response) {
+        final List<NameValue> parameters = new ArrayList<>();
         switch (response) {
             case AuthorizationCodeResponse success -> {
-                parameters.add(new Parameter(OAuth2.Parameters.CODE, success.code()));
-                success.state().ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.STATE, value)));
+                parameters.add(new NameValue(OAuth2.Parameters.CODE, success.code()));
+                success.state().ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.STATE, value)));
                 success.extensions().values().forEach((name, value) -> extension(parameters, name, value));
             }
             case AuthorizationErrorResponse error -> {
-                parameters.add(new Parameter(OAuth2.Parameters.ERROR, error.error().value()));
+                parameters.add(new NameValue(OAuth2.Parameters.ERROR, error.error().value()));
                 error.errorDescription()
-                        .ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.ERROR_DESCRIPTION, value)));
-                error.errorUri().ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.ERROR_URI, value)));
-                error.state().ifPresent(value -> parameters.add(new Parameter(OAuth2.Parameters.STATE, value)));
+                        .ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.ERROR_DESCRIPTION, value)));
+                error.errorUri().ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.ERROR_URI, value)));
+                error.state().ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.STATE, value)));
                 error.extensions().values().forEach((name, value) -> extension(parameters, name, value));
             }
         }
@@ -131,7 +131,7 @@ public final class AuthorizationResponseEncoder {
      * @param name       candidate response parameter name
      * @return whether the name already exists
      */
-    private static boolean contains(final List<Parameter> parameters, final String name) {
+    private static boolean contains(final List<NameValue> parameters, final String name) {
         return parameters.stream().anyMatch(parameter -> parameter.name().equals(name));
     }
 
@@ -154,10 +154,10 @@ public final class AuthorizationResponseEncoder {
         Assert.notNull(response, "OAuth 2.x authorization response must not be null");
         final URI target = validateRedirect(redirectUri);
         final QueryCodec queryCodec = new QueryCodec();
-        final List<Parameter> existing = target.getRawQuery() == null ? List.of()
+        final List<NameValue> existing = target.getRawQuery() == null ? List.of()
                 : queryCodec.decode(target.getRawQuery());
-        final List<Parameter> parameters = parameters(response);
-        for (Parameter parameter : parameters) {
+        final List<NameValue> parameters = parameters(response);
+        for (NameValue parameter : parameters) {
             if (contains(existing, parameter.name())) {
                 throw new ValidateException(
                         "OAuth 2.x redirect URI must not predefine response parameter: " + parameter.name());

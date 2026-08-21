@@ -23,6 +23,7 @@ import org.miaixz.bus.auth.shared.SecurityBaseline;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.crypto.Builder;
@@ -37,11 +38,11 @@ public final class PkceGenerator {
     /**
      * Minimum entropy required by RFC 7636 for a generated verifier.
      */
-    private static final int RFC_MINIMUM_BITS = 256;
+    private static final int RFC_MINIMUM_BITS = Normal._256;
     /**
      * Maximum random bytes whose Base64URL encoding remains within 128 characters.
      */
-    private static final int MAXIMUM_BYTES = 96;
+    private static final int MAXIMUM_BYTES = Normal._96;
 
     /**
      * Number of secure random bytes generated per verifier.

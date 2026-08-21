@@ -349,7 +349,8 @@ public final class RedirectBindingCodec {
         final StringBuilder result = new StringBuilder();
         for (byte item : value.getBytes(Charset.UTF_8)) {
             final int character = item & 0xff;
-            if ((character >= 'A' && character <= 'Z') || (character >= 'a' && character <= 'z')
+            if ((character >= Symbol.C_UPPER_A && character <= Symbol.C_UPPER_Z)
+                    || (character >= Symbol.C_LOWER_A && character <= Symbol.C_LOWER_Z)
                     || (character >= Symbol.C_ZERO && character <= Symbol.C_NINE) || character == Symbol.C_MINUS
                     || character == Symbol.C_DOT || character == Symbol.C_UNDERLINE || character == Symbol.C_TILDE) {
                 result.append((char) character);

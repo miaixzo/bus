@@ -56,13 +56,12 @@ public class Source extends Tracer {
     private String provider_id;
 
     /**
-     * Required non-blank stable Source code. The value is used by external management interfaces and must be unique
-     * among Sources with the same {@link #provider_id}.
+     * Project-managed stable Source code used only by external management interfaces.
      */
     private String code;
 
     /**
-     * Required non-blank human-readable Source name shown at management and authentication entry points.
+     * Project-managed human-readable Source name shown by external management and authentication entry points.
      */
     private String name;
 
@@ -81,10 +80,8 @@ public class Source extends Tracer {
     private String icon;
 
     /**
-     * Optional presentation order within the owning Provider. {@code null} is compared as {@code 0}; otherwise the
-     * value must be zero or greater. Lower values are ordered first. Sources with the same effective sort value are
-     * ordered by inherited {@code created} ascending, then by {@code id} ascending, so the earliest created Source is
-     * the default.
+     * Optional project-managed presentation order within the owning Provider. It is never used by protocol execution or
+     * runtime Source selection.
      */
     private Integer sort;
 

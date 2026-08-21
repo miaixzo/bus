@@ -43,7 +43,7 @@ import org.miaixz.bus.core.net.url.UrlQuery;
  *
  * @author Kimi Liu
  */
-public final class QueryCodec implements Codec<List<Parameter>, String> {
+public final class QueryCodec implements DualCodec<List<NameValue>, String> {
 
     /**
      * Creates a stateless strict query codec.
@@ -60,7 +60,7 @@ public final class QueryCodec implements Codec<List<Parameter>, String> {
      * @param end     exclusive sequence offset
      * @return decoded name/value parameter
      */
-    private static Parameter decodeParameter(final String encoded, final int start, final int end) {
+    private static NameValue decodeParameter(final String encoded, final int start, final int end) {
         int separator = end;
         for (int index = start; index < end; index++) {
             if (encoded.charAt(index) == Symbol.C_EQUAL) {
@@ -70,7 +70,7 @@ public final class QueryCodec implements Codec<List<Parameter>, String> {
         }
         final String name = decodeComponent(encoded, start, separator);
         final String value = separator == end ? Normal.EMPTY : decodeComponent(encoded, separator + 1, end);
-        return new Parameter(name, value);
+        return new NameValue(name, value);
     }
 
     /**
@@ -122,11 +122,11 @@ public final class QueryCodec implements Codec<List<Parameter>, String> {
         if (value >= Symbol.C_ZERO && value <= Symbol.C_NINE) {
             return value - Symbol.C_ZERO;
         }
-        if (value >= 'A' && value <= 'F') {
-            return value - 'A' + 10;
+        if (value >= Symbol.C_UPPER_A && value <= Symbol.C_UPPER_F) {
+            return value - Symbol.C_UPPER_A + 10;
         }
-        if (value >= 'a' && value <= 'f') {
-            return value - 'a' + 10;
+        if (value >= Symbol.C_LOWER_A && value <= Symbol.C_LOWER_F) {
+            return value - Symbol.C_LOWER_A + 10;
         }
         return -1;
     }
@@ -139,11 +139,11 @@ public final class QueryCodec implements Codec<List<Parameter>, String> {
      * @throws IllegalArgumentException if the list or an entry is {@code null}
      */
     @Override
-    public String encode(final List<Parameter> data) {
+    public String encode(final List<NameValue> data) {
         Assert.notNull(data, "Query parameters must not be null");
         final UrlQuery query = UrlQuery.of(UrlQuery.EncodeMode.STRICT);
-        for (Parameter parameter : data) {
-            final Parameter value = Assert.notNull(parameter, "Query parameter must not be null");
+        for (NameValue parameter : data) {
+            final NameValue value = Assert.notNull(parameter, "Query parameter must not be null");
             query.add(value.name(), value.value());
         }
         return query.build(Charset.UTF_8);
@@ -159,12 +159,12 @@ public final class QueryCodec implements Codec<List<Parameter>, String> {
      * @throws IllegalArgumentException if the query component is {@code null}
      */
     @Override
-    public List<Parameter> decode(final String encoded) {
+    public List<NameValue> decode(final String encoded) {
         Assert.notNull(encoded, "Encoded query component must not be null");
         Assert.isFalse(
                 encoded.indexOf(Symbol.C_HASH) >= 0,
                 "Encoded query component must not contain a fragment delimiter");
-        final List<Parameter> parameters = new ArrayList<>();
+        final List<NameValue> parameters = new ArrayList<>();
         int start = 0;
         for (int index = 0; index <= encoded.length(); index++) {
             if (index == encoded.length() || encoded.charAt(index) == Symbol.C_AND) {

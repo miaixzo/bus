@@ -28,6 +28,7 @@ import java.util.Arrays;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
@@ -128,7 +129,7 @@ public final class SecretGuard {
      */
     public void clear(final char[] secret) {
         Assert.notNull(secret, "Secret material must not be null");
-        Arrays.fill(secret, '\0');
+        Arrays.fill(secret, Symbol.C_NUL);
     }
 
 }

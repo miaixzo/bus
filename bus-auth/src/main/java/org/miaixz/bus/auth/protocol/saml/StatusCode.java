@@ -38,22 +38,22 @@ public record StatusCode(String value, Optional<StatusCode> nested) {
     /**
      * SAML top-level success status.
      */
-    public static final String SUCCESS = "urn:oasis:names:tc:SAML:2.0:status:Success";
+    public static final String SUCCESS = Saml.Statuses.SUCCESS;
 
     /**
      * SAML top-level requester error status.
      */
-    public static final String REQUESTER = "urn:oasis:names:tc:SAML:2.0:status:Requester";
+    public static final String REQUESTER = Saml.Statuses.REQUESTER;
 
     /**
      * SAML top-level responder error status.
      */
-    public static final String RESPONDER = "urn:oasis:names:tc:SAML:2.0:status:Responder";
+    public static final String RESPONDER = Saml.Statuses.RESPONDER;
 
     /**
      * SAML top-level version mismatch status.
      */
-    public static final String VERSION_MISMATCH = "urn:oasis:names:tc:SAML:2.0:status:VersionMismatch";
+    public static final String VERSION_MISMATCH = Saml.Statuses.VERSION_MISMATCH;
 
     /**
      * Validates the required status URI and normalizes the optional recursive child.

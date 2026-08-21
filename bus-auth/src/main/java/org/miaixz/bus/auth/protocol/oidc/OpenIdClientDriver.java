@@ -204,6 +204,12 @@ public final class OpenIdClientDriver implements SourceDriver<OpenIdClientOption
         return new Capability.Manifest(capabilities);
     }
 
+    /**
+     * Tests whether any enabled inherited OAuth endpoint requires client-secret material.
+     *
+     * @param options validated OpenID client options
+     * @return whether the compiled worker requires the secret-loading slot
+     */
     private static boolean usesClientSecret(final OpenIdClientOptions options) {
         final OAuth2ClientOptions oauth = options.oauth2Options();
         if (Endpoint.Authentication.NONE.equals(oauth.clientAuthenticationMethod())) {
@@ -244,8 +250,7 @@ public final class OpenIdClientDriver implements SourceDriver<OpenIdClientOption
 
     @Override
     public WorkerSlots slots(final Source source, final OpenIdClientOptions options) {
-        return usesClientSecret(options) ? WorkerSlots.of(WorkerSlots.Slot.SECRET)
-                : WorkerSlots.none();
+        return usesClientSecret(options) ? WorkerSlots.of(WorkerSlots.Slot.SECRET) : WorkerSlots.none();
     }
 
     @Override
@@ -267,9 +272,7 @@ public final class OpenIdClientDriver implements SourceDriver<OpenIdClientOption
      * @throws ValidateException        if routing, options, or signing policy is invalid
      */
     @Override
-    public SourceWorker compile(
-            final Prepared<OpenIdClientOptions> prepared,
-            final DriverServices services) {
+    public SourceWorker compile(final Prepared<OpenIdClientOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "OpenID Connect Source preparation must not be null");
         Assert.notNull(services, "OpenID Connect Source execution services must not be null");
         final Registration.SourceEntry record = prepared.registration();

@@ -26,6 +26,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
@@ -269,7 +270,7 @@ public record Schema(List<String> schemas, String id, Optional<String> name, Opt
         /**
          * Attribute is returned by default.
          */
-        DEFAULT("default"),
+        DEFAULT(Normal.DEFAULT),
         /**
          * Attribute is returned only when requested.
          */
@@ -310,7 +311,7 @@ public record Schema(List<String> schemas, String id, Optional<String> name, Opt
         /**
          * No uniqueness guarantee.
          */
-        NONE("none"),
+        NONE(Normal.NONE),
         /**
          * Value is unique within one service provider.
          */

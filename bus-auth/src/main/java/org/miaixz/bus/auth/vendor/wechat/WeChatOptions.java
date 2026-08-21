@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorOptions;
@@ -359,12 +360,11 @@ public record WeChatOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
      */
     @Override
     public String toString() {
-        return "WeChatOptions[vendor=" + vendor + ", variant=" + variant
-                + ", clientId=[REDACTED], credential=[REDACTED], redirectUri=[REDACTED], scopes=" + scopes
-                + ", loginType=" + (loginType.isEmpty() ? "[EMPTY]" : loginType) + ", agentId="
-                + (agentId.isEmpty() ? "[EMPTY]" : "[REDACTED]") + ", language="
-                + (language.isEmpty() ? "[EMPTY]" : language) + ", userType="
-                + (userType.isEmpty() ? "[EMPTY]" : userType) + Symbol.C_BRACKET_RIGHT;
+        return "WeChatOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS + scopes
+                + ", loginType=" + (loginType.isEmpty() ? Builder.EMPTY_VALUE : loginType) + ", agentId="
+                + (agentId.isEmpty() ? Builder.EMPTY_VALUE : Builder.REDACTED_VALUE) + ", language="
+                + (language.isEmpty() ? Builder.EMPTY_VALUE : language) + ", userType="
+                + (userType.isEmpty() ? Builder.EMPTY_VALUE : userType) + Symbol.C_BRACKET_RIGHT;
     }
 
 }

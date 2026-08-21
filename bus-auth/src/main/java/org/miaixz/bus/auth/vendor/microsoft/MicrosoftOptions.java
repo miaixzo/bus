@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.protocol.oauth2.Scope;
 import org.miaixz.bus.auth.vendor.Vendor;
@@ -257,9 +258,8 @@ public record MicrosoftOptions(Vendor.Id vendor, Vendor.Variant variant, String 
      */
     @Override
     public String toString() {
-        return "MicrosoftOptions[vendor=" + vendor + ", variant=" + variant
-                + ", clientId=[REDACTED], credential=[REDACTED], redirectUri=[REDACTED], scopes=" + scopes + ", tenant="
-                + tenant + Symbol.C_BRACKET_RIGHT;
+        return "MicrosoftOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS
+                + scopes + ", tenant=" + tenant + Symbol.C_BRACKET_RIGHT;
     }
 
 }

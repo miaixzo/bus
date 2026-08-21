@@ -121,9 +121,7 @@ public final class ScimServerDriver implements SourceDriver<ScimServerOptions> {
      * @throws ValidateException        if routing, options, baseline, or external binding validation fails
      */
     @Override
-    public SourceWorker compile(
-            final Prepared<ScimServerOptions> prepared,
-            final DriverServices services) {
+    public SourceWorker compile(final Prepared<ScimServerOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "SCIM Provider preparation must not be null");
         Assert.notNull(services, "SCIM Provider execution services must not be null");
         final Registration.SourceEntry record = prepared.registration();
@@ -142,7 +140,7 @@ public final class ScimServerDriver implements SourceDriver<ScimServerOptions> {
         final BindingLoader.Key<ScimResourceStore> binding = new BindingLoader.Key<>("scim-resource",
                 ScimResourceStore.class);
         final ScimResourceStore store = Assert.notNull(
-                services.bindingParser().parse(record, binding, services.bindingLoader().load(record, binding)),
+                binding.require(services.bindingLoader().load(record, binding)),
                 "SCIM external resource store binding must not be null");
         final ScimResourceService resources = new ScimResourceService(source.getId(), options, store);
         return new CompiledServer(manifest(options), options.resourceTypes(), resources, new ScimUserService(resources),

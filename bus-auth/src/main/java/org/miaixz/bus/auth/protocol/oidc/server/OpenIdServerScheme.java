@@ -28,7 +28,6 @@ import org.miaixz.bus.auth.protocol.Conformance;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.server.OAuth2ServerScheme;
 import org.miaixz.bus.auth.protocol.oidc.*;
-import org.miaixz.bus.auth.shared.jose.JwkSet;
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.net.Protocol;

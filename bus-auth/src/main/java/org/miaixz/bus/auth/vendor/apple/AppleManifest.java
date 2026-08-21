@@ -22,15 +22,17 @@ package org.miaixz.bus.auth.vendor.apple;
 import java.util.List;
 import java.util.Set;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oidc.client.OpenIdClientScheme;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorDeviation;
 import org.miaixz.bus.auth.vendor.VendorTargets;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -54,14 +56,14 @@ public final class AppleManifest implements VariantManifest<AppleOptions> {
     /**
      * Internal identifier of the single Sign in with Apple variant.
      */
-    public static final Vendor.Variant DEFAULT = new Vendor.Variant("default");
+    public static final Vendor.Variant DEFAULT = new Vendor.Variant(Normal.DEFAULT);
 
     /**
      * Exact public operations supported by the compiled Sign in with Apple Source.
      */
     private static final Capability.Manifest CAPABILITIES = new Capability.Manifest(List.of(
-            SourceAuthentication.initiate(Set.of(Capability.Interaction.REDIRECT)),
-            SourceAuthentication.complete(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT)),
             OpenIdClientScheme.TOKEN,
             OpenIdClientScheme.REVOCATION,
             OpenIdClientScheme.DISCOVERY,
@@ -71,7 +73,7 @@ public final class AppleManifest implements VariantManifest<AppleOptions> {
      * Dynamic client-secret semantics applied to the otherwise standard token and revocation form fields.
      */
     private static final List<VendorDeviation> DEVIATIONS = List.of(
-            new VendorDeviation("source_authentication.initiate", VendorDeviation.Location.QUERY,
+            new VendorDeviation(Builder.SOURCE_AUTHENTICATION_INITIATE, VendorDeviation.Location.QUERY,
                     OAuth2.Parameters.SCOPE, Optional.of(OAuth2.Parameters.SCOPE), Optional.empty(), Http.Method.GET,
                     false),
             new VendorDeviation(OAuth2.Parameters.TOKEN, VendorDeviation.Location.FORM, OAuth2.Parameters.CLIENT_SECRET,

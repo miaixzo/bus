@@ -85,6 +85,12 @@ public final class OAuth2ClientDriver implements SourceDriver<OAuth2ClientOption
         return new Capability.Manifest(capabilities);
     }
 
+    /**
+     * Tests whether any enabled endpoint requires configured client-secret material.
+     *
+     * @param options validated OAuth client options
+     * @return whether the compiled worker requires the secret-loading slot
+     */
     private static boolean usesClientSecret(final OAuth2ClientOptions options) {
         if (Endpoint.Authentication.NONE.equals(options.clientAuthenticationMethod())) {
             return false;
@@ -113,8 +119,7 @@ public final class OAuth2ClientDriver implements SourceDriver<OAuth2ClientOption
 
     @Override
     public WorkerSlots slots(final Source source, final OAuth2ClientOptions options) {
-        return usesClientSecret(options) ? WorkerSlots.of(WorkerSlots.Slot.SECRET)
-                : WorkerSlots.none();
+        return usesClientSecret(options) ? WorkerSlots.of(WorkerSlots.Slot.SECRET) : WorkerSlots.none();
     }
 
     @Override
@@ -136,9 +141,7 @@ public final class OAuth2ClientDriver implements SourceDriver<OAuth2ClientOption
      * @throws ValidateException        if registration routing fields do not match this driver
      */
     @Override
-    public SourceWorker compile(
-            final Prepared<OAuth2ClientOptions> prepared,
-            final DriverServices services) {
+    public SourceWorker compile(final Prepared<OAuth2ClientOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "OAuth 2.x Source preparation must not be null");
         Assert.notNull(services, "OAuth 2.x Source execution services must not be null");
         final Registration.SourceEntry record = prepared.registration();

@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public final class SourceValidator {
 
     /**
-     * Frozen profiles obtained from explicitly supplied Source drivers.
+     * Frozen directory of explicitly supplied Source drivers.
      */
     private final DriverDirectory drivers;
 
@@ -58,78 +58,80 @@ public final class SourceValidator {
     }
 
     /**
-     * Validates Source association shape, type, protocol, and options boundary.
+     * Validates only Source association, type, protocol, and options required by framework compilation.
      *
      * @param value complete Source entity
-     * @throws ValidateException        if a generic Source does not match its protocol scheme
-     * @throws IllegalArgumentException if a common required field is {@code null} or blank
+     * @return immutable field-level framework invariant violations
+     * @throws IllegalArgumentException if the Source is {@code null}
      */
-    public List<EntityViolation> validate(final Source value) {
+    public List<FieldViolation> validate(final Source value) {
         Assert.notNull(value, "Source must not be null");
-        final List<EntityViolation> issues = new ArrayList<>();
-        required(issues, "provider_id", value.getProvider_id(), "Source provider id must not be blank");
-        required(issues, "code", value.getCode(), "Source code must not be blank");
-        required(issues, "name", value.getName(), "Source name must not be blank");
-        if (value.getSort() != null) {
-            if (value.getSort() < 0) {
-                issues.add(new EntityViolation("sort", ErrorCode._100101, "Source sort must not be negative"));
-            }
-        }
+        final List<FieldViolation> violations = new ArrayList<>();
+        required(violations, "provider_id", value.getProvider_id(), "Source provider id must not be blank");
         if (StringKit.isBlank(value.getType())) {
-            issues.add(new EntityViolation("type", ErrorCode._100100, "Source type must not be blank"));
-            return List.copyOf(issues);
+            violations.add(new FieldViolation("type", ErrorCode._100100, "Source type must not be blank"));
+            return List.copyOf(violations);
         }
         final SourceDriver<?> driver;
         try {
             driver = driver(value.getType());
         } catch (RuntimeException ignored) {
-            issues.add(new EntityViolation("type", ErrorCode._404, "Source driver is not assembled"));
-            return List.copyOf(issues);
+            violations.add(new FieldViolation("type", ErrorCode._404, "Source driver is not assembled"));
+            return List.copyOf(violations);
         }
         if (StringKit.isBlank(value.getProtocol()) || !driver.supports(value.getProtocol())) {
-            issues.add(
-                    new EntityViolation("protocol", ErrorCode._100101,
+            violations.add(
+                    new FieldViolation("protocol", ErrorCode._100101,
                             "Source protocol is not supported by the selected type"));
         }
         final Options<?> options = value.getOptions();
         if (options == null) {
-            issues.add(new EntityViolation("options", ErrorCode._100100, "Source options must not be null"));
+            violations.add(new FieldViolation("options", ErrorCode._100100, "Source options must not be null"));
         } else {
             try {
                 final Class<?> declared = Assert.notNull(options.type(), "Source options type must not be null");
                 if (declared != options.getClass()) {
                     throw new ValidateException("Source options type must exactly match its implementation class");
                 }
-                final Options<?> snapshot = Assert.notNull(options.snapshot(), "Source options snapshot must not be null");
+                final Options<?> snapshot = Assert
+                        .notNull(options.snapshot(), "Source options snapshot must not be null");
                 if (snapshot.type() != snapshot.getClass() || snapshot.type() != declared) {
                     throw new ValidateException("Source options snapshot must preserve its exact implementation type");
                 }
                 driver.validate(value);
             } catch (RuntimeException ignored) {
-                issues.add(
-                        new EntityViolation("options", ErrorCode._100101,
+                violations.add(
+                        new FieldViolation("options", ErrorCode._100101,
                                 "Source options do not match the selected type"));
             }
         }
-        return List.copyOf(issues);
+        return List.copyOf(violations);
     }
 
+    /**
+     * Adds one missing-required-field violation when text is blank.
+     *
+     * @param violations  destination violations
+     * @param field       field name
+     * @param value       candidate value
+     * @param description safe violation description
+     */
     private static void required(
-            final List<EntityViolation> issues,
+            final List<FieldViolation> violations,
             final String field,
             final String value,
             final String description) {
         if (StringKit.isBlank(value)) {
-            issues.add(new EntityViolation(field, ErrorCode._100100, description));
+            violations.add(new FieldViolation(field, ErrorCode._100100, description));
         }
     }
 
     /**
-     * Resolves the unique scheme for a Source category without introducing an implementation dependency.
+     * Resolves the exact assembled driver for a stable Source type.
      *
      * @param type stable Source driver type
      * @return unique matching Source driver
-     * @throws ValidateException if the frozen catalog has no matching scheme
+     * @throws ValidateException if the frozen directory has no matching driver
      */
     private SourceDriver<?> driver(final String type) {
         return drivers.require(type);

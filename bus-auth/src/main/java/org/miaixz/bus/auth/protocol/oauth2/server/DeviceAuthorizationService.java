@@ -40,6 +40,7 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Protocol;
@@ -63,22 +64,22 @@ public final class DeviceAuthorizationService {
     /**
      * Minimum entropy applied to generated device codes.
      */
-    private static final int MINIMUM_DEVICE_CODE_BITS = 256;
+    private static final int MINIMUM_DEVICE_CODE_BITS = Normal._256;
 
     /**
      * Maximum create-if-absent attempts for a device or user-code collision.
      */
-    private static final int MAXIMUM_CREATE_ATTEMPTS = 3;
+    private static final int MAXIMUM_CREATE_ATTEMPTS = org.miaixz.bus.auth.Builder.MAXIMUM_RETRY_ATTEMPTS;
 
     /**
      * Number of unambiguous characters shown to the end user before formatting.
      */
-    private static final int USER_CODE_CHARACTERS = 8;
+    private static final int USER_CODE_CHARACTERS = Normal._8;
 
     /**
      * Position at which the user code receives its readability separator.
      */
-    private static final int USER_CODE_GROUP = 4;
+    private static final int USER_CODE_GROUP = Normal._4;
 
     /**
      * Uppercase alphabet excluding visually ambiguous I, L, O, U, 0, and 1 characters.
@@ -88,7 +89,7 @@ public final class DeviceAuthorizationService {
     /**
      * Safe failure detail member carrying a registered OAuth error code.
      */
-    private static final String OAUTH_ERROR = "oauth_error";
+    private static final String OAUTH_ERROR = org.miaixz.bus.auth.Builder.OAUTH_ERROR;
 
     /**
      * Provider identifier used to isolate device-code state.
@@ -225,8 +226,8 @@ public final class DeviceAuthorizationService {
         final CompletionStage<Outcome<ConsumerMetadata>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.consumerLoader().load(clientId, context, timeout),
-                    loaded -> services.consumerParser().parse(clientId, loaded));
+                    () -> services.consumerLoader().load(services.registration(), clientId, context, timeout),
+                    loaded -> services.consumerParser().parse(services.registration(), clientId, loaded));
         } catch (RuntimeException exception) {
             return completed(
                     Outcome.failed(
@@ -397,7 +398,7 @@ public final class DeviceAuthorizationService {
      * @return hexadecimal SHA-256 cache key
      */
     private String key(final String deviceCode) {
-        return Builder.sha256Hex(providerId + '\0' + deviceCode);
+        return Builder.sha256Hex(providerId + Symbol.C_NUL + deviceCode);
     }
 
     /**

@@ -94,6 +94,12 @@ public final class AuthenticationWorker {
 
     /**
      * Invokes one project port without allowing null stages or dependency exceptions to escape as normal flow.
+     *
+     * @param <T>      successful project-port value type
+     * @param supplier deferred project-port invocation
+     * @param timeout  shared end-to-end operation budget
+     * @param failure  safe description used for dependency failures
+     * @return normalized asynchronous outcome
      */
     private static <T> CompletionStage<Outcome<T>> invoke(
             final StageSupplier<T> supplier,
@@ -115,6 +121,12 @@ public final class AuthenticationWorker {
 
     /**
      * Composes a successful value while preserving rejection and operational failure outcomes.
+     *
+     * @param <A>   current successful value type
+     * @param <B>   following successful value type
+     * @param stage current asynchronous outcome
+     * @param next  function invoked only for a successful current value
+     * @return stage preserving rejection or failure and containing the following successful value
      */
     private static <A, B> CompletionStage<Outcome<B>> flatMap(
             final CompletionStage<Outcome<A>> stage,
@@ -136,6 +148,10 @@ public final class AuthenticationWorker {
 
     /**
      * Creates one already completed outcome stage.
+     *
+     * @param <T>     successful outcome value type
+     * @param outcome outcome to expose through a completed stage
+     * @return already completed asynchronous outcome
      */
     private static <T> CompletionStage<Outcome<T>> completed(final Outcome<T> outcome) {
         return CompletableFuture.completedFuture(outcome);
@@ -143,6 +159,9 @@ public final class AuthenticationWorker {
 
     /**
      * Creates one safe operation-budget failure.
+     *
+     * @param <T> expected operation value type
+     * @return typed timeout failure outcome
      */
     private static <T> Outcome<T> expired() {
         return Outcome.failed(
@@ -152,6 +171,10 @@ public final class AuthenticationWorker {
 
     /**
      * Creates one safe dependency or framework failure.
+     *
+     * @param <T>         expected operation value type
+     * @param description safe failure description
+     * @return typed operational failure outcome
      */
     private static <T> Outcome<T> failed(final String description) {
         return Outcome.failed(new Outcome.Failure(ErrorCode._500, description, new JsonValue.ObjectValue(Map.of())));
@@ -202,6 +225,12 @@ public final class AuthenticationWorker {
 
     /**
      * Completes framework-owned Principal and result construction.
+     *
+     * @param subject  parsed stable subject
+     * @param identity verified external identity
+     * @param claims   parsed disclosed claim set
+     * @param timeout  shared end-to-end operation budget
+     * @return stage containing the completed authentication result or a safe failure
      */
     private CompletionStage<Outcome<AuthenticationResult>> principal(
             final Subject subject,
@@ -223,10 +252,17 @@ public final class AuthenticationWorker {
 
     /**
      * Supplies one asynchronous project-port invocation.
+     *
+     * @param <T> successful project-port value type
      */
     @FunctionalInterface
     private interface StageSupplier<T> {
 
+        /**
+         * Starts the deferred project-port invocation.
+         *
+         * @return asynchronous project-port outcome
+         */
         CompletionStage<Outcome<T>> get();
 
     }

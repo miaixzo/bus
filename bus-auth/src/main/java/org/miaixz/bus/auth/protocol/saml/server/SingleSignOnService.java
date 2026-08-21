@@ -30,10 +30,11 @@ import org.miaixz.bus.auth.Session;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.saml.AuthnRequest;
 import org.miaixz.bus.auth.protocol.saml.Response;
+import org.miaixz.bus.auth.protocol.saml.Saml;
 import org.miaixz.bus.auth.protocol.saml.SamlBinding;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
 import org.miaixz.bus.auth.source.DriverServices;
-import org.miaixz.bus.auth.source.SessionCoordinator;
+import org.miaixz.bus.auth.worker.SessionCoordinator;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -54,12 +55,12 @@ public final class SingleSignOnService {
     /**
      * SAML entity identifier format used by Web Browser SSO request issuers.
      */
-    private static final String ENTITY_NAME_ID = "urn:oasis:names:tc:SAML:2.0:nameid-format:entity";
+    private static final String ENTITY_NAME_ID = Saml.NameIdFormats.ENTITY;
 
     /**
      * Standard second-level status for a request denied by local policy.
      */
-    private static final String REQUEST_DENIED = "urn:oasis:names:tc:SAML:2.0:status:RequestDenied";
+    private static final String REQUEST_DENIED = Saml.Statuses.REQUEST_DENIED;
 
     /**
      * Validated identity-provider options.
@@ -80,6 +81,7 @@ public final class SingleSignOnService {
      * Standard SAML protocol error-response mapper.
      */
     private final SamlErrorMapper errorMapper;
+    /** Framework coordinator for Source-isolated authentication Session transitions. */
     private final SessionCoordinator sessions;
 
     /**
@@ -142,9 +144,11 @@ public final class SingleSignOnService {
         Assert.notNull(timeout, "SAML Single Sign-On time budget must not be null");
         final Outcome<String> requester = requester(request, timeout);
         return switch (requester) {
-            case Outcome.Succeeded<String> success -> Outcome.mapStage(
-                            () -> services.consumerLoader().load(success.value(), context, timeout),
-                            loaded -> services.consumerParser().parse(success.value(), loaded))
+            case Outcome.Succeeded<String> success -> Outcome
+                    .mapStage(
+                            () -> services.consumerLoader()
+                                    .load(services.registration(), success.value(), context, timeout),
+                            loaded -> services.consumerParser().parse(services.registration(), success.value(), loaded))
                     .thenCompose(resolved -> switch (resolved) {
                         case Outcome.Succeeded<ConsumerMetadata> client -> issue(
                                 request,

@@ -25,12 +25,13 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.source.DriverServices;
@@ -68,12 +69,12 @@ public final class RedNoteSourceAdapter implements VendorAdapter {
     /**
      * Maximum bounded JSON response size accepted from the marketing API.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum JSON nesting accepted from the marketing API.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 16;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._16;
 
     /**
      * Selected immutable RedNote marketing manifest.
@@ -136,7 +137,7 @@ public final class RedNoteSourceAdapter implements VendorAdapter {
         try {
             return new String(material);
         } finally {
-            Arrays.fill(material, '\0');
+            Arrays.fill(material, Symbol.C_NUL);
         }
     }
 
@@ -375,8 +376,8 @@ public final class RedNoteSourceAdapter implements VendorAdapter {
             final Timeout.Budget timeout) {
         try {
             final CompletionStage<Outcome<SecretLease>> stage = Outcome.mapStage(
-                    () -> services.secretLoader().load(options.credential(), context, timeout),
-                    loaded -> services.secretParser().parse(options.credential(), loaded));
+                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
             if (stage == null) {
                 return completed(failed(ErrorCode._502, "RedNote secret loader returned no stage"));
             }
@@ -421,9 +422,9 @@ public final class RedNoteSourceAdapter implements VendorAdapter {
             final boolean initial = request.code().isPresent();
             body = formCodec.encode(
                     List.of(
-                            new Parameter("app_id", options.clientId()),
-                            new Parameter("secret", secret(secret)),
-                            new Parameter(initial ? "code" : OAuth2.Parameters.REFRESH_TOKEN,
+                            new NameValue("app_id", options.clientId()),
+                            new NameValue("secret", secret(secret)),
+                            new NameValue(initial ? "code" : OAuth2.Parameters.REFRESH_TOKEN,
                                     initial ? request.code().getOrNull() : request.refreshToken().getOrNull())));
             final var resolvedTargets = variant.targets().resolve(options);
             final String endpoint = (initial ? resolvedTargets.token() : resolvedTargets.refresh()).getOrNull().url()

@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -47,7 +48,7 @@ public final class JwaAlgorithm {
     /**
      * Unsecured JWS algorithm identifier, recognized solely so execution can reject it explicitly.
      */
-    public static final JwaAlgorithm NONE = known("none", Kind.UNSECURED, Set.of(), null, 0);
+    public static final JwaAlgorithm NONE = known(Normal.NONE, Kind.UNSECURED, Set.of(), null, 0);
     /**
      * HMAC using SHA-256 signature algorithm identifier.
      */

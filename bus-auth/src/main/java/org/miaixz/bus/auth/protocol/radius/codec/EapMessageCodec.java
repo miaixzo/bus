@@ -44,7 +44,7 @@ public final class EapMessageCodec {
     /**
      * Maximum EAP octets in one RADIUS Attribute Value.
      */
-    private static final int FRAGMENT_BYTES = 253;
+    private static final int FRAGMENT_BYTES = Radius.MAXIMUM_ATTRIBUTE_VALUE_BYTES;
 
     /**
      * Creates the stateless EAP-Message fragment codec.

@@ -21,6 +21,7 @@ package org.miaixz.bus.auth.worker.identity;
 
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -34,37 +35,37 @@ final class ExternalIdentityVerifier {
     /**
      * Maximum accepted nesting below the external attribute root.
      */
-    private static final int MAXIMUM_DEPTH = 32;
+    private static final int MAXIMUM_DEPTH = Normal._32;
 
     /**
      * Maximum accepted JSON values in the complete external attribute tree.
      */
-    private static final int MAXIMUM_NODES = 4096;
+    private static final int MAXIMUM_NODES = Normal._4096;
 
     /**
      * Maximum accepted members in one JSON object.
      */
-    private static final int MAXIMUM_MEMBERS = 256;
+    private static final int MAXIMUM_MEMBERS = Normal._256;
 
     /**
      * Maximum accepted elements in one JSON array.
      */
-    private static final int MAXIMUM_ELEMENTS = 1024;
+    private static final int MAXIMUM_ELEMENTS = Normal._1024;
 
     /**
      * Maximum accepted JSON member-name length.
      */
-    private static final int MAXIMUM_NAME_LENGTH = 256;
+    private static final int MAXIMUM_NAME_LENGTH = Normal._256;
 
     /**
      * Maximum accepted JSON string length.
      */
-    private static final int MAXIMUM_STRING_LENGTH = 65536;
+    private static final int MAXIMUM_STRING_LENGTH = Normal._65536;
 
     /**
      * Maximum accepted evidence entries for one authentication result.
      */
-    private static final int MAXIMUM_EVIDENCE = 32;
+    private static final int MAXIMUM_EVIDENCE = Normal._32;
 
     /**
      * Creates the stateless verifier.
@@ -75,6 +76,10 @@ final class ExternalIdentityVerifier {
 
     /**
      * Validates one bounded provider-neutral JSON value tree.
+     *
+     * @param value current non-null JSON value
+     * @param depth current nesting depth below the attribute root
+     * @param nodes shared single-element counter for the complete tree
      */
     private static void structure(final JsonValue value, final int depth, final int[] nodes) {
         if (depth > MAXIMUM_DEPTH || ++nodes[0] > MAXIMUM_NODES) {

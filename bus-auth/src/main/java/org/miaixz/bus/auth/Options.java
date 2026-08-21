@@ -43,7 +43,7 @@ public interface Options<O extends Options<O>> {
     Class<O> type();
 
     /**
-     * Returns an immutable detached value safe to retain in one compiled Registry generation.
+     * Returns an immutable detached value safe to retain in one compiled runtime container.
      * <p>
      * Immutable value implementations may return {@code this}. Mutable project implementations must return a detached
      * immutable copy. The framework does not serialize deployment options to manufacture a snapshot.

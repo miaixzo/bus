@@ -75,6 +75,7 @@ public interface RegistrationLoader {
             }
             registrations = List.copyOf(registrations);
         }
+
     }
 
 }

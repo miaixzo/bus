@@ -21,6 +21,7 @@ package org.miaixz.bus.auth.resolver;
 
 import java.time.Instant;
 
+import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.worker.CertificateLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -30,9 +31,31 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  */
 public final class CertificateParser {
 
-    public CertificateMaterial parse(final CertificateLoader.Request request, final CertificateLoader.Record record) {
+    /**
+     * Creates a stateless certificate-material parser.
+     */
+    public CertificateParser() {
+    }
+
+    /**
+     * Validates Source ownership, lookup coordinates, and validity interval.
+     *
+     * @param registration exact Source registration that requested the data
+     * @param request      exact certificate lookup request
+     * @param record       project-loaded certificate record
+     * @return validated certificate material
+     */
+    public CertificateMaterial parse(
+            final Registration.SourceEntry registration,
+            final CertificateLoader.Request request,
+            final CertificateLoader.Record record) {
+        final String sourceId = Assert.notNull(registration, "Certificate Source registration must not be null")
+                .resource().getId();
         final CertificateLoader.Request expected = Assert.notNull(request, "Certificate request must not be null");
         final CertificateLoader.Record loaded = Assert.notNull(record, "Loaded certificate record must not be null");
+        if (!sourceId.equals(loaded.sourceId())) {
+            throw new ValidateException("Loaded certificate does not belong to the requested Source");
+        }
         if (!expected.issuer()
                 .equals(Assert.notBlank(loaded.issuer(), "Loaded certificate issuer must not be blank"))) {
             throw new ValidateException("Loaded certificate issuer does not match the requested issuer");
@@ -49,4 +72,5 @@ public final class CertificateParser {
         }
         return new CertificateMaterial(loaded.chain(), loaded.trustRoots());
     }
+
 }

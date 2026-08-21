@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.Enumers;
  * External projects create complete records from databases, files, or remote services. The framework validates and
  * compiles one complete snapshot; this container performs no loading, persistence, protocol option materialization, or
  * Registry access. Each record detaches the framework-owned fields of the complete managed entity so project mutation
- * cannot change a published generation.
+ * cannot change a published runtime container.
  * </p>
  *
  * @author Kimi Liu
@@ -124,6 +124,7 @@ public final class Registration {
          * @return mutable copy that cannot change this entry
          */
         Entity resource();
+
     }
 
     /**
@@ -134,6 +135,7 @@ public final class Registration {
      */
     public record LibraryEntry(boolean enabled, Library resource) implements Entry {
 
+        /** Validates and detaches one Library registration. */
         public LibraryEntry {
             resource = copy(Assert.notNull(resource, "Library registration must not be null"));
         }
@@ -147,6 +149,7 @@ public final class Registration {
         public Library resource() {
             return copy(resource);
         }
+
     }
 
     /**
@@ -157,6 +160,7 @@ public final class Registration {
      */
     public record ProviderEntry(boolean enabled, Provider resource) implements Entry {
 
+        /** Validates and detaches one Provider registration. */
         public ProviderEntry {
             resource = copy(Assert.notNull(resource, "Provider registration must not be null"));
         }
@@ -170,6 +174,7 @@ public final class Registration {
         public Provider resource() {
             return copy(resource);
         }
+
     }
 
     /**
@@ -180,6 +185,7 @@ public final class Registration {
      */
     public record SourceEntry(boolean enabled, Source resource) implements Entry {
 
+        /** Validates and detaches one Source registration. */
         public SourceEntry {
             resource = copy(Assert.notNull(resource, "Source registration must not be null"));
         }
@@ -193,8 +199,15 @@ public final class Registration {
         public Source resource() {
             return copy(resource);
         }
+
     }
 
+    /**
+     * Copies common audit identity and timestamps into a detached entity.
+     *
+     * @param source source audit entity
+     * @param target detached target audit entity
+     */
     private static void copyAudit(final Audit source, final Audit target) {
         target.setId(source.getId());
         target.setCreator(source.getCreator());
@@ -203,6 +216,12 @@ public final class Registration {
         target.setModified(source.getModified());
     }
 
+    /**
+     * Creates a detached Library copy.
+     *
+     * @param source registered Library
+     * @return detached Library
+     */
     private static Library copy(final Library source) {
         final Library target = new Library();
         copyAudit(source, target);
@@ -220,6 +239,12 @@ public final class Registration {
         return target;
     }
 
+    /**
+     * Creates a detached Provider copy.
+     *
+     * @param source registered Provider
+     * @return detached Provider
+     */
     private static Provider copy(final Provider source) {
         final Provider target = new Provider();
         copyAudit(source, target);
@@ -233,6 +258,12 @@ public final class Registration {
         return target;
     }
 
+    /**
+     * Creates a detached Source copy including detached typed options.
+     *
+     * @param source registered Source
+     * @return detached Source
+     */
     private static Source copy(final Source source) {
         final Source target = new Source();
         copyAudit(source, target);
@@ -244,7 +275,9 @@ public final class Registration {
         target.setSort(source.getSort());
         target.setProtocol(source.getProtocol());
         final Options<?> options = source.getOptions();
-        target.setOptions(options == null ? null : Assert.notNull(options.snapshot(), "Source options snapshot must not be null"));
+        target.setOptions(
+                options == null ? null
+                        : Assert.notNull(options.snapshot(), "Source options snapshot must not be null"));
         target.setMetadata(source.getMetadata());
         target.setDescription(source.getDescription());
         return target;

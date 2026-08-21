@@ -21,6 +21,7 @@ package org.miaixz.bus.auth.protocol.scim.codec;
 
 import org.miaixz.bus.auth.protocol.scim.Filter;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
@@ -37,22 +38,22 @@ public final class ScimFilterEncoder {
     /**
      * Lowest precedence assigned to logical OR.
      */
-    private static final int OR_PRECEDENCE = 1;
+    private static final int OR_PRECEDENCE = Normal._1;
 
     /**
      * Middle precedence assigned to logical AND.
      */
-    private static final int AND_PRECEDENCE = 2;
+    private static final int AND_PRECEDENCE = Normal._2;
 
     /**
      * Unary precedence assigned to logical NOT.
      */
-    private static final int NOT_PRECEDENCE = 3;
+    private static final int NOT_PRECEDENCE = Normal._3;
 
     /**
      * Highest precedence assigned to attribute and valuePath expressions.
      */
-    private static final int PRIMARY_PRECEDENCE = 4;
+    private static final int PRIMARY_PRECEDENCE = Normal._4;
 
     /**
      * Prevents instantiation of the stateless encoder.
@@ -123,7 +124,7 @@ public final class ScimFilterEncoder {
             case Filter.StringValue string -> jsonString(string.value());
             case Filter.BooleanValue bool -> Boolean.toString(bool.value());
             case Filter.NumberValue number -> number.value().toString();
-            case Filter.NullValue ignored -> "null";
+            case Filter.NullValue ignored -> Normal.NULL;
         };
     }
 
@@ -142,9 +143,9 @@ public final class ScimFilterEncoder {
                 case Symbol.C_BACKSLASH -> encoded.append("\\\\");
                 case '\b' -> encoded.append("\\b");
                 case '\f' -> encoded.append("\\f");
-                case '\n' -> encoded.append("\\n");
-                case '\r' -> encoded.append("\\r");
-                case '\t' -> encoded.append("\\t");
+                case Symbol.C_LF -> encoded.append("\\n");
+                case Symbol.C_CR -> encoded.append("\\r");
+                case Symbol.C_TAB -> encoded.append("\\t");
                 default -> {
                     if (character < 0x20) {
                         encoded.append("\\u");

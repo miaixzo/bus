@@ -27,10 +27,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.guard.IssuerValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
+import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientOptions;
 import org.miaixz.bus.auth.protocol.oidc.*;
 import org.miaixz.bus.auth.protocol.oidc.client.DiscoveryClient;
@@ -47,7 +49,7 @@ import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -56,7 +58,9 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -87,12 +91,12 @@ public final class LineSourceAdapter implements VendorAdapter {
     /**
      * Maximum accepted LINE endpoint JSON document size.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum accepted LINE endpoint JSON nesting depth.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 32;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._32;
 
     /**
      * Maximum access-token lifetime registered by LINE Login, in seconds.
@@ -102,12 +106,12 @@ public final class LineSourceAdapter implements VendorAdapter {
     /**
      * Discovery extension carrying LINE's RFC 7009 revocation endpoint.
      */
-    private static final String REVOCATION_ENDPOINT = "revocation_endpoint";
+    private static final String REVOCATION_ENDPOINT = OAuth2.Metadata.REVOCATION_ENDPOINT;
 
     /**
      * Discovery extension carrying LINE's supported PKCE methods.
      */
-    private static final String CODE_CHALLENGE_METHODS = "code_challenge_methods_supported";
+    private static final String CODE_CHALLENGE_METHODS = OAuth2.Metadata.CODE_CHALLENGE_METHODS_SUPPORTED;
 
     /**
      * Standard OAuth errors representing rejected LINE token requests.
@@ -557,7 +561,7 @@ public final class LineSourceAdapter implements VendorAdapter {
         try {
             return new String(material);
         } finally {
-            Arrays.fill(material, '\0');
+            Arrays.fill(material, Symbol.C_NUL);
         }
     }
 
@@ -644,12 +648,12 @@ public final class LineSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("LINE capability is not declared"));
         }
-        if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -796,8 +800,8 @@ public final class LineSourceAdapter implements VendorAdapter {
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(options.credential(), context, timeout),
-                    loaded -> services.secretParser().parse(options.credential(), loaded));
+                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "LINE channel-secret resolution failed"));
         }
@@ -872,8 +876,8 @@ public final class LineSourceAdapter implements VendorAdapter {
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(options.credential(), context, timeout),
-                    loaded -> services.secretParser().parse(options.credential(), loaded));
+                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "LINE channel-secret resolution failed"));
         }
@@ -951,22 +955,22 @@ public final class LineSourceAdapter implements VendorAdapter {
      * @param secret  open channel-secret lease
      * @return immutable ordered form parameters
      */
-    private List<Parameter> tokenParameters(final TokenRequest request, final SecretLease secret) {
+    private List<NameValue> tokenParameters(final TokenRequest request, final SecretLease secret) {
         if (request.grant() instanceof AuthorizationCodeGrant grant) {
             return List.of(
-                    new Parameter(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()),
-                    new Parameter(OAuth2.Parameters.CODE, grant.code()),
-                    new Parameter(OAuth2.Parameters.REDIRECT_URI, grant.redirectUri().getOrNull()),
-                    new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()),
-                    new Parameter(OAuth2.Parameters.CLIENT_SECRET, secret(secret)),
-                    new Parameter(OAuth2.Parameters.CODE_VERIFIER, grant.codeVerifier().getOrNull()));
+                    new NameValue(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()),
+                    new NameValue(OAuth2.Parameters.CODE, grant.code()),
+                    new NameValue(OAuth2.Parameters.REDIRECT_URI, grant.redirectUri().getOrNull()),
+                    new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()),
+                    new NameValue(OAuth2.Parameters.CLIENT_SECRET, secret(secret)),
+                    new NameValue(OAuth2.Parameters.CODE_VERIFIER, grant.codeVerifier().getOrNull()));
         }
         if (request.grant() instanceof RefreshTokenGrant grant) {
             return List.of(
-                    new Parameter(OAuth2.Parameters.GRANT_TYPE, GrantType.REFRESH_TOKEN.value()),
-                    new Parameter(OAuth2.Parameters.REFRESH_TOKEN, grant.refreshToken()),
-                    new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()),
-                    new Parameter(OAuth2.Parameters.CLIENT_SECRET, secret(secret)));
+                    new NameValue(OAuth2.Parameters.GRANT_TYPE, GrantType.REFRESH_TOKEN.value()),
+                    new NameValue(OAuth2.Parameters.REFRESH_TOKEN, grant.refreshToken()),
+                    new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()),
+                    new NameValue(OAuth2.Parameters.CLIENT_SECRET, secret(secret)));
         }
         throw new ValidateException("LINE token request uses an unsupported grant");
     }
@@ -1027,7 +1031,7 @@ public final class LineSourceAdapter implements VendorAdapter {
         }
         final OAuth2ErrorCode error = new OAuth2ErrorCode(requiredString(object, OAuth2.Parameters.ERROR));
         optionalString(object, OAuth2.Parameters.ERROR_DESCRIPTION);
-        final Map<String, JsonValue> details = Map.of("oauth_error", new JsonValue.StringValue(error.value()));
+        final Map<String, JsonValue> details = Map.of(Builder.OAUTH_ERROR, new JsonValue.StringValue(error.value()));
         if (status == Http.Status.TOO_MANY_REQUESTS) {
             return failed(ErrorCode._429, "LINE token endpoint rate limited the request", details);
         }
@@ -1166,7 +1170,8 @@ public final class LineSourceAdapter implements VendorAdapter {
             final Jwk selected = jwkSelector.requireUnique(
                     keys,
                     new JwkSelector.Selection(Optional.of(keyId), JwaAlgorithm.ES256.name(),
-                            JwaAlgorithm.Kind.SIGNATURE, Optional.of("sig"), Optional.of("verify"), Optional.of("EC")));
+                            JwaAlgorithm.Kind.SIGNATURE, Optional.of(Builder.SIGNATURE), Optional.of(Builder.VERIFY),
+                            Optional.of("EC")));
             if (selected.keyId().filter(keyId::equals).isEmpty()
                     || selected.algorithm().filter(JwaAlgorithm.ES256.name()::equals).isEmpty()) {
                 throw new ValidateException("LINE JWK must explicitly bind kid and alg=ES256");
@@ -1333,8 +1338,8 @@ public final class LineSourceAdapter implements VendorAdapter {
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(options.credential(), context, timeout),
-                    loaded -> services.secretParser().parse(options.credential(), loaded));
+                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "LINE channel-secret resolution failed"));
         }
@@ -1373,9 +1378,9 @@ public final class LineSourceAdapter implements VendorAdapter {
             }
             body = formCodec.encode(
                     List.of(
-                            new Parameter(OAuth2.Parameters.ACCESS_TOKEN, request.token()),
-                            new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()),
-                            new Parameter(OAuth2.Parameters.CLIENT_SECRET, secret(secret))));
+                            new NameValue(OAuth2.Parameters.ACCESS_TOKEN, request.token()),
+                            new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()),
+                            new NameValue(OAuth2.Parameters.CLIENT_SECRET, secret(secret))));
             final var endpoint = variant.targets().resolve(options).revocation().getOrNull();
             try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
                     .method(Http.Method.POST).timeout(timeout.forFabric())

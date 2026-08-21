@@ -38,7 +38,7 @@ public record ExtendedRequest(String requestName, Optional<byte[]> requestValue)
     /**
      * RFC 4511 StartTLS extended-operation object identifier.
      */
-    public static final String START_TLS_OID = "1.3.6.1.4.1.1466.20037";
+    public static final String START_TLS_OID = Ldap.START_TLS_OID;
 
     /**
      * Creates an immutable extended request and applies the standard StartTLS value constraint.

@@ -28,7 +28,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationCodeResponse;
 import org.miaixz.bus.auth.protocol.oauth2.GrantType;
@@ -38,7 +38,7 @@ import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationResponseDecoder;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
@@ -214,12 +214,12 @@ public final class AfdianSourceAdapter implements VendorAdapter {
         Assert.notNull(timeout, "Afdian budget must not be null");
         if (!manifest().capabilities().contains(capability))
             return missing();
-        if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -242,12 +242,12 @@ public final class AfdianSourceAdapter implements VendorAdapter {
         if (timeout.expired())
             return completed(failed("Afdian authorization budget is exhausted"));
         final List<String> scopes = options.scopes().isEmpty() ? variant.defaultScopes() : options.scopes();
-        final List<Parameter> parameters = List.of(
-                new Parameter(OAuth2.Parameters.RESPONSE_TYPE, ResponseType.CODE.value()),
-                new Parameter(OAuth2.Parameters.SCOPE, String.join(Symbol.SPACE, scopes)),
-                new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()),
-                new Parameter(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()),
-                new Parameter(OAuth2.Parameters.STATE, initiation.state()));
+        final List<NameValue> parameters = List.of(
+                new NameValue(OAuth2.Parameters.RESPONSE_TYPE, ResponseType.CODE.value()),
+                new NameValue(OAuth2.Parameters.SCOPE, String.join(Symbol.SPACE, scopes)),
+                new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()),
+                new NameValue(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()),
+                new NameValue(OAuth2.Parameters.STATE, initiation.state()));
         final String base = variant.targets().resolve(options).authorization().getOrNull().url().toString();
         return completed(
                 Outcome.succeeded(
@@ -285,9 +285,11 @@ public final class AfdianSourceAdapter implements VendorAdapter {
         } catch (RuntimeException cause) {
             return completed(rejected("Afdian callback is invalid"));
         }
-        return Outcome.mapStage(
-                        () -> services.secretLoader().load(options.credential(), context, timeout),
-                        loaded -> services.secretParser().parse(options.credential(), loaded))
+        return Outcome
+                .mapStage(
+                        () -> services.secretLoader()
+                                .load(services.registration(), options.credential(), context, timeout),
+                        loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(outcome -> switch (outcome) {
                     case Outcome.Succeeded<SecretLease> success -> exchange(code, success.value(), timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
@@ -312,11 +314,11 @@ public final class AfdianSourceAdapter implements VendorAdapter {
             try {
                 body = formCodec.encode(
                         List.of(
-                                new Parameter(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()),
-                                new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()),
-                                new Parameter(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())),
-                                new Parameter(OAuth2.Parameters.CODE, code),
-                                new Parameter(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull())));
+                                new NameValue(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()),
+                                new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()),
+                                new NameValue(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())),
+                                new NameValue(OAuth2.Parameters.CODE, code),
+                                new NameValue(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull())));
                 final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
                 try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint)
                         .method(Http.Method.POST).timeout(timeout.forFabric())

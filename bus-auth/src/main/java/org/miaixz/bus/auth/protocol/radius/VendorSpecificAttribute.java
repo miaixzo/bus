@@ -22,6 +22,7 @@ package org.miaixz.bus.auth.protocol.radius;
 import java.util.Arrays;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
@@ -45,7 +46,7 @@ public record VendorSpecificAttribute(long vendorId, byte[] value) {
     /**
      * Maximum vendor String length after the four-octet Vendor-Id.
      */
-    private static final int MAXIMUM_VALUE_BYTES = 249;
+    private static final int MAXIMUM_VALUE_BYTES = Radius.MAXIMUM_ATTRIBUTE_VALUE_BYTES - Normal._4;
 
     /**
      * Validates the unsigned Vendor-Id and detaches the opaque value.

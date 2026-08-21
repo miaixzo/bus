@@ -29,6 +29,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.guard.IssuerValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.*;
@@ -41,7 +42,7 @@ import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -217,7 +218,7 @@ public final class OktaSourceAdapter implements VendorAdapter {
      */
     private static Outcome<ExternalIdentity> authorizationError(final AuthorizationErrorResponse response) {
         final Map<String, JsonValue> details = Map
-                .of("oauth_error", new JsonValue.StringValue(response.error().value()));
+                .of(Builder.OAUTH_ERROR, new JsonValue.StringValue(response.error().value()));
         return Outcome.rejected(
                 new Outcome.Failure(ErrorCode._400, "Okta authorization endpoint returned a standard error",
                         new JsonValue.ObjectValue(details)));
@@ -359,12 +360,12 @@ public final class OktaSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("Okta capability is not declared"));
         }
-        if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -533,10 +534,10 @@ public final class OktaSourceAdapter implements VendorAdapter {
             final Jwk selected = jwkSelector.requireUnique(
                     keys,
                     new JwkSelector.Selection(header.keyId(), JwaAlgorithm.RS256.name(), JwaAlgorithm.Kind.SIGNATURE,
-                            Optional.of("sig"), Optional.of("verify"), Optional.of("RSA")));
+                            Optional.of(Builder.SIGNATURE), Optional.of(Builder.VERIFY), Optional.of("RSA")));
             if (selected.keyId().filter(keyId::equals).isEmpty()
                     || selected.algorithm().filter(JwaAlgorithm.RS256.name()::equals).isEmpty()
-                    || selected.publicKeyUse().filter("sig"::equals).isEmpty()) {
+                    || selected.publicKeyUse().filter(Builder.SIGNATURE::equals).isEmpty()) {
                 throw new ValidateException("Okta JWK must bind kid, alg=RS256, and use=sig");
             }
             key = rsaPublicKey(selected);

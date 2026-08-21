@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
@@ -133,7 +134,7 @@ public record Endpoint(UnoUrl url, Transport transport, Optional<Http.Method> me
         /**
          * Declares that the endpoint requires no authentication.
          */
-        public static final Authentication NONE = new Authentication("none");
+        public static final Authentication NONE = new Authentication(Normal.NONE);
 
         /**
          * HTTP Basic authentication scheme.

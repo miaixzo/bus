@@ -25,12 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -56,7 +56,7 @@ public final class AuthorizationServerMetadataCodec {
     /**
      * Maximum accepted metadata document size in bytes.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Provider-neutral JSON service.

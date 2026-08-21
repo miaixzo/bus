@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
@@ -54,7 +55,7 @@ public final class JwkSetService {
     /**
      * Standard public-key use value for signature keys.
      */
-    private static final String SIGNATURE_USE = "sig";
+    private static final String SIGNATURE_USE = Builder.SIGNATURE;
 
     /**
      * Frozen OpenID Provider signing options.
@@ -119,8 +120,8 @@ public final class JwkSetService {
         try {
             final KeyLoader.PublicRequest request = new KeyLoader.PublicRequest(options.issuer(), SIGNATURE_USE, now);
             resolution = Outcome.mapStage(
-                    () -> services.keyLoader().loadPublic(request, context, timeout),
-                    loaded -> services.keyParser().parsePublic(request, loaded));
+                    () -> services.keyLoader().loadPublic(services.registration(), request, context, timeout),
+                    loaded -> services.keyParser().parsePublic(services.registration(), request, loaded));
         } catch (RuntimeException exception) {
             return completed(Outcome.failed(failure(ErrorCode._500, "OpenID Connect public key resolution failed")));
         }
@@ -172,7 +173,7 @@ public final class JwkSetService {
                     throw new ValidateException("OpenID Connect JWK Set contains a non-advertised signing key");
                 }
                 if (!key.keyOperations().isEmpty()
-                        && (key.keyOperations().size() != 1 || !key.keyOperations().contains("verify"))) {
+                        && (key.keyOperations().size() != 1 || !key.keyOperations().contains(Builder.VERIFY))) {
                     throw new ValidateException("OpenID Connect public JWK key_ops must contain only verify");
                 }
                 final Jwk publicKey = key.publicOnly();

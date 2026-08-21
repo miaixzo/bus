@@ -21,6 +21,7 @@ package org.miaixz.bus.auth.protocol.oidc.client;
 
 import java.util.Set;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.Options;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientOptions;
@@ -136,7 +137,7 @@ public record OpenIdClientOptions(OAuth2ClientOptions oauth2Options, Optional<En
      * @return stable presence label
      */
     private static String present(final Optional<Endpoint> endpoint) {
-        return endpoint.isPresent() ? "[CONFIGURED]" : "[ABSENT]";
+        return endpoint.isPresent() ? Builder.CONFIGURED_VALUE : Builder.ABSENT_VALUE;
     }
 
     /**

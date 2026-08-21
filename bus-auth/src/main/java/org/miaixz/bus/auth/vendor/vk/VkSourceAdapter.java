@@ -25,8 +25,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.AuthorizationClient;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientOptions;
@@ -37,7 +38,7 @@ import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -77,12 +78,12 @@ public final class VkSourceAdapter implements VendorAdapter {
     /**
      * Maximum accepted VK JSON response size.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum accepted VK JSON nesting depth.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 64;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
 
     /**
      * Registered Source identifier copied into verified identities.
@@ -457,12 +458,12 @@ public final class VkSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("VK capability is not declared by the selected manifest"));
         }
-        if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -565,7 +566,7 @@ public final class VkSourceAdapter implements VendorAdapter {
      * @return standard token response with VK user_id retained as an extension
      */
     private CompletionStage<Outcome<TokenResponse>> token(final TokenRequest request, final Timeout.Budget timeout) {
-        final List<Parameter> parameters;
+        final List<NameValue> parameters;
         try {
             parameters = tokenParameters(request);
         } catch (RuntimeException cause) {
@@ -602,7 +603,7 @@ public final class VkSourceAdapter implements VendorAdapter {
      * @return immutable ordered VK form parameters
      * @throws ValidateException if grant type, registered values, or extension cardinality is invalid
      */
-    private List<Parameter> tokenParameters(final TokenRequest request) {
+    private List<NameValue> tokenParameters(final TokenRequest request) {
         Assert.notNull(request, "VK token request must not be null");
         TokenBinding.decode(request.extensions());
         if (request.grant() instanceof AuthorizationCodeGrant grant) {
@@ -613,8 +614,8 @@ public final class VkSourceAdapter implements VendorAdapter {
             return tokenEncoder.encode(request);
         }
         if (request.grant() instanceof RefreshTokenGrant) {
-            final List<Parameter> result = new ArrayList<>(tokenEncoder.encode(request));
-            result.add(new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()));
+            final List<NameValue> result = new ArrayList<>(tokenEncoder.encode(request));
+            result.add(new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()));
             return List.copyOf(result);
         }
         throw new ValidateException("VK token endpoint supports authorization_code and refresh_token grants only");
@@ -689,7 +690,7 @@ public final class VkSourceAdapter implements VendorAdapter {
             return failed(ErrorCode._502, "VK token endpoint returned invalid error members");
         }
         final Map<String, JsonValue> details = Map
-                .of("oauth_error", new JsonValue.StringValue(error), "status", number(status));
+                .of(Builder.OAUTH_ERROR, new JsonValue.StringValue(error), "status", number(status));
         return status >= Http.Status.INTERNAL_SERVER_ERROR || status == Http.Status.TOO_MANY_REQUESTS
                 ? failed(
                         status == Http.Status.TOO_MANY_REQUESTS ? ErrorCode._429 : ErrorCode._502,
@@ -715,8 +716,8 @@ public final class VkSourceAdapter implements VendorAdapter {
             try {
                 body = formCodec.encode(
                         List.of(
-                                new Parameter(OAuth2.Parameters.ACCESS_TOKEN, token.accessToken()),
-                                new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId())));
+                                new NameValue(OAuth2.Parameters.ACCESS_TOKEN, token.accessToken()),
+                                new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId())));
                 final var endpoint = variant.targets().resolve(options).userInfo().getOrNull();
                 try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
                         .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
@@ -822,8 +823,8 @@ public final class VkSourceAdapter implements VendorAdapter {
             try {
                 body = formCodec.encode(
                         List.of(
-                                new Parameter(OAuth2.Parameters.ACCESS_TOKEN, request.token()),
-                                new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId())));
+                                new NameValue(OAuth2.Parameters.ACCESS_TOKEN, request.token()),
+                                new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId())));
                 final var endpoint = variant.targets().resolve(options).revocation().getOrNull();
                 try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
                         .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)

@@ -26,6 +26,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Clock;
 
@@ -34,11 +36,10 @@ import org.miaixz.bus.fabric.Clock;
  * <p>
  * This class owns no cache implementation, connection, serialization, expiration scheduler, or atomic algorithm. It
  * only isolates one authentication purpose with a fixed key namespace and delegates every operation to {@link CacheX}.
- * Purpose-specific public caches expose this view with their exact immutable value type.
- * Every value is stored inside a versioned {@link Envelope}; the complete envelope graph must be serializable by the
- * configured bus-cache serializer and must produce a stable representation when the same immutable value is encoded
- * again, because distributed {@link CacheX#replace(Object, Object, Object, long)} implementations compare the encoded
- * expected value atomically.
+ * Purpose-specific public caches expose this view with their exact immutable value type. Every value is stored inside a
+ * versioned {@link Envelope}; the complete envelope graph must be serializable by the configured bus-cache serializer
+ * and must produce a stable representation when the same immutable value is encoded again, because distributed
+ * {@link CacheX#replace(Object, Object, Object, long)} implementations compare the encoded expected value atomically.
  * The ordinary {@code deployment:auth:purpose:key} prefix intentionally contains no Redis hash tag: every operation is
  * single-key atomic, so forcing a complete deployment into one cluster slot would create a hotspot without providing a
  * stronger transaction boundary.
@@ -63,6 +64,10 @@ public abstract class AuthCache<V> {
      * Runtime value class expected after backend decoding.
      */
     private final Class<V> valueType;
+
+    /**
+     * Shared runtime clock used to convert absolute expiry instants into backend TTL values.
+     */
     private final Clock clock;
 
     /**
@@ -80,11 +85,11 @@ public abstract class AuthCache<V> {
         final String deploymentName = Assert
                 .notBlank(deployment, "Authentication cache deployment namespace must not be blank");
         Assert.isFalse(
-                deploymentName.indexOf('{') >= 0 || deploymentName.indexOf('}') >= 0,
+                deploymentName.indexOf(Symbol.C_BRACE_LEFT) >= 0 || deploymentName.indexOf(Symbol.C_BRACE_RIGHT) >= 0,
                 "Authentication cache deployment namespace must not contain Redis hash-tag braces");
         final String purposeName = Assert.notBlank(purpose, "Authentication cache purpose must not be blank");
         Assert.isFalse(
-                purposeName.indexOf('{') >= 0 || purposeName.indexOf('}') >= 0,
+                purposeName.indexOf(Symbol.C_BRACE_LEFT) >= 0 || purposeName.indexOf(Symbol.C_BRACE_RIGHT) >= 0,
                 "Authentication cache purpose must not contain Redis hash-tag braces");
         this.namespace = deploymentName + ":auth:" + purposeName + ":";
         this.valueType = Assert.notNull(valueType, "Authentication cache value type must not be null");
@@ -156,7 +161,7 @@ public abstract class AuthCache<V> {
     private String key(final String key) {
         final String localKey = Assert.notBlank(key, "Authentication cache key must not be blank");
         Assert.isFalse(
-                localKey.indexOf('{') >= 0 || localKey.indexOf('}') >= 0,
+                localKey.indexOf(Symbol.C_BRACE_LEFT) >= 0 || localKey.indexOf(Symbol.C_BRACE_RIGHT) >= 0,
                 "Authentication cache key must not contain Redis hash-tag braces");
         return namespace + localKey;
     }
@@ -174,6 +179,13 @@ public abstract class AuthCache<V> {
                 Assert.notNull(value, "Authentication cache value must not be null"));
     }
 
+    /**
+     * Calculates the positive backend TTL for an expiring authentication value.
+     *
+     * @param value immutable value carrying an absolute expiry instant
+     * @return remaining lifetime in milliseconds
+     * @throws ValidateException if the value has already expired
+     */
     private long ttl(final ExpiringValue<V> value) {
         final long millis = Duration.between(clock.now(), value.expiresAt()).toMillis();
         if (millis <= 0L) {
@@ -182,6 +194,13 @@ public abstract class AuthCache<V> {
         return millis;
     }
 
+    /**
+     * Validates a backend envelope and restores its purpose-specific value.
+     *
+     * @param stored object returned by the shared cache backend
+     * @return typed expiring value, or {@code null} when no entry exists
+     * @throws ValidateException if the stored envelope has an incompatible version, purpose, or value type
+     */
     private ExpiringValue<V> value(final Object stored) {
         if (stored == null) {
             return null;
@@ -197,13 +216,18 @@ public abstract class AuthCache<V> {
 
     /**
      * Stable versioned boundary stored through the bus-cache serializer.
+     *
+     * @param version   envelope schema version
+     * @param purpose   complete purpose namespace that owns the entry
+     * @param valueType fully qualified immutable value type name
+     * @param value     expiring authentication value serialized by bus-cache
      */
     public record Envelope(int version, String purpose, String valueType, Object value) implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 2898166305821L;
 
-        private static final int VERSION = 1;
+        private static final int VERSION = Normal._1;
 
     }
 

@@ -44,6 +44,7 @@ import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -62,7 +63,7 @@ public final class UserInfoService {
     /**
      * Safe failure-detail member consumed by the RFC 6750 endpoint error mapper.
      */
-    private static final String OAUTH_ERROR = "oauth_error";
+    private static final String OAUTH_ERROR = org.miaixz.bus.auth.Builder.OAUTH_ERROR;
 
     /**
      * Provider identifier used to isolate opaque access-token digests.
@@ -306,6 +307,15 @@ public final class UserInfoService {
                 .thenCompose(authorizationResult -> resolveAuthorized(authorizationResult, entry, context, timeout));
     }
 
+    /**
+     * Validates authoritative authorization state before loading UserInfo claims.
+     *
+     * @param result  authorization cache lookup result
+     * @param entry   validated access-token metadata
+     * @param context invocation context
+     * @param timeout operation budget
+     * @return UserInfo outcome
+     */
     private CompletionStage<Outcome<UserInfoResponse>> resolveAuthorized(
             final AuthorizationResult result,
             final AccessTokenCache.Entry entry,
@@ -334,8 +344,10 @@ public final class UserInfoService {
         final CompletionStage<Outcome<JsonValue.ObjectValue>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.attributeLoader().load(new Subject.Key(entry.subjectId()), context, timeout),
-                    loaded -> services.attributeParser().parse(new Subject.Key(entry.subjectId()), loaded));
+                    () -> services.attributeLoader()
+                            .load(services.registration(), new Subject.Key(entry.subjectId()), context, timeout),
+                    loaded -> services.attributeParser()
+                            .parse(services.registration(), new Subject.Key(entry.subjectId()), loaded));
         } catch (RuntimeException exception) {
             return completed(
                     Outcome.failed(
@@ -446,7 +458,7 @@ public final class UserInfoService {
      * @return SHA-256 hexadecimal cache key
      */
     private String tokenKey(final String token) {
-        return Builder.sha256Hex(providerId + '\0' + token);
+        return Builder.sha256Hex(providerId + Symbol.C_NUL + token);
     }
 
     /**
@@ -460,6 +472,12 @@ public final class UserInfoService {
 
     }
 
+    /**
+     * Carries an authorization cache lookup and asynchronous failure.
+     *
+     * @param value   stored authorization state or {@code null}
+     * @param failure asynchronous failure or {@code null}
+     */
     private record AuthorizationResult(ExpiringValue<AuthorizationCache.Entry> value, Throwable failure) {
 
     }

@@ -24,6 +24,7 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Outcome;
+import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.shared.SecretLease;
 
@@ -33,14 +34,30 @@ import org.miaixz.bus.auth.shared.SecretLease;
 @FunctionalInterface
 public interface SecretLoader {
 
+    /**
+     * Loads a fresh secret lease within the exact Source registration scope.
+     *
+     * @param registration exact Source registration requesting the secret
+     * @param reference    exact project credential reference
+     * @param context      immutable non-secret invocation context
+     * @param timeout      shared end-to-end operation budget
+     * @return asynchronous project loading outcome
+     */
     CompletionStage<Outcome<Record>> load(
+            Registration.SourceEntry registration,
             Credential.Reference reference,
             Context context,
             Timeout.Budget timeout);
 
     /**
      * Loaded secret lease paired with its exact external reference.
+     *
+     * @param sourceId  exact Source identifier that owns the returned data
+     * @param reference exact credential reference resolved by the project
+     * @param lease     fresh closeable secret lease
      */
-    record Record(Credential.Reference reference, SecretLease lease) {
+    record Record(String sourceId, Credential.Reference reference, SecretLease lease) {
+
     }
+
 }

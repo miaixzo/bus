@@ -23,6 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
@@ -365,7 +366,8 @@ public final class Jwk {
         }
         for (int index = 0; index < value.length(); index++) {
             final char character = value.charAt(index);
-            if (!(character >= 'A' && character <= 'Z') && !(character >= 'a' && character <= 'z')
+            if (!(character >= Symbol.C_UPPER_A && character <= Symbol.C_UPPER_Z)
+                    && !(character >= Symbol.C_LOWER_A && character <= Symbol.C_LOWER_Z)
                     && !(character >= Symbol.C_ZERO && character <= Symbol.C_NINE) && character != Symbol.C_MINUS
                     && character != Symbol.C_UNDERLINE) {
                 throw new ValidateException("JWK Base64URL value contains an invalid character");
@@ -391,10 +393,10 @@ public final class Jwk {
                 if (index < value.length() - 2 || padding > 2) {
                     return false;
                 }
-            } else if (padding != 0
-                    || !(character >= 'A' && character <= 'Z') && !(character >= 'a' && character <= 'z')
-                            && !(character >= Symbol.C_ZERO && character <= Symbol.C_NINE) && character != Symbol.C_PLUS
-                            && character != Symbol.C_SLASH) {
+            } else if (padding != 0 || !(character >= Symbol.C_UPPER_A && character <= Symbol.C_UPPER_Z)
+                    && !(character >= Symbol.C_LOWER_A && character <= Symbol.C_LOWER_Z)
+                    && !(character >= Symbol.C_ZERO && character <= Symbol.C_NINE) && character != Symbol.C_PLUS
+                    && character != Symbol.C_SLASH) {
                 return false;
             }
         }
@@ -668,7 +670,7 @@ public final class Jwk {
                 if (!unique.add(value)) {
                     throw new ValidateException("JWK key_ops parameter must not contain duplicates");
                 }
-                if (use.filter("sig"::equals).isPresent() && encryptionOperation(value)
+                if (use.filter(Builder.SIGNATURE::equals).isPresent() && encryptionOperation(value)
                         || use.filter("enc"::equals).isPresent() && signatureOperation(value)) {
                     throw new ValidateException("JWK use and key_ops parameters are inconsistent");
                 }
@@ -683,7 +685,7 @@ public final class Jwk {
          * @return {@code true} for sign or verify
          */
         private static boolean signatureOperation(final String value) {
-            return "sign".equals(value) || "verify".equals(value);
+            return "sign".equals(value) || Builder.VERIFY.equals(value);
         }
 
         /**

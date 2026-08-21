@@ -30,15 +30,16 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
 import org.miaixz.bus.auth.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
@@ -46,6 +47,7 @@ import org.miaixz.bus.auth.worker.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -69,7 +71,7 @@ public final class AlipaySourceAdapter implements VendorAdapter {
     /**
      * Maximum nesting accepted for one Alipay gateway JSON document.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 64;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
     /**
      * Alipay gateway timestamp formatter.
      */
@@ -258,12 +260,12 @@ public final class AlipaySourceAdapter implements VendorAdapter {
         Assert.notNull(timeout, "Alipay time budget must not be null");
         if (!manifest().capabilities().contains(capability))
             return missing();
-        if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -287,11 +289,11 @@ public final class AlipaySourceAdapter implements VendorAdapter {
         if (redirect.getHost() == null || Protocol.HOST_LOCAL.equalsIgnoreCase(redirect.getHost())) {
             return completed(rejected("Alipay redirect URI must use a registered non-local host"));
         }
-        final List<Parameter> query = List.of(
-                new Parameter("app_id", options.clientId()),
-                new Parameter(OAuth2.Parameters.SCOPE, "auth_user"),
-                new Parameter(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()),
-                new Parameter(OAuth2.Parameters.STATE, initiation.state()));
+        final List<NameValue> query = List.of(
+                new NameValue("app_id", options.clientId()),
+                new NameValue(OAuth2.Parameters.SCOPE, "auth_user"),
+                new NameValue(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()),
+                new NameValue(OAuth2.Parameters.STATE, initiation.state()));
         final String base = variant.targets().resolve(options).authorization().getOrNull().url().toString();
         return completed(
                 Outcome.succeeded(
@@ -411,11 +413,13 @@ public final class AlipaySourceAdapter implements VendorAdapter {
             final Context context,
             final Timeout.Budget timeout) {
         final Instant now = timeout.clock().now();
-        final KeyLoader.Request query = new KeyLoader.Request(AUTHORITY, Optional.of(options.credential().id()), "sig",
-                Algorithm.SHA256WITHRSA.getValue(), now);
-        return Outcome.mapStage(
-                () -> services.keyLoader().load(query, context, timeout),
-                loaded -> services.keyParser().parse(query, loaded)).thenCompose(resolved -> switch (resolved) {
+        final KeyLoader.Request query = new KeyLoader.Request(AUTHORITY, Optional.of(options.credential().id()),
+                Builder.SIGNATURE, Algorithm.SHA256WITHRSA.getValue(), now);
+        return Outcome
+                .mapStage(
+                        () -> services.keyLoader().load(services.registration(), query, context, timeout),
+                        loaded -> services.keyParser().parse(services.registration(), query, loaded))
+                .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<KeyMaterial> success -> send(
                             method,
                             business,
@@ -486,8 +490,8 @@ public final class AlipaySourceAdapter implements VendorAdapter {
     private Outcome<byte[]> request(final Map<String, String> fields, final Timeout.Budget timeout) {
         byte[] body = null;
         try {
-            final List<Parameter> parameters = new ArrayList<>(fields.size());
-            fields.forEach((name, value) -> parameters.add(new Parameter(name, value)));
+            final List<NameValue> parameters = new ArrayList<>(fields.size());
+            fields.forEach((name, value) -> parameters.add(new NameValue(name, value)));
             body = formCodec.encode(parameters);
             final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
             try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
@@ -529,11 +533,13 @@ public final class AlipaySourceAdapter implements VendorAdapter {
             final Timeout.Budget timeout) {
         final Instant now = timeout.clock().now();
         final KeyLoader.Request query = new KeyLoader.Request(AUTHORITY, Optional.of(options.verificationKeyId()),
-                "sig", Algorithm.SHA256WITHRSA.getValue(), now);
+                Builder.SIGNATURE, Algorithm.SHA256WITHRSA.getValue(), now);
         try {
-            return Outcome.mapStage(
-                    () -> services.keyLoader().load(query, context, timeout),
-                    loaded -> services.keyParser().parse(query, loaded)).handle((resolved, cause) -> {
+            return Outcome
+                    .mapStage(
+                            () -> services.keyLoader().load(services.registration(), query, context, timeout),
+                            loaded -> services.keyParser().parse(services.registration(), query, loaded))
+                    .handle((resolved, cause) -> {
                         try {
                             if (cause != null)
                                 return failed("Alipay verification key resolution failed");

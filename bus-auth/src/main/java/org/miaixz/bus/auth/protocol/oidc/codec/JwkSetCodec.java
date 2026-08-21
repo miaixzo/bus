@@ -22,11 +22,11 @@ package org.miaixz.bus.auth.protocol.oidc.codec;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.shared.jose.Jwk;
 import org.miaixz.bus.auth.shared.jose.JwkSet;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -53,7 +53,7 @@ public final class JwkSetCodec {
     /**
      * Maximum accepted public JWK Set document size.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Externally selected provider-neutral JSON implementation.

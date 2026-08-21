@@ -17,23 +17,27 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.auth.codec;
+package org.miaixz.bus.auth.registry;
 
-import org.miaixz.bus.core.codec.Decoder;
-import org.miaixz.bus.core.codec.Encoder;
+import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.core.lang.Assert;
 
 /**
- * Combines the shared Bus encoder and decoder contracts for one exact bidirectional representation.
- * <p>
- * Implementations preserve a fixed relationship between domain type {@code I} and encoded type {@code O}. They do not
- * define a generic protocol request, HTTP envelope, JSON tree, Base64 implementation, or alternate failure wrapper;
- * invalid input is reported through the existing Bus validation exception boundary.
- * </p>
+ * Carries one field-level invariant violation without assigning registration ownership or processing stage.
  *
- * @param <I> decoded domain or protocol value type
- * @param <O> encoded representation type
- * @author Kimi Liu
+ * @param field       violated registration field name
+ * @param error       stable validation error classification
+ * @param description safe human-readable violation description
  */
-public interface Codec<I, O> extends Encoder<I, O>, Decoder<O, I> {
+record FieldViolation(String field, Errors error, String description) {
+
+    /**
+     * Validates one complete field-level invariant violation.
+     */
+    FieldViolation {
+        Assert.notBlank(field, "Field violation name must not be blank");
+        Assert.notNull(error, "Field violation error must not be null");
+        Assert.notBlank(description, "Field violation description must not be blank");
+    }
 
 }

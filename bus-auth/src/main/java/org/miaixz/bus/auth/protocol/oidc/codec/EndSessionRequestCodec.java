@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oidc.EndSessionRequest;
@@ -165,13 +165,13 @@ public final class EndSessionRequestCodec {
             return redirect;
         }
         final QueryCodec codec = new QueryCodec();
-        final List<Parameter> existing = uri.getRawQuery() == null ? List.of() : codec.decode(uri.getRawQuery());
+        final List<NameValue> existing = uri.getRawQuery() == null ? List.of() : codec.decode(uri.getRawQuery());
         if (existing.stream().anyMatch(parameter -> OAuth2.Parameters.STATE.equals(parameter.name()))) {
             throw new ValidateException("OpenID Connect post-logout redirect URI already contains state");
         }
         final String separator = uri.getRawQuery() == null ? Symbol.QUESTION_MARK
                 : uri.getRawQuery().isEmpty() || uri.getRawQuery().endsWith(Symbol.AND) ? Normal.EMPTY : Symbol.AND;
-        return redirect + separator + codec.encode(List.of(new Parameter(OAuth2.Parameters.STATE, state)));
+        return redirect + separator + codec.encode(List.of(new NameValue(OAuth2.Parameters.STATE, state)));
     }
 
     /**

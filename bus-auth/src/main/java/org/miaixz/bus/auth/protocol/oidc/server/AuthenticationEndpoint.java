@@ -41,13 +41,33 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  */
 public final class AuthenticationEndpoint {
 
+    /**
+     * Strict decoder for the incoming OpenID Connect Authentication Request.
+     */
     private final AuthenticationRequestDecoder decoder;
+
+    /**
+     * Typed service that validates and authorizes the decoded request.
+     */
     private final AuthenticationService service;
+
+    /**
+     * Encoder for successful OAuth authorization endpoint responses.
+     */
     private final AuthorizationResponseEncoder encoder;
+
+    /**
+     * Mapper for safe malformed-request and authorization error responses.
+     */
     private final OAuth2ErrorMapper errorMapper;
 
     /**
      * Creates the complete OpenID Connect authorization endpoint adapter.
+     *
+     * @param decoder     strict Authentication Request decoder
+     * @param service     typed OpenID Connect authentication service
+     * @param encoder     successful authorization response encoder
+     * @param errorMapper safe OAuth authorization error mapper
      */
     public AuthenticationEndpoint(final AuthenticationRequestDecoder decoder, final AuthenticationService service,
             final AuthorizationResponseEncoder encoder, final OAuth2ErrorMapper errorMapper) {
@@ -59,6 +79,11 @@ public final class AuthenticationEndpoint {
 
     /**
      * Decodes, authorizes, and encodes one OpenID Connect authorization endpoint request.
+     *
+     * @param request incoming authorization endpoint HTTP request
+     * @param context immutable invocation context containing authenticated subject state
+     * @param timeout shared end-to-end operation budget
+     * @return stage containing the complete HTTP response
      */
     public CompletionStage<HttpResponse> handle(
             final HttpRequest request,
@@ -74,12 +99,13 @@ public final class AuthenticationEndpoint {
             return CompletableFuture.completedFuture(errorMapper.authorizationMalformed(request));
         }
         return service.authorize(decoded, context, timeout).thenApply(outcome -> switch (outcome) {
-            case Outcome.Succeeded<AuthorizationResponse> success -> encoder.encode(request,
-                    decoded.authorizationRequest().redirectUri().getOrNull(), success.value());
-            case Outcome.Rejected<AuthorizationResponse> rejected -> errorMapper.authorization(request,
-                    decoded.authorizationRequest(), rejected.failure());
-            case Outcome.Failed<AuthorizationResponse> failed -> errorMapper.authorization(request,
-                    decoded.authorizationRequest(), failed.failure());
+            case Outcome.Succeeded<AuthorizationResponse> success -> encoder
+                    .encode(request, decoded.authorizationRequest().redirectUri().getOrNull(), success.value());
+            case Outcome.Rejected<AuthorizationResponse> rejected -> errorMapper
+                    .authorization(request, decoded.authorizationRequest(), rejected.failure());
+            case Outcome.Failed<AuthorizationResponse> failed -> errorMapper
+                    .authorization(request, decoded.authorizationRequest(), failed.failure());
         });
     }
+
 }

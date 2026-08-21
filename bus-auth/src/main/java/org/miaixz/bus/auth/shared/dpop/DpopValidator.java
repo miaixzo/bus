@@ -160,8 +160,8 @@ public final class DpopValidator {
                 throw new ValidateException("DPoP public key does not match the access-token confirmation");
             }
         } finally {
-            Arrays.fill(expectedCharacters, '\0');
-            Arrays.fill(presentedCharacters, '\0');
+            Arrays.fill(expectedCharacters, Symbol.C_NUL);
+            Arrays.fill(presentedCharacters, Symbol.C_NUL);
         }
     }
 

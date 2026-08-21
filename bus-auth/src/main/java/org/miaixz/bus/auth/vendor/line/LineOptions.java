@@ -24,6 +24,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.protocol.oauth2.Scope;
 import org.miaixz.bus.auth.vendor.Vendor;
@@ -139,8 +140,7 @@ public record LineOptions(Vendor.Id vendor, Vendor.Variant variant, String clien
      */
     @Override
     public String toString() {
-        return "LineOptions[vendor=" + vendor + ", variant=" + variant
-                + ", clientId=[REDACTED], credential=[REDACTED], redirectUri=[REDACTED], scopes=" + scopes
+        return "LineOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS + scopes
                 + Symbol.C_BRACKET_RIGHT;
     }
 

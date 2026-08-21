@@ -95,7 +95,27 @@ public record WorkerSlots(Set<Slot> slots) {
      * Identifies one project integration slot visible through {@link WorkerSet}.
      */
     public enum Slot {
-        BINDING, CONSUMER, SECRET, CREDENTIAL, KEY, CERTIFICATE, ATTRIBUTE, RESOURCE, CONSENT, SESSION
+        /** Typed project service binding. */
+        BINDING,
+        /** Protocol consumer metadata. */
+        CONSUMER,
+        /** Secret material loading. */
+        SECRET,
+        /** Mutable credential persistence. */
+        CREDENTIAL,
+        /** Cryptographic key material. */
+        KEY,
+        /** Certificate chain and trust roots. */
+        CERTIFICATE,
+        /** Subject attribute loading. */
+        ATTRIBUTE,
+        /** Protected-resource metadata. */
+        RESOURCE,
+        /** Consent interaction and persistence. */
+        CONSENT,
+        /** Authentication Session integration. */
+        SESSION
+
     }
 
 }

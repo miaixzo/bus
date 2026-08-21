@@ -27,6 +27,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationResponseDecoder;
@@ -88,12 +89,12 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
     /**
      * Maximum response body accepted from any WeChat endpoint.
      */
-    private static final long MAXIMUM_RESPONSE_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_RESPONSE_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum JSON nesting accepted from WeChat endpoints.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 32;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._32;
 
     /**
      * Registered namespace used to isolate replay and browser correlation keys.
@@ -496,8 +497,9 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
     private static <T> Outcome<T> oauthError(final AuthorizationResponseDecoder.Error error) {
         return Outcome.rejected(
                 new Outcome.Failure(ErrorCode._400, "WeChat authorization endpoint returned a standard error",
-                        new JsonValue.ObjectValue(
-                                Map.of("oauth_error", new JsonValue.StringValue(error.response().error().value())))));
+                        new JsonValue.ObjectValue(Map.of(
+                                Builder.OAUTH_ERROR,
+                                new JsonValue.StringValue(error.response().error().value())))));
     }
 
     /**
@@ -549,7 +551,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
         try {
             return new String(material);
         } finally {
-            Arrays.fill(material, '\0');
+            Arrays.fill(material, Symbol.C_NUL);
         }
     }
 
@@ -652,14 +654,12 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("WeChat capability is not declared by the selected variant"));
         }
-        if (!WeChatManifest.MINI.equals(options.variant())
-                && capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (!WeChatManifest.MINI.equals(options.variant()) && capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (!WeChatManifest.MINI.equals(options.variant())
-                && capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (!WeChatManifest.MINI.equals(options.variant()) && capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::browserIdentity, context, timeout),
                     capability.responseType());
@@ -667,9 +667,8 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
         if (standardAdapter.manifest().capabilities().contains(capability)) {
             return standardAdapter.invoke(capability, request, context, timeout);
         }
-        if (WeChatManifest.MINI.equals(options.variant())
-                && capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.OneTimeCode oneTimeCode
+        if (WeChatManifest.MINI.equals(options.variant()) && capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.OneTimeCode oneTimeCode
                 && sourceId.equals(oneTimeCode.sourceId())) {
             return narrow(miniProgram(oneTimeCode.code(), context, timeout), capability.responseType());
         }
@@ -1423,7 +1422,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @param timeout shared end-to-end budget
      * @return completed direct Source initiation
      */
-    private CompletionStage<Outcome<SourceAuthentication.Stage>> miniProgram(
+    private CompletionStage<Outcome<SourceWorkflow.Stage>> miniProgram(
             final String code,
             final Context context,
             final Timeout.Budget timeout) {
@@ -1461,14 +1460,14 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @param timeout shared end-to-end budget
      * @return completed direct Source initiation
      */
-    private CompletionStage<Outcome<SourceAuthentication.Stage>> codeSession(
+    private CompletionStage<Outcome<SourceWorkflow.Stage>> codeSession(
             final String code,
             final SecretLease secret,
             final Timeout.Budget timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try (secret) {
                 if (timeout.expired()) {
-                    return WeChatAdapterSupport.<SourceAuthentication.Stage>failed(
+                    return WeChatAdapterSupport.<SourceWorkflow.Stage>failed(
                             ErrorCode._408,
                             "WeChat Mini Program request has no remaining time budget");
                 }
@@ -1481,15 +1480,16 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
                         .execute()) {
                     final Outcome<ExternalIdentity> identity = decodeMiniProgram(response, timeout);
                     return switch (identity) {
-                        case Outcome.Succeeded<ExternalIdentity> success -> Outcome.succeeded(
-                                new SourceAuthentication.Stage.Completed(success.value()));
+                        case Outcome.Succeeded<ExternalIdentity> success -> Outcome
+                                .succeeded(new SourceWorkflow.Stage.Completed(success.value()));
                         case Outcome.Rejected<ExternalIdentity> rejected -> Outcome.rejected(rejected.failure());
                         case Outcome.Failed<ExternalIdentity> failed -> Outcome.failed(failed.failure());
                     };
                 }
             } catch (RuntimeException cause) {
-                return WeChatAdapterSupport
-                        .<SourceAuthentication.Stage>failed(ErrorCode._502, "WeChat Mini Program request failed");
+                return WeChatAdapterSupport.<SourceWorkflow.Stage>failed(
+                        ErrorCode._502,
+                        "WeChat Mini Program request failed");
             }
         }, services.executor());
     }
@@ -1531,8 +1531,8 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
     private CompletionStage<Outcome<SecretLease>> resolve(final Context context, final Timeout.Budget timeout) {
         try {
             final CompletionStage<Outcome<SecretLease>> stage = Outcome.mapStage(
-                    () -> services.secretLoader().load(options.credential(), context, timeout),
-                    loaded -> services.secretParser().parse(options.credential(), loaded));
+                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
             if (stage == null) {
                 return completed(failed(ErrorCode._502, "WeChat client-secret loader returned no stage"));
             }

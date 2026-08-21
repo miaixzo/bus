@@ -216,7 +216,8 @@ public record IdTokenClaims(String issuer, String subject, List<String> audience
         if (present != null) {
             for (int index = 0; index < present.length(); index++) {
                 final char character = present.charAt(index);
-                if (!((character >= 'A' && character <= 'Z') || (character >= 'a' && character <= 'z')
+                if (!((character >= Symbol.C_UPPER_A && character <= Symbol.C_UPPER_Z)
+                        || (character >= Symbol.C_LOWER_A && character <= Symbol.C_LOWER_Z)
                         || (character >= Symbol.C_ZERO && character <= Symbol.C_NINE) || character == Symbol.C_MINUS
                         || character == Symbol.C_UNDERLINE)) {
                     throw new ValidateException(label + " must use unpadded base64url encoding");

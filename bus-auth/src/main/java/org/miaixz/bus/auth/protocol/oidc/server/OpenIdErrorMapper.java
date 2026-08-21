@@ -21,6 +21,7 @@ package org.miaixz.bus.auth.protocol.oidc.server;
 
 import java.util.Set;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
@@ -46,7 +47,7 @@ public final class OpenIdErrorMapper {
     /**
      * Failure detail member carrying one registered OAuth bearer error.
      */
-    private static final String OAUTH_ERROR = "oauth_error";
+    private static final String OAUTH_ERROR = Builder.OAUTH_ERROR;
 
     /**
      * Bearer errors allowed at the UserInfo protected-resource boundary.

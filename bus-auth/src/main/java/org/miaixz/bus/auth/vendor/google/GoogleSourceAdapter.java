@@ -27,10 +27,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.guard.IssuerValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
+import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.AuthorizationClient;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2Client;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientOptions;
@@ -48,7 +50,7 @@ import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -94,12 +96,12 @@ public final class GoogleSourceAdapter implements VendorAdapter {
     /**
      * OIDC Discovery extension carrying the RFC 7009 revocation endpoint.
      */
-    private static final String REVOCATION_ENDPOINT = "revocation_endpoint";
+    private static final String REVOCATION_ENDPOINT = OAuth2.Metadata.REVOCATION_ENDPOINT;
 
     /**
      * OIDC Discovery extension carrying the supported PKCE transformation methods.
      */
-    private static final String CODE_CHALLENGE_METHODS = "code_challenge_methods_supported";
+    private static final String CODE_CHALLENGE_METHODS = OAuth2.Metadata.CODE_CHALLENGE_METHODS_SUPPORTED;
 
     /**
      * Discovery extension requiring the RFC 9207 issuer parameter in authorization responses.
@@ -114,12 +116,12 @@ public final class GoogleSourceAdapter implements VendorAdapter {
     /**
      * Maximum bounded JSON document accepted from Google endpoints.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum object and array nesting accepted from Google endpoint JSON.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 16;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._16;
 
     /**
      * Registered Source identifier used for every produced external identity.
@@ -648,12 +650,12 @@ public final class GoogleSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return missing();
         }
-        if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -679,9 +681,11 @@ public final class GoogleSourceAdapter implements VendorAdapter {
         if (!valid(request)) {
             return completed(rejected("Google token request does not match the registered grant contract"));
         }
-        return Outcome.mapStage(
-                        () -> services.secretLoader().load(options.credential(), context, timeout),
-                        loaded -> services.secretParser().parse(options.credential(), loaded))
+        return Outcome
+                .mapStage(
+                        () -> services.secretLoader()
+                                .load(services.registration(), options.credential(), context, timeout),
+                        loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> CompletableFuture.supplyAsync(() -> {
                         try (SecretLease secret = success.value()) {
@@ -800,23 +804,23 @@ public final class GoogleSourceAdapter implements VendorAdapter {
      * @param secret  open Client Secret lease
      * @return immutable ordered form parameters
      */
-    private List<Parameter> tokenParameters(final TokenRequest request, final SecretLease secret) {
-        final ArrayList<Parameter> parameters = new ArrayList<>();
+    private List<NameValue> tokenParameters(final TokenRequest request, final SecretLease secret) {
+        final ArrayList<NameValue> parameters = new ArrayList<>();
         if (request.grant() instanceof AuthorizationCodeGrant grant) {
-            parameters.add(new Parameter(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()));
-            parameters.add(new Parameter(OAuth2.Parameters.CODE, grant.code()));
-            parameters.add(new Parameter(OAuth2.Parameters.REDIRECT_URI, grant.redirectUri().getOrNull()));
-            parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()));
-            parameters.add(new Parameter(OAuth2.Parameters.CODE_VERIFIER, grant.codeVerifier().getOrNull()));
+            parameters.add(new NameValue(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()));
+            parameters.add(new NameValue(OAuth2.Parameters.CODE, grant.code()));
+            parameters.add(new NameValue(OAuth2.Parameters.REDIRECT_URI, grant.redirectUri().getOrNull()));
+            parameters.add(new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()));
+            parameters.add(new NameValue(OAuth2.Parameters.CODE_VERIFIER, grant.codeVerifier().getOrNull()));
         } else if (request.grant() instanceof RefreshTokenGrant grant) {
-            parameters.add(new Parameter(OAuth2.Parameters.GRANT_TYPE, GrantType.REFRESH_TOKEN.value()));
-            parameters.add(new Parameter(OAuth2.Parameters.REFRESH_TOKEN, grant.refreshToken()));
-            grant.scope().ifPresent(scope -> parameters.add(new Parameter(OAuth2.Parameters.SCOPE, scope.format())));
-            parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()));
+            parameters.add(new NameValue(OAuth2.Parameters.GRANT_TYPE, GrantType.REFRESH_TOKEN.value()));
+            parameters.add(new NameValue(OAuth2.Parameters.REFRESH_TOKEN, grant.refreshToken()));
+            grant.scope().ifPresent(scope -> parameters.add(new NameValue(OAuth2.Parameters.SCOPE, scope.format())));
+            parameters.add(new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()));
         } else {
             throw new ValidateException("Google token request uses an unsupported grant");
         }
-        parameters.add(new Parameter(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())));
+        parameters.add(new NameValue(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())));
         return List.copyOf(parameters);
     }
 
@@ -876,7 +880,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
         optionalString(object, OAuth2.Parameters.ERROR_DESCRIPTION);
         optionalString(object, "error_subtype");
         final Map<String, JsonValue> details = Map
-                .of("oauth_error", new JsonValue.StringValue(error.value()), "status", number(status));
+                .of(Builder.OAUTH_ERROR, new JsonValue.StringValue(error.value()), "status", number(status));
         if (status == Http.Status.TOO_MANY_REQUESTS) {
             return failed(ErrorCode._429, "Google token endpoint rate limited the request", details);
         }
@@ -944,10 +948,10 @@ public final class GoogleSourceAdapter implements VendorAdapter {
             if (timeout.expired()) {
                 return failed(ErrorCode._408, "Google revocation has no remaining time budget");
             }
-            final ArrayList<Parameter> parameters = new ArrayList<>();
-            parameters.add(new Parameter("token", request.token()));
+            final ArrayList<NameValue> parameters = new ArrayList<>();
+            parameters.add(new NameValue("token", request.token()));
             request.tokenTypeHint()
-                    .ifPresent(hint -> parameters.add(new Parameter(OAuth2.Parameters.TOKEN_TYPE_HINT, hint)));
+                    .ifPresent(hint -> parameters.add(new NameValue(OAuth2.Parameters.TOKEN_TYPE_HINT, hint)));
             body = formCodec.encode(parameters);
             final var endpoint = variant.targets().resolve(options).revocation().getOrNull();
             try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
@@ -992,7 +996,9 @@ public final class GoogleSourceAdapter implements VendorAdapter {
             if (object.values().size() != 1 || !object.values().containsKey(OAuth2.Parameters.ERROR)) {
                 throw new ValidateException("Google revocation error envelope is invalid");
             }
-            details.put("oauth_error", new JsonValue.StringValue(requiredString(object, OAuth2.Parameters.ERROR)));
+            details.put(
+                    Builder.OAUTH_ERROR,
+                    new JsonValue.StringValue(requiredString(object, OAuth2.Parameters.ERROR)));
         }
         return Map.copyOf(details);
     }
@@ -1067,7 +1073,8 @@ public final class GoogleSourceAdapter implements VendorAdapter {
             return completed(rejected("Google authorization callback is invalid"));
         }
         if (values.failed()) {
-            final Map<String, JsonValue> details = Map.of("oauth_error", new JsonValue.StringValue(values.error()));
+            final Map<String, JsonValue> details = Map
+                    .of(Builder.OAUTH_ERROR, new JsonValue.StringValue(values.error()));
             return completed(
                     Outcome.rejected(
                             new Outcome.Failure(ErrorCode._400,
@@ -1085,9 +1092,11 @@ public final class GoogleSourceAdapter implements VendorAdapter {
         }
         final TokenRequest tokenRequest = new TokenRequest(new AuthorizationCodeGrant(response.code(),
                 options.redirectUri(), Optional.empty(), Optional.of(verifier)), emptyObject());
-        return Outcome.mapStage(
-                        () -> services.secretLoader().load(options.credential(), context, timeout),
-                        loaded -> services.secretParser().parse(options.credential(), loaded))
+        return Outcome
+                .mapStage(
+                        () -> services.secretLoader()
+                                .load(services.registration(), options.credential(), context, timeout),
+                        loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> authenticate(
                             tokenRequest,
@@ -1171,10 +1180,10 @@ public final class GoogleSourceAdapter implements VendorAdapter {
             final Jwk selected = jwkSelector.requireUnique(
                     keys,
                     new JwkSelector.Selection(header.keyId(), JwaAlgorithm.RS256.name(), JwaAlgorithm.Kind.SIGNATURE,
-                            Optional.of("sig"), Optional.of("verify"), Optional.of("RSA")));
+                            Optional.of(Builder.SIGNATURE), Optional.of(Builder.VERIFY), Optional.of("RSA")));
             if (selected.keyId().filter(keyId::equals).isEmpty()
                     || selected.algorithm().filter(JwaAlgorithm.RS256.name()::equals).isEmpty()
-                    || selected.publicKeyUse().filter("sig"::equals).isEmpty()) {
+                    || selected.publicKeyUse().filter(Builder.SIGNATURE::equals).isEmpty()) {
                 throw new ValidateException("Google JWK must explicitly bind kid, alg=RS256, and use=sig");
             }
             key = rsaPublicKey(selected);

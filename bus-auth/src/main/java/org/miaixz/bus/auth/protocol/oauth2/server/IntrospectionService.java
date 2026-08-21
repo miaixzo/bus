@@ -40,6 +40,7 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -143,8 +144,9 @@ public final class IntrospectionService {
         }
         return lookup.handle((stored, thrown) -> new CacheResult(stored, thrown)).thenCompose(result -> {
             if (result.failure() != null) {
-                return completed(Outcome
-                        .<IntrospectionResponse>failed(failure(ErrorCode._500, "OAuth 2.x access token lookup failed")));
+                return completed(
+                        Outcome.<IntrospectionResponse>failed(
+                                failure(ErrorCode._500, "OAuth 2.x access token lookup failed")));
             }
             final ExpiringValue<AccessTokenCache.Entry> stored = result.value();
             final Instant now = timeout.clock().now();
@@ -202,9 +204,15 @@ public final class IntrospectionService {
      * @return SHA-256 hexadecimal cache key
      */
     private String key(final String token) {
-        return Builder.sha256Hex(providerId + '\0' + token);
+        return Builder.sha256Hex(providerId + Symbol.C_NUL + token);
     }
 
+    /**
+     * Captures an access-token cache lookup and any asynchronous dependency failure.
+     *
+     * @param value   cached token validation state, or {@code null}
+     * @param failure asynchronous cache failure, or {@code null}
+     */
     private record CacheResult(ExpiringValue<AccessTokenCache.Entry> value, Throwable failure) {
 
     }

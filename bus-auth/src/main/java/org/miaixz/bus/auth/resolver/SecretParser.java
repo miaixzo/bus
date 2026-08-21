@@ -20,6 +20,7 @@
 package org.miaixz.bus.auth.resolver;
 
 import org.miaixz.bus.auth.Credential;
+import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.worker.SecretLoader;
 import org.miaixz.bus.core.lang.Assert;
@@ -30,12 +31,33 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  */
 public final class SecretParser {
 
-    public SecretLease parse(final Credential.Reference expected, final SecretLoader.Record record) {
+    /** Creates a stateless secret-material parser. */
+    public SecretParser() {
+    }
+
+    /**
+     * Validates Source and credential-reference ownership of a loaded secret lease.
+     *
+     * @param registration exact Source registration that requested the secret
+     * @param expected     exact requested credential reference
+     * @param record       project-loaded secret record
+     * @return validated fresh secret lease
+     */
+    public SecretLease parse(
+            final Registration.SourceEntry registration,
+            final Credential.Reference expected,
+            final SecretLoader.Record record) {
+        final String sourceId = Assert.notNull(registration, "Secret Source registration must not be null").resource()
+                .getId();
         final Credential.Reference reference = Assert.notNull(expected, "Expected secret reference must not be null");
         final SecretLoader.Record loaded = Assert.notNull(record, "Loaded secret record must not be null");
+        if (!sourceId.equals(loaded.sourceId())) {
+            throw new ValidateException("Loaded secret does not belong to the requested Source");
+        }
         if (!reference.equals(loaded.reference())) {
             throw new ValidateException("Loaded secret reference does not match the requested reference");
         }
         return Assert.notNull(loaded.lease(), "Loaded secret lease must not be null");
     }
+
 }

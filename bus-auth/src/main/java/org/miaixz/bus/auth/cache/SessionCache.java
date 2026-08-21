@@ -45,21 +45,43 @@ public final class SessionCache extends AuthCache<Session> {
     /**
      * Creates a Session cache view backed entirely by bus-cache.
      *
-     * @param cache shared bus-cache backend
+     * @param cache      shared bus-cache backend
+     * @param deployment deployment-unique cache namespace
+     * @param clock      shared runtime clock used to derive entry lifetimes
      */
-    public SessionCache(final CacheX<String, Object> cache, final String deployment,
-            final Clock clock) {
+    public SessionCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
         super(cache, deployment, PURPOSE, Session.class, clock);
     }
 
+    /**
+     * Establishes a new Session when absent.
+     *
+     * @param key   Session digest
+     * @param value Session and expiry
+     * @return creation stage
+     */
     public CompletionStage<Boolean> establish(final String key, final ExpiringValue<Session> value) {
         return super.doIssue(key, value);
     }
 
+    /**
+     * Finds current Session state.
+     *
+     * @param key Session digest
+     * @return stored Session stage
+     */
     public CompletionStage<ExpiringValue<Session>> find(final String key) {
         return super.doFind(key);
     }
 
+    /**
+     * Atomically replaces exact Session state.
+     *
+     * @param key      Session digest
+     * @param expected current state
+     * @param update   replacement state
+     * @return replacement stage
+     */
     public CompletionStage<Boolean> refresh(
             final String key,
             final ExpiringValue<Session> expected,
@@ -67,6 +89,12 @@ public final class SessionCache extends AuthCache<Session> {
         return super.doUpdate(key, expected, update);
     }
 
+    /**
+     * Invalidates Session state.
+     *
+     * @param key Session digest
+     * @return removal stage
+     */
     public CompletionStage<Boolean> invalidate(final String key) {
         return super.doRevoke(key);
     }

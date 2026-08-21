@@ -45,8 +45,8 @@ import org.miaixz.bus.auth.shared.jose.JwsService;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
 import org.miaixz.bus.auth.shared.pkce.PkceValidator;
 import org.miaixz.bus.auth.source.DriverServices;
-import org.miaixz.bus.auth.source.SessionCoordinator;
 import org.miaixz.bus.auth.source.SourceDriver;
+import org.miaixz.bus.auth.worker.SessionCoordinator;
 import org.miaixz.bus.auth.worker.SourceWorker;
 import org.miaixz.bus.auth.worker.WorkerSlots;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
@@ -117,6 +117,12 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
         return new Capability.Manifest(capabilities);
     }
 
+    /**
+     * Tests whether an enabled inherited OAuth endpoint accepts a client-secret method.
+     *
+     * @param endpoint optional configured endpoint
+     * @return whether client-secret loading is required
+     */
     private static boolean usesClientSecret(final Endpoint endpoint) {
         return endpoint != null && (endpoint.authentication().contains(Endpoint.Authentication.CLIENT_SECRET_BASIC)
                 || endpoint.authentication().contains(Endpoint.Authentication.CLIENT_SECRET_POST));
@@ -145,10 +151,7 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
         final OAuth2ServerOptions oauth = options.oauth2Options();
         WorkerSlots slots = WorkerSlots.none();
         if (oauth.authorizationEndpoint().isPresent()) {
-            slots = slots.with(
-                    WorkerSlots.Slot.CONSUMER,
-                    WorkerSlots.Slot.CONSENT,
-                    WorkerSlots.Slot.SESSION);
+            slots = slots.with(WorkerSlots.Slot.CONSUMER, WorkerSlots.Slot.CONSENT, WorkerSlots.Slot.SESSION);
         }
         if (oauth.tokenEndpoint().isPresent()) {
             slots = slots.with(
@@ -174,10 +177,7 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
             slots = slots.with(WorkerSlots.Slot.ATTRIBUTE);
         }
         if (options.endSessionEndpoint().isPresent()) {
-            slots = slots.with(
-                    WorkerSlots.Slot.CONSUMER,
-                    WorkerSlots.Slot.KEY,
-                    WorkerSlots.Slot.SESSION);
+            slots = slots.with(WorkerSlots.Slot.CONSUMER, WorkerSlots.Slot.KEY, WorkerSlots.Slot.SESSION);
         }
         return slots;
     }
@@ -206,9 +206,7 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
      * @throws ValidateException        if registration routing, options, or signing policy is invalid
      */
     @Override
-    public SourceWorker compile(
-            final Prepared<OpenIdServerOptions> prepared,
-            final DriverServices services) {
+    public SourceWorker compile(final Prepared<OpenIdServerOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "OpenID Connect Provider preparation must not be null");
         Assert.notNull(services, "OpenID Connect Provider execution services must not be null");
         final Registration.SourceEntry record = prepared.registration();
@@ -239,7 +237,8 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
         final OAuth2ErrorMapper oauthErrorMapper = new OAuth2ErrorMapper(services.jsonProvider());
         final OpenIdErrorMapper openIdErrorMapper = new OpenIdErrorMapper();
         final Map<Capability<?, ?>, EndpointHandler> endpoints = new LinkedHashMap<>();
-        final SessionCoordinator sessions = new SessionCoordinator(source.getId(), services);
+        final SessionCoordinator sessions = new SessionCoordinator(source.getId(), services.sessionCache(),
+                services.sessionWorker());
         if (options.oauth2Options().authorizationEndpoint().isPresent()) {
             final AuthorizationCodeIssuer issuer = new AuthorizationCodeIssuer(source.getId(), options.oauth2Options(),
                     services, redirectUriValidator, scopeValidator);
@@ -326,12 +325,13 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
          */
         private final Capability.Manifest manifest;
 
+        /** Exact endpoint handler indexed by its declared capability. */
         private final Map<Capability<?, ?>, EndpointHandler> endpoints;
 
         /**
          * Creates one compiled OpenID Provider Source runtime from its exact manifest and endpoint handlers.
          *
-         * @param manifest                    endpoint-accurate capability manifest
+         * @param manifest  endpoint-accurate capability manifest
          * @param endpoints endpoint handlers keyed by exact declared capability
          */
         private CompiledServer(final Capability.Manifest manifest,
@@ -397,10 +397,20 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
 
     }
 
+    /** Adapts one compiled HTTP endpoint to the common Source-worker invocation shape. */
     @FunctionalInterface
     private interface EndpointHandler {
 
+        /**
+         * Handles one validated endpoint request.
+         *
+         * @param request incoming HTTP request
+         * @param context immutable invocation context
+         * @param timeout shared operation budget
+         * @return asynchronous HTTP response
+         */
         CompletionStage<HttpResponse> handle(HttpRequest request, Context context, Timeout.Budget timeout);
+
     }
 
 }

@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.fabric.Clock;
 
 /**
  * Stores the server-side validation state of an issued OAuth access token.
@@ -50,21 +50,41 @@ public final class AccessTokenCache extends AuthCache<AccessTokenCache.Entry> {
     /**
      * Creates an access-token cache view backed entirely by bus-cache.
      *
-     * @param cache shared bus-cache backend
+     * @param cache      shared bus-cache backend
+     * @param deployment deployment-unique cache namespace
+     * @param clock      shared runtime clock used to derive entry lifetimes
      */
-    public AccessTokenCache(final CacheX<String, Object> cache, final String deployment,
-            final Clock clock) {
+    public AccessTokenCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
         super(cache, deployment, PURPOSE, Entry.class, clock);
     }
 
+    /**
+     * Stores access-token validation state when the digest key is absent.
+     *
+     * @param key   purpose-local irreversible token digest
+     * @param value validation metadata and its absolute expiry instant
+     * @return stage containing whether the token state was stored
+     */
     public CompletionStage<Boolean> issue(final String key, final ExpiringValue<Entry> value) {
         return super.doIssue(key, value);
     }
 
+    /**
+     * Finds access-token validation state without consuming it.
+     *
+     * @param key purpose-local irreversible token digest
+     * @return stage containing validation state or {@code null}
+     */
     public CompletionStage<ExpiringValue<Entry>> find(final String key) {
         return super.doFind(key);
     }
 
+    /**
+     * Revokes access-token validation state by its digest key.
+     *
+     * @param key purpose-local irreversible token digest
+     * @return stage containing whether token state was removed
+     */
     public CompletionStage<Boolean> revoke(final String key) {
         return super.doRevoke(key);
     }
@@ -72,15 +92,15 @@ public final class AccessTokenCache extends AuthCache<AccessTokenCache.Entry> {
     /**
      * Carries immutable access-token validation metadata.
      *
-     * @param providerId     OAuth Provider identifier
-     * @param clientId       OAuth client identifier
-     * @param subjectId      authorized subject identifier
+     * @param providerId      OAuth Provider identifier
+     * @param clientId        OAuth client identifier
+     * @param subjectId       authorized subject identifier
      * @param authorizationId authoritative authorization identifier shared by derived credentials
-     * @param scope          granted OAuth scope values
-     * @param audience       intended resource server audience values
-     * @param actorSubjectId optional RFC 8693 acting-subject identifier for delegated token exchange
-     * @param confirmation   optional safe sender-constraining key confirmation identifier
-     * @param openIdBinding  optional OpenID Connect authorization context inherited from an authorization code
+     * @param scope           granted OAuth scope values
+     * @param audience        intended resource server audience values
+     * @param actorSubjectId  optional RFC 8693 acting-subject identifier for delegated token exchange
+     * @param confirmation    optional safe sender-constraining key confirmation identifier
+     * @param openIdBinding   optional OpenID Connect authorization context inherited from an authorization code
      * @author Kimi Liu
      */
     public record Entry(String providerId, String clientId, String subjectId, String authorizationId,

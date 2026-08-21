@@ -95,9 +95,7 @@ public final class RadiusServerDriver implements SourceDriver<RadiusServerOption
      * @throws ValidateException        if registration, options, baseline, or binding validation fails
      */
     @Override
-    public SourceWorker compile(
-            final Prepared<RadiusServerOptions> prepared,
-            final DriverServices services) {
+    public SourceWorker compile(final Prepared<RadiusServerOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "RADIUS Provider preparation must not be null");
         Assert.notNull(services, "RADIUS Provider execution services must not be null");
         final Registration.SourceEntry record = prepared.registration();
@@ -116,7 +114,7 @@ public final class RadiusServerDriver implements SourceDriver<RadiusServerOption
         final BindingLoader.Key<RadiusRequestHandler> binding = new BindingLoader.Key<>("radius-request",
                 RadiusRequestHandler.class);
         final RadiusRequestHandler handler = Assert.notNull(
-                services.bindingParser().parse(record, binding, services.bindingLoader().load(record, binding)),
+                binding.require(services.bindingLoader().load(record, binding)),
                 "RADIUS external request handler binding must not be null");
         final RadiusAttributeCodec attributes = new RadiusAttributeCodec();
         final RadiusPacketEncoder encoder = new RadiusPacketEncoder(options.maximumPacketBytes(),

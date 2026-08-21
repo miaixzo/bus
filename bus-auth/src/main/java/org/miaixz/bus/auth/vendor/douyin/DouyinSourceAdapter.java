@@ -28,8 +28,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
 import org.miaixz.bus.auth.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
@@ -82,12 +83,12 @@ public final class DouyinSourceAdapter implements VendorAdapter {
     /**
      * Maximum accepted Douyin JSON document size.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum accepted Douyin JSON nesting depth.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 64;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
 
     /**
      * Registration namespace used only for replay digest isolation.
@@ -453,21 +454,19 @@ public final class DouyinSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("Douyin capability is not declared by the selected variant"));
         }
-        if (DouyinManifest.OPEN.equals(options.variant())
-                && capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (DouyinManifest.OPEN.equals(options.variant()) && capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (DouyinManifest.OPEN.equals(options.variant())
-                && capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (DouyinManifest.OPEN.equals(options.variant()) && capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
         }
         if (DouyinManifest.MINI_PROGRAM.equals(options.variant())
-                && capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.OneTimeCode oneTimeCode
+                && capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.OneTimeCode oneTimeCode
                 && sourceId.equals(oneTimeCode.sourceId())) {
             return narrow(mini(oneTimeCode.code(), context, timeout), capability.responseType());
         }
@@ -491,12 +490,12 @@ public final class DouyinSourceAdapter implements VendorAdapter {
             return completed(failed("Douyin authorization security material violates the open variant manifest"));
         }
         try {
-            final List<Parameter> parameters = List.of(
-                    new Parameter("client_key", options.clientId()),
-                    new Parameter(OAuth2.Parameters.RESPONSE_TYPE, ResponseType.CODE.value()),
-                    new Parameter(OAuth2.Parameters.SCOPE, String.join(Symbol.COMMA, options.scopes())),
-                    new Parameter(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()),
-                    new Parameter(OAuth2.Parameters.STATE, initiation.state()));
+            final List<NameValue> parameters = List.of(
+                    new NameValue("client_key", options.clientId()),
+                    new NameValue(OAuth2.Parameters.RESPONSE_TYPE, ResponseType.CODE.value()),
+                    new NameValue(OAuth2.Parameters.SCOPE, String.join(Symbol.COMMA, options.scopes())),
+                    new NameValue(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()),
+                    new NameValue(OAuth2.Parameters.STATE, initiation.state()));
             final String endpoint = variant.targets().resolve(options).authorization().getOrNull().url().toString();
             return completed(
                     Outcome.succeeded(
@@ -563,11 +562,11 @@ public final class DouyinSourceAdapter implements VendorAdapter {
                 }
                 body = formCodec.encode(
                         List.of(
-                                new Parameter("client_key", options.clientId()),
-                                new Parameter(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())),
-                                new Parameter(OAuth2.Parameters.CODE,
+                                new NameValue("client_key", options.clientId()),
+                                new NameValue(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())),
+                                new NameValue(OAuth2.Parameters.CODE,
                                         Assert.notBlank(code, "Douyin authorization code must not be blank")),
-                                new Parameter(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value())));
+                                new NameValue(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value())));
                 final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
                 try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint)
                         .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
@@ -640,8 +639,8 @@ public final class DouyinSourceAdapter implements VendorAdapter {
                 }
                 body = formCodec.encode(
                         List.of(
-                                new Parameter(OAuth2.Parameters.ACCESS_TOKEN, access.accessToken()),
-                                new Parameter("open_id", access.openId())));
+                                new NameValue(OAuth2.Parameters.ACCESS_TOKEN, access.accessToken()),
+                                new NameValue("open_id", access.openId())));
                 final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
                 try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint)
                         .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
@@ -722,7 +721,7 @@ public final class DouyinSourceAdapter implements VendorAdapter {
      * @param timeout shared end-to-end budget
      * @return completed direct Source initiation
      */
-    private CompletionStage<Outcome<SourceAuthentication.Stage>> mini(
+    private CompletionStage<Outcome<SourceWorkflow.Stage>> mini(
             final String code,
             final Context context,
             final Timeout.Budget timeout) {
@@ -760,7 +759,7 @@ public final class DouyinSourceAdapter implements VendorAdapter {
      * @param timeout shared end-to-end budget
      * @return completed direct Source initiation
      */
-    private CompletionStage<Outcome<SourceAuthentication.Stage>> codeSession(
+    private CompletionStage<Outcome<SourceWorkflow.Stage>> codeSession(
             final String code,
             final SecretLease secret,
             final Timeout.Budget timeout) {
@@ -768,7 +767,7 @@ public final class DouyinSourceAdapter implements VendorAdapter {
             byte[] body = null;
             try (secret) {
                 if (timeout.expired()) {
-                    return DouyinSourceAdapter.<SourceAuthentication.Stage>failed(
+                    return DouyinSourceAdapter.<SourceWorkflow.Stage>failed(
                             "Douyin mini-program request has no remaining time budget");
                 }
                 final Map<String, JsonValue> fields = new LinkedHashMap<>();
@@ -785,14 +784,14 @@ public final class DouyinSourceAdapter implements VendorAdapter {
                         .body(body, MediaType.APPLICATION_JSON_TYPE).execute()) {
                     final Outcome<ExternalIdentity> identity = decodeMini(response, timeout);
                     return switch (identity) {
-                        case Outcome.Succeeded<ExternalIdentity> success -> Outcome.succeeded(
-                                new SourceAuthentication.Stage.Completed(success.value()));
+                        case Outcome.Succeeded<ExternalIdentity> success -> Outcome
+                                .succeeded(new SourceWorkflow.Stage.Completed(success.value()));
                         case Outcome.Rejected<ExternalIdentity> rejected -> Outcome.rejected(rejected.failure());
                         case Outcome.Failed<ExternalIdentity> failed -> Outcome.failed(failed.failure());
                     };
                 }
             } catch (RuntimeException cause) {
-                return DouyinSourceAdapter.<SourceAuthentication.Stage>failed("Douyin mini-program request failed");
+                return DouyinSourceAdapter.<SourceWorkflow.Stage>failed("Douyin mini-program request failed");
             } finally {
                 clear(body);
             }
@@ -856,8 +855,8 @@ public final class DouyinSourceAdapter implements VendorAdapter {
     private CompletionStage<Outcome<SecretLease>> resolve(final Context context, final Timeout.Budget timeout) {
         try {
             final CompletionStage<Outcome<SecretLease>> stage = Outcome.mapStage(
-                    () -> services.secretLoader().load(options.credential(), context, timeout),
-                    loaded -> services.secretParser().parse(options.credential(), loaded));
+                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
             if (stage == null) {
                 return completed(failed("Douyin client-secret loader returned no stage"));
             }

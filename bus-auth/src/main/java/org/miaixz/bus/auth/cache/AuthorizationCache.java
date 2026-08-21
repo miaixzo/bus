@@ -24,6 +24,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.fabric.Clock;
 
@@ -39,20 +40,51 @@ import org.miaixz.bus.fabric.Clock;
  */
 public final class AuthorizationCache extends AuthCache<AuthorizationCache.Entry> {
 
+    /**
+     * Isolates authorization lifecycle state from every other bus-cache consumer.
+     */
     private static final String PURPOSE = "authorization";
 
+    /**
+     * Creates an authorization lifecycle cache view backed entirely by bus-cache.
+     *
+     * @param cache      shared bus-cache backend
+     * @param deployment deployment-unique cache namespace
+     * @param clock      shared runtime clock used to derive entry lifetimes
+     */
     public AuthorizationCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
         super(cache, deployment, PURPOSE, Entry.class, clock);
     }
 
+    /**
+     * Stores a new authoritative authorization lifecycle when its key is absent.
+     *
+     * @param key   Provider-isolated authorization digest
+     * @param value lifecycle state and its absolute expiry instant
+     * @return stage containing whether the lifecycle was stored
+     */
     public CompletionStage<Boolean> issue(final String key, final ExpiringValue<Entry> value) {
         return super.doIssue(key, value);
     }
 
+    /**
+     * Finds an authoritative authorization lifecycle without changing it.
+     *
+     * @param key Provider-isolated authorization digest
+     * @return stage containing lifecycle state or {@code null}
+     */
     public CompletionStage<ExpiringValue<Entry>> find(final String key) {
         return super.doFind(key);
     }
 
+    /**
+     * Atomically replaces an exact authorization lifecycle value.
+     *
+     * @param key      Provider-isolated authorization digest
+     * @param expected exact current lifecycle value
+     * @param update   replacement lifecycle value
+     * @return stage containing whether replacement succeeded
+     */
     public CompletionStage<Boolean> update(
             final String key,
             final ExpiringValue<Entry> expected,
@@ -60,6 +92,12 @@ public final class AuthorizationCache extends AuthCache<AuthorizationCache.Entry
         return super.doUpdate(key, expected, update);
     }
 
+    /**
+     * Removes an authorization lifecycle.
+     *
+     * @param key Provider-isolated authorization digest
+     * @return stage containing whether the lifecycle was removed
+     */
     public CompletionStage<Boolean> delete(final String key) {
         return super.doRevoke(key);
     }
@@ -72,14 +110,24 @@ public final class AuthorizationCache extends AuthCache<AuthorizationCache.Entry
      * @return hexadecimal SHA-256 cache key
      */
     public static String key(final String providerId, final String authorizationId) {
-        return Builder.sha256Hex(Assert.notBlank(providerId, "Authorization Provider id must not be blank") + '\0'
-                + "authorization" + '\0'
-                + Assert.notBlank(authorizationId, "Authorization id must not be blank"));
+        return Builder.sha256Hex(
+                Assert.notBlank(providerId, "Authorization Provider id must not be blank") + Symbol.C_NUL
+                        + "authorization" + Symbol.C_NUL
+                        + Assert.notBlank(authorizationId, "Authorization id must not be blank"));
     }
 
     /** Represents the security state shared by all credentials derived from one authorization. */
     public enum Status {
-        ACTIVE, REVOKED, COMPROMISED
+
+        /** Authorization and all derived credentials remain active. */
+        ACTIVE,
+
+        /** Authorization was explicitly revoked. */
+        REVOKED,
+
+        /** Authorization was invalidated after credential reuse or another compromise signal. */
+        COMPROMISED
+
     }
 
     /**
@@ -91,10 +139,15 @@ public final class AuthorizationCache extends AuthCache<AuthorizationCache.Entry
      */
     public record Entry(String providerId, String clientId, Status status) implements Serializable {
 
+        /**
+         * Validates the minimal authoritative authorization lifecycle state.
+         */
         public Entry {
             Assert.notBlank(providerId, "Authorization Provider id must not be blank");
             Assert.notBlank(clientId, "Authorization client id must not be blank");
             Assert.notNull(status, "Authorization status must not be null");
         }
+
     }
+
 }

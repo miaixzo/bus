@@ -28,6 +28,7 @@ import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Declares the two application-level capabilities used to enter external Source authentication.
@@ -39,7 +40,7 @@ import org.miaixz.bus.core.lang.Optional;
  *
  * @author Kimi Liu
  */
-public final class SourceAuthentication {
+public final class SourceWorkflow {
 
     /**
      * Starts a browser, device, or direct Source authentication interaction.
@@ -56,7 +57,7 @@ public final class SourceAuthentication {
     /**
      * Prevents construction of the capability declaration container.
      */
-    private SourceAuthentication() {
+    private SourceWorkflow() {
         // No initialization required.
     }
 
@@ -71,11 +72,9 @@ public final class SourceAuthentication {
      * @return immutable profile-specific initiation capability
      * @throws IllegalArgumentException if the set is null or empty
      */
-    public static Capability<Request.Start, Stage> initiate(
-            final Set<Capability.Interaction> interactions) {
-        return new Capability<>(Capability.Key.application("source-authentication.initiate"),
-                Request.Start.class, Stage.class,
-                Capability.Direction.SOURCE, interactions, Capability.Security.PUBLIC);
+    public static Capability<Request.Start, Stage> initiate(final Set<Capability.Interaction> interactions) {
+        return new Capability<>(Capability.Key.application("source-authentication.initiate"), Request.Start.class,
+                Stage.class, Capability.Direction.SOURCE, interactions, Capability.Security.PUBLIC);
     }
 
     /**
@@ -94,9 +93,8 @@ public final class SourceAuthentication {
         if (interactions != null && interactions.contains(Capability.Interaction.DIRECT)) {
             throw new IllegalArgumentException("Source authentication completion does not support direct interaction");
         }
-        return new Capability<>(Capability.Key.application("source-authentication.complete"),
-                Request.Completion.class, ExternalIdentity.class,
-                Capability.Direction.SOURCE, interactions, Capability.Security.PUBLIC);
+        return new Capability<>(Capability.Key.application("source-authentication.complete"), Request.Completion.class,
+                ExternalIdentity.class, Capability.Direction.SOURCE, interactions, Capability.Security.PUBLIC);
     }
 
     /**
@@ -131,7 +129,10 @@ public final class SourceAuthentication {
             public BrowserStart {
                 Assert.notBlank(sourceId, "Browser Source id must not be blank");
                 Assert.notNull(callbackTarget, "Browser callback target must not be null");
-                Assert.equals(sourceId, callbackTarget.sourceId(), "Browser callback target must use Source {}",
+                Assert.equals(
+                        sourceId,
+                        callbackTarget.sourceId(),
+                        "Browser callback target must use Source {}",
                         sourceId);
             }
 
@@ -186,10 +187,9 @@ public final class SourceAuthentication {
                 Assert.notBlank(sourceId, "One-time-code Source id must not be blank");
                 Assert.notBlank(code, "One-time authentication code must not be blank");
                 Assert.isFalse(
-                        code.indexOf('\r') >= 0 || code.indexOf('\n') >= 0,
+                        code.indexOf(Symbol.C_CR) >= 0 || code.indexOf(Symbol.C_LF) >= 0,
                         "One-time authentication code must not contain line breaks");
-                Assert.isTrue(code.length() <= 4096,
-                        "One-time authentication code must not exceed 4096 characters");
+                Assert.isTrue(code.length() <= 4096, "One-time authentication code must not exceed 4096 characters");
             }
 
             /** Returns a diagnostic representation that never reveals the single-use code. */
@@ -285,7 +285,8 @@ public final class SourceAuthentication {
                 }
                 verificationUriComplete = Optional.ofNullable(verificationUriComplete.getOrNull());
                 Assert.notNull(interval, "Device authorization polling interval must not be null");
-                Assert.isTrue(!interval.isZero() && !interval.isNegative(),
+                Assert.isTrue(
+                        !interval.isZero() && !interval.isNegative(),
                         "Device authorization polling interval must be positive");
                 Assert.notNull(expiresAt, "Device authorization expiration must not be null");
             }

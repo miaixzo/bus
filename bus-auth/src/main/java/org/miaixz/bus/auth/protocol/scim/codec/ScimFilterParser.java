@@ -234,7 +234,8 @@ public final class ScimFilterParser {
      * @return whether it is A-Z or a-z
      */
     private static boolean alpha(final char value) {
-        return value >= 'A' && value <= 'Z' || value >= 'a' && value <= 'z';
+        return value >= Symbol.C_UPPER_A && value <= Symbol.C_UPPER_Z
+                || value >= Symbol.C_LOWER_A && value <= Symbol.C_LOWER_Z;
     }
 
     /**
@@ -390,7 +391,7 @@ public final class ScimFilterParser {
         if (literal(Normal.FALSE)) {
             return new Filter.BooleanValue(false);
         }
-        if (literal("null")) {
+        if (literal(Normal.NULL)) {
             return new Filter.NullValue();
         }
         return new Filter.NumberValue(parseJsonNumber());
@@ -423,10 +424,10 @@ public final class ScimFilterParser {
             switch (escaped) {
                 case Symbol.C_DOUBLE_QUOTES, Symbol.C_BACKSLASH, Symbol.C_SLASH -> value.append(escaped);
                 case 'b' -> value.append('\b');
-                case 'f' -> value.append('\f');
-                case 'n' -> value.append('\n');
-                case 'r' -> value.append('\r');
-                case 't' -> value.append('\t');
+                case Symbol.C_LOWER_F -> value.append('\f');
+                case 'n' -> value.append(Symbol.C_LF);
+                case 'r' -> value.append(Symbol.C_CR);
+                case 't' -> value.append(Symbol.C_TAB);
                 case 'u' -> value.append(parseUnicodeEscape());
                 default -> throw new ValidateException("SCIM filter string contains an invalid JSON escape");
             }

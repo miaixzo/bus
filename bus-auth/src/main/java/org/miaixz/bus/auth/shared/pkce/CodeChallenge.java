@@ -61,7 +61,8 @@ public record CodeChallenge(String value, PkceMethod method) {
     private static boolean base64Url(final String candidate) {
         for (int index = 0; index < candidate.length(); index++) {
             final char character = candidate.charAt(index);
-            if (!(character >= 'A' && character <= 'Z') && !(character >= 'a' && character <= 'z')
+            if (!(character >= Symbol.C_UPPER_A && character <= Symbol.C_UPPER_Z)
+                    && !(character >= Symbol.C_LOWER_A && character <= Symbol.C_LOWER_Z)
                     && !(character >= Symbol.C_ZERO && character <= Symbol.C_NINE) && character != Symbol.C_MINUS
                     && character != Symbol.C_UNDERLINE) {
                 return false;

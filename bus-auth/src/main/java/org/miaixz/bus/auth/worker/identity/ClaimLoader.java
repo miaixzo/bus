@@ -36,19 +36,41 @@ import org.miaixz.bus.core.lang.Assert;
 @FunctionalInterface
 public interface ClaimLoader {
 
+    /**
+     * Loads project-disclosed claims for a stable subject and verified external identity.
+     *
+     * @param request validated claim-loading coordinates
+     * @param context immutable non-secret invocation context
+     * @param timeout shared end-to-end operation budget
+     * @return asynchronous project loading outcome
+     */
     CompletionStage<Outcome<Record>> load(Request request, Context context, Timeout.Budget timeout);
 
+    /**
+     * Binds the stable subject to the verified external identity used for claim loading.
+     *
+     * @param subject  stable framework subject
+     * @param identity verified completed external identity
+     */
     record Request(Subject subject, ExternalIdentity identity) {
 
+        /**
+         * Validates one complete claim-loading request.
+         */
         public Request {
             Assert.notNull(subject, "Claim loading Subject must not be null");
             Assert.notNull(identity, "Claim loading external identity must not be null");
         }
+
     }
 
     /**
      * Project-loaded claim entries awaiting framework parsing.
+     *
+     * @param entries ordered claim entries disclosed by the project
      */
     record Record(List<ClaimSet.Entry> entries) {
+
     }
+
 }

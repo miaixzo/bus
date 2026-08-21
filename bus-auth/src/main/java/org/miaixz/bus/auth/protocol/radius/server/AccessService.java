@@ -460,8 +460,8 @@ public final class AccessService {
             final Timeout.Budget timeout) {
         try {
             return Outcome.mapStage(
-                    () -> services.secretLoader().load(reference, context, timeout),
-                    loaded -> services.secretParser().parse(reference, loaded));
+                    () -> services.secretLoader().load(services.registration(), reference, context, timeout),
+                    loaded -> services.secretParser().parse(services.registration(), reference, loaded));
         } catch (RuntimeException exception) {
             return completed(Outcome.failed(failure(ErrorCode._503, "RADIUS shared-secret resolution failed")));
         }

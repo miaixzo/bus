@@ -27,11 +27,12 @@ import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.auth.protocol.oidc.client.OpenIdClientScheme;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorDeviation;
 import org.miaixz.bus.auth.vendor.VendorTargets;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -60,14 +61,14 @@ public final class LineManifest implements VariantManifest<LineOptions> {
     /**
      * Stable identifier of the sole supported LINE Login web variant.
      */
-    public static final Vendor.Variant DEFAULT = new Vendor.Variant("default");
+    public static final Vendor.Variant DEFAULT = new Vendor.Variant(Normal.DEFAULT);
 
     /**
      * Exact public operations supported by the compiled LINE Source.
      */
     private static final Capability.Manifest CAPABILITIES = new Capability.Manifest(List.of(
-            SourceAuthentication.initiate(Set.of(Capability.Interaction.REDIRECT)),
-            SourceAuthentication.complete(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
+            SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT)),
             OpenIdClientScheme.AUTHENTICATION,
             OpenIdClientScheme.TOKEN,
             OpenIdClientScheme.REVOCATION,

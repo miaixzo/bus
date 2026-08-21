@@ -25,8 +25,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.AuthorizationClient;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientOptions;
@@ -36,7 +37,7 @@ import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -45,6 +46,7 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -74,12 +76,12 @@ public final class FigmaSourceAdapter implements VendorAdapter {
     /**
      * Maximum accepted Figma JSON response size.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum accepted Figma JSON nesting depth.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 64;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
 
     /**
      * Registered Source identifier copied into verified identities.
@@ -398,12 +400,12 @@ public final class FigmaSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return missing();
         }
-        if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -484,9 +486,11 @@ public final class FigmaSourceAdapter implements VendorAdapter {
             return completed(failed(ErrorCode._500, "Figma callback lacks its required PKCE verifier"));
         }
         final String verifier = completion.codeVerifier().getOrNull().value();
-        return Outcome.mapStage(
-                        () -> services.secretLoader().load(options.credential(), context, timeout),
-                        loaded -> services.secretParser().parse(options.credential(), loaded))
+        return Outcome
+                .mapStage(
+                        () -> services.secretLoader()
+                                .load(services.registration(), options.credential(), context, timeout),
+                        loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> authenticate(
                             code,
@@ -547,11 +551,11 @@ public final class FigmaSourceAdapter implements VendorAdapter {
             }
             body = formCodec.encode(
                     List.of(
-                            new Parameter(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()),
-                            new Parameter(OAuth2.Parameters.CODE,
+                            new NameValue(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()),
+                            new NameValue(OAuth2.Parameters.CODE,
                                     Assert.notBlank(code, "Figma authorization code must not be blank")),
-                            new Parameter(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()),
-                            new Parameter(OAuth2.Parameters.CODE_VERIFIER,
+                            new NameValue(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()),
+                            new NameValue(OAuth2.Parameters.CODE_VERIFIER,
                                     Assert.notBlank(verifier, "Figma code verifier must not be blank"))));
             basicBytes = basic(options.clientId(), secret.material());
             final String authorization = "Basic " + Base64.encode(basicBytes);

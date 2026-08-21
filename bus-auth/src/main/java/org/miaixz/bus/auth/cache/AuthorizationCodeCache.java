@@ -30,11 +30,11 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Session;
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.extra.json.JsonValue;
+import org.miaixz.bus.fabric.Clock;
 
 /**
  * Stores the server-side binding required to redeem an OAuth 2.0 authorization code exactly once.
@@ -56,17 +56,31 @@ public final class AuthorizationCodeCache extends AuthCache<AuthorizationCodeCac
     /**
      * Creates an authorization-code cache view backed entirely by bus-cache.
      *
-     * @param cache shared bus-cache backend
+     * @param cache      shared bus-cache backend
+     * @param deployment deployment-unique cache namespace
+     * @param clock      shared runtime clock used to derive entry lifetimes
      */
-    public AuthorizationCodeCache(final CacheX<String, Object> cache, final String deployment,
-            final Clock clock) {
+    public AuthorizationCodeCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
         super(cache, deployment, PURPOSE, Entry.class, clock);
     }
 
+    /**
+     * Stores an authorization-code binding when the digest key is absent.
+     *
+     * @param key   purpose-local irreversible code digest
+     * @param value code binding and its absolute expiry instant
+     * @return stage containing whether the binding was stored
+     */
     public CompletionStage<Boolean> issue(final String key, final ExpiringValue<Entry> value) {
         return super.doIssue(key, value);
     }
 
+    /**
+     * Atomically consumes an authorization-code binding for one-time redemption.
+     *
+     * @param key purpose-local irreversible code digest
+     * @return stage containing the consumed binding or {@code null}
+     */
     public CompletionStage<ExpiringValue<Entry>> consume(final String key) {
         return super.doConsume(key);
     }

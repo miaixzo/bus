@@ -21,11 +21,10 @@ package org.miaixz.bus.auth.runtime;
 
 import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.auth.Authenticator;
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Dispatcher;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.registry.AtomicRegistryState;
 import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.lang.Assert;
 
@@ -47,9 +46,9 @@ public final class RuntimeManager implements Lifecycle, AutoCloseable {
     private final Registry registry;
 
     /**
-     * Capability execution gateway, kept separate from registration state access.
+     * Capability dispatch gateway, kept separate from registration state access.
      */
-    private final Authenticator authenticator;
+    private final Dispatcher dispatcher;
 
     /**
      * Explicit complete-snapshot reload orchestrator.
@@ -66,25 +65,31 @@ public final class RuntimeManager implements Lifecycle, AutoCloseable {
      */
     private final RuntimeLifecycle lifecycle;
 
-    private final AtomicRegistryState registryState;
+    /**
+     * Atomic executable container cell whose workers are retired during close.
+     */
+    private final RuntimeContainer.Cell containers;
 
     /**
      * Creates a running runtime from completely assembled framework services.
      *
      * @param registry      initialized revision-zero Registry
-     * @param authenticator capability execution gateway
+     * @param dispatcher    capability dispatch gateway
      * @param reloadService complete-snapshot reload service
      * @param descriptor    frozen description of the assembled schemes and Vendors
+     * @param lifecycle     shared runtime lifecycle gate
+     * @param containers    current executable container cell
      * @throws IllegalArgumentException if a dependency is {@code null}
      */
-    RuntimeManager(final Registry registry, final Authenticator authenticator, final RuntimeReloadService reloadService,
-            final RuntimeDescriptor descriptor, final RuntimeLifecycle lifecycle, final AtomicRegistryState registryState) {
+    RuntimeManager(final Registry registry, final Dispatcher dispatcher, final RuntimeReloadService reloadService,
+            final RuntimeDescriptor descriptor, final RuntimeLifecycle lifecycle,
+            final RuntimeContainer.Cell containers) {
         this.registry = Assert.notNull(registry, "Authentication Registry must not be null");
-        this.authenticator = Assert.notNull(authenticator, "Authentication executor must not be null");
+        this.dispatcher = Assert.notNull(dispatcher, "Capability dispatcher must not be null");
         this.reloadService = Assert.notNull(reloadService, "Runtime reload service must not be null");
         this.descriptor = Assert.notNull(descriptor, "Runtime descriptor must not be null");
         this.lifecycle = Assert.notNull(lifecycle, "Runtime lifecycle must not be null");
-        this.registryState = Assert.notNull(registryState, "Runtime Registry state must not be null");
+        this.containers = Assert.notNull(containers, "Runtime containers must not be null");
     }
 
     /**
@@ -97,12 +102,12 @@ public final class RuntimeManager implements Lifecycle, AutoCloseable {
     }
 
     /**
-     * Returns the capability execution gateway.
+     * Returns the capability dispatch gateway.
      *
-     * @return runtime authenticator
+     * @return runtime capability dispatcher
      */
-    public Authenticator authenticator() {
-        return authenticator;
+    public Dispatcher dispatcher() {
+        return dispatcher;
     }
 
     /**
@@ -145,7 +150,7 @@ public final class RuntimeManager implements Lifecycle, AutoCloseable {
     @Override
     public void close() {
         lifecycle.close();
-        registryState.current().retire();
+        containers.current().retire();
         reloadService.close();
     }
 

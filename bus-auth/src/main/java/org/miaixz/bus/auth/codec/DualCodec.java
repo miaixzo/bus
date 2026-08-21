@@ -19,31 +19,21 @@
 */
 package org.miaixz.bus.auth.codec;
 
-import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.codec.Decoder;
+import org.miaixz.bus.core.codec.Encoder;
 
 /**
- * Represents one decoded name/value pair in an ordered form or URI query sequence.
+ * Combines the shared Bus encoder and decoder contracts as two complementary directions of one exact representation.
  * <p>
- * Empty names and values remain distinct from missing pairs, and duplicate names remain separate list entries. This
- * transport value does not interpret OAuth, OpenID Connect, SAML, SCIM, or Vendor parameter semantics.
+ * Implementations preserve a fixed relationship between structured value type {@code V} and encoded representation type
+ * {@code W}. They do not define a generic protocol request, HTTP envelope, JSON tree, Base64 implementation, or
+ * alternate failure wrapper; invalid input is reported through the existing Bus validation exception boundary.
  * </p>
  *
- * @param name  decoded parameter name, which may be empty
- * @param value decoded parameter value, which may be empty
+ * @param <V> decoded structured value type
+ * @param <W> encoded representation type
  * @author Kimi Liu
  */
-public record Parameter(String name, String value) {
-
-    /**
-     * Creates one decoded parameter without normalizing empty text.
-     *
-     * @param name  decoded parameter name
-     * @param value decoded parameter value
-     * @throws IllegalArgumentException if either component is {@code null}
-     */
-    public Parameter {
-        Assert.notNull(name, "Codec parameter name must not be null");
-        Assert.notNull(value, "Codec parameter value must not be null");
-    }
+public interface DualCodec<V, W> extends Encoder<V, W>, Decoder<W, V> {
 
 }

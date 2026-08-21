@@ -36,9 +36,6 @@ import org.miaixz.bus.auth.guard.RedirectUriValidator;
 import org.miaixz.bus.auth.guard.ScopeValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
-import org.miaixz.bus.auth.shared.consent.Consent;
-import org.miaixz.bus.auth.shared.consent.ConsentDecision;
-import org.miaixz.bus.auth.shared.consent.ConsentRequest;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.worker.ConsentService;
@@ -46,7 +43,9 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.crypto.Builder;
@@ -67,12 +66,12 @@ public final class AuthorizationCodeIssuer {
     /**
      * Number of random bytes providing 256 bits of authorization-code entropy.
      */
-    private static final int CODE_BYTES = 32;
+    private static final int CODE_BYTES = Normal._32;
 
     /**
      * Maximum number of create-if-absent attempts after an opaque-code digest collision.
      */
-    private static final int MAXIMUM_CREATE_ATTEMPTS = 3;
+    private static final int MAXIMUM_CREATE_ATTEMPTS = org.miaixz.bus.auth.Builder.MAXIMUM_RETRY_ATTEMPTS;
 
     /**
      * Metadata member identifying an RFC 7591 native client.
@@ -92,12 +91,12 @@ public final class AuthorizationCodeIssuer {
     /**
      * Internal failure-detail member carrying the registered OAuth error code.
      */
-    private static final String OAUTH_ERROR = "oauth_error";
+    private static final String OAUTH_ERROR = org.miaixz.bus.auth.Builder.OAUTH_ERROR;
 
     /**
      * Internal failure-detail member proving the redirect URI passed registration validation.
      */
-    private static final String REDIRECT_VALIDATED = "redirect_validated";
+    private static final String REDIRECT_VALIDATED = org.miaixz.bus.auth.Builder.REDIRECT_VALIDATED;
 
     /**
      * Provider identifier used to isolate persisted authorization-code digests.
@@ -152,8 +151,12 @@ public final class AuthorizationCodeIssuer {
      * @param now     current shared-clock instant
      * @return whether the stored consent may be reused
      */
-    private static boolean covering(final Consent consent, final ConsentRequest request, final Instant now) {
-        return consent != null && consent.activeAt(now) && consent.subject().equals(request.subject())
+    private static boolean covering(
+            final ConsentService.Snapshot consent,
+            final ConsentService.Request request,
+            final Instant now) {
+        return consent != null && consent.activeAt(now) && consent.sourceId().equals(request.sourceId())
+                && consent.providerId().equals(request.providerId()) && consent.subject().equals(request.subject())
                 && consent.clientId().equals(request.clientId()) && consent.scopes().containsAll(request.scopes())
                 && consent.resources().containsAll(request.resources());
     }
@@ -166,8 +169,13 @@ public final class AuthorizationCodeIssuer {
      * @param now      record operation instant
      * @return whether the returned snapshot is coherent and active
      */
-    private static boolean recorded(final Consent consent, final ConsentDecision decision, final Instant now) {
-        return consent != null && consent.activeAt(now) && consent.subject().equals(decision.request().subject())
+    private static boolean recorded(
+            final ConsentService.Snapshot consent,
+            final ConsentService.Decision decision,
+            final Instant now) {
+        return consent != null && consent.activeAt(now) && consent.sourceId().equals(decision.request().sourceId())
+                && consent.providerId().equals(decision.request().providerId())
+                && consent.subject().equals(decision.request().subject())
                 && consent.clientId().equals(decision.request().clientId())
                 && consent.scopes().equals(decision.grantedScopes())
                 && consent.resources().equals(decision.request().resources());
@@ -348,8 +356,10 @@ public final class AuthorizationCodeIssuer {
         final CompletionStage<Outcome<ConsumerMetadata>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.consumerLoader().load(authorizationRequest.clientId(), context, timeout),
-                    loaded -> services.consumerParser().parse(authorizationRequest.clientId(), loaded));
+                    () -> services.consumerLoader()
+                            .load(services.registration(), authorizationRequest.clientId(), context, timeout),
+                    loaded -> services.consumerParser()
+                            .parse(services.registration(), authorizationRequest.clientId(), loaded));
         } catch (RuntimeException exception) {
             return completed(
                     Outcome.failed(
@@ -505,9 +515,10 @@ public final class AuthorizationCodeIssuer {
                     timeout,
                     1);
         }
-        final ConsentRequest consentRequest;
+        final ConsentService.Request consentRequest;
         try {
-            consentRequest = new ConsentRequest(subject.reference(), client.id(), clientName(client), redirectUri,
+            consentRequest = new ConsentService.Request(providerId, services.registration().resource().getProvider_id(),
+                    subject.reference(), client.id(), clientName(client), redirectUri,
                     new LinkedHashSet<>(requestedScopes), requestedResources);
         } catch (RuntimeException exception) {
             return completed(
@@ -586,10 +597,10 @@ public final class AuthorizationCodeIssuer {
             final Subject subject,
             final ConsumerMetadata client,
             final String redirectUri,
-            final ConsentRequest consentRequest,
+            final ConsentService.Request consentRequest,
             final Context context,
             final Timeout.Budget timeout) {
-        final CompletionStage<Outcome<Optional<Consent>>> lookup;
+        final CompletionStage<Outcome<Optional<ConsentService.Snapshot>>> lookup;
         try {
             lookup = services.consentService().find(consentRequest, context, timeout);
         } catch (RuntimeException exception) {
@@ -597,21 +608,21 @@ public final class AuthorizationCodeIssuer {
         }
         return lookup.handle(
                 (outcome, thrown) -> thrown == null && outcome != null ? outcome
-                        : Outcome.<Optional<Consent>>failed(
+                        : Outcome.<Optional<ConsentService.Snapshot>>failed(
                                 failure(
                                         ErrorCode._500,
                                         OAuth2ErrorCode.SERVER_ERROR,
                                         "OAuth 2.x consent lookup failed",
                                         redirectUri)))
                 .thenCompose(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<Optional<Consent>> success -> {
+                    case Outcome.Succeeded<Optional<ConsentService.Snapshot>> success -> {
                         if (success.value() == null) {
                             yield completed(
                                     consentFailure(
                                             "OAuth 2.x consent lookup returned no optional container",
                                             redirectUri));
                         }
-                        final Consent existing = success.value().getOrNull();
+                        final ConsentService.Snapshot existing = success.value().getOrNull();
                         if (covering(existing, consentRequest, timeout.clock().now())) {
                             yield issue(
                                     request,
@@ -634,14 +645,14 @@ public final class AuthorizationCodeIssuer {
                                 context,
                                 timeout);
                     }
-                    case Outcome.Rejected<Optional<Consent>> rejected -> completed(
+                    case Outcome.Rejected<Optional<ConsentService.Snapshot>> rejected -> completed(
                             Outcome.rejected(
                                     failure(
                                             rejected.failure().error(),
                                             OAuth2ErrorCode.ACCESS_DENIED,
                                             "OAuth 2.x consent lookup was rejected",
                                             redirectUri)));
-                    case Outcome.Failed<Optional<Consent>> failed -> completed(
+                    case Outcome.Failed<Optional<ConsentService.Snapshot>> failed -> completed(
                             Outcome.failed(
                                     failure(
                                             failed.failure().error(),
@@ -670,10 +681,10 @@ public final class AuthorizationCodeIssuer {
             final Subject subject,
             final ConsumerMetadata client,
             final String redirectUri,
-            final ConsentRequest consentRequest,
+            final ConsentService.Request consentRequest,
             final Context context,
             final Timeout.Budget timeout) {
-        final CompletionStage<Outcome<ConsentDecision>> decision;
+        final CompletionStage<Outcome<ConsentService.Decision>> decision;
         try {
             decision = services.consentService().decide(consentRequest, context, timeout);
         } catch (RuntimeException exception) {
@@ -681,21 +692,21 @@ public final class AuthorizationCodeIssuer {
         }
         return decision.handle(
                 (outcome, thrown) -> thrown == null && outcome != null ? outcome
-                        : Outcome.<ConsentDecision>failed(
+                        : Outcome.<ConsentService.Decision>failed(
                                 failure(
                                         ErrorCode._500,
                                         OAuth2ErrorCode.SERVER_ERROR,
                                         "OAuth 2.x consent decision failed",
                                         redirectUri)))
                 .thenCompose(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<ConsentDecision> success -> {
+                    case Outcome.Succeeded<ConsentService.Decision> success -> {
                         if (success.value() == null || !consentRequest.equals(success.value().request())) {
                             yield completed(
                                     consentFailure(
                                             "OAuth 2.x consent decision returned an inconsistent request",
                                             redirectUri));
                         }
-                        if (success.value().status() == ConsentDecision.Status.DENIED) {
+                        if (success.value().status() == ConsentService.Status.DENIED) {
                             yield completed(
                                     Outcome.rejected(
                                             failure(
@@ -714,14 +725,14 @@ public final class AuthorizationCodeIssuer {
                                 context,
                                 timeout);
                     }
-                    case Outcome.Rejected<ConsentDecision> rejected -> completed(
+                    case Outcome.Rejected<ConsentService.Decision> rejected -> completed(
                             Outcome.rejected(
                                     failure(
                                             rejected.failure().error(),
                                             OAuth2ErrorCode.ACCESS_DENIED,
                                             "OAuth 2.x consent decision was rejected",
                                             redirectUri)));
-                    case Outcome.Failed<ConsentDecision> failed -> completed(
+                    case Outcome.Failed<ConsentService.Decision> failed -> completed(
                             Outcome.failed(
                                     failure(
                                             failed.failure().error(),
@@ -750,27 +761,27 @@ public final class AuthorizationCodeIssuer {
             final Subject subject,
             final ConsumerMetadata client,
             final String redirectUri,
-            final ConsentDecision decision,
+            final ConsentService.Decision decision,
             final Context context,
             final Timeout.Budget timeout) {
         final Instant now = timeout.clock().now();
-        final CompletionStage<Outcome<Consent>> recording;
+        final CompletionStage<Outcome<ConsentService.Snapshot>> recording;
         try {
             recording = services.consentService()
-                    .record(new ConsentService.Record(decision, now, Optional.empty()), context, timeout);
+                    .record(new ConsentService.Save(decision, now, Optional.empty()), context, timeout);
         } catch (RuntimeException exception) {
             return completed(consentFailure("OAuth 2.x consent recording failed", redirectUri));
         }
         return recording.handle(
                 (outcome, thrown) -> thrown == null && outcome != null ? outcome
-                        : Outcome.<Consent>failed(
+                        : Outcome.<ConsentService.Snapshot>failed(
                                 failure(
                                         ErrorCode._500,
                                         OAuth2ErrorCode.SERVER_ERROR,
                                         "OAuth 2.x consent recording failed",
                                         redirectUri)))
                 .thenCompose(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<Consent> success -> {
+                    case Outcome.Succeeded<ConsentService.Snapshot> success -> {
                         if (!recorded(success.value(), decision, now)) {
                             yield completed(
                                     consentFailure(
@@ -788,14 +799,14 @@ public final class AuthorizationCodeIssuer {
                                 timeout,
                                 1);
                     }
-                    case Outcome.Rejected<Consent> rejected -> completed(
+                    case Outcome.Rejected<ConsentService.Snapshot> rejected -> completed(
                             Outcome.rejected(
                                     failure(
                                             rejected.failure().error(),
                                             OAuth2ErrorCode.ACCESS_DENIED,
                                             "OAuth 2.x consent recording was rejected",
                                             redirectUri)));
-                    case Outcome.Failed<Consent> failed -> completed(
+                    case Outcome.Failed<ConsentService.Snapshot> failed -> completed(
                             Outcome.failed(
                                     failure(
                                             failed.failure().error(),
@@ -910,7 +921,7 @@ public final class AuthorizationCodeIssuer {
      * @return hexadecimal SHA-256 lookup key
      */
     private String codeKey(final String code) {
-        return Builder.sha256Hex(providerId + '\0' + code);
+        return Builder.sha256Hex(providerId + Symbol.C_NUL + code);
     }
 
     /**

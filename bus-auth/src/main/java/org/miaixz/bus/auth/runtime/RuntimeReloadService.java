@@ -28,10 +28,8 @@ import java.util.function.Function;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.registry.AtomicRegistryState;
-import org.miaixz.bus.auth.registry.RegistrationValidator;
-import org.miaixz.bus.auth.registry.RegistryIssue;
-import org.miaixz.bus.auth.registry.RegistryView;
+import org.miaixz.bus.auth.registry.SnapshotFault;
+import org.miaixz.bus.auth.registry.SnapshotValidator;
 import org.miaixz.bus.auth.worker.RegistrationLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -41,9 +39,9 @@ import org.miaixz.bus.core.lang.Optional;
 /**
  * Loads, validates, compiles, and atomically publishes complete external registration snapshots.
  * <p>
- * Every call captures one expected immutable view before loading. A candidate becomes visible only through a successful
- * compare-and-set replacement, so validation, compilation, timeout, revision, and concurrency failures preserve the
- * complete previous view. Listener failures are isolated after the commit or validation decision.
+ * Every call captures one expected runtime container before loading. A candidate becomes visible only through a
+ * successful compare-and-set replacement, so validation, compilation, timeout, revision, and concurrency failures
+ * preserve the complete previous view. Listener failures are isolated after the commit or validation decision.
  * </p>
  *
  * @author Kimi Liu
@@ -56,9 +54,9 @@ final class RuntimeReloadService {
     private final RegistrationLoader loader;
 
     /**
-     * Framework raw registration validator.
+     * Framework candidate Snapshot validator.
      */
-    private final RegistrationValidator validator;
+    private final SnapshotValidator validator;
 
     /**
      * Pure compiler for already validated complete snapshots.
@@ -66,9 +64,9 @@ final class RuntimeReloadService {
     private final SnapshotCompiler compiler;
 
     /**
-     * Atomic holder of the currently committed immutable Registry view.
+     * Atomic cell holding the current executable runtime container.
      */
-    private final AtomicRegistryState registryState;
+    private final RuntimeContainer.Cell containers;
 
     /**
      * Immutable Registry listener list in registration order.
@@ -83,20 +81,21 @@ final class RuntimeReloadService {
     /**
      * Creates the single complete-snapshot reload orchestrator.
      *
-     * @param loader        external complete registration batch loader
-     * @param validator     raw registration validator
-     * @param compiler      validated snapshot compiler
-     * @param registryState atomic committed-view holder
-     * @param notifier      ordered Registry observation dispatcher
+     * @param loader     external complete registration batch loader
+     * @param validator  candidate Snapshot validator
+     * @param compiler   validated snapshot compiler
+     * @param containers atomic committed-container cell
+     * @param notifier   ordered Registry observation dispatcher
+     * @param lifecycle  shared runtime lifecycle gate
      * @throws IllegalArgumentException if a dependency, list, or listener is {@code null}
      */
-    RuntimeReloadService(final RegistrationLoader loader, final RegistrationValidator validator,
-            final SnapshotCompiler compiler, final AtomicRegistryState registryState, final RegistryNotifier notifier,
+    RuntimeReloadService(final RegistrationLoader loader, final SnapshotValidator validator,
+            final SnapshotCompiler compiler, final RuntimeContainer.Cell containers, final RegistryNotifier notifier,
             final RuntimeLifecycle lifecycle) {
         this.loader = Assert.notNull(loader, "Runtime reload loader must not be null");
         this.validator = Assert.notNull(validator, "Runtime reload validator must not be null");
         this.compiler = Assert.notNull(compiler, "Runtime reload compiler must not be null");
-        this.registryState = Assert.notNull(registryState, "Runtime reload Registry state must not be null");
+        this.containers = Assert.notNull(containers, "Runtime reload containers must not be null");
         this.notifier = Assert.notNull(notifier, "Runtime reload Registry notifier must not be null");
         this.lifecycle = Assert.notNull(lifecycle, "Runtime lifecycle must not be null");
     }
@@ -113,12 +112,12 @@ final class RuntimeReloadService {
      */
     private static Registry.Report report(
             final long revision,
-            final RegistryIssue.Stage stage,
+            final SnapshotFault.Stage stage,
             final String field,
             final Errors error,
             final String description) {
         return new Registry.Report(new Registry.Revision(Math.max(0L, revision)),
-                List.of(RegistryIssue.snapshot(stage, Optional.ofNullable(field), error, description)));
+                List.of(SnapshotFault.snapshot(stage, Optional.ofNullable(field), error, description)));
     }
 
     /**
@@ -136,8 +135,8 @@ final class RuntimeReloadService {
         if (lease == null) {
             return CompletableFuture.completedFuture(
                     report(
-                            registryState.current().revision().value(),
-                            RegistryIssue.Stage.COMMIT,
+                            containers.current().registry().revision().value(),
+                            SnapshotFault.Stage.COMMIT,
                             "lifecycle",
                             ErrorCode._503,
                             "Authentication runtime is not running"));
@@ -146,20 +145,20 @@ final class RuntimeReloadService {
             lease.close();
             return reject(
                     report(
-                            registryState.current().revision().value(),
-                            RegistryIssue.Stage.LOAD,
+                            containers.current().registry().revision().value(),
+                            SnapshotFault.Stage.LOAD,
                             "timeout",
                             ErrorCode._408,
                             "Runtime reload time budget has expired"));
         }
-        final RegistryView expected = registryState.current();
+        final RuntimeContainer expected = containers.current();
         final CompletionStage<RegistrationLoader.Batch> loading;
         try {
             loading = loader.load(context, timeout);
         } catch (RuntimeException cause) {
             final Registry.Report report = report(
-                    expected.revision().value() + 1L,
-                    RegistryIssue.Stage.LOAD,
+                    expected.registry().revision().value() + 1L,
+                    SnapshotFault.Stage.LOAD,
                     "loader",
                     ErrorCode._500,
                     "Registration loader failed before returning a stage");
@@ -169,8 +168,8 @@ final class RuntimeReloadService {
         }
         if (loading == null) {
             final Registry.Report report = report(
-                    expected.revision().value() + 1L,
-                    RegistryIssue.Stage.LOAD,
+                    expected.registry().revision().value() + 1L,
+                    SnapshotFault.Stage.LOAD,
                     "loader",
                     ErrorCode._500,
                     "Registration loader returned no stage");
@@ -183,8 +182,8 @@ final class RuntimeReloadService {
                         (batch, cause) -> cause == null ? process(batch, expected, timeout)
                                 : reject(
                                         report(
-                                                expected.revision().value() + 1L,
-                                                RegistryIssue.Stage.LOAD,
+                                                expected.registry().revision().value() + 1L,
+                                                SnapshotFault.Stage.LOAD,
                                                 "loader",
                                                 ErrorCode._500,
                                                 "Registration loader stage failed")))
@@ -195,30 +194,30 @@ final class RuntimeReloadService {
      * Validates, compiles, and atomically commits one loaded snapshot.
      *
      * @param batch    externally loaded complete candidate batch
-     * @param expected Registry view captured before loading
+     * @param expected runtime container captured before loading
      * @param timeout  shared operation budget
      * @return stage containing validation or successful commit report
      */
     private CompletionStage<Registry.Report> process(
             final RegistrationLoader.Batch batch,
-            final RegistryView expected,
+            final RuntimeContainer expected,
             final Timeout.Budget timeout) {
         if (batch == null) {
             return reject(
                     report(
-                            expected.revision().value() + 1L,
-                            RegistryIssue.Stage.LOAD,
+                            expected.registry().revision().value() + 1L,
+                            SnapshotFault.Stage.LOAD,
                             "batch",
                             ErrorCode._500,
                             "Registration loader returned no batch"));
         }
         final Registry.Snapshot snapshot = new Registry.Snapshot(new Registry.Revision(batch.revision()),
                 batch.registrations());
-        if (snapshot.revision().value() <= expected.revision().value()) {
+        if (snapshot.revision().value() <= expected.registry().revision().value()) {
             return reject(
                     report(
                             snapshot.revision().value(),
-                            RegistryIssue.Stage.VALIDATE,
+                            SnapshotFault.Stage.VALIDATE,
                             "revision",
                             ErrorCode._409,
                             "Registry snapshot revision must increase monotonically"));
@@ -227,7 +226,7 @@ final class RuntimeReloadService {
             return reject(
                     report(
                             snapshot.revision().value(),
-                            RegistryIssue.Stage.VALIDATE,
+                            SnapshotFault.Stage.VALIDATE,
                             "timeout",
                             ErrorCode._408,
                             "Runtime reload time budget expired after loading"));
@@ -239,25 +238,25 @@ final class RuntimeReloadService {
             return reject(
                     report(
                             snapshot.revision().value(),
-                            RegistryIssue.Stage.VALIDATE,
+                            SnapshotFault.Stage.VALIDATE,
                             "validator",
                             ErrorCode._500,
                             "Registry snapshot validation failed operationally"));
         }
-        if (!report.issues().isEmpty()) {
+        if (!report.faults().isEmpty()) {
             rejected(report);
             return CompletableFuture.completedFuture(report);
         }
-        final RegistryView replacement;
+        final RuntimeContainer replacement;
         try {
             replacement = compiler.compile(snapshot);
         } catch (SnapshotCompiler.CompilationFailure failure) {
-            return reject(new Registry.Report(snapshot.revision(), List.of(failure.issue())));
+            return reject(new Registry.Report(snapshot.revision(), List.of(failure.fault())));
         } catch (RuntimeException cause) {
             return reject(
                     report(
                             snapshot.revision().value(),
-                            RegistryIssue.Stage.COMPILE,
+                            SnapshotFault.Stage.COMPILE,
                             "snapshot",
                             ErrorCode._500,
                             "Registry snapshot compilation failed"));
@@ -267,14 +266,14 @@ final class RuntimeReloadService {
             return reject(
                     report(
                             snapshot.revision().value(),
-                            RegistryIssue.Stage.COMMIT,
+                            SnapshotFault.Stage.COMMIT,
                             "timeout",
                             ErrorCode._408,
                             "Runtime reload time budget expired before commit"));
         }
         final AtomicBoolean replaced = new AtomicBoolean();
         final boolean admitted = lifecycle.commit(() -> {
-            replaced.set(registryState.replace(expected, replacement));
+            replaced.set(containers.replace(expected, replacement));
             if (replaced.get()) {
                 notifier.enqueueCommitted(snapshot.revision());
             }
@@ -284,7 +283,7 @@ final class RuntimeReloadService {
             return CompletableFuture.completedFuture(
                     report(
                             snapshot.revision().value(),
-                            RegistryIssue.Stage.COMMIT,
+                            SnapshotFault.Stage.COMMIT,
                             "lifecycle",
                             ErrorCode._503,
                             "Authentication runtime closed before commit"));
@@ -294,7 +293,7 @@ final class RuntimeReloadService {
             return reject(
                     report(
                             snapshot.revision().value(),
-                            RegistryIssue.Stage.COMMIT,
+                            SnapshotFault.Stage.COMMIT,
                             "revision",
                             ErrorCode._409,
                             "Concurrent Registry reload prevented atomic commit"));
@@ -304,15 +303,27 @@ final class RuntimeReloadService {
         return CompletableFuture.completedFuture(report);
     }
 
+    /**
+     * Returns a completed report after scheduling rejection observation.
+     *
+     * @param report rejection report
+     * @return completed report stage
+     */
     private CompletionStage<Registry.Report> reject(final Registry.Report report) {
         rejected(report);
         return CompletableFuture.completedFuture(report);
     }
 
+    /**
+     * Schedules one rejected report for isolated listener delivery.
+     *
+     * @param report rejection report
+     */
     private void rejected(final Registry.Report report) {
         notifier.rejected(report);
     }
 
+    /** Closes Registry notification delivery owned by this reload service. */
     void close() {
         notifier.close();
     }

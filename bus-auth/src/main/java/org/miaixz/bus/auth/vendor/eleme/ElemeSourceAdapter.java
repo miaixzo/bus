@@ -27,7 +27,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.*;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationRequestEncoder;
@@ -37,7 +37,7 @@ import org.miaixz.bus.auth.protocol.oauth2.codec.TokenResponseDecoder;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
-import org.miaixz.bus.auth.source.SourceAuthentication;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -89,12 +89,12 @@ public final class ElemeSourceAdapter implements VendorAdapter {
     /**
      * Maximum accepted Eleme merchant JSON response size.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = org.miaixz.bus.auth.Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum accepted Eleme merchant JSON nesting depth.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 64;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
 
     /**
      * Registered Source identifier copied into verified external identities.
@@ -284,8 +284,9 @@ public final class ElemeSourceAdapter implements VendorAdapter {
     private static <T> Outcome<T> oauthError(final AuthorizationResponseDecoder.Error error) {
         return Outcome.rejected(
                 new Outcome.Failure(ErrorCode._400, "Eleme authorization endpoint returned a standard error",
-                        new JsonValue.ObjectValue(
-                                Map.of("oauth_error", new JsonValue.StringValue(error.response().error().value())))));
+                        new JsonValue.ObjectValue(Map.of(
+                                org.miaixz.bus.auth.Builder.OAUTH_ERROR,
+                                new JsonValue.StringValue(error.response().error().value())))));
     }
 
     /**
@@ -295,8 +296,9 @@ public final class ElemeSourceAdapter implements VendorAdapter {
      * @return rejected 4xx or failed rate-limit/upstream outcome
      */
     private static Outcome<TokenResponse> tokenError(final TokenResponseDecoder.Error error) {
-        final Map<String, JsonValue> details = Map
-                .of("oauth_error", new JsonValue.StringValue(error.response().error().value()));
+        final Map<String, JsonValue> details = Map.of(
+                org.miaixz.bus.auth.Builder.OAUTH_ERROR,
+                new JsonValue.StringValue(error.response().error().value()));
         if (error.status() == Http.Status.TOO_MANY_REQUESTS) {
             return failed(ErrorCode._429, "Eleme token endpoint rate limited the request", details);
         }
@@ -559,12 +561,12 @@ public final class ElemeSourceAdapter implements VendorAdapter {
         if (!manifest().capabilities().contains(capability)) {
             return missing();
         }
-        if (capability.key().equals(SourceAuthentication.INITIATE.key())
-                && request instanceof SourceAuthentication.Request.BrowserStart start) {
+        if (capability.key().equals(SourceWorkflow.INITIATE.key())
+                && request instanceof SourceWorkflow.Request.BrowserStart start) {
             return narrow(redirectManager.initiate(start, this::prepare, context, timeout), capability.responseType());
         }
-        if (capability.key().equals(SourceAuthentication.COMPLETE.key())
-                && request instanceof SourceAuthentication.Request.BrowserCallback callback) {
+        if (capability.key().equals(SourceWorkflow.COMPLETE.key())
+                && request instanceof SourceWorkflow.Request.BrowserCallback callback) {
             return narrow(
                     redirectManager.complete(callback, this::state, this::identity, context, timeout),
                     capability.responseType());
@@ -672,9 +674,11 @@ public final class ElemeSourceAdapter implements VendorAdapter {
         }
         final TokenRequest request = new TokenRequest(new AuthorizationCodeGrant(response.code(), options.redirectUri(),
                 Optional.of(options.clientId()), Optional.empty()), emptyObject());
-        return Outcome.mapStage(
-                        () -> services.secretLoader().load(options.credential(), context, timeout),
-                        loaded -> services.secretParser().parse(options.credential(), loaded))
+        return Outcome
+                .mapStage(
+                        () -> services.secretLoader()
+                                .load(services.registration(), options.credential(), context, timeout),
+                        loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> authenticate(request, success.value(), timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
@@ -973,7 +977,7 @@ public final class ElemeSourceAdapter implements VendorAdapter {
      * @return form-encoded credential component
      */
     private String formComponent(final String value) {
-        final byte[] encoded = formCodec.encode(List.of(new Parameter(Normal.EMPTY, value)));
+        final byte[] encoded = formCodec.encode(List.of(new NameValue(Normal.EMPTY, value)));
         try {
             return new String(encoded, 1, encoded.length - 1, Charset.UTF_8);
         } finally {

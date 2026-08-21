@@ -32,9 +32,10 @@ import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Session;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.saml.*;
+import org.miaixz.bus.auth.protocol.saml.Saml;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
 import org.miaixz.bus.auth.source.DriverServices;
-import org.miaixz.bus.auth.source.SessionCoordinator;
+import org.miaixz.bus.auth.worker.SessionCoordinator;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.data.id.UUID;
@@ -64,12 +65,12 @@ public final class SingleLogoutService {
     /**
      * SAML entity identifier NameID format.
      */
-    private static final String ENTITY_NAME_ID = "urn:oasis:names:tc:SAML:2.0:nameid-format:entity";
+    private static final String ENTITY_NAME_ID = Saml.NameIdFormats.ENTITY;
 
     /**
      * Standard second-level status for an unknown session principal.
      */
-    private static final String UNKNOWN_PRINCIPAL = "urn:oasis:names:tc:SAML:2.0:status:UnknownPrincipal";
+    private static final String UNKNOWN_PRINCIPAL = Saml.Statuses.UNKNOWN_PRINCIPAL;
 
     /**
      * Validated identity-provider options.
@@ -85,6 +86,7 @@ public final class SingleLogoutService {
      * Standard SAML error response mapper.
      */
     private final SamlErrorMapper errorMapper;
+    /** Framework coordinator for Source-isolated authentication Session transitions. */
     private final SessionCoordinator sessions;
 
     /**
@@ -163,9 +165,11 @@ public final class SingleLogoutService {
         Assert.notNull(timeout, "SAML Single Logout time budget must not be null");
         final Outcome<String> requester = requester(request, timeout);
         return switch (requester) {
-            case Outcome.Succeeded<String> success -> Outcome.mapStage(
-                            () -> services.consumerLoader().load(success.value(), context, timeout),
-                            loaded -> services.consumerParser().parse(success.value(), loaded))
+            case Outcome.Succeeded<String> success -> Outcome
+                    .mapStage(
+                            () -> services.consumerLoader()
+                                    .load(services.registration(), success.value(), context, timeout),
+                            loaded -> services.consumerParser().parse(services.registration(), success.value(), loaded))
                     .thenCompose(resolved -> switch (resolved) {
                         case Outcome.Succeeded<ConsumerMetadata> client -> end(
                                 request,
@@ -244,15 +248,16 @@ public final class SingleLogoutService {
         }
         return sessions.end(new Session.Key(request.sessionIndexes().get(0)), context, timeout)
                 .thenApply(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<SessionCoordinator.End> result -> result.value() == SessionCoordinator.End.ENDED
-                            ? Outcome.succeeded(success(request, destination, timeout))
-                            : Outcome.succeeded(
-                                    errorMapper.logoutResponse(
-                                            request,
-                                            destination,
-                                            UNKNOWN_PRINCIPAL,
-                                            "Requested SAML session is not active",
-                                            timeout.clock().now()));
+                    case Outcome.Succeeded<SessionCoordinator.End> result -> result
+                            .value() == SessionCoordinator.End.ENDED
+                                    ? Outcome.succeeded(success(request, destination, timeout))
+                                    : Outcome.succeeded(
+                                            errorMapper.logoutResponse(
+                                                    request,
+                                                    destination,
+                                                    UNKNOWN_PRINCIPAL,
+                                                    "Requested SAML session is not active",
+                                                    timeout.clock().now()));
                     case Outcome.Rejected<SessionCoordinator.End> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<SessionCoordinator.End> failed -> Outcome.failed(failed.failure());
                 });

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.auth.resolver;
 
+import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.worker.ConsumerLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -29,15 +30,35 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public final class ConsumerParser {
 
     /**
-     * Parses one loaded record without performing data access.
+     * Creates a stateless consumer-metadata parser.
      */
-    public ConsumerMetadata parse(final String expectedId, final ConsumerLoader.Record record) {
+    public ConsumerParser() {
+    }
+
+    /**
+     * Validates Source and consumer ownership without performing data access.
+     *
+     * @param registration exact Source registration that requested the data
+     * @param expectedId   exact requested consumer identifier
+     * @param record       project-loaded consumer record
+     * @return validated immutable consumer metadata
+     */
+    public ConsumerMetadata parse(
+            final Registration.SourceEntry registration,
+            final String expectedId,
+            final ConsumerLoader.Record record) {
+        final String sourceId = Assert.notNull(registration, "Consumer Source registration must not be null").resource()
+                .getId();
         final String expected = Assert.notBlank(expectedId, "Expected consumer identifier must not be blank");
         final ConsumerLoader.Record loaded = Assert.notNull(record, "Loaded consumer record must not be null");
+        if (!sourceId.equals(loaded.sourceId())) {
+            throw new ValidateException("Loaded consumer does not belong to the requested Source");
+        }
         if (!expected.equals(loaded.id())) {
             throw new ValidateException("Loaded consumer identifier does not match the requested identifier");
         }
         return new ConsumerMetadata(loaded.id(), loaded.credential(), loaded.redirectUris(), loaded.grantTypes(),
                 loaded.responseTypes(), loaded.scopes(), loaded.metadata());
     }
+
 }

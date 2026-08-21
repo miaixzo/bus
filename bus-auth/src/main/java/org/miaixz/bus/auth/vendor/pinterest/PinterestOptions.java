@@ -24,6 +24,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorOptions;
@@ -140,9 +141,8 @@ public record PinterestOptions(Vendor.Id vendor, Vendor.Variant variant, String 
      */
     @Override
     public String toString() {
-        return "PinterestOptions[vendor=" + vendor + ", variant=" + variant
-                + ", clientId=[REDACTED], credential=[REDACTED], redirectUri=[REDACTED], scopes=" + scopes
-                + Symbol.C_BRACKET_RIGHT;
+        return "PinterestOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS
+                + scopes + Symbol.C_BRACKET_RIGHT;
     }
 
 }

@@ -28,6 +28,7 @@ import java.util.concurrent.Executor;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.worker.RegistryListener;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Delivers Registry observations in acceptance order without executing project callbacks inside the commit gate.
@@ -40,16 +41,30 @@ import org.miaixz.bus.core.lang.Assert;
  */
 final class RegistryNotifier {
 
-    private static final int MAXIMUM_PENDING = 256;
+    /** Maximum queued observation events before the oldest event is dropped. */
+    private static final int MAXIMUM_PENDING = Normal._256;
 
+    /** Immutable project listeners in deterministic delivery order. */
     private final List<RegistryListener> listeners;
+    /** Caller-owned executor used to deliver listener callbacks. */
     private final Executor executor;
+    /** Bounded pending notification queue guarded by this instance monitor. */
     private final Queue<Notification> pending = new ArrayDeque<>();
+    /** Whether one queue-draining task is currently scheduled or running. */
     private boolean dispatching;
+    /** Whether shutdown has permanently disabled new notifications. */
     private boolean closed;
+    /** Number of dropped observations awaiting one overflow callback. */
     private long dropped;
+    /** Latest committed revision reported with an observation gap. */
     private Registry.Revision latestCommitted = new Registry.Revision(0L);
 
+    /**
+     * Creates one bounded failure-isolated Registry observation dispatcher.
+     *
+     * @param listeners project listeners in delivery order
+     * @param executor  caller-owned callback executor
+     */
     RegistryNotifier(final List<RegistryListener> listeners, final Executor executor) {
         Assert.notNull(listeners, "Registry listener list must not be null");
         final List<RegistryListener> copy = new ArrayList<>(listeners.size());
@@ -60,11 +75,21 @@ final class RegistryNotifier {
         this.executor = Assert.notNull(executor, "Registry listener executor must not be null");
     }
 
+    /**
+     * Queues one committed revision while the Registry commit gate is held.
+     *
+     * @param revision committed revision
+     */
     synchronized void enqueueCommitted(final Registry.Revision revision) {
         latestCommitted = Assert.notNull(revision, "Committed Registry revision must not be null");
         enqueue(listener -> listener.committed(revision));
     }
 
+    /**
+     * Queues and schedules one rejected registration report.
+     *
+     * @param report rejected validation report
+     */
     void rejected(final Registry.Report report) {
         synchronized (this) {
             enqueue(listener -> listener.rejected(report));
@@ -72,6 +97,11 @@ final class RegistryNotifier {
         dispatch();
     }
 
+    /**
+     * Adds one callback to the bounded queue.
+     *
+     * @param notification callback to enqueue
+     */
     private void enqueue(final Notification notification) {
         if (!closed && !listeners.isEmpty()) {
             if (pending.size() == MAXIMUM_PENDING) {
@@ -109,6 +139,7 @@ final class RegistryNotifier {
         });
     }
 
+    /** Drains pending callbacks in order until the queue becomes empty. */
     private void drain() {
         while (true) {
             deliverOverflow();
@@ -145,6 +176,11 @@ final class RegistryNotifier {
         }
     }
 
+    /**
+     * Delivers one callback to every listener without propagating listener failures.
+     *
+     * @param notification callback
+     */
     private void deliver(final Notification notification) {
         for (RegistryListener listener : listeners) {
             try {
@@ -155,15 +191,23 @@ final class RegistryNotifier {
         }
     }
 
+    /** Permanently disables notification delivery and clears queued callbacks. */
     synchronized void close() {
         closed = true;
         pending.clear();
     }
 
+    /** Represents one isolated listener callback. */
     @FunctionalInterface
     private interface Notification {
 
+        /**
+         * Delivers this observation to one listener.
+         *
+         * @param listener destination listener
+         */
         void deliver(RegistryListener listener);
+
     }
 
 }

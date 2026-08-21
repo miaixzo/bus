@@ -55,7 +55,7 @@ public record IdpSsoDescriptor(Optional<String> id, Optional<Instant> validUntil
     /**
      * SAML 2.0 protocol namespace required by the represented IdP SSO role.
      */
-    public static final String PROTOCOL = "urn:oasis:names:tc:SAML:2.0:protocol";
+    public static final String PROTOCOL = Saml.Namespaces.PROTOCOL;
 
     /**
      * Validates role cardinality and freezes all lists and XML values.

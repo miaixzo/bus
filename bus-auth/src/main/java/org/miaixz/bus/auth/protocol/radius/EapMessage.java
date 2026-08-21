@@ -22,6 +22,7 @@ package org.miaixz.bus.auth.protocol.radius;
 import java.util.Arrays;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
@@ -39,7 +40,7 @@ public record EapMessage(byte[] value) {
     /**
      * Minimum common EAP packet header size.
      */
-    private static final int HEADER_BYTES = 4;
+    private static final int HEADER_BYTES = Normal._4;
 
     /**
      * Validates the common EAP Length and detaches the packet.

@@ -32,6 +32,14 @@ import org.miaixz.bus.extra.json.JsonValue;
 
 /**
  * Immutable protocol consumer metadata accepted by authentication services.
+ *
+ * @param id            consumer identifier
+ * @param credential    optional credential reference used to authenticate the consumer
+ * @param redirectUris  ordered registered redirect URI values
+ * @param grantTypes    allowed authorization grant types
+ * @param responseTypes allowed authorization response types
+ * @param scopes        scopes the consumer may request
+ * @param metadata      detached protocol-specific consumer metadata
  */
 public record ConsumerMetadata(String id, Optional<Credential.Reference> credential, List<String> redirectUris,
         Set<String> grantTypes, Set<String> responseTypes, Set<String> scopes, JsonValue.ObjectValue metadata) {
@@ -51,6 +59,13 @@ public record ConsumerMetadata(String id, Optional<Credential.Reference> credent
         metadata = new JsonValue.ObjectValue(metadata.values());
     }
 
+    /**
+     * Validates and freezes an ordered unique list of protocol text values.
+     *
+     * @param values values to validate and copy
+     * @param label  safe semantic label used in validation messages
+     * @return immutable ordered list
+     */
     private static List<String> immutableList(final List<String> values, final String label) {
         Assert.notNull(values, label + " list must not be null");
         final List<String> copy = new ArrayList<>(values.size());
@@ -65,6 +80,13 @@ public record ConsumerMetadata(String id, Optional<Credential.Reference> credent
         return List.copyOf(copy);
     }
 
+    /**
+     * Validates and freezes a set of protocol text values.
+     *
+     * @param values values to validate and copy
+     * @param label  safe semantic label used in validation messages
+     * @return immutable set
+     */
     private static Set<String> immutableSet(final Set<String> values, final String label) {
         Assert.notNull(values, label + " set must not be null");
         for (String value : values) {
@@ -72,4 +94,5 @@ public record ConsumerMetadata(String id, Optional<Credential.Reference> credent
         }
         return Set.copyOf(values);
     }
+
 }

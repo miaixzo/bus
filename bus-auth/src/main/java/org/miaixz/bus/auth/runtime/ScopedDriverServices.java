@@ -21,6 +21,7 @@ package org.miaixz.bus.auth.runtime;
 
 import java.util.concurrent.Executor;
 
+import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.cache.AccessTokenCache;
 import org.miaixz.bus.auth.cache.AuthorizationCache;
 import org.miaixz.bus.auth.cache.AuthorizationCodeCache;
@@ -31,7 +32,6 @@ import org.miaixz.bus.auth.cache.ReplayCache;
 import org.miaixz.bus.auth.cache.SessionCache;
 import org.miaixz.bus.auth.cache.StateCache;
 import org.miaixz.bus.auth.resolver.AttributeParser;
-import org.miaixz.bus.auth.resolver.BindingParser;
 import org.miaixz.bus.auth.resolver.CertificateParser;
 import org.miaixz.bus.auth.resolver.ConsumerParser;
 import org.miaixz.bus.auth.resolver.KeyParser;
@@ -69,25 +69,55 @@ import org.miaixz.bus.fabric.Context;
  */
 final class ScopedDriverServices implements DriverServices {
 
+    /** Complete runtime service inventory behind this capability boundary. */
     private final RuntimeServices services;
 
+    /** Exact immutable Source registration owning this view. */
+    private final Registration.SourceEntry registration;
+
+    /** Project data slots declared by the prepared Source. */
     private final WorkerSlots slots;
 
+    /** Framework dependencies declared by the prepared Source. */
     private final SourceDriver.Dependencies dependencies;
 
-    ScopedDriverServices(final RuntimeServices services, final WorkerSlots slots,
-            final SourceDriver.Dependencies dependencies) {
+    /**
+     * Creates one capability-limited Source service view.
+     *
+     * @param services     complete runtime service inventory
+     * @param registration exact Source registration
+     * @param slots        declared project data slots
+     * @param dependencies declared framework dependencies
+     */
+    ScopedDriverServices(final RuntimeServices services, final Registration.SourceEntry registration,
+            final WorkerSlots slots, final SourceDriver.Dependencies dependencies) {
         this.services = Assert.notNull(services, "Runtime services must not be null");
+        this.registration = Assert.notNull(registration, "Scoped Source registration must not be null");
         this.slots = Assert.notNull(slots, "Driver service slots must not be null");
         this.dependencies = Assert.notNull(dependencies, "Driver framework dependencies must not be null");
     }
 
+    @Override
+    public Registration.SourceEntry registration() {
+        return registration;
+    }
+
+    /**
+     * Requires one declared project data slot.
+     *
+     * @param slot requested slot
+     */
     private void require(final WorkerSlots.Slot slot) {
         if (!slots.contains(slot)) {
             throw new ValidateException("Source driver accessed undeclared project slot " + slot.name());
         }
     }
 
+    /**
+     * Requires one declared framework service.
+     *
+     * @param service requested service
+     */
     private void require(final SourceDriver.Dependencies.Service service) {
         if (!dependencies.contains(service)) {
             throw new ValidateException("Source driver accessed undeclared framework service " + service.name());
@@ -116,12 +146,6 @@ final class ScopedDriverServices implements DriverServices {
     public BindingLoader bindingLoader() {
         require(WorkerSlots.Slot.BINDING);
         return services.bindingLoader();
-    }
-
-    @Override
-    public BindingParser bindingParser() {
-        require(WorkerSlots.Slot.BINDING);
-        return services.bindingParser();
     }
 
     @Override
@@ -273,4 +297,5 @@ final class ScopedDriverServices implements DriverServices {
         require(SourceDriver.Dependencies.Service.SECURITY_BASELINE);
         return services.securityBaseline();
     }
+
 }

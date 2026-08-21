@@ -26,12 +26,13 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.codec.FormCodec;
-import org.miaixz.bus.auth.codec.Parameter;
+import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2ErrorCode;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2ErrorResponse;
@@ -64,12 +65,12 @@ public final class RevocationClient {
     /**
      * Maximum accepted RFC 7009 OAuth error document size.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Maximum accepted nesting depth for a revocation OAuth error document.
      */
-    private static final int MAXIMUM_JSON_DEPTH = 64;
+    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
 
     /**
      * Validated client registration and selected client authentication method.
@@ -188,8 +189,10 @@ public final class RevocationClient {
             return execute(request, null, timeout);
         }
         return Outcome.mapStage(
-                        () -> services.secretLoader().load(options.clientCredential().getOrNull(), context, timeout),
-                        loaded -> services.secretParser().parse(options.clientCredential().getOrNull(), loaded))
+                () -> services.secretLoader()
+                        .load(services.registration(), options.clientCredential().getOrNull(), context, timeout),
+                loaded -> services.secretParser()
+                        .parse(services.registration(), options.clientCredential().getOrNull(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> execute(request, success.value(), timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
@@ -300,14 +303,14 @@ public final class RevocationClient {
      * @param secret  optional client-secret lease
      * @return immutable ordered form parameters
      */
-    private List<Parameter> authenticated(final List<Parameter> encoded, final SecretLease secret) {
-        final List<Parameter> parameters = new ArrayList<>(
+    private List<NameValue> authenticated(final List<NameValue> encoded, final SecretLease secret) {
+        final List<NameValue> parameters = new ArrayList<>(
                 Assert.notNull(encoded, "OAuth 2.x encoded revocation parameters must not be null"));
         if (Endpoint.Authentication.NONE.equals(options.clientAuthenticationMethod())) {
-            parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()));
+            parameters.add(new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()));
         } else if (Endpoint.Authentication.CLIENT_SECRET_POST.equals(options.clientAuthenticationMethod())) {
-            parameters.add(new Parameter(OAuth2.Parameters.CLIENT_ID, options.clientId()));
-            parameters.add(new Parameter(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())));
+            parameters.add(new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()));
+            parameters.add(new NameValue(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material())));
         }
         return List.copyOf(parameters);
     }
@@ -319,7 +322,7 @@ public final class RevocationClient {
      * @return form-encoded credential component
      */
     private String formComponent(final String value) {
-        final byte[] encoded = formCodec.encode(List.of(new Parameter(Normal.EMPTY, value)));
+        final byte[] encoded = formCodec.encode(List.of(new NameValue(Normal.EMPTY, value)));
         try {
             return new String(encoded, 1, encoded.length - 1, Charset.UTF_8);
         } finally {

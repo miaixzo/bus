@@ -25,6 +25,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
+import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.shared.jose.JwkSet;
 import org.miaixz.bus.core.lang.Assert;
@@ -36,12 +37,50 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  */
 public interface KeyLoader {
 
-    CompletionStage<Outcome<Record>> load(Request request, Context context, Timeout.Budget timeout);
+    /**
+     * Loads one exact key within the Source registration scope.
+     *
+     * @param registration exact Source registration requesting the key
+     * @param request      validated key lookup coordinates
+     * @param context      immutable non-secret invocation context
+     * @param timeout      shared end-to-end operation budget
+     * @return asynchronous project loading outcome
+     */
+    CompletionStage<Outcome<Record>> load(
+            Registration.SourceEntry registration,
+            Request request,
+            Context context,
+            Timeout.Budget timeout);
 
-    CompletionStage<Outcome<JwkSet>> loadPublic(PublicRequest request, Context context, Timeout.Budget timeout);
+    /**
+     * Loads the public key set exposed by one issuer and use.
+     *
+     * @param registration exact Source registration requesting the keys
+     * @param request      validated public-key lookup coordinates
+     * @param context      immutable non-secret invocation context
+     * @param timeout      shared end-to-end operation budget
+     * @return asynchronous project loading outcome
+     */
+    CompletionStage<Outcome<PublicRecord>> loadPublic(
+            Registration.SourceEntry registration,
+            PublicRequest request,
+            Context context,
+            Timeout.Budget timeout);
 
+    /**
+     * Identifies one exact cryptographic key required by a protocol operation.
+     *
+     * @param issuer    expected key issuer
+     * @param keyId     optional exact key identifier
+     * @param use       expected protocol use
+     * @param algorithm expected registered algorithm
+     * @param at        required validity instant
+     */
     record Request(String issuer, Optional<String> keyId, String use, String algorithm, Instant at) {
 
+        /**
+         * Validates one exact cryptographic key lookup request.
+         */
         public Request {
             Assert.notBlank(issuer, "Key request issuer must not be blank");
             Assert.notNull(keyId, "Key request identifier container must not be null");
@@ -54,21 +93,56 @@ public interface KeyLoader {
             Assert.notBlank(algorithm, "Key request algorithm must not be blank");
             Assert.notNull(at, "Key request validity instant must not be null");
         }
+
     }
 
+    /**
+     * Identifies the public key set required by a protocol operation.
+     *
+     * @param issuer expected key issuer
+     * @param use    expected protocol use
+     * @param at     required validity instant
+     */
     record PublicRequest(String issuer, String use, Instant at) {
 
+        /**
+         * Validates one public-key-set lookup request.
+         */
         public PublicRequest {
             Assert.notBlank(issuer, "Public key request issuer must not be blank");
             Assert.notBlank(use, "Public key request use must not be blank");
             Assert.notNull(at, "Public key request validity instant must not be null");
         }
+
     }
 
     /**
      * Project-adapted key material awaiting framework parsing.
+     *
+     * @param sourceId  exact Source identifier that owns the returned data
+     * @param issuer    returned issuer
+     * @param keyId     returned key identifier
+     * @param use       returned protocol use
+     * @param algorithm returned registered algorithm
+     * @param key       returned key material
+     * @param notBefore inclusive validity start
+     * @param notAfter  exclusive validity end
      */
-    record Record(String issuer, String keyId, String use, String algorithm, Key key, Instant notBefore,
-            Instant notAfter) {
+    record Record(String sourceId, String issuer, String keyId, String use, String algorithm, Key key,
+            Instant notBefore, Instant notAfter) {
+
     }
+
+    /**
+     * Project-adapted public key set awaiting framework parsing.
+     *
+     * @param sourceId exact Source identifier that owns the returned data
+     * @param issuer   returned issuer
+     * @param use      returned protocol use
+     * @param keys     public-only JSON Web Key set
+     */
+    record PublicRecord(String sourceId, String issuer, String use, JwkSet keys) {
+
+    }
+
 }

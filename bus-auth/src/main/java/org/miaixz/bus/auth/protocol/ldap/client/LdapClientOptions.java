@@ -21,6 +21,7 @@ package org.miaixz.bus.auth.protocol.ldap.client;
 
 import java.util.*;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Options;
 import org.miaixz.bus.auth.protocol.ldap.DistinguishedName;
@@ -171,10 +172,10 @@ public record LdapClientOptions(String host, int port, SecurityMode securityMode
     public String toString() {
         return "LdapClientOptions[host=" + host + ", port=" + port + ", securityMode=" + securityMode + ", searchBase="
                 + searchBase + ", usernameAttribute=" + usernameAttribute + ", attributes=" + attributes + ", bindDn="
-                + (bindDn.isPresent() ? "[PRESENT]" : "[ABSENT]") + ", bindCredential="
-                + (bindCredential.isPresent() ? "[REDACTED]" : "[ABSENT]") + ", timeLimitSeconds=" + timeLimitSeconds
-                + ", maximumMessageBytes=" + maximumMessageBytes + ", maximumBerDepth=" + maximumBerDepth
-                + Symbol.BRACKET_RIGHT;
+                + (bindDn.isPresent() ? "[PRESENT]" : Builder.ABSENT_VALUE) + ", bindCredential="
+                + (bindCredential.isPresent() ? Builder.REDACTED_VALUE : Builder.ABSENT_VALUE) + ", timeLimitSeconds="
+                + timeLimitSeconds + ", maximumMessageBytes=" + maximumMessageBytes + ", maximumBerDepth="
+                + maximumBerDepth + Symbol.BRACKET_RIGHT;
     }
 
     /**

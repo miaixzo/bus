@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2ErrorCode;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2ErrorResponse;
@@ -32,6 +33,7 @@ import org.miaixz.bus.auth.protocol.oidc.UserInfoRequest;
 import org.miaixz.bus.auth.protocol.oidc.UserInfoResponse;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -60,7 +62,7 @@ public final class UserInfoCodec {
     /**
      * Maximum accepted UserInfo or OAuth error JSON response size.
      */
-    private static final long MAXIMUM_JSON_BYTES = Normal.MEBI;
+    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Externally selected provider-neutral JSON implementation.
@@ -106,7 +108,8 @@ public final class UserInfoCodec {
                 padding = true;
                 continue;
             }
-            final boolean valid = character >= 'A' && character <= 'Z' || character >= 'a' && character <= 'z'
+            final boolean valid = character >= Symbol.C_UPPER_A && character <= Symbol.C_UPPER_Z
+                    || character >= Symbol.C_LOWER_A && character <= Symbol.C_LOWER_Z
                     || character >= Symbol.C_ZERO && character <= Symbol.C_NINE || character == Symbol.C_MINUS
                     || character == Symbol.C_DOT || character == Symbol.C_UNDERLINE || character == Symbol.C_TILDE
                     || character == Symbol.C_PLUS || character == Symbol.C_SLASH;

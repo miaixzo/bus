@@ -107,6 +107,9 @@ public final class VendorDriver<O extends VendorOptions<?>> {
 
     /**
      * Creates the checked adapter binding for one declared variant.
+     *
+     * @param variant declared Vendor variant
+     * @return checked adapter binding
      */
     AdapterBindings.Binding binding(final Vendor.Variant variant) {
         final VendorAdapter.Factory<O> factory = factories
