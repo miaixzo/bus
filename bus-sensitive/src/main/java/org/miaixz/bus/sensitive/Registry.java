@@ -78,8 +78,8 @@ public final class Registry {
         }
         final EnumValue.Masking type = provider.type();
         if (type == null) {
-            throw new IllegalArgumentException("Sensitive provider type must not be null: "
-                    + provider.getClass().getName());
+            throw new IllegalArgumentException(
+                    "Sensitive provider type must not be null: " + provider.getClass().getName());
         }
         Logger.debug(
                 true,

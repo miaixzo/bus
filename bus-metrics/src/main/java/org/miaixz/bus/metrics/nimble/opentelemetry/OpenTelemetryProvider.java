@@ -135,11 +135,11 @@ public class OpenTelemetryProvider implements Provider {
      * @return a Counter backed by an OTel LongCounter
      */
     @Override
-    public org.miaixz.bus.metrics.nimble.Counter counter(String name, Tag... tags) {
+    public Counter counter(String name, Tag... tags) {
         tags = CardinalityGuard.enforce(name, tags);
         Tag[] finalTags = tags;
         LongCounter c = otelMeter.counterBuilder(name).build();
-        return new org.miaixz.bus.metrics.nimble.Counter() {
+        return new Counter() {
 
             /**
              * Cumulative event count; updated on each increment call.
@@ -277,11 +277,11 @@ public class OpenTelemetryProvider implements Provider {
      * @return a RatePair tracking success/error rates
      */
     @Override
-    public org.miaixz.bus.metrics.nimble.RatePair ratePair(String name, Tag... tags) {
+    public RatePair ratePair(String name, Tag... tags) {
         org.miaixz.bus.metrics.nimble.Meter total = meter(name + ".total", tags);
         org.miaixz.bus.metrics.nimble.Meter errors = meter(name + ".errors", tags);
         org.miaixz.bus.metrics.nimble.Meter successes = meter(name + ".successes", tags);
-        return new org.miaixz.bus.metrics.nimble.RatePair() {
+        return new RatePair() {
 
             /**
              * Records a successful event, incrementing both total and successes meters.
@@ -365,7 +365,7 @@ public class OpenTelemetryProvider implements Provider {
      * @return a Gauge that also caches the last observed value for local reads
      */
     @Override
-    public <T> org.miaixz.bus.metrics.nimble.Gauge gauge(String name, T stateObj, ToDoubleFunction<T> fn, Tag... tags) {
+    public <T> Gauge gauge(String name, T stateObj, ToDoubleFunction<T> fn, Tag... tags) {
         tags = CardinalityGuard.enforce(name, tags);
         Tag[] finalTags = tags;
         AtomicReference<Double> last = new AtomicReference<>(0.0);
@@ -385,11 +385,11 @@ public class OpenTelemetryProvider implements Provider {
      * @return a Timer backed by an OTel DoubleHistogram
      */
     @Override
-    public org.miaixz.bus.metrics.nimble.Timer timer(String name, Tag... tags) {
+    public Timer timer(String name, Tag... tags) {
         tags = CardinalityGuard.enforce(name, tags);
         Tag[] finalTags = tags;
         DoubleHistogram h = otelMeter.histogramBuilder(name).setUnit("s").build();
-        return new org.miaixz.bus.metrics.nimble.Timer() {
+        return new Timer() {
 
             /**
              * Starts a timer sample and returns a handle that records the duration on stop.
@@ -485,7 +485,7 @@ public class OpenTelemetryProvider implements Provider {
              * @return this timer
              */
             @Override
-            public org.miaixz.bus.metrics.nimble.Timer onViolation(
+            public Timer onViolation(
                     double percentile,
                     long threshold,
                     TimeUnit unit,
@@ -514,11 +514,11 @@ public class OpenTelemetryProvider implements Provider {
      * @return a Histogram backed by an OTel DoubleHistogram
      */
     @Override
-    public org.miaixz.bus.metrics.nimble.Histogram histogram(String name, Tag... tags) {
+    public Histogram histogram(String name, Tag... tags) {
         tags = CardinalityGuard.enforce(name, tags);
         Tag[] finalTags = tags;
         DoubleHistogram h = otelMeter.histogramBuilder(name).build();
-        return new org.miaixz.bus.metrics.nimble.Histogram() {
+        return new Histogram() {
 
             /**
              * Records a single observation value to the OTel histogram.
@@ -591,11 +591,11 @@ public class OpenTelemetryProvider implements Provider {
      * @return an LlmTimer for tracking LLM request latency, tokens, and errors
      */
     @Override
-    public org.miaixz.bus.metrics.nimble.LlmTimer llmTimer(String name, Tag... tags) {
+    public LlmTimer llmTimer(String name, Tag... tags) {
         // OTel GenAI SIG 2025 conventions
         return (model, provider_, operation) -> {
             long startNs = System.nanoTime();
-            return new org.miaixz.bus.metrics.nimble.LlmSample() {
+            return new LlmSample() {
 
                 /**
                  * Nanosecond timestamp of the first token; -1 if not yet recorded.
@@ -687,7 +687,7 @@ public class OpenTelemetryProvider implements Provider {
      * Returns an empty iterable; OTel registry enumeration is not supported.
      */
     @Override
-    public Iterable<org.miaixz.bus.metrics.nimble.Counter> counters() {
+    public Iterable<Counter> counters() {
         return Collections.emptyList();
     }
 
@@ -703,7 +703,7 @@ public class OpenTelemetryProvider implements Provider {
      * Returns an empty iterable; OTel registry enumeration is not supported.
      */
     @Override
-    public Iterable<org.miaixz.bus.metrics.nimble.Gauge> gauges() {
+    public Iterable<Gauge> gauges() {
         return Collections.emptyList();
     }
 
@@ -711,7 +711,7 @@ public class OpenTelemetryProvider implements Provider {
      * Returns an empty iterable; OTel registry enumeration is not supported.
      */
     @Override
-    public Iterable<org.miaixz.bus.metrics.nimble.Timer> timers() {
+    public Iterable<Timer> timers() {
         return Collections.emptyList();
     }
 
@@ -719,7 +719,7 @@ public class OpenTelemetryProvider implements Provider {
      * Returns an empty iterable; OTel registry enumeration is not supported.
      */
     @Override
-    public Iterable<org.miaixz.bus.metrics.nimble.Histogram> histograms() {
+    public Iterable<Histogram> histograms() {
         return Collections.emptyList();
     }
 
@@ -727,7 +727,7 @@ public class OpenTelemetryProvider implements Provider {
      * Returns an empty iterable; OTel registry enumeration is not supported.
      */
     @Override
-    public Iterable<org.miaixz.bus.metrics.nimble.LlmTimer> llmTimers() {
+    public Iterable<LlmTimer> llmTimers() {
         return Collections.emptyList();
     }
 

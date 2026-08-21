@@ -24,8 +24,8 @@
  * Provides a consistent API for loading and accessing application settings.
  *
  * <p>
- * Includes configuration formats, typed value access, resource-backed settings, and readers for properties, YAML,
- * TOML, and INI documents.
+ * Includes configuration formats, typed value access, resource-backed settings, and readers for properties, YAML, TOML,
+ * and INI documents.
  *
  * @author Kimi Liu
  */

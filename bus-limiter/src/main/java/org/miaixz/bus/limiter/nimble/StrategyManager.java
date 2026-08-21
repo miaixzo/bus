@@ -60,8 +60,8 @@ public class StrategyManager {
         }
         final StrategyMode type = provider.type();
         if (type == null) {
-            throw new IllegalArgumentException("Limiter provider type must not be null: "
-                    + provider.getClass().getName());
+            throw new IllegalArgumentException(
+                    "Limiter provider type must not be null: " + provider.getClass().getName());
         }
         final Provider previous = map.putIfAbsent(type, provider);
         if (previous != null) {

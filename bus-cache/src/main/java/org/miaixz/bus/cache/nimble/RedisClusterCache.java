@@ -19,7 +19,14 @@
 */
 package org.miaixz.bus.cache.nimble;
 
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Executor;
+import java.util.function.Supplier;
+
 import jakarta.annotation.PreDestroy;
+
 import org.miaixz.bus.cache.Builder;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Serializer;
@@ -28,16 +35,11 @@ import org.miaixz.bus.cache.serialize.Hessian2Serializer;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
+
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.params.ScanParams;
 import redis.clients.jedis.params.SetParams;
 import redis.clients.jedis.resps.ScanResult;
-
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executor;
-import java.util.function.Supplier;
 
 /**
  * A Redis Cluster implementation of {@link CacheX} using the Jedis client.
@@ -400,7 +402,7 @@ public class RedisClusterCache<K, V> implements CacheX<K, V>, AutoCloseable {
         return submit(() -> {
             byte[] script = ("if redis.call('GET', KEYS[1]) == ARGV[1] then "
                     + "redis.call('SET', KEYS[1], ARGV[2], 'PX', ARGV[3]); return 1 else return 0 end")
-                    .getBytes(Charset.UTF_8);
+                            .getBytes(Charset.UTF_8);
             return Long.valueOf(1L).equals(
                     jedisCluster.eval(script, List.of(keyBytes), List.of(expectedBytes, updateBytes, ttlBytes)));
         });
