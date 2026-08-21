@@ -111,8 +111,8 @@ public class NLPFactory {
             if (provider != null) {
                 final String type = provider.type();
                 if (type == null || type.isBlank()) {
-                    throw new InternalException("NLP provider type must not be null or blank: "
-                            + provider.getClass().getName());
+                    throw new InternalException(
+                            "NLP provider type must not be null or blank: " + provider.getClass().getName());
                 }
                 if (!type.equalsIgnoreCase(requested)) {
                     continue;

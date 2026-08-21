@@ -753,6 +753,11 @@ public class Normal {
     public static final int _65535 = 0xFFFF;
 
     /**
+     * The number 65536.
+     */
+    public static final int _65536 = 1 << 16;
+
+    /**
      * Reusable Long constant for zero.
      */
     public static final Long LONG_ZERO = 0L;

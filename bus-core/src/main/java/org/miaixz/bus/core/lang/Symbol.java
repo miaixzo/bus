@@ -34,6 +34,11 @@ public class Symbol {
     }
 
     /**
+     * Character: ASCII NUL.
+     */
+    public static final char C_NUL = '\0';
+
+    /**
      * Character: '0'
      */
     public static final char C_ZERO = '0';
@@ -472,6 +477,36 @@ public class Symbol {
      * String: Chinese numeral "億" (hundred million, traditional)
      */
     public static final String U_ONE_HUNDRED_MILLION = Normal.EMPTY + C_U_ONE_HUNDRED_MILLION;
+
+    /**
+     * Character: uppercase 'A'.
+     */
+    public static final char C_UPPER_A = 'A';
+
+    /**
+     * Character: uppercase 'F'.
+     */
+    public static final char C_UPPER_F = 'F';
+
+    /**
+     * Character: uppercase 'Z'.
+     */
+    public static final char C_UPPER_Z = 'Z';
+
+    /**
+     * Character: lowercase 'a'.
+     */
+    public static final char C_LOWER_A = 'a';
+
+    /**
+     * Character: lowercase 'f'.
+     */
+    public static final char C_LOWER_F = 'f';
+
+    /**
+     * Character: lowercase 'z'.
+     */
+    public static final char C_LOWER_Z = 'z';
 
     /**
      * Character: 'X'
