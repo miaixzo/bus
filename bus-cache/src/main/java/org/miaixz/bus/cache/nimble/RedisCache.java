@@ -344,7 +344,7 @@ public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
      * @return {@code true} when asynchronous atomic operations are configured
      */
     @Override
-    public boolean atomic() {
+    public boolean supports() {
         return executor != null;
     }
 

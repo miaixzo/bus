@@ -473,7 +473,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
      * @return {@code true} only for the explicit clock-based atomic configuration
      */
     @Override
-    public boolean atomic() {
+    public boolean supports() {
         return atomicMode;
     }
 
