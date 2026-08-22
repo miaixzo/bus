@@ -41,10 +41,9 @@ module bus.image {
     requires bus.health;
     requires bus.logger;
     requires bus.opencv;
-    requires bus.setting;
 
-    requires static lombok;
     requires static jakarta.json;
+    requires static lombok;
 
     exports org.miaixz.bus.image;
     exports org.miaixz.bus.image.builtin;
@@ -52,14 +51,28 @@ module bus.image {
     exports org.miaixz.bus.image.builtin.ldap;
     exports org.miaixz.bus.image.galaxy;
     exports org.miaixz.bus.image.galaxy.data;
+    exports org.miaixz.bus.image.galaxy.dict.acuson;
+    exports org.miaixz.bus.image.galaxy.dict.acuson_1_2_840_113680_1_0_0910;
+    exports org.miaixz.bus.image.galaxy.dict.acuson_1_2_840_113680_1_0_7f10;
+    exports org.miaixz.bus.image.galaxy.dict.acuson_1_2_840_113680_1_0_7ffe;
+    exports org.miaixz.bus.image.galaxy.dict.agfa;
+    exports org.miaixz.bus.image.galaxy.dict.agfa_adc_compact;
+    exports org.miaixz.bus.image.galaxy.dict.agfa_adc_nx;
+    exports org.miaixz.bus.image.galaxy.dict.agfa_ag_hpstate;
+    exports org.miaixz.bus.image.galaxy.dict.agfa_displayable_images;
+    exports org.miaixz.bus.image.galaxy.dict.agfa_kosd_1_0;
+    exports org.miaixz.bus.image.galaxy.dict.agfa_pacs_archive_mirroring_1_0;
+    exports org.miaixz.bus.image.galaxy.dict.agfa_xeroverse;
+    exports org.miaixz.bus.image.galaxy.dict.agility_overlay;
+    exports org.miaixz.bus.image.galaxy.dict.agility_runtime;
     exports org.miaixz.bus.image.galaxy.dict.AMI_Annotations_01;
     exports org.miaixz.bus.image.galaxy.dict.AMI_Annotations_02;
-    exports org.miaixz.bus.image.galaxy.dict.AMI_ImageContextExt_01;
     exports org.miaixz.bus.image.galaxy.dict.AMI_ImageContext_01;
+    exports org.miaixz.bus.image.galaxy.dict.AMI_ImageContextExt_01;
     exports org.miaixz.bus.image.galaxy.dict.AMI_ImageTransform_01;
-    exports org.miaixz.bus.image.galaxy.dict.AMI_Sequence_AnnotElements_01;
     exports org.miaixz.bus.image.galaxy.dict.AMI_Sequence_Annotations_01;
     exports org.miaixz.bus.image.galaxy.dict.AMI_Sequence_Annotations_02;
+    exports org.miaixz.bus.image.galaxy.dict.AMI_Sequence_AnnotElements_01;
     exports org.miaixz.bus.image.galaxy.dict.AMI_StudyExtensions_01;
     exports org.miaixz.bus.image.galaxy.dict.APEX_PRIVATE;
     exports org.miaixz.bus.image.galaxy.dict.Applicare_Centricity_Radiology_Web_Version_1_0;
@@ -70,27 +83,36 @@ module bus.image {
     exports org.miaixz.bus.image.galaxy.dict.Applicare_RadWorks_Version_6_0;
     exports org.miaixz.bus.image.galaxy.dict.Applicare_RadWorks_Version_6_0_Summary;
     exports org.miaixz.bus.image.galaxy.dict.Applicare_Workflow_Version_1_0;
+    exports org.miaixz.bus.image.galaxy.dict.archive;
     exports org.miaixz.bus.image.galaxy.dict.BioPri3D;
     exports org.miaixz.bus.image.galaxy.dict.CARDIO_D_R__1_0;
     exports org.miaixz.bus.image.galaxy.dict.CARDIO_D_R__1_0_siemens;
     exports org.miaixz.bus.image.galaxy.dict.DIDI_TO_PCR_1_1;
     exports org.miaixz.bus.image.galaxy.dict.DIGISCAN_IMAGE;
+    exports org.miaixz.bus.image.galaxy.dict.DL_INTERNAL_USE;
     exports org.miaixz.bus.image.galaxy.dict.DLX_ANNOT_01;
     exports org.miaixz.bus.image.galaxy.dict.DLX_EXAMS_01;
     exports org.miaixz.bus.image.galaxy.dict.DLX_LKUP_01;
     exports org.miaixz.bus.image.galaxy.dict.DLX_PATNT_01;
     exports org.miaixz.bus.image.galaxy.dict.DLX_SERIE_01;
-    exports org.miaixz.bus.image.galaxy.dict.DL_INTERNAL_USE;
+    exports org.miaixz.bus.image.galaxy.dict.elscint;
     exports org.miaixz.bus.image.galaxy.dict.ESOFT_DICOM_ECAT_OWNERCODE;
     exports org.miaixz.bus.image.galaxy.dict.FFP_DATA;
+    exports org.miaixz.bus.image.galaxy.dict.GE_1_2_840_113708_794_1_1_2_0;
+    exports org.miaixz.bus.image.galaxy.dict.GE_____From_Adantage_Review_CS;
+    exports org.miaixz.bus.image.galaxy.dict.GE_Generic_Data;
+    exports org.miaixz.bus.image.galaxy.dict.GE_GENESIS_REV3_0;
+    exports org.miaixz.bus.image.galaxy.dict.GE_GROUP;
+    exports org.miaixz.bus.image.galaxy.dict.GE_Informatics_Data;
+    exports org.miaixz.bus.image.galaxy.dict.GE_LUT_Asymmetry_Parameter;
     exports org.miaixz.bus.image.galaxy.dict.GEHC_CT_ADVAPP_001;
     exports org.miaixz.bus.image.galaxy.dict.GEIIS;
     exports org.miaixz.bus.image.galaxy.dict.GEIIS_IW;
     exports org.miaixz.bus.image.galaxy.dict.GEIIS_PACS;
     exports org.miaixz.bus.image.galaxy.dict.GEIIS_RA1000;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_0039;
-    exports org.miaixz.bus.image.galaxy.dict.GEMS_3DSTATE_001;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_3D_INTVL_01;
+    exports org.miaixz.bus.image.galaxy.dict.GEMS_3DSTATE_001;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_ACQU_01;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_ACRQA_1_0_BLOCK1;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_ACRQA_1_0_BLOCK2;
@@ -103,10 +125,10 @@ module bus.image {
     exports org.miaixz.bus.image.galaxy.dict.GEMS_ADWSoft_DPO1;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_AWSOFT_CD1;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_AWSoft_SB1;
-    exports org.miaixz.bus.image.galaxy.dict.GEMS_CTHD_01;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_CT_CARDIAC_001;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_CT_HINO_01;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_CT_VES_01;
+    exports org.miaixz.bus.image.galaxy.dict.GEMS_CTHD_01;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_DL_FRAME_01;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_DL_IMG_01;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_DL_PATNT_01;
@@ -133,8 +155,8 @@ module bus.image {
     exports org.miaixz.bus.image.galaxy.dict.GEMS_PETD_01;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_RELA_01;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_SEND_02;
-    exports org.miaixz.bus.image.galaxy.dict.GEMS_SENOCRYSTAL_V1;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_SENO_02;
+    exports org.miaixz.bus.image.galaxy.dict.GEMS_SENOCRYSTAL_V1;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_SERS_01;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_STDY_01;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_Ultrasound_ExamGroup_001;
@@ -144,22 +166,39 @@ module bus.image {
     exports org.miaixz.bus.image.galaxy.dict.GEMS_XELPRV_01;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_XR3DCAL_01;
     exports org.miaixz.bus.image.galaxy.dict.GEMS_YMHD_01;
-    exports org.miaixz.bus.image.galaxy.dict.GE_1_2_840_113708_794_1_1_2_0;
-    exports org.miaixz.bus.image.galaxy.dict.GE_GENESIS_REV3_0;
-    exports org.miaixz.bus.image.galaxy.dict.GE_GROUP;
-    exports org.miaixz.bus.image.galaxy.dict.GE_Generic_Data;
-    exports org.miaixz.bus.image.galaxy.dict.GE_Informatics_Data;
-    exports org.miaixz.bus.image.galaxy.dict.GE_LUT_Asymmetry_Parameter;
-    exports org.miaixz.bus.image.galaxy.dict.GE_____From_Adantage_Review_CS;
+    exports org.miaixz.bus.image.galaxy.dict.http___www_gemedicalsystems_com_it_solutions_bamwallthickness_1_0;
+    exports org.miaixz.bus.image.galaxy.dict.http___www_gemedicalsystems_com_it_solutions_orthoview_2_1;
+    exports org.miaixz.bus.image.galaxy.dict.http___www_gemedicalsystems_com_it_solutions_rad_pacs_;
     exports org.miaixz.bus.image.galaxy.dict.ISI;
     exports org.miaixz.bus.image.galaxy.dict.KINETDX;
     exports org.miaixz.bus.image.galaxy.dict.KINETDX_GRAPHICS;
     exports org.miaixz.bus.image.galaxy.dict.KRETZ_US;
     exports org.miaixz.bus.image.galaxy.dict.Mayo_IBM_Archive_Project;
+    exports org.miaixz.bus.image.galaxy.dict.mitra_linked_attributes_1_0;
+    exports org.miaixz.bus.image.galaxy.dict.mitra_markup_1_0;
+    exports org.miaixz.bus.image.galaxy.dict.mitra_object_attributes_1_0;
+    exports org.miaixz.bus.image.galaxy.dict.mitra_object_document_1_0;
+    exports org.miaixz.bus.image.galaxy.dict.mitra_object_utf8_attributes_1_0;
+    exports org.miaixz.bus.image.galaxy.dict.mitra_presentation_1_0;
+    exports org.miaixz.bus.image.galaxy.dict.Philips_EV_Imaging_DD_022;
+    exports org.miaixz.bus.image.galaxy.dict.Philips_Imaging_DD_001;
     exports org.miaixz.bus.image.galaxy.dict.PHILIPS_IMAGING_DD_001_1;
+    exports org.miaixz.bus.image.galaxy.dict.Philips_Imaging_DD_002;
+    exports org.miaixz.bus.image.galaxy.dict.Philips_Imaging_DD_065;
+    exports org.miaixz.bus.image.galaxy.dict.Philips_Imaging_DD_067;
+    exports org.miaixz.bus.image.galaxy.dict.Philips_Imaging_DD_070;
+    exports org.miaixz.bus.image.galaxy.dict.Philips_Imaging_DD_073;
+    exports org.miaixz.bus.image.galaxy.dict.Philips_Imaging_DD_124;
+    exports org.miaixz.bus.image.galaxy.dict.Philips_Imaging_DD_129;
     exports org.miaixz.bus.image.galaxy.dict.PHILIPS_MR;
     exports org.miaixz.bus.image.galaxy.dict.PHILIPS_MR_1;
+    exports org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_001;
     exports org.miaixz.bus.image.galaxy.dict.PHILIPS_MR_IMAGING_DD_001_1;
+    exports org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_002;
+    exports org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_003;
+    exports org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_004;
+    exports org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_005;
+    exports org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_006;
     exports org.miaixz.bus.image.galaxy.dict.PHILIPS_MR_LAST;
     exports org.miaixz.bus.image.galaxy.dict.PHILIPS_MR_PART;
     exports org.miaixz.bus.image.galaxy.dict.PHILIPS_MR_PART_12;
@@ -169,25 +208,6 @@ module bus.image {
     exports org.miaixz.bus.image.galaxy.dict.PHILIPS_MR_R5_6_PART;
     exports org.miaixz.bus.image.galaxy.dict.PHILIPS_MR_SPECTRO_1;
     exports org.miaixz.bus.image.galaxy.dict.PHILIPS_NM__Private;
-    exports org.miaixz.bus.image.galaxy.dict.PHILIPS_XCT__Private;
-    exports org.miaixz.bus.image.galaxy.dict.PMI_Private_Calibration_Module_Version_2_0;
-    exports org.miaixz.bus.image.galaxy.dict.PMS_THORA_5_1;
-    exports org.miaixz.bus.image.galaxy.dict.POLYTRON_SMS_2_5;
-    exports org.miaixz.bus.image.galaxy.dict.Philips_EV_Imaging_DD_022;
-    exports org.miaixz.bus.image.galaxy.dict.Philips_Imaging_DD_001;
-    exports org.miaixz.bus.image.galaxy.dict.Philips_Imaging_DD_002;
-    exports org.miaixz.bus.image.galaxy.dict.Philips_Imaging_DD_065;
-    exports org.miaixz.bus.image.galaxy.dict.Philips_Imaging_DD_067;
-    exports org.miaixz.bus.image.galaxy.dict.Philips_Imaging_DD_070;
-    exports org.miaixz.bus.image.galaxy.dict.Philips_Imaging_DD_073;
-    exports org.miaixz.bus.image.galaxy.dict.Philips_Imaging_DD_124;
-    exports org.miaixz.bus.image.galaxy.dict.Philips_Imaging_DD_129;
-    exports org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_001;
-    exports org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_002;
-    exports org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_003;
-    exports org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_004;
-    exports org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_005;
-    exports org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_006;
     exports org.miaixz.bus.image.galaxy.dict.Philips_NM_Private_Group;
     exports org.miaixz.bus.image.galaxy.dict.Philips_PET_Private_Group;
     exports org.miaixz.bus.image.galaxy.dict.Philips_RAD_Imaging_DD_001;
@@ -214,10 +234,19 @@ module bus.image {
     exports org.miaixz.bus.image.galaxy.dict.Philips_US_Imaging_DD_109;
     exports org.miaixz.bus.image.galaxy.dict.Philips_US_Imaging_DD_113;
     exports org.miaixz.bus.image.galaxy.dict.Philips_X_ray_Imaging_DD_001;
+    exports org.miaixz.bus.image.galaxy.dict.PHILIPS_XCT__Private;
+    exports org.miaixz.bus.image.galaxy.dict.PMI_Private_Calibration_Module_Version_2_0;
+    exports org.miaixz.bus.image.galaxy.dict.PMS_THORA_5_1;
+    exports org.miaixz.bus.image.galaxy.dict.POLYTRON_SMS_2_5;
     exports org.miaixz.bus.image.galaxy.dict.QUASAR_INTERNAL_USE;
-    exports org.miaixz.bus.image.galaxy.dict.REPORT_FROM_APP;
     exports org.miaixz.bus.image.galaxy.dict.RadWorksTBR;
+    exports org.miaixz.bus.image.galaxy.dict.REPORT_FROM_APP;
     exports org.miaixz.bus.image.galaxy.dict.SHS_MagicView_300;
+    exports org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Image_Stamp;
+    exports org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Lab_Settings;
+    exports org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Post_Processing;
+    exports org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Raw_Image_Settings;
+    exports org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Version;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_AX_INSPACE_EP;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_CM_VA0__ACQU;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_CM_VA0__CMS;
@@ -247,9 +276,6 @@ module bus.image {
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_IMAGE_SHADOW_ATTRIBUTES;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_ISI;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_MED;
-    exports org.miaixz.bus.image.galaxy.dict.SIEMENS_MEDCOM_HEADER;
-    exports org.miaixz.bus.image.galaxy.dict.SIEMENS_MEDCOM_HEADER2;
-    exports org.miaixz.bus.image.galaxy.dict.SIEMENS_MEDCOM_OOG;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_DISPLAY;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_DISPLAY_0000;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_DISPLAY_0001;
@@ -269,6 +295,9 @@ module bus.image {
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_SMS_USG_S2000_3D_VOLUME;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_SP_DXMG_WH_AWS_1;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_SYNGO_RT;
+    exports org.miaixz.bus.image.galaxy.dict.SIEMENS_MEDCOM_HEADER;
+    exports org.miaixz.bus.image.galaxy.dict.SIEMENS_MEDCOM_HEADER2;
+    exports org.miaixz.bus.image.galaxy.dict.SIEMENS_MEDCOM_OOG;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_MI_RWVM_SUV;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_CM_03;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_DATAMAPPING_ATTRIBUTES;
@@ -290,6 +319,7 @@ module bus.image {
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_RA_PLANE_A;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_RA_PLANE_B;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_RIS;
+    exports org.miaixz.bus.image.galaxy.dict.SIEMENS_Selma;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_SERIES_SHADOW_ATTRIBUTES;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_SIENET;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_SMS_AX__ACQ_1_0;
@@ -315,7 +345,7 @@ module bus.image {
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_ULTRA_SOUND_TOYON_DATA_STREAMING;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_VOLUME;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_WORKFLOW;
-    exports org.miaixz.bus.image.galaxy.dict.SIEMENS_Selma;
+    exports org.miaixz.bus.image.galaxy.dict.Siemens_Ultrasound_Miscellaneous;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_Ultrasound_S2000;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_Ultrasound_SC2000;
     exports org.miaixz.bus.image.galaxy.dict.SIEMENS_WH_SR_1_0;
@@ -346,37 +376,6 @@ module bus.image {
     exports org.miaixz.bus.image.galaxy.dict.SPI_P_XSB_DCI_Release_1;
     exports org.miaixz.bus.image.galaxy.dict.SPI_P_XSB_VISUB_Release_1;
     exports org.miaixz.bus.image.galaxy.dict.SPI_Release_1;
-    exports org.miaixz.bus.image.galaxy.dict.Siemens_Ultrasound_Miscellaneous;
-    exports org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Image_Stamp;
-    exports org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Lab_Settings;
-    exports org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Post_Processing;
-    exports org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Raw_Image_Settings;
-    exports org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Version;
-    exports org.miaixz.bus.image.galaxy.dict.acuson;
-    exports org.miaixz.bus.image.galaxy.dict.acuson_1_2_840_113680_1_0_0910;
-    exports org.miaixz.bus.image.galaxy.dict.acuson_1_2_840_113680_1_0_7f10;
-    exports org.miaixz.bus.image.galaxy.dict.acuson_1_2_840_113680_1_0_7ffe;
-    exports org.miaixz.bus.image.galaxy.dict.agfa;
-    exports org.miaixz.bus.image.galaxy.dict.agfa_adc_compact;
-    exports org.miaixz.bus.image.galaxy.dict.agfa_adc_nx;
-    exports org.miaixz.bus.image.galaxy.dict.agfa_ag_hpstate;
-    exports org.miaixz.bus.image.galaxy.dict.agfa_displayable_images;
-    exports org.miaixz.bus.image.galaxy.dict.agfa_kosd_1_0;
-    exports org.miaixz.bus.image.galaxy.dict.agfa_pacs_archive_mirroring_1_0;
-    exports org.miaixz.bus.image.galaxy.dict.agfa_xeroverse;
-    exports org.miaixz.bus.image.galaxy.dict.agility_overlay;
-    exports org.miaixz.bus.image.galaxy.dict.agility_runtime;
-    exports org.miaixz.bus.image.galaxy.dict.archive;
-    exports org.miaixz.bus.image.galaxy.dict.elscint;
-    exports org.miaixz.bus.image.galaxy.dict.http___www_gemedicalsystems_com_it_solutions_bamwallthickness_1_0;
-    exports org.miaixz.bus.image.galaxy.dict.http___www_gemedicalsystems_com_it_solutions_orthoview_2_1;
-    exports org.miaixz.bus.image.galaxy.dict.http___www_gemedicalsystems_com_it_solutions_rad_pacs_;
-    exports org.miaixz.bus.image.galaxy.dict.mitra_linked_attributes_1_0;
-    exports org.miaixz.bus.image.galaxy.dict.mitra_markup_1_0;
-    exports org.miaixz.bus.image.galaxy.dict.mitra_object_attributes_1_0;
-    exports org.miaixz.bus.image.galaxy.dict.mitra_object_document_1_0;
-    exports org.miaixz.bus.image.galaxy.dict.mitra_object_utf8_attributes_1_0;
-    exports org.miaixz.bus.image.galaxy.dict.mitra_presentation_1_0;
     exports org.miaixz.bus.image.galaxy.dict.syngoDynamics;
     exports org.miaixz.bus.image.galaxy.dict.syngoDynamics_Reporting;
     exports org.miaixz.bus.image.galaxy.io;
@@ -415,18 +414,18 @@ module bus.image {
     uses org.miaixz.bus.image.galaxy.data.ElementDictionary;
 
     provides java.nio.file.spi.FileTypeDetector
-            with org.miaixz.bus.image.galaxy.io.ImageFileDetector, org.miaixz.bus.image.galaxy.io.GenozipFileDetector;
+            with org.miaixz.bus.image.galaxy.io.GenozipFileDetector, org.miaixz.bus.image.galaxy.io.ImageFileDetector;
 
     provides javax.imageio.spi.ImageReaderSpi
-            with org.miaixz.bus.image.nimble.ImageReaderSpi, org.miaixz.bus.image.nimble.reader.RLEImageioReaderSpi,
+            with org.miaixz.bus.image.nimble.ImageReaderSpi, org.miaixz.bus.image.nimble.opencv.NativeJ2kImageReaderSpi,
             org.miaixz.bus.image.nimble.opencv.NativeJLSImageReaderSpi,
             org.miaixz.bus.image.nimble.opencv.NativeJPEGImageReaderSpi,
-            org.miaixz.bus.image.nimble.opencv.NativeJ2kImageReaderSpi,
-            org.miaixz.bus.image.nimble.opencv.NativeJXLImageReaderSpi;
+            org.miaixz.bus.image.nimble.opencv.NativeJXLImageReaderSpi,
+            org.miaixz.bus.image.nimble.reader.RLEImageioReaderSpi;
 
-    provides javax.imageio.spi.ImageWriterSpi with org.miaixz.bus.image.nimble.opencv.NativeJLSImageWriterSpi,
+    provides javax.imageio.spi.ImageWriterSpi with org.miaixz.bus.image.nimble.opencv.NativeJ2kImageWriterSpi,
+            org.miaixz.bus.image.nimble.opencv.NativeJLSImageWriterSpi,
             org.miaixz.bus.image.nimble.opencv.NativeJPEGImageWriterSpi,
-            org.miaixz.bus.image.nimble.opencv.NativeJ2kImageWriterSpi,
             org.miaixz.bus.image.nimble.opencv.NativeJXLImageWriterSpi;
 
 }

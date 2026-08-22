@@ -31,17 +31,15 @@
  */
 module bus.mapper {
 
-    requires java.compiler;
     requires java.desktop;
     requires java.sql;
 
     requires bus.core;
     requires bus.logger;
 
-    requires static lombok;
     requires static jakarta.persistence;
+    requires static lombok;
     requires static org.mybatis;
-    requires static org.mybatis.spring;
 
     exports org.miaixz.bus.mapper;
     exports org.miaixz.bus.mapper.annotation;

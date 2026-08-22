@@ -33,14 +33,12 @@ module bus.cortex {
 
     requires bus.cache;
     requires bus.core;
-    requires bus.crypto;
     requires bus.extra;
     requires bus.fabric;
-    requires bus.health;
     requires bus.logger;
 
-    requires static lombok;
     requires static jakarta.persistence;
+    requires static lombok;
 
     exports org.miaixz.bus.cortex;
     exports org.miaixz.bus.cortex.bridge;

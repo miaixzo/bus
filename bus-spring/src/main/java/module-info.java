@@ -39,27 +39,28 @@ module bus.spring {
     requires bus.extra;
     requires bus.logger;
 
-    requires static lombok;
-    requires static jakarta.persistence;
     requires static jakarta.servlet;
+    requires static lombok;
+    requires static org.aspectj.weaver;
     requires static spring.aop;
     requires static spring.beans;
     requires static spring.boot;
     requires static spring.boot.autoconfigure;
-    requires static spring.boot.webmvc;
     requires static spring.context;
     requires static spring.core;
     requires static spring.jdbc;
     requires static spring.web;
     requires static spring.webmvc;
-    requires static org.aspectj.weaver;
 
     exports org.miaixz.bus.spring;
     exports org.miaixz.bus.spring.annotation;
     exports org.miaixz.bus.spring.aop;
     exports org.miaixz.bus.spring.bean;
+    exports org.miaixz.bus.spring.boot;
     exports org.miaixz.bus.spring.boot.banner;
     exports org.miaixz.bus.spring.boot.condition;
+    exports org.miaixz.bus.spring.boot.environment;
+    exports org.miaixz.bus.spring.boot.listener;
     exports org.miaixz.bus.spring.boot.startup;
     exports org.miaixz.bus.spring.jdbc;
     exports org.miaixz.bus.spring.web;
