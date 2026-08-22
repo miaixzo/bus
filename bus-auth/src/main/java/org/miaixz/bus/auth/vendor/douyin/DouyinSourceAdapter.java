@@ -28,7 +28,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
@@ -37,8 +36,9 @@ import org.miaixz.bus.auth.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.ResponseType;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.*;
 import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.ExternalIdentity;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
@@ -81,19 +81,9 @@ public class DouyinSourceAdapter implements VendorAdapter {
     private static final String MINI_CODE_PURPOSE = "douyin-mini-code";
 
     /**
-     * Maximum accepted Douyin JSON document size.
+     * Registration space used only for replay digest isolation.
      */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum accepted Douyin JSON nesting depth.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
-
-    /**
-     * Registration namespace used only for replay digest isolation.
-     */
-    private final String namespaceId;
+    private final String spaceId;
 
     /**
      * Registered Source identifier copied into verified identities.
@@ -133,19 +123,19 @@ public class DouyinSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Douyin adapter for the selected frozen variant.
      *
-     * @param namespaceId registration namespace used to isolate state, credentials, and replay digests
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Douyin manifest
-     * @param variant     exact selected variant manifest
-     * @param options     decoded externally loaded options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate state, credentials, and replay digests
+     * @param sourceId registered Source identifier
+     * @param manifest selected Douyin manifest
+     * @param variant  exact selected variant manifest
+     * @param options  decoded externally loaded options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, variant, protocol, or options routing is inconsistent
      */
-    public DouyinSourceAdapter(final String namespaceId, final String sourceId, final DouyinManifest manifest,
+    public DouyinSourceAdapter(final String spaceId, final String sourceId, final DouyinManifest manifest,
             final VariantManifest.Variant variant, final DouyinOptions options, final DriverServices services) {
         final DouyinManifest selectedProfile = Assert.notNull(manifest, "Douyin manifest must not be null");
-        this.namespaceId = Assert.notBlank(namespaceId, "Douyin namespace id must not be blank");
+        this.spaceId = Assert.notBlank(spaceId, "Douyin space id must not be blank");
         this.sourceId = Assert.notBlank(sourceId, "Douyin Source id must not be blank");
         this.variant = Assert.notNull(variant, "Douyin manifest must not be null");
         this.options = Assert.notNull(options, "Douyin options must not be null");
@@ -154,12 +144,11 @@ public class DouyinSourceAdapter implements VendorAdapter {
                 || !selectedProfile.variant(options.variant()).equals(variant)
                 || !options.variant().equals(variant.variant()) || !DouyinManifest.ID.equals(options.vendor())
                 || DouyinManifest.OPEN.equals(options.variant()) && variant.protocol() != Protocol.OAUTH2
-                || DouyinManifest.MINI_PROGRAM.equals(options.variant())
-                        && variant.protocol() != Protocol.VENDOR_AUTH) {
+                || DouyinManifest.MINI_PROGRAM.equals(options.variant()) && variant.protocol() != Protocol.HTTPS) {
             throw new ValidateException("Douyin adapter profile, variant, and options must match");
         }
         this.redirectManager = DouyinManifest.OPEN.equals(options.variant())
-                ? RedirectManager.create(namespaceId, sourceId, variant, options, services)
+                ? RedirectManager.create(spaceId, sourceId, variant, options, services)
                 : null;
     }
 
@@ -725,11 +714,11 @@ public class DouyinSourceAdapter implements VendorAdapter {
             final String code,
             final Context context,
             final Timeout timeout) {
-        final var policy = services.securityBaseline().require(Protocol.VENDOR_AUTH);
+        final var policy = services.securityBaseline().require(Protocol.HTTPS);
         return services.securityBaseline().replayGuard(services.replayCache())
                 .register(
-                        namespaceId,
-                        Protocol.VENDOR_AUTH,
+                        spaceId,
+                        Protocol.HTTPS,
                         MINI_AUTHORITY,
                         MINI_CODE_PURPOSE,
                         code,
@@ -779,7 +768,7 @@ public class DouyinSourceAdapter implements VendorAdapter {
                 fields.put("code", new JsonValue.StringValue(code));
                 body = services.jsonProvider().writeValue(new JsonValue.ObjectValue(fields));
                 final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-                try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
+                try (Response response = FabricX.http(services.fabric(), Protocol.HTTPS, timeout).url(endpoint)
                         .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                         .body(body, MediaType.APPLICATION_JSON_TYPE).execute()) {
                     final Outcome<ExternalIdentity> identity = decodeMini(response, timeout);
@@ -927,7 +916,7 @@ public class DouyinSourceAdapter implements VendorAdapter {
                 throw new ValidateException("Douyin response must use HTTP 200 application/json");
             }
             final JsonValue value = services.jsonProvider()
-                    .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                    .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
             if (!(value instanceof JsonValue.ObjectValue object)) {
                 throw new ValidateException("Douyin JSON root must be an object");
             }

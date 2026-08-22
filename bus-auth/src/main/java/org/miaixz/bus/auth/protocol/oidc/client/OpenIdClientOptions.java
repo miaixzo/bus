@@ -206,15 +206,35 @@ public record OpenIdClientOptions(OAuth2ClientOptions oauth2Options, Optional<En
      */
     public static class Builder {
 
+        /**
+         * Immutable OAuth client options extended by this OpenID profile.
+         */
         private final OAuth2ClientOptions oauth2Options;
-        private Optional<Endpoint> discoveryEndpoint = Optional.empty();
-        private Optional<Endpoint> userInfoEndpoint = Optional.empty();
-        private Optional<Endpoint> jwkSetEndpoint = Optional.empty();
-        private Optional<Endpoint> endSessionEndpoint = Optional.empty();
+        /**
+         * Accepted ID Token signing algorithms in caller order.
+         */
         private final Set<JwaAlgorithm> signingAlgorithms = new LinkedHashSet<>();
+        /**
+         * Optional OpenID Provider discovery endpoint.
+         */
+        private Optional<Endpoint> discoveryEndpoint = Optional.empty();
+        /**
+         * Optional UserInfo endpoint.
+         */
+        private Optional<Endpoint> userInfoEndpoint = Optional.empty();
+        /**
+         * Optional provider JWK Set endpoint.
+         */
+        private Optional<Endpoint> jwkSetEndpoint = Optional.empty();
+        /**
+         * Optional relying-party initiated end-session endpoint.
+         */
+        private Optional<Endpoint> endSessionEndpoint = Optional.empty();
 
         /**
          * Creates a build-scoped collector around immutable OAuth 2.x client Options.
+         *
+         * @param oauth2Options immutable OAuth client options
          */
         public Builder(final OAuth2ClientOptions oauth2Options) {
             this.oauth2Options = Assert.notNull(oauth2Options, "OpenID OAuth 2.x options must not be null");

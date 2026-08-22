@@ -28,11 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.miaixz.bus.auth.FabricX.Body;
-import org.miaixz.bus.auth.FabricX.Headers;
-import org.miaixz.bus.auth.FabricX.HeadersBuilder;
-import org.miaixz.bus.auth.FabricX.Request;
-import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.*;
 import org.miaixz.bus.auth.protocol.scim.Group;
 import org.miaixz.bus.auth.protocol.scim.Resource;
 import org.miaixz.bus.auth.protocol.scim.Scim;

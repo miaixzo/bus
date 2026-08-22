@@ -89,6 +89,53 @@ public interface VariantManifest<O extends VendorOptions<?>> {
     }
 
     /**
+     * Defines whether one platform variant forbids, permits, or requires S256 PKCE.
+     * <p>
+     * This is a platform protocol fact. Project options participate only when the manifest explicitly declares
+     * {@link #OPTIONAL}; they can never disable {@link #REQUIRED} or enable {@link #DISABLED}.
+     * </p>
+     *
+     * @author Kimi Liu
+     */
+    enum Pkce {
+
+        /**
+         * Platform forbids PKCE.
+         */
+        DISABLED,
+        /**
+         * Deployment may enable PKCE.
+         */
+        OPTIONAL,
+        /**
+         * Platform always requires PKCE.
+         */
+        REQUIRED;
+
+        /**
+         * Resolves the final PKCE decision from this immutable policy and deployment options.
+         *
+         * @param options selected immutable deployment options
+         * @return whether S256 PKCE must be generated for this Source
+         * @throws ValidateException if options try to enable PKCE for a disabled variant
+         */
+        public boolean resolve(final VendorOptions<?> options) {
+            final VendorOptions<?> checked = Assert.notNull(options, "Vendor PKCE options must not be null");
+            return switch (this) {
+                case DISABLED -> {
+                    if (checked.pkce()) {
+                        throw new ValidateException("Selected Vendor variant does not support PKCE");
+                    }
+                    yield false;
+                }
+                case OPTIONAL -> checked.pkce();
+                case REQUIRED -> true;
+            };
+        }
+
+    }
+
+    /**
      * Holds the immutable common Vendor options form.
      *
      * @author Kimi Liu
@@ -96,7 +143,7 @@ public interface VariantManifest<O extends VendorOptions<?>> {
     class Forms {
 
         /**
-         * Creates a Vendor form encoder namespace instance.
+         * Creates a Vendor form encoder constant holder.
          */
         public Forms() {
             // No initialization required.
@@ -216,53 +263,6 @@ public interface VariantManifest<O extends VendorOptions<?>> {
                 copy.add(Assert.notNull(deviation, "Variant manifest deviation must not be null"));
             }
             deviations = List.copyOf(copy);
-        }
-
-    }
-
-    /**
-     * Defines whether one platform variant forbids, permits, or requires S256 PKCE.
-     * <p>
-     * This is a platform protocol fact. Project options participate only when the manifest explicitly declares
-     * {@link #OPTIONAL}; they can never disable {@link #REQUIRED} or enable {@link #DISABLED}.
-     * </p>
-     *
-     * @author Kimi Liu
-     */
-    enum Pkce {
-
-        /**
-         * Platform forbids PKCE.
-         */
-        DISABLED,
-        /**
-         * Deployment may enable PKCE.
-         */
-        OPTIONAL,
-        /**
-         * Platform always requires PKCE.
-         */
-        REQUIRED;
-
-        /**
-         * Resolves the final PKCE decision from this immutable policy and deployment options.
-         *
-         * @param options selected immutable deployment options
-         * @return whether S256 PKCE must be generated for this Source
-         * @throws ValidateException if options try to enable PKCE for a disabled variant
-         */
-        public boolean resolve(final VendorOptions<?> options) {
-            final VendorOptions<?> checked = Assert.notNull(options, "Vendor PKCE options must not be null");
-            return switch (this) {
-                case DISABLED -> {
-                    if (checked.pkce()) {
-                        throw new ValidateException("Selected Vendor variant does not support PKCE");
-                    }
-                    yield false;
-                }
-                case OPTIONAL -> checked.pkce();
-                case REQUIRED -> true;
-            };
         }
 
     }

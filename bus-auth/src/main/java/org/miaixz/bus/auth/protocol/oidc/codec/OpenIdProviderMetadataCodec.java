@@ -60,16 +60,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class OpenIdProviderMetadataCodec {
 
     /**
-     * Maximum accepted metadata document size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum JSON container nesting accepted from a remote Discovery document.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
-
-    /**
      * Externally selected provider-neutral JSON implementation.
      */
     private final JsonProvider jsonProvider;
@@ -100,7 +90,7 @@ public class OpenIdProviderMetadataCodec {
         if (response.code() != Http.Status.OK) {
             throw new ValidateException("OpenID Connect discovery endpoint must return HTTP 200");
         }
-        if (response.body().length() > MAXIMUM_JSON_BYTES) {
+        if (response.body().length() > Builder.MAXIMUM_DOCUMENT_BYTES) {
             throw new ValidateException("OpenID Connect metadata response exceeds one MiB");
         }
         final MediaType media = response.body().media();
@@ -376,7 +366,8 @@ public class OpenIdProviderMetadataCodec {
         Assert.notNull(metadata, "OpenID Connect Provider Metadata must not be null");
         final Map<String, JsonValue> members;
         try (Response oauth = oauthCodec.encodeResponse(request, metadata.authorizationServerMetadata())) {
-            final JsonValue value = jsonProvider.readValue(oauth.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+            final JsonValue value = jsonProvider
+                    .readValue(oauth.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
             if (!(value instanceof JsonValue.ObjectValue object)) {
                 throw new ValidateException("OAuth authorization server metadata encoder returned a non-object body");
             }
@@ -455,7 +446,8 @@ public class OpenIdProviderMetadataCodec {
         final Response encoded = Assert.notNull(response, "OpenID Connect metadata HTTP response must not be null");
         try (encoded) {
             validateResponse(encoded);
-            final JsonValue root = jsonProvider.readValue(encoded.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+            final JsonValue root = jsonProvider
+                    .readValue(encoded.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
             if (!(root instanceof JsonValue.ObjectValue object)) {
                 throw new ValidateException("OpenID Connect metadata JSON root must be an object");
             }

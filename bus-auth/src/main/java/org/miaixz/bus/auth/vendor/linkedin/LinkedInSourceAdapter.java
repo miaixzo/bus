@@ -28,7 +28,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
@@ -59,11 +58,8 @@ import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -92,16 +88,6 @@ public class LinkedInSourceAdapter implements VendorAdapter {
      * Historical issuer still documented by LinkedIn's current product page.
      */
     private static final String HISTORICAL_ISSUER = "https://www.linkedin.com";
-
-    /**
-     * Maximum bounded JSON document accepted from a LinkedIn endpoint.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum JSON nesting admitted for private LinkedIn wire documents.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._16;
 
     /**
      * Standard and LinkedIn token errors classified as request rejection.
@@ -204,17 +190,17 @@ public class LinkedInSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound LinkedIn adapter from the frozen current-product manifest.
      *
-     * @param namespaceId registration namespace used to isolate browser state and credentials
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected LinkedIn manifest
-     * @param variant     selected default variant manifest
-     * @param options     decoded externally loaded LinkedIn options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate browser state and credentials
+     * @param sourceId registered Source identifier
+     * @param manifest selected LinkedIn manifest
+     * @param variant  selected default variant manifest
+     * @param options  decoded externally loaded LinkedIn options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a required collaborator is {@code null}
      * @throws ValidateException        if the Vendor manifest, variant manifest, options, or security baseline differs
      *                                  from the frozen LinkedIn OIDC variant
      */
-    public LinkedInSourceAdapter(final String namespaceId, final String sourceId, final LinkedInManifest manifest,
+    public LinkedInSourceAdapter(final String spaceId, final String sourceId, final LinkedInManifest manifest,
             final VariantManifest.Variant variant, final LinkedInOptions options, final DriverServices services) {
         Assert.notNull(manifest, "LinkedIn manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "LinkedIn Source id must not be blank");
@@ -231,7 +217,7 @@ public class LinkedInSourceAdapter implements VendorAdapter {
         if (!services.securityBaseline().require(Protocol.OIDC).algorithms().contains(JwaAlgorithm.RS256.name())) {
             throw new ValidateException("LinkedIn RS256 is not enabled by the OIDC security baseline");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), targets.token(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(ISSUER),
@@ -1330,7 +1316,7 @@ public class LinkedInSourceAdapter implements VendorAdapter {
             throw new ValidateException("LinkedIn JSON response charset must be UTF-8");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._16, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("LinkedIn response root must be a JSON object");
         }

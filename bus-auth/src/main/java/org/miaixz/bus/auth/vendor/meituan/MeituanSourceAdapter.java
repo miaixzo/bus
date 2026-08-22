@@ -27,7 +27,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
@@ -49,8 +48,6 @@ import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -73,16 +70,6 @@ public class MeituanSourceAdapter implements VendorAdapter {
      * Trusted Meituan OpenAPI authority recorded in federated identity evidence.
      */
     private static final String AUTHORITY = "https://openapi.waimai.meituan.com";
-
-    /**
-     * Maximum accepted Meituan JSON response size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum accepted Meituan JSON response nesting depth.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._32;
 
     /**
      * Exact platform error code observed and registered for application, client, and code rejection.
@@ -127,16 +114,16 @@ public class MeituanSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Meituan adapter from the frozen default manifest.
      *
-     * @param namespaceId registration namespace used to isolate browser state and credentials
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Meituan manifest
-     * @param variant     exact selected default manifest
-     * @param options     decoded externally loaded Meituan options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate browser state and credentials
+     * @param sourceId registered Source identifier
+     * @param manifest selected Meituan manifest
+     * @param variant  exact selected default manifest
+     * @param options  decoded externally loaded Meituan options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, or options differ from the frozen manifest
      */
-    public MeituanSourceAdapter(final String namespaceId, final String sourceId, final MeituanManifest manifest,
+    public MeituanSourceAdapter(final String spaceId, final String sourceId, final MeituanManifest manifest,
             final VariantManifest.Variant variant, final MeituanOptions options, final DriverServices services) {
         final MeituanManifest selectedProfile = Assert.notNull(manifest, "Meituan manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Meituan Source id must not be blank");
@@ -150,7 +137,7 @@ public class MeituanSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty() || !options.scopes().isEmpty()) {
             throw new ValidateException("Meituan adapter requires the meituan/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         this.standardAdapter = new StandardAdapter(variant, options, Optional.of(redirectManager),
                 List.of(
                         new StandardAdapter.Binding<>(OAuth2ClientScheme.AUTHORIZATION,
@@ -914,7 +901,7 @@ public class MeituanSourceAdapter implements VendorAdapter {
             throw new ValidateException("Meituan JSON response charset must be UTF-8");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._32, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("Meituan response root must be a JSON object");
         }

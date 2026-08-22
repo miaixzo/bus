@@ -26,7 +26,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.FabricX.UrlBuilder;
@@ -45,9 +44,7 @@ import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -75,16 +72,6 @@ public class MiSourceAdapter implements VendorAdapter {
      * Trusted Xiaomi account resource authority recorded in identity evidence.
      */
     private static final String AUTHORITY = "https://open.account.xiaomi.com";
-
-    /**
-     * Maximum accepted Xiaomi JSON response size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum accepted Xiaomi JSON nesting depth.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._32;
 
     /**
      * Standard OAuth token errors classified as expected request or credential rejection.
@@ -135,16 +122,16 @@ public class MiSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Xiaomi adapter.
      *
-     * @param namespaceId registration namespace used to isolate state and secret resolution
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Xiaomi manifest
-     * @param variant     exact default manifest
-     * @param options     decoded externally loaded Xiaomi options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate state and secret resolution
+     * @param sourceId registered Source identifier
+     * @param manifest selected Xiaomi manifest
+     * @param variant  exact default manifest
+     * @param options  decoded externally loaded Xiaomi options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, or callback options are inconsistent
      */
-    public MiSourceAdapter(final String namespaceId, final String sourceId, final MiManifest manifest,
+    public MiSourceAdapter(final String spaceId, final String sourceId, final MiManifest manifest,
             final VariantManifest.Variant variant, final MiOptions options, final DriverServices services) {
         final MiManifest selected = Assert.notNull(manifest, "Xiaomi manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Xiaomi Source id must not be blank");
@@ -157,7 +144,7 @@ public class MiSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("Xiaomi adapter requires the mi/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         this.authorizationResponseDecoder = new AuthorizationResponseDecoder();
         this.standardAdapter = new StandardAdapter(variant, options, Optional.of(redirectManager),
                 List.of(
@@ -696,7 +683,7 @@ public class MiSourceAdapter implements VendorAdapter {
                     && !MediaType.TEXT_PLAIN_TYPE.isCompatible(media)) {
                 return failed(ErrorCode._502, "Xiaomi token endpoint returned an unsupported representation");
             }
-            body = response.bytes(MAXIMUM_JSON_BYTES);
+            body = response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES);
             final byte[] prefix = TOKEN_PREFIX.getBytes(Charset.UTF_8);
             if (body.length <= prefix.length) {
                 throw new ValidateException("Xiaomi token response lacks its required prefix and JSON document");
@@ -707,7 +694,7 @@ public class MiSourceAdapter implements VendorAdapter {
                 }
             }
             json = Arrays.copyOfRange(body, prefix.length, body.length);
-            final JsonValue value = services.jsonProvider().readValue(json, MAXIMUM_JSON_DEPTH, true);
+            final JsonValue value = services.jsonProvider().readValue(json, Normal._32, true);
             if (!(value instanceof JsonValue.ObjectValue object)) {
                 throw new ValidateException("Xiaomi token response must contain a JSON object");
             }
@@ -896,7 +883,7 @@ public class MiSourceAdapter implements VendorAdapter {
                 return failed(ErrorCode._502, "Xiaomi profile endpoint returned an invalid response");
             }
             final JsonValue parsed = services.jsonProvider()
-                    .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                    .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._32, true);
             if (!(parsed instanceof JsonValue.ObjectValue object)) {
                 return failed(ErrorCode._502, "Xiaomi profile response must be a JSON object");
             }

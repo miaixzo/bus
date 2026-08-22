@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the public Okta OpenID Connect Vendor manifest and externally loaded options.
+ * Declares Okta OpenID Connect login and service-app Management API variants.
  * <p>
  * OktaManifest fixes {@code okta/default} to the issuer
  * {@code https://{instance}.okta.com/oauth2/{authorizationServerId}} and derives authorization, token, UserInfo,
@@ -38,6 +38,18 @@
  * verified ID Token {@code sub}, after UserInfo subject equality, as ExternalIdentity subject. Client secrets, state,
  * nonce, callback codes, tokens, JWK material, claims, and upstream documents must not enter options diagnostics,
  * Context, logs, or public failure details.
+ * </p>
+ * <p>
+ * {@code okta/management} is an independent HTTPS Variant using a referenced RSA private key and private_key_jwt at the
+ * organization token endpoint. Its fixed read scopes expose describe, snapshot, and retrieve for visible users, groups,
+ * administrator roles, group membership, and role assignments. Coverage is UNKNOWN because administrator-role scope and
+ * service-app grants control the visible projection; no changes capability is implemented.
+ * </p>
+ * <p>
+ * An Okta browser login Session or OIDC access token is never reused as a Management Token. Link continuations and
+ * opaque Cursors are validated against the configured organization, while equal role resources may reappear on later
+ * bounded pages without tenant-wide de-duplication state. External projects invoke Dispatcher and own synchronization,
+ * checkpointing, and persistence.
  * </p>
  *
  * @author Kimi Liu

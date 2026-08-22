@@ -19,12 +19,7 @@
 */
 package org.miaixz.bus.auth.protocol.oauth2;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -248,6 +243,26 @@ public class OAuth2ServerDriver implements SourceDriver<OAuth2ServerOptions> {
     }
 
     /**
+     * Adapts one compiled HTTP endpoint to the common Source-worker invocation shape.
+     *
+     * @author Kimi Liu
+     */
+    @FunctionalInterface
+    private interface EndpointHandler {
+
+        /**
+         * Handles one validated endpoint request.
+         *
+         * @param request incoming HTTP request
+         * @param context immutable invocation context
+         * @param timeout shared operation timeout
+         * @return asynchronous HTTP response
+         */
+        CompletionStage<Response> handle(Request request, Context context, Timeout timeout);
+
+    }
+
+    /**
      * Routes the exact enabled OAuth 2.x Provider capabilities to compiled HTTP endpoints.
      *
      * @author Kimi Liu
@@ -330,26 +345,6 @@ public class OAuth2ServerDriver implements SourceDriver<OAuth2ServerOptions> {
             return endpoint.handle(httpRequest, context, timeout)
                     .thenApply(response -> Outcome.succeeded(capability.responseType().cast(response)));
         }
-
-    }
-
-    /**
-     * Adapts one compiled HTTP endpoint to the common Source-worker invocation shape.
-     *
-     * @author Kimi Liu
-     */
-    @FunctionalInterface
-    private interface EndpointHandler {
-
-        /**
-         * Handles one validated endpoint request.
-         *
-         * @param request incoming HTTP request
-         * @param context immutable invocation context
-         * @param timeout shared operation timeout
-         * @return asynchronous HTTP response
-         */
-        CompletionStage<Response> handle(Request request, Context context, Timeout timeout);
 
     }
 

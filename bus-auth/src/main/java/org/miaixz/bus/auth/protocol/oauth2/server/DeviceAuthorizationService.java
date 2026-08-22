@@ -62,34 +62,9 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class DeviceAuthorizationService {
 
     /**
-     * Minimum entropy applied to generated device codes.
-     */
-    private static final int MINIMUM_DEVICE_CODE_BITS = Normal._256;
-
-    /**
-     * Maximum create-if-absent attempts for a device or user-code collision.
-     */
-    private static final int MAXIMUM_CREATE_ATTEMPTS = org.miaixz.bus.auth.Builder.MAXIMUM_RETRY_ATTEMPTS;
-
-    /**
-     * Number of unambiguous characters shown to the end user before formatting.
-     */
-    private static final int USER_CODE_CHARACTERS = Normal._8;
-
-    /**
-     * Position at which the user code receives its readability separator.
-     */
-    private static final int USER_CODE_GROUP = Normal._4;
-
-    /**
      * Uppercase alphabet excluding visually ambiguous I, L, O, U, 0, and 1 characters.
      */
     private static final char[] USER_CODE_ALPHABET = "23456789ABCDEFGHJKMNPQRSTVWXYZ".toCharArray();
-
-    /**
-     * Safe failure detail member carrying a registered OAuth error code.
-     */
-    private static final String OAUTH_ERROR = org.miaixz.bus.auth.Builder.OAUTH_ERROR;
 
     /**
      * Provider identifier used to isolate device-code state.
@@ -131,9 +106,8 @@ public class DeviceAuthorizationService {
         this.options = Assert.notNull(options, "OAuth 2.x Provider options must not be null");
         this.services = Assert.notNull(services, "OAuth 2.x execution services must not be null");
         this.scopeValidator = Assert.notNull(scopeValidator, "OAuth 2.x scope validator must not be null");
-        final int entropyBits = Math.max(
-                MINIMUM_DEVICE_CODE_BITS,
-                services.securityBaseline().require(Protocol.OAUTH2).minimumEntropyBits());
+        final int entropyBits = Math
+                .max(Normal._256, services.securityBaseline().require(Protocol.OAUTH2).minimumEntropyBits());
         this.deviceCodeBytes = (entropyBits + Byte.SIZE - 1) / Byte.SIZE;
     }
 
@@ -143,10 +117,10 @@ public class DeviceAuthorizationService {
      * @return eight-character code formatted as two four-character groups
      */
     private static String userCode() {
-        final StringBuilder value = new StringBuilder(USER_CODE_CHARACTERS + 1);
+        final StringBuilder value = new StringBuilder(Normal._8 + 1);
         final SecureRandom random = RandomKit.getSecureRandom();
-        for (int index = 0; index < USER_CODE_CHARACTERS; index++) {
-            if (index == USER_CODE_GROUP) {
+        for (int index = 0; index < Normal._8; index++) {
+            if (index == Normal._4) {
                 value.append(Symbol.C_MINUS);
             }
             value.append(USER_CODE_ALPHABET[random.nextInt(USER_CODE_ALPHABET.length)]);
@@ -166,8 +140,8 @@ public class DeviceAuthorizationService {
             final Errors error,
             final OAuth2ErrorCode oauthError,
             final String description) {
-        return new Outcome.Failure(error, description,
-                new JsonValue.ObjectValue(Map.of(OAUTH_ERROR, new JsonValue.StringValue(oauthError.value()))));
+        return new Outcome.Failure(error, description, new JsonValue.ObjectValue(
+                Map.of(org.miaixz.bus.auth.Builder.OAUTH_ERROR, new JsonValue.StringValue(oauthError.value()))));
     }
 
     /**
@@ -185,6 +159,7 @@ public class DeviceAuthorizationService {
      * Validates one standard request and issues its device and user verification codes.
      *
      * @param request standard device authorization request
+     * @param client  resolved immutable client metadata
      * @param context invocation context carrying an authenticated or identified client
      * @param timeout shared end-to-end operation timeout
      * @return asynchronous standard device authorization response outcome
@@ -293,7 +268,7 @@ public class DeviceAuthorizationService {
                                                 OAuth2ErrorCode.SERVER_ERROR,
                                                 "OAuth 2.x device authorization state persistence failed")));
                     }
-                    if (!result.created() && attempt < MAXIMUM_CREATE_ATTEMPTS) {
+                    if (!result.created() && attempt < org.miaixz.bus.auth.Builder.MAXIMUM_RETRY_ATTEMPTS) {
                         return create(clientId, scope, timeout, attempt + 1);
                     }
                     if (!result.created()) {

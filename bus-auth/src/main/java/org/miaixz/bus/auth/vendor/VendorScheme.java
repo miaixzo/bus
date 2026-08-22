@@ -65,13 +65,13 @@ public class VendorScheme implements Scheme<VendorOptions<?>> {
     private final Set<Protocol> protocols;
 
     /**
-     * Creates an aggregate scheme from the exact assembled Vendor directory.
+     * Creates an aggregate scheme from the exact assembled Vendor locator.
      *
-     * @param directory assembled Vendor directory
+     * @param locator assembled Vendor locator
      */
-    public VendorScheme(final VendorDirectory directory) {
+    public VendorScheme(final VendorLocator locator) {
         final Set<Protocol> selected = new LinkedHashSet<>();
-        for (VariantManifest<?> manifest : directory.manifests()) {
+        for (VariantManifest<?> manifest : locator.manifests()) {
             for (VariantManifest.Variant variant : manifest.variants()) {
                 selected.add(variant.protocol());
             }
@@ -79,36 +79,71 @@ public class VendorScheme implements Scheme<VendorOptions<?>> {
         this.protocols = Set.copyOf(selected);
     }
 
+    /**
+     * Returns the stable aggregate Vendor Source type identifier.
+     *
+     * @return stable Vendor scheme identifier
+     */
     @Override
     public String id() {
         return ID;
     }
 
+    /**
+     * Returns HTTPS as the aggregate fallback because proprietary Vendor exchanges use their real secure transport.
+     *
+     * @return HTTPS aggregate fallback protocol
+     */
     @Override
     public Protocol protocol() {
-        return Protocol.VENDOR_AUTH;
+        return Protocol.HTTPS;
     }
 
+    /**
+     * Returns every real protocol represented by the assembled Vendor variants.
+     *
+     * @return immutable represented protocol set
+     */
     @Override
     public Set<Protocol> protocols() {
         return protocols;
     }
 
+    /**
+     * Returns the aggregate Source authentication entry capabilities.
+     *
+     * @return immutable common capability manifest
+     */
     @Override
     public Capability.Manifest manifest() {
         return CAPABILITIES;
     }
 
+    /**
+     * Returns no aggregate conformance claim because conformance belongs to each selected Variant.
+     *
+     * @return empty conformance container
+     */
     @Override
     public Optional<Conformance> conformance() {
         return Optional.empty();
     }
 
+    /**
+     * Returns the empty aggregate form used before a concrete platform is selected.
+     *
+     * @return immutable empty aggregate form
+     */
     @Override
     public Form form() {
         return FORM;
     }
 
+    /**
+     * Returns no default Vendor options because a platform and Variant must be selected explicitly.
+     *
+     * @return empty default-options container
+     */
     @Override
     public Optional<VendorOptions<?>> defaults() {
         // A concrete platform and variant must be selected before deployment options can exist.

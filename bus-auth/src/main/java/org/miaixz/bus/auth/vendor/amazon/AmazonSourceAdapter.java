@@ -27,7 +27,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -74,16 +73,6 @@ public class AmazonSourceAdapter implements VendorAdapter {
     private static final String AUTHORITY = "https://api.amazon.com";
 
     /**
-     * Maximum accepted bytes for one Amazon JSON resource response.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum accepted JSON container depth for an Amazon resource response.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
-
-    /**
      * Registered Source identifier copied into verified external identities.
      */
     private final String sourceId;
@@ -121,17 +110,17 @@ public class AmazonSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Login with Amazon adapter from the frozen default manifest.
      *
-     * @param namespaceId registration namespace used to isolate state and PKCE material
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Login with Amazon manifest
-     * @param variant     selected default variant manifest
-     * @param options     decoded externally loaded Amazon options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate state and PKCE material
+     * @param sourceId registered Source identifier
+     * @param manifest selected Login with Amazon manifest
+     * @param variant  selected default variant manifest
+     * @param options  decoded externally loaded Amazon options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, or callback options differ from the frozen Login
      *                                  with Amazon profile
      */
-    public AmazonSourceAdapter(final String namespaceId, final String sourceId, final AmazonManifest manifest,
+    public AmazonSourceAdapter(final String spaceId, final String sourceId, final AmazonManifest manifest,
             final VariantManifest.Variant variant, final AmazonOptions options, final DriverServices services) {
         Assert.notNull(manifest, "Login with Amazon manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Login with Amazon Source id must not be blank");
@@ -144,7 +133,7 @@ public class AmazonSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("Login with Amazon adapter requires the amazon/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         this.standardAdapter = standardAdapter(variant, options, services, redirectManager);
         this.authorizationResponseDecoder = new AuthorizationResponseDecoder();
     }
@@ -690,7 +679,7 @@ public class AmazonSourceAdapter implements VendorAdapter {
                     return failed(ErrorCode._502, "Login with Amazon resource endpoint returned an invalid response");
                 }
                 final JsonValue parsed = services.jsonProvider()
-                        .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                        .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
                 if (!(parsed instanceof JsonValue.ObjectValue object)) {
                     return failed(ErrorCode._502, "Login with Amazon resource response must be a JSON object");
                 }

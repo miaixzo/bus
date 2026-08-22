@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the Figma OAuth Source variant.
+ * Declares Figma OAuth login and tenant-scoped SCIM lifecycle-read variants.
  * <p>
  * FigmaManifest exposes {@code figma/default} with fixed commercial authorization, token, refresh, and current-user
  * endpoints. It requires CLIENT_SECRET with HTTP Basic token authentication, requires S256 PKCE, defaults to
@@ -36,6 +36,17 @@
  * {@code user_id_string} byte for byte; that value alone becomes the subject. Deprecated numeric user IDs, handle,
  * image URL, and email cannot supply or replace the identity key. Secrets, tokens, verifiers, personal data, and
  * unknown error bodies remain private to the operation.
+ * </p>
+ * <p>
+ * {@code figma/scim} is a separate SCIM Variant whose Tenant ID selects the fixed official path template and whose
+ * SHARED_SECRET reference identifies the administrator SCIM token. It exposes describe, snapshot, and retrieve for
+ * SCIM-managed users, groups, and membership. Coverage is UNKNOWN, unsupported plans and permissions are explicit
+ * failures, and neither changes nor an organizational hierarchy is declared.
+ * </p>
+ * <p>
+ * OAuth authenticates a user; SCIM reads lifecycle resources and is not an authentication protocol in this package.
+ * Login client secrets and callbacks never substitute for the tenant token. External projects invoke Dispatcher and own
+ * sync scheduling, durable checkpoints, mapping, and persistence.
  * </p>
  *
  * @author Kimi Liu

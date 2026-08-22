@@ -42,11 +42,6 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 public class EapMessageCodec {
 
     /**
-     * Maximum EAP octets in one RADIUS Attribute Value.
-     */
-    private static final int FRAGMENT_BYTES = Radius.MAXIMUM_ATTRIBUTE_VALUE_BYTES;
-
-    /**
      * Creates the stateless EAP-Message fragment codec.
      */
     public EapMessageCodec() {
@@ -101,9 +96,10 @@ public class EapMessageCodec {
      */
     public List<RadiusAttribute> encode(final EapMessage message) {
         final byte[] packet = Assert.notNull(message, "EAP message must not be null").value();
-        final List<RadiusAttribute> attributes = new ArrayList<>((packet.length + FRAGMENT_BYTES - 1) / FRAGMENT_BYTES);
-        for (int offset = 0; offset < packet.length; offset += FRAGMENT_BYTES) {
-            final int length = Math.min(FRAGMENT_BYTES, packet.length - offset);
+        final List<RadiusAttribute> attributes = new ArrayList<>(
+                (packet.length + Radius.MAXIMUM_ATTRIBUTE_VALUE_BYTES - 1) / Radius.MAXIMUM_ATTRIBUTE_VALUE_BYTES);
+        for (int offset = 0; offset < packet.length; offset += Radius.MAXIMUM_ATTRIBUTE_VALUE_BYTES) {
+            final int length = Math.min(Radius.MAXIMUM_ATTRIBUTE_VALUE_BYTES, packet.length - offset);
             final byte[] fragment = new byte[length];
             System.arraycopy(packet, offset, fragment, 0, length);
             attributes.add(new RadiusAttribute(new RadiusAttribute.Type(Radius.Attributes.EAP_MESSAGE), fragment));

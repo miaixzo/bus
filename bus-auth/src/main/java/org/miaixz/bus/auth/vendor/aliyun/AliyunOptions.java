@@ -31,60 +31,86 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.PatternKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Carries externally managed Alibaba Cloud OpenID Connect client values.
+ * Carries externally managed Alibaba Cloud OpenID Connect or RAM access values.
  * <p>
  * This immutable record keeps only public registration values and an external client-secret reference. Fixed platform
- * endpoints remain in {@link AliyunManifest}; secret material is resolved only for an adapter operation.
+ * endpoints remain in {@link AliyunManifest}; secret material is resolved only for an adapter operation. The RAM branch
+ * stores an AccessKey ID and an external AccessKey Secret reference without OAuth callback or scopes.
  * </p>
  *
  * @param vendor      exact Alibaba Cloud identifier
- * @param variant     exact default variant
- * @param clientId    registered OpenID Connect client identifier
- * @param credential  external client-secret reference
- * @param redirectUri exact registered redirect URI
- * @param scopes      ordered requested scopes, or empty to select the manifest defaults
+ * @param variant     exact default login or RAM Variant
+ * @param clientId    OpenID Connect client identifier or RAM AccessKey ID
+ * @param credential  external client-secret or AccessKey Secret reference
+ * @param redirectUri login redirect URI or empty for RAM
+ * @param scopes      ordered login scopes or empty for RAM
  * @author Kimi Liu
  */
 public record AliyunOptions(Vendor.Id vendor, Vendor.Variant variant, String clientId, Credential.Reference credential,
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<AliyunOptions> {
 
     /**
-     * Validates and freezes one Alibaba Cloud Source registration without resolving its client secret.
+     * Conservative lexical grammar for Alibaba Cloud AccessKey identifiers.
+     */
+    private static final String ACCESS_KEY_ID_PATTERN = "[A-Za-z0-9]{8,128}";
+
+    /**
+     * Validates and freezes one Alibaba Cloud Source registration without resolving its external secret.
      *
      * @throws IllegalArgumentException if a required component, container, or collection member is null or blank
      * @throws ValidateException        if routing, credential type, scope vocabulary, scope uniqueness, or required
      *                                  OpenID Connect scope coverage is invalid
      */
     public AliyunOptions {
-        if (!AliyunManifest.ID.equals(vendor) || !AliyunManifest.DEFAULT.equals(variant)) {
-            throw new ValidateException("Alibaba Cloud options must select aliyun/default");
+        if (!AliyunManifest.ID.equals(vendor)
+                || !(AliyunManifest.DEFAULT.equals(variant) || AliyunManifest.RAM.equals(variant))) {
+            throw new ValidateException("Alibaba Cloud options must select aliyun/default or aliyun/ram");
         }
-        Assert.notBlank(clientId, "Alibaba Cloud client id must not be blank");
+        clientId = Assert.notBlank(
+                clientId,
+                AliyunManifest.RAM.equals(variant) ? "Alibaba Cloud AccessKey ID must not be blank"
+                        : "Alibaba Cloud client id must not be blank");
         Assert.notNull(credential, "Alibaba Cloud credential reference must not be null");
-        if (credential.type() != Credential.Type.CLIENT_SECRET) {
-            throw new ValidateException("Alibaba Cloud credential must reference a client secret");
-        }
         Assert.notNull(redirectUri, "Alibaba Cloud redirect URI container must not be null");
         redirectUri = Optional.ofNullable(redirectUri.getOrNull());
-        if (redirectUri.isPresent()) {
-            Assert.notBlank(redirectUri.getOrNull(), "Alibaba Cloud redirect URI must not be blank");
-        }
         Assert.notNull(scopes, "Alibaba Cloud scopes must not be null");
-        final List<String> copy = new ArrayList<>(scopes.size());
-        for (String scope : scopes) {
-            final String checked = Assert.notBlank(scope, "Alibaba Cloud scope must not be blank");
-            if (!scope(checked) || copy.contains(checked)) {
-                throw new ValidateException("Alibaba Cloud scopes must be unique openid, profile, or aliuid values");
+        if (AliyunManifest.RAM.equals(variant)) {
+            if (!clientId.equals(StringKit.trim(clientId)) || !PatternKit.isMatch(ACCESS_KEY_ID_PATTERN, clientId)) {
+                throw new ValidateException("Alibaba Cloud AccessKey ID has an invalid lexical form");
             }
-            copy.add(checked);
+            if (credential.type() != Credential.Type.SHARED_SECRET) {
+                throw new ValidateException("Alibaba Cloud RAM credential must reference an AccessKey Secret");
+            }
+            if (redirectUri.isPresent() || !scopes.isEmpty()) {
+                throw new ValidateException("Alibaba Cloud RAM options must not contain login callback or scopes");
+            }
+            scopes = List.of();
+        } else {
+            if (credential.type() != Credential.Type.CLIENT_SECRET) {
+                throw new ValidateException("Alibaba Cloud login credential must reference a client secret");
+            }
+            if (redirectUri.isPresent()) {
+                Assert.notBlank(redirectUri.getOrNull(), "Alibaba Cloud redirect URI must not be blank");
+            }
+            final List<String> copy = new ArrayList<>(scopes.size());
+            for (String scope : scopes) {
+                final String checked = Assert.notBlank(scope, "Alibaba Cloud scope must not be blank");
+                if (!scope(checked) || copy.contains(checked)) {
+                    throw new ValidateException(
+                            "Alibaba Cloud scopes must be unique openid, profile, or aliuid values");
+                }
+                copy.add(checked);
+            }
+            if (!copy.isEmpty()
+                    && (!copy.contains(OpenIdConnect.Scopes.OPENID) || !copy.contains(OpenIdConnect.Scopes.PROFILE))) {
+                throw new ValidateException("Explicit Alibaba Cloud scopes must contain openid and profile");
+            }
+            scopes = List.copyOf(copy);
         }
-        if (!copy.isEmpty()
-                && (!copy.contains(OpenIdConnect.Scopes.OPENID) || !copy.contains(OpenIdConnect.Scopes.PROFILE))) {
-            throw new ValidateException("Explicit Alibaba Cloud scopes must contain openid and profile");
-        }
-        scopes = List.copyOf(copy);
     }
 
     /**

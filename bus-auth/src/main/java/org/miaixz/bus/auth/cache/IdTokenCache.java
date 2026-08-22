@@ -39,10 +39,17 @@ import org.miaixz.bus.core.lang.Symbol;
  */
 public class IdTokenCache extends AuthCache<IdTokenCache.Entry> {
 
+    /**
+     * Cache purpose discriminator used to isolate ID Token bindings.
+     */
     private static final String PURPOSE = "id-token";
 
     /**
      * Creates an ID Token binding view backed entirely by bus-cache.
+     *
+     * @param cache      shared bus-cache backend
+     * @param deployment deployment-unique cache scope
+     * @param clock      shared runtime clock used to derive entry lifetimes
      */
     public IdTokenCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
         super(cache, deployment, PURPOSE, Entry.class, clock);
@@ -52,7 +59,7 @@ public class IdTokenCache extends AuthCache<IdTokenCache.Entry> {
      * Creates a Source-generation-scoped ID Token binding cache view for compiled runtime use.
      *
      * @param cache      shared bus-cache backend
-     * @param deployment deployment-unique cache namespace
+     * @param deployment deployment-unique cache scope
      * @param sourceId   exact Source registration identifier
      * @param generation non-negative Source configuration generation
      * @param clock      shared runtime clock used to derive entry lifetimes
@@ -63,7 +70,24 @@ public class IdTokenCache extends AuthCache<IdTokenCache.Entry> {
     }
 
     /**
+     * Derives a Source-isolated SHA-256 key without retaining the compact token.
+     *
+     * @param sourceId       exact Source registration identifier
+     * @param compactIdToken compact serialized ID Token
+     * @return irreversible Source-isolated token digest
+     */
+    public static String key(final String sourceId, final String compactIdToken) {
+        return Builder.sha256Hex(
+                Assert.notBlank(sourceId, "ID Token Source id must not be blank") + Symbol.C_NUL + PURPOSE
+                        + Symbol.C_NUL + Assert.notBlank(compactIdToken, "Compact ID Token must not be blank"));
+    }
+
+    /**
      * Creates a binding, accepting only an exactly equal existing value as idempotent success.
+     *
+     * @param digest irreversible ID Token digest
+     * @param value  expiring logout binding value
+     * @return stage resolving to whether the binding exists with the requested value
      */
     public CompletionStage<Boolean> bind(final String digest, final ExpiringValue<Entry> value) {
         return doIssue(digest, value).thenCompose(
@@ -73,6 +97,9 @@ public class IdTokenCache extends AuthCache<IdTokenCache.Entry> {
 
     /**
      * Finds one issued ID Token binding by irreversible digest.
+     *
+     * @param digest irreversible ID Token digest
+     * @return stage resolving to the stored binding or {@code null}
      */
     public CompletionStage<ExpiringValue<Entry>> find(final String digest) {
         return doFind(digest);
@@ -80,23 +107,21 @@ public class IdTokenCache extends AuthCache<IdTokenCache.Entry> {
 
     /**
      * Revokes one issued ID Token binding.
+     *
+     * @param digest irreversible ID Token digest
+     * @return stage resolving to whether a binding was removed
      */
     public CompletionStage<Boolean> revoke(final String digest) {
         return doRevoke(digest);
     }
 
     /**
-     * Derives a Source-isolated SHA-256 key without retaining the compact token.
-     */
-    public static String key(final String sourceId, final String compactIdToken) {
-        return Builder.sha256Hex(
-                Assert.notBlank(sourceId, "ID Token Source id must not be blank") + Symbol.C_NUL + PURPOSE
-                        + Symbol.C_NUL + Assert.notBlank(compactIdToken, "Compact ID Token must not be blank"));
-    }
-
-    /**
      * Minimal logout binding for one issued ID Token.
      *
+     * @param sourceId   Source that issued the token
+     * @param consumerId relying-party consumer identifier
+     * @param subject    issued wire subject
+     * @param sessionId  optional issued Session identifier
      * @author Kimi Liu
      */
     public record Entry(String sourceId, String consumerId, String subject, Optional<String> sessionId)

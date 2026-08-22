@@ -29,8 +29,8 @@ import org.miaixz.bus.core.lang.Assert;
 /**
  * Stores one-time OpenID Connect nonce bindings independently from callback state.
  * <p>
- * Keys are irreversible digests isolated by namespace, Source, and nonce purpose. A successful ID Token validation
- * consumes the value with the inherited atomic take operation so the same nonce cannot establish identity twice.
+ * Keys are irreversible digests isolated by space, Source, and nonce purpose. A successful ID Token validation consumes
+ * the value with the inherited atomic take operation so the same nonce cannot establish identity twice.
  * </p>
  *
  * @author Kimi Liu
@@ -46,7 +46,7 @@ public class NonceCache extends AuthCache<NonceCache.Nonce> {
      * Creates a nonce cache view backed entirely by bus-cache.
      *
      * @param cache      shared bus-cache backend
-     * @param deployment deployment-unique cache namespace
+     * @param deployment deployment-unique cache scope
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
     public NonceCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
@@ -57,7 +57,7 @@ public class NonceCache extends AuthCache<NonceCache.Nonce> {
      * Creates a Source-generation-scoped nonce cache view for compiled runtime use.
      *
      * @param cache      shared bus-cache backend
-     * @param deployment deployment-unique cache namespace
+     * @param deployment deployment-unique cache scope
      * @param sourceId   exact Source registration identifier
      * @param generation non-negative Source configuration generation
      * @param clock      shared runtime clock used to derive entry lifetimes

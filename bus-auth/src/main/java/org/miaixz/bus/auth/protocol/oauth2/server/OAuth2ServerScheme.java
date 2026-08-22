@@ -27,7 +27,7 @@ import org.miaixz.bus.auth.FabricX.Request;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.Conformance;
-import org.miaixz.bus.auth.protocol.oauth2.*;
+import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.net.Protocol;

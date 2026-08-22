@@ -42,11 +42,6 @@ import org.miaixz.bus.core.lang.Normal;
 final class RegistryNotifier {
 
     /**
-     * Maximum queued observation events before the oldest event is dropped.
-     */
-    private static final int MAXIMUM_PENDING = Normal._256;
-
-    /**
      * Immutable project listeners in deterministic delivery order.
      */
     private final List<RegistryListener> listeners;
@@ -120,7 +115,7 @@ final class RegistryNotifier {
      */
     private void enqueue(final Notification notification) {
         if (!closed && !listeners.isEmpty()) {
-            if (pending.size() == MAXIMUM_PENDING) {
+            if (pending.size() == Normal._256) {
                 pending.poll();
                 dropped++;
             }

@@ -61,8 +61,8 @@ public class AfdianManifest implements VariantManifest<AfdianOptions> {
     /**
      * Complete immutable Afdian variant manifest.
      */
-    private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT,
-            Protocol.VENDOR_AUTH, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of("basic"),
+    private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.HTTPS,
+            VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of("basic"),
             new VendorTargets(Optional
                     .of(fixed("https://afdian.net/oauth2/authorize", Http.Method.GET, Endpoint.Authentication.NONE)),
                     Optional.of(

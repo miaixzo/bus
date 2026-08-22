@@ -32,9 +32,9 @@ import org.miaixz.bus.core.basic.entity.Tracer;
  * Sources, each independently selecting its adapter type, actual protocol, and typed protocol options.
  * </p>
  * <p>
- * A Source does not own a persistent {@code namespace_id}. Its resource namespace is resolved only through
- * {@code provider_id -> Provider.library_id -> Library.namespace_id}; inherited Tracer fields are transient request
- * context and are not registration ownership.
+ * A Source does not own a persistent {@code space_id}. Its resource space is resolved only through
+ * {@code provider_id -> Provider.library_id -> Library.space_id}; inherited Tracer fields are transient request context
+ * and are not registration ownership.
  * </p>
  * <p>
  * This mutable registration model exposes no runtime operation, protocol implementation, vendor-specific field, or
@@ -88,8 +88,9 @@ public class Source extends Tracer {
     /**
      * Required actual protocol accepted by the selected Driver. Values are compared case-insensitively with Bus
      * protocol names such as {@code OAUTH2}, {@code OIDC}, {@code SAML}, {@code SCIM}, {@code LDAP}, {@code RADIUS}, or
-     * {@code VENDOR_AUTH}; lower-case database values are recommended. The selected Driver performs the final
-     * type-to-protocol compatibility check.
+     * {@code HTTPS}; lower-case database values are recommended. Proprietary Vendor HTTPS exchanges use {@code HTTPS},
+     * while their platform and operation semantics remain in the selected Vendor Variant and Capability. The selected
+     * Driver performs the final type-to-protocol compatibility check.
      */
     private String protocol;
 

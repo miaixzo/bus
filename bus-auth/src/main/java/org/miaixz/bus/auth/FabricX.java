@@ -20,8 +20,6 @@
 package org.miaixz.bus.auth;
 
 import java.net.URI;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -33,15 +31,12 @@ import org.miaixz.bus.auth.shared.SecurityBaseline;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.net.Http.Method;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.UnoUrl;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.frame.Frame;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 import org.miaixz.bus.fabric.network.tls.TlsPolicy;
@@ -245,6 +240,58 @@ public class FabricX {
     }
 
     /**
+     * Creates one HTTP Basic authorization header value.
+     *
+     * @param username HTTP Basic username
+     * @param password HTTP Basic password
+     * @return complete Authorization header value
+     */
+    public static String basic(final String username, final String password) {
+        return HttpAuth.basic(username, password).value();
+    }
+
+    /**
+     * Defines the authentication-owned byte-stream frame boundary used by socket protocols.
+     * <p>
+     * Protocol packages implement this contract without depending on Fabric frame or socket APIs. FabricX adapts each
+     * implementation to the transport-specific codec internally when opening the connection.
+     * </p>
+     *
+     * @author Kimi Liu
+     */
+    public interface Framer {
+
+        /**
+         * Consumes newly received stream bytes and returns complete protocol frames.
+         *
+         * @param input newly received stream bytes
+         * @return immutable complete frame payloads in wire order
+         */
+        List<ByteString> decode(Buffer input);
+
+        /**
+         * Encodes one complete protocol frame into the destination stream buffer.
+         *
+         * @param payload complete protocol frame payload
+         * @param output  destination stream buffer
+         */
+        void encode(ByteString payload, Buffer output);
+
+        /**
+         * Creates an independent framer for one socket session.
+         *
+         * @return independent framer
+         */
+        Framer fork();
+
+        /**
+         * Discards incomplete input retained by this framer.
+         */
+        void reset();
+
+    }
+
+    /**
      * Authentication-owned exclusive socket session.
      * <p>
      * This facade deliberately exposes only byte-oriented operations required by authentication protocols. The backing
@@ -316,47 +363,6 @@ public class FabricX {
         public void close() {
             session.close();
         }
-
-    }
-
-    /**
-     * Defines the authentication-owned byte-stream frame boundary used by socket protocols.
-     * <p>
-     * Protocol packages implement this contract without depending on Fabric frame or socket APIs. FabricX adapts each
-     * implementation to the transport-specific codec internally when opening the connection.
-     * </p>
-     *
-     * @author Kimi Liu
-     */
-    public interface Framer {
-
-        /**
-         * Consumes newly received stream bytes and returns complete protocol frames.
-         *
-         * @param input newly received stream bytes
-         * @return immutable complete frame payloads in wire order
-         */
-        List<ByteString> decode(Buffer input);
-
-        /**
-         * Encodes one complete protocol frame into the destination stream buffer.
-         *
-         * @param payload complete protocol frame payload
-         * @param output  destination stream buffer
-         */
-        void encode(ByteString payload, Buffer output);
-
-        /**
-         * Creates an independent framer for one socket session.
-         *
-         * @return independent framer
-         */
-        Framer fork();
-
-        /**
-         * Discards incomplete input retained by this framer.
-         */
-        void reset();
 
     }
 
@@ -516,6 +522,12 @@ public class FabricX {
             this.delegate = Assert.notNull(delegate, "Fabric URL must not be null");
         }
 
+        /**
+         * Wraps a nullable normalized URL at an internal adapter boundary.
+         *
+         * @param value backing normalized URL
+         * @return wrapped URL or {@code null}
+         */
         private static Url wrap(final UnoUrl value) {
             return value == null ? null : new Url(value);
         }
@@ -585,30 +597,67 @@ public class FabricX {
             return delegate.path();
         }
 
+        /**
+         * Returns decoded URL user information username.
+         *
+         * @return username or an empty value
+         */
         public String username() {
             return delegate.username();
         }
 
+        /**
+         * Returns decoded URL user information password.
+         *
+         * @return password or an empty value
+         */
         public String password() {
             return delegate.password();
         }
 
+        /**
+         * Returns the decoded URL fragment.
+         *
+         * @return fragment or {@code null}
+         */
         public String fragment() {
             return delegate.fragment();
         }
 
+        /**
+         * Returns the flattened query value count.
+         *
+         * @return query value count
+         */
         public int querySize() {
             return delegate.querySize();
         }
 
+        /**
+         * Returns the decoded query name at one flattened index.
+         *
+         * @param index zero-based query index
+         * @return decoded query name
+         */
         public String queryParameterName(final int index) {
             return delegate.queryParameterName(index);
         }
 
+        /**
+         * Returns the decoded query value at one flattened index.
+         *
+         * @param index zero-based query index
+         * @return decoded query value or {@code null}
+         */
         public String queryParameterValue(final int index) {
             return delegate.queryParameterValue(index);
         }
 
+        /**
+         * Returns the normalized URL with sensitive components redacted.
+         *
+         * @return redacted URL text
+         */
         public String redact() {
             return delegate.redact();
         }
@@ -785,36 +834,78 @@ public class FabricX {
             this.delegate = Assert.notNull(delegate, "Fabric URL builder must not be null");
         }
 
+        /**
+         * Sets the URL scheme.
+         *
+         * @param value scheme value
+         * @return this builder
+         */
         public UrlBuilder scheme(final String value) {
             delegate.scheme(value);
             return this;
         }
 
+        /**
+         * Sets the URL host.
+         *
+         * @param value host value
+         * @return this builder
+         */
         public UrlBuilder host(final String value) {
             delegate.host(value);
             return this;
         }
 
+        /**
+         * Sets the URL port.
+         *
+         * @param value destination port
+         * @return this builder
+         */
         public UrlBuilder port(final int value) {
             delegate.port(value);
             return this;
         }
 
+        /**
+         * Sets the encoded or decoded URL path accepted by Fabric.
+         *
+         * @param value path value
+         * @return this builder
+         */
         public UrlBuilder path(final String value) {
             delegate.path(value);
             return this;
         }
 
+        /**
+         * Adds one query value.
+         *
+         * @param name  query name
+         * @param value query value
+         * @return this builder
+         */
         public UrlBuilder query(final String name, final String value) {
             delegate.query(name, value);
             return this;
         }
 
+        /**
+         * Sets the URL fragment.
+         *
+         * @param value fragment value
+         * @return this builder
+         */
         public UrlBuilder fragment(final String value) {
             delegate.fragment(value);
             return this;
         }
 
+        /**
+         * Builds the normalized immutable URL.
+         *
+         * @return immutable URL
+         */
         public Url build() {
             return new Url(delegate.build());
         }
@@ -828,72 +919,170 @@ public class FabricX {
      */
     public static class Headers {
 
+        /**
+         * Backing immutable Bus Fabric headers.
+         */
         private final org.miaixz.bus.fabric.Headers delegate;
 
+        /**
+         * Creates an authentication header view over immutable Fabric headers.
+         *
+         * @param delegate backing Fabric headers
+         */
         public Headers(final org.miaixz.bus.fabric.Headers delegate) {
             this.delegate = Assert.notNull(delegate, "Fabric headers must not be null");
         }
 
-        private org.miaixz.bus.fabric.Headers unwrap() {
-            return delegate;
-        }
-
+        /**
+         * Returns an empty immutable header view.
+         *
+         * @return empty headers
+         */
         public static Headers empty() {
             return new Headers(org.miaixz.bus.fabric.Headers.empty());
         }
 
+        /**
+         * Creates headers from alternating names and values.
+         *
+         * @param values alternating header names and values
+         * @return immutable headers
+         */
         public static Headers of(final String... values) {
             return new Headers(org.miaixz.bus.fabric.Headers.of(values));
         }
 
+        /**
+         * Creates headers from one value per name.
+         *
+         * @param values header values keyed by name
+         * @return immutable headers
+         */
         public static Headers of(final Map<String, String> values) {
             return new Headers(org.miaixz.bus.fabric.Headers.of(values));
         }
 
+        /**
+         * Creates an empty mutable header builder.
+         *
+         * @return new header builder
+         */
         public static HeadersBuilder builder() {
             return new HeadersBuilder(org.miaixz.bus.fabric.Headers.builder());
         }
 
+        /**
+         * Returns the backing Fabric headers inside the facade boundary.
+         *
+         * @return backing immutable headers
+         */
+        private org.miaixz.bus.fabric.Headers unwrap() {
+            return delegate;
+        }
+
+        /**
+         * Returns the first value for a case-insensitive header name.
+         *
+         * @param name header name
+         * @return first value or {@code null}
+         */
         public String get(final String name) {
             return delegate.get(name);
         }
 
+        /**
+         * Returns every value for a case-insensitive header name.
+         *
+         * @param name header name
+         * @return immutable header values
+         */
         public List<String> values(final String name) {
             return delegate.values(name);
         }
 
+        /**
+         * Reports whether a header name is present.
+         *
+         * @param name header name
+         * @return whether the name is present
+         */
         public boolean contains(final String name) {
             return delegate.contains(name);
         }
 
+        /**
+         * Returns the flattened header entry count.
+         *
+         * @return header entry count
+         */
         public int size() {
             return delegate.size();
         }
 
+        /**
+         * Returns the header name at one flattened entry index.
+         *
+         * @param index zero-based entry index
+         * @return header name
+         */
         public String name(final int index) {
             return delegate.name(index);
         }
 
+        /**
+         * Returns the header value at one flattened entry index.
+         *
+         * @param index zero-based entry index
+         * @return header value
+         */
         public String value(final int index) {
             return delegate.value(index);
         }
 
+        /**
+         * Returns the parsed Content-Length value.
+         *
+         * @return content length or the Fabric absence marker
+         */
         public long contentLength() {
             return delegate.contentLength();
         }
 
+        /**
+         * Returns a copy containing one additional header value.
+         *
+         * @param name  header name
+         * @param value header value
+         * @return updated immutable headers
+         */
         public Headers with(final String name, final String value) {
             return new Headers(delegate.with(name, value));
         }
 
+        /**
+         * Returns a copy without one header name.
+         *
+         * @param name header name
+         * @return updated immutable headers
+         */
         public Headers without(final String name) {
             return new Headers(delegate.without(name));
         }
 
+        /**
+         * Returns a builder initialized from these headers.
+         *
+         * @return initialized header builder
+         */
         public HeadersBuilder newBuilder() {
             return new HeadersBuilder(delegate.newBuilder());
         }
 
+        /**
+         * Returns an immutable multi-value header map.
+         *
+         * @return header values keyed by normalized name
+         */
         public Map<String, List<String>> asMap() {
             return delegate.asMap();
         }
@@ -907,27 +1096,60 @@ public class FabricX {
      */
     public static class HeadersBuilder {
 
+        /**
+         * Backing mutable Bus Fabric header builder.
+         */
         private final org.miaixz.bus.fabric.Headers.Builder delegate;
 
+        /**
+         * Creates a facade over one Fabric header builder.
+         *
+         * @param delegate backing header builder
+         */
         public HeadersBuilder(final org.miaixz.bus.fabric.Headers.Builder delegate) {
             this.delegate = Assert.notNull(delegate, "Fabric headers builder must not be null");
         }
 
+        /**
+         * Adds one header value without replacing existing values.
+         *
+         * @param name  header name
+         * @param value header value
+         * @return this builder
+         */
         public HeadersBuilder add(final String name, final String value) {
             delegate.add(name, value);
             return this;
         }
 
+        /**
+         * Replaces all values for one header name.
+         *
+         * @param name  header name
+         * @param value replacement value
+         * @return this builder
+         */
         public HeadersBuilder set(final String name, final String value) {
             delegate.set(name, value);
             return this;
         }
 
+        /**
+         * Removes all values for one header name.
+         *
+         * @param name header name
+         * @return this builder
+         */
         public HeadersBuilder remove(final String name) {
             delegate.remove(name);
             return this;
         }
 
+        /**
+         * Freezes the accumulated header values.
+         *
+         * @return immutable headers
+         */
         public Headers build() {
             return new Headers(delegate.build());
         }
@@ -941,64 +1163,162 @@ public class FabricX {
      */
     public static class Body implements AutoCloseable {
 
+        /**
+         * Backing lifecycle-bound Bus Fabric payload body.
+         */
         private final PayloadBody delegate;
 
+        /**
+         * Creates an authentication body facade.
+         *
+         * @param delegate backing Fabric payload body
+         */
         public Body(final PayloadBody delegate) {
             this.delegate = Assert.notNull(delegate, "Fabric HTTP body must not be null");
         }
 
+        /**
+         * Wraps a nullable Fabric body at an internal adapter boundary.
+         *
+         * @param value backing Fabric body
+         * @return wrapped body or {@code null}
+         */
         private static Body wrap(final PayloadBody value) {
             return value == null ? null : new Body(value);
         }
 
-        private PayloadBody unwrap() {
-            return delegate;
-        }
-
+        /**
+         * Returns an empty repeatable body.
+         *
+         * @return empty body
+         */
         public static Body empty() {
             return new Body(PayloadBody.empty());
         }
 
+        /**
+         * Creates a UTF-8 body from text and its media type.
+         *
+         * @param value body text
+         * @param media body media type
+         * @return immutable repeatable body
+         */
         public static Body of(final String value, final MediaType media) {
-            return new Body(PayloadBody.of(Payload.of(value.getBytes(StandardCharsets.UTF_8)), media));
+            return new Body(PayloadBody.of(Payload.of(value.getBytes(Charset.UTF_8)), media));
         }
 
+        /**
+         * Creates a body from bytes and its media type.
+         *
+         * @param value body bytes
+         * @param media body media type
+         * @return immutable repeatable body
+         */
         public static Body of(final byte[] value, final MediaType media) {
             return new Body(PayloadBody.of(Payload.of(value), media));
         }
 
+        /**
+         * Returns the backing Fabric body inside the facade boundary.
+         *
+         * @return backing payload body
+         */
+        private PayloadBody unwrap() {
+            return delegate;
+        }
+
+        /**
+         * Returns an owned immutable byte-string representation.
+         *
+         * @return owned body bytes
+         */
         public ByteString ownedBytes() {
             return delegate.ownedBytes();
         }
 
+        /**
+         * Returns the declared media type.
+         *
+         * @return body media type
+         */
         public MediaType media() {
             return delegate.media();
         }
 
+        /**
+         * Returns the declared body length when available.
+         *
+         * @return body length or the Fabric absence marker
+         */
         public long length() {
             return delegate.length();
         }
 
+        /**
+         * Reports whether the payload may be consumed more than once.
+         *
+         * @return whether the body is repeatable
+         */
         public boolean repeatable() {
             return delegate.repeatable();
         }
 
+        /**
+         * Returns the underlying Bus payload for explicit streaming operations.
+         * <p>
+         * The returned payload retains the lifecycle of this body and must be consumed before the owning response is
+         * closed. Callers that materialize ordinary bounded documents should continue to use {@link #bytes(long)}.
+         * </p>
+         *
+         * @return original response payload or its progress-tracking wrapper
+         */
+        public Payload payload() {
+            return delegate.payload();
+        }
+
+        /**
+         * Materializes the complete body using the Fabric default boundary.
+         *
+         * @return body bytes
+         */
         public byte[] bytes() {
             return delegate.bytes();
         }
 
+        /**
+         * Materializes at most the explicitly bounded document size.
+         *
+         * @param maximumBytes maximum accepted body bytes
+         * @return bounded body bytes
+         */
         public byte[] bytes(final long maximumBytes) {
             return delegate.bytes(maximumBytes);
         }
 
-        public String text(final Charset charset) {
+        /**
+         * Decodes complete body text using the supplied charset.
+         *
+         * @param charset text charset
+         * @return decoded body text
+         */
+        public String text(final java.nio.charset.Charset charset) {
             return delegate.text(charset);
         }
 
-        public String text(final Charset charset, final long maximumBytes) {
+        /**
+         * Decodes bounded body text using the supplied charset.
+         *
+         * @param charset      text charset
+         * @param maximumBytes maximum accepted body bytes
+         * @return decoded bounded body text
+         */
+        public String text(final java.nio.charset.Charset charset, final long maximumBytes) {
             return delegate.text(charset, maximumBytes);
         }
 
+        /**
+         * Closes the backing payload body.
+         */
         @Override
         public void close() {
             delegate.close();
@@ -1013,126 +1333,282 @@ public class FabricX {
      */
     public static class Http {
 
+        /**
+         * Backing Bus Fabric HTTP execution builder.
+         */
         private final HttpX.Builder delegate;
 
+        /**
+         * Creates an authentication HTTP facade.
+         *
+         * @param delegate backing Fabric HTTP builder
+         */
         public Http(final HttpX.Builder delegate) {
             this.delegate = Assert.notNull(delegate, "Fabric HTTP builder must not be null");
         }
 
+        /**
+         * Sets the absolute request URL.
+         *
+         * @param value absolute URL text
+         * @return this builder
+         */
         public Http url(final String value) {
             delegate.url(value);
             return this;
         }
 
+        /**
+         * Selects HTTP GET for the configured URL.
+         *
+         * @return this builder
+         */
         public Http get() {
             delegate.get();
             return this;
         }
 
+        /**
+         * Sets the request URL and selects HTTP GET.
+         *
+         * @param value absolute URL text
+         * @return this builder
+         */
         public Http get(final String value) {
             delegate.get(value);
             return this;
         }
 
+        /**
+         * Selects HTTP POST for the configured URL.
+         *
+         * @return this builder
+         */
         public Http post() {
             delegate.post();
             return this;
         }
 
+        /**
+         * Sets the request URL and selects HTTP POST.
+         *
+         * @param value absolute URL text
+         * @return this builder
+         */
         public Http post(final String value) {
             delegate.post(value);
             return this;
         }
 
+        /**
+         * Sets the registered HTTP method.
+         *
+         * @param method HTTP method
+         * @return this builder
+         */
         public Http method(final Method method) {
             delegate.method(method);
             return this;
         }
 
+        /**
+         * Sets an HTTP method by its registered text.
+         *
+         * @param method HTTP method text
+         * @return this builder
+         */
         public Http method(final String method) {
             delegate.method(method);
             return this;
         }
 
+        /**
+         * Adds one string header value.
+         *
+         * @param name  header name
+         * @param value header value
+         * @return this builder
+         */
         public Http header(final String name, final String value) {
             delegate.header(name, value);
             return this;
         }
 
+        /**
+         * Adds one object header value using Fabric conversion.
+         *
+         * @param name  header name
+         * @param value header value
+         * @return this builder
+         */
         public Http header(final String name, final Object value) {
             delegate.header(name, value);
             return this;
         }
 
+        /**
+         * Adds immutable authentication headers.
+         *
+         * @param headers header values
+         * @return this builder
+         */
         public Http headers(final Headers headers) {
             delegate.headers(Assert.notNull(headers, "Authentication HTTP headers must not be null").unwrap());
             return this;
         }
 
+        /**
+         * Adds map-backed header values using Fabric conversion.
+         *
+         * @param headers header values keyed by name
+         * @return this builder
+         */
         public Http headers(final Map<String, ?> headers) {
             delegate.headers(headers);
             return this;
         }
 
+        /**
+         * Adds one string query value.
+         *
+         * @param name  query name
+         * @param value query value
+         * @return this builder
+         */
         public Http query(final String name, final String value) {
             delegate.query(name, value);
             return this;
         }
 
+        /**
+         * Adds one object query value using Fabric conversion.
+         *
+         * @param name  query name
+         * @param value query value
+         * @return this builder
+         */
         public Http query(final String name, final Object value) {
             delegate.query(name, value);
             return this;
         }
 
+        /**
+         * Adds map-backed query values using Fabric conversion.
+         *
+         * @param values query values keyed by name
+         * @return this builder
+         */
         public Http query(final Map<String, ?> values) {
             delegate.query(values);
             return this;
         }
 
+        /**
+         * Adds one string form value.
+         *
+         * @param name  form name
+         * @param value form value
+         * @return this builder
+         */
         public Http form(final String name, final String value) {
             delegate.form(name, value);
             return this;
         }
 
+        /**
+         * Adds one object form value using Fabric conversion.
+         *
+         * @param name  form name
+         * @param value form value
+         * @return this builder
+         */
         public Http form(final String name, final Object value) {
             delegate.form(name, value);
             return this;
         }
 
+        /**
+         * Adds map-backed form values using Fabric conversion.
+         *
+         * @param values form values keyed by name
+         * @return this builder
+         */
         public Http form(final Map<String, ?> values) {
             delegate.form(values);
             return this;
         }
 
+        /**
+         * Sets a text request body using Fabric defaults.
+         *
+         * @param value body text
+         * @return this builder
+         */
         public Http body(final String value) {
             delegate.body(value);
             return this;
         }
 
+        /**
+         * Sets a text request body and media type.
+         *
+         * @param value body text
+         * @param media body media type
+         * @return this builder
+         */
         public Http body(final String value, final MediaType media) {
             delegate.body(value, media);
             return this;
         }
 
+        /**
+         * Sets a binary request body and media type.
+         *
+         * @param value body bytes
+         * @param media body media type
+         * @return this builder
+         */
         public Http body(final byte[] value, final MediaType media) {
             delegate.body(value, media);
             return this;
         }
 
+        /**
+         * Sets a lifecycle-bound authentication body.
+         *
+         * @param body request body
+         * @return this builder
+         */
         public Http body(final Body body) {
             delegate.body(Assert.notNull(body, "Authentication HTTP body must not be null").unwrap());
             return this;
         }
 
+        /**
+         * Sets the request media type.
+         *
+         * @param media media type
+         * @return this builder
+         */
         public Http media(final MediaType media) {
             delegate.media(media);
             return this;
         }
 
+        /**
+         * Executes the configured request.
+         *
+         * @return closeable HTTP response
+         */
         public Response execute() {
             return Response.wrap(delegate.execute());
         }
 
+        /**
+         * Executes the configured request and decodes its response text.
+         *
+         * @return response text
+         */
         public String executeText() {
             return delegate.executeText();
         }
@@ -1146,72 +1622,163 @@ public class FabricX {
      */
     public static class Request {
 
+        /**
+         * Backing immutable Bus Fabric HTTP request.
+         */
         private final HttpRequest delegate;
 
+        /**
+         * Creates an authentication request facade.
+         *
+         * @param delegate backing Fabric request
+         */
         public Request(final HttpRequest delegate) {
             this.delegate = Assert.notNull(delegate, "Fabric HTTP request must not be null");
         }
 
+        /**
+         * Wraps a nullable Fabric request at an internal adapter boundary.
+         *
+         * @param value backing Fabric request
+         * @return wrapped request or {@code null}
+         */
         private static Request wrap(final HttpRequest value) {
             return value == null ? null : new Request(value);
         }
 
-        private HttpRequest unwrap() {
-            return delegate;
-        }
-
+        /**
+         * Creates an empty mutable request builder.
+         *
+         * @return new request builder
+         */
         public static RequestBuilder builder() {
             return new RequestBuilder(HttpRequest.builder());
         }
 
+        /**
+         * Returns the backing Fabric request inside the facade boundary.
+         *
+         * @return backing immutable request
+         */
+        private HttpRequest unwrap() {
+            return delegate;
+        }
+
+        /**
+         * Returns a builder initialized from this request.
+         *
+         * @return initialized request builder
+         */
         public RequestBuilder toBuilder() {
             return new RequestBuilder(delegate.toBuilder());
         }
 
+        /**
+         * Returns the registered HTTP method.
+         *
+         * @return HTTP method
+         */
         public Method method() {
             return delegate.method();
         }
 
+        /**
+         * Returns the immutable request URL.
+         *
+         * @return request URL
+         */
         public Url url() {
             return Url.wrap(delegate.url());
         }
 
+        /**
+         * Returns immutable request headers.
+         *
+         * @return request headers
+         */
         public Headers headers() {
             return new Headers(delegate.headers());
         }
 
+        /**
+         * Returns the optional request body.
+         *
+         * @return request body or {@code null}
+         */
         public Body body() {
             return Body.wrap(delegate.body());
         }
 
+        /**
+         * Returns the exact HTTP method text.
+         *
+         * @return method text
+         */
         public String methodText() {
             return delegate.methodText();
         }
 
+        /**
+         * Returns the normalized request authority.
+         *
+         * @return request authority
+         */
         public String authority() {
             return delegate.authority();
         }
 
+        /**
+         * Returns the encoded request target.
+         *
+         * @return request target
+         */
         public String requestTarget() {
             return delegate.requestTarget();
         }
 
+        /**
+         * Returns the declared request body length.
+         *
+         * @return body length or the Fabric absence marker
+         */
         public long bodyLength() {
             return delegate.bodyLength();
         }
 
+        /**
+         * Reports whether the complete request can be replayed.
+         *
+         * @return whether the request is replayable
+         */
         public boolean replayable() {
             return delegate.replayable();
         }
 
+        /**
+         * Returns the untyped request tag.
+         *
+         * @return request tag or {@code null}
+         */
         public Object tag() {
             return delegate.tag();
         }
 
+        /**
+         * Returns the request tag when it matches an expected type.
+         *
+         * @param type expected tag type
+         * @param <T>  expected tag value type
+         * @return matching tag or {@code null}
+         */
         public <T> T tag(final Class<T> type) {
             return delegate.tag(type);
         }
 
+        /**
+         * Reports whether the request URL uses HTTPS.
+         *
+         * @return whether the request uses HTTPS
+         */
         public boolean isHttps() {
             return delegate.isHttps();
         }
@@ -1225,52 +1792,114 @@ public class FabricX {
      */
     public static class RequestBuilder {
 
+        /**
+         * Backing mutable Bus Fabric request builder.
+         */
         private final HttpRequest.Builder delegate;
 
+        /**
+         * Creates a facade over one Fabric request builder.
+         *
+         * @param delegate backing request builder
+         */
         public RequestBuilder(final HttpRequest.Builder delegate) {
             this.delegate = Assert.notNull(delegate, "Fabric HTTP request builder must not be null");
         }
 
+        /**
+         * Sets the HTTP method.
+         *
+         * @param method HTTP method
+         * @return this builder
+         */
         public RequestBuilder method(final Method method) {
             delegate.method(method);
             return this;
         }
 
+        /**
+         * Sets the immutable request URL.
+         *
+         * @param url request URL
+         * @return this builder
+         */
         public RequestBuilder url(final Url url) {
             delegate.url(Assert.notNull(url, "Authentication URL must not be null").delegate);
             return this;
         }
 
+        /**
+         * Sets immutable request headers.
+         *
+         * @param headers request headers
+         * @return this builder
+         */
         public RequestBuilder headers(final Headers headers) {
             delegate.headers(Assert.notNull(headers, "Authentication HTTP headers must not be null").unwrap());
             return this;
         }
 
+        /**
+         * Sets the User-Agent header.
+         *
+         * @param value user-agent value
+         * @return this builder
+         */
         public RequestBuilder userAgent(final String value) {
             delegate.userAgent(value);
             return this;
         }
 
+        /**
+         * Sets the request body.
+         *
+         * @param body request body
+         * @return this builder
+         */
         public RequestBuilder body(final Body body) {
             delegate.body(Assert.notNull(body, "Authentication HTTP body must not be null").unwrap());
             return this;
         }
 
+        /**
+         * Sets a text body using Fabric defaults.
+         *
+         * @param value body text
+         * @return this builder
+         */
         public RequestBuilder text(final String value) {
             delegate.text(value);
             return this;
         }
 
+        /**
+         * Sets a text body and media type.
+         *
+         * @param value body text
+         * @param media body media type
+         * @return this builder
+         */
         public RequestBuilder text(final String value, final MediaType media) {
             delegate.text(value, media);
             return this;
         }
 
+        /**
+         * Sets an application request tag.
+         *
+         * @param tag request tag
+         * @return this builder
+         */
         public RequestBuilder tag(final Object tag) {
             delegate.tag(tag);
             return this;
         }
 
+        /**
+         * Builds the immutable request.
+         *
+         * @return immutable request
+         */
         public Request build() {
             return new Request(delegate.build());
         }
@@ -1284,68 +1913,151 @@ public class FabricX {
      */
     public static class Response implements AutoCloseable {
 
+        /**
+         * Backing lifecycle-bound Bus Fabric HTTP response.
+         */
         private final HttpResponse delegate;
 
+        /**
+         * Creates an authentication response facade.
+         *
+         * @param delegate backing Fabric response
+         */
         public Response(final HttpResponse delegate) {
             this.delegate = Assert.notNull(delegate, "Fabric HTTP response must not be null");
         }
 
+        /**
+         * Wraps a nullable Fabric response at an internal adapter boundary.
+         *
+         * @param value backing Fabric response
+         * @return wrapped response or {@code null}
+         */
         private static Response wrap(final HttpResponse value) {
             return value == null ? null : new Response(value);
         }
 
-        private HttpResponse unwrap() {
-            return delegate;
-        }
-
+        /**
+         * Creates an empty mutable response builder.
+         *
+         * @return new response builder
+         */
         public static ResponseBuilder builder() {
             return new ResponseBuilder(HttpResponse.builder());
         }
 
+        /**
+         * Returns the backing Fabric response inside the facade boundary.
+         *
+         * @return backing response
+         */
+        private HttpResponse unwrap() {
+            return delegate;
+        }
+
+        /**
+         * Returns a builder initialized from this response.
+         *
+         * @return initialized response builder
+         */
         public ResponseBuilder toBuilder() {
             return new ResponseBuilder(delegate.toBuilder());
         }
 
+        /**
+         * Returns the request that produced this response.
+         *
+         * @return originating request or {@code null}
+         */
         public Request request() {
             return Request.wrap(delegate.request());
         }
 
+        /**
+         * Returns the HTTP status code.
+         *
+         * @return response status code
+         */
         public int code() {
             return delegate.code();
         }
 
+        /**
+         * Returns the HTTP status message.
+         *
+         * @return response status message
+         */
         public String message() {
             return delegate.message();
         }
 
+        /**
+         * Returns immutable response headers.
+         *
+         * @return response headers
+         */
         public Headers headers() {
             return new Headers(delegate.headers());
         }
 
+        /**
+         * Returns the optional lifecycle-bound response body.
+         *
+         * @return response body or {@code null}
+         */
         public Body body() {
             return Body.wrap(delegate.body());
         }
 
+        /**
+         * Reports whether the status code is successful.
+         *
+         * @return whether the response is successful
+         */
         public boolean successful() {
             return delegate.successful();
         }
 
+        /**
+         * Returns the parsed response cache-control directives.
+         *
+         * @return cache-control view
+         */
         public CacheControl cacheControl() {
             return new CacheControl(delegate.cacheControl());
         }
 
+        /**
+         * Decodes the response body as text using Fabric defaults.
+         *
+         * @return response body text
+         */
         public String text() {
             return delegate.text();
         }
 
+        /**
+         * Materializes the response body using the Fabric default boundary.
+         *
+         * @return response body bytes
+         */
         public byte[] bytes() {
             return delegate.bytes();
         }
 
+        /**
+         * Materializes at most the explicitly bounded response document size.
+         *
+         * @param maximumBytes maximum accepted response bytes
+         * @return bounded response body bytes
+         */
         public byte[] bytes(final long maximumBytes) {
             return delegate.bytes(maximumBytes);
         }
 
+        /**
+         * Closes the response and its body.
+         */
         @Override
         public void close() {
             delegate.close();
@@ -1360,35 +2072,47 @@ public class FabricX {
      */
     public static class CacheControl {
 
+        /**
+         * Backing immutable Bus Fabric cache-control value.
+         */
         private final HttpCacheControl delegate;
 
+        /**
+         * Creates an authentication cache-control view.
+         *
+         * @param delegate backing Fabric cache-control value
+         */
         public CacheControl(final HttpCacheControl delegate) {
             this.delegate = Assert.notNull(delegate, "Fabric cache control must not be null");
         }
 
+        /**
+         * Reports whether reuse requires origin revalidation.
+         *
+         * @return whether {@code no-cache} is present
+         */
         public boolean noCache() {
             return delegate.noCache();
         }
 
+        /**
+         * Reports whether storage is prohibited.
+         *
+         * @return whether {@code no-store} is present
+         */
         public boolean noStore() {
             return delegate.noStore();
         }
 
+        /**
+         * Returns the parsed maximum age in seconds.
+         *
+         * @return maximum age or the Fabric absence marker
+         */
         public int maxAgeSeconds() {
             return delegate.maxAgeSeconds();
         }
 
-    }
-
-    /**
-     * Creates one HTTP Basic authorization header value.
-     *
-     * @param username HTTP Basic username
-     * @param password HTTP Basic password
-     * @return complete Authorization header value
-     */
-    public static String basic(final String username, final String password) {
-        return HttpAuth.basic(username, password).value();
     }
 
     /**
@@ -1422,30 +2146,66 @@ public class FabricX {
      */
     public static class AddressPolicy {
 
+        /**
+         * Backing immutable Bus Fabric outbound-address policy.
+         */
         private final org.miaixz.bus.fabric.guard.route.AddressPolicy delegate;
 
+        /**
+         * Creates an explicit outbound address policy.
+         *
+         * @param allowedSchemes     allowed transport schemes
+         * @param allowedPorts       allowed destination ports
+         * @param allowedTargetCidrs allowed resolved target network ranges
+         * @param allowedPeerCidrs   allowed connected peer network ranges
+         */
         public AddressPolicy(final Set<Protocol> allowedSchemes, final Set<Integer> allowedPorts,
                 final Set<String> allowedTargetCidrs, final Set<String> allowedPeerCidrs) {
             this.delegate = new org.miaixz.bus.fabric.guard.route.AddressPolicy(allowedSchemes, allowedPorts,
                     allowedTargetCidrs, allowedPeerCidrs);
         }
 
+        /**
+         * Returns the backing Fabric address policy inside the facade boundary.
+         *
+         * @return backing address policy
+         */
         private org.miaixz.bus.fabric.guard.route.AddressPolicy unwrap() {
             return delegate;
         }
 
+        /**
+         * Returns allowed transport schemes.
+         *
+         * @return immutable allowed schemes
+         */
         public Set<Protocol> allowedSchemes() {
             return delegate.allowedSchemes();
         }
 
+        /**
+         * Returns allowed destination ports.
+         *
+         * @return immutable allowed ports
+         */
         public Set<Integer> allowedPorts() {
             return delegate.allowedPorts();
         }
 
+        /**
+         * Returns allowed resolved target network ranges.
+         *
+         * @return immutable target CIDRs
+         */
         public Set<String> allowedTargetCidrs() {
             return delegate.allowedTargetCidrs();
         }
 
+        /**
+         * Returns allowed connected peer network ranges.
+         *
+         * @return immutable peer CIDRs
+         */
         public Set<String> allowedPeerCidrs() {
             return delegate.allowedPeerCidrs();
         }
@@ -1459,62 +2219,135 @@ public class FabricX {
      */
     public static class ResponseBuilder {
 
+        /**
+         * Backing mutable Bus Fabric response builder.
+         */
         private final HttpResponse.Builder delegate;
 
+        /**
+         * Creates a facade over one Fabric response builder.
+         *
+         * @param delegate backing response builder
+         */
         public ResponseBuilder(final HttpResponse.Builder delegate) {
             this.delegate = Assert.notNull(delegate, "Fabric HTTP response builder must not be null");
         }
 
+        /**
+         * Sets the originating request.
+         *
+         * @param request originating request
+         * @return this builder
+         */
         public ResponseBuilder request(final Request request) {
             delegate.request(Assert.notNull(request, "Authentication HTTP request must not be null").unwrap());
             return this;
         }
 
+        /**
+         * Sets the HTTP status code.
+         *
+         * @param code status code
+         * @return this builder
+         */
         public ResponseBuilder code(final int code) {
             delegate.code(code);
             return this;
         }
 
+        /**
+         * Sets the HTTP status message.
+         *
+         * @param message status message
+         * @return this builder
+         */
         public ResponseBuilder message(final String message) {
             delegate.message(message);
             return this;
         }
 
+        /**
+         * Sets immutable response headers.
+         *
+         * @param headers response headers
+         * @return this builder
+         */
         public ResponseBuilder headers(final Headers headers) {
             delegate.headers(Assert.notNull(headers, "Authentication HTTP headers must not be null").unwrap());
             return this;
         }
 
+        /**
+         * Sets the response body.
+         *
+         * @param body response body
+         * @return this builder
+         */
         public ResponseBuilder body(final Body body) {
             delegate.body(Assert.notNull(body, "Authentication HTTP body must not be null").unwrap());
             return this;
         }
 
+        /**
+         * Sets the nested network response.
+         *
+         * @param response network response or {@code null}
+         * @return this builder
+         */
         public ResponseBuilder networkResponse(final Response response) {
             delegate.networkResponse(response == null ? null : response.unwrap());
             return this;
         }
 
+        /**
+         * Sets the nested cache response.
+         *
+         * @param response cache response or {@code null}
+         * @return this builder
+         */
         public ResponseBuilder cacheResponse(final Response response) {
             delegate.cacheResponse(response == null ? null : response.unwrap());
             return this;
         }
 
+        /**
+         * Sets the preceding response in a redirect or authentication chain.
+         *
+         * @param response prior response or {@code null}
+         * @return this builder
+         */
         public ResponseBuilder priorResponse(final Response response) {
             delegate.priorResponse(response == null ? null : response.unwrap());
             return this;
         }
 
+        /**
+         * Sets the request-send timestamp.
+         *
+         * @param value epoch millisecond timestamp
+         * @return this builder
+         */
         public ResponseBuilder sentRequestAtMillis(final long value) {
             delegate.sentRequestAtMillis(value);
             return this;
         }
 
+        /**
+         * Sets the response-receive timestamp.
+         *
+         * @param value epoch millisecond timestamp
+         * @return this builder
+         */
         public ResponseBuilder receivedResponseAtMillis(final long value) {
             delegate.receivedResponseAtMillis(value);
             return this;
         }
 
+        /**
+         * Builds the immutable response.
+         *
+         * @return immutable response
+         */
         public Response build() {
             return new Response(delegate.build());
         }

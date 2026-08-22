@@ -34,65 +34,91 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.PatternKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Carries externally managed GitHub.com OAuth App values.
+ * Carries externally managed GitHub.com OAuth App or Enterprise management values.
  * <p>
  * Fixed GitHub.com endpoints, S256 PKCE, and REST versioning remain manifest- and adapter-owned. This record retains
  * only the public Client ID, an external Client Secret reference, the registered callback, and the approved OAuth
- * scopes.
+ * scopes. The Enterprise branch instead stores a non-secret enterprise slug and a reference to a separately managed
+ * read-only administrator token.
  * </p>
  *
  * @param vendor      exact GitHub platform identifier
- * @param variant     exact default GitHub.com variant
- * @param clientId    registered GitHub OAuth App Client ID
- * @param credential  external Client Secret reference
- * @param redirectUri exact Authorization callback URL
- * @param scopes      ordered GitHub OAuth scopes whose first value is {@code read:user}
+ * @param variant     exact default login or Enterprise management Variant
+ * @param clientId    OAuth Client ID or Enterprise slug
+ * @param credential  external Client Secret or administrator Token reference
+ * @param redirectUri exact Authorization callback or empty for Enterprise management
+ * @param scopes      ordered OAuth scopes or empty for Enterprise management
  * @author Kimi Liu
  */
 public record GitHubOptions(Vendor.Id vendor, Vendor.Variant variant, String clientId, Credential.Reference credential,
         Optional<String> redirectUri, List<String> scopes) implements VendorOptions<GitHubOptions> {
 
     /**
-     * Validates and freezes one GitHub registration without resolving its Client Secret.
+     * Exact conservative GitHub Enterprise slug grammar used by path-template resolution.
+     */
+    private static final String ENTERPRISE_SLUG_PATTERN = "[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?";
+
+    /**
+     * Validates and freezes one GitHub registration without resolving its external credential.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, or scopes differ from the frozen manifest
      */
     public GitHubOptions {
-        if (!GitHubManifest.ID.equals(vendor) || !GitHubManifest.DEFAULT.equals(variant)) {
-            throw new ValidateException("GitHub options must select github/default");
+        if (!GitHubManifest.ID.equals(vendor)
+                || !(GitHubManifest.DEFAULT.equals(variant) || GitHubManifest.ENTERPRISE.equals(variant))) {
+            throw new ValidateException("GitHub options must select github/default or github/enterprise");
         }
-        Assert.notBlank(clientId, "GitHub client id must not be blank");
+        clientId = Assert.notBlank(
+                clientId,
+                GitHubManifest.ENTERPRISE.equals(variant) ? "GitHub Enterprise slug must not be blank"
+                        : "GitHub client id must not be blank");
         Assert.notNull(credential, "GitHub credential reference must not be null");
-        if (credential.type() != Credential.Type.CLIENT_SECRET) {
-            throw new ValidateException("GitHub credential must reference a client secret");
-        }
         Assert.notNull(redirectUri, "GitHub redirect URI container must not be null");
         redirectUri = Optional.ofNullable(redirectUri.getOrNull());
-        if (redirectUri.isEmpty()) {
-            throw new ValidateException("GitHub options require an Authorization callback URL");
-        }
-        redirect(redirectUri.getOrNull());
-
         Assert.notNull(scopes, "GitHub scopes must not be null");
-        final List<String> copy = new ArrayList<>(scopes.size());
-        for (String scope : scopes) {
-            final String checked = Assert.notBlank(scope, "GitHub scope must not be blank");
-            Scope.parse(checked);
-            if (!approvedScope(checked) || copy.contains(checked)) {
-                throw new ValidateException("GitHub scope is unsupported or duplicated by the frozen login manifest");
+        if (GitHubManifest.ENTERPRISE.equals(variant)) {
+            if (!clientId.equals(StringKit.trim(clientId)) || !PatternKit.isMatch(ENTERPRISE_SLUG_PATTERN, clientId)) {
+                throw new ValidateException(
+                        "GitHub Enterprise slug must use one to 39 letters, digits, or inner hyphens");
             }
-            copy.add(checked);
+            if (credential.type() != Credential.Type.SHARED_SECRET) {
+                throw new ValidateException("GitHub Enterprise credential must reference an administrator token");
+            }
+            if (redirectUri.isPresent() || !scopes.isEmpty()) {
+                throw new ValidateException("GitHub Enterprise options must not contain login callback or scopes");
+            }
+            scopes = List.of();
+        } else {
+            if (credential.type() != Credential.Type.CLIENT_SECRET) {
+                throw new ValidateException("GitHub login credential must reference a client secret");
+            }
+            if (redirectUri.isEmpty()) {
+                throw new ValidateException("GitHub options require an Authorization callback URL");
+            }
+            redirect(redirectUri.getOrNull());
+            final List<String> copy = new ArrayList<>(scopes.size());
+            for (String scope : scopes) {
+                final String checked = Assert.notBlank(scope, "GitHub scope must not be blank");
+                Scope.parse(checked);
+                if (!approvedScope(checked) || copy.contains(checked)) {
+                    throw new ValidateException(
+                            "GitHub scope is unsupported or duplicated by the frozen login manifest");
+                }
+                copy.add(checked);
+            }
+            if (copy.isEmpty()) {
+                copy.add("read:user");
+            }
+            if (!"read:user".equals(copy.getFirst())) {
+                throw new ValidateException("GitHub scopes must begin with read:user");
+            }
+            scopes = List.copyOf(copy);
         }
-        if (copy.isEmpty()) {
-            copy.add("read:user");
-        }
-        if (!"read:user".equals(copy.getFirst())) {
-            throw new ValidateException("GitHub scopes must begin with read:user");
-        }
-        scopes = List.copyOf(copy);
     }
 
     /**
@@ -124,6 +150,16 @@ public record GitHubOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
         } catch (URISyntaxException cause) {
             throw new ValidateException("GitHub redirect URI is invalid", cause);
         }
+    }
+
+    /**
+     * Returns the Enterprise slug only for constrained management target templates.
+     *
+     * @return Enterprise slug or empty for browser login
+     */
+    @Override
+    public Optional<String> templateTenant() {
+        return GitHubManifest.ENTERPRISE.equals(variant) ? Optional.of(clientId) : Optional.empty();
     }
 
     /**

@@ -29,7 +29,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.guard.IssuerValidator;
@@ -136,17 +135,17 @@ public class OktaSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Okta adapter from the frozen default manifest.
      *
-     * @param namespaceId registration namespace isolating browser and credential state
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Okta manifest
-     * @param variant     selected default variant manifest
-     * @param options     decoded externally loaded Okta options
-     * @param services    caller-owned runtime dependencies
+     * @param spaceId  registration space isolating browser and credential state
+     * @param sourceId registered Source identifier
+     * @param manifest selected Okta manifest
+     * @param variant  selected default variant manifest
+     * @param options  decoded externally loaded Okta options
+     * @param services caller-owned runtime dependencies
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, manifest, options, or security baseline do not match the frozen
      *                                  variant
      */
-    public OktaSourceAdapter(final String namespaceId, final String sourceId, final OktaManifest manifest,
+    public OktaSourceAdapter(final String spaceId, final String sourceId, final OktaManifest manifest,
             final VariantManifest.Variant variant, final OktaOptions options, final DriverServices services) {
         Assert.notNull(manifest, "Okta manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Okta Source id must not be blank");
@@ -161,7 +160,7 @@ public class OktaSourceAdapter implements VendorAdapter {
         if (!services.securityBaseline().require(Protocol.OIDC).algorithms().contains(JwaAlgorithm.RS256.name())) {
             throw new ValidateException("Okta RS256 is not enabled by the OIDC security baseline");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final String authorizationEndpoint = targets.authorization().getOrNull().url().toString();
         if (!authorizationEndpoint.endsWith("/v1/authorize")) {

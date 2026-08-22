@@ -81,16 +81,6 @@ public class TeambitionSourceAdapter implements VendorAdapter {
     private static final String PROFILE_AUTHORIZATION_PREFIX = "OAuth2 ";
 
     /**
-     * Maximum bounded Teambition JSON response size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum Teambition JSON response nesting.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
-
-    /**
      * Registered Source identifier copied into verified identities.
      */
     private final String sourceId;
@@ -138,16 +128,16 @@ public class TeambitionSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Teambition adapter from the frozen default manifest.
      *
-     * @param namespaceId registration namespace isolating browser state and credentials
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Teambition manifest
-     * @param variant     exact selected default manifest
-     * @param options     decoded externally loaded Teambition options
-     * @param services    caller-owned runtime dependencies
+     * @param spaceId  registration space isolating browser state and credentials
+     * @param sourceId registered Source identifier
+     * @param manifest selected Teambition manifest
+     * @param variant  exact selected default manifest
+     * @param options  decoded externally loaded Teambition options
+     * @param services caller-owned runtime dependencies
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
-    public TeambitionSourceAdapter(final String namespaceId, final String sourceId, final TeambitionManifest manifest,
+    public TeambitionSourceAdapter(final String spaceId, final String sourceId, final TeambitionManifest manifest,
             final VariantManifest.Variant variant, final TeambitionOptions options, final DriverServices services) {
         final TeambitionManifest selected = Assert.notNull(manifest, "Teambition manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Teambition Source id must not be blank");
@@ -161,7 +151,7 @@ public class TeambitionSourceAdapter implements VendorAdapter {
                 || !TeambitionManifest.DEFAULT.equals(options.variant())) {
             throw new ValidateException("Teambition adapter requires the teambition/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         this.authorizationEncoder = new AuthorizationRequestEncoder(
                 variant.targets().resolve(options).authorization().getOrNull());
         this.callbackDecoder = new AuthorizationResponseDecoder();
@@ -703,7 +693,7 @@ public class TeambitionSourceAdapter implements VendorAdapter {
             throw new ValidateException("Teambition " + operation + " response must use application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("Teambition " + operation + " response root must be an object");
         }
@@ -737,7 +727,6 @@ public class TeambitionSourceAdapter implements VendorAdapter {
      * @param website   optional website URL
      * @param location  optional location text
      * @param email     optional email address
-     *
      * @author Kimi Liu
      */
     private record ProfileWire(String name, String avatarUrl, String website, String location, String email) {

@@ -76,16 +76,6 @@ public class MicrosoftSourceAdapter implements VendorAdapter {
     private static final String CHINA_AUTHORITY = "https://microsoftgraph.chinacloudapi.cn";
 
     /**
-     * Maximum accepted Microsoft Graph JSON response size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum accepted Microsoft Graph JSON nesting depth.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
-
-    /**
      * Registered Source identifier copied into verified identities.
      */
     private final String sourceId;
@@ -123,16 +113,16 @@ public class MicrosoftSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Microsoft cloud adapter.
      *
-     * @param namespaceId registration namespace used to isolate state and credential resolution
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Microsoft platform manifest
-     * @param variant     exact selected global or China manifest
-     * @param options     decoded externally loaded Microsoft options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate state and credential resolution
+     * @param sourceId registered Source identifier
+     * @param manifest selected Microsoft platform manifest
+     * @param variant  exact selected global or China manifest
+     * @param options  decoded externally loaded Microsoft options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, variant, protocol, options, or required standard operations disagree
      */
-    public MicrosoftSourceAdapter(final String namespaceId, final String sourceId, final MicrosoftManifest manifest,
+    public MicrosoftSourceAdapter(final String spaceId, final String sourceId, final MicrosoftManifest manifest,
             final VariantManifest.Variant variant, final MicrosoftOptions options, final DriverServices services) {
         final MicrosoftManifest selected = Assert.notNull(manifest, "Microsoft manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Microsoft Source id must not be blank");
@@ -147,7 +137,7 @@ public class MicrosoftSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("Microsoft adapter requires a matching global or China OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), targets.token(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
@@ -527,7 +517,7 @@ public class MicrosoftSourceAdapter implements VendorAdapter {
                     return failed(ErrorCode._502, "Microsoft Graph returned an invalid current-user response");
                 }
                 final JsonValue parsed = services.jsonProvider()
-                        .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                        .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
                 if (!(parsed instanceof JsonValue.ObjectValue object)) {
                     return failed(ErrorCode._502, "Microsoft Graph current-user response must be a JSON object");
                 }

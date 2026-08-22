@@ -21,7 +21,10 @@ package org.miaixz.bus.auth.protocol.oauth2.grant;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -60,19 +63,9 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class AccessTokenIssuer {
 
     /**
-     * Maximum create-if-absent attempts used for an opaque token digest collision.
-     */
-    private static final int MAXIMUM_CREATE_ATTEMPTS = Builder.MAXIMUM_RETRY_ATTEMPTS;
-
-    /**
      * RFC 8628 interval increment applied after every successful excessive-poll update.
      */
     private static final Duration DEVICE_SLOW_DOWN_INCREMENT = Duration.ofSeconds(5);
-
-    /**
-     * Safe failure detail member carrying a registered OAuth error code.
-     */
-    private static final String OAUTH_ERROR = Builder.OAUTH_ERROR;
 
     /**
      * Provider identifier used to isolate every opaque credential digest.
@@ -184,7 +177,7 @@ public class AccessTokenIssuer {
             final OAuth2ErrorCode oauthError,
             final String description) {
         return new Outcome.Failure(error, description,
-                new JsonValue.ObjectValue(Map.of(OAUTH_ERROR, new JsonValue.StringValue(oauthError.value()))));
+                new JsonValue.ObjectValue(Map.of(Builder.OAUTH_ERROR, new JsonValue.StringValue(oauthError.value()))));
     }
 
     /**
@@ -212,9 +205,10 @@ public class AccessTokenIssuer {
     /**
      * Executes one non-refresh grant through the standard OAuth token operation.
      *
-     * @param request standard token request
-     * @param context invocation context carrying a verified client identifier
-     * @param timeout shared end-to-end operation timeout
+     * @param request        standard token request
+     * @param authentication verified request-scoped client authentication
+     * @param context        invocation context carrying a verified client identifier
+     * @param timeout        shared end-to-end operation timeout
      * @return asynchronous standard token response outcome
      */
     public CompletionStage<Outcome<TokenEndpointResponse>> token(
@@ -821,7 +815,7 @@ public class AccessTokenIssuer {
             if (replaced == null) {
                 return completed(storeFailure("OAuth 2.x device polling state update failed"));
             }
-            if (!replaced && attempt < MAXIMUM_CREATE_ATTEMPTS) {
+            if (!replaced && attempt < Builder.MAXIMUM_RETRY_ATTEMPTS) {
                 return deviceCode(grant, client, context, timeout, attempt + 1);
             }
             if (!replaced) {
@@ -868,7 +862,7 @@ public class AccessTokenIssuer {
             if (replaced == null) {
                 return completed(storeFailure("OAuth 2.x approved device state update failed"));
             }
-            if (!replaced && attempt < MAXIMUM_CREATE_ATTEMPTS) {
+            if (!replaced && attempt < Builder.MAXIMUM_RETRY_ATTEMPTS) {
                 return deviceCode(grant, client, context, timeout, attempt + 1);
             }
             if (!replaced) {
@@ -961,7 +955,7 @@ public class AccessTokenIssuer {
                     if (result.failure() != null) {
                         return completed(storeFailure("OAuth 2.x authorization state persistence failed"));
                     }
-                    if (!result.created() && attempt < MAXIMUM_CREATE_ATTEMPTS) {
+                    if (!result.created() && attempt < Builder.MAXIMUM_RETRY_ATTEMPTS) {
                         return createAuthorization(grant, context, timeout, attempt + 1);
                     }
                     if (!result.created()) {
@@ -1022,7 +1016,7 @@ public class AccessTokenIssuer {
                     if (result.failure() != null) {
                         return completed(storeFailure("OAuth 2.x access token persistence failed"));
                     }
-                    if (!result.created() && attempt < MAXIMUM_CREATE_ATTEMPTS) {
+                    if (!result.created() && attempt < Builder.MAXIMUM_RETRY_ATTEMPTS) {
                         return createAccess(grant, context, timeout, attempt + 1);
                     }
                     if (!result.created()) {
@@ -1073,7 +1067,7 @@ public class AccessTokenIssuer {
                     if (result.failure() != null) {
                         return cleanupAccess(accessKey, "OAuth 2.x refresh token persistence failed");
                     }
-                    if (!result.created() && attempt < MAXIMUM_CREATE_ATTEMPTS) {
+                    if (!result.created() && attempt < Builder.MAXIMUM_RETRY_ATTEMPTS) {
                         return createRefresh(accessToken, accessKey, grant, context, timeout, attempt + 1);
                     }
                     if (!result.created()) {
@@ -1375,6 +1369,22 @@ public class AccessTokenIssuer {
         }
 
         /**
+         * Copies one ordered internal lexical value list.
+         *
+         * @param values source values
+         * @param label  safe semantic label
+         * @return immutable detached list
+         */
+        private static List<String> immutable(final List<String> values, final String label) {
+            Assert.notNull(values, label + " must not be null");
+            final List<String> copy = new ArrayList<>(values.size());
+            for (String value : values) {
+                copy.add(Assert.notBlank(value, label + " must not contain blank values"));
+            }
+            return List.copyOf(copy);
+        }
+
+        /**
          * Returns the identifier from the verified immutable consumer snapshot.
          *
          * @return verified consumer identifier
@@ -1392,22 +1402,6 @@ public class AccessTokenIssuer {
         private Grant withAuthorizationId(final String value) {
             return new Grant(consumer, subjectId, scope, audience, grantType, refreshToken, issuedTokenType,
                     actorSubjectId, confirmation, openIdBinding, Optional.of(value));
-        }
-
-        /**
-         * Copies one ordered internal lexical value list.
-         *
-         * @param values source values
-         * @param label  safe semantic label
-         * @return immutable detached list
-         */
-        private static List<String> immutable(final List<String> values, final String label) {
-            Assert.notNull(values, label + " must not be null");
-            final List<String> copy = new ArrayList<>(values.size());
-            for (String value : values) {
-                copy.add(Assert.notBlank(value, label + " must not contain blank values"));
-            }
-            return List.copyOf(copy);
         }
 
     }

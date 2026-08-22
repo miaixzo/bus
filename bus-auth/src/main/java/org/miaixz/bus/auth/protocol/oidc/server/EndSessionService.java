@@ -321,6 +321,7 @@ public class EndSessionService {
      * @param clientId  verified relying-party client identifier
      * @param sessionId optional verified {@code sid} claim
      * @param subjectId optional verified {@code sub} claim retained for audit correlation only
+     * @param digest    optional irreversible ID Token binding digest
      * @author Kimi Liu
      */
     private record Hint(Optional<String> clientId, Optional<String> sessionId, Optional<String> subjectId,

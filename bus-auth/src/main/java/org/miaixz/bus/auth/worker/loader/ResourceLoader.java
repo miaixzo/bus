@@ -39,20 +39,19 @@ public interface ResourceLoader extends Loader<ResourceLoader.Request, ResourceL
      * Identifies the protected resource required by one protocol operation.
      *
      * @param registration exact Source registration requesting the resource
-     * @param namespaceId  project resource namespace, independent of the Source registration identifier
+     * @param spaceId      project resource space, independent of the Source registration identifier
      * @param audience     requested token audiences
      * @param resource     requested resource indicators
      * @author Kimi Liu
      */
-    record Request(Blueprint.SourceEntry registration, String namespaceId, List<String> audience,
-            List<String> resource) {
+    record Request(Blueprint.SourceEntry registration, String spaceId, List<String> audience, List<String> resource) {
 
         /**
          * Validates and freezes one protected-resource lookup request.
          */
         public Request {
             Assert.notNull(registration, "Resource registration must not be null");
-            Assert.notBlank(namespaceId, "Resource request namespace id must not be blank");
+            Assert.notBlank(spaceId, "Resource request space id must not be blank");
             audience = immutable(audience, "Resource request audience");
             resource = immutable(resource, "Resource request indicator");
         }

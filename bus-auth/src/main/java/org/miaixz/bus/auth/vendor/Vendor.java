@@ -40,7 +40,7 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class Vendor {
 
     /**
-     * Creates a Vendor namespace instance with no retained state.
+     * Creates a Vendor constant holder with no retained state.
      */
     public Vendor() {
         // No initialization required.
@@ -65,12 +65,12 @@ public class Vendor {
     }
 
     /**
-     * Creates the complete immutable directory used by external management interfaces.
+     * Creates the complete immutable locator used by external management interfaces.
      *
-     * @return newly constructed Vendor directory
+     * @return newly constructed Vendor locator
      */
-    public static VendorDirectory directory() {
-        return module().directory();
+    public static VendorLocator locator() {
+        return module().locator();
     }
 
     /**

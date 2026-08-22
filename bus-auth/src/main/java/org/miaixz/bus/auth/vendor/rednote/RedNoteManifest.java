@@ -88,9 +88,8 @@ public class RedNoteManifest implements VariantManifest<RedNoteOptions> {
     /**
      * Complete immutable RedNote marketing manifest.
      */
-    private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, MARKETING,
-            Protocol.VENDOR_AUTH, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET,
-            List.of("report_service"),
+    private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, MARKETING, Protocol.HTTPS,
+            VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of("report_service"),
             new VendorTargets(Optional
                     .of(fixed("https://ad-market.xiaohongshu.com/auth", Http.Method.GET, Endpoint.Authentication.NONE)),
                     Optional.of(

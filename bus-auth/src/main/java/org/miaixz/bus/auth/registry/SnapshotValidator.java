@@ -19,12 +19,7 @@
 */
 package org.miaixz.bus.auth.registry;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.miaixz.bus.auth.Blueprint;
 import org.miaixz.bus.auth.Provider;
@@ -67,38 +62,6 @@ public class SnapshotValidator {
     }
 
     /**
-     * Validates required Provider-to-Library ownership and enabled-parent compatibility.
-     *
-     * @param providers unique Provider records by identifier
-     * @param libraries unique Library records by identifier
-     * @param faults    mutable fault accumulator
-     */
-    private void validateProviders(
-            final Map<String, Blueprint.Entry> providers,
-            final Map<String, Blueprint.Entry> libraries,
-            final List<SnapshotFault> faults) {
-        for (Blueprint.Entry record : providers.values()) {
-            final Provider provider = (Provider) record.resource();
-            final String libraryId = provider.getLibrary_id();
-            if (StringKit.isBlank(libraryId)) {
-                fault(faults, record, "library_id", ErrorCode._100100, "Provider Library id must not be blank");
-            } else {
-                final Blueprint.Entry libraryRecord = libraries.get(libraryId);
-                if (libraryRecord == null) {
-                    fault(faults, record, "library_id", ErrorCode._404, "Provider references an unknown Library");
-                } else if (record.enabled() && !libraryRecord.enabled()) {
-                    fault(
-                            faults,
-                            record,
-                            "library_id",
-                            ErrorCode._100101,
-                            "An enabled Provider requires an enabled Library");
-                }
-            }
-        }
-    }
-
-    /**
      * Adds one safe validation fault without including options or credential material.
      *
      * @param faults      mutable fault accumulator
@@ -138,6 +101,38 @@ public class SnapshotValidator {
             final List<FieldViolation> violations) {
         for (FieldViolation violation : violations) {
             fault(faults, record, violation.field(), violation.error(), violation.description());
+        }
+    }
+
+    /**
+     * Validates required Provider-to-Library ownership and enabled-parent compatibility.
+     *
+     * @param providers unique Provider records by identifier
+     * @param libraries unique Library records by identifier
+     * @param faults    mutable fault accumulator
+     */
+    private void validateProviders(
+            final Map<String, Blueprint.Entry> providers,
+            final Map<String, Blueprint.Entry> libraries,
+            final List<SnapshotFault> faults) {
+        for (Blueprint.Entry record : providers.values()) {
+            final Provider provider = (Provider) record.resource();
+            final String libraryId = provider.getLibrary_id();
+            if (StringKit.isBlank(libraryId)) {
+                fault(faults, record, "library_id", ErrorCode._100100, "Provider Library id must not be blank");
+            } else {
+                final Blueprint.Entry libraryRecord = libraries.get(libraryId);
+                if (libraryRecord == null) {
+                    fault(faults, record, "library_id", ErrorCode._404, "Provider references an unknown Library");
+                } else if (record.enabled() && !libraryRecord.enabled()) {
+                    fault(
+                            faults,
+                            record,
+                            "library_id",
+                            ErrorCode._100101,
+                            "An enabled Provider requires an enabled Library");
+                }
+            }
         }
     }
 

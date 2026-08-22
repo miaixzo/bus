@@ -20,8 +20,8 @@
 /**
  * Declares the public RedNote marketing authorization profile and externally loaded options.
  * <p>
- * RedNoteManifest fixes the proprietary {@code rednote/marketing} VENDOR_AUTH variant and its authorization,
- * initial-token, and refresh-token endpoints. It publishes only the application capabilities
+ * RedNoteManifest fixes the proprietary {@code rednote/marketing} HTTPS Variant and its authorization, initial-token,
+ * and refresh-token endpoints. It publishes only the application capabilities
  * {@code vendor.rednote.marketing_authorize} and {@code vendor.rednote.marketing_token}, with dedicated nested request
  * and response records that preserve official field names and the initial-versus-refresh token union. It does not
  * publish Source authentication, ExternalIdentity, OAuth AuthorizationRequest, TokenResponse, or O2A/O2T capabilities.

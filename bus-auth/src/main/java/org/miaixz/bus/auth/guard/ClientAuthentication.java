@@ -30,6 +30,10 @@ import org.miaixz.bus.extra.json.JsonValue;
 /**
  * Immutable result joining one Consumer snapshot with request-scoped verified authentication facts.
  *
+ * @param consumer   immutable authenticated Consumer metadata
+ * @param kind       authentication result profile
+ * @param method     optional registered authentication method for a standard result
+ * @param federation optional verified federation facts for a federated JWT result
  * @author Kimi Liu
  */
 public record ClientAuthentication(ConsumerMetadata consumer, Kind kind, Optional<ClientAuthenticationMethod> method,
@@ -87,18 +91,42 @@ public record ClientAuthentication(ConsumerMetadata consumer, Kind kind, Optiona
     }
 
     /**
+     * Prevents verified claims from being rendered in logs.
+     */
+    @Override
+    public String toString() {
+        final Federation facts = federation.getOrNull();
+        return "ClientAuthentication[consumer=" + consumer.id() + ", kind=" + kind + ", method="
+                + method.map(ClientAuthenticationMethod::value).orElse(null) + ", issuer="
+                + (facts == null ? null : facts.issuer()) + ']';
+    }
+
+    /**
      * Authentication result profile.
      *
      * @author Kimi Liu
      */
     public enum Kind {
-        STANDARD, FEDERATED_JWT
+
+        /**
+         * Registered Consumer authentication using a standard OAuth client method.
+         */
+        STANDARD,
+
+        /**
+         * Federated JWT authentication mapped to a project Subject.
+         */
+        FEDERATED_JWT
 
     }
 
     /**
      * Verified external issuer-to-project-subject mapping for one federated request.
      *
+     * @param issuer          verified external assertion issuer
+     * @param externalSubject verified external assertion subject
+     * @param subject         project Subject selected by the federation relation
+     * @param claims          detached verified assertion claims
      * @author Kimi Liu
      */
     public record Federation(String issuer, String externalSubject, Subject.Key subject, JsonValue.ObjectValue claims) {
@@ -114,17 +142,6 @@ public record ClientAuthentication(ConsumerMetadata consumer, Kind kind, Optiona
             claims = new JsonValue.ObjectValue(claims.values());
         }
 
-    }
-
-    /**
-     * Prevents verified claims from being rendered in logs.
-     */
-    @Override
-    public String toString() {
-        final Federation facts = federation.getOrNull();
-        return "ClientAuthentication[consumer=" + consumer.id() + ", kind=" + kind + ", method="
-                + method.map(ClientAuthenticationMethod::value).orElse(null) + ", issuer="
-                + (facts == null ? null : facts.issuer()) + ']';
     }
 
 }

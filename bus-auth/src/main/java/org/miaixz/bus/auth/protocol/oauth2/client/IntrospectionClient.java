@@ -26,11 +26,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Endpoint;
-import org.miaixz.bus.auth.FabricX;
-import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.IntrospectionRequest;

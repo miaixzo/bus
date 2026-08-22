@@ -53,7 +53,7 @@ public class DeviceCodeCache extends AuthCache<DeviceCodeCache.Entry> {
      * Creates a device-code cache view backed entirely by bus-cache.
      *
      * @param cache      shared bus-cache backend
-     * @param deployment deployment-unique cache namespace
+     * @param deployment deployment-unique cache scope
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
     public DeviceCodeCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
@@ -64,7 +64,7 @@ public class DeviceCodeCache extends AuthCache<DeviceCodeCache.Entry> {
      * Creates a Source-generation-scoped device-code cache view for compiled runtime use.
      *
      * @param cache      shared bus-cache backend
-     * @param deployment deployment-unique cache namespace
+     * @param deployment deployment-unique cache scope
      * @param sourceId   exact Source registration identifier
      * @param generation non-negative Source configuration generation
      * @param clock      shared runtime clock used to derive entry lifetimes

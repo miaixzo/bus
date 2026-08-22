@@ -34,12 +34,13 @@ import org.miaixz.bus.auth.protocol.radius.Radius;
 import org.miaixz.bus.auth.protocol.saml.Saml;
 import org.miaixz.bus.auth.protocol.scim.Scim;
 import org.miaixz.bus.auth.registry.CurrentRegistry;
+import org.miaixz.bus.auth.registry.SnapshotFault;
 import org.miaixz.bus.auth.registry.SnapshotValidator;
 import org.miaixz.bus.auth.registry.SourceValidator;
 import org.miaixz.bus.auth.source.DriverDirectory;
 import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.auth.vendor.Vendor;
-import org.miaixz.bus.auth.vendor.VendorDirectory;
+import org.miaixz.bus.auth.vendor.VendorLocator;
 import org.miaixz.bus.auth.vendor.VendorModule;
 import org.miaixz.bus.auth.worker.RegistryListener;
 import org.miaixz.bus.auth.worker.loader.RegistrationLoader;
@@ -61,6 +62,21 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @author Kimi Liu
  */
 public class RuntimeBuilder {
+
+    /**
+     * Formats the first structured, non-sensitive startup fault for an actionable build failure.
+     *
+     * @param report rejected initial Registry report containing at least one fault
+     * @return safe startup rejection description
+     */
+    private static String rejection(final Registry.Report report) {
+        final SnapshotFault fault = report.faults().getFirst();
+        final String resource = fault.id().isPresent() ? fault.id().getOrNull() : "snapshot";
+        final String field = fault.field().isPresent() ? fault.field().getOrNull() : "unknown";
+        return "Initial authentication registration snapshot was rejected: " + report.faults().size()
+                + " fault(s); first=" + fault.stage().name() + "/" + resource + "/" + field + ": "
+                + fault.safeDescription();
+    }
 
     /**
      * Externally supplied protocol execution service set.
@@ -85,7 +101,7 @@ public class RuntimeBuilder {
     /**
      * Vendor inventory paired with the assembled Vendor Source driver, when selected.
      */
-    private VendorDirectory vendors;
+    private VendorLocator vendorLocator;
 
     /**
      * Whether the one-shot build process has begun.
@@ -183,8 +199,8 @@ public class RuntimeBuilder {
     public synchronized RuntimeBuilder vendors(final VendorModule module) {
         mutable();
         final VendorModule checked = Assert.notNull(module, "Vendor module must not be null");
-        Assert.isTrue(vendors == null, "Vendor module has already been configured");
-        vendors = checked.directory();
+        Assert.isTrue(vendorLocator == null, "Vendor module has already been configured");
+        vendorLocator = checked.locator();
         sources.add(checked.source());
         return this;
     }
@@ -220,8 +236,7 @@ public class RuntimeBuilder {
         return runtime.reload(context, timeout).thenApply(report -> {
             if (!report.faults().isEmpty()) {
                 runtime.close();
-                throw new ValidateException("Initial authentication registration snapshot was rejected: "
-                        + report.faults().size() + " fault(s)");
+                throw new ValidateException(rejection(report));
             }
             return runtime;
         }).whenComplete((started, failure) -> {
@@ -254,7 +269,7 @@ public class RuntimeBuilder {
         built = true;
         final List<SourceDriver<?>> frozenSources = List.copyOf(sources);
         final DriverDirectory directory = new DriverDirectory(frozenSources);
-        final RuntimeDescriptor descriptor = new RuntimeDescriptor(directory, Optional.ofNullable(vendors));
+        final RuntimeDescriptor descriptor = new RuntimeDescriptor(directory, Optional.ofNullable(vendorLocator));
         final SnapshotCompiler snapshotCompiler = new SnapshotCompiler(directory, services);
         final Registry.Revision revision = new Registry.Revision(0L);
         final Registry.Snapshot snapshot = new Registry.Snapshot(revision, List.of());

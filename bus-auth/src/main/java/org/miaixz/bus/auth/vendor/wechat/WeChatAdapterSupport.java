@@ -27,7 +27,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.FabricX.UrlBuilder;
@@ -35,8 +34,9 @@ import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationResponseDecoder;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.*;
 import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.ExternalIdentity;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -88,19 +88,9 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
     private static final String PROFILE_LANGUAGE = "zh_CN";
 
     /**
-     * Maximum response body accepted from any WeChat endpoint.
+     * Registered space used to isolate replay and browser correlation keys.
      */
-    private static final long MAXIMUM_RESPONSE_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum JSON nesting accepted from WeChat endpoints.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._32;
-
-    /**
-     * Registered namespace used to isolate replay and browser correlation keys.
-     */
-    private final String namespaceId;
+    private final String spaceId;
 
     /**
      * Registered Source identifier copied into verified external identities.
@@ -145,19 +135,19 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
     /**
      * Creates one Source-bound adapter for the selected frozen WeChat variant.
      *
-     * @param namespaceId registration namespace isolating state, replay, and credentials
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected WeChat manifest
-     * @param variant     exact selected variant manifest
-     * @param options     decoded externally loaded options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space isolating state, replay, and credentials
+     * @param sourceId registered Source identifier
+     * @param manifest selected WeChat manifest
+     * @param variant  exact selected variant manifest
+     * @param options  decoded externally loaded options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, variant, protocol, or options routing is inconsistent
      */
-    public WeChatAdapterSupport(final String namespaceId, final String sourceId, final WeChatManifest manifest,
+    public WeChatAdapterSupport(final String spaceId, final String sourceId, final WeChatManifest manifest,
             final VariantManifest.Variant variant, final WeChatOptions options, final DriverServices services) {
         final WeChatManifest selected = Assert.notNull(manifest, "WeChat manifest must not be null");
-        this.namespaceId = Assert.notBlank(namespaceId, "WeChat namespace id must not be blank");
+        this.spaceId = Assert.notBlank(spaceId, "WeChat space id must not be blank");
         this.sourceId = Assert.notBlank(sourceId, "WeChat Source id must not be blank");
         this.manifest = selected;
         this.variant = Assert.notNull(variant, "WeChat manifest must not be null");
@@ -166,11 +156,11 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
         if (!WeChatManifest.ID.equals(selected.vendor()) || !selected.variant(options.variant()).equals(variant)
                 || !options.variant().equals(variant.variant()) || !WeChatManifest.ID.equals(options.vendor())
                 || oauthVariant() && variant.protocol() != Protocol.OAUTH2
-                || !oauthVariant() && variant.protocol() != Protocol.VENDOR_AUTH) {
+                || !oauthVariant() && variant.protocol() != Protocol.HTTPS) {
             throw new ValidateException("WeChat adapter profile, variant, protocol, and options must match");
         }
         this.redirectManager = WeChatManifest.MINI.equals(options.variant()) ? null
-                : RedirectManager.create(namespaceId, sourceId, variant, options, services);
+                : RedirectManager.create(spaceId, sourceId, variant, options, services);
         this.callbackDecoder = new AuthorizationResponseDecoder();
         this.standardAdapter = new StandardAdapter(variant, options, Optional.ofNullable(redirectManager),
                 oauthVariant() ? List.of(
@@ -945,7 +935,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
                             "provider_secret",
                             new JsonValue.StringValue(secret(secret)))));
             final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-            try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
+            try (Response response = FabricX.http(services.fabric(), Protocol.HTTPS, timeout).url(endpoint)
                     .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_JSON_TYPE).execute()) {
                 return decodeWorkAccess(response, code, true);
@@ -1130,7 +1120,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
         }
         try {
             final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
-            try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
+            try (Response response = FabricX.http(services.fabric(), Protocol.HTTPS, timeout).url(endpoint)
                     .method(Http.Method.GET).query(OAuth2.Parameters.ACCESS_TOKEN, access.token())
                     .query(OAuth2.Parameters.CODE, access.code()).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .execute()) {
@@ -1198,7 +1188,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
             return failed(ErrorCode._408, "WeCom member request has no remaining timeout");
         }
         final WeChatTargets targets = manifest.enterpriseTargets();
-        try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout)
+        try (Response response = FabricX.http(services.fabric(), Protocol.HTTPS, timeout)
                 .url(targets.member().endpoint().url().toString()).method(Http.Method.GET)
                 .query(OAuth2.Parameters.ACCESS_TOKEN, token).query("userid", subject)
                 .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
@@ -1273,7 +1263,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
             body = services.jsonProvider().writeValue(
                     new JsonValue.ObjectValue(Map.of("user_ticket", new JsonValue.StringValue(userTicket))));
             final WeChatTargets targets = manifest.enterpriseTargets();
-            try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout)
+            try (Response response = FabricX.http(services.fabric(), Protocol.HTTPS, timeout)
                     .url(targets.sensitive().endpoint().url().toString()).method(Http.Method.POST)
                     .query(OAuth2.Parameters.ACCESS_TOKEN, token).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_JSON_TYPE).execute()) {
@@ -1344,7 +1334,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
             body = services.jsonProvider().writeValue(
                     new JsonValue.ObjectValue(Map.of("auth_code", new JsonValue.StringValue(access.code()))));
             final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
-            try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
+            try (Response response = FabricX.http(services.fabric(), Protocol.HTTPS, timeout).url(endpoint)
                     .method(Http.Method.POST).query(OAuth2.Parameters.ACCESS_TOKEN, access.token())
                     .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).body(body, MediaType.APPLICATION_JSON_TYPE)
                     .execute()) {
@@ -1410,11 +1400,11 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
             final String code,
             final Context context,
             final Timeout timeout) {
-        final var policy = services.securityBaseline().require(Protocol.VENDOR_AUTH);
+        final var policy = services.securityBaseline().require(Protocol.HTTPS);
         return services.securityBaseline().replayGuard(services.replayCache())
                 .register(
-                        namespaceId,
-                        Protocol.VENDOR_AUTH,
+                        spaceId,
+                        Protocol.HTTPS,
                         WECHAT_AUTHORITY,
                         MINI_CODE_PURPOSE,
                         code,
@@ -1458,7 +1448,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
                             "WeChat Mini Program request has no remaining timeout");
                 }
                 final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-                try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
+                try (Response response = FabricX.http(services.fabric(), Protocol.HTTPS, timeout).url(endpoint)
                         .method(Http.Method.GET).query("appid", options.clientId()).query("secret", secret(secret))
                         .query("js_code", code)
                         .query(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value())
@@ -1590,7 +1580,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
             throw new ValidateException("WeChat response must use application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_RESPONSE_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._32, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("WeChat response root must be a JSON object");
         }

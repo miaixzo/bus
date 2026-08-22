@@ -80,9 +80,10 @@ public class TokenService {
     /**
      * Executes exactly one grant at the standard token endpoint.
      *
-     * @param request standard token request
-     * @param context invocation context carrying a verified client identifier
-     * @param timeout shared end-to-end timeout
+     * @param request        standard token request
+     * @param authentication verified client authentication facts
+     * @param context        invocation context carrying a verified client identifier
+     * @param timeout        shared end-to-end timeout
      * @return asynchronous standard token response outcome
      */
     public CompletionStage<Outcome<TokenEndpointResponse>> token(

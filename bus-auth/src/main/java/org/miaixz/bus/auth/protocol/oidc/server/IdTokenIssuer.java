@@ -26,12 +26,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.FabricX;
-import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Subject;
-import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.cache.AuthorizationCodeCache;
 import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.cache.IdTokenCache;
@@ -80,16 +75,6 @@ import org.miaixz.bus.extra.json.JsonValue;
  * @author Kimi Liu
  */
 public class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
-
-    /**
-     * Standard JWK key-use value for signing keys.
-     */
-    private static final String SIGNATURE_USE = Builder.SIGNATURE;
-
-    /**
-     * Safe failure-detail member consumed by the OAuth token error mapper.
-     */
-    private static final String OAUTH_ERROR = Builder.OAUTH_ERROR;
 
     /**
      * Frozen OpenID Provider options.
@@ -210,7 +195,7 @@ public class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
             final OAuth2ErrorCode oauthError,
             final String description) {
         return new Outcome.Failure(error, description,
-                new JsonValue.ObjectValue(Map.of(OAUTH_ERROR, new JsonValue.StringValue(oauthError.value()))));
+                new JsonValue.ObjectValue(Map.of(Builder.OAUTH_ERROR, new JsonValue.StringValue(oauthError.value()))));
     }
 
     /**
@@ -357,7 +342,7 @@ public class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
             final Timeout timeout) {
         final Instant now = timeout.clock().now();
         final KeyLoader.Request query = new KeyLoader.Request(services.registration(), options.issuer(),
-                Optional.of(options.idTokenSigningKeyId()), SIGNATURE_USE, options.idTokenSigningAlgorithm().name(),
+                Optional.of(options.idTokenSigningKeyId()), Builder.SIGNATURE, options.idTokenSigningAlgorithm().name(),
                 now);
         final CompletionStage<Outcome<KeyMaterial>> resolution;
         try {
@@ -557,6 +542,15 @@ public class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
     /**
      * Encrypts a signed token with one validated public key and persists its final compact binding.
      *
+     * @param response   OAuth token response to extend
+     * @param consumer   relying-party consumer metadata
+     * @param binding    authorization-code OpenID binding
+     * @param signed     compact signed ID Token
+     * @param expiration ID Token expiration instant
+     * @param algorithm  key-management algorithm
+     * @param method     content-encryption method
+     * @param material   resolved relying-party public key
+     * @param now        current runtime instant
      * @return asynchronous encrypted and indexed token response
      */
     private CompletionStage<Outcome<TokenEndpointResponse>> encryptResolved(
@@ -615,6 +609,11 @@ public class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
     /**
      * Persists the irreversible final-token binding before exposing the response.
      *
+     * @param response   OAuth token response to extend
+     * @param consumer   relying-party consumer metadata
+     * @param binding    authorization-code OpenID binding
+     * @param compact    final compact ID Token
+     * @param expiration ID Token expiration instant
      * @return asynchronous indexed token response
      */
     private CompletionStage<Outcome<TokenEndpointResponse>> bind(

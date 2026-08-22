@@ -19,7 +19,9 @@
 */
 package org.miaixz.bus.auth.vendor.dingtalk;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.miaixz.bus.auth.Builder;
@@ -27,6 +29,7 @@ import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.FabricX.Url;
+import org.miaixz.bus.auth.Realm;
 import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
@@ -43,11 +46,12 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
 
 /**
- * Declares DingTalk's current OAuth 2.0 delegated-login and proprietary account-login Source variants.
+ * Declares DingTalk's frozen browser-login, account-login, and enterprise directory Source variants.
  * <p>
  * The {@code oauth2} variant exposes only its standard authorization request as OAuth 2.0; its camel-case JSON token
  * and proprietary access-token header remain inside Source authentication. The {@code account} variant is a separate
- * signed temporary-code flow and never fabricates OAuth token operations.
+ * signed temporary-code flow and never fabricates OAuth token operations. The {@code enterprise} variant independently
+ * exposes provider-neutral directory capabilities over DingTalk's official HTTPS management endpoints.
  * </p>
  *
  * @author Kimi Liu
@@ -68,6 +72,11 @@ public class DingTalkManifest implements VariantManifest<DingTalkOptions> {
      * Stable identifier of the signed account-login variant.
      */
     public static final Vendor.Variant ACCOUNT = new Vendor.Variant("account");
+
+    /**
+     * Stable identifier of the DingTalk enterprise directory variant.
+     */
+    public static final Vendor.Variant ENTERPRISE = new Vendor.Variant("enterprise");
 
     /**
      * DingTalk's registered JSON-body client authentication method.
@@ -94,6 +103,37 @@ public class DingTalkManifest implements VariantManifest<DingTalkOptions> {
     private static final Capability.Manifest ACCOUNT_CAPABILITIES = new Capability.Manifest(List.of(
             SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
             SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT))));
+
+    /**
+     * Exact provider-neutral capabilities implemented by the enterprise directory adapter.
+     */
+    private static final Capability.Manifest ENTERPRISE_CAPABILITIES = new Capability.Manifest(
+            List.of(Realm.describe(ID), Realm.snapshot(ID), Realm.retrieve(ID)));
+
+    /**
+     * DingTalk-specific limitation documenting the platform's maximum supported department depth.
+     */
+    private static final String DEPARTMENT_DEPTH_LIMITED_BY_PLATFORM = "department-depth-limited-by-platform";
+
+    /**
+     * Exact enterprise coverage description shared with the compiled enterprise adapter.
+     */
+    private static final Realm.Description ENTERPRISE_DESCRIPTION = new Realm.Description(
+            Set.of(Realm.Kind.USER, Realm.Kind.ORGANIZATION, Realm.Kind.ROLE),
+            Set.of(
+                    Realm.RelationKind.PARENT,
+                    Realm.RelationKind.MEMBER,
+                    Realm.RelationKind.MANAGER,
+                    Realm.RelationKind.ROLE_MEMBER),
+            Set.of(Realm.Operation.DESCRIBE, Realm.Operation.SNAPSHOT, Realm.Operation.RETRIEVE),
+            Realm.Coverage.PARTIAL, Builder.MAXIMUM_ENTERPRISE_PAGE_SIZE,
+            List.of(
+                    Builder.ENTERPRISE_LIMITATION_APPLICATION_VISIBLE_CONTACT_SCOPE,
+                    Builder.ENTERPRISE_LIMITATION_HIERARCHY_PAGES_REPLAY_FROM_ROOT,
+                    Builder.ENTERPRISE_LIMITATION_UNPAGED_REPLAY,
+                    Builder.ENTERPRISE_LIMITATION_REPLAY_CHANGE_FAILURE,
+                    DEPARTMENT_DEPTH_LIMITED_BY_PLATFORM,
+                    Builder.ENTERPRISE_LIMITATION_SNAPSHOT_ONLY));
 
     /**
      * Registered deviations confined to the delegated Source-authentication chain.
@@ -196,7 +236,7 @@ public class DingTalkManifest implements VariantManifest<DingTalkOptions> {
      * Complete immutable proprietary account-login variant manifest.
      */
     private static final VariantManifest.Variant ACCOUNT_VARIANT = new VariantManifest.Variant(ID, ACCOUNT,
-            Protocol.VENDOR_AUTH, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of("snsapi_login"),
+            Protocol.HTTPS, VariantManifest.Pkce.DISABLED, Credential.Type.SHARED_SECRET, List.of("snsapi_login"),
             targets(
                     fixed(
                             "https://oapi.dingtalk.com/connect/oauth2/sns_authorize",
@@ -211,11 +251,63 @@ public class DingTalkManifest implements VariantManifest<DingTalkOptions> {
             ACCOUNT_CAPABILITIES, ACCOUNT_DEVIATIONS);
 
     /**
+     * Complete immutable DingTalk enterprise directory Variant declaration.
+     */
+    private static final VariantManifest.Variant ENTERPRISE_VARIANT = new VariantManifest.Variant(ID, ENTERPRISE,
+            Protocol.HTTPS, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of(),
+            new VendorTargets(Optional.empty(), Optional.of(
+                    fixed("https://api.dingtalk.com/v1.0/oauth2/accessToken", Http.Method.POST, CLIENT_SECRET_JSON)),
+                    Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                    Optional.empty(), Optional.empty(), Optional.empty(), managementTargets()),
+            ENTERPRISE_CAPABILITIES, List.of());
+
+    /**
      * Creates the stateless DingTalk manifest used by Vendor directory assembly.
      */
     public DingTalkManifest() {
-        // No initialization required.
-        // All manifest state is held by immutable class constants.
+    }
+
+    /**
+     * Returns the frozen DingTalk enterprise coverage description.
+     *
+     * @return immutable enterprise description
+     */
+    static Realm.Description enterpriseDescription() {
+        return ENTERPRISE_DESCRIPTION;
+    }
+
+    /**
+     * Creates the ordered official DingTalk management target map.
+     *
+     * @return immutable-by-construction management target declarations
+     */
+    private static Map<String, VendorTargets.Target> managementTargets() {
+        final Map<String, VendorTargets.Target> targets = new LinkedHashMap<>();
+        final VendorTargets.Target user = fixed(
+                "https://oapi.dingtalk.com/topapi/v2/user/get",
+                Http.Method.POST,
+                Endpoint.Authentication.NONE);
+        targets.put(Builder.ENTERPRISE_USERS, user);
+        targets.put(Builder.ENTERPRISE_USER, user);
+        targets.put(
+                Builder.ENTERPRISE_ORGANIZATIONS,
+                fixed(
+                        "https://oapi.dingtalk.com/topapi/v2/department/listsub",
+                        Http.Method.POST,
+                        Endpoint.Authentication.NONE));
+        targets.put(
+                Builder.ENTERPRISE_ORGANIZATION_USERS,
+                fixed("https://oapi.dingtalk.com/topapi/user/listid", Http.Method.POST, Endpoint.Authentication.NONE));
+        targets.put(
+                Builder.ENTERPRISE_ROLES,
+                fixed("https://oapi.dingtalk.com/topapi/role/list", Http.Method.POST, Endpoint.Authentication.NONE));
+        targets.put(
+                Builder.ENTERPRISE_ROLE_MEMBERS,
+                fixed(
+                        "https://oapi.dingtalk.com/topapi/role/simplelist",
+                        Http.Method.POST,
+                        Endpoint.Authentication.NONE));
+        return targets;
     }
 
     /**
@@ -318,17 +410,17 @@ public class DingTalkManifest implements VariantManifest<DingTalkOptions> {
      */
     @Override
     public Vendor.Metadata metadata() {
-        return new Vendor.Metadata("DingTalk", "DingTalk delegated and account login", "dingtalk");
+        return new Vendor.Metadata("DingTalk", "DingTalk login and enterprise directory access", "dingtalk");
     }
 
     /**
-     * Returns both variants in stable management order.
+     * Returns all DingTalk variants in stable management order.
      *
-     * @return delegated OAuth 2.0 then account-login manifests
+     * @return delegated OAuth 2.0, account-login, then enterprise manifests
      */
     @Override
     public List<VariantManifest.Variant> variants() {
-        return List.of(OAUTH2_VARIANT, ACCOUNT_VARIANT);
+        return List.of(OAUTH2_VARIANT, ACCOUNT_VARIANT, ENTERPRISE_VARIANT);
     }
 
     /**
@@ -345,6 +437,9 @@ public class DingTalkManifest implements VariantManifest<DingTalkOptions> {
         }
         if (ACCOUNT.equals(variant)) {
             return ACCOUNT_VARIANT;
+        }
+        if (ENTERPRISE.equals(variant)) {
+            return ENTERPRISE_VARIANT;
         }
         throw new ValidateException("DingTalk Vendor variant is not supported");
     }

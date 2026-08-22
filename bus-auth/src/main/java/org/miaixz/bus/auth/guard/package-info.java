@@ -34,9 +34,9 @@
  * </p>
  * <p>
  * Validation is fail-closed and uses the invocation Timeout clock, exact registered identifiers, constant-time secret
- * comparison where applicable, and atomic replay keys isolated by namespace and purpose. Failures reveal no secret,
- * token, code, verifier, assertion, signing input, complete URI, or stack trace and never downgrade a malformed
- * security value to an absent optional value.
+ * comparison where applicable, and atomic replay keys isolated by space and purpose. Failures reveal no secret, token,
+ * code, verifier, assertion, signing input, complete URI, or stack trace and never downgrade a malformed security value
+ * to an absent optional value.
  * </p>
  *
  * @author Kimi Liu

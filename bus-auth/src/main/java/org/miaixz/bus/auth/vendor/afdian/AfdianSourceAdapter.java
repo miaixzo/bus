@@ -96,21 +96,21 @@ public class AfdianSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Afdian adapter.
      *
-     * @param namespaceId registration namespace
-     * @param sourceId    registration Source identifier
-     * @param manifest    selected Afdian manifest
-     * @param variant     selected default manifest
-     * @param options     decoded Afdian options
-     * @param services    external runtime dependencies
+     * @param spaceId  registration space
+     * @param sourceId registration Source identifier
+     * @param manifest selected Afdian manifest
+     * @param variant  selected default manifest
+     * @param options  decoded Afdian options
+     * @param services external runtime dependencies
      */
-    public AfdianSourceAdapter(final String namespaceId, final String sourceId, final AfdianManifest manifest,
+    public AfdianSourceAdapter(final String spaceId, final String sourceId, final AfdianManifest manifest,
             final VariantManifest.Variant variant, final AfdianOptions options, final DriverServices services) {
         Assert.notNull(manifest, "Afdian manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Afdian Source id must not be blank");
         this.variant = Assert.notNull(variant, "Afdian manifest must not be null");
         this.options = Assert.notNull(options, "Afdian options must not be null");
         this.services = Assert.notNull(services, "Afdian execution services must not be null");
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
     }
 
     /**
@@ -324,7 +324,7 @@ public class AfdianSourceAdapter implements VendorAdapter {
                                 new NameValue(OAuth2.Parameters.CODE, code),
                                 new NameValue(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull())));
                 final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-                try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
+                try (Response response = FabricX.http(services.fabric(), Protocol.HTTPS, timeout).url(endpoint)
                         .method(Http.Method.POST).body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                     if (response.code() == 429 || response.code() >= Http.Status.INTERNAL_SERVER_ERROR) {
                         return failed("Afdian identity endpoint is unavailable");

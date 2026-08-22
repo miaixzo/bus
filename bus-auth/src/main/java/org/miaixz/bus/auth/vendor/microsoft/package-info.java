@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares Microsoft global-cloud and China-cloud OAuth Source variants.
+ * Declares Microsoft global and China cloud login and enterprise Graph Source variants.
  * <p>
  * MicrosoftManifest exposes {@code microsoft/global} and {@code microsoft/china}. Each variant owns constrained tenant
  * templates for standard authorization, token, and refresh operations plus its fixed Microsoft Graph current-user
@@ -35,6 +35,19 @@
  * Source identity accepts only the non-blank Microsoft Graph {@code id} as its subject. User principal name, mail,
  * display name, office, and other Graph fields remain attributes. The two cloud variants never share endpoints or infer
  * a cloud from Context, and all standard token results retain OAuth model and field semantics.
+ * </p>
+ * <p>
+ * {@code enterprise-global} and {@code enterprise-china} are separate application-permission variants with concrete
+ * tenant selection, CLIENT_SECRET credentials, cloud-specific token authority, Graph origin, and application scope.
+ * They expose describe, snapshot, changes, and retrieve for the implemented USER, ORGANIZATION, GROUP, ROLE, and
+ * SERVICE_ACCOUNT projections and selected membership, manager, role-member, and application-assignment relations.
+ * Other Graph directoryObject types are outside this contract.
+ * </p>
+ * <p>
+ * Graph delta is available only for user, group, and service-principal kinds. The opaque Cursor binds the selected
+ * cloud, operation, kind, official nextLink or deltaLink, and replay offset; a URL from the other national cloud or an
+ * expired delta token is rejected and requires a new baseline. Dispatcher provides invocation only—external projects
+ * own scheduling, durable checkpoints, reconciliation, and persistence.
  * </p>
  *
  * @author Kimi Liu

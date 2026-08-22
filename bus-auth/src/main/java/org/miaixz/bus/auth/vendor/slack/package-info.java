@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the public Slack OAuth Vendor manifest and externally loaded options.
+ * Declares Slack OAuth login and administrator SCIM enterprise variants.
  * <p>
  * SlackManifest fixes {@code slack/default}, authorization, token, users-info, and revocation endpoints, default
  * identity scopes, and redirect Source authentication plus standard OAuth authorization, token, and revocation
@@ -39,6 +39,17 @@
  * {@code users.info user.id}, and only that bound ID becomes ExternalIdentity subject. Client secrets, state, codes,
  * tokens, Slack profile values, response bodies, and platform errors must not enter diagnostics, Context, tracing,
  * logs, or public failure details.
+ * </p>
+ * <p>
+ * {@code slack/scim} is a separate SCIM Variant using an administrator SHARED_SECRET token and official SCIM Users and
+ * Groups endpoints. It exposes describe, snapshot, and retrieve for provisioned users, groups, and membership only.
+ * Coverage is UNKNOWN, the required paid plan and installation permissions are explicit limitations, and no changes
+ * capability is declared.
+ * </p>
+ * <p>
+ * OAuth login credentials and workspace identity scopes cannot replace the SCIM administrator token. A Slack workspace
+ * is not modeled as a complete organizational hierarchy, and SCIM visibility is not presented as a complete workforce
+ * inventory. External projects call Dispatcher and own synchronization, durable state, and reconciliation.
  * </p>
  *
  * @author Kimi Liu

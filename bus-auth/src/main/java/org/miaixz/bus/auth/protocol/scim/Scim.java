@@ -143,7 +143,7 @@ public class Scim {
     public static final String SEARCH_REQUEST_SCHEMA = "urn:ietf:params:scim:api:messages:2.0:SearchRequest";
 
     /**
-     * Creates a SCIM protocol namespace instance with no retained state.
+     * Creates a SCIM protocol constant holder with no retained state.
      */
     public Scim() {
         // No initialization required.

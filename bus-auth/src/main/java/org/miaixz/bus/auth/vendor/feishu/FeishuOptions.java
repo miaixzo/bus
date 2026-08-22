@@ -35,18 +35,18 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
- * Carries externally managed Feishu v3 OAuth client values.
+ * Carries externally managed Feishu OAuth or enterprise Contact API client values.
  * <p>
- * Fixed endpoints, mandatory S256 PKCE, and v3 JSON wire behavior remain manifest-owned. This record retains only the
- * public App ID, an external App Secret reference, the registered callback, and requested Feishu scopes.
+ * Fixed endpoints and wire behavior remain manifest-owned. The default browser Variant uses a registered callback and
+ * optional scopes, while the enterprise Variant uses only an App ID and an external App Secret reference.
  * </p>
  *
  * @param vendor      exact Feishu platform identifier
- * @param variant     exact default Feishu variant
+ * @param variant     exact default or enterprise Feishu variant
  * @param clientId    registered Feishu App ID
  * @param credential  external App Secret reference
- * @param redirectUri exact Security Options redirect URI
- * @param scopes      ordered requested scopes; empty means no explicit scope
+ * @param redirectUri exact registered callback for the default Variant, empty for enterprise
+ * @param scopes      ordered requested login scopes, empty for enterprise
  * @author Kimi Liu
  */
 public record FeishuOptions(Vendor.Id vendor, Vendor.Variant variant, String clientId, Credential.Reference credential,
@@ -56,11 +56,12 @@ public record FeishuOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
      * Validates and freezes one Feishu registration without resolving its App Secret.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
-     * @throws ValidateException        if routing, credential, callback, or scope differs from the frozen v3 manifest
+     * @throws ValidateException        if routing, credential, callback, or scope differs from the selected manifest
      */
     public FeishuOptions {
-        if (!FeishuManifest.ID.equals(vendor) || !FeishuManifest.DEFAULT.equals(variant)) {
-            throw new ValidateException("Feishu options must select feishu/default");
+        if (!FeishuManifest.ID.equals(vendor)
+                || (!FeishuManifest.DEFAULT.equals(variant) && !FeishuManifest.ENTERPRISE.equals(variant))) {
+            throw new ValidateException("Feishu options must select a supported Feishu variant");
         }
         Assert.notBlank(clientId, "Feishu client id must not be blank");
         Assert.notNull(credential, "Feishu credential reference must not be null");
@@ -69,11 +70,6 @@ public record FeishuOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
         }
         Assert.notNull(redirectUri, "Feishu redirect URI container must not be null");
         redirectUri = Optional.ofNullable(redirectUri.getOrNull());
-        if (redirectUri.isEmpty()) {
-            throw new ValidateException("Feishu options require a registered redirect URI");
-        }
-        redirect(redirectUri.getOrNull());
-
         Assert.notNull(scopes, "Feishu scopes must not be null");
         final List<String> copy = new ArrayList<>(scopes.size());
         for (String scope : scopes) {
@@ -84,6 +80,16 @@ public record FeishuOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
             copy.add(checked);
         }
         scopes = List.copyOf(copy);
+        if (FeishuManifest.ENTERPRISE.equals(variant)) {
+            if (redirectUri.isPresent() || !scopes.isEmpty()) {
+                throw new ValidateException("Feishu enterprise options prohibit redirect URI and scopes");
+            }
+        } else {
+            if (redirectUri.isEmpty()) {
+                throw new ValidateException("Feishu default options require a registered redirect URI");
+            }
+            redirect(redirectUri.getOrNull());
+        }
     }
 
     /**
@@ -118,14 +124,14 @@ public record FeishuOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
     }
 
     /**
-     * Returns a diagnostic representation without app, credential, or callback values.
+     * Returns a diagnostic representation without app, credential, callback, or scope values.
      *
      * @return redacted options description
      */
     @Override
     public String toString() {
-        return "FeishuOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS + scopes
-                + Symbol.C_BRACKET_RIGHT;
+        return "FeishuOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS
+                + Builder.REDACTED_VALUE + Symbol.C_BRACKET_RIGHT;
     }
 
 }

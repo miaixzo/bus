@@ -65,16 +65,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class AuthorizationCodeIssuer {
 
     /**
-     * Number of random bytes providing 256 bits of authorization-code entropy.
-     */
-    private static final int CODE_BYTES = Normal._32;
-
-    /**
-     * Maximum number of create-if-absent attempts after an opaque-code digest collision.
-     */
-    private static final int MAXIMUM_CREATE_ATTEMPTS = org.miaixz.bus.auth.Builder.MAXIMUM_RETRY_ATTEMPTS;
-
-    /**
      * Metadata member identifying an RFC 7591 native client.
      */
     private static final String APPLICATION_TYPE = "application_type";
@@ -88,16 +78,6 @@ public class AuthorizationCodeIssuer {
      * Metadata member carrying the non-sensitive registered client display name.
      */
     private static final String CLIENT_NAME = "client_name";
-
-    /**
-     * Internal failure-detail member carrying the registered OAuth error code.
-     */
-    private static final String OAUTH_ERROR = org.miaixz.bus.auth.Builder.OAUTH_ERROR;
-
-    /**
-     * Internal failure-detail member proving the redirect URI passed registration validation.
-     */
-    private static final String REDIRECT_VALIDATED = org.miaixz.bus.auth.Builder.REDIRECT_VALIDATED;
 
     /**
      * Provider identifier used to isolate persisted authorization-code digests.
@@ -148,6 +128,14 @@ public class AuthorizationCodeIssuer {
 
     /**
      * Creates an authorization-code issuer with an explicit OpenID subject binder.
+     *
+     * @param providerId           compiled server-role Source identifier used for state isolation
+     * @param options              validated authorization-server options
+     * @param services             externally implemented runtime dependencies
+     * @param redirectUriValidator exact redirect URI validator
+     * @param scopeValidator       standard scope validator
+     * @param openIdBinder         compile-time selected OpenID wire-subject binder
+     * @throws IllegalArgumentException if the identifier is blank or a collaborator is {@code null}
      */
     public AuthorizationCodeIssuer(final String providerId, final GrantPolicy options, final DriverServices services,
             final RedirectUriValidator redirectUriValidator, final ScopeValidator scopeValidator,
@@ -283,7 +271,7 @@ public class AuthorizationCodeIssuer {
      * @return unpadded Base64URL authorization code
      */
     private static String authorizationCode() {
-        final byte[] bytes = RandomKit.randomBytes(CODE_BYTES, RandomKit.getSecureRandom());
+        final byte[] bytes = RandomKit.randomBytes(Normal._32, RandomKit.getSecureRandom());
         try {
             return Base64.encodeUrlSafe(bytes);
         } finally {
@@ -317,10 +305,10 @@ public class AuthorizationCodeIssuer {
             final String description,
             final String redirectUri) {
         final Map<String, JsonValue> details = new LinkedHashMap<>();
-        details.put(OAUTH_ERROR, new JsonValue.StringValue(oauthError.value()));
+        details.put(org.miaixz.bus.auth.Builder.OAUTH_ERROR, new JsonValue.StringValue(oauthError.value()));
         if (redirectUri != null) {
             details.put(OAuth2.Parameters.REDIRECT_URI, new JsonValue.StringValue(redirectUri));
-            details.put(REDIRECT_VALIDATED, new JsonValue.BooleanValue(true));
+            details.put(org.miaixz.bus.auth.Builder.REDIRECT_VALIDATED, new JsonValue.BooleanValue(true));
         }
         return new Outcome.Failure(error, description, new JsonValue.ObjectValue(details));
     }
@@ -855,6 +843,7 @@ public class AuthorizationCodeIssuer {
      * @param redirectUri   registration-validated redirect target
      * @param grantedScopes exact approved scope tokens
      * @param resources     exact validated resource indicators bound to the grant
+     * @param context       invocation context retained for OpenID subject binding
      * @param timeout       shared operation timeout
      * @param attempt       one-based create attempt number
      * @return asynchronous authorization outcome
@@ -956,7 +945,7 @@ public class AuthorizationCodeIssuer {
                                                 redirectUri)));
                     }
                     if (!result.created()) {
-                        if (attempt < MAXIMUM_CREATE_ATTEMPTS) {
+                        if (attempt < org.miaixz.bus.auth.Builder.MAXIMUM_RETRY_ATTEMPTS) {
                             return issue(
                                     request,
                                     openIdBinding,
@@ -1024,6 +1013,33 @@ public class AuthorizationCodeIssuer {
          * A remaining authorization request security condition is invalid.
          */
         INVALID_REQUEST
+
+    }
+
+    /**
+     * Completes an OpenID authorization binding with its final wire subject.
+     *
+     * @author Kimi Liu
+     */
+    @FunctionalInterface
+    public interface OpenIdBinder {
+
+        /**
+         * Binds one internal subject and Consumer to an immutable OpenID authorization context.
+         *
+         * @param subject  authenticated project Subject key
+         * @param consumer resolved immutable Consumer metadata
+         * @param binding  OpenID authentication context awaiting its final wire subject
+         * @param context  immutable invocation context
+         * @param timeout  shared end-to-end operation timeout
+         * @return asynchronous bound OpenID authorization context outcome
+         */
+        CompletionStage<Outcome<AuthorizationCodeCache.OpenIdBinding>> bind(
+                Subject.Key subject,
+                ConsumerMetadata consumer,
+                AuthorizationCodeCache.OpenIdBinding binding,
+                Context context,
+                Timeout timeout);
 
     }
 
@@ -1120,26 +1136,6 @@ public class AuthorizationCodeIssuer {
      * @author Kimi Liu
      */
     private record CreateResult(boolean created, Throwable failure) {
-
-    }
-
-    /**
-     * Completes an OpenID authorization binding with its final wire subject.
-     *
-     * @author Kimi Liu
-     */
-    @FunctionalInterface
-    public interface OpenIdBinder {
-
-        /**
-         * Binds one internal subject and Consumer to an immutable OpenID authorization context.
-         */
-        CompletionStage<Outcome<AuthorizationCodeCache.OpenIdBinding>> bind(
-                Subject.Key subject,
-                ConsumerMetadata consumer,
-                AuthorizationCodeCache.OpenIdBinding binding,
-                Context context,
-                Timeout timeout);
 
     }
 

@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.Symbol;
 public class Credential {
 
     /**
-     * Creates a credential contract namespace instance with no retained state.
+     * Creates a credential contract constant holder with no retained state.
      */
     public Credential() {
         // No initialization required.

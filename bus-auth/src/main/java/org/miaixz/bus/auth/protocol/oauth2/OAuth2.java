@@ -60,7 +60,7 @@ public class OAuth2 {
             .standard(Protocol.OAUTH2, "authorization_server_metadata");
 
     /**
-     * Creates an OAuth 2.x operation namespace instance with no retained state.
+     * Creates an OAuth 2.x operation constant holder with no retained state.
      */
     public OAuth2() {
         // No initialization required.
@@ -249,7 +249,7 @@ public class OAuth2 {
         public static final String VERIFICATION_URI_COMPLETE = "verification_uri_complete";
 
         /**
-         * Creates an OAuth request-parameter namespace instance.
+         * Creates an OAuth request-parameter constant holder.
          */
         public Parameters() {
             // No initialization required.
@@ -270,7 +270,7 @@ public class OAuth2 {
         public static final String QUERY = "query";
 
         /**
-         * Creates an OAuth response-mode namespace instance.
+         * Creates an OAuth response-mode constant holder.
          */
         public ResponseModes() {
             // No initialization required.
@@ -391,7 +391,7 @@ public class OAuth2 {
         public static final String UI_LOCALES_SUPPORTED = "ui_locales_supported";
 
         /**
-         * Creates an OAuth metadata-name namespace instance.
+         * Creates an OAuth metadata-name constant holder.
          */
         public Metadata() {
             // No initialization required.

@@ -53,11 +53,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class AuthorizationServerMetadataCodec {
 
     /**
-     * Maximum accepted metadata document size in bytes.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
      * Provider-neutral JSON service.
      */
     private final JsonProvider jsonProvider;
@@ -82,7 +77,7 @@ public class AuthorizationServerMetadataCodec {
         if (response.code() != Http.Status.OK) {
             throw new ValidateException("OAuth 2.x metadata endpoint must return HTTP 200");
         }
-        if (response.body().length() > MAXIMUM_JSON_BYTES) {
+        if (response.body().length() > Builder.MAXIMUM_DOCUMENT_BYTES) {
             throw new ValidateException("OAuth 2.x metadata response exceeds the maximum JSON size");
         }
         final MediaType media = response.body().media();
@@ -404,7 +399,7 @@ public class AuthorizationServerMetadataCodec {
         final Response encoded = Assert.notNull(response, "OAuth 2.x metadata HTTP response must not be null");
         try (encoded) {
             validateResponse(encoded);
-            final JsonValue value = jsonProvider.readValue(encoded.bytes(MAXIMUM_JSON_BYTES));
+            final JsonValue value = jsonProvider.readValue(encoded.bytes(Builder.MAXIMUM_DOCUMENT_BYTES));
             if (!(value instanceof JsonValue.ObjectValue object)) {
                 throw new ValidateException("OAuth 2.x metadata JSON root must be an object");
             }

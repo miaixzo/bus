@@ -19,21 +19,17 @@
 */
 package org.miaixz.bus.auth.vendor.feishu;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Credential;
-import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
-import org.miaixz.bus.auth.vendor.VariantManifest;
-import org.miaixz.bus.auth.vendor.Vendor;
-import org.miaixz.bus.auth.vendor.VendorDeviation;
-import org.miaixz.bus.auth.vendor.VendorTargets;
+import org.miaixz.bus.auth.vendor.*;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -43,11 +39,11 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
 
 /**
- * Declares the frozen Feishu v3 OAuth browser Vendor manifest.
+ * Declares the frozen Feishu v3 OAuth browser and enterprise Contact API Vendor variants.
  * <p>
  * The authorization request remains a standard OAuth operation with mandatory S256 PKCE. Feishu's v3 JSON token and
- * refresh requests and its code/msg/data profile envelope remain private Source-authentication behavior and are never
- * exposed as standard token or OpenID Connect UserInfo capabilities.
+ * refresh requests and its code/msg/data profile envelope remain private Source-authentication behavior. The separate
+ * enterprise Variant exposes only provider-neutral directory capabilities over official Contact v3 endpoints.
  * </p>
  *
  * @author Kimi Liu
@@ -65,6 +61,11 @@ public class FeishuManifest implements VariantManifest<FeishuOptions> {
     public static final Vendor.Variant DEFAULT = new Vendor.Variant(Normal.DEFAULT);
 
     /**
+     * Stable identifier of the Feishu enterprise Contact API variant.
+     */
+    public static final Vendor.Variant ENTERPRISE = new Vendor.Variant("enterprise");
+
+    /**
      * Feishu v3 JSON client-id/client-secret authentication method.
      */
     private static final Endpoint.Authentication CLIENT_SECRET_JSON = new Endpoint.Authentication("client_secret_json");
@@ -76,6 +77,31 @@ public class FeishuManifest implements VariantManifest<FeishuOptions> {
             SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
             SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT)),
             OAuth2ClientScheme.AUTHORIZATION));
+
+    /**
+     * Exact provider-neutral capabilities implemented by the enterprise Contact API adapter.
+     */
+    private static final Capability.Manifest ENTERPRISE_CAPABILITIES = new Capability.Manifest(
+            List.of(Realm.describe(ID), Realm.snapshot(ID), Realm.retrieve(ID)));
+
+    /**
+     * Feishu-specific limitation stating that functional roles cannot be completely enumerated.
+     */
+    private static final String FUNCTIONAL_ROLES_NOT_ENUMERATED = "functional-roles-not-enumerated";
+
+    /**
+     * Exact enterprise coverage description shared with the compiled enterprise adapter.
+     */
+    private static final Realm.Description ENTERPRISE_DESCRIPTION = new Realm.Description(
+            Set.of(Realm.Kind.USER, Realm.Kind.ORGANIZATION, Realm.Kind.GROUP),
+            Set.of(Realm.RelationKind.PARENT, Realm.RelationKind.MEMBER, Realm.RelationKind.MANAGER),
+            Set.of(Realm.Operation.DESCRIBE, Realm.Operation.SNAPSHOT, Realm.Operation.RETRIEVE),
+            Realm.Coverage.PARTIAL, Builder.MAXIMUM_ENTERPRISE_PAGE_SIZE,
+            List.of(
+                    Builder.ENTERPRISE_LIMITATION_APPLICATION_VISIBLE_CONTACT_SCOPE,
+                    Builder.ENTERPRISE_LIMITATION_HIERARCHY_PAGES_REPLAY_FROM_ROOT,
+                    FUNCTIONAL_ROLES_NOT_ENUMERATED,
+                    Builder.ENTERPRISE_LIMITATION_SNAPSHOT_ONLY));
 
     /**
      * Exact Feishu v3 wire differences retained only inside Source authentication.
@@ -131,11 +157,73 @@ public class FeishuManifest implements VariantManifest<FeishuOptions> {
             CAPABILITIES, DEVIATIONS);
 
     /**
+     * Complete immutable Contact v3 enterprise Variant declaration.
+     */
+    private static final VariantManifest.Variant ENTERPRISE_VARIANT = new VariantManifest.Variant(ID, ENTERPRISE,
+            Protocol.HTTPS, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of(),
+            new VendorTargets(Optional.empty(),
+                    Optional.of(
+                            fixed(
+                                    "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal",
+                                    Http.Method.POST,
+                                    CLIENT_SECRET_JSON)),
+                    Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                    Optional.empty(), Optional.empty(), Optional.empty(), managementTargets()),
+            ENTERPRISE_CAPABILITIES, List.of());
+
+    /**
      * Creates the stateless Feishu manifest used by Vendor directory assembly.
      */
     public FeishuManifest() {
-        // No initialization required.
-        // All manifest state is held by immutable class constants.
+    }
+
+    /**
+     * Returns the frozen Feishu enterprise coverage description.
+     *
+     * @return immutable enterprise description
+     */
+    static Realm.Description enterpriseDescription() {
+        return ENTERPRISE_DESCRIPTION;
+    }
+
+    /**
+     * Creates the ordered official Contact v3 management target map.
+     *
+     * @return immutable-by-construction management target declarations
+     */
+    private static Map<String, VendorTargets.Target> managementTargets() {
+        final Map<String, VendorTargets.Target> targets = new LinkedHashMap<>();
+        final VendorTargets.Target departmentUsers = fixed(
+                "https://open.feishu.cn/open-apis/contact/v3/users/find_by_department",
+                Http.Method.GET,
+                Endpoint.Authentication.BEARER);
+        targets.put(Builder.ENTERPRISE_USERS, departmentUsers);
+        targets.put(
+                Builder.ENTERPRISE_USER,
+                fixed(
+                        "https://open.feishu.cn/open-apis/contact/v3/users",
+                        Http.Method.GET,
+                        Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_ORGANIZATIONS,
+                fixed(
+                        "https://open.feishu.cn/open-apis/contact/v3/departments",
+                        Http.Method.GET,
+                        Endpoint.Authentication.BEARER));
+        targets.put(Builder.ENTERPRISE_ORGANIZATION_USERS, departmentUsers);
+        targets.put(
+                Builder.ENTERPRISE_GROUPS,
+                fixed(
+                        "https://open.feishu.cn/open-apis/contact/v3/group/simplelist",
+                        Http.Method.GET,
+                        Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_GROUP_MEMBERS,
+                fixed(
+                        "https://open.feishu.cn/open-apis/contact/v3/group",
+                        Http.Method.GET,
+                        Endpoint.Authentication.BEARER));
+        return targets;
     }
 
     /**
@@ -195,21 +283,21 @@ public class FeishuManifest implements VariantManifest<FeishuOptions> {
      */
     @Override
     public Vendor.Metadata metadata() {
-        return new Vendor.Metadata("Feishu", "Feishu v3 OAuth and user login", "feishu");
+        return new Vendor.Metadata("Feishu", "Feishu OAuth login and enterprise directory access", "feishu");
     }
 
     /**
-     * Returns the sole supported Feishu variant.
+     * Returns the supported Feishu variants in stable declaration order.
      *
-     * @return immutable single-element manifest list
+     * @return immutable default and enterprise manifest list
      */
     @Override
     public List<VariantManifest.Variant> variants() {
-        return List.of(VARIANT);
+        return List.of(VARIANT, ENTERPRISE_VARIANT);
     }
 
     /**
-     * Returns the exact default Feishu manifest.
+     * Returns the exact requested Feishu manifest Variant.
      *
      * @param variant requested variant
      * @return exact immutable manifest
@@ -217,10 +305,13 @@ public class FeishuManifest implements VariantManifest<FeishuOptions> {
      */
     @Override
     public VariantManifest.Variant variant(final Vendor.Variant variant) {
-        if (!DEFAULT.equals(variant)) {
-            throw new ValidateException("Feishu Vendor variant is not supported");
+        if (DEFAULT.equals(variant)) {
+            return VARIANT;
         }
-        return VARIANT;
+        if (ENTERPRISE.equals(variant)) {
+            return ENTERPRISE_VARIANT;
+        }
+        throw new ValidateException("Feishu Vendor variant is not supported");
     }
 
 }

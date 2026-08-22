@@ -19,13 +19,7 @@
 */
 package org.miaixz.bus.auth.worker;
 
-import org.miaixz.bus.auth.worker.loader.AttributeLoader;
-import org.miaixz.bus.auth.worker.loader.CertificateLoader;
-import org.miaixz.bus.auth.worker.loader.ConsumerLoader;
-import org.miaixz.bus.auth.worker.loader.FederationLoader;
-import org.miaixz.bus.auth.worker.loader.KeyLoader;
-import org.miaixz.bus.auth.worker.loader.ResourceLoader;
-import org.miaixz.bus.auth.worker.loader.SecretLoader;
+import org.miaixz.bus.auth.worker.loader.*;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
@@ -326,6 +320,9 @@ public class WorkerSet {
 
         /**
          * Sets the project consumer evidence verifier.
+         *
+         * @param value consumer evidence verifier
+         * @return this builder
          */
         public Builder consumerVerifier(final ConsumerVerifier value) {
             this.consumerVerifier = Assert.notNull(value, "Consumer verifier must not be null");
@@ -334,6 +331,9 @@ public class WorkerSet {
 
         /**
          * Sets the project federation relation loader.
+         *
+         * @param value federation relation loader
+         * @return this builder
          */
         public Builder federationLoader(final FederationLoader value) {
             this.federationLoader = Assert.notNull(value, "Federation loader must not be null");

@@ -132,7 +132,6 @@ public class SourceWorkflow {
          *
          * @param sourceId       registered Source identifier
          * @param callbackTarget registered callback target bound to the same Source
-         *
          * @author Kimi Liu
          */
         record BrowserStart(String sourceId, Callback.Target callbackTarget) implements Start {
@@ -156,7 +155,6 @@ public class SourceWorkflow {
          * Starts an OAuth device authorization interaction for a registered Source.
          *
          * @param sourceId registered Source identifier
-         *
          * @author Kimi Liu
          */
         record DeviceStart(String sourceId) implements Start {
@@ -176,7 +174,6 @@ public class SourceWorkflow {
          * @param sourceId      registered Source identifier
          * @param principalHint non-secret principal identifier supplied to the Source
          * @param credential    reference to secret material managed by the external credential store
-         *
          * @author Kimi Liu
          */
         record Direct(String sourceId, String principalHint, Credential.Reference credential) implements Start {
@@ -201,7 +198,6 @@ public class SourceWorkflow {
          *
          * @param sourceId registered Source identifier
          * @param code     opaque single-use code issued for the current Source interaction
-         *
          * @author Kimi Liu
          */
         record OneTimeCode(String sourceId, String code) implements Start {
@@ -233,7 +229,6 @@ public class SourceWorkflow {
          *
          * @param sourceId registered Source identifier selected by the route
          * @param callback raw callback transport bound to the same Source
-         *
          * @author Kimi Liu
          */
         record BrowserCallback(String sourceId, Callback.Inbound callback) implements Completion {
@@ -254,7 +249,6 @@ public class SourceWorkflow {
          *
          * @param sourceId   registered Source identifier
          * @param deviceCode opaque device code returned by the initiation stage
-         *
          * @author Kimi Liu
          */
         record DevicePoll(String sourceId, String deviceCode) implements Completion {
@@ -288,7 +282,6 @@ public class SourceWorkflow {
          *
          * @param location    absolute or application-approved redirect location
          * @param correlation one-time callback correlation
-         *
          * @author Kimi Liu
          */
         record Redirect(String location, Callback.Correlation correlation) implements Stage {
@@ -312,7 +305,6 @@ public class SourceWorkflow {
          * @param verificationUriComplete optional URI that already contains the user code
          * @param interval                minimum polling interval required by the authorization server
          * @param expiresAt               absolute expiration time of the device authorization
-         *
          * @author Kimi Liu
          */
         record Device(String deviceCode, String userCode, String verificationUri,
@@ -343,7 +335,6 @@ public class SourceWorkflow {
          * Carries a verified identity immediately established by a direct Source interaction.
          *
          * @param identity verified external identity
-         *
          * @author Kimi Liu
          */
         record Completed(ExternalIdentity identity) implements Stage {

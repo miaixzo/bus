@@ -27,7 +27,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
@@ -36,8 +35,9 @@ import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationResponseDecoder;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.*;
 import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.ExternalIdentity;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -46,8 +46,6 @@ import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -82,19 +80,9 @@ public class QqSourceAdapter implements VendorAdapter {
     private static final String MINI_CODE_PURPOSE = "qq-mini-program-code";
 
     /**
-     * Maximum bounded response size accepted from QQ.
+     * Registration space used for Mini Program replay digest isolation.
      */
-    private static final long MAXIMUM_RESPONSE_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum JSON nesting accepted from QQ.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._32;
-
-    /**
-     * Registration namespace used for Mini Program replay digest isolation.
-     */
-    private final String namespaceId;
+    private final String spaceId;
 
     /**
      * Registered Source identifier copied into verified identities.
@@ -139,19 +127,19 @@ public class QqSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound QQ adapter for the selected frozen variant.
      *
-     * @param namespaceId registration namespace isolating state, replay, and credentials
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected QQ manifest
-     * @param variant     exact selected variant manifest
-     * @param options     decoded externally loaded options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space isolating state, replay, and credentials
+     * @param sourceId registered Source identifier
+     * @param manifest selected QQ manifest
+     * @param variant  exact selected variant manifest
+     * @param options  decoded externally loaded options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, variant, protocol, or options routing is inconsistent
      */
-    public QqSourceAdapter(final String namespaceId, final String sourceId, final QqManifest manifest,
+    public QqSourceAdapter(final String spaceId, final String sourceId, final QqManifest manifest,
             final VariantManifest.Variant variant, final QqOptions options, final DriverServices services) {
         final QqManifest selected = Assert.notNull(manifest, "QQ manifest must not be null");
-        this.namespaceId = Assert.notBlank(namespaceId, "QQ namespace id must not be blank");
+        this.spaceId = Assert.notBlank(spaceId, "QQ space id must not be blank");
         this.sourceId = Assert.notBlank(sourceId, "QQ Source id must not be blank");
         this.variant = Assert.notNull(variant, "QQ manifest must not be null");
         this.options = Assert.notNull(options, "QQ options must not be null");
@@ -159,11 +147,11 @@ public class QqSourceAdapter implements VendorAdapter {
         if (!QqManifest.ID.equals(selected.vendor()) || !selected.variant(options.variant()).equals(variant)
                 || !options.variant().equals(variant.variant()) || !QqManifest.ID.equals(options.vendor())
                 || QqManifest.OPEN.equals(options.variant()) && variant.protocol() != Protocol.OAUTH2
-                || QqManifest.MINI_PROGRAM.equals(options.variant()) && variant.protocol() != Protocol.VENDOR_AUTH) {
+                || QqManifest.MINI_PROGRAM.equals(options.variant()) && variant.protocol() != Protocol.HTTPS) {
             throw new ValidateException("QQ adapter profile, variant, protocol, and options must match");
         }
         this.redirectManager = QqManifest.OPEN.equals(options.variant())
-                ? RedirectManager.create(namespaceId, sourceId, variant, options, services)
+                ? RedirectManager.create(spaceId, sourceId, variant, options, services)
                 : null;
         this.callbackDecoder = new AuthorizationResponseDecoder();
         this.formCodec = new FormCodec();
@@ -634,7 +622,8 @@ public class QqSourceAdapter implements VendorAdapter {
      */
     private Outcome<Access> token(final Response response) {
         try {
-            final TextTokenWire wire = TextTokenWire.decode(formCodec.decode(response.bytes(MAXIMUM_RESPONSE_BYTES)));
+            final TextTokenWire wire = TextTokenWire
+                    .decode(formCodec.decode(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES)));
             if (wire.failed()) {
                 return response.code() >= Http.Status.INTERNAL_SERVER_ERROR
                         ? failed(ErrorCode._502, "QQ token endpoint returned an upstream error")
@@ -686,13 +675,12 @@ public class QqSourceAdapter implements VendorAdapter {
                         ? failed(ErrorCode._502, "QQ OpenID endpoint returned an upstream error")
                         : rejected("QQ OpenID endpoint rejected the access token");
             }
-            final String document = new String(response.bytes(MAXIMUM_RESPONSE_BYTES), Charset.UTF_8).trim();
+            final String document = new String(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Charset.UTF_8).trim();
             if (!document.startsWith("callback(") || !document.endsWith(");")) {
                 throw new ValidateException("QQ OpenID response must use the callback JSONP wrapper");
             }
             final String json = document.substring("callback(".length(), document.length() - 2).trim();
-            final JsonValue value = services.jsonProvider()
-                    .readValue(json.getBytes(Charset.UTF_8), MAXIMUM_JSON_DEPTH, true);
+            final JsonValue value = services.jsonProvider().readValue(json.getBytes(Charset.UTF_8), Normal._32, true);
             if (!(value instanceof JsonValue.ObjectValue object)) {
                 throw new ValidateException("QQ OpenID JSONP payload must be an object");
             }
@@ -793,11 +781,11 @@ public class QqSourceAdapter implements VendorAdapter {
             final String code,
             final Context context,
             final Timeout timeout) {
-        final var policy = services.securityBaseline().require(Protocol.VENDOR_AUTH);
+        final var policy = services.securityBaseline().require(Protocol.HTTPS);
         return services.securityBaseline().replayGuard(services.replayCache())
                 .register(
-                        namespaceId,
-                        Protocol.VENDOR_AUTH,
+                        spaceId,
+                        Protocol.HTTPS,
                         MINI_AUTHORITY,
                         MINI_CODE_PURPOSE,
                         code,
@@ -841,7 +829,7 @@ public class QqSourceAdapter implements VendorAdapter {
                             "QQ Mini Program request has no remaining timeout");
                 }
                 final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-                try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
+                try (Response response = FabricX.http(services.fabric(), Protocol.HTTPS, timeout).url(endpoint)
                         .method(Http.Method.GET).query("appid", options.clientId()).query("secret", secret(secret))
                         .query("js_code", code)
                         .query(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value())
@@ -870,7 +858,7 @@ public class QqSourceAdapter implements VendorAdapter {
      */
     private Outcome<ExternalIdentity> mini(final Response response, final Timeout timeout) {
         try {
-            final JsonValue.ObjectValue object = object(response, Protocol.VENDOR_AUTH);
+            final JsonValue.ObjectValue object = object(response, Protocol.HTTPS);
             if (!members(WireKind.MINI, object.values().keySet())) {
                 throw new ValidateException("QQ Mini Program response members are invalid");
             }
@@ -949,7 +937,7 @@ public class QqSourceAdapter implements VendorAdapter {
             throw new ValidateException("QQ response must use application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_RESPONSE_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._32, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("QQ response root must be a JSON object");
         }

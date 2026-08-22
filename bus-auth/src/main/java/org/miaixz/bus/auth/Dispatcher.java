@@ -50,16 +50,16 @@ import org.miaixz.bus.core.lang.Optional;
  * <h2>Protocol-specific endpoint configuration</h2>
  * <p>
  * Dispatcher is shared infrastructure; public addresses are not shared protocol semantics. The project must configure a
- * separate route or listener namespace for every server protocol and map each namespace only to capabilities declared
- * by the matching Scheme. Public paths must not expose the bus-auth Source identifier. The project route assembly binds
- * each fixed protocol route set to one exact {@link Registry.Reference} inside the Namespace already selected by the
- * upper project boundary. Namespace selection is complete before the request enters bus-auth; Dispatcher never routes
- * across Namespaces. The path fragments below are recommendations rather than Controller implementations.
+ * separate route or listener scope for every server protocol and map each scope only to capabilities declared by the
+ * matching Scheme. Public paths must not expose the bus-auth Source identifier. The project route assembly binds each
+ * fixed protocol route set to one exact {@link Registry.Reference} inside the Space already selected by the upper
+ * project boundary. Space selection is complete before the request enters bus-auth; Dispatcher never routes across
+ * Spaces. The path fragments below are recommendations rather than Controller implementations.
  * </p>
  *
  * <h3>OAuth 2.x authorization server</h3>
  * <p>
- * An OAuth-only Source normally uses a fixed {@code /oauth2} namespace and the capability constants in
+ * An OAuth-only Source normally uses a fixed {@code /oauth2} route prefix and the capability constants in
  * {@link org.miaixz.bus.auth.protocol.oauth2.server.OAuth2ServerScheme}. OAuth endpoint adapters accept and return
  * Fabric HTTP models, so the project preserves the complete inbound request when invoking Dispatcher.
  * </p>
@@ -106,7 +106,7 @@ import org.miaixz.bus.core.lang.Optional;
  *
  * <h3>OpenID Connect Provider</h3>
  * <p>
- * An OpenID Provider uses a distinct fixed {@code /oidc} issuer and route namespace even though it composes OAuth token
+ * An OpenID Provider uses a distinct fixed {@code /oidc} issuer and route scope even though it composes OAuth token
  * operations. Its discovery, UserInfo, JWK Set, ID Token, subject, and end-session semantics do not exist in a generic
  * OAuth-only Source. Use the constants in {@link org.miaixz.bus.auth.protocol.oidc.server.OpenIdServerScheme}.
  * </p>
@@ -152,15 +152,15 @@ import org.miaixz.bus.core.lang.Optional;
  * </table>
  * <p>
  * Optional OAuth introspection, revocation, device authorization, and authorization-server metadata remain under the
- * same OIDC Source namespace when enabled. Do not publish one registration simultaneously as unrelated OAuth and OIDC
+ * same OIDC Source route scope when enabled. Do not publish one registration simultaneously as unrelated OAuth and OIDC
  * route roots; the selected server Scheme and its frozen endpoint metadata must remain unambiguous.
  * </p>
  *
  * <h3>SAML 2.0 identity provider</h3>
  * <p>
  * SAML does not use OAuth endpoints or OAuth HTTP message models. A SAML Source normally uses a fixed {@code /saml}
- * namespace and the capabilities in {@link org.miaixz.bus.auth.protocol.saml.server.SamlServerScheme}. The project SAML
- * transport adapter decodes the inbound HTTP-Redirect Binding into a typed {@code AuthnRequest} or
+ * route scope and the capabilities in {@link org.miaixz.bus.auth.protocol.saml.server.SamlServerScheme}. The project
+ * SAML transport adapter decodes the inbound HTTP-Redirect Binding into a typed {@code AuthnRequest} or
  * {@code LogoutRequest}, invokes Dispatcher, and encodes the signed typed response using the configured HTTP-POST or
  * HTTP-Redirect Binding. The metadata operation has no request model and returns a typed {@code EntityDescriptor}.
  * </p>
@@ -197,7 +197,7 @@ import org.miaixz.bus.core.lang.Optional;
  *
  * <h3>SCIM 2.0 service provider</h3>
  * <p>
- * SCIM uses an independent fixed {@code /scim/v2} resource namespace and typed resource capabilities from
+ * SCIM uses an independent fixed {@code /scim/v2} resource scope and typed resource capabilities from
  * {@link org.miaixz.bus.auth.protocol.scim.server.ScimServerScheme}. The project HTTP adapter owns JSON and HTTP status
  * conversion around the typed SCIM models.
  * </p>
@@ -254,7 +254,7 @@ import org.miaixz.bus.core.lang.Optional;
  * <p>
  * Fixed routes are valid because route assembly already binds each route set to exactly one compatible Source.
  * Dispatcher deliberately does not inspect an unverified {@code client_id}, SAML issuer, LDAP bind name, or packet
- * attribute to guess across Sources, Namespaces, or protocols.
+ * attribute to guess across Sources, Spaces, or protocols.
  * </p>
  *
  * <h2>Protocol-specific invocation forms</h2>

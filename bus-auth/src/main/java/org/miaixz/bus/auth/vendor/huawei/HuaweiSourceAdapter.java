@@ -27,14 +27,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.guard.IssuerValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
-import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.AuthorizationClient;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2Client;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientOptions;
@@ -90,16 +88,6 @@ public class HuaweiSourceAdapter implements VendorAdapter {
      * Exact issuer required from Discovery and every verified Huawei ID Token.
      */
     private static final String ISSUER = "https://accounts.huawei.com";
-
-    /**
-     * Maximum JSON response size accepted from Huawei endpoints.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum nested JSON depth accepted from Huawei endpoints.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._16;
 
     /**
      * Registered Source identifier written into verified external identities.
@@ -159,17 +147,17 @@ public class HuaweiSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Huawei adapter from the frozen default manifest.
      *
-     * @param namespaceId registration namespace used for browser correlation isolation
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Huawei manifest
-     * @param variant     selected default variant manifest
-     * @param options     decoded externally loaded options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used for browser correlation isolation
+     * @param sourceId registered Source identifier
+     * @param manifest selected Huawei manifest
+     * @param variant  selected default variant manifest
+     * @param options  decoded externally loaded options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, entropy, or algorithm policy differs from the frozen
      *                                  profile
      */
-    public HuaweiSourceAdapter(final String namespaceId, final String sourceId, final HuaweiManifest manifest,
+    public HuaweiSourceAdapter(final String spaceId, final String sourceId, final HuaweiManifest manifest,
             final VariantManifest.Variant variant, final HuaweiOptions options, final DriverServices services) {
         Assert.notNull(manifest, "Huawei manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Huawei Source id must not be blank");
@@ -186,7 +174,7 @@ public class HuaweiSourceAdapter implements VendorAdapter {
             throw new ValidateException(
                     "Huawei requires RS256 and state entropy not exceeding its 100-character limit");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         this.formCodec = new FormCodec();
         this.issuerValidator = new IssuerValidator();
         this.jwkSelector = new JwkSelector();
@@ -1209,7 +1197,7 @@ public class HuaweiSourceAdapter implements VendorAdapter {
                         throw new ValidateException("Huawei JWK Set response must use HTTP 200 application/json");
                     }
                     final JsonValue value = services.jsonProvider()
-                            .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                            .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._16, true);
                     if (!(value instanceof JsonValue.ObjectValue object)) {
                         throw new ValidateException("Huawei JWK Set root must be a JSON object");
                     }
@@ -1278,7 +1266,7 @@ public class HuaweiSourceAdapter implements VendorAdapter {
             throw new ValidateException("Huawei response must use application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._16, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("Huawei response root must be a JSON object");
         }

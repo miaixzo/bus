@@ -34,16 +34,17 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Carries externally managed Slack OAuth application values.
+ * Carries externally managed Slack OAuth application or administrator SCIM values.
  *
  * @param vendor      exact Slack platform identifier
- * @param variant     exact default Slack variant
- * @param clientId    Slack application client identifier
- * @param credential  external client-secret reference
- * @param redirectUri exact callback URI registered with Slack
- * @param scopes      ordered Slack scopes, or empty to use manifest defaults
+ * @param variant     exact default login or SCIM Variant
+ * @param clientId    OAuth application identifier or non-sensitive SCIM workspace/organization selector
+ * @param credential  external client-secret or SCIM administrator-token reference
+ * @param redirectUri exact login callback or empty for SCIM
+ * @param scopes      ordered login scopes or empty for SCIM
  * @author Kimi Liu
  */
 public record SlackOptions(Vendor.Id vendor, Vendor.Variant variant, String clientId, Credential.Reference credential,
@@ -55,41 +56,58 @@ public record SlackOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
     private static final String USERS_READ = "users:read";
 
     /**
-     * Validates and freezes one Slack registration without resolving its client secret.
+     * Validates and freezes one Slack registration without resolving its external credential.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
-     * @throws ValidateException        if routing, credential, callback, scope syntax, uniqueness, or identity coverage
-     *                                  fails
+     * @throws ValidateException        if routing, credential, callback, scope syntax, uniqueness, identity coverage,
+     *                                  or SCIM isolation fails
      */
     public SlackOptions {
-        if (!SlackManifest.ID.equals(vendor) || !SlackManifest.DEFAULT.equals(variant)) {
-            throw new ValidateException("Slack options must select slack/default");
+        if (!SlackManifest.ID.equals(vendor)
+                || !(SlackManifest.DEFAULT.equals(variant) || SlackManifest.SCIM.equals(variant))) {
+            throw new ValidateException("Slack options must select slack/default or slack/scim");
         }
-        clientId = Assert.notBlank(clientId, "Slack client identifier must not be blank");
+        clientId = Assert.notBlank(
+                clientId,
+                SlackManifest.SCIM.equals(variant) ? "Slack SCIM workspace or organization selector must not be blank"
+                        : "Slack client identifier must not be blank");
         Assert.notNull(credential, "Slack credential reference must not be null");
-        if (credential.type() != Credential.Type.CLIENT_SECRET) {
-            throw new ValidateException("Slack credential must reference a client secret");
-        }
         Assert.notNull(redirectUri, "Slack redirect URI container must not be null");
         redirectUri = Optional.ofNullable(redirectUri.getOrNull());
-        if (redirectUri.isEmpty()) {
-            throw new ValidateException("Slack options require a registered redirect URI");
-        }
-        redirect(redirectUri.getOrNull());
         Assert.notNull(scopes, "Slack scopes must not be null");
-        final List<String> copy = new ArrayList<>(scopes.size());
-        for (String scope : scopes) {
-            final String checked = Assert.notBlank(scope, "Slack scope must not be blank");
-            Scope.parse(checked);
-            if (copy.contains(checked)) {
-                throw new ValidateException("Slack scopes must not contain duplicates");
+        if (SlackManifest.SCIM.equals(variant)) {
+            if (!clientId.equals(StringKit.trim(clientId))) {
+                throw new ValidateException("Slack SCIM selector must not contain surrounding whitespace");
             }
-            copy.add(checked);
+            if (credential.type() != Credential.Type.SHARED_SECRET) {
+                throw new ValidateException("Slack SCIM credential must reference an administrator token");
+            }
+            if (redirectUri.isPresent() || !scopes.isEmpty()) {
+                throw new ValidateException("Slack SCIM options must not contain login callback or scope values");
+            }
+            scopes = List.of();
+        } else {
+            if (credential.type() != Credential.Type.CLIENT_SECRET) {
+                throw new ValidateException("Slack login credential must reference a client secret");
+            }
+            if (redirectUri.isEmpty()) {
+                throw new ValidateException("Slack options require a registered redirect URI");
+            }
+            redirect(redirectUri.getOrNull());
+            final List<String> copy = new ArrayList<>(scopes.size());
+            for (String scope : scopes) {
+                final String checked = Assert.notBlank(scope, "Slack scope must not be blank");
+                Scope.parse(checked);
+                if (copy.contains(checked)) {
+                    throw new ValidateException("Slack scopes must not contain duplicates");
+                }
+                copy.add(checked);
+            }
+            if (!copy.isEmpty() && !copy.contains(USERS_READ)) {
+                throw new ValidateException("Explicit Slack scopes must contain users:read for identity resolution");
+            }
+            scopes = List.copyOf(copy);
         }
-        if (!copy.isEmpty() && !copy.contains(USERS_READ)) {
-            throw new ValidateException("Explicit Slack scopes must contain users:read for identity resolution");
-        }
-        scopes = List.copyOf(copy);
     }
 
     /**

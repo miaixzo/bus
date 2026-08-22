@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the Aliyun OpenID Connect Vendor manifest and client registration options.
+ * Declares Aliyun OpenID Connect login and Alibaba Cloud RAM identity-read variants.
  * <p>
  * AliyunManifest exposes the single {@code aliyun/default} OIDC variant with fixed authorization, token, UserInfo,
  * revocation, Discovery, and JWK Set endpoints. It declares client_secret_post, CLIENT_SECRET, mandatory S256 PKCE,
@@ -37,6 +37,17 @@
  * Published conformance and capabilities correspond only to the corrected standard FORM, Bearer, PKCE, nonce,
  * Discovery, JWKS, ID Token, and UserInfo flow; historical query secrets, query access tokens, and empty scope behavior
  * are not retained as deviations.
+ * </p>
+ * <p>
+ * {@code aliyun/ram} is a separate HTTPS Variant using an AccessKey ID and referenced SHARED_SECRET. It signs fixed RAM
+ * RPC actions with ACS3-HMAC-SHA256 and exposes describe, snapshot, and retrieve for RAM USER, GROUP, ROLE, group
+ * membership, and role-trust user relations. RAM identities are administrative cloud identities and are not
+ * automatically classified as employees; coverage is PARTIAL and no changes operation exists.
+ * </p>
+ * <p>
+ * OIDC login credentials and scopes do not authorize RAM reads. The RAM Variant remains under the same Aliyun Vendor,
+ * uses only Bus HTTP, encoding, clock, random, digest, and HMAC components, and keeps AccessKey material inside one
+ * Source invocation. External projects call Dispatcher and own sync scheduling, business classification, and storage.
  * </p>
  *
  * @author Kimi Liu

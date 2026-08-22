@@ -65,16 +65,46 @@ import org.miaixz.bus.extra.json.JsonValue;
  */
 public class JwtClientAuthenticator {
 
+    /**
+     * Registered key-use value required for assertion-signing keys.
+     */
     private static final String SIGNATURE_USE = "sig";
+    /**
+     * Replay-cache purpose discriminator for client assertions.
+     */
     private static final String ASSERTION_PURPOSE = "client-assertion";
 
+    /**
+     * Frozen OAuth authorization-server options.
+     */
     private final OAuth2ServerOptions options;
+    /**
+     * Source-scoped project loaders and framework services.
+     */
     private final DriverServices services;
+    /**
+     * Exact Source identifier used to isolate replay records.
+     */
     private final String sourceId;
+    /**
+     * Exact token-endpoint audience required in assertions.
+     */
     private final String tokenAudience;
+    /**
+     * OAuth security policy used for bounded parsing and algorithm checks.
+     */
     private final SecurityBaseline.Policy policy;
+    /**
+     * Shared OAuth temporal validation guard.
+     */
     private final TimeGuard timeGuard;
+    /**
+     * Shared single-use assertion replay guard.
+     */
     private final ReplayGuard replayGuard;
+    /**
+     * Bus JOSE service used to parse and verify compact assertions.
+     */
     private final JwsService jwsService;
 
     /**
@@ -96,6 +126,29 @@ public class JwtClientAuthenticator {
         this.replayGuard = services.securityBaseline().replayGuard(services.replayCache());
         this.jwsService = new JwsService(services.jsonProvider(), services.securityBaseline().algorithmGuard(),
                 policy.algorithms());
+    }
+
+    /**
+     * Creates a safe assertion rejection or operational failure.
+     *
+     * @param operational whether the failure belongs to an unavailable dependency
+     * @param description safe failure description
+     * @return immutable failure value
+     */
+    private static Outcome.Failure failure(final boolean operational, final String description) {
+        return new Outcome.Failure(operational ? ErrorCode._500 : ErrorCode._401, description,
+                new JsonValue.ObjectValue(Map.of()));
+    }
+
+    /**
+     * Wraps an outcome in an already completed stage.
+     *
+     * @param <T>     outcome value type
+     * @param outcome outcome to expose
+     * @return completed outcome stage
+     */
+    private static <T> CompletionStage<Outcome<T>> completed(final Outcome<T> outcome) {
+        return CompletableFuture.completedFuture(outcome);
     }
 
     /**
@@ -146,6 +199,13 @@ public class JwtClientAuthenticator {
         return resolveFederation(consumer, assertion, context, timeout);
     }
 
+    /**
+     * Parses and validates the bounded assertion structure and temporal claims.
+     *
+     * @param compact compact client assertion
+     * @param timeout shared operation timeout
+     * @return validated assertion facts awaiting signature verification
+     */
     private Assertion parse(final String compact, final Timeout timeout) {
         Assert.notBlank(compact, "OAuth 2.x client assertion must not be blank");
         if (compact.getBytes(Charset.UTF_8).length > policy.maximumMessageBytes()) {
@@ -180,6 +240,15 @@ public class JwtClientAuthenticator {
                 expiresAt);
     }
 
+    /**
+     * Resolves an explicitly registered federation relation for a machine assertion.
+     *
+     * @param consumer  registered OAuth consumer
+     * @param assertion validated assertion facts
+     * @param context   immutable invocation context
+     * @param timeout   shared operation timeout
+     * @return stage resolving to verified authentication or a safe failure
+     */
     private CompletionStage<Outcome<ClientAuthentication>> resolveFederation(
             final ConsumerMetadata consumer,
             final Assertion assertion,
@@ -217,6 +286,17 @@ public class JwtClientAuthenticator {
         });
     }
 
+    /**
+     * Loads the exact verification key and verifies the assertion signature.
+     *
+     * @param consumer   registered OAuth consumer
+     * @param assertion  validated assertion facts
+     * @param keyId      exact registered verification key identifier
+     * @param federation optional resolved federation relation
+     * @param context    immutable invocation context
+     * @param timeout    shared operation timeout
+     * @return stage resolving to verified authentication or a safe failure
+     */
     private CompletionStage<Outcome<ClientAuthentication>> resolveKey(
             final ConsumerMetadata consumer,
             final Assertion assertion,
@@ -252,6 +332,15 @@ public class JwtClientAuthenticator {
         });
     }
 
+    /**
+     * Registers the verified assertion identifier before returning authentication facts.
+     *
+     * @param consumer   registered OAuth consumer
+     * @param assertion  verified assertion facts
+     * @param federation optional resolved federation relation
+     * @param timeout    shared operation timeout
+     * @return stage resolving to single-use client authentication
+     */
     private CompletionStage<Outcome<ClientAuthentication>> registerReplay(
             final ConsumerMetadata consumer,
             final Assertion assertion,
@@ -286,18 +375,17 @@ public class JwtClientAuthenticator {
                 });
     }
 
-    private static Outcome.Failure failure(final boolean operational, final String description) {
-        return new Outcome.Failure(operational ? ErrorCode._500 : ErrorCode._401, description,
-                new JsonValue.ObjectValue(Map.of()));
-    }
-
-    private static <T> CompletionStage<Outcome<T>> completed(final Outcome<T> outcome) {
-        return CompletableFuture.completedFuture(outcome);
-    }
-
     /**
      * Retains bounded parsed assertion facts until exact-key verification completes.
      *
+     * @param jws       parsed compact JWS
+     * @param algorithm asserted signing algorithm
+     * @param keyId     selected verification key identifier
+     * @param claims    parsed bounded JWT claims
+     * @param issuer    verified assertion issuer
+     * @param subject   verified assertion subject
+     * @param jwtId     verified unique assertion identifier
+     * @param expiresAt verified assertion expiration instant
      * @author Kimi Liu
      */
     private record Assertion(JwsService.Jws jws, String algorithm, String keyId, JwtClaims claims, String issuer,

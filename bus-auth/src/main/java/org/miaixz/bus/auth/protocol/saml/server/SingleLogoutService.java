@@ -32,7 +32,6 @@ import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Session;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.saml.*;
-import org.miaixz.bus.auth.protocol.saml.Saml;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.worker.SessionCoordinator;
@@ -62,16 +61,6 @@ public class SingleLogoutService {
      * Registered metadata member containing the service-provider SingleLogoutService response location.
      */
     private static final String SINGLE_LOGOUT_SERVICE_URL = "single_logout_service_url";
-
-    /**
-     * SAML entity identifier NameID format.
-     */
-    private static final String ENTITY_NAME_ID = Saml.NameIdFormats.ENTITY;
-
-    /**
-     * Standard second-level status for an unknown session principal.
-     */
-    private static final String UNKNOWN_PRINCIPAL = Saml.Statuses.UNKNOWN_PRINCIPAL;
 
     /**
      * Validated identity-provider options.
@@ -217,7 +206,7 @@ public class SingleLogoutService {
         }
         final NameID issuerName = issuer.nameId();
         final String format = issuerName.format().getOrNull();
-        if ((format != null && !ENTITY_NAME_ID.equals(format)) || issuerName.nameQualifier().isPresent()
+        if ((format != null && !Saml.NameIdFormats.ENTITY.equals(format)) || issuerName.nameQualifier().isPresent()
                 || issuerName.spNameQualifier().isPresent() || issuerName.spProvidedId().isPresent()) {
             return Outcome.rejected(failure(ErrorCode._400, "SAML Logout Request Issuer is invalid"));
         }
@@ -262,7 +251,7 @@ public class SingleLogoutService {
                                             errorMapper.logoutResponse(
                                                     request,
                                                     destination,
-                                                    UNKNOWN_PRINCIPAL,
+                                                    Saml.Statuses.UNKNOWN_PRINCIPAL,
                                                     "Requested SAML session is not active",
                                                     timeout.clock().now()));
                     case Outcome.Rejected<SessionCoordinator.End> rejected -> Outcome.rejected(rejected.failure());
@@ -284,7 +273,7 @@ public class SingleLogoutService {
                 "2.0", timeout.clock().now(), Optional.of(destination), Optional.empty(),
                 Optional.of(
                         new Issuer(new NameID(options.entityId(), Optional.empty(), Optional.empty(),
-                                Optional.of(ENTITY_NAME_ID), Optional.empty()))),
+                                Optional.of(Saml.NameIdFormats.ENTITY), Optional.empty()))),
                 Optional.empty(), List.of(),
                 new Status(new StatusCode(StatusCode.SUCCESS, Optional.empty()), Optional.empty(), Optional.empty()));
     }

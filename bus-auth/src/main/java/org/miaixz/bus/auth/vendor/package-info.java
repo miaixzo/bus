@@ -30,11 +30,19 @@
  * <p>
  * {@link org.miaixz.bus.auth.vendor.VendorDriver} binds one manifest to exact per-variant factories.
  * {@link org.miaixz.bus.auth.vendor.VendorModule} freezes built-in and externally contributed drivers into one
- * immutable inventory. {@link org.miaixz.bus.auth.vendor.VendorDirectory} provides read-only manifest lookup, while the
+ * immutable inventory. {@link org.miaixz.bus.auth.vendor.VendorLocator} provides read-only manifest lookup, while the
  * Source compiler validates project options against that inventory and creates the selected
  * {@link org.miaixz.bus.auth.vendor.VendorAdapter}. These classes do not exchange responsibilities: manifests describe,
- * options carry deployment input, drivers bind factories, the module assembles, the directory indexes, and adapters
+ * options carry deployment input, drivers bind factories, the module assembles, the locator indexes, and adapters
  * execute.
+ * </p>
+ * <p>
+ * {@link Realm} is the optional provider-neutral contract implemented only by declared enterprise Variants. It models
+ * read-only description, snapshot, optional change-feed, and stable-key retrieval results; it neither indexes Manifests
+ * nor implies that every Vendor supports enterprise access. {@link org.miaixz.bus.auth.vendor.VendorLocator} indexes
+ * immutable Manifest declarations and must not be used as an enterprise data API. External projects select a compiled
+ * Source and invoke its declared Enterprise capability through {@link org.miaixz.bus.auth.Dispatcher}; synchronization
+ * scheduling, persistence, reconciliation, and business models remain outside bus-auth.
  * </p>
  * <p>
  * {@link org.miaixz.bus.auth.vendor.RedirectManager} orchestrates the platform redirect flow. Its package-private
@@ -57,3 +65,5 @@
  * @author Kimi Liu
  */
 package org.miaixz.bus.auth.vendor;
+
+import org.miaixz.bus.auth.Realm;

@@ -54,16 +54,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class SingleSignOnService {
 
     /**
-     * SAML entity identifier format used by Web Browser SSO request issuers.
-     */
-    private static final String ENTITY_NAME_ID = Saml.NameIdFormats.ENTITY;
-
-    /**
-     * Standard second-level status for a request denied by local policy.
-     */
-    private static final String REQUEST_DENIED = Saml.Statuses.REQUEST_DENIED;
-
-    /**
      * Validated identity-provider options.
      */
     private final SamlServerOptions options;
@@ -191,7 +181,7 @@ public class SingleSignOnService {
         }
         final var issuerName = issuer.nameId();
         final String format = issuerName.format().getOrNull();
-        if ((format != null && !ENTITY_NAME_ID.equals(format)) || issuerName.nameQualifier().isPresent()
+        if ((format != null && !Saml.NameIdFormats.ENTITY.equals(format)) || issuerName.nameQualifier().isPresent()
                 || issuerName.spNameQualifier().isPresent() || issuerName.spProvidedId().isPresent()) {
             return Outcome.rejected(
                     failure(ErrorCode._400, "SAML Authentication Request Issuer is not an entity identifier"));
@@ -242,7 +232,7 @@ public class SingleSignOnService {
                             errorMapper.response(
                                     request,
                                     destination,
-                                    REQUEST_DENIED,
+                                    Saml.Statuses.REQUEST_DENIED,
                                     "Authenticated subject context is required",
                                     timeout.clock().now())));
         }

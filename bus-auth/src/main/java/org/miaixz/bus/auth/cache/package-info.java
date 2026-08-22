@@ -21,8 +21,8 @@
  * Defines typed bus-cache wrappers for one-time and lifecycle-bound authentication state.
  * <p>
  * Purpose-specific caches separate authorization state, nonce, authorization code, device code, access token, refresh
- * token, session, and replay records. Each cache adds only its fixed key namespace and exact immutable value type
- * before delegating create, get, take, replace, and delete to {@link org.miaixz.bus.cache.CacheX}. Immutable
+ * token, session, and replay records. Each cache adds only its fixed key prefix and exact immutable value type before
+ * delegating create, get, take, replace, and delete to {@link org.miaixz.bus.cache.CacheX}. Immutable
  * {@link org.miaixz.bus.auth.cache.ExpiringValue} values retain protocol-visible expiry without defining a backend.
  * </p>
  * <p>

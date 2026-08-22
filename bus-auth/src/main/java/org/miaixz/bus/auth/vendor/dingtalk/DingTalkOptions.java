@@ -32,19 +32,20 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
- * Carries externally managed DingTalk client values for both frozen login variants.
+ * Carries externally managed DingTalk client values for the frozen login and enterprise variants.
  * <p>
  * Organization selectors belong only to the delegated {@code oauth2} variant. The {@code account} variant requires all
  * selectors to remain absent and uses the common client identifier as both official {@code appid} and
- * {@code accessKey}. Credential material remains an external reference in both cases.
+ * {@code accessKey}. The {@code enterprise} variant uses the client identifier as AppKey and prohibits every
+ * browser-only selector. Credential material remains an external reference in every case.
  * </p>
  *
  * @param vendor          exact DingTalk platform identifier
- * @param variant         exact {@code oauth2} or {@code account} variant
- * @param clientId        registered client identifier, app id, or access key
- * @param credential      external client-secret or shared-secret reference selected by the variant
- * @param redirectUri     exact registered callback URI
- * @param scopes          ordered requested scopes, or empty to use the selected manifest default
+ * @param variant         exact {@code oauth2}, {@code account}, or {@code enterprise} variant
+ * @param clientId        registered client identifier, app id, access key, or AppKey
+ * @param credential      external client-secret or shared-secret reference selected by the Variant
+ * @param redirectUri     exact registered callback URI, empty for enterprise
+ * @param scopes          ordered requested login scopes, empty for enterprise
  * @param orgType         optional official organization type for delegated login
  * @param corpId          optional organization identifier for delegated login
  * @param exclusiveLogin  whether delegated login is restricted to one organization
@@ -69,18 +70,14 @@ public record DingTalkOptions(Vendor.Id vendor, Vendor.Variant variant, String c
      *                                  variant
      */
     public DingTalkOptions {
-        if (!DingTalkManifest.ID.equals(vendor)
-                || !DingTalkManifest.OAUTH2.equals(variant) && !DingTalkManifest.ACCOUNT.equals(variant)) {
-            throw new ValidateException("DingTalk options must select dingtalk/oauth2 or dingtalk/account");
+        if (!DingTalkManifest.ID.equals(vendor) || (!DingTalkManifest.OAUTH2.equals(variant)
+                && !DingTalkManifest.ACCOUNT.equals(variant) && !DingTalkManifest.ENTERPRISE.equals(variant))) {
+            throw new ValidateException("DingTalk options must select a supported DingTalk variant");
         }
         Assert.notBlank(clientId, "DingTalk client id must not be blank");
         Assert.notNull(credential, "DingTalk credential reference must not be null");
         Assert.notNull(redirectUri, "DingTalk redirect URI container must not be null");
         redirectUri = Optional.ofNullable(redirectUri.getOrNull());
-        if (redirectUri.isEmpty()) {
-            throw new ValidateException("DingTalk browser options require a registered redirect URI");
-        }
-        Assert.notBlank(redirectUri.getOrNull(), "DingTalk redirect URI must not be blank");
         Assert.notNull(scopes, "DingTalk scopes must not be null");
         Assert.notNull(orgType, "DingTalk organization type container must not be null");
         Assert.notNull(corpId, "DingTalk organization id container must not be null");
@@ -100,10 +97,27 @@ public record DingTalkOptions(Vendor.Id vendor, Vendor.Variant variant, String c
         scopes = List.copyOf(copy);
 
         if (DingTalkManifest.OAUTH2.equals(variant)) {
+            browserRedirect(redirectUri);
             oauth2(credential, scopes, orgType, exclusiveLogin, exclusiveCorpId);
-        } else {
+        } else if (DingTalkManifest.ACCOUNT.equals(variant)) {
+            browserRedirect(redirectUri);
             account(credential, scopes, orgType, corpId, exclusiveLogin, exclusiveCorpId);
+        } else {
+            enterprise(credential, redirectUri, scopes, orgType, corpId, exclusiveLogin, exclusiveCorpId);
         }
+    }
+
+    /**
+     * Requires the registered callback shared by both browser login variants.
+     *
+     * @param redirectUri normalized callback container
+     * @throws ValidateException if the callback is absent
+     */
+    private static void browserRedirect(final Optional<String> redirectUri) {
+        if (redirectUri.isEmpty()) {
+            throw new ValidateException("DingTalk browser options require a registered redirect URI");
+        }
+        Assert.notBlank(redirectUri.getOrNull(), "DingTalk redirect URI must not be blank");
     }
 
     /**
@@ -164,6 +178,34 @@ public record DingTalkOptions(Vendor.Id vendor, Vendor.Variant variant, String c
     }
 
     /**
+     * Validates the enterprise App Secret reference and prohibits every login-only value.
+     *
+     * @param credential      external App Secret reference
+     * @param redirectUri     forbidden browser callback
+     * @param scopes          forbidden browser scopes
+     * @param orgType         forbidden login organization type
+     * @param corpId          forbidden login organization identifier
+     * @param exclusiveLogin  forbidden exclusive-login selector
+     * @param exclusiveCorpId forbidden exclusive organization identifier
+     */
+    private static void enterprise(
+            final Credential.Reference credential,
+            final Optional<String> redirectUri,
+            final List<String> scopes,
+            final Optional<String> orgType,
+            final Optional<String> corpId,
+            final boolean exclusiveLogin,
+            final Optional<String> exclusiveCorpId) {
+        if (credential.type() != Credential.Type.CLIENT_SECRET) {
+            throw new ValidateException("DingTalk enterprise credential must reference an App Secret");
+        }
+        if (redirectUri.isPresent() || !scopes.isEmpty() || orgType.isPresent() || corpId.isPresent() || exclusiveLogin
+                || exclusiveCorpId.isPresent()) {
+            throw new ValidateException("DingTalk enterprise options prohibit browser login selectors");
+        }
+    }
+
+    /**
      * Normalizes one optional non-blank official selector.
      *
      * @param value optional selector container
@@ -195,11 +237,8 @@ public record DingTalkOptions(Vendor.Id vendor, Vendor.Variant variant, String c
      */
     @Override
     public String toString() {
-        return "DingTalkOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS + scopes
-                + ", orgType=" + (orgType.isPresent() ? "[PRESENT]" : Builder.EMPTY_VALUE) + ", corpId="
-                + (corpId.isPresent() ? Builder.REDACTED_VALUE : Builder.EMPTY_VALUE) + ", exclusiveLogin="
-                + exclusiveLogin + ", exclusiveCorpId="
-                + (exclusiveCorpId.isPresent() ? Builder.REDACTED_VALUE : Builder.EMPTY_VALUE) + Symbol.C_BRACKET_RIGHT;
+        return "DingTalkOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS
+                + Builder.REDACTED_VALUE + Symbol.C_BRACKET_RIGHT;
     }
 
 }

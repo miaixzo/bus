@@ -32,7 +32,7 @@
  * <p>
  * Protocol clients, protocol servers, and Vendor adapters depend on these contracts. RuntimeDescriptor exposes only
  * public immutable Vendor manifest contracts and never imports a concrete platform implementation, protocol
- * implementation, token model, UserInfo model, or wire codec. Vendor definitions remain in VendorDirectory while
+ * implementation, token model, UserInfo model, or wire codec. Vendor definitions remain in VendorLocator while
  * VendorModule exposes their single aggregate Source driver for runtime assembly.
  * </p>
  * <p>

@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.auth.vendor.okta;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Credential;
-import org.miaixz.bus.auth.Endpoint;
-import org.miaixz.bus.auth.Scheme;
+import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Realm;
 import org.miaixz.bus.auth.protocol.oidc.client.OpenIdClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -39,12 +39,13 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
 
 /**
- * Declares the Okta custom authorization-server OpenID Connect Vendor manifest.
+ * Declares the Okta custom authorization-server login and service-app management manifests.
  * <p>
  * The organization label and authorization-server identifier are deployment selectors, while every host suffix,
  * endpoint path, HTTP method, client authentication method, scope default, and signing algorithm remains frozen by this
  * immutable profile. The resolved issuer is used unchanged by Discovery, authorization-response, and ID Token
- * validation.
+ * validation. The independent management Variant uses a private-key JWT and fixed organization-scoped Management API
+ * templates to expose provider-neutral enterprise snapshot and retrieval operations.
  * </p>
  *
  * @author Kimi Liu
@@ -62,10 +63,17 @@ public class OktaManifest implements VariantManifest<OktaOptions> {
     public static final Vendor.Variant DEFAULT = new Vendor.Variant(Normal.DEFAULT);
 
     /**
+     * Stable identifier of the Okta service-app management Variant.
+     */
+    public static final Vendor.Variant MANAGEMENT = new Vendor.Variant("management");
+    /**
+     * Ordered Okta Management API scopes accepted by the service-app Variant.
+     */
+    static final List<String> MANAGEMENT_SCOPES = List.of("okta.users.read", "okta.groups.read", "okta.roles.read");
+    /**
      * Manifest-owned issuer template resolved from the two external Okta selectors.
      */
     private static final String ISSUER = "https://{instance}.okta.com/oauth2/{authorizationServerId}";
-
     /**
      * Exact Source authentication and standard OIDC operations exposed by the Okta adapter.
      */
@@ -78,12 +86,29 @@ public class OktaManifest implements VariantManifest<OktaOptions> {
             OpenIdClientScheme.DISCOVERY,
             OpenIdClientScheme.JWK_SET,
             OpenIdClientScheme.USERINFO));
-
+    /**
+     * Exact provider-neutral capabilities exposed by the management Variant.
+     */
+    private static final Capability.Manifest ENTERPRISE_CAPABILITIES = new Capability.Manifest(
+            List.of(Realm.describe(ID), Realm.snapshot(ID), Realm.retrieve(ID)));
     /**
      * Historical default Okta login scopes preserved in deterministic request order.
      */
     private static final List<String> DEFAULT_SCOPES = List
             .of("openid", "profile", "email", "address", "phone", "offline_access");
+    /**
+     * Frozen provider-neutral coverage description for Okta service-app management.
+     */
+    private static final Realm.Description ENTERPRISE_DESCRIPTION = new Realm.Description(
+            Set.of(Realm.Kind.USER, Realm.Kind.GROUP, Realm.Kind.ROLE),
+            Set.of(Realm.RelationKind.MEMBER, Realm.RelationKind.ROLE_MEMBER),
+            Set.of(Realm.Operation.DESCRIBE, Realm.Operation.SNAPSHOT, Realm.Operation.RETRIEVE),
+            Realm.Coverage.UNKNOWN, Builder.MAXIMUM_ENTERPRISE_PAGE_SIZE,
+            List.of(
+                    "admin-role-scope-controls-visible-resources",
+                    "organization-and-service-apps-not-enumerated",
+                    Builder.ENTERPRISE_LIMITATION_REPEATED_RESOURCES,
+                    Builder.ENTERPRISE_LIMITATION_SNAPSHOT_ONLY));
 
     /**
      * Complete immutable Okta endpoint, client, scope, capability, and form manifest.
@@ -120,11 +145,67 @@ public class OktaManifest implements VariantManifest<OktaOptions> {
             CAPABILITIES, List.of());
 
     /**
+     * Complete immutable Okta service-app management manifest.
+     */
+    private static final VariantManifest.Variant MANAGEMENT_VARIANT = new VariantManifest.Variant(ID, MANAGEMENT,
+            Protocol.HTTPS, VariantManifest.Pkce.DISABLED, Credential.Type.PRIVATE_KEY, MANAGEMENT_SCOPES,
+            new VendorTargets(Optional.empty(),
+                    Optional.of(
+                            template(
+                                    "https://{instance}.okta.com/oauth2/v1/token",
+                                    Http.Method.POST,
+                                    Endpoint.Authentication.PRIVATE_KEY_JWT)),
+                    Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                    Optional.empty(), Optional.empty(), Optional.empty(), managementTargets()),
+            ENTERPRISE_CAPABILITIES, List.of());
+
+    /**
      * Creates the stateless Okta manifest used by Vendor directory assembly.
      */
     public OktaManifest() {
-        // No initialization required.
-        // Immutable manifest state is retained by class constants.
+    }
+
+    /**
+     * Returns the frozen Okta management coverage description.
+     *
+     * @return immutable management description
+     */
+    static Realm.Description enterpriseDescription() {
+        return ENTERPRISE_DESCRIPTION;
+    }
+
+    /**
+     * Creates the exact ordered Okta Management API target declarations.
+     *
+     * @return immutable-by-construction management target map
+     */
+    private static Map<String, VendorTargets.Target> managementTargets() {
+        final Map<String, VendorTargets.Target> targets = new LinkedHashMap<>();
+        targets.put(
+                Builder.ENTERPRISE_USERS,
+                template("https://{instance}.okta.com/api/v1/users", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_USER,
+                template("https://{instance}.okta.com/api/v1/users", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_GROUPS,
+                template("https://{instance}.okta.com/api/v1/groups", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_GROUP,
+                template("https://{instance}.okta.com/api/v1/groups", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_GROUP_MEMBERS,
+                template("https://{instance}.okta.com/api/v1/groups", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_ROLES,
+                template("https://{instance}.okta.com/api/v1", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_ROLE_MEMBERS,
+                template("https://{instance}.okta.com/api/v1", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_ROLE_ASSIGNMENTS,
+                template("https://{instance}.okta.com/api/v1", Http.Method.GET, Endpoint.Authentication.BEARER));
+        return targets;
     }
 
     /**
@@ -181,28 +262,31 @@ public class OktaManifest implements VariantManifest<OktaOptions> {
     }
 
     /**
-     * Returns the sole supported Okta custom authorization-server variant.
+     * Returns the login Variant followed by the service-app management Variant.
      *
-     * @return immutable single-element manifest list
+     * @return immutable two-Variant manifest list
      */
     @Override
     public List<VariantManifest.Variant> variants() {
-        return List.of(VARIANT);
+        return List.of(VARIANT, MANAGEMENT_VARIANT);
     }
 
     /**
-     * Resolves the exact default Okta manifest.
+     * Resolves the exact Okta login or management manifest.
      *
      * @param variant requested Okta variant
-     * @return immutable default manifest
+     * @return immutable matching manifest
      * @throws ValidateException if the requested variant is unsupported
      */
     @Override
     public VariantManifest.Variant variant(final Vendor.Variant variant) {
-        if (!DEFAULT.equals(variant)) {
-            throw new ValidateException("Okta Vendor variant is not supported");
+        if (DEFAULT.equals(variant)) {
+            return VARIANT;
         }
-        return VARIANT;
+        if (MANAGEMENT.equals(variant)) {
+            return MANAGEMENT_VARIANT;
+        }
+        throw new ValidateException("Okta Vendor variant is not supported");
     }
 
 }

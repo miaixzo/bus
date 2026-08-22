@@ -51,7 +51,7 @@ public class AccessTokenCache extends AuthCache<AccessTokenCache.Entry> {
      * Creates an access-token cache view backed entirely by bus-cache.
      *
      * @param cache      shared bus-cache backend
-     * @param deployment deployment-unique cache namespace
+     * @param deployment deployment-unique cache scope
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
     public AccessTokenCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
@@ -62,7 +62,7 @@ public class AccessTokenCache extends AuthCache<AccessTokenCache.Entry> {
      * Creates a Source-generation-scoped access-token cache view for compiled runtime use.
      *
      * @param cache      shared bus-cache backend
-     * @param deployment deployment-unique cache namespace
+     * @param deployment deployment-unique cache scope
      * @param sourceId   exact Source registration identifier
      * @param generation non-negative Source configuration generation
      * @param clock      shared runtime clock used to derive entry lifetimes

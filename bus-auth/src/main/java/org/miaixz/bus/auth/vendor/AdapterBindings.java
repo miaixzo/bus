@@ -70,8 +70,8 @@ final class AdapterBindings {
         final Class<D> checkedManifestType = Assert.notNull(manifestType, "Vendor manifest type must not be null");
         final VendorAdapter.Factory<O> checkedFactory = Assert
                 .notNull(factory, "Vendor adapter factory must not be null");
-        return new Binding((namespaceId, sourceId, manifest, variant, options, services) -> checkedFactory
-                .create(namespaceId, sourceId, checkedManifestType.cast(manifest), variant, narrow(options), services));
+        return new Binding((spaceId, sourceId, manifest, variant, options, services) -> checkedFactory
+                .create(spaceId, sourceId, checkedManifestType.cast(manifest), variant, narrow(options), services));
     }
 
     /**
@@ -88,11 +88,11 @@ final class AdapterBindings {
         final VariantManifest<O> checkedManifest = Assert.notNull(manifest, "Vendor manifest must not be null");
         final VendorAdapter.Factory<O> checkedFactory = Assert
                 .notNull(factory, "Vendor adapter factory must not be null");
-        return new Binding((namespaceId, sourceId, selected, variant, options, services) -> {
+        return new Binding((spaceId, sourceId, selected, variant, options, services) -> {
             if (selected != checkedManifest) {
                 throw new ValidateException("Vendor binding received a different manifest instance");
             }
-            return checkedFactory.create(namespaceId, sourceId, checkedManifest, variant, narrow(options), services);
+            return checkedFactory.create(spaceId, sourceId, checkedManifest, variant, narrow(options), services);
         });
     }
 
@@ -132,23 +132,23 @@ final class AdapterBindings {
     /**
      * Creates one Vendor adapter after validating the complete manifest, variant, options, and service relation.
      *
-     * @param namespaceId runtime namespace identifier
-     * @param sourceId    configured Source identifier
-     * @param manifest    selected Vendor manifest
-     * @param variant     selected manifest variant
-     * @param options     validated options for the selected variant
-     * @param services    runtime services exposed to the adapter
+     * @param spaceId  runtime space identifier
+     * @param sourceId configured Source identifier
+     * @param manifest selected Vendor manifest
+     * @param variant  selected manifest variant
+     * @param options  validated options for the selected variant
+     * @param services runtime services exposed to the adapter
      * @return adapter exposing exactly the selected variant capabilities
      * @throws ValidateException if routing is inconsistent, no factory exists, or factory construction fails
      */
     VendorAdapter create(
-            final String namespaceId,
+            final String spaceId,
             final String sourceId,
             final VariantManifest<?> manifest,
             final VariantManifest.Variant variant,
             final VendorOptions<?> options,
             final DriverServices services) {
-        Assert.notBlank(namespaceId, "Vendor adapter namespace id must not be blank");
+        Assert.notBlank(spaceId, "Vendor adapter space id must not be blank");
         Assert.notBlank(sourceId, "Vendor adapter Source id must not be blank");
         final VariantManifest<?> checkedManifest = Assert.notNull(manifest, "Vendor adapter manifest must not be null");
         final VariantManifest.Variant checkedVariant = Assert
@@ -167,7 +167,7 @@ final class AdapterBindings {
         final VendorAdapter adapter;
         try {
             adapter = binding.invoker()
-                    .create(namespaceId, sourceId, checkedManifest, checkedVariant, checkedOptions, checkedServices);
+                    .create(spaceId, sourceId, checkedManifest, checkedVariant, checkedOptions, checkedServices);
         } catch (RuntimeException cause) {
             if (cause instanceof ValidateException validation) {
                 throw validation;
@@ -189,16 +189,16 @@ final class AdapterBindings {
         /**
          * Invokes the factory relation validated when the binding was assembled.
          *
-         * @param namespaceId runtime namespace identifier
-         * @param sourceId    configured Source identifier
-         * @param manifest    selected Vendor manifest
-         * @param variant     selected manifest variant
-         * @param options     selected runtime options
-         * @param services    runtime services exposed to the adapter
+         * @param spaceId  runtime space identifier
+         * @param sourceId configured Source identifier
+         * @param manifest selected Vendor manifest
+         * @param variant  selected manifest variant
+         * @param options  selected runtime options
+         * @param services runtime services exposed to the adapter
          * @return constructed Vendor adapter
          */
         VendorAdapter create(
-                String namespaceId,
+                String spaceId,
                 String sourceId,
                 VariantManifest<?> manifest,
                 VariantManifest.Variant variant,

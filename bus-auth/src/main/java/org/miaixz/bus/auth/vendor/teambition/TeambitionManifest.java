@@ -64,11 +64,6 @@ public class TeambitionManifest implements VariantManifest<TeambitionOptions> {
     public static final Vendor.Variant DEFAULT = new Vendor.Variant(Normal.DEFAULT);
 
     /**
-     * Teambition client-secret form authentication identifier.
-     */
-    private static final Endpoint.Authentication CLIENT_SECRET_POST = Endpoint.Authentication.CLIENT_SECRET_POST;
-
-    /**
      * Exact Source authentication and public OAuth operation exposed by Teambition.
      */
     private static final Capability.Manifest CAPABILITIES = new Capability.Manifest(List.of(
@@ -128,7 +123,7 @@ public class TeambitionManifest implements VariantManifest<TeambitionOptions> {
                             fixed(
                                     "https://account.teambition.com/oauth2/access_token",
                                     Http.Method.POST,
-                                    CLIENT_SECRET_POST)),
+                                    Endpoint.Authentication.CLIENT_SECRET_POST)),
                     Optional.of(
                             fixed(
                                     "https://api.teambition.com/users/me",

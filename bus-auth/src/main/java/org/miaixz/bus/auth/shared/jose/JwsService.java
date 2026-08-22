@@ -35,7 +35,6 @@ import javax.crypto.SecretKey;
 import org.miaixz.bus.auth.guard.AlgorithmGuard;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.builtin.asymmetric.KeyType;

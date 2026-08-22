@@ -33,9 +33,9 @@ import org.miaixz.bus.core.basic.entity.Tracer;
  * selection and protocol options belong exclusively to each Source.
  * </p>
  * <p>
- * Provider has no second persistent {@code namespace_id}: its resource namespace is resolved through
- * {@code library_id -> Library.namespace_id}. The inherited Tracer {@code x_namespace_id} remains transient request
- * context and must not be used as registration ownership.
+ * Provider has no second persistent {@code space_id}: its resource space is resolved through
+ * {@code library_id -> Library.space_id}. The inherited Tracer {@code x_space_id} remains transient request context and
+ * must not be used as registration ownership.
  * </p>
  * <p>
  * This mutable persistence model is intended for external projects to extend and map to their storage model. It has no

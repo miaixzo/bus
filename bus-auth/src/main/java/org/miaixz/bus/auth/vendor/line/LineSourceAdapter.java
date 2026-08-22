@@ -27,14 +27,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.guard.IssuerValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
-import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientOptions;
 import org.miaixz.bus.auth.protocol.oidc.*;
 import org.miaixz.bus.auth.protocol.oidc.client.DiscoveryClient;
@@ -61,9 +59,7 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -89,29 +85,9 @@ public class LineSourceAdapter implements VendorAdapter {
     private static final String ISSUER = "https://access.line.me";
 
     /**
-     * Maximum accepted LINE endpoint JSON document size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum accepted LINE endpoint JSON nesting depth.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._32;
-
-    /**
      * Maximum access-token lifetime registered by LINE Login, in seconds.
      */
     private static final long MAXIMUM_ACCESS_TOKEN_SECONDS = 30L * 24L * 60L * 60L;
-
-    /**
-     * Discovery extension carrying LINE's RFC 7009 revocation endpoint.
-     */
-    private static final String REVOCATION_ENDPOINT = OAuth2.Metadata.REVOCATION_ENDPOINT;
-
-    /**
-     * Discovery extension carrying LINE's supported PKCE methods.
-     */
-    private static final String CODE_CHALLENGE_METHODS = OAuth2.Metadata.CODE_CHALLENGE_METHODS_SUPPORTED;
 
     /**
      * Standard OAuth errors representing rejected LINE token requests.
@@ -207,17 +183,17 @@ public class LineSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound LINE adapter from the frozen default manifest.
      *
-     * @param namespaceId registration namespace used to isolate browser state and credentials
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected LINE manifest
-     * @param variant     exact selected default manifest
-     * @param options     decoded externally loaded LINE options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate browser state and credentials
+     * @param sourceId registered Source identifier
+     * @param manifest selected LINE manifest
+     * @param variant  exact selected default manifest
+     * @param options  decoded externally loaded LINE options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, options, or the security baseline differs from the frozen
      *                                  LINE web profile
      */
-    public LineSourceAdapter(final String namespaceId, final String sourceId, final LineManifest manifest,
+    public LineSourceAdapter(final String spaceId, final String sourceId, final LineManifest manifest,
             final VariantManifest.Variant variant, final LineOptions options, final DriverServices services) {
         final LineManifest selectedProfile = Assert.notNull(manifest, "LINE manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "LINE Source id must not be blank");
@@ -235,7 +211,7 @@ public class LineSourceAdapter implements VendorAdapter {
         if (!algorithms.contains(JwaAlgorithm.HS256.name()) || !algorithms.contains(JwaAlgorithm.ES256.name())) {
             throw new ValidateException("LINE HS256 and ES256 must be enabled by the OIDC security baseline");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), targets.token(),
                 Optional.empty(), Optional.empty(), targets.revocation(), Optional.empty(), Optional.of(ISSUER),
@@ -1459,9 +1435,10 @@ public class LineSourceAdapter implements VendorAdapter {
                     || !metadata.idTokenSigningAlgValuesSupported().equals(List.of(JwaAlgorithm.ES256))
                     || !metadata.tokenEndpointAuthMethodsSupported()
                             .contains(ClientAuthenticationMethod.CLIENT_SECRET_POST)
-                    || !extension(metadata, REVOCATION_ENDPOINT)
+                    || !extension(metadata, OAuth2.Metadata.REVOCATION_ENDPOINT)
                             .equals(resolvedTargets.revocation().getOrNull().url().toString())
-                    || !extensionArray(metadata, CODE_CHALLENGE_METHODS).contains(PkceMethod.S256.value())) {
+                    || !extensionArray(metadata, OAuth2.Metadata.CODE_CHALLENGE_METHODS_SUPPORTED)
+                            .contains(PkceMethod.S256.value())) {
                 throw new ValidateException("LINE Discovery metadata differs from the frozen manifest");
             }
             return Outcome.succeeded(metadata);
@@ -1591,7 +1568,7 @@ public class LineSourceAdapter implements VendorAdapter {
             throw new ValidateException("LINE " + operation + " response must use application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._32, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("LINE " + operation + " response root must be a JSON object");
         }

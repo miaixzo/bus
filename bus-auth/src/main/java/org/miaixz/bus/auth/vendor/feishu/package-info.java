@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the Feishu confidential-client OAuth Source variant.
+ * Declares the Feishu confidential-client OAuth Source and optional enterprise Contact v3 variants.
  * <p>
  * FeishuManifest exposes {@code feishu/default} with fixed authorization, v3 token, refresh, and user-information
  * endpoints. It requires CLIENT_SECRET and S256 PKCE, has no default scope, accepts only optional
@@ -36,6 +36,18 @@
  * {@code open_id}, optional user ID, tenant, employee, avatar, name, email, and mobile values remain attributes and
  * never replace that identity key. Tokens, verifier, secret, private envelopes, and personal attributes remain within
  * the operation's security boundary.
+ * </p>
+ * <p>
+ * The separate {@code feishu/enterprise} HTTPS Variant uses an application Client ID and CLIENT_SECRET reference to
+ * obtain a tenant token. It exposes only describe, snapshot, and retrieve for visible users, departments, groups, and
+ * their membership or management relations through fixed Contact v3 targets. Coverage is PARTIAL because the result is
+ * bounded by the application's granted contact scope; event subscriptions are external notifications and are not an
+ * Enterprise changes implementation.
+ * </p>
+ * <p>
+ * Enterprise invocation still enters the shared Dispatcher execution path. The package does not schedule sync jobs,
+ * persist directory state, promise fields outside the allow-listed projection, or convert Contact events into durable
+ * change cursors. Tenant tokens, application secrets, upstream documents, and personal values remain Source-private.
  * </p>
  *
  * @author Kimi Liu

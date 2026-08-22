@@ -47,9 +47,7 @@ import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -95,16 +93,6 @@ public class JdSourceAdapter implements VendorAdapter {
     private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern(Fields.NORM_DATETIME);
 
     /**
-     * Maximum bounded JSON body accepted from JD endpoints.
-     */
-    private static final long MAXIMUM_JSON_BYTES = org.miaixz.bus.auth.Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum JSON nesting accepted from JD endpoints.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._16;
-
-    /**
      * Registered Source identifier used by produced external identities.
      */
     private final String sourceId;
@@ -142,16 +130,16 @@ public class JdSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound JD adapter.
      *
-     * @param namespaceId registration namespace used for state isolation
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected JD manifest
-     * @param variant     selected default manifest
-     * @param options     decoded externally loaded JD options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used for state isolation
+     * @param sourceId registered Source identifier
+     * @param manifest selected JD manifest
+     * @param variant  selected default manifest
+     * @param options  decoded externally loaded JD options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing or protocol differs from jd/default
      */
-    public JdSourceAdapter(final String namespaceId, final String sourceId, final JdManifest manifest,
+    public JdSourceAdapter(final String spaceId, final String sourceId, final JdManifest manifest,
             final VariantManifest.Variant variant, final JdOptions options, final DriverServices services) {
         Assert.notNull(manifest, "JD manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "JD Source id must not be blank");
@@ -163,7 +151,7 @@ public class JdSourceAdapter implements VendorAdapter {
                 || !JdManifest.ID.equals(options.vendor()) || !JdManifest.DEFAULT.equals(options.variant())) {
             throw new ValidateException("JD adapter requires the jd/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         this.formCodec = new FormCodec();
         this.standardAdapter = new StandardAdapter(variant, options, Optional.of(redirectManager),
                 List.of(
@@ -967,7 +955,7 @@ public class JdSourceAdapter implements VendorAdapter {
             throw new ValidateException("JD response media type is invalid");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(org.miaixz.bus.auth.Builder.MAXIMUM_DOCUMENT_BYTES), Normal._16, true);
         return object(value, "JD response");
     }
 

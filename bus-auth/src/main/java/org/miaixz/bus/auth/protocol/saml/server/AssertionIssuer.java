@@ -55,16 +55,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class AssertionIssuer {
 
     /**
-     * Persistent NameID format emitted by the identity-provider assertion issuer.
-     */
-    private static final String PERSISTENT_NAME_ID = Saml.NameIdFormats.PERSISTENT;
-
-    /**
-     * Entity NameID format used by SAML Issuer values.
-     */
-    private static final String ENTITY_NAME_ID = Saml.NameIdFormats.ENTITY;
-
-    /**
      * Unspecified attribute-name format used when external attributes do not declare another SAML format.
      */
     private static final String UNSPECIFIED_ATTRIBUTE = "urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified";
@@ -192,7 +182,7 @@ public class AssertionIssuer {
         final String destination = request.assertionConsumerServiceUrl().getOrNull();
         final Issuer issuer = issuer();
         final NameID nameId = new NameID(frameworkSubject.reference().value(), Optional.of(options.entityId()),
-                Optional.of(client.id()), Optional.of(PERSISTENT_NAME_ID), Optional.empty());
+                Optional.of(client.id()), Optional.of(Saml.NameIdFormats.PERSISTENT), Optional.empty());
         final SubjectConfirmationData confirmationData = new SubjectConfirmationData(Optional.empty(),
                 Optional.of(expiresAt), Optional.of(destination), Optional.of(request.id()),
                 Optional.of(context.network().remoteAddress()), List.of(), Map.of());
@@ -253,7 +243,7 @@ public class AssertionIssuer {
      */
     private Issuer issuer() {
         return new Issuer(new NameID(options.entityId(), Optional.empty(), Optional.empty(),
-                Optional.of(ENTITY_NAME_ID), Optional.empty()));
+                Optional.of(Saml.NameIdFormats.ENTITY), Optional.empty()));
     }
 
 }

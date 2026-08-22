@@ -23,15 +23,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.core.basic.entity.Namespace;
+import org.miaixz.bus.core.basic.entity.Space;
 import org.miaixz.bus.core.lang.Enumers;
 
 /**
  * Represents the single authentication application displayed by administrative and end-user application hubs.
  * <p>
- * The inherited {@link Namespace} contract provides the single persistent namespace scope together with identity and
- * audit metadata. This entity adds only authentication application presentation and launch metadata. A {@code Library}
- * does not own collections of providers or sources; those resources reference it through their direct identifiers.
+ * The inherited {@link Space} contract provides the single persistent space scope together with identity and audit
+ * metadata. This entity adds only authentication application presentation and launch metadata. A {@code Library} does
+ * not own collections of providers or sources; those resources reference it through their direct identifiers.
  * </p>
  * <p>
  * Instances are mutable persistence models intended for external projects to extend and map to their storage model.
@@ -43,11 +43,11 @@ import org.miaixz.bus.core.lang.Enumers;
 @Getter
 @Setter
 @SuperBuilder
-public class Library extends Namespace {
+public class Library extends Space {
 
     /**
-     * Project-managed namespace-local application code. Format and uniqueness policies belong to the external
-     * management implementation and do not affect authentication compilation.
+     * Project-managed space-local application code. Format and uniqueness policies belong to the external management
+     * implementation and do not affect authentication compilation.
      */
     private String code;
     /**

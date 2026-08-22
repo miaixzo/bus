@@ -57,21 +57,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class RefreshTokenRotator {
 
     /**
-     * Maximum create-if-absent attempts for a generated refresh-token digest collision.
-     */
-    private static final int MAXIMUM_CREATE_ATTEMPTS = Builder.MAXIMUM_RETRY_ATTEMPTS;
-
-    /**
-     * Maximum compare-and-replace attempts for one authoritative family-state transition.
-     */
-    private static final int MAXIMUM_STATE_ATTEMPTS = Builder.MAXIMUM_RETRY_ATTEMPTS;
-
-    /**
-     * Safe failure detail member carrying a registered OAuth error code.
-     */
-    private static final String OAUTH_ERROR = Builder.OAUTH_ERROR;
-
-    /**
      * Provider identifier used in token and family key isolation.
      */
     private final String providerId;
@@ -167,7 +152,7 @@ public class RefreshTokenRotator {
             final OAuth2ErrorCode oauthError,
             final String description) {
         return new Outcome.Failure(error, description,
-                new JsonValue.ObjectValue(Map.of(OAUTH_ERROR, new JsonValue.StringValue(oauthError.value()))));
+                new JsonValue.ObjectValue(Map.of(Builder.OAUTH_ERROR, new JsonValue.StringValue(oauthError.value()))));
     }
 
     /**
@@ -184,6 +169,7 @@ public class RefreshTokenRotator {
      * Validates and rotates one standard refresh-token grant.
      *
      * @param request standard token request containing a refresh-token grant
+     * @param client  authenticated OAuth consumer metadata
      * @param context invocation context carrying a verified client identifier
      * @param timeout shared end-to-end operation timeout
      * @return asynchronous standard token response outcome
@@ -374,7 +360,7 @@ public class RefreshTokenRotator {
                     if (result.failure() != null) {
                         return completed(storeFailure("OAuth 2.x refresh successor persistence failed"));
                     }
-                    if (!result.created() && attempt < MAXIMUM_CREATE_ATTEMPTS) {
+                    if (!result.created() && attempt < Builder.MAXIMUM_RETRY_ATTEMPTS) {
                         return createSuccessor(client, oldKey, stored, entry, scope, context, timeout, attempt + 1);
                     }
                     if (!result.created()) {
@@ -565,7 +551,7 @@ public class RefreshTokenRotator {
                 if (Boolean.TRUE.equals(updated)) {
                     return CompletableFuture.completedFuture(true);
                 }
-                if (attempt >= MAXIMUM_STATE_ATTEMPTS) {
+                if (attempt >= Builder.MAXIMUM_RETRY_ATTEMPTS) {
                     return confirmFamilyInactive(key, entry, timeout);
                 }
                 return compromiseFamily(entry, timeout, attempt + 1);

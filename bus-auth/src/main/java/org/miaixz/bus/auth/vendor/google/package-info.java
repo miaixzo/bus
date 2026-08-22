@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the Google web-server OpenID Connect Source variant.
+ * Declares Google web-server OpenID Connect login and Workspace management Source variants.
  * <p>
  * GoogleManifest fixes {@code google/default}, issuer {@code https://accounts.google.com}, Discovery, authorization,
  * token, refresh, JWKS, UserInfo, and revocation endpoints, CLIENT_SECRET form authentication, required S256 PKCE,
@@ -35,6 +35,18 @@
  * ID Token {@code sub}, which must equal UserInfo {@code sub}; email, hosted domain, names, and profile data remain
  * standard claims and never replace the subject. The documented legacy token issuer is an explicit verification
  * deviation, not an alternative configured issuer.
+ * </p>
+ * <p>
+ * {@code google/workspace} is a separate HTTPS enterprise Variant. It resolves a referenced RSA private key, creates a
+ * bounded RS256 domain-wide-delegation assertion for the configured service-account client and delegated administrator,
+ * and requests only the fixed Admin SDK read scopes. It exposes describe, snapshot, and retrieve for supported users,
+ * organizational units, groups, roles, and their selected relations; coverage is UNKNOWN and no changes exists.
+ * </p>
+ * <p>
+ * OIDC client secrets, browser scopes, and login endpoints cannot authorize Workspace management. Conversely, the
+ * Workspace key and delegated subject do not participate in login. Admin watch channels are external notifications that
+ * a project may orchestrate; they are not durable Enterprise changes. Dispatcher invocation remains separate from
+ * project scheduling, checkpointing, synchronization, and persistence.
  * </p>
  *
  * @author Kimi Liu

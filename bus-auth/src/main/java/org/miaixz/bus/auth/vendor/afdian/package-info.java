@@ -20,9 +20,9 @@
 /**
  * Declares the Afdian creator-account Vendor manifest and externally managed client options.
  * <p>
- * AfdianManifest exposes the single {@code afdian/default} VENDOR_AUTH variant with fixed public authorization and
- * identity-exchange endpoints, the {@code basic} default scope, CLIENT_SECRET credential type, and browser initiate and
- * complete capabilities. AfdianOptions accepts only the platform routing keys, public client identifier, credential
+ * AfdianManifest exposes the single {@code afdian/default} proprietary HTTPS variant with fixed public authorization
+ * and identity-exchange endpoints, the {@code basic} default scope, CLIENT_SECRET credential type, and browser initiate
+ * and complete capabilities. AfdianOptions accepts only the platform routing keys, public client identifier, credential
  * reference, exact registered callback, and ordered requested scopes.
  * </p>
  * <p>
@@ -33,9 +33,10 @@
  * </p>
  * <p>
  * Routing is fixed to one variant, credentials must reference CLIENT_SECRET, callback ownership is exact, and scopes
- * are immutable non-blank platform values. The manifest deliberately declares VENDOR_AUTH because the token endpoint's
- * private JSON envelope returns {@code data.user_id} as the terminal identity rather than a standards-compliant OAuth
- * token response. Only that verified stable user identifier may become the external subject.
+ * are immutable non-blank platform values. The platform and capability declarations identify the proprietary exchange,
+ * while its real transport protocol is HTTPS. The token endpoint's private JSON envelope returns {@code data.user_id}
+ * as the terminal identity rather than a standards-compliant OAuth token response. Only that verified stable user
+ * identifier may become the external subject.
  * </p>
  *
  * @author Kimi Liu

@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.auth.protocol.oidc.server;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -39,6 +38,7 @@ import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.worker.loader.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -50,14 +50,30 @@ import org.miaixz.bus.extra.json.JsonValue;
  */
 public class SubjectIssuer {
 
+    /**
+     * Registered key-use value for pairwise subject derivation keys.
+     */
     private static final String PAIRWISE_USE = "pairwise-sub";
 
+    /**
+     * Exact Source identifier used to isolate subject derivation.
+     */
     private final String sourceId;
+    /**
+     * Frozen OpenID Provider options.
+     */
     private final OpenIdServerOptions options;
+    /**
+     * Source-scoped key loader and parser services.
+     */
     private final DriverServices services;
 
     /**
      * Creates a Source-scoped subject issuer.
+     *
+     * @param sourceId exact Source identifier
+     * @param options  frozen OpenID Provider options
+     * @param services Source-scoped project loaders and framework services
      */
     public SubjectIssuer(final String sourceId, final OpenIdServerOptions options, final DriverServices services) {
         this.sourceId = Assert.notBlank(sourceId, "OpenID Connect Source id must not be blank");
@@ -66,7 +82,34 @@ public class SubjectIssuer {
     }
 
     /**
+     * Creates a safe operational subject-issuance failure.
+     *
+     * @param description safe failure description
+     * @return immutable failure value
+     */
+    private static Outcome.Failure failure(final String description) {
+        return new Outcome.Failure(ErrorCode._500, description, new JsonValue.ObjectValue(Map.of()));
+    }
+
+    /**
+     * Wraps an outcome in an already completed stage.
+     *
+     * @param <T>     outcome value type
+     * @param outcome outcome to expose
+     * @return completed outcome stage
+     */
+    private static <T> CompletionStage<Outcome<T>> completed(final Outcome<T> outcome) {
+        return CompletableFuture.completedFuture(outcome);
+    }
+
+    /**
      * Issues a stable wire subject according to the Consumer-selected subject type.
+     *
+     * @param subject  internal stable subject key
+     * @param consumer relying-party consumer metadata
+     * @param context  immutable invocation context
+     * @param timeout  shared operation timeout
+     * @return stage resolving to the public or pairwise wire subject
      */
     public CompletionStage<Outcome<String>> issue(
             final Subject.Key subject,
@@ -111,19 +154,11 @@ public class SubjectIssuer {
                 final String input = options.issuer() + Symbol.C_NUL + sector + Symbol.C_NUL + subject.value();
                 return Outcome.succeeded(
                         Base64.getUrlEncoder().withoutPadding()
-                                .encodeToString(mac.doFinal(input.getBytes(StandardCharsets.UTF_8))));
+                                .encodeToString(mac.doFinal(input.getBytes(Charset.UTF_8))));
             } catch (Exception cause) {
                 return Outcome.<String>failed(failure("Pairwise subject generation failed"));
             }
         });
-    }
-
-    private static Outcome.Failure failure(final String description) {
-        return new Outcome.Failure(ErrorCode._500, description, new JsonValue.ObjectValue(Map.of()));
-    }
-
-    private static <T> CompletionStage<Outcome<T>> completed(final Outcome<T> outcome) {
-        return CompletableFuture.completedFuture(outcome);
     }
 
     @Override

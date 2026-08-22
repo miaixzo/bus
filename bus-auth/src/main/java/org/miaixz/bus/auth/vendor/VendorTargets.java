@@ -21,7 +21,10 @@ package org.miaixz.bus.auth.vendor;
 
 import java.net.IDN;
 import java.net.URI;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.miaixz.bus.auth.Endpoint;
@@ -52,12 +55,13 @@ import org.miaixz.bus.core.xyz.PatternKit;
  * @param discovery           OpenID or OAuth metadata discovery endpoint
  * @param jwks                JSON Web Key Set endpoint
  * @param endSession          OpenID Connect end-session endpoint
+ * @param management          ordered named enterprise management endpoints
  * @author Kimi Liu
  */
 public record VendorTargets(Optional<Target> authorization, Optional<Target> token, Optional<Target> userInfo,
         Optional<Target> refresh, Optional<Target> introspection, Optional<Target> revocation,
         Optional<Target> deviceAuthorization, Optional<Target> discovery, Optional<Target> jwks,
-        Optional<Target> endSession) {
+        Optional<Target> endSession, Map<String, Target> management) {
 
     /**
      * Placeholder for a path-segment tenant value.
@@ -77,7 +81,19 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tok
     /**
      * Validates and normalizes every optional endpoint target container.
      *
-     * @throws IllegalArgumentException if an optional container is null
+     * @param authorization       authorization endpoint
+     * @param token               token or platform credential endpoint
+     * @param userInfo            user information endpoint
+     * @param refresh             refresh endpoint when distinct from token
+     * @param introspection       introspection or registered platform token-info endpoint
+     * @param revocation          revocation endpoint
+     * @param deviceAuthorization device authorization endpoint
+     * @param discovery           OpenID or OAuth metadata discovery endpoint
+     * @param jwks                JSON Web Key Set endpoint
+     * @param endSession          OpenID Connect end-session endpoint
+     * @param management          ordered named enterprise management endpoints
+     * @throws IllegalArgumentException if an optional container or management map entry is null
+     * @throws ValidateException        if a management key is blank or contains surrounding whitespace
      */
     public VendorTargets {
         authorization = normalize(authorization, "Vendor authorization endpoint");
@@ -90,6 +106,29 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tok
         discovery = normalize(discovery, "Vendor discovery endpoint");
         jwks = normalize(jwks, "Vendor JWK Set endpoint");
         endSession = normalize(endSession, "Vendor end-session endpoint");
+        management = normalizeManagement(management);
+    }
+
+    /**
+     * Creates a Vendor target set in the original ten-endpoint source shape without enterprise management targets.
+     *
+     * @param authorization       authorization endpoint
+     * @param token               token or platform credential endpoint
+     * @param userInfo            user information endpoint
+     * @param refresh             refresh endpoint when distinct from token
+     * @param introspection       introspection or registered platform token-info endpoint
+     * @param revocation          revocation endpoint
+     * @param deviceAuthorization device authorization endpoint
+     * @param discovery           OpenID or OAuth metadata discovery endpoint
+     * @param jwks                JSON Web Key Set endpoint
+     * @param endSession          OpenID Connect end-session endpoint
+     */
+    public VendorTargets(final Optional<Target> authorization, final Optional<Target> token,
+            final Optional<Target> userInfo, final Optional<Target> refresh, final Optional<Target> introspection,
+            final Optional<Target> revocation, final Optional<Target> deviceAuthorization,
+            final Optional<Target> discovery, final Optional<Target> jwks, final Optional<Target> endSession) {
+        this(authorization, token, userInfo, refresh, introspection, revocation, deviceAuthorization, discovery, jwks,
+                endSession, Map.of());
     }
 
     /**
@@ -157,6 +196,51 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tok
     }
 
     /**
+     * Validates and freezes management targets while preserving their declaration order.
+     *
+     * @param values manifest-owned named management targets
+     * @return insertion-ordered immutable target map
+     */
+    private static Map<String, Target> normalizeManagement(final Map<String, Target> values) {
+        Assert.notNull(values, "Vendor management targets must not be null");
+        final Map<String, Target> copy = new LinkedHashMap<>(values.size());
+        values.forEach(
+                (name, target) -> copy
+                        .put(managementKey(name), Assert.notNull(target, "Vendor management target must not be null")));
+        return Collections.unmodifiableMap(copy);
+    }
+
+    /**
+     * Validates and freezes resolved management endpoints while preserving their declaration order.
+     *
+     * @param values resolved named management endpoints
+     * @return insertion-ordered immutable endpoint map
+     */
+    private static Map<String, Endpoint> normalizeManagementEndpoints(final Map<String, Endpoint> values) {
+        Assert.notNull(values, "Resolved Vendor management endpoints must not be null");
+        final Map<String, Endpoint> copy = new LinkedHashMap<>(values.size());
+        values.forEach(
+                (name, endpoint) -> copy.put(
+                        managementKey(name),
+                        Assert.notNull(endpoint, "Resolved Vendor management endpoint must not be null")));
+        return Collections.unmodifiableMap(copy);
+    }
+
+    /**
+     * Validates one exact management target name without silently changing it.
+     *
+     * @param value caller-supplied management target name
+     * @return original validated management target name
+     */
+    private static String managementKey(final String value) {
+        final String key = Assert.notBlank(value, "Vendor management target name must not be blank");
+        if (!key.equals(key.trim())) {
+            throw new ValidateException("Vendor management target name must not contain surrounding whitespace");
+        }
+        return key;
+    }
+
+    /**
      * Resolves one optional target.
      *
      * @param target  optional manifest-owned endpoint target
@@ -165,6 +249,19 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tok
      */
     private static Optional<Endpoint> resolve(final Optional<Target> target, final VendorOptions<?> options) {
         return target.isPresent() ? Optional.of(target.getOrNull().resolve(options)) : Optional.empty();
+    }
+
+    /**
+     * Resolves every named management target in its manifest declaration order.
+     *
+     * @param targets manifest-owned named management targets
+     * @param options validated external Source options
+     * @return insertion-ordered immutable resolved endpoint map
+     */
+    private static Map<String, Endpoint> resolve(final Map<String, Target> targets, final VendorOptions<?> options) {
+        final Map<String, Endpoint> resolved = new LinkedHashMap<>(targets.size());
+        targets.forEach((name, target) -> resolved.put(name, target.resolve(options)));
+        return Collections.unmodifiableMap(resolved);
     }
 
     /**
@@ -214,6 +311,9 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tok
      * @return UTF-8 RFC 3986 path-segment encoding
      */
     private static String segment(final String value) {
+        if (value.indexOf(Symbol.C_SLASH) >= 0 || value.indexOf(Symbol.C_BACKSLASH) >= 0) {
+            throw new ValidateException("Vendor path-segment selector must not contain path separators");
+        }
         return RFC3986.SEGMENT.encode(value, Charset.UTF_8);
     }
 
@@ -353,7 +453,8 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tok
                 resolve(userInfo, checkedOptions), resolve(refresh, checkedOptions),
                 resolve(introspection, checkedOptions), resolve(revocation, checkedOptions),
                 resolve(deviceAuthorization, checkedOptions), resolve(discovery, checkedOptions),
-                resolve(jwks, checkedOptions), resolve(endSession, checkedOptions));
+                resolve(jwks, checkedOptions), resolve(endSession, checkedOptions),
+                resolve(management, checkedOptions));
     }
 
     /**
@@ -513,17 +614,30 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tok
      * @param discovery           discovery endpoint
      * @param jwks                JWK Set endpoint
      * @param endSession          end-session endpoint
+     * @param management          ordered named enterprise management endpoints
      * @author Kimi Liu
      */
     public record Resolved(Optional<Endpoint> authorization, Optional<Endpoint> token, Optional<Endpoint> userInfo,
             Optional<Endpoint> refresh, Optional<Endpoint> introspection, Optional<Endpoint> revocation,
             Optional<Endpoint> deviceAuthorization, Optional<Endpoint> discovery, Optional<Endpoint> jwks,
-            Optional<Endpoint> endSession) {
+            Optional<Endpoint> endSession, Map<String, Endpoint> management) {
 
         /**
          * Normalizes every resolved endpoint container.
          *
-         * @throws IllegalArgumentException if an optional container is null
+         * @param authorization       authorization endpoint
+         * @param token               token endpoint
+         * @param userInfo            user information endpoint
+         * @param refresh             refresh endpoint
+         * @param introspection       introspection or token-info endpoint
+         * @param revocation          revocation endpoint
+         * @param deviceAuthorization device authorization endpoint
+         * @param discovery           discovery endpoint
+         * @param jwks                JWK Set endpoint
+         * @param endSession          end-session endpoint
+         * @param management          ordered named enterprise management endpoints
+         * @throws IllegalArgumentException if an optional container or management endpoint is null
+         * @throws ValidateException        if a management endpoint key is blank or contains surrounding whitespace
          */
         public Resolved {
             authorization = normalizeEndpoint(authorization, "Resolved Vendor authorization endpoint");
@@ -538,6 +652,7 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tok
             discovery = normalizeEndpoint(discovery, "Resolved Vendor discovery endpoint");
             jwks = normalizeEndpoint(jwks, "Resolved Vendor JWK Set endpoint");
             endSession = normalizeEndpoint(endSession, "Resolved Vendor end-session endpoint");
+            management = normalizeManagementEndpoints(management);
         }
 
     }
