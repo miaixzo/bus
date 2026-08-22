@@ -20,6 +20,10 @@
 package org.miaixz.bus.image.plugin;
 
 import java.io.*;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
@@ -29,6 +33,7 @@ import org.xml.sax.SAXException;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.*;
 import org.miaixz.bus.image.galaxy.EditorContext;
@@ -56,6 +61,20 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 public class StoreSCU implements AutoCloseable {
+
+    /**
+     * The default temporary file prefix.
+     */
+    private static final String DEFAULT_TMP_PREFIX = "storescu-";
+
+    /**
+     * The owner-only temporary directory attributes.
+     */
+    private static final FileAttribute<?>[] OWNER_ONLY = FileSystems.getDefault().supportedFileAttributeViews()
+            .contains("posix")
+                    ? new FileAttribute<?>[] {
+                            PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwx------")) }
+                    : new FileAttribute<?>[0];
 
     /**
      * A managing SOP Class Relationship extended negotiation.
@@ -110,7 +129,7 @@ public class StoreSCU implements AutoCloseable {
     /**
      * The prefix for the temporary file name.
      */
-    private String tmpPrefix = "storescu-";
+    private String tmpPrefix = DEFAULT_TMP_PREFIX;
 
     /**
      * The suffix for the temporary file name.
@@ -126,6 +145,16 @@ public class StoreSCU implements AutoCloseable {
      * The temporary file used to store the list of files to be sent.
      */
     private File tmpFile;
+
+    /**
+     * The temporary directory created by this instance.
+     */
+    private final File ownedTmpDir;
+
+    /**
+     * Whether the temporary file was created by this instance.
+     */
+    private boolean ownsTmpFile;
 
     /**
      * The active DICOM association.
@@ -183,6 +212,12 @@ public class StoreSCU implements AutoCloseable {
         rq.addPresentationContext(new PresentationContext(1, UID.Verification.uid, UID.ImplicitVRLittleEndian.uid));
         this.state = new Status(progress);
         this.dicomEditors = dicomEditors;
+        try {
+            this.ownedTmpDir = Files.createTempDirectory(DEFAULT_TMP_PREFIX, OWNER_ONLY).toFile();
+            this.tmpDir = ownedTmpDir;
+        } catch (IOException e) {
+            throw new InternalException(e);
+        }
     }
 
     /**
@@ -237,6 +272,7 @@ public class StoreSCU implements AutoCloseable {
      */
     public void setTmpFile(File tmpFile) {
         this.tmpFile = tmpFile;
+        this.ownsTmpFile = false;
     }
 
     /**
@@ -312,7 +348,7 @@ public class StoreSCU implements AutoCloseable {
      */
     public void scanFiles(List<String> fnames, boolean printout) throws IOException {
         tmpFile = File.createTempFile(tmpPrefix, tmpSuffix, tmpDir);
-        tmpFile.deleteOnExit();
+        ownsTmpFile = true;
         try (BufferedWriter fileInfos = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmpFile)))) {
             for (String fname : fnames) {
                 scan(new File(fname), fileInfos, printout);
@@ -505,11 +541,15 @@ public class StoreSCU implements AutoCloseable {
         boolean noChange = uidSuffix == null && (attrs == null || attrs.isEmpty())
                 && syntax.getRequested().equals(tsuid) && dicomEditors == null;
         DataWriter dataWriter;
-        try (InputStream in = noChange ? new FileInputStream(f) : new ImageInputStream(f)) {
-            if (f.getName().endsWith(".xml")) {
-                Attributes data = SAXReader.parse(new FileInputStream(f));
+        if (f.getName().endsWith(".xml")) {
+            try (InputStream in = new FileInputStream(f)) {
+                Attributes data = SAXReader.parse(in);
                 processAndSend(data, cuid, iuid, syntax, f);
-            } else if (noChange) {
+            }
+            return;
+        }
+        if (noChange) {
+            try (InputStream in = new FileInputStream(f)) {
                 in.skip(fmiEndPos);
                 dataWriter = new InputStreamDataWriter(in);
                 as.cstore(
@@ -519,12 +559,13 @@ public class StoreSCU implements AutoCloseable {
                         dataWriter,
                         syntax.getSuitable(),
                         rspHandlerFactory.createDimseRSPHandler(f));
-            } else {
-                ImageInputStream dicomIn = (ImageInputStream) in;
-                dicomIn.setIncludeBulkData(ImageInputStream.IncludeBulkData.URI);
-                Attributes data = dicomIn.readDataset();
-                processAndSend(data, cuid, iuid, syntax, f);
             }
+            return;
+        }
+        try (ImageInputStream dicomIn = new ImageInputStream(f)) {
+            dicomIn.setIncludeBulkData(ImageInputStream.IncludeBulkData.URI);
+            Attributes data = dicomIn.readDataset();
+            processAndSend(data, cuid, iuid, syntax, f);
         }
     }
 
@@ -569,22 +610,31 @@ public class StoreSCU implements AutoCloseable {
      */
     @Override
     public void close() throws IOException, InterruptedException {
-        if (as != null) {
-            Logger.debug(
-                    true,
-                    "Image",
-                    "DICOM store association close started: associationReady={}",
-                    as.isReadyForDataTransfer());
-            if (as.isReadyForDataTransfer()) {
-                as.release();
+        try {
+            if (as != null) {
+                Logger.debug(
+                        true,
+                        "Image",
+                        "DICOM store association close started: associationReady={}",
+                        as.isReadyForDataTransfer());
+                if (as.isReadyForDataTransfer()) {
+                    as.release();
+                }
+                as.waitForSocketClose();
+                Logger.info(
+                        false,
+                        "Image",
+                        "DICOM store association closed: filesScanned={}, totalBytes={}",
+                        filesScanned,
+                        totalSize);
             }
-            as.waitForSocketClose();
-            Logger.info(
-                    false,
-                    "Image",
-                    "DICOM store association closed: filesScanned={}, totalBytes={}",
-                    filesScanned,
-                    totalSize);
+        } finally {
+            if (ownsTmpFile && tmpFile != null) {
+                FileKit.remove(tmpFile);
+            }
+            if (ownedTmpDir != null) {
+                FileKit.remove(ownedTmpDir);
+            }
         }
     }
 
