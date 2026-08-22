@@ -39,7 +39,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
  *
  * @author Kimi Liu
  */
-public final class EapMessageCodec {
+public class EapMessageCodec {
 
     /**
      * Maximum EAP octets in one RADIUS Attribute Value.

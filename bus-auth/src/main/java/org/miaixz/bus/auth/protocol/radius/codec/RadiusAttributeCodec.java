@@ -39,7 +39,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
  *
  * @author Kimi Liu
  */
-public final class RadiusAttributeCodec
+public class RadiusAttributeCodec
         implements Decoder<byte[], List<RadiusAttribute>>, Encoder<List<RadiusAttribute>, byte[]> {
 
     /**

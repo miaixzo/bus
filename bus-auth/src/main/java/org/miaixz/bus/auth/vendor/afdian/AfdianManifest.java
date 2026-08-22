@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.Vendor;
@@ -34,14 +36,13 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Declares the frozen Afdian creator authorization Vendor manifest.
  *
  * @author Kimi Liu
  */
-public final class AfdianManifest implements VariantManifest<AfdianOptions> {
+public class AfdianManifest implements VariantManifest<AfdianOptions> {
 
     /**
      * Stable Afdian platform identifier.
@@ -61,7 +62,7 @@ public final class AfdianManifest implements VariantManifest<AfdianOptions> {
      * Complete immutable Afdian variant manifest.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT,
-            Protocol.VENDOR_AUTH, List.of("basic"),
+            Protocol.VENDOR_AUTH, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of("basic"),
             new VendorTargets(Optional
                     .of(fixed("https://afdian.net/oauth2/authorize", Http.Method.GET, Endpoint.Authentication.NONE)),
                     Optional.of(
@@ -92,7 +93,7 @@ public final class AfdianManifest implements VariantManifest<AfdianOptions> {
             final String value,
             final Http.Method method,
             final Endpoint.Authentication authentication) {
-        return new VendorTargets.Fixed(new Endpoint(UnoUrl.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
+        return new VendorTargets.Fixed(new Endpoint(Url.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
                 Set.of(authentication), Optional.empty(), TlsClientAuth.NONE));
     }
 

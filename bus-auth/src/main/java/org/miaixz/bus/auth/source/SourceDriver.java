@@ -100,7 +100,7 @@ public interface SourceDriver<O extends Options<?>> {
     /**
      * Returns the project integration slots required by one already narrowed Source options value.
      * <p>
-     * Runtime calls this method only from {@link #prepare(Registration.SourceEntry, Provider, Library)} and retains the
+     * Runtime calls this method only from {@link #prepare(Blueprint.SourceEntry, Provider, Library)} and retains the
      * result with the exact options instance. Compilation therefore cannot independently select another requirement set
      * for the same registration.
      * </p>
@@ -133,10 +133,10 @@ public interface SourceDriver<O extends Options<?>> {
      * @return immutable preparation consumed by compilation
      */
     default Prepared<O> prepare(
-            final Registration.SourceEntry registration,
+            final Blueprint.SourceEntry registration,
             final Provider provider,
             final Library library) {
-        final Registration.SourceEntry record = Assert.notNull(registration, "Source registration must not be null");
+        final Blueprint.SourceEntry record = Assert.notNull(registration, "Source registration must not be null");
         final Provider owner = Assert.notNull(provider, "Source Provider must not be null");
         final Library application = Assert.notNull(library, "Source Library must not be null");
         final Source source = Assert.notNull(record.resource(), "Registered Source must not be null");
@@ -171,8 +171,9 @@ public interface SourceDriver<O extends Options<?>> {
      * @param slots        exact project integration requirements
      * @param dependencies exact framework infrastructure and state requirements
      * @param <O>          options type
+     * @author Kimi Liu
      */
-    record Prepared<O extends Options<?>>(Registration.SourceEntry registration, Provider provider, Library library,
+    record Prepared<O extends Options<?>>(Blueprint.SourceEntry registration, Provider provider, Library library,
             O options, WorkerSlots slots, Dependencies dependencies) {
 
         /**
@@ -193,6 +194,8 @@ public interface SourceDriver<O extends Options<?>> {
      * Declares the exact framework-owned services visible to one compiled Source.
      *
      * @param values required framework services
+     *
+     * @author Kimi Liu
      */
     record Dependencies(Set<Service> values) {
 
@@ -236,33 +239,65 @@ public interface SourceDriver<O extends Options<?>> {
 
         /**
          * Identifies one framework-owned infrastructure or protocol-state service.
+         *
+         * @author Kimi Liu
          */
         public enum Service {
-            /** Shared Fabric execution context. */
-            FABRIC_CONTEXT,
-            /** Provider-neutral JSON implementation. */
+            /**
+             * Runtime-scoped facade for every Fabric protocol used by bus-auth.
+             */
+            FABRIC,
+            /**
+             * Provider-neutral JSON implementation.
+             */
             JSON_PROVIDER,
-            /** Asynchronous Source executor. */
+            /**
+             * Asynchronous Source executor.
+             */
             EXECUTOR,
-            /** Callback-state cache. */
+            /**
+             * Callback-state cache.
+             */
             STATE_CACHE,
-            /** One-time nonce cache. */
+            /**
+             * One-time nonce cache.
+             */
             NONCE_CACHE,
-            /** Authorization-code cache. */
+            /**
+             * Authorization-code cache.
+             */
             AUTHORIZATION_CODE_CACHE,
-            /** Device-code cache. */
+            /**
+             * Device-code cache.
+             */
             DEVICE_CODE_CACHE,
-            /** Authorization lifecycle cache. */
+            /**
+             * Authorization lifecycle cache.
+             */
             AUTHORIZATION_CACHE,
-            /** Access-token cache. */
+            /**
+             * Access-token cache.
+             */
             ACCESS_TOKEN_CACHE,
-            /** Refresh-token cache. */
+            /**
+             * Refresh-token cache.
+             */
             REFRESH_TOKEN_CACHE,
-            /** Authentication Session cache. */
+            /**
+             * Authentication Session cache.
+             */
             SESSION_CACHE,
-            /** Replay-prevention cache. */
+            /**
+             * Issued ID Token logout-binding cache.
+             */
+            ID_TOKEN_CACHE,
+            /**
+             * Replay-prevention cache.
+             */
             REPLAY_CACHE,
-            /** Runtime security baseline. */
+            /**
+             * Runtime security baseline.
+             */
             SECURITY_BASELINE
 
         }

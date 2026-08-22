@@ -24,7 +24,9 @@ import java.util.Set;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -37,7 +39,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Declares Douyin's open-platform browser flow and ordinary mini-program code-to-session flow.
@@ -49,7 +50,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class DouyinManifest implements VariantManifest<DouyinOptions> {
+public class DouyinManifest implements VariantManifest<DouyinOptions> {
 
     /**
      * Stable platform routing identifier.
@@ -163,7 +164,7 @@ public final class DouyinManifest implements VariantManifest<DouyinOptions> {
      * Complete immutable open-platform manifest.
      */
     private static final VariantManifest.Variant OPEN_VARIANT = new VariantManifest.Variant(ID, OPEN, Protocol.OAUTH2,
-            List.of("user_info"),
+            VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of("user_info"),
             new VendorTargets(
                     Optional.of(
                             fixed(
@@ -193,7 +194,7 @@ public final class DouyinManifest implements VariantManifest<DouyinOptions> {
      * Complete immutable ordinary mini-program manifest.
      */
     private static final VariantManifest.Variant MINI_VARIANT = new VariantManifest.Variant(ID, MINI_PROGRAM,
-            Protocol.VENDOR_AUTH, List.of(),
+            Protocol.VENDOR_AUTH, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of(),
             new VendorTargets(Optional.empty(),
                     Optional.of(
                             fixed(
@@ -224,7 +225,7 @@ public final class DouyinManifest implements VariantManifest<DouyinOptions> {
             final String value,
             final Http.Method method,
             final Endpoint.Authentication authentication) {
-        return new VendorTargets.Fixed(new Endpoint(UnoUrl.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
+        return new VendorTargets.Fixed(new Endpoint(Url.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
                 Set.of(authentication), Optional.empty(), TlsClientAuth.NONE));
     }
 

@@ -25,6 +25,7 @@ import java.nio.charset.CodingErrorAction;
 import java.util.*;
 
 import org.miaixz.bus.auth.Evidence;
+import org.miaixz.bus.auth.FabricX.Clock;
 import org.miaixz.bus.auth.protocol.ldap.LdapAttribute;
 import org.miaixz.bus.auth.protocol.ldap.SearchResultEntry;
 import org.miaixz.bus.auth.source.ExternalIdentity;
@@ -32,7 +33,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Clock;
 
 /**
  * Maps one uniquely selected and password-verified LDAP Search result entry to an external identity.
@@ -45,7 +45,7 @@ import org.miaixz.bus.fabric.Clock;
  *
  * @author Kimi Liu
  */
-public final class LdapIdentityParser {
+public class LdapIdentityParser {
 
     /**
      * Immutable LDAP Source mapping options.

@@ -29,6 +29,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationResponseDecoder;
@@ -40,6 +42,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -51,9 +54,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements Slack browser authentication and its registered OAuth-facing adaptations.
@@ -64,7 +64,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class SlackSourceAdapter implements VendorAdapter {
+public class SlackSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted Slack authority recorded in federated identity evidence.
@@ -433,6 +433,7 @@ public final class SlackSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -511,7 +512,7 @@ public final class SlackSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing private Slack models
@@ -521,10 +522,10 @@ public final class SlackSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Slack capability must not be null");
         Assert.notNull(context, "Slack invocation context must not be null");
-        Assert.notNull(timeout, "Slack invocation budget must not be null");
+        Assert.notNull(timeout, "Slack invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("Slack capability is not declared"));
         }
@@ -549,13 +550,13 @@ public final class SlackSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated browser correlation material
      * @param context    immutable invocation context retained by the uniform signature
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return prepared authorization redirect
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "Slack authorization context must not be null");
         if (timeout.expired() || initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(failed(ErrorCode._500, "Slack browser material violates the frozen manifest"));
@@ -566,10 +567,11 @@ public final class SlackSourceAdapter implements VendorAdapter {
                     Optional.empty(), Optional.empty(), emptyObject());
             return standardAdapter.invoke(OAuth2ClientScheme.AUTHORIZATION, request, context, timeout)
                     .thenApply(outcome -> switch (outcome) {
-                        case Outcome.Succeeded<UnoUrl> success -> Outcome.succeeded(
+                        case Outcome.Succeeded<Url> success -> Outcome.succeeded(
                                 new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                        case Outcome.Rejected<UnoUrl> rejected -> Outcome.rejected(rejected.failure());
-                        case Outcome.Failed<UnoUrl> failed -> Outcome.failed(failed.failure());
+                        case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                        case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (RuntimeException cause) {
             return completed(rejected("Slack authorization request is invalid"));
@@ -582,13 +584,13 @@ public final class SlackSourceAdapter implements VendorAdapter {
      * @param request standard authorization request
      * @return asynchronous exact Slack authorization URL outcome
      */
-    private CompletionStage<Outcome<UnoUrl>> authorization(final AuthorizationRequest request) {
+    private CompletionStage<Outcome<Url>> authorization(final AuthorizationRequest request) {
         if (!valid(request)) {
             return completed(rejected("Slack authorization request differs from the registered Source"));
         }
         try {
             final var endpoint = variant.targets().resolve(options).authorization().getOrNull();
-            final UnoUrl location = endpoint.url().newBuilder().query(OAuth2.Parameters.CLIENT_ID, request.clientId())
+            final Url location = endpoint.url().newBuilder().query(OAuth2.Parameters.CLIENT_ID, request.clientId())
                     .query(OAuth2.Parameters.STATE, request.state().getOrNull())
                     .query(OAuth2.Parameters.REDIRECT_URI, request.redirectUri().getOrNull())
                     .query(OAuth2.Parameters.SCOPE, String.join(Symbol.COMMA, effectiveScopes())).build();
@@ -625,6 +627,7 @@ public final class SlackSourceAdapter implements VendorAdapter {
                     .orElseThrow(() -> new ValidateException("Slack authorization success requires state"));
             case AuthorizationResponseDecoder.Error error -> error.response().state()
                     .orElseThrow(() -> new ValidateException("Slack authorization error requires state"));
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -633,13 +636,13 @@ public final class SlackSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed browser correlation
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified Slack identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final AuthorizationResponseDecoder.Decoded decoded;
         try {
             decoded = decode(completion.callback());
@@ -664,6 +667,7 @@ public final class SlackSourceAdapter implements VendorAdapter {
                     case Outcome.Rejected<TokenEndpointResponse> rejected -> completed(
                             Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<TokenEndpointResponse> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -672,19 +676,22 @@ public final class SlackSourceAdapter implements VendorAdapter {
      *
      * @param request standard token request
      * @param context immutable invocation context used for secret resolution
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return standard token response or safely classified failure
      */
     private CompletionStage<Outcome<TokenResponse>> token(
             final TokenRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!valid(request)) {
             return completed(rejected("Slack token request differs from the registered grant contract"));
         }
         try {
             final CompletionStage<Outcome<SecretLease>> stage = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
             if (stage == null) {
                 return completed(failed(ErrorCode._502, "Slack secret loader returned no stage"));
@@ -704,6 +711,7 @@ public final class SlackSourceAdapter implements VendorAdapter {
                         }, services.executor());
                         case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                         case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "Slack secret resolution failed"));
@@ -731,25 +739,25 @@ public final class SlackSourceAdapter implements VendorAdapter {
      *
      * @param request validated standard token request
      * @param secret  open client-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return standard token response with Slack extensions
      */
     private Outcome<TokenResponse> sendToken(
             final TokenRequest request,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "Slack token request has no remaining time budget");
+            return failed(ErrorCode._408, "Slack token request has no remaining timeout");
         }
         try {
             final AuthorizationCodeGrant grant = (AuthorizationCodeGrant) request.grant();
             final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                    .query(OAuth2.Parameters.CODE, grant.code()).query(OAuth2.Parameters.CLIENT_ID, options.clientId())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
+                    .method(Http.Method.GET).query(OAuth2.Parameters.CODE, grant.code())
+                    .query(OAuth2.Parameters.CLIENT_ID, options.clientId())
                     .query(OAuth2.Parameters.CLIENT_SECRET, secret(secret))
                     .query(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull())
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute()) {
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                 return token(response);
             }
         } catch (RuntimeException cause) {
@@ -763,7 +771,7 @@ public final class SlackSourceAdapter implements VendorAdapter {
      * @param response owned token endpoint response
      * @return standard token response or safely classified Slack failure
      */
-    private Outcome<TokenResponse> token(final HttpResponse response) {
+    private Outcome<TokenResponse> token(final Response response) {
         try {
             final JsonValue.ObjectValue object = object(response);
             if (!members(WireKind.TOKEN, object)) {
@@ -796,12 +804,10 @@ public final class SlackSourceAdapter implements VendorAdapter {
      * Retrieves the Slack user selected by the token envelope.
      *
      * @param token   standard token response carrying Slack extensions
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified Slack identity stage
      */
-    private CompletionStage<Outcome<ExternalIdentity>> profile(
-            final TokenResponse token,
-            final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<ExternalIdentity>> profile(final TokenResponse token, final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             if (!TokenType.BEARER.equals(token.tokenType())) {
                 return SlackSourceAdapter
@@ -816,16 +822,14 @@ public final class SlackSourceAdapter implements VendorAdapter {
             }
             if (timeout.expired()) {
                 return SlackSourceAdapter
-                        .<ExternalIdentity>failed(ErrorCode._408, "Slack profile request has no remaining time budget");
+                        .<ExternalIdentity>failed(ErrorCode._408, "Slack profile request has no remaining timeout");
             }
             try {
                 final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                        .query("user", userId)
+                try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
+                        .method(Http.Method.GET).query("user", userId)
                         .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + token.accessToken())
-                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
-                        .execute()) {
+                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                     return profile(response, userId, timeout);
                 }
             } catch (RuntimeException cause) {
@@ -843,9 +847,9 @@ public final class SlackSourceAdapter implements VendorAdapter {
      * @return verified external identity
      */
     private Outcome<ExternalIdentity> profile(
-            final HttpResponse response,
+            final Response response,
             final String expectedUserId,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         try {
             final JsonValue.ObjectValue root = object(response);
             if (!members(WireKind.USER_RESPONSE, root)) {
@@ -890,22 +894,21 @@ public final class SlackSourceAdapter implements VendorAdapter {
      * Executes Slack's Bearer GET revocation adaptation for one standard request.
      *
      * @param request standard RFC 7009 revocation request
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return empty standard revocation success or safely classified failure
      */
-    private CompletionStage<Outcome<Void>> revoke(final RevocationRequest request, final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<Void>> revoke(final RevocationRequest request, final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             if (timeout.expired()) {
                 return SlackSourceAdapter
-                        .<Void>failed(ErrorCode._408, "Slack revocation request has no remaining time budget");
+                        .<Void>failed(ErrorCode._408, "Slack revocation request has no remaining timeout");
             }
             try {
                 final String endpoint = variant.targets().resolve(options).revocation().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
+                try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
+                        .method(Http.Method.GET)
                         .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + request.token())
-                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
-                        .execute()) {
+                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                     return revoke(response);
                 }
             } catch (RuntimeException cause) {
@@ -920,7 +923,7 @@ public final class SlackSourceAdapter implements VendorAdapter {
      * @param response owned auth.revoke response
      * @return successful void outcome or safely classified failure
      */
-    private Outcome<Void> revoke(final HttpResponse response) {
+    private Outcome<Void> revoke(final Response response) {
         try {
             final JsonValue.ObjectValue object = object(response);
             if (!members(WireKind.REVOCATION, object)) {
@@ -963,7 +966,7 @@ public final class SlackSourceAdapter implements VendorAdapter {
      * @param response response whose body remains owned by the caller
      * @return immutable provider-neutral JSON object
      */
-    private JsonValue.ObjectValue object(final HttpResponse response) {
+    private JsonValue.ObjectValue object(final Response response) {
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("Slack response must use application/json");
         }

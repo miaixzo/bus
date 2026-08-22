@@ -25,6 +25,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Set;
 
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.guard.SecretGuard;
 import org.miaixz.bus.auth.guard.TimeGuard;
@@ -43,7 +44,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Verifies an RFC 9449 compact proof against its embedded public JWK and the exact receiving HTTP request.
@@ -55,7 +55,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class DpopVerifier {
+public class DpopVerifier {
 
     /**
      * Provider-neutral JSON codec used only after signature validation for the Claims Set.
@@ -84,7 +84,7 @@ public final class DpopVerifier {
      * @param jsonProvider     provider-neutral JSON codec
      * @param jwsService       profile-scoped JWS service
      * @param publicKeyFactory typed public JWK converter
-     * @param timeGuard        shared issued-at and operation-budget guard
+     * @param timeGuard        shared issued-at and operation-timeout guard
      * @param secretGuard      shared constant-time comparison primitive
      */
     public DpopVerifier(final JsonProvider jsonProvider, final JwsService jwsService,
@@ -154,16 +154,16 @@ public final class DpopVerifier {
      *
      * @param compact received three-segment DPoP proof
      * @param request exact receiving request and validation policy
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return cryptographically and semantically verified proof
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if parsing, key conversion, signature, request binding, or temporal validation
      *                                  fails
      */
-    public DpopProof verify(final String compact, final Request request, final Timeout.Budget timeout) {
+    public DpopProof verify(final String compact, final Request request, final Timeout timeout) {
         Assert.notBlank(compact, "DPoP compact proof must not be blank");
         Assert.notNull(request, "DPoP verification request must not be null");
-        Assert.notNull(timeout, "DPoP verification budget must not be null");
+        Assert.notNull(timeout, "DPoP verification timeout must not be null");
         final JwsService.Jws parsed = jwsService.parseCompact(compact, request.critical());
         final JwsService.Signature signature = parsed.signatures().get(0);
         validateProtectedHeader(signature.header());
@@ -185,14 +185,14 @@ public final class DpopVerifier {
      *
      * @param proof   signature-verified proof
      * @param request exact receiving request
-     * @param timeout shared operation budget and clock
+     * @param timeout shared operation timeout and clock
      */
-    private void validateRequestBinding(final DpopProof proof, final Request request, final Timeout.Budget timeout) {
+    private void validateRequestBinding(final DpopProof proof, final Request request, final Timeout timeout) {
         if (!request.method().value().equals(proof.httpMethod())) {
             throw new ValidateException("DPoP htm does not match the receiving HTTP method");
         }
         final String expectedUri = DpopProof.normalize(request.uri());
-        final String presentedUri = DpopProof.normalize(UnoUrl.parse(proof.httpUri()));
+        final String presentedUri = DpopProof.normalize(Url.parse(proof.httpUri()));
         if (!expectedUri.equals(presentedUri)) {
             throw new ValidateException("DPoP htu does not match the receiving HTTP target URI");
         }
@@ -275,7 +275,7 @@ public final class DpopVerifier {
      * @param critical    exact JOSE critical extensions processed by the caller
      * @author Kimi Liu
      */
-    public record Request(Http.Method method, UnoUrl uri, Optional<String> accessToken, Optional<String> nonce,
+    public record Request(Http.Method method, Url uri, Optional<String> accessToken, Optional<String> nonce,
             Duration maximumAge, Set<String> critical) {
 
         /**

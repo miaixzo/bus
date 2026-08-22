@@ -25,6 +25,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.auth.FabricX.Body;
+import org.miaixz.bus.auth.FabricX.Headers;
+import org.miaixz.bus.auth.FabricX.HeadersBuilder;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.protocol.scim.*;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
@@ -33,11 +38,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * Encodes RFC 7643 SCIM discovery resources and discovery ListResponse messages for a Service Provider.
@@ -48,7 +48,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  *
  * @author Kimi Liu
  */
-public final class ScimDiscoveryCodec {
+public class ScimDiscoveryCodec {
 
     /**
      * Runtime-selected provider-neutral JSON implementation.
@@ -285,7 +285,7 @@ public final class ScimDiscoveryCodec {
      * @param resource standard ServiceProviderConfig resource
      * @return complete non-cacheable application/scim+json response
      */
-    public HttpResponse encode(final HttpRequest request, final ServiceProviderConfig resource) {
+    public Response encode(final Request request, final ServiceProviderConfig resource) {
         final ServiceProviderConfig value = Assert.notNull(resource, "SCIM ServiceProviderConfig must not be null");
         final Map<String, JsonValue> members = base(value.schemas(), value.meta());
         put(members, Scim.Attributes.DOCUMENTATION_URI, value.documentationUri());
@@ -316,7 +316,7 @@ public final class ScimDiscoveryCodec {
      * @param resource standard ResourceType resource
      * @return complete non-cacheable application/scim+json response
      */
-    public HttpResponse encode(final HttpRequest request, final ResourceType resource) {
+    public Response encode(final Request request, final ResourceType resource) {
         final ResourceType value = Assert.notNull(resource, "SCIM ResourceType must not be null");
         final Map<String, JsonValue> members = base(value.schemas(), value.meta());
         put(members, Scim.Attributes.ID, value.id());
@@ -346,7 +346,7 @@ public final class ScimDiscoveryCodec {
      * @param resource standard Schema resource
      * @return complete non-cacheable application/scim+json response
      */
-    public HttpResponse encode(final HttpRequest request, final Schema resource) {
+    public Response encode(final Request request, final Schema resource) {
         final Schema value = Assert.notNull(resource, "SCIM Schema must not be null");
         final Map<String, JsonValue> members = base(value.schemas(), value.meta());
         members.put(Scim.Attributes.ID, string(value.id()));
@@ -368,7 +368,7 @@ public final class ScimDiscoveryCodec {
      * @return complete non-cacheable application/scim+json response
      * @throws ValidateException if resources are heterogeneous or not discovery resources
      */
-    public HttpResponse encode(final HttpRequest request, final ListResponse response) {
+    public Response encode(final Request request, final ListResponse response) {
         final ListResponse value = Assert.notNull(response, "SCIM discovery ListResponse must not be null");
         Class<?> resourceClass = null;
         final List<JsonValue> resources = new ArrayList<>(value.resources().size());
@@ -401,13 +401,13 @@ public final class ScimDiscoveryCodec {
      * @param meta    optional metadata used for Location and ETag headers
      * @return complete HTTP response
      */
-    private HttpResponse response(
-            final HttpRequest request,
+    private Response response(
+            final Request request,
             final JsonValue.ObjectValue object,
             final Optional<Resource.Meta> meta) {
-        final HttpRequest origin = Assert.notNull(request, "SCIM discovery origin request must not be null");
+        final Request origin = Assert.notNull(request, "SCIM discovery origin request must not be null");
         final byte[] body = ScimResourceCodec.bytes(object, jsonProvider, maximumBytes, maximumDepth);
-        final Headers.Builder headers = Headers.builder().add(Http.Header.CACHE_CONTROL, Http.Cache.NO_STORE)
+        final HeadersBuilder headers = Headers.builder().add(Http.Header.CACHE_CONTROL, Http.Cache.NO_STORE)
                 .add(Http.Header.PRAGMA, Http.Cache.NO_CACHE);
         final Resource.Meta metadata = meta.getOrNull();
         if (metadata != null && !metadata.location().isEmpty()) {
@@ -416,8 +416,8 @@ public final class ScimDiscoveryCodec {
         if (metadata != null && !metadata.version().isEmpty()) {
             headers.add(Http.Header.ETAG, metadata.version().getOrThrow());
         }
-        return HttpResponse.builder().request(origin).code(Http.Status.OK).headers(headers.build())
-                .body(PayloadBody.of(Payload.of(body), MediaType.APPLICATION_SCIM_JSON_TYPE)).build();
+        return Response.builder().request(origin).code(Http.Status.OK).headers(headers.build())
+                .body(Body.of(body, MediaType.APPLICATION_SCIM_JSON_TYPE)).build();
     }
 
 }

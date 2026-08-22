@@ -22,14 +22,14 @@ package org.miaixz.bus.auth.guard;
 import java.time.Duration;
 import java.time.Instant;
 
+import org.miaixz.bus.auth.FabricX.Clock;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Clock;
 
 /**
- * Applies one shared clock and maximum clock-skew policy to authentication timestamps and operation budgets.
+ * Applies one shared clock and maximum clock-skew policy to authentication timestamps and operation timeouts.
  * <p>
  * Protocol implementations remain responsible for deciding which standard timestamp fields are required. This guard
  * provides reusable checks for issued-at, not-before, expiration, and complete validity windows without reading system
@@ -38,7 +38,7 @@ import org.miaixz.bus.fabric.Clock;
  *
  * @author Kimi Liu
  */
-public final class TimeGuard {
+public class TimeGuard {
 
     /**
      * Shared Fabric time source supplied by runtime assembly.
@@ -69,14 +69,14 @@ public final class TimeGuard {
     /**
      * Rejects work after the shared end-to-end deadline has been reached.
      *
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @throws IllegalArgumentException if {@code timeout} is {@code null}
-     * @throws ValidateException        if the budget is exhausted
+     * @throws ValidateException        if the timeout is exhausted
      */
-    public void validateBudget(final Timeout.Budget timeout) {
-        Assert.notNull(timeout, "Authentication time budget must not be null");
+    public void validateTimeout(final Timeout timeout) {
+        Assert.notNull(timeout, "Authentication timeout must not be null");
         if (timeout.expired()) {
-            throw new ValidateException("Authentication time budget has expired");
+            throw new ValidateException("Authentication timeout has expired");
         }
     }
 
@@ -84,12 +84,12 @@ public final class TimeGuard {
      * Validates that an issued-at timestamp is not unacceptably far in the future.
      *
      * @param issuedAt issued-at timestamp from the protocol object
-     * @param timeout  shared operation budget
+     * @param timeout  shared operation timeout
      * @throws IllegalArgumentException if an argument is {@code null}
-     * @throws ValidateException        if the budget is exhausted or the timestamp exceeds the skew allowance
+     * @throws ValidateException        if the timeout is exhausted or the timestamp exceeds the skew allowance
      */
-    public void validateIssuedAt(final Instant issuedAt, final Timeout.Budget timeout) {
-        validateBudget(timeout);
+    public void validateIssuedAt(final Instant issuedAt, final Timeout timeout) {
+        validateTimeout(timeout);
         Assert.notNull(issuedAt, "Issued-at timestamp must not be null");
         if (issuedAt.isAfter(clock.now().plus(maximumSkew))) {
             throw new ValidateException("Issued-at timestamp is later than the permitted clock skew");
@@ -100,12 +100,12 @@ public final class TimeGuard {
      * Validates that a not-before timestamp has become active within the skew allowance.
      *
      * @param notBefore not-before timestamp from the protocol object
-     * @param timeout   shared operation budget
+     * @param timeout   shared operation timeout
      * @throws IllegalArgumentException if an argument is {@code null}
-     * @throws ValidateException        if the budget is exhausted or the timestamp is still in the future
+     * @throws ValidateException        if the timeout is exhausted or the timestamp is still in the future
      */
-    public void validateNotBefore(final Instant notBefore, final Timeout.Budget timeout) {
-        validateBudget(timeout);
+    public void validateNotBefore(final Instant notBefore, final Timeout timeout) {
+        validateTimeout(timeout);
         Assert.notNull(notBefore, "Not-before timestamp must not be null");
         if (notBefore.isAfter(clock.now().plus(maximumSkew))) {
             throw new ValidateException("Not-before timestamp has not become active within the permitted clock skew");
@@ -116,12 +116,12 @@ public final class TimeGuard {
      * Validates that an expiration timestamp remains valid within the skew allowance.
      *
      * @param expiresAt expiration timestamp from the protocol object
-     * @param timeout   shared operation budget
+     * @param timeout   shared operation timeout
      * @throws IllegalArgumentException if an argument is {@code null}
-     * @throws ValidateException        if the budget is exhausted or the timestamp has expired
+     * @throws ValidateException        if the timeout is exhausted or the timestamp has expired
      */
-    public void validateExpiration(final Instant expiresAt, final Timeout.Budget timeout) {
-        validateBudget(timeout);
+    public void validateExpiration(final Instant expiresAt, final Timeout timeout) {
+        validateTimeout(timeout);
         Assert.notNull(expiresAt, "Expiration timestamp must not be null");
         if (!expiresAt.isAfter(clock.now().minus(maximumSkew))) {
             throw new ValidateException("Expiration timestamp is outside the permitted clock skew");
@@ -134,7 +134,7 @@ public final class TimeGuard {
      * @param issuedAt  issued-at timestamp
      * @param notBefore optional not-before timestamp
      * @param expiresAt expiration timestamp
-     * @param timeout   shared operation budget
+     * @param timeout   shared operation timeout
      * @throws IllegalArgumentException if an argument or optional container is {@code null}
      * @throws ValidateException        if a temporal check fails or the declared window has no valid ordering
      */
@@ -142,7 +142,7 @@ public final class TimeGuard {
             final Instant issuedAt,
             final Optional<Instant> notBefore,
             final Instant expiresAt,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(notBefore, "Not-before timestamp container must not be null");
         validateIssuedAt(issuedAt, timeout);
         final Instant lowerBound = notBefore.getOrNull();

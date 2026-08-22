@@ -21,11 +21,13 @@ package org.miaixz.bus.auth.source;
 
 import java.util.concurrent.Executor;
 
-import org.miaixz.bus.auth.Registration;
+import org.miaixz.bus.auth.Blueprint;
+import org.miaixz.bus.auth.FabricX;
 import org.miaixz.bus.auth.cache.AccessTokenCache;
 import org.miaixz.bus.auth.cache.AuthorizationCache;
 import org.miaixz.bus.auth.cache.AuthorizationCodeCache;
 import org.miaixz.bus.auth.cache.DeviceCodeCache;
+import org.miaixz.bus.auth.cache.IdTokenCache;
 import org.miaixz.bus.auth.cache.NonceCache;
 import org.miaixz.bus.auth.cache.RefreshTokenCache;
 import org.miaixz.bus.auth.cache.ReplayCache;
@@ -34,22 +36,24 @@ import org.miaixz.bus.auth.cache.StateCache;
 import org.miaixz.bus.auth.resolver.AttributeParser;
 import org.miaixz.bus.auth.resolver.CertificateParser;
 import org.miaixz.bus.auth.resolver.ConsumerParser;
+import org.miaixz.bus.auth.resolver.FederationParser;
 import org.miaixz.bus.auth.resolver.KeyParser;
 import org.miaixz.bus.auth.resolver.ResourceParser;
 import org.miaixz.bus.auth.resolver.SecretParser;
 import org.miaixz.bus.auth.shared.SecurityBaseline;
-import org.miaixz.bus.auth.worker.AttributeLoader;
-import org.miaixz.bus.auth.worker.BindingLoader;
-import org.miaixz.bus.auth.worker.CertificateLoader;
+import org.miaixz.bus.auth.worker.BindingResolver;
 import org.miaixz.bus.auth.worker.ConsentService;
-import org.miaixz.bus.auth.worker.ConsumerLoader;
+import org.miaixz.bus.auth.worker.ConsumerVerifier;
 import org.miaixz.bus.auth.worker.CredentialStore;
-import org.miaixz.bus.auth.worker.KeyLoader;
-import org.miaixz.bus.auth.worker.ResourceLoader;
-import org.miaixz.bus.auth.worker.SecretLoader;
 import org.miaixz.bus.auth.worker.SessionWorker;
+import org.miaixz.bus.auth.worker.loader.AttributeLoader;
+import org.miaixz.bus.auth.worker.loader.CertificateLoader;
+import org.miaixz.bus.auth.worker.loader.ConsumerLoader;
+import org.miaixz.bus.auth.worker.loader.FederationLoader;
+import org.miaixz.bus.auth.worker.loader.KeyLoader;
+import org.miaixz.bus.auth.worker.loader.ResourceLoader;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.extra.json.JsonProvider;
-import org.miaixz.bus.fabric.Context;
 
 /**
  * Defines the protocol execution services visible to a compiled Source driver.
@@ -67,14 +71,14 @@ public interface DriverServices {
      *
      * @return current Source registration
      */
-    Registration.SourceEntry registration();
+    Blueprint.SourceEntry registration();
 
     /**
-     * Returns the shared fabric execution context.
+     * Returns the Runtime-scoped facade for every Fabric protocol used by bus-auth.
      *
-     * @return shared fabric execution context
+     * @return guarded Fabric protocol facade
      */
-    Context fabricContext();
+    FabricX fabric();
 
     /**
      * Returns the selected provider-neutral JSON implementation.
@@ -93,9 +97,9 @@ public interface DriverServices {
     /**
      * Returns the project binding loading port.
      *
-     * @return binding loader
+     * @return binding resolver
      */
-    BindingLoader bindingLoader();
+    BindingResolver bindingResolver();
 
     /**
      * Returns the project consumer metadata loading port.
@@ -110,6 +114,21 @@ public interface DriverServices {
      * @return consumer parser
      */
     ConsumerParser consumerParser();
+
+    /**
+     * Returns the project server-side consumer evidence verifier.
+     */
+    ConsumerVerifier consumerVerifier();
+
+    /**
+     * Returns the project federation relation loader.
+     */
+    FederationLoader federationLoader();
+
+    /**
+     * Returns the framework federation relation parser.
+     */
+    FederationParser federationParser();
 
     /**
      * Returns the project secret loading port.
@@ -243,6 +262,11 @@ public interface DriverServices {
      * @return Session cache
      */
     SessionCache sessionCache();
+
+    /**
+     * Returns the issued ID Token logout-binding cache.
+     */
+    IdTokenCache idTokenCache();
 
     /**
      * Returns the protocol replay-prevention cache view.

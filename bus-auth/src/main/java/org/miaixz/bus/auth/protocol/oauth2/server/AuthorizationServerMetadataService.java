@@ -47,7 +47,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class AuthorizationServerMetadataService {
+public class AuthorizationServerMetadataService {
 
     /**
      * Immutable Provider options used as the single metadata source of truth.
@@ -115,18 +115,17 @@ public final class AuthorizationServerMetadataService {
      * Returns the exact standard metadata currently implemented by this Provider.
      *
      * @param context invocation context retained for the uniform service contract
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return completed asynchronous metadata outcome
      */
     public CompletionStage<Outcome<AuthorizationServerMetadata>> metadata(
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "OAuth 2.x metadata context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x metadata time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x metadata timeout must not be null");
         if (timeout.expired()) {
             return completed(
-                    Outcome.failed(
-                            failure(ErrorCode._408, "OAuth 2.x metadata operation has no remaining time budget")));
+                    Outcome.failed(failure(ErrorCode._408, "OAuth 2.x metadata operation has no remaining timeout")));
         }
         try {
             return completed(Outcome.succeeded(build()));

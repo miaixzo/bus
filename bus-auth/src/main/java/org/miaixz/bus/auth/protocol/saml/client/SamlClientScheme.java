@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.Conformance;
 import org.miaixz.bus.auth.protocol.saml.AuthnRequest;
@@ -32,7 +33,6 @@ import org.miaixz.bus.auth.protocol.saml.Saml;
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Declares the generic SAML 2.0 service-provider client scheme.
@@ -44,7 +44,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class SamlClientScheme implements Scheme<SamlClientOptions> {
+public class SamlClientScheme implements Scheme<SamlClientOptions> {
 
     /**
      * Stable registration type identifier for generic SAML Sources.
@@ -53,18 +53,18 @@ public final class SamlClientScheme implements Scheme<SamlClientOptions> {
     /**
      * Builds an HTTP-Redirect URL carrying a standard SAML Authentication Request.
      */
-    public static final Capability<AuthnRequest, UnoUrl> SINGLE_SIGN_ON = capability(
+    public static final Capability<AuthnRequest, Url> SINGLE_SIGN_ON = capability(
             Saml.SINGLE_SIGN_ON,
             AuthnRequest.class,
-            UnoUrl.class,
+            Url.class,
             Capability.Interaction.REDIRECT);
     /**
      * Builds an HTTP-Redirect URL carrying a standard SAML Logout Request.
      */
-    public static final Capability<LogoutRequest, UnoUrl> SINGLE_LOGOUT = capability(
+    public static final Capability<LogoutRequest, Url> SINGLE_LOGOUT = capability(
             Saml.SINGLE_LOGOUT,
             LogoutRequest.class,
-            UnoUrl.class,
+            Url.class,
             Capability.Interaction.REDIRECT);
     /**
      * Retrieves the trusted identity-provider SAML Metadata document.

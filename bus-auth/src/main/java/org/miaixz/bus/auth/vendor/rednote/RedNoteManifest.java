@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.Vendor;
@@ -38,7 +40,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Declares the Xiaohongshu marketing authorization-only Vendor API.
@@ -50,7 +51,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class RedNoteManifest implements VariantManifest<RedNoteOptions> {
+public class RedNoteManifest implements VariantManifest<RedNoteOptions> {
 
     /**
      * Stable RedNote platform routing identifier.
@@ -59,9 +60,9 @@ public final class RedNoteManifest implements VariantManifest<RedNoteOptions> {
     /**
      * Starts an exact RedNote marketing authorization interaction.
      */
-    public static final Capability<MarketingAuthorizationRequest, UnoUrl> REDNOTE_MARKETING_AUTHORIZE = new Capability<>(
+    public static final Capability<MarketingAuthorizationRequest, Url> REDNOTE_MARKETING_AUTHORIZE = new Capability<>(
             Capability.Key.application("vendor.rednote.marketing_authorize"), MarketingAuthorizationRequest.class,
-            UnoUrl.class, Capability.Direction.SOURCE, Set.of(Capability.Interaction.REDIRECT),
+            Url.class, Capability.Direction.SOURCE, Set.of(Capability.Interaction.REDIRECT),
             Capability.Security.PUBLIC);
     /**
      * Exchanges or refreshes an exact RedNote marketing platform token.
@@ -88,7 +89,8 @@ public final class RedNoteManifest implements VariantManifest<RedNoteOptions> {
      * Complete immutable RedNote marketing manifest.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, MARKETING,
-            Protocol.VENDOR_AUTH, List.of("report_service"),
+            Protocol.VENDOR_AUTH, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET,
+            List.of("report_service"),
             new VendorTargets(Optional
                     .of(fixed("https://ad-market.xiaohongshu.com/auth", Http.Method.GET, Endpoint.Authentication.NONE)),
                     Optional.of(
@@ -191,7 +193,7 @@ public final class RedNoteManifest implements VariantManifest<RedNoteOptions> {
             final String value,
             final Http.Method method,
             final Endpoint.Authentication authentication) {
-        return new VendorTargets.Fixed(new Endpoint(UnoUrl.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
+        return new VendorTargets.Fixed(new Endpoint(Url.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
                 Set.of(authentication), Optional.empty(), TlsClientAuth.NONE));
     }
 

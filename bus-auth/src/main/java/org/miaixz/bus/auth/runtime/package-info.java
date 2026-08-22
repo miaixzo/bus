@@ -41,7 +41,7 @@
  * <p>
  * Runtime closing stops new authentication and reload work while the Registry retains the last immutable snapshot for
  * read-only inspection. Closing does not close caller-owned Fabric, executor, JSON provider, stores, loaders, keys, or
- * network resources. Reload is all-or-nothing, observes one Budget, and must not expose candidate options, compiled
+ * network resources. Reload is all-or-nothing, observes one Timeout, and must not expose candidate options, compiled
  * workers, credentials, protocol messages, exceptions, or stack traces when it fails.
  * </p>
  *

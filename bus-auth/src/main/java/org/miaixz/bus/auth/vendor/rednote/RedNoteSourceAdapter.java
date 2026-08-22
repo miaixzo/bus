@@ -28,6 +28,9 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.codec.FormCodec;
@@ -40,6 +43,7 @@ import org.miaixz.bus.auth.vendor.VendorAdapter;
 import org.miaixz.bus.auth.vendor.rednote.RedNoteManifest.MarketingAuthorizationRequest;
 import org.miaixz.bus.auth.vendor.rednote.RedNoteManifest.MarketingTokenRequest;
 import org.miaixz.bus.auth.vendor.rednote.RedNoteManifest.MarketingTokenResponse;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -51,9 +55,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements the Vendor-defined Xiaohongshu marketing authorization-only API.
@@ -64,7 +65,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class RedNoteSourceAdapter implements VendorAdapter {
+public class RedNoteSourceAdapter implements VendorAdapter {
 
     /**
      * Maximum bounded JSON response size accepted from the marketing API.
@@ -244,6 +245,7 @@ public final class RedNoteSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -306,7 +308,7 @@ public final class RedNoteSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    exact nested marketing request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed Vendor outcome without standard OAuth or identity models
@@ -316,10 +318,10 @@ public final class RedNoteSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "RedNote capability must not be null");
         Assert.notNull(context, "RedNote invocation context must not be null");
-        Assert.notNull(timeout, "RedNote invocation budget must not be null");
+        Assert.notNull(timeout, "RedNote invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("RedNote capability is not declared"));
         }
@@ -352,7 +354,7 @@ public final class RedNoteSourceAdapter implements VendorAdapter {
         }
         try {
             final var endpoint = variant.targets().resolve(options).authorization().getOrNull();
-            final UnoUrl location = endpoint.url().newBuilder().query("appId", options.clientId())
+            final Url location = endpoint.url().newBuilder().query("appId", options.clientId())
                     .query(OAuth2.Parameters.SCOPE, String.join(Symbol.SPACE, scopes))
                     .query("redirectUri", request.redirectUri()).query(OAuth2.Parameters.STATE, request.state())
                     .build();
@@ -367,16 +369,19 @@ public final class RedNoteSourceAdapter implements VendorAdapter {
      *
      * @param request exact initial or refresh token request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return marketing token outcome stage
      */
     private CompletionStage<Outcome<MarketingTokenResponse>> token(
             final MarketingTokenRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         try {
             final CompletionStage<Outcome<SecretLease>> stage = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
             if (stage == null) {
                 return completed(failed(ErrorCode._502, "RedNote secret loader returned no stage"));
@@ -396,6 +401,7 @@ public final class RedNoteSourceAdapter implements VendorAdapter {
                         }, services.executor());
                         case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                         case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "RedNote secret resolution failed"));
@@ -407,15 +413,15 @@ public final class RedNoteSourceAdapter implements VendorAdapter {
      *
      * @param request validated profile-scoped request
      * @param secret  open application-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return decoded platform token response
      */
     private Outcome<MarketingTokenResponse> send(
             final MarketingTokenRequest request,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "RedNote token request has no remaining time budget");
+            return failed(ErrorCode._408, "RedNote token request has no remaining timeout");
         }
         byte[] body = null;
         try {
@@ -429,9 +435,8 @@ public final class RedNoteSourceAdapter implements VendorAdapter {
             final var resolvedTargets = variant.targets().resolve(options);
             final String endpoint = (initial ? resolvedTargets.token() : resolvedTargets.refresh()).getOrNull().url()
                     .toString();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.VENDOR_AUTH).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
+                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 return decode(response, initial);
             }
@@ -451,7 +456,7 @@ public final class RedNoteSourceAdapter implements VendorAdapter {
      * @param initial  whether the active branch exchanges an authorization code
      * @return exact profile-scoped token response or safely classified failure
      */
-    private Outcome<MarketingTokenResponse> decode(final HttpResponse response, final boolean initial) {
+    private Outcome<MarketingTokenResponse> decode(final Response response, final boolean initial) {
         try {
             final JsonValue.ObjectValue object = object(response);
             if (!responseMembers(object)) {
@@ -487,7 +492,7 @@ public final class RedNoteSourceAdapter implements VendorAdapter {
      * @param response response whose body remains owned by the caller
      * @return immutable provider-neutral JSON object
      */
-    private JsonValue.ObjectValue object(final HttpResponse response) {
+    private JsonValue.ObjectValue object(final Response response) {
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("RedNote response must use application/json");
         }

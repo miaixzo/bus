@@ -24,7 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
@@ -39,6 +39,7 @@ import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -48,8 +49,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements CODING team browser authentication using its registered OAuth 2.0 wire contract.
@@ -61,7 +60,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class CodingSourceAdapter implements VendorAdapter {
+public class CodingSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted CODING authority recorded in federated identity evidence.
@@ -291,6 +290,7 @@ public final class CodingSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -381,7 +381,7 @@ public final class CodingSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed Source authentication outcome
@@ -391,10 +391,10 @@ public final class CodingSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "CODING capability must not be null");
         Assert.notNull(context, "CODING invocation context must not be null");
-        Assert.notNull(timeout, "CODING invocation budget must not be null");
+        Assert.notNull(timeout, "CODING invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("CODING capability is not declared"));
         }
@@ -416,13 +416,13 @@ public final class CodingSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated browser correlation
      * @param context    immutable invocation context retained by the uniform operation signature
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return prepared CODING authorization redirect
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "CODING authorization context must not be null");
         if (timeout.expired() || initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(failed("CODING authorization security material violates the frozen manifest"));
@@ -453,13 +453,13 @@ public final class CodingSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed browser correlation
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified CODING external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CallbackWire values;
         try {
             values = callback(completion.callback());
@@ -472,7 +472,10 @@ public final class CodingSourceAdapter implements VendorAdapter {
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed("CODING client-secret resolution failed"));
@@ -488,6 +491,7 @@ public final class CodingSourceAdapter implements VendorAdapter {
                     case Outcome.Succeeded<SecretLease> success -> token(values.code(), success.value(), timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -496,18 +500,18 @@ public final class CodingSourceAdapter implements VendorAdapter {
      *
      * @param code    consumed authorization code
      * @param secret  owned client-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified identity after token and OpenAPI processing
      */
     private CompletionStage<Outcome<ExternalIdentity>> token(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             byte[] body = null;
             try (secret) {
                 if (timeout.expired()) {
-                    return CodingSourceAdapter.<Access>failed("CODING token request has no remaining time budget");
+                    return CodingSourceAdapter.<Access>failed("CODING token request has no remaining timeout");
                 }
                 body = formCodec.encode(
                         List.of(
@@ -516,10 +520,8 @@ public final class CodingSourceAdapter implements VendorAdapter {
                                 new NameValue(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()),
                                 new NameValue(OAuth2.Parameters.CODE, code)));
                 final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint)
+                try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
                         .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                        .timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
                         .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                     return decodeToken(response);
                 }
@@ -534,6 +536,7 @@ public final class CodingSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<Access> success -> profile(success.value(), timeout);
             case Outcome.Rejected<Access> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<Access> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -543,7 +546,7 @@ public final class CodingSourceAdapter implements VendorAdapter {
      * @param response owned CODING token HTTP response
      * @return private access value or safely classified failure
      */
-    private Outcome<Access> decodeToken(final HttpResponse response) {
+    private Outcome<Access> decodeToken(final Response response) {
         if (response.code() == Http.Status.TOO_MANY_REQUESTS || response.code() >= Http.Status.INTERNAL_SERVER_ERROR) {
             return failed("CODING token endpoint is unavailable");
         }
@@ -592,25 +595,24 @@ public final class CodingSourceAdapter implements VendorAdapter {
      * Calls CODING OpenAPI with the private bearer token and exact current-user action.
      *
      * @param access  private access-token result
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
-    private CompletionStage<Outcome<ExternalIdentity>> profile(final Access access, final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<ExternalIdentity>> profile(final Access access, final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             byte[] body = null;
             try {
                 if (timeout.expired()) {
                     return CodingSourceAdapter
-                            .<ExternalIdentity>failed("CODING profile request has no remaining time budget");
+                            .<ExternalIdentity>failed("CODING profile request has no remaining timeout");
                 }
                 body = services.jsonProvider().writeValue(
                         new JsonValue.ObjectValue(
                                 Map.of("Action", new JsonValue.StringValue("DescribeCodingCurrentUser"))));
                 final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint)
+                try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
                         .method(Http.Method.POST).header(Http.Header.AUTHORIZATION, "Bearer " + access.accessToken())
-                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                         .body(body, MediaType.APPLICATION_JSON_TYPE).execute()) {
                     return decodeProfile(response, timeout);
                 }
@@ -631,7 +633,7 @@ public final class CodingSourceAdapter implements VendorAdapter {
      * @param timeout  shared clock used for identity evidence
      * @return verified external identity or safely classified failure
      */
-    private Outcome<ExternalIdentity> decodeProfile(final HttpResponse response, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> decodeProfile(final Response response, final Timeout timeout) {
         if (response.code() == Http.Status.TOO_MANY_REQUESTS || response.code() >= Http.Status.INTERNAL_SERVER_ERROR) {
             return failed("CODING profile endpoint is unavailable");
         }
@@ -673,7 +675,7 @@ public final class CodingSourceAdapter implements VendorAdapter {
      * @param operation non-sensitive operation label used in validation messages
      * @return decoded object
      */
-    private JsonValue.ObjectValue object(final HttpResponse response, final String operation) {
+    private JsonValue.ObjectValue object(final Response response, final String operation) {
         if (response.code() != Http.Status.OK
                 || !MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("CODING " + operation + " response must use HTTP 200 application/json");

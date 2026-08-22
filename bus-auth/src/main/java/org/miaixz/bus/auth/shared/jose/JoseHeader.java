@@ -38,7 +38,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class JoseHeader {
+public class JoseHeader {
 
     /**
      * Registered JOSE algorithm member name.

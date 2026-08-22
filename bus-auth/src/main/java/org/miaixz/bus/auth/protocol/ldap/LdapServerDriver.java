@@ -27,7 +27,7 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.protocol.ldap.server.*;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.SourceDriver;
-import org.miaixz.bus.auth.worker.BindingLoader;
+import org.miaixz.bus.auth.worker.BindingResolver;
 import org.miaixz.bus.auth.worker.SourceWorker;
 import org.miaixz.bus.auth.worker.WorkerSlots;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
@@ -46,7 +46,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class LdapServerDriver implements SourceDriver<LdapServerOptions> {
+public class LdapServerDriver implements SourceDriver<LdapServerOptions> {
 
     /**
      * Creates the stateless LDAP Provider driver.
@@ -97,7 +97,7 @@ public final class LdapServerDriver implements SourceDriver<LdapServerOptions> {
     public SourceWorker compile(final Prepared<LdapServerOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "LDAP Provider preparation must not be null");
         Assert.notNull(services, "LDAP Provider execution services must not be null");
-        final Registration.SourceEntry record = prepared.registration();
+        final Blueprint.SourceEntry record = prepared.registration();
         final Provider provider = prepared.provider();
         final Library library = prepared.library();
         final Source source = record.resource();
@@ -110,10 +110,10 @@ public final class LdapServerDriver implements SourceDriver<LdapServerOptions> {
         if (options.maximumMessageBytes() > services.securityBaseline().require(Protocol.LDAP).maximumMessageBytes()) {
             throw new ValidateException("LDAP Provider message limit exceeds the shared security baseline");
         }
-        final BindingLoader.Key<DirectoryStore> binding = new BindingLoader.Key<>("ldap-directory",
+        final BindingResolver.Key<DirectoryStore> binding = new BindingResolver.Key<>("ldap-directory",
                 DirectoryStore.class);
         final DirectoryStore store = Assert.notNull(
-                binding.require(services.bindingLoader().load(record, binding)),
+                binding.require(services.bindingResolver().resolve(record, binding)),
                 "LDAP external DirectoryStore binding must not be null");
         return new CompiledServer(new LdapServerScheme().manifest(), new BindService(source.getId(), options, store),
                 new UnbindService(source.getId(), options, store), new SearchService(source.getId(), options, store),
@@ -233,6 +233,9 @@ public final class LdapServerDriver implements SourceDriver<LdapServerOptions> {
                         .succeeded(success.value() == null ? null : responseType.cast(success.value()));
                 case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
                 case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+                default -> Outcome.failed(
+                        new Outcome.Failure(ErrorCode._500, "LDAP Provider returned an unsupported outcome",
+                                new JsonValue.ObjectValue(Map.of())));
             });
         }
 
@@ -290,7 +293,7 @@ public final class LdapServerDriver implements SourceDriver<LdapServerOptions> {
          * @param capability exact declared capability
          * @param request    complete LDAP request message
          * @param context    immutable invocation context
-         * @param timeout    shared end-to-end budget
+         * @param timeout    shared end-to-end timeout
          * @param <Q>        declared request type
          * @param <S>        declared success type
          * @return delegated typed outcome or a closed 400/404 rejection
@@ -300,10 +303,10 @@ public final class LdapServerDriver implements SourceDriver<LdapServerOptions> {
                 final Capability<Q, S> capability,
                 final Q request,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             Assert.notNull(capability, "LDAP Provider capability must not be null");
             Assert.notNull(context, "LDAP Provider context must not be null");
-            Assert.notNull(timeout, "LDAP Provider time budget must not be null");
+            Assert.notNull(timeout, "LDAP Provider timeout must not be null");
             if (!manifest.capabilities().contains(capability)) {
                 return missing();
             }

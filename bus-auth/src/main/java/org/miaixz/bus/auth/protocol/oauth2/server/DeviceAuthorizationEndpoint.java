@@ -23,22 +23,23 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.guard.ClientAuthentication;
 import org.miaixz.bus.auth.guard.ClientAuthenticator;
 import org.miaixz.bus.auth.protocol.oauth2.DeviceAuthorizationRequest;
 import org.miaixz.bus.auth.protocol.oauth2.DeviceAuthorizationResponse;
 import org.miaixz.bus.auth.protocol.oauth2.codec.DeviceAuthorizationCodec;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Adapts RFC 8628 Fabric HTTP messages to typed device authorization processing.
  *
  * @author Kimi Liu
  */
-public final class DeviceAuthorizationEndpoint {
+public class DeviceAuthorizationEndpoint {
 
     /**
      * Bidirectional RFC 8628 transport codec.
@@ -48,7 +49,7 @@ public final class DeviceAuthorizationEndpoint {
     /**
      * Standard HTTP client authentication or public-client identification strategy.
      */
-    private final ClientAuthenticator<HttpRequest> authenticator;
+    private final ClientAuthenticator<Request> authenticator;
 
     /**
      * Typed device authorization service.
@@ -70,7 +71,7 @@ public final class DeviceAuthorizationEndpoint {
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
     public DeviceAuthorizationEndpoint(final DeviceAuthorizationCodec codec,
-            final ClientAuthenticator<HttpRequest> authenticator, final DeviceAuthorizationService service,
+            final ClientAuthenticator<Request> authenticator, final DeviceAuthorizationService service,
             final OAuth2ErrorMapper errorMapper) {
         this.codec = Assert.notNull(codec, "OAuth 2.x device authorization codec must not be null");
         this.authenticator = Assert
@@ -84,16 +85,13 @@ public final class DeviceAuthorizationEndpoint {
      *
      * @param request immutable Fabric HTTP request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a complete standard HTTP response
      */
-    public CompletionStage<HttpResponse> handle(
-            final HttpRequest request,
-            final Context context,
-            final Timeout.Budget timeout) {
+    public CompletionStage<Response> handle(final Request request, final Context context, final Timeout timeout) {
         Assert.notNull(request, "OAuth 2.x device authorization HTTP request must not be null");
         Assert.notNull(context, "OAuth 2.x device authorization context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x device authorization time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x device authorization timeout must not be null");
         final DeviceAuthorizationRequest decoded;
         try {
             decoded = codec.decodeRequest(request);
@@ -102,20 +100,24 @@ public final class DeviceAuthorizationEndpoint {
         }
         return authenticator.authenticate(request, context, timeout)
                 .thenCompose(authenticated -> switch (authenticated) {
-                    case Outcome.Succeeded<org.miaixz.bus.auth.resolver.ConsumerMetadata> success -> service
-                            .deviceAuthorization(decoded, context.withClientId(success.value().id()), timeout)
-                            .thenApply(outcome -> switch (outcome) {
+                    case Outcome.Succeeded<ClientAuthentication> success -> service.deviceAuthorization(
+                            decoded,
+                            success.value().consumer(),
+                            context.withClientId(success.value().consumer().id()),
+                            timeout).thenApply(outcome -> switch (outcome) {
                                 case Outcome.Succeeded<DeviceAuthorizationResponse> value -> codec
                                         .encodeResponse(request, value.value());
                                 case Outcome.Rejected<DeviceAuthorizationResponse> rejected -> errorMapper
                                         .deviceAuthorization(request, rejected.failure());
                                 case Outcome.Failed<DeviceAuthorizationResponse> failed -> errorMapper
                                         .deviceAuthorization(request, failed.failure());
+                                default -> throw new IllegalStateException("Unsupported Outcome implementation");
                             });
-                    case Outcome.Rejected<org.miaixz.bus.auth.resolver.ConsumerMetadata> rejected -> CompletableFuture
+                    case Outcome.Rejected<ClientAuthentication> rejected -> CompletableFuture
                             .completedFuture(errorMapper.deviceAuthorization(request, rejected.failure()));
-                    case Outcome.Failed<org.miaixz.bus.auth.resolver.ConsumerMetadata> failed -> CompletableFuture
+                    case Outcome.Failed<ClientAuthentication> failed -> CompletableFuture
                             .completedFuture(errorMapper.deviceAuthorization(request, failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 

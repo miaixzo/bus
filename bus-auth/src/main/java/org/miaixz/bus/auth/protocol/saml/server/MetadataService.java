@@ -32,7 +32,7 @@ import org.miaixz.bus.auth.protocol.saml.*;
 import org.miaixz.bus.auth.protocol.saml.codec.MetadataCodec;
 import org.miaixz.bus.auth.resolver.CertificateMaterial;
 import org.miaixz.bus.auth.source.DriverServices;
-import org.miaixz.bus.auth.worker.CertificateLoader;
+import org.miaixz.bus.auth.worker.loader.CertificateLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
@@ -48,7 +48,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class MetadataService {
+public class MetadataService {
 
     /**
      * Validated identity-provider options.
@@ -84,30 +84,30 @@ public final class MetadataService {
      * Resolves the current signing certificate and creates a standard EntityDescriptor.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the current standard Metadata entity or a closed framework failure
      */
-    public CompletionStage<Outcome<EntityDescriptor>> metadata(final Context context, final Timeout.Budget timeout) {
+    public CompletionStage<Outcome<EntityDescriptor>> metadata(final Context context, final Timeout timeout) {
         Assert.notNull(context, "SAML Metadata publication context must not be null");
-        Assert.notNull(timeout, "SAML Metadata publication time budget must not be null");
+        Assert.notNull(timeout, "SAML Metadata publication timeout must not be null");
         if (timeout.expired()) {
             return CompletableFuture.completedFuture(
                     Outcome.failed(
-                            new Outcome.Failure(ErrorCode._408,
-                                    "SAML Metadata publication has no remaining time budget",
+                            new Outcome.Failure(ErrorCode._408, "SAML Metadata publication has no remaining timeout",
                                     new JsonValue.ObjectValue(Map.of()))));
         }
-        final CertificateLoader.Request query = new CertificateLoader.Request(options.entityId(), Builder.SIGNING,
-                timeout.clock().now());
+        final CertificateLoader.Request query = new CertificateLoader.Request(services.registration(),
+                options.entityId(), Builder.SIGNING, timeout.clock().now());
         return Outcome
                 .mapStage(
-                        () -> services.certificateLoader().load(services.registration(), query, context, timeout),
+                        () -> services.certificateLoader().load(query, context, timeout),
                         loaded -> services.certificateParser().parse(services.registration(), query, loaded))
                 .thenApply(outcome -> switch (outcome) {
                     case Outcome.Succeeded<CertificateMaterial> success -> Outcome
                             .succeeded(descriptor(success.value()));
                     case Outcome.Rejected<CertificateMaterial> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<CertificateMaterial> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 

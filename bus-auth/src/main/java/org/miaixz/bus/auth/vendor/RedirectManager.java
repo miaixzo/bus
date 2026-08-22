@@ -56,24 +56,40 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class RedirectManager {
+public class RedirectManager {
 
-    /** Maximum lifetime of generated redirect correlation material. */
+    /**
+     * Maximum lifetime of generated redirect correlation material.
+     */
     private static final Duration LIFETIME = Duration.ofMinutes(10);
 
-    /** Exact configured Source identifier owning this redirect flow. */
+    /**
+     * Exact configured Source identifier owning this redirect flow.
+     */
     private final String sourceId;
-    /** Validated exact Vendor options for the configured Source. */
+    /**
+     * Validated exact Vendor options for the configured Source.
+     */
     private final VendorOptions<?> vendorOptions;
-    /** Whether the selected OpenID Connect variant requires a nonce. */
+    /**
+     * Whether the selected OpenID Connect variant requires a nonce.
+     */
     private final boolean nonceEnabled;
-    /** Whether the selected variant and options require PKCE. */
+    /**
+     * Whether the selected variant and options require PKCE.
+     */
     private final boolean pkceEnabled;
-    /** Policy-bound PKCE generator, or {@code null} when PKCE is disabled. */
+    /**
+     * Policy-bound PKCE generator, or {@code null} when PKCE is disabled.
+     */
     private final PkceGenerator pkceGenerator;
-    /** Number of random bytes used for generated state and nonce values. */
+    /**
+     * Number of random bytes used for generated state and nonce values.
+     */
     private final int randomBytes;
-    /** Source-isolated one-time correlation persistence coordinator. */
+    /**
+     * Source-isolated one-time correlation persistence coordinator.
+     */
     private final RedirectState state;
 
     /**
@@ -85,7 +101,7 @@ public final class RedirectManager {
      * @param vendorOptions validated deployment options
      * @param services      Source-scoped runtime services
      */
-    private RedirectManager(final String namespaceId, final String sourceId, final VariantManifest.Variant variant,
+    public RedirectManager(final String namespaceId, final String sourceId, final VariantManifest.Variant variant,
             final VendorOptions<?> vendorOptions, final DriverServices services) {
         this.sourceId = Assert.notBlank(sourceId, "Vendor redirect Source id must not be blank");
         final VariantManifest.Variant checkedVariant = Assert
@@ -126,14 +142,14 @@ public final class RedirectManager {
      * @param request   Source-bound browser initiation request
      * @param operation platform authorization preparation operation
      * @param context   immutable invocation context
-     * @param timeout   shared end-to-end time budget
+     * @param timeout   shared end-to-end timeout
      * @return asynchronous redirect initiation outcome
      */
     public CompletionStage<Outcome<SourceWorkflow.Stage>> initiate(
             final SourceWorkflow.Request.BrowserStart request,
             final PrepareOperation operation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "Vendor redirect start request must not be null");
         Assert.notNull(operation, "Vendor redirect prepare operation must not be null");
         invocation(context, timeout);
@@ -142,7 +158,7 @@ public final class RedirectManager {
             return completed(rejected("Vendor redirect callback target does not match the registered Source"));
         }
         if (timeout.expired()) {
-            return completed(failed("Vendor redirect initiation has no remaining time budget"));
+            return completed(failed("Vendor redirect initiation has no remaining timeout"));
         }
         final Optional<String> nonce = nonceEnabled ? Optional.of(random()) : Optional.empty();
         final Optional<PkceGenerator.Pair> pair = pkceEnabled ? Optional.of(pkceGenerator.generate())
@@ -171,6 +187,7 @@ public final class RedirectManager {
                             timeout);
                     case Outcome.Rejected<Prepared> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<Prepared> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -181,7 +198,7 @@ public final class RedirectManager {
      * @param extractor platform correlation extractor
      * @param operation platform callback verification operation
      * @param context   immutable invocation context
-     * @param timeout   shared end-to-end time budget
+     * @param timeout   shared end-to-end timeout
      * @return asynchronous verified Source authentication outcome
      */
     public CompletionStage<Outcome<ExternalIdentity>> complete(
@@ -189,7 +206,7 @@ public final class RedirectManager {
             final CorrelationExtractor extractor,
             final CompleteOperation operation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "Vendor redirect callback request must not be null");
         Assert.notNull(extractor, "Vendor callback correlation extractor must not be null");
         Assert.notNull(operation, "Vendor callback completion operation must not be null");
@@ -216,6 +233,7 @@ public final class RedirectManager {
                     timeout);
             case Outcome.Rejected<RedirectState.Consumed> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<RedirectState.Consumed> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -226,7 +244,7 @@ public final class RedirectManager {
      * @param prepared   platform-prepared redirect
      * @param verifier   optional caller-owned PKCE verifier
      * @param context    invocation context
-     * @param timeout    operation budget
+     * @param timeout    operation timeout
      * @return redirect-stage outcome
      */
     private CompletionStage<Outcome<SourceWorkflow.Stage>> persist(
@@ -234,7 +252,7 @@ public final class RedirectManager {
             final Prepared prepared,
             final Optional<CodeVerifier> verifier,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (prepared == null) {
             return completed(failed("Vendor authorization preparation returned invalid redirect data"));
         }
@@ -242,7 +260,7 @@ public final class RedirectManager {
             return completed(rejected("Vendor authorization correlation does not equal generated state"));
         }
         if (timeout.expired()) {
-            return completed(failed("Vendor redirect initiation exhausted its time budget before state storage"));
+            return completed(failed("Vendor redirect initiation exhausted its timeout before state storage"));
         }
         final Callback.Correlation correlation = new Callback.Correlation(sourceId, prepared.correlationValue(),
                 initiation.nonce(), timeout.clock().now().plus(LIFETIME));
@@ -251,6 +269,7 @@ public final class RedirectManager {
                     .succeeded(new SourceWorkflow.Stage.Redirect(prepared.location(), correlation));
             case Outcome.Rejected<Void> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<Void> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -262,7 +281,7 @@ public final class RedirectManager {
      * @param lease       optional caller-owned verifier lease
      * @param operation   platform completion operation
      * @param context     invocation context
-     * @param timeout     operation budget
+     * @param timeout     operation timeout
      * @return verified external identity outcome
      */
     private CompletionStage<Outcome<ExternalIdentity>> finish(
@@ -271,7 +290,7 @@ public final class RedirectManager {
             final Optional<SecretLease> lease,
             final CompleteOperation operation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final Optional<CodeVerifier> verifier;
         try {
             if (lease.isPresent()) {
@@ -310,6 +329,7 @@ public final class RedirectManager {
                         : Outcome.succeeded(success.value());
                 case Outcome.Rejected<ExternalIdentity> rejected -> Outcome.rejected(rejected.failure());
                 case Outcome.Failed<ExternalIdentity> failed -> Outcome.failed(failed.failure());
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             };
         });
     }
@@ -332,11 +352,11 @@ public final class RedirectManager {
      * Validates common redirect invocation collaborators.
      *
      * @param context invocation context
-     * @param timeout operation budget
+     * @param timeout operation timeout
      */
-    private static void invocation(final Context context, final Timeout.Budget timeout) {
+    private static void invocation(final Context context, final Timeout timeout) {
         Assert.notNull(context, "Vendor redirect invocation context must not be null");
-        Assert.notNull(timeout, "Vendor redirect invocation budget must not be null");
+        Assert.notNull(timeout, "Vendor redirect invocation timeout must not be null");
     }
 
     /**
@@ -396,10 +416,10 @@ public final class RedirectManager {
          *
          * @param initiation generated state, nonce, and PKCE challenge
          * @param context    immutable invocation context
-         * @param timeout    shared time budget
+         * @param timeout    shared timeout
          * @return platform redirect and exact callback correlation binding
          */
-        CompletionStage<Outcome<Prepared>> prepare(Initiation initiation, Context context, Timeout.Budget timeout);
+        CompletionStage<Outcome<Prepared>> prepare(Initiation initiation, Context context, Timeout timeout);
 
     }
 
@@ -434,13 +454,10 @@ public final class RedirectManager {
          *
          * @param completion consumed callback security material
          * @param context    immutable invocation context
-         * @param timeout    shared time budget
+         * @param timeout    shared timeout
          * @return verified external identity outcome
          */
-        CompletionStage<Outcome<ExternalIdentity>> complete(
-                Completion completion,
-                Context context,
-                Timeout.Budget timeout);
+        CompletionStage<Outcome<ExternalIdentity>> complete(Completion completion, Context context, Timeout timeout);
 
     }
 
@@ -454,7 +471,9 @@ public final class RedirectManager {
      */
     public record Initiation(String state, Optional<String> nonce, Optional<CodeChallenge> codeChallenge) {
 
-        /** Validates generated redirect authorization material. */
+        /**
+         * Validates generated redirect authorization material.
+         */
         public Initiation {
             Assert.notBlank(state, "Vendor redirect state must not be blank");
             Assert.notNull(nonce, "Vendor redirect nonce container must not be null");
@@ -472,7 +491,9 @@ public final class RedirectManager {
      */
     public record Prepared(String location, String correlationValue) {
 
-        /** Validates one platform-prepared authorization redirect. */
+        /**
+         * Validates one platform-prepared authorization redirect.
+         */
         public Prepared {
             Assert.notBlank(location, "Vendor authorization redirect location must not be blank");
             Assert.notBlank(correlationValue, "Vendor authorization correlation value must not be blank");
@@ -491,7 +512,9 @@ public final class RedirectManager {
     public record Completion(Callback.Inbound callback, Callback.Correlation correlation,
             Optional<CodeVerifier> codeVerifier) {
 
-        /** Validates consumed callback security material passed to the platform adapter. */
+        /**
+         * Validates consumed callback security material passed to the platform adapter.
+         */
         public Completion {
             Assert.notNull(callback, "Vendor inbound callback must not be null");
             Assert.notNull(correlation, "Vendor callback correlation must not be null");

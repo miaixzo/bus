@@ -62,10 +62,7 @@ public record LdapMessage(int messageId, ProtocolOp protocolOp, List<Control> co
      *
      * @author Kimi Liu
      */
-    public sealed interface ProtocolOp permits BindRequest, BindResponse, UnbindRequest, SearchRequest,
-            SearchResultEntry, SearchResultDone, SearchResultReference, ModifyRequest, ModifyResponse, AddRequest,
-            AddResponse, DeleteRequest, DeleteResponse, ModifyDNRequest, ModifyDNResponse, CompareRequest,
-            CompareResponse, AbandonRequest, ExtendedRequest, ExtendedResponse, IntermediateResponse {
+    public interface ProtocolOp {
 
     }
 

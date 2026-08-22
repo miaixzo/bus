@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.Assert;
  *
  * @author Kimi Liu
  */
-public final class AuthorizationService {
+public class AuthorizationService {
 
     /**
      * Internal authorization-code flow implementation.
@@ -56,16 +56,16 @@ public final class AuthorizationService {
      *
      * @param request standard authorization request
      * @param context invocation context carrying the authenticated subject
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return asynchronous standard authorization response outcome
      */
     public CompletionStage<Outcome<AuthorizationResponse>> authorize(
             final AuthorizationRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OAuth 2.x authorization request must not be null");
         Assert.notNull(context, "OAuth 2.x authorization context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x authorization time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x authorization timeout must not be null");
         return issuer.authorize(AuthorizationCodeIssuer.Request.oauth(request), context, timeout)
                 .thenApply(outcome -> switch (outcome) {
                     case Outcome.Succeeded<AuthorizationCodeIssuer.Result> success -> Outcome
@@ -73,6 +73,7 @@ public final class AuthorizationService {
                     case Outcome.Rejected<AuthorizationCodeIssuer.Result> rejected -> Outcome
                             .rejected(rejected.failure());
                     case Outcome.Failed<AuthorizationCodeIssuer.Result> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -81,16 +82,16 @@ public final class AuthorizationService {
      *
      * @param request standard authorization request
      * @param context invocation context carrying the authenticated subject
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return asynchronous internal result containing standard response and redirect target
      */
     CompletionStage<Outcome<AuthorizationCodeIssuer.Result>> authorizeEndpoint(
             final AuthorizationRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OAuth 2.x authorization request must not be null");
         Assert.notNull(context, "OAuth 2.x authorization context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x authorization time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x authorization timeout must not be null");
         return issuer.authorize(AuthorizationCodeIssuer.Request.oauth(request), context, timeout);
     }
 

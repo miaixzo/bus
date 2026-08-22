@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.oidc.client.OpenIdClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -47,7 +49,7 @@ import org.miaixz.bus.core.net.tls.TlsClientAuth;
  *
  * @author Kimi Liu
  */
-public final class OktaManifest implements VariantManifest<OktaOptions> {
+public class OktaManifest implements VariantManifest<OktaOptions> {
 
     /**
      * Stable Okta platform routing identifier.
@@ -87,7 +89,7 @@ public final class OktaManifest implements VariantManifest<OktaOptions> {
      * Complete immutable Okta endpoint, client, scope, capability, and form manifest.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OIDC,
-            DEFAULT_SCOPES,
+            VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, DEFAULT_SCOPES,
             new VendorTargets(
                     Optional.of(template(ISSUER + "/v1/authorize", Http.Method.GET, Endpoint.Authentication.NONE)),
                     Optional.of(
@@ -138,6 +140,24 @@ public final class OktaManifest implements VariantManifest<OktaOptions> {
             final Http.Method method,
             final Endpoint.Authentication authentication) {
         return new VendorTargets.Template(value, method, Set.of(authentication), Optional.empty(), TlsClientAuth.NONE);
+    }
+
+    /**
+     * Returns the one-time Okta client form for organization and authorization-server selectors.
+     *
+     * @return immutable Okta client configuration form
+     */
+    @Override
+    public Scheme.Form form() {
+        return VariantManifest.Forms.extended(
+                false,
+                List.of(
+                        VariantManifest.Forms.field("instance", "Okta organization", Scheme.Form.Type.TEXT, true),
+                        VariantManifest.Forms.field(
+                                "authorizationServerId",
+                                "Authorization server identifier",
+                                Scheme.Form.Type.TEXT,
+                                false)));
     }
 
     /**

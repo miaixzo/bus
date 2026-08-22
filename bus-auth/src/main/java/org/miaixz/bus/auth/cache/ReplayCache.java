@@ -21,8 +21,8 @@ package org.miaixz.bus.auth.cache;
 
 import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.FabricX.Clock;
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.fabric.Clock;
 
 /**
  * Records isolated authentication artifact digests for atomic replay detection.
@@ -36,7 +36,7 @@ import org.miaixz.bus.fabric.Clock;
  *
  * @author Kimi Liu
  */
-public final class ReplayCache extends AuthCache<String> {
+public class ReplayCache extends AuthCache<String> {
 
     /**
      * Isolates replay markers from every other bus-cache consumer.

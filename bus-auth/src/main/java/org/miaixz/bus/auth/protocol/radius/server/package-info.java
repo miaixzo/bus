@@ -29,7 +29,7 @@
  * <p>
  * The framework owns packet validation and orchestration; the external project owns trusted transport adaptation,
  * client resolution, authentication decisions, accounting processing, persistence, and permissions. Services consume
- * typed packets, codecs, SecretLoader, SecretParser, SecurityBaseline, Context, and Budget. They perform no network
+ * typed packets, codecs, SecretLoader, SecretParser, SecurityBaseline, Context, and Timeout. They perform no network
  * I/O, direct Registry lookup, Source/client behavior, Vendor login, Dynamic Authorization, or HTTP/JSON error mapping.
  * </p>
  * <p>

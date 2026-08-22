@@ -24,6 +24,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationRequest;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.ResponseType;
@@ -34,8 +36,6 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 
 /**
  * Decodes a standard OAuth 2.x authorization endpoint query into its immutable protocol model.
@@ -46,7 +46,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
  *
  * @author Kimi Liu
  */
-public final class AuthorizationRequestDecoder implements Decoder<HttpRequest, AuthorizationRequest> {
+public class AuthorizationRequestDecoder implements Decoder<Request, AuthorizationRequest> {
 
     /**
      * Creates a stateless strict authorization request decoder.
@@ -62,7 +62,7 @@ public final class AuthorizationRequestDecoder implements Decoder<HttpRequest, A
      * @return mutable unique parameter map
      * @throws ValidateException if any parameter name occurs more than once
      */
-    private static Map<String, List<String>> parameters(final UnoUrl url) {
+    private static Map<String, List<String>> parameters(final Url url) {
         final Map<String, List<String>> values = new LinkedHashMap<>(url.querySize());
         for (int index = 0; index < url.querySize(); index++) {
             final String name = url.queryParameterName(index);
@@ -139,7 +139,7 @@ public final class AuthorizationRequestDecoder implements Decoder<HttpRequest, A
      * @throws ValidateException        if method, body, fragment, multiplicity, or parameter syntax is invalid
      */
     @Override
-    public AuthorizationRequest decode(final HttpRequest encoded) {
+    public AuthorizationRequest decode(final Request encoded) {
         Assert.notNull(encoded, "OAuth 2.x authorization HTTP request must not be null");
         if (encoded.method() != Http.Method.GET) {
             throw new ValidateException("OAuth 2.x authorization endpoint requires HTTP GET");
@@ -147,7 +147,7 @@ public final class AuthorizationRequestDecoder implements Decoder<HttpRequest, A
         if (encoded.body().length() != 0) {
             throw new ValidateException("OAuth 2.x authorization GET request must not contain a body");
         }
-        final UnoUrl url = encoded.url();
+        final Url url = encoded.url();
         if (url.fragment() != null) {
             throw new ValidateException("OAuth 2.x authorization request URL must not contain a fragment");
         }

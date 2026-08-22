@@ -19,14 +19,41 @@
 */
 package org.miaixz.bus.auth;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * Defines constants shared across bus-auth packages.
  *
  * @author Kimi Liu
  */
-public final class Builder {
+public class Builder {
+
+    /**
+     * Derives the common lowercase SHA-256 hexadecimal representation used for irreversible protocol indexes.
+     *
+     * @param value non-secret or opaque protocol value
+     * @return lowercase SHA-256 hexadecimal digest
+     */
+    public static String sha256Hex(final String value) {
+        try {
+            final byte[] digest = MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8));
+            final char[] hex = new char[digest.length * 2];
+            final char[] alphabet = "0123456789abcdef".toCharArray();
+            for (int index = 0; index < digest.length; index++) {
+                final int octet = digest[index] & 0xff;
+                hex[index * 2] = alphabet[octet >>> 4];
+                hex[index * 2 + 1] = alphabet[octet & 0x0f];
+            }
+            return new String(hex);
+        } catch (NoSuchAlgorithmException cause) {
+            throw new InternalException("SHA-256 algorithm is unavailable", cause);
+        }
+    }
 
     /**
      * Maximum size accepted for a bounded JSON or remote response document.
@@ -109,9 +136,10 @@ public final class Builder {
     public static final String REDACTED_ACCESS_TOKEN = "Access[accessToken=[REDACTED], expiresIn=";
 
     /**
-     * Prevents construction of the authentication constant holder.
+     * Creates an authentication constant namespace instance with no retained state.
      */
-    private Builder() {
-        // Utility class.
+    public Builder() {
+        // No initialization required.
     }
+
 }

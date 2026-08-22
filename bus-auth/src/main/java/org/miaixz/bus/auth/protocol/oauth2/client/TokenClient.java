@@ -28,6 +28,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.codec.FormCodec;
@@ -39,6 +40,7 @@ import org.miaixz.bus.auth.protocol.oauth2.codec.TokenRequestEncoder;
 import org.miaixz.bus.auth.protocol.oauth2.codec.TokenResponseDecoder;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -48,15 +50,13 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.protocol.http.auth.HttpAuth;
 
 /**
  * Executes every supported OAuth 2.x grant through the single registered token endpoint.
  *
  * @author Kimi Liu
  */
-public final class TokenClient {
+public class TokenClient {
 
     /**
      * Validated client registration and selected client authentication method.
@@ -112,6 +112,8 @@ public final class TokenClient {
         return switch (decoded) {
             case TokenResponseDecoder.Success success -> Outcome.succeeded(success.response());
             case TokenResponseDecoder.Error error -> remote(error);
+            default -> Outcome
+                    .failed(failure(ErrorCode._502, "OAuth 2.x token decoder returned an unsupported result"));
         };
     }
 
@@ -158,31 +160,36 @@ public final class TokenClient {
      *
      * @param request standard token request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a standard token response or closed framework failure
      */
     public CompletionStage<Outcome<TokenEndpointResponse>> token(
             final TokenRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OAuth 2.x token request must not be null");
         Assert.notNull(context, "OAuth 2.x token invocation context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x token time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x token timeout must not be null");
         if (timeout.expired()) {
-            return completed(Outcome.failed(failure(ErrorCode._408, "OAuth 2.x token request has no time budget")));
+            return completed(Outcome.failed(failure(ErrorCode._408, "OAuth 2.x token request has no timeout")));
         }
         if (Endpoint.Authentication.NONE.equals(options.clientAuthenticationMethod())) {
             return execute(request, null, timeout);
         }
-        return Outcome.mapStage(
-                () -> services.secretLoader()
-                        .load(services.registration(), options.clientCredential().getOrNull(), context, timeout),
-                loaded -> services.secretParser()
-                        .parse(services.registration(), options.clientCredential().getOrNull(), loaded))
+        return Outcome
+                .mapStage(
+                        () -> services.secretLoader().load(
+                                new SecretLoader.Request(services.registration(),
+                                        options.clientCredential().getOrNull()),
+                                context,
+                                timeout),
+                        loaded -> services.secretParser()
+                                .parse(services.registration(), options.clientCredential().getOrNull(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> execute(request, success.value(), timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -191,33 +198,32 @@ public final class TokenClient {
      *
      * @param request validated token request
      * @param secret  optional owned client-secret lease
-     * @param timeout decreasing operation budget
+     * @param timeout decreasing operation timeout
      * @return asynchronous token response outcome
      */
     private CompletionStage<Outcome<TokenEndpointResponse>> execute(
             final TokenRequest request,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             byte[] body = null;
             try {
                 if (timeout.expired()) {
                     return Outcome.<TokenEndpointResponse>failed(
-                            failure(ErrorCode._408, "OAuth 2.x token request exhausted its time budget"));
+                            failure(ErrorCode._408, "OAuth 2.x token request exhausted its timeout"));
                 }
                 final List<NameValue> parameters = authenticated(requestEncoder.encode(request), secret);
                 body = formCodec.encode(parameters);
                 final var endpoint = options.tokenEndpoint().getOrNull();
-                final var builder = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                        .method(Http.Method.POST).timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+                final var builder = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                        .url(endpoint.url().toString()).method(Http.Method.POST)
                         .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE);
                 if (Endpoint.Authentication.CLIENT_SECRET_BASIC.equals(options.clientAuthenticationMethod())) {
                     builder.header(
                             Http.Header.AUTHORIZATION,
-                            HttpAuth.basic(
+                            FabricX.basic(
                                     formComponent(options.clientId()),
-                                    formComponent(new String(secret.material()))).value());
+                                    formComponent(new String(secret.material()))));
                 }
                 return decoded(responseDecoder.decode(builder.execute()));
             } catch (RuntimeException exception) {

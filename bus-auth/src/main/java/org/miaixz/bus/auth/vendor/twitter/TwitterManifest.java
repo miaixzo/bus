@@ -24,7 +24,9 @@ import java.util.Set;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -38,7 +40,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Declares the frozen Twitter.com OAuth App browser Vendor manifest.
@@ -49,7 +50,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class TwitterManifest implements VariantManifest<TwitterOptions> {
+public class TwitterManifest implements VariantManifest<TwitterOptions> {
 
     /**
      * Stable Twitter platform routing identifier.
@@ -86,7 +87,7 @@ public final class TwitterManifest implements VariantManifest<TwitterOptions> {
      * Complete immutable endpoint, client, scope, capability, form, and deviation manifest.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OAUTH2,
-            VariantManifest.Pkce.REQUIRED, List.of("tweet.read", "users.read"),
+            VariantManifest.Pkce.REQUIRED, Credential.Type.CLIENT_SECRET, List.of("tweet.read", "users.read"),
             new VendorTargets(
                     Optional.of(
                             fixed("https://x.com/i/oauth2/authorize", Http.Method.GET, Endpoint.Authentication.NONE)),
@@ -130,7 +131,7 @@ public final class TwitterManifest implements VariantManifest<TwitterOptions> {
             final String value,
             final Http.Method method,
             final Endpoint.Authentication authentication) {
-        return new VendorTargets.Fixed(new Endpoint(UnoUrl.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
+        return new VendorTargets.Fixed(new Endpoint(Url.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
                 Set.of(authentication), Optional.empty(), TlsClientAuth.NONE));
     }
 

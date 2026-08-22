@@ -23,20 +23,20 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdProviderMetadata;
 import org.miaixz.bus.auth.protocol.oidc.codec.OpenIdProviderMetadataCodec;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Adapts the OpenID Provider Metadata resource to typed discovery service execution.
  *
  * @author Kimi Liu
  */
-public final class DiscoveryEndpoint {
+public class DiscoveryEndpoint {
 
     /**
      * Strict discovery request validator and metadata response codec.
@@ -73,16 +73,13 @@ public final class DiscoveryEndpoint {
      *
      * @param request immutable Fabric HTTP request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a complete standard HTTP response
      */
-    public CompletionStage<HttpResponse> handle(
-            final HttpRequest request,
-            final Context context,
-            final Timeout.Budget timeout) {
+    public CompletionStage<Response> handle(final Request request, final Context context, final Timeout timeout) {
         Assert.notNull(request, "OpenID Connect discovery HTTP request must not be null");
         Assert.notNull(context, "OpenID Connect discovery context must not be null");
-        Assert.notNull(timeout, "OpenID Connect discovery time budget must not be null");
+        Assert.notNull(timeout, "OpenID Connect discovery timeout must not be null");
         try {
             codec.validateRequest(request);
         } catch (RuntimeException exception) {
@@ -93,6 +90,7 @@ public final class DiscoveryEndpoint {
             case Outcome.Rejected<OpenIdProviderMetadata> rejected -> errorMapper
                     .discovery(request, rejected.failure());
             case Outcome.Failed<OpenIdProviderMetadata> failed -> errorMapper.discovery(request, failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 

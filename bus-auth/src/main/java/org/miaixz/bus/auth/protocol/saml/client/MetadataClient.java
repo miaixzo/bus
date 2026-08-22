@@ -24,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.saml.EntityDescriptor;
@@ -39,7 +40,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
 
 /**
  * Retrieves and validates the trusted SAML 2.0 identity-provider Metadata document for one Source.
@@ -51,7 +51,7 @@ import org.miaixz.bus.fabric.Fabric;
  *
  * @author Kimi Liu
  */
-public final class MetadataClient {
+public class MetadataClient {
 
     /**
      * Validated SAML Source deployment options.
@@ -116,15 +116,14 @@ public final class MetadataClient {
      * Retrieves, decodes, validates, and trust-binds identity-provider metadata.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing trusted metadata or a closed framework failure
      */
-    public CompletionStage<Outcome<EntityDescriptor>> metadata(final Context context, final Timeout.Budget timeout) {
+    public CompletionStage<Outcome<EntityDescriptor>> metadata(final Context context, final Timeout timeout) {
         Assert.notNull(context, "SAML Metadata invocation context must not be null");
-        Assert.notNull(timeout, "SAML Metadata time budget must not be null");
+        Assert.notNull(timeout, "SAML Metadata timeout must not be null");
         if (timeout.expired()) {
-            return completed(
-                    Outcome.failed(failure(ErrorCode._408, "SAML Metadata request has no remaining time budget")));
+            return completed(Outcome.failed(failure(ErrorCode._408, "SAML Metadata request has no remaining timeout")));
         }
         return CompletableFuture.supplyAsync(() -> retrieve(timeout), services.executor())
                 .thenCompose(outcome -> switch (outcome) {
@@ -134,6 +133,7 @@ public final class MetadataClient {
                             Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SamlMessageCodec.Document<EntityDescriptor>> failed -> completed(
                             Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 }).thenApply(outcome -> switch (outcome) {
                     case Outcome.Succeeded<SamlMessageCodec.Document<EntityDescriptor>> success -> Outcome
                             .succeeded(success.value().message());
@@ -141,24 +141,24 @@ public final class MetadataClient {
                             .rejected(rejected.failure());
                     case Outcome.Failed<SamlMessageCodec.Document<EntityDescriptor>> failed -> Outcome
                             .failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
     /**
      * Executes the bounded Fabric request and validates non-cryptographic Metadata invariants.
      *
-     * @param timeout decreasing operation time budget
+     * @param timeout decreasing operation timeout
      * @return retrieved metadata outcome before XML signature verification
      */
-    private Outcome<SamlMessageCodec.Document<EntityDescriptor>> retrieve(final Timeout.Budget timeout) {
+    private Outcome<SamlMessageCodec.Document<EntityDescriptor>> retrieve(final Timeout timeout) {
         try {
             if (timeout.expired()) {
-                return Outcome.failed(failure(ErrorCode._408, "SAML Metadata request exhausted its time budget"));
+                return Outcome.failed(failure(ErrorCode._408, "SAML Metadata request exhausted its timeout"));
             }
             final var endpoint = options.identityProviderMetadataEndpoint();
-            final var response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.GET).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.SAML).addressPolicy()).execute();
+            final var response = FabricX.http(services.fabric(), Protocol.SAML, timeout).url(endpoint.url().toString())
+                    .method(Http.Method.GET).execute();
             final SamlMessageCodec.Document<EntityDescriptor> document = codec.decode(response);
             final EntityDescriptor metadata = document.message();
             if (!options.identityProviderEntityId().equals(metadata.entityId())) {

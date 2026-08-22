@@ -19,25 +19,31 @@
 */
 package org.miaixz.bus.auth.worker;
 
-import org.miaixz.bus.auth.Registration;
+import org.miaixz.bus.auth.Blueprint;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
- * Loads one project-owned runtime binding for an exact registration and contract.
+ * Resolves one already assembled project runtime binding for an exact registration and contract.
+ * <p>
+ * This port performs synchronous typed dependency resolution during Source compilation. It does not load external
+ * project data and therefore does not implement {@link org.miaixz.bus.auth.Loader}.
+ * </p>
+ *
+ * @author Kimi Liu
  */
 @FunctionalInterface
-public interface BindingLoader {
+public interface BindingResolver {
 
     /**
-     * Loads one project binding for the exact Source registration and typed key.
+     * Resolves one project binding for the exact Source registration and typed key.
      *
      * @param <T>          binding contract type
      * @param registration exact Source registration requesting the binding
      * @param key          stable typed binding key
-     * @return loaded binding implementing the requested contract
+     * @return resolved binding implementing the requested contract
      */
-    <T> T load(Registration.SourceEntry registration, Key<T> key);
+    <T> T resolve(Blueprint.SourceEntry registration, Key<T> key);
 
     /**
      * Identifies one project binding without using a raw class as a service-locator key.
@@ -45,6 +51,7 @@ public interface BindingLoader {
      * @param name stable binding name
      * @param type exact binding contract
      * @param <T>  binding type
+     * @author Kimi Liu
      */
     record Key<T>(String name, Class<T> type) {
 
@@ -57,17 +64,17 @@ public interface BindingLoader {
         }
 
         /**
-         * Requires one loaded binding to implement this exact project contract.
+         * Requires one resolved binding to implement this exact project contract.
          *
-         * @param binding loaded project binding
+         * @param binding resolved project binding
          * @return binding narrowed to the exact contract
          */
         public T require(final Object binding) {
-            final Object loaded = Assert.notNull(binding, "Loaded binding must not be null");
-            if (!type.isInstance(loaded)) {
-                throw new ValidateException("Loaded binding does not implement the required contract");
+            final Object resolved = Assert.notNull(binding, "Resolved binding must not be null");
+            if (!type.isInstance(resolved)) {
+                throw new ValidateException("Resolved binding does not implement the required contract");
             }
-            return type.cast(loaded);
+            return type.cast(resolved);
         }
 
     }

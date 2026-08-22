@@ -24,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationRequest;
@@ -32,7 +33,6 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Builds an OAuth 2.x authorization URL for a user-agent interaction.
@@ -43,7 +43,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class AuthorizationClient {
+public class AuthorizationClient {
 
     /**
      * Immutable registration options used to bind the outgoing request to one Source.
@@ -94,19 +94,19 @@ public final class AuthorizationClient {
      *
      * @param request standard authorization request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return completed stage containing an authorization URL or closed framework failure
      */
-    public CompletionStage<Outcome<UnoUrl>> authorize(
+    public CompletionStage<Outcome<Url>> authorize(
             final AuthorizationRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OAuth 2.x authorization request must not be null");
         Assert.notNull(context, "OAuth 2.x authorization invocation context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x authorization time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x authorization timeout must not be null");
         if (timeout.expired()) {
             return completed(
-                    Outcome.failed(failure(ErrorCode._408, "OAuth 2.x authorization has no remaining time budget")));
+                    Outcome.failed(failure(ErrorCode._408, "OAuth 2.x authorization has no remaining timeout")));
         }
         if (!options.clientId().equals(request.clientId())) {
             return completed(

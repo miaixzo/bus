@@ -40,7 +40,7 @@ import org.miaixz.bus.core.net.Protocol;
  *
  * @author Kimi Liu
  */
-public final class SamlServerScheme implements Scheme<SamlServerOptions> {
+public class SamlServerScheme implements Scheme<SamlServerOptions> {
 
     /**
      * Stable registration type identifier for generic SAML Providers.

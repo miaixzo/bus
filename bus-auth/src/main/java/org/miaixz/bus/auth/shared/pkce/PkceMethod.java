@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.Assert;
  *
  * @author Kimi Liu
  */
-public final class PkceMethod {
+public class PkceMethod {
 
     /**
      * SHA-256 followed by unpadded Base64URL derivation method.
@@ -49,7 +49,7 @@ public final class PkceMethod {
      *
      * @param value exact registration or extension value
      */
-    private PkceMethod(final String value) {
+    public PkceMethod(final String value) {
         this.value = Assert.notBlank(value, "PKCE method must not be blank");
     }
 

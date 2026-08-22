@@ -24,10 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.FabricX.Clock;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.fabric.Clock;
 
 /**
  * Stores OAuth refresh-token family state for rotation and reuse detection.
@@ -39,7 +39,7 @@ import org.miaixz.bus.fabric.Clock;
  *
  * @author Kimi Liu
  */
-public final class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
+public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
 
     /**
      * Isolates refresh-token state from every other bus-cache consumer.
@@ -55,6 +55,20 @@ public final class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> 
      */
     public RefreshTokenCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
         super(cache, deployment, PURPOSE, Entry.class, clock);
+    }
+
+    /**
+     * Creates a Source-generation-scoped refresh-token cache view for compiled runtime use.
+     *
+     * @param cache      shared bus-cache backend
+     * @param deployment deployment-unique cache namespace
+     * @param sourceId   exact Source registration identifier
+     * @param generation non-negative Source configuration generation
+     * @param clock      shared runtime clock used to derive entry lifetimes
+     */
+    public RefreshTokenCache(final CacheX<String, Object> cache, final String deployment, final String sourceId,
+            final long generation, final Clock clock) {
+        super(cache, deployment, PURPOSE, Entry.class, sourceId, generation, clock);
     }
 
     /**

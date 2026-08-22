@@ -28,6 +28,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -40,6 +42,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.*;
@@ -50,9 +53,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements QQ Open Platform browser login and QQ Mini Program direct authentication.
@@ -64,7 +64,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class QqSourceAdapter implements VendorAdapter {
+public class QqSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted QQ Open Platform authority recorded in federated identity evidence.
@@ -303,7 +303,7 @@ public final class QqSourceAdapter implements VendorAdapter {
             final String claim,
             final String subject,
             final String authority,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return new Evidence(Evidence.Type.FEDERATED, Evidence.Strength.SINGLE_FACTOR,
                 new Evidence.Claim(claim, new JsonValue.StringValue(subject), authority, timeout.clock().now()));
     }
@@ -338,6 +338,7 @@ public final class QqSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -400,7 +401,7 @@ public final class QqSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing private QQ response models
@@ -410,10 +411,10 @@ public final class QqSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "QQ capability must not be null");
         Assert.notNull(context, "QQ invocation context must not be null");
-        Assert.notNull(timeout, "QQ invocation budget must not be null");
+        Assert.notNull(timeout, "QQ invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("QQ capability is not declared by the selected variant"));
         }
@@ -443,13 +444,13 @@ public final class QqSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated browser correlation material
      * @param context    immutable invocation context retained by the uniform signature
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return prepared authorization redirect
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "QQ authorization context must not be null");
         if (timeout.expired() || initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(failed(ErrorCode._500, "QQ browser material violates the open variant manifest"));
@@ -460,10 +461,11 @@ public final class QqSourceAdapter implements VendorAdapter {
                     Optional.empty(), Optional.empty(), emptyObject());
             return standardAdapter.getOrNull().invoke(OAuth2ClientScheme.AUTHORIZATION, request, context, timeout)
                     .thenApply(outcome -> switch (outcome) {
-                        case Outcome.Succeeded<UnoUrl> success -> Outcome.succeeded(
+                        case Outcome.Succeeded<Url> success -> Outcome.succeeded(
                                 new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                        case Outcome.Rejected<UnoUrl> rejected -> Outcome.rejected(rejected.failure());
-                        case Outcome.Failed<UnoUrl> failed -> Outcome.failed(failed.failure());
+                        case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                        case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (RuntimeException cause) {
             return completed(rejected("QQ authorization request is invalid"));
@@ -476,13 +478,13 @@ public final class QqSourceAdapter implements VendorAdapter {
      * @param request standard authorization request
      * @return asynchronous exact QQ authorization URL outcome
      */
-    private CompletionStage<Outcome<UnoUrl>> authorization(final AuthorizationRequest request) {
+    private CompletionStage<Outcome<Url>> authorization(final AuthorizationRequest request) {
         if (!valid(request)) {
             return completed(rejected("QQ authorization request differs from the registered Source"));
         }
         try {
             final var endpoint = variant.targets().resolve(options).authorization().getOrNull();
-            final UnoUrl location = endpoint.url().newBuilder()
+            final Url location = endpoint.url().newBuilder()
                     .query(OAuth2.Parameters.RESPONSE_TYPE, request.responseType().value())
                     .query(OAuth2.Parameters.CLIENT_ID, request.clientId())
                     .query(OAuth2.Parameters.REDIRECT_URI, request.redirectUri().getOrNull())
@@ -521,6 +523,7 @@ public final class QqSourceAdapter implements VendorAdapter {
                     .orElseThrow(() -> new ValidateException("QQ authorization success requires state"));
             case AuthorizationResponseDecoder.Error error -> error.response().state()
                     .orElseThrow(() -> new ValidateException("QQ authorization error requires state"));
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -529,13 +532,13 @@ public final class QqSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed browser correlation
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified QQ Open Platform identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> openIdentity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final AuthorizationResponseDecoder.Decoded decoded;
         try {
             decoded = decode(completion.callback());
@@ -553,6 +556,7 @@ public final class QqSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<SecretLease> success -> open(response.code(), success.value(), timeout);
             case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -561,13 +565,13 @@ public final class QqSourceAdapter implements VendorAdapter {
      *
      * @param code    consumed authorization code
      * @param secret  owned App Key lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified QQ Open Platform identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> open(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             final Outcome<Access> token;
             try (secret) {
@@ -583,9 +587,11 @@ public final class QqSourceAdapter implements VendorAdapter {
                             timeout);
                     case Outcome.Rejected<OpenIdentity> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<OpenIdentity> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 };
                 case Outcome.Rejected<Access> rejected -> Outcome.rejected(rejected.failure());
                 case Outcome.Failed<Access> failed -> Outcome.failed(failed.failure());
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             };
         }, services.executor());
     }
@@ -595,23 +601,23 @@ public final class QqSourceAdapter implements VendorAdapter {
      *
      * @param code    consumed authorization code
      * @param secret  open App Key lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return private token material without fabricated token type
      */
-    private Outcome<Access> token(final String code, final SecretLease secret, final Timeout.Budget timeout) {
+    private Outcome<Access> token(final String code, final SecretLease secret, final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "QQ token request has no remaining time budget");
+            return failed(ErrorCode._408, "QQ token request has no remaining timeout");
         }
         try {
             final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
+                    .method(Http.Method.POST)
                     .query(OAuth2.Parameters.CODE, Assert.notBlank(code, "QQ authorization code must not be blank"))
                     .query(OAuth2.Parameters.CLIENT_ID, options.clientId())
                     .query(OAuth2.Parameters.CLIENT_SECRET, secret(secret))
                     .query(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value())
                     .query(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull())
-                    .header(Http.Header.ACCEPT, MediaType.TEXT_PLAIN).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+                    .header(Http.Header.ACCEPT, MediaType.TEXT_PLAIN)
                     .body(Normal.EMPTY_BYTE_ARRAY, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 return token(response);
             }
@@ -626,7 +632,7 @@ public final class QqSourceAdapter implements VendorAdapter {
      * @param response owned token endpoint response
      * @return private access result or safely classified failure
      */
-    private Outcome<Access> token(final HttpResponse response) {
+    private Outcome<Access> token(final Response response) {
         try {
             final TextTokenWire wire = TextTokenWire.decode(formCodec.decode(response.bytes(MAXIMUM_RESPONSE_BYTES)));
             if (wire.failed()) {
@@ -647,20 +653,19 @@ public final class QqSourceAdapter implements VendorAdapter {
      * Resolves the QQ OpenID and optional UnionID from its exact JSONP operation.
      *
      * @param access  private access result
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return client-bound OpenID result
      */
-    private Outcome<OpenIdentity> openId(final Access access, final Timeout.Budget timeout) {
+    private Outcome<OpenIdentity> openId(final Access access, final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "QQ OpenID request has no remaining time budget");
+            return failed(ErrorCode._408, "QQ OpenID request has no remaining timeout");
         }
         try {
             final String endpoint = variant.targets().resolve(options).introspection().getOrNull().url().toString();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                    .query(OAuth2.Parameters.ACCESS_TOKEN, access.accessToken())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
+                    .method(Http.Method.GET).query(OAuth2.Parameters.ACCESS_TOKEN, access.accessToken())
                     .query("unionid", options.preferUnionId() ? 1 : 0).header(Http.Header.ACCEPT, MediaType.TEXT_PLAIN)
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute()) {
+                    .execute()) {
                 return openId(response);
             }
         } catch (RuntimeException cause) {
@@ -674,7 +679,7 @@ public final class QqSourceAdapter implements VendorAdapter {
      * @param response owned OpenID endpoint response
      * @return client-bound OpenID and optional UnionID
      */
-    private Outcome<OpenIdentity> openId(final HttpResponse response) {
+    private Outcome<OpenIdentity> openId(final Response response) {
         try {
             if (response.code() != Http.Status.OK) {
                 return response.code() >= Http.Status.INTERNAL_SERVER_ERROR
@@ -715,23 +720,19 @@ public final class QqSourceAdapter implements VendorAdapter {
      *
      * @param access   private access result
      * @param identity client-bound OpenID result
-     * @param timeout  shared end-to-end budget
+     * @param timeout  shared end-to-end timeout
      * @return verified QQ Open Platform identity
      */
-    private Outcome<ExternalIdentity> profile(
-            final Access access,
-            final OpenIdentity identity,
-            final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final Access access, final OpenIdentity identity, final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "QQ profile request has no remaining time budget");
+            return failed(ErrorCode._408, "QQ profile request has no remaining timeout");
         }
         try {
             final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                    .query(OAuth2.Parameters.ACCESS_TOKEN, access.accessToken())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
+                    .method(Http.Method.GET).query(OAuth2.Parameters.ACCESS_TOKEN, access.accessToken())
                     .query("oauth_consumer_key", options.clientId()).query("openid", identity.openId())
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute()) {
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                 return profile(response, identity, timeout);
             }
         } catch (RuntimeException cause) {
@@ -748,9 +749,9 @@ public final class QqSourceAdapter implements VendorAdapter {
      * @return verified external identity
      */
     private Outcome<ExternalIdentity> profile(
-            final HttpResponse response,
+            final Response response,
             final OpenIdentity identity,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         try {
             final JsonValue.ObjectValue object = object(response, Protocol.OAUTH2);
             if (!members(WireKind.PROFILE, object.values().keySet())) {
@@ -785,13 +786,13 @@ public final class QqSourceAdapter implements VendorAdapter {
      *
      * @param code    runtime one-time code
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return completed direct Source initiation
      */
     private CompletionStage<Outcome<SourceWorkflow.Stage>> mini(
             final String code,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final var policy = services.securityBaseline().require(Protocol.VENDOR_AUTH);
         return services.securityBaseline().replayGuard(services.replayCache())
                 .register(
@@ -812,9 +813,11 @@ public final class QqSourceAdapter implements VendorAdapter {
                                 case Outcome.Rejected<SecretLease> rejected -> completed(
                                         Outcome.rejected(rejected.failure()));
                                 case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                                default -> throw new IllegalStateException("Unsupported Outcome implementation");
                             });
                     case Outcome.Rejected<Void> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<Void> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -823,33 +826,33 @@ public final class QqSourceAdapter implements VendorAdapter {
      *
      * @param code    replay-registered one-time code
      * @param secret  owned App Secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return completed direct Source initiation
      */
     private CompletionStage<Outcome<SourceWorkflow.Stage>> codeSession(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try (secret) {
                 if (timeout.expired()) {
                     return QqSourceAdapter.<SourceWorkflow.Stage>failed(
                             ErrorCode._408,
-                            "QQ Mini Program request has no remaining time budget");
+                            "QQ Mini Program request has no remaining timeout");
                 }
                 final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                        .query("appid", options.clientId()).query("secret", secret(secret)).query("js_code", code)
+                try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
+                        .method(Http.Method.GET).query("appid", options.clientId()).query("secret", secret(secret))
+                        .query("js_code", code)
                         .query(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value())
-                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.VENDOR_AUTH).addressPolicy())
-                        .execute()) {
+                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                     final Outcome<ExternalIdentity> identity = mini(response, timeout);
                     return switch (identity) {
                         case Outcome.Succeeded<ExternalIdentity> success -> Outcome
                                 .succeeded(new SourceWorkflow.Stage.Completed(success.value()));
                         case Outcome.Rejected<ExternalIdentity> rejected -> Outcome.rejected(rejected.failure());
                         case Outcome.Failed<ExternalIdentity> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     };
                 }
             } catch (RuntimeException cause) {
@@ -865,7 +868,7 @@ public final class QqSourceAdapter implements VendorAdapter {
      * @param timeout  shared clock used for evidence timestamping
      * @return verified Mini Program identity
      */
-    private Outcome<ExternalIdentity> mini(final HttpResponse response, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> mini(final Response response, final Timeout timeout) {
         try {
             final JsonValue.ObjectValue object = object(response, Protocol.VENDOR_AUTH);
             if (!members(WireKind.MINI, object.values().keySet())) {
@@ -897,13 +900,16 @@ public final class QqSourceAdapter implements VendorAdapter {
      * Resolves one operation-scoped QQ client secret with closed exception handling.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return secret resolution outcome stage
      */
-    private CompletionStage<Outcome<SecretLease>> resolve(final Context context, final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<SecretLease>> resolve(final Context context, final Timeout timeout) {
         try {
             final CompletionStage<Outcome<SecretLease>> stage = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
             if (stage == null) {
                 return completed(failed(ErrorCode._502, "QQ client-secret loader returned no stage"));
@@ -938,7 +944,7 @@ public final class QqSourceAdapter implements VendorAdapter {
      * @param protocol selected security baseline protocol
      * @return immutable provider-neutral JSON object
      */
-    private JsonValue.ObjectValue object(final HttpResponse response, final Protocol protocol) {
+    private JsonValue.ObjectValue object(final Response response, final Protocol protocol) {
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("QQ response must use application/json");
         }

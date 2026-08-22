@@ -24,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationRequest;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.ResponseType;
@@ -40,6 +41,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.*;
@@ -51,8 +53,6 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements Facebook Login with Graph API v26.0 while publishing only standard OAuth authorization.
@@ -64,7 +64,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class FacebookSourceAdapter implements VendorAdapter {
+public class FacebookSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted Graph authority recorded in federated identity evidence.
@@ -400,6 +400,7 @@ public final class FacebookSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -500,7 +501,7 @@ public final class FacebookSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing Facebook private models
@@ -510,10 +511,10 @@ public final class FacebookSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Facebook capability must not be null");
         Assert.notNull(context, "Facebook invocation context must not be null");
-        Assert.notNull(timeout, "Facebook invocation budget must not be null");
+        Assert.notNull(timeout, "Facebook invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return missing();
         }
@@ -539,16 +540,16 @@ public final class FacebookSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated browser correlation without nonce or PKCE
      * @param context    immutable invocation context retained for operation consistency
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return exact redirect and state correlation
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "Facebook authorization context must not be null");
         if (timeout.expired()) {
-            return completed(failed(ErrorCode._408, "Facebook authorization has no remaining time budget"));
+            return completed(failed(ErrorCode._408, "Facebook authorization has no remaining timeout"));
         }
         if (initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(
@@ -585,13 +586,13 @@ public final class FacebookSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback correlation without PKCE verifier
      * @param context    immutable invocation context used for one secret resolution
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified Facebook identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CallbackWire callback;
         try {
             callback = callback(completion.callback());
@@ -611,8 +612,10 @@ public final class FacebookSourceAdapter implements VendorAdapter {
         }
         return Outcome
                 .mapStage(
-                        () -> services.secretLoader()
-                                .load(services.registration(), options.credential(), context, timeout),
+                        () -> services.secretLoader().load(
+                                new SecretLoader.Request(services.registration(), options.credential()),
+                                context,
+                                timeout),
                         loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> authenticate(
@@ -621,6 +624,7 @@ public final class FacebookSourceAdapter implements VendorAdapter {
                             timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -629,19 +633,20 @@ public final class FacebookSourceAdapter implements VendorAdapter {
      *
      * @param code    consumed authorization code
      * @param secret  owned app-secret lease closed by this asynchronous operation
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> authenticate(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try (secret) {
                 return switch (token(code, secret, timeout)) {
                     case Outcome.Succeeded<Access> success -> profile(success.value(), secret, timeout);
                     case Outcome.Rejected<Access> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<Access> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 };
             } catch (RuntimeException cause) {
                 return failed(ErrorCode._502, "Facebook authentication completion failed");
@@ -654,22 +659,22 @@ public final class FacebookSourceAdapter implements VendorAdapter {
      *
      * @param code    sensitive authorization code
      * @param secret  still-open app-secret lease shared with profile proof generation
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return private access result or safely classified Graph failure
      */
-    private Outcome<Access> token(final String code, final SecretLease secret, final Timeout.Budget timeout) {
+    private Outcome<Access> token(final String code, final SecretLease secret, final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "Facebook token request has no remaining time budget");
+            return failed(ErrorCode._408, "Facebook token request has no remaining timeout");
         }
         try {
             final var endpoint = variant.targets().resolve(options).token().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.GET).query(OAuth2.Parameters.CLIENT_ID, options.clientId())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.GET)
+                    .query(OAuth2.Parameters.CLIENT_ID, options.clientId())
                     .query(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull())
                     .query(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material()))
                     .query(OAuth2.Parameters.CODE, code).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute()) {
+                    .execute()) {
                 return token(response);
             }
         } catch (RuntimeException cause) {
@@ -683,7 +688,7 @@ public final class FacebookSourceAdapter implements VendorAdapter {
      * @param response owned token endpoint response
      * @return private access result or safely classified Graph failure
      */
-    private Outcome<Access> token(final HttpResponse response) {
+    private Outcome<Access> token(final Response response) {
         try {
             final JsonValue.ObjectValue object = object(response);
             if (object.values().size() == 2 && object.values().containsKey(OAuth2.Parameters.ACCESS_TOKEN)
@@ -709,29 +714,25 @@ public final class FacebookSourceAdapter implements VendorAdapter {
      *
      * @param access  private access-token result
      * @param secret  still-open app-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
-    private Outcome<ExternalIdentity> profile(
-            final Access access,
-            final SecretLease secret,
-            final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final Access access, final SecretLease secret, final Timeout timeout) {
         byte[] key = null;
         byte[] message = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Facebook profile request has no remaining time budget");
+                return failed(ErrorCode._408, "Facebook profile request has no remaining timeout");
             }
             key = new String(secret.material()).getBytes(Charset.UTF_8);
             message = access.accessToken().getBytes(Charset.UTF_8);
             final String proof = Builder.hmacSha256(key).digestHex(message);
             final var endpoint = variant.targets().resolve(options).userInfo().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.GET)
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.GET)
                     .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + access.accessToken())
                     .query("fields", PROFILE_FIELDS).query("appsecret_proof", proof)
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute()) {
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                 return profile(response, timeout);
             }
         } catch (RuntimeException cause) {
@@ -749,7 +750,7 @@ public final class FacebookSourceAdapter implements VendorAdapter {
      * @param timeout  shared clock used for evidence verification time
      * @return verified identity or safely classified Graph failure
      */
-    private Outcome<ExternalIdentity> profile(final HttpResponse response, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final Response response, final Timeout timeout) {
         try {
             final JsonValue.ObjectValue object = object(response);
             if (object.values().size() == 1 && object.values().containsKey(OAuth2.Parameters.ERROR)) {
@@ -852,7 +853,7 @@ public final class FacebookSourceAdapter implements VendorAdapter {
      * @return strict provider-neutral JSON object
      * @throws ValidateException if media, JSON shape, depth, or duplicate members are invalid
      */
-    private JsonValue.ObjectValue object(final HttpResponse response) {
+    private JsonValue.ObjectValue object(final Response response) {
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("Facebook Graph response must use application/json");
         }

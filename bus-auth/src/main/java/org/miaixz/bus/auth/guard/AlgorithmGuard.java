@@ -41,7 +41,7 @@ import org.miaixz.bus.crypto.builtin.asymmetric.KeyType;
  *
  * @author Kimi Liu
  */
-public final class AlgorithmGuard {
+public class AlgorithmGuard {
 
     /**
      * Creates a stateless algorithm guard.

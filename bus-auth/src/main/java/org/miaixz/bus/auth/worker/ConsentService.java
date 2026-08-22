@@ -50,30 +50,30 @@ public interface ConsentService {
      *
      * @param request validated authorization context
      * @param context immutable non-secret invocation context
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return stage containing an optional snapshot, expected rejection, or operational failure
      */
-    CompletionStage<Outcome<Optional<Snapshot>>> find(Request request, Context context, Timeout.Budget timeout);
+    CompletionStage<Outcome<Optional<Snapshot>>> find(Request request, Context context, Timeout timeout);
 
     /**
      * Obtains an explicit approval or denial from the external consent implementation.
      *
      * @param request validated authorization context and minimum display data
      * @param context immutable non-secret invocation context
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return stage containing a bounded decision, expected rejection, or operational failure
      */
-    CompletionStage<Outcome<Decision>> decide(Request request, Context context, Timeout.Budget timeout);
+    CompletionStage<Outcome<Decision>> decide(Request request, Context context, Timeout timeout);
 
     /**
      * Records an approved consent snapshot through the external persistence implementation.
      *
      * @param request approved decision and validity timestamps
      * @param context immutable non-secret invocation context
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return stage containing the stored snapshot, expected rejection, or operational failure
      */
-    CompletionStage<Outcome<Snapshot>> record(Save request, Context context, Timeout.Budget timeout);
+    CompletionStage<Outcome<Snapshot>> record(Save request, Context context, Timeout timeout);
 
     /**
      * Carries the minimum validated, non-secret authorization context displayed by an external consent implementation.
@@ -86,6 +86,8 @@ public interface ConsentService {
      * @param redirectUri validated redirect URI lexical value
      * @param scopes      non-empty requested OAuth scope-token set
      * @param resources   ordered requested resource indicators
+     *
+     * @author Kimi Liu
      */
     record Request(String sourceId, String providerId, Subject.Reference subject, String clientId, String clientName,
             String redirectUri, Set<String> scopes, List<String> resources) {
@@ -117,6 +119,8 @@ public interface ConsentService {
      * @param request       immutable authorization context presented for decision
      * @param status        explicit approval or denial
      * @param grantedScopes exact approved scope subset, empty for denial
+     *
+     * @author Kimi Liu
      */
     record Decision(Request request, Status status, Set<String> grantedScopes) {
 
@@ -172,6 +176,8 @@ public interface ConsentService {
      * @param resources  ordered authorized resource indicators
      * @param grantedAt  instant at which authorization was granted
      * @param expiresAt  optional exclusive expiration instant
+     *
+     * @author Kimi Liu
      */
     record Snapshot(String sourceId, String providerId, Subject.Reference subject, String clientId, Set<String> scopes,
             List<String> resources, Instant grantedAt, Optional<Instant> expiresAt) {
@@ -266,13 +272,19 @@ public interface ConsentService {
 
     /**
      * Enumerates the only application-level consent outcomes.
+     *
+     * @author Kimi Liu
      */
     enum Status {
 
-        /** The subject approved a non-empty subset of requested scopes. */
+        /**
+         * The subject approved a non-empty subset of requested scopes.
+         */
         APPROVED,
 
-        /** The subject denied the consent interaction. */
+        /**
+         * The subject denied the consent interaction.
+         */
         DENIED
 
     }

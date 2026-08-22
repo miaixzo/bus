@@ -33,12 +33,12 @@ import org.miaixz.bus.core.lang.Assert;
  * <p>
  * RuntimeServices remain owned by the external project. Closing this runtime rejects new authentication and reload
  * operations, but preserves the last immutable Registry snapshot for read-only inspection. It never closes the caller's
- * executor, Fabric context, cache backend, loaders, JSON provider, audit sink, or consent service.
+ * executor, FabricX facade, cache backend, loaders, JSON provider, audit sink, or consent service.
  * </p>
  *
  * @author Kimi Liu
  */
-public final class RuntimeManager implements Lifecycle, AutoCloseable {
+public class RuntimeManager implements Lifecycle, AutoCloseable {
 
     /**
      * Only public gateway to compiled Source capabilities.
@@ -81,9 +81,9 @@ public final class RuntimeManager implements Lifecycle, AutoCloseable {
      * @param containers    current executable container cell
      * @throws IllegalArgumentException if a dependency is {@code null}
      */
-    RuntimeManager(final Registry registry, final Dispatcher dispatcher, final RuntimeReloadService reloadService,
-            final RuntimeDescriptor descriptor, final RuntimeLifecycle lifecycle,
-            final RuntimeContainer.Cell containers) {
+    public RuntimeManager(final Registry registry, final Dispatcher dispatcher,
+            final RuntimeReloadService reloadService, final RuntimeDescriptor descriptor,
+            final RuntimeLifecycle lifecycle, final RuntimeContainer.Cell containers) {
         this.registry = Assert.notNull(registry, "Authentication Registry must not be null");
         this.dispatcher = Assert.notNull(dispatcher, "Capability dispatcher must not be null");
         this.reloadService = Assert.notNull(reloadService, "Runtime reload service must not be null");
@@ -121,15 +121,29 @@ public final class RuntimeManager implements Lifecycle, AutoCloseable {
 
     /**
      * Loads, validates, compiles, and atomically publishes one complete external registration snapshot.
+     * <p>
+     * Reload is an explicit security boundary, not a passive Registry refresh. On a successful commit, the strictly
+     * increasing snapshot revision becomes the cache generation of every compiled Source. New invocations can no longer
+     * redeem or validate authorization codes, device codes, access tokens, refresh tokens, framework protocol sessions,
+     * callback states, nonces, authorization lifecycle entries, or ID Token logout bindings created by an older
+     * revision. Old backend entries are left unreachable until their existing TTL expires; reload never performs a
+     * distributed key scan or bulk deletion.
+     * </p>
+     * <p>
+     * Failed loading, validation, compilation, timeout, lifecycle, or concurrent-commit attempts leave both the active
+     * runtime and its generation unchanged. Replay markers deliberately remain shared across revisions until their TTL
+     * expires, so reload cannot reopen a replay window. Project-owned web or business sessions are not bulk-deleted;
+     * only framework protocol Session state is generation-bound.
+     * </p>
      *
      * @param context immutable non-secret invocation context
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return stage containing the validation or commit report for the attempted snapshot
      * @throws IllegalArgumentException if an argument is {@code null}
      */
-    public CompletionStage<Registry.Report> reload(final Context context, final Timeout.Budget timeout) {
+    public CompletionStage<Registry.Report> reload(final Context context, final Timeout timeout) {
         Assert.notNull(context, "Runtime reload context must not be null");
-        Assert.notNull(timeout, "Runtime reload budget must not be null");
+        Assert.notNull(timeout, "Runtime reload timeout must not be null");
         return reloadService.reload(context, timeout);
     }
 

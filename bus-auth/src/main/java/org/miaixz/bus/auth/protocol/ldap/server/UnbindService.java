@@ -37,7 +37,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class UnbindService {
+public class UnbindService {
 
     /**
      * Compiled server-role Source identifier.
@@ -93,16 +93,16 @@ public final class UnbindService {
      *
      * @param message complete Unbind request message
      * @param context immutable invocation context with a trusted connection snapshot
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing only internal empty success or a closed failure
      */
     public CompletionStage<Outcome<Void>> unbind(
             final LdapMessage message,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(message, "LDAP Unbind message must not be null");
         Assert.notNull(context, "LDAP Unbind context must not be null");
-        Assert.notNull(timeout, "LDAP Unbind time budget must not be null");
+        Assert.notNull(timeout, "LDAP Unbind timeout must not be null");
         if (!(message.protocolOp() instanceof UnbindRequest request) || message.messageId() <= 0
                 || hasCriticalControl(message)) {
             return CompletableFuture.completedFuture(Outcome.succeeded(null));
@@ -110,7 +110,7 @@ public final class UnbindService {
         Assert.isTrue(context.network().connection().isPresent(), "LDAP Unbind requires a trusted connection snapshot");
         final String connectionId = context.network().connection().getOrThrow().id();
         if (timeout.expired()) {
-            return CompletableFuture.completedFuture(Outcome.failed(failure("LDAP Unbind time budget expired")));
+            return CompletableFuture.completedFuture(Outcome.failed(failure("LDAP Unbind timeout expired")));
         }
         final CompletionStage<Outcome<Void>> stage;
         try {

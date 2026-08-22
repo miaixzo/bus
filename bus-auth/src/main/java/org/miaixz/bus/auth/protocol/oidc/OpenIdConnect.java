@@ -30,7 +30,7 @@ import org.miaixz.bus.core.net.Protocol;
  *
  * @author Kimi Liu
  */
-public final class OpenIdConnect {
+public class OpenIdConnect {
 
     /**
      * Complete OpenID Connect authentication operation composed over OAuth 2.x authorization and token exchange.
@@ -54,9 +54,9 @@ public final class OpenIdConnect {
     public static final Capability.Key END_SESSION = Capability.Key.standard(Protocol.OIDC, "end_session");
 
     /**
-     * Prevents instantiation of the OpenID Connect operation namespace.
+     * Creates an OpenID Connect operation namespace instance with no retained state.
      */
-    private OpenIdConnect() {
+    public OpenIdConnect() {
         // No initialization required.
     }
 
@@ -81,7 +81,7 @@ public final class OpenIdConnect {
     /**
      * Defines OpenID Connect authentication and logout request parameter names.
      */
-    public static final class Parameters {
+    public static class Parameters {
 
         /**
          * Requested authentication context class reference parameter name.
@@ -149,9 +149,9 @@ public final class OpenIdConnect {
         public static final String UI_LOCALES = "ui_locales";
 
         /**
-         * Prevents instantiation of the OpenID Connect parameter namespace.
+         * Creates an OpenID Connect request-parameter namespace instance.
          */
-        private Parameters() {
+        public Parameters() {
             // No initialization required.
         }
 
@@ -160,7 +160,7 @@ public final class OpenIdConnect {
     /**
      * Defines OpenID Connect ID Token and UserInfo claim names beyond the registered JWT claims.
      */
-    public static final class Claims {
+    public static class Claims {
 
         /**
          * Authentication context class reference claim name.
@@ -320,9 +320,9 @@ public final class OpenIdConnect {
         public static final String VALUES = "values";
 
         /**
-         * Prevents instantiation of the OpenID Connect claim namespace.
+         * Creates an OpenID Connect claim-name namespace instance.
          */
-        private Claims() {
+        public Claims() {
             // No initialization required.
         }
 
@@ -331,7 +331,7 @@ public final class OpenIdConnect {
     /**
      * Defines OpenID Connect scope values introduced beyond OAuth 2.x.
      */
-    public static final class Scopes {
+    public static class Scopes {
 
         /**
          * Mandatory OpenID Connect authentication scope value.
@@ -355,9 +355,9 @@ public final class OpenIdConnect {
         public static final String PHONE = "phone";
 
         /**
-         * Prevents instantiation of the OpenID Connect scope namespace.
+         * Creates an OpenID Connect scope namespace instance.
          */
-        private Scopes() {
+        public Scopes() {
             // No initialization required.
         }
 
@@ -366,7 +366,7 @@ public final class OpenIdConnect {
     /**
      * Defines response mode values used by OpenID Connect authorization responses.
      */
-    public static final class ResponseModes {
+    public static class ResponseModes {
 
         /**
          * Query-encoded authorization response mode.
@@ -382,9 +382,9 @@ public final class OpenIdConnect {
         public static final String FORM_POST = "form_post";
 
         /**
-         * Prevents instantiation of the OpenID Connect response-mode namespace.
+         * Creates an OpenID Connect response-mode namespace instance.
          */
-        private ResponseModes() {
+        public ResponseModes() {
             // No initialization required.
         }
 
@@ -393,7 +393,7 @@ public final class OpenIdConnect {
     /**
      * Defines OpenID Provider metadata member names introduced by OpenID Connect Discovery.
      */
-    public static final class Metadata {
+    public static class Metadata {
 
         /**
          * Authentication context support metadata member name.
@@ -469,9 +469,9 @@ public final class OpenIdConnect {
         public static final String USERINFO_SIGNING_ALGORITHMS_SUPPORTED = "userinfo_signing_alg_values_supported";
 
         /**
-         * Prevents instantiation of the OpenID Provider metadata namespace.
+         * Creates an OpenID Provider metadata-name namespace instance.
          */
-        private Metadata() {
+        public Metadata() {
             // No initialization required.
         }
 

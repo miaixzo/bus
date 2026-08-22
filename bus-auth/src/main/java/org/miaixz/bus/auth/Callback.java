@@ -24,10 +24,10 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.auth.FabricX.Headers;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.fabric.Headers;
 
 /**
  * Defines the single protocol-neutral callback transport and correlation contract.
@@ -39,12 +39,12 @@ import org.miaixz.bus.fabric.Headers;
  *
  * @author Kimi Liu
  */
-public final class Callback {
+public class Callback {
 
     /**
-     * Prevents instantiation of the callback contract namespace.
+     * Creates a callback contract namespace instance with no retained state.
      */
-    private Callback() {
+    public Callback() {
         // No initialization required.
     }
 

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.miaixz.bus.auth.FabricX;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
@@ -36,22 +37,20 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.codec.frame.Frame;
-import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 
 /**
  * Frames LDAPv3 messages on a Fabric byte stream and supplies restricted BER primitives to LDAP message codecs.
  * <p>
  * LDAP uses the definite-length Basic Encoding Rules rather than a separate transport length prefix. This codec
  * therefore retains incoming bytes until one complete top-level LDAPMessage SEQUENCE is available and emits the
- * complete TLV as one Fabric frame. The package-private reader and writer deliberately implement only the BER forms
+ * complete TLV as one transport frame. The package-private reader and writer deliberately implement only the BER forms
  * required by RFC 4511; protocol-operation mapping remains in {@link LdapMessageDecoder} and
  * {@link LdapMessageEncoder}.
  * </p>
  *
  * @author Kimi Liu
  */
-public final class BerCodec implements FrameCodec {
+public class BerCodec implements FabricX.Framer {
 
     /**
      * Universal constructed SEQUENCE tag required at the LDAPMessage boundary.
@@ -88,7 +87,7 @@ public final class BerCodec implements FrameCodec {
      *
      * @param maximumMessageBytes positive maximum complete LDAPMessage size
      * @param maximumDepth        positive maximum nested BER element depth
-     * @throws ValidateException if a limit is non-positive or the message limit exceeds Fabric frame range
+     * @throws ValidateException if a limit is non-positive or exceeds the supported transport frame range
      */
     public BerCodec(final long maximumMessageBytes, final int maximumDepth) {
         if (maximumMessageBytes <= 0 || maximumMessageBytes > Integer.MAX_VALUE) {
@@ -132,17 +131,17 @@ public final class BerCodec implements FrameCodec {
      * @throws ProtocolException if a top-level tag or definite length is invalid or exceeds the configured limit
      */
     @Override
-    public List<Frame> decode(final Buffer input) {
+    public List<ByteString> decode(final Buffer input) {
         final Buffer current = Assert.notNull(input, () -> new ValidateException("LDAP BER input must not be null"));
         if (current.size() == 0) {
             throw new ValidateException("LDAP BER input must not be empty");
         }
         accumulator.write(current, current.size());
-        final List<Frame> frames = new ArrayList<>();
+        final List<ByteString> frames = new ArrayList<>();
         long frameLength;
         while ((frameLength = completeFrameLength(accumulator)) >= 0) {
             try {
-                frames.add(Frame.of(accumulator.readByteString(frameLength)));
+                frames.add(accumulator.readByteString(frameLength));
             } catch (EOFException exception) {
                 throw new InternalException("Unable to consume a complete LDAP BER frame", exception);
             }
@@ -153,27 +152,13 @@ public final class BerCodec implements FrameCodec {
     /**
      * Writes one already encoded complete LDAPMessage TLV without adding a transport prefix.
      *
-     * @param frame  complete LDAPMessage frame
-     * @param output destination stream buffer
+     * @param payload complete LDAPMessage frame payload
+     * @param output  destination stream buffer
      * @throws ValidateException if an argument is {@code null}
      * @throws ProtocolException if the payload is not exactly one valid bounded LDAPMessage frame
      */
     @Override
-    public void encode(final Frame frame, final Buffer output) {
-        final Frame current = Assert.notNull(frame, () -> new ValidateException("LDAP BER frame must not be null"));
-        encodeOwned(current.payload(), output);
-    }
-
-    /**
-     * Writes one immutable complete LDAPMessage payload without an intermediate Frame allocation.
-     *
-     * @param payload complete LDAPMessage TLV
-     * @param output  destination stream buffer
-     * @throws ValidateException if an argument is {@code null}
-     * @throws ProtocolException if the payload is empty, malformed, trailing, or exceeds the configured limit
-     */
-    @Override
-    public void encodeOwned(final ByteString payload, final Buffer output) {
+    public void encode(final ByteString payload, final Buffer output) {
         final ByteString current = Assert
                 .notNull(payload, () -> new ValidateException("LDAP BER payload must not be null"));
         final Buffer target = Assert.notNull(output, () -> new ValidateException("LDAP BER output must not be null"));

@@ -28,6 +28,7 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.protocol.radius.*;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -42,7 +43,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class AccountingService {
+public class AccountingService {
 
     /**
      * Compiled server-role Source identifier.
@@ -209,18 +210,18 @@ public final class AccountingService {
      *
      * @param request complete standard Accounting-Request
      * @param context immutable invocation context with trusted network metadata
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return stage containing Accounting-Response or a silent-discard failure
      */
     public CompletionStage<Outcome<AccountingResponse>> accounting(
             final AccountingRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "RADIUS Accounting-Request must not be null");
         Assert.notNull(context, "RADIUS Accounting context must not be null");
-        Assert.notNull(timeout, "RADIUS Accounting time budget must not be null");
+        Assert.notNull(timeout, "RADIUS Accounting timeout must not be null");
         if (timeout.expired()) {
-            return unavailable("RADIUS Accounting time budget expired");
+            return unavailable("RADIUS Accounting timeout expired");
         }
         if (!validTransport(request, context) || !validAttributes(request)) {
             return discard("RADIUS Accounting-Request failed protocol validation");
@@ -247,6 +248,7 @@ public final class AccountingService {
                             Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<RadiusRequestHandler.Client> failed -> completed(
                             Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 }).exceptionally(
                         exception -> Outcome.failed(
                                 failure(ErrorCode._503, "RADIUS Accounting client resolution failed asynchronously")));
@@ -257,14 +259,14 @@ public final class AccountingService {
      *
      * @param request validated Accounting request
      * @param context invocation context
-     * @param timeout operation budget
+     * @param timeout operation timeout
      * @param client  resolved client
      * @return durable Accounting stage
      */
     private CompletionStage<Outcome<AccountingResponse>> client(
             final AccountingRequest request,
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final RadiusRequestHandler.Client client) {
         if (client == null || !client.allowedCodes().contains(new RadiusCode(Radius.Codes.ACCOUNTING_REQUEST))) {
             return discard("RADIUS client is not permitted to send Accounting-Request");
@@ -299,6 +301,7 @@ public final class AccountingService {
                     }
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -308,14 +311,14 @@ public final class AccountingService {
      * @param request validated Accounting request
      * @param client  resolved client
      * @param context context carrying verified client id
-     * @param timeout operation budget
+     * @param timeout operation timeout
      * @return handler response stage
      */
     private CompletionStage<Outcome<AccountingResponse>> invokeHandler(
             final AccountingRequest request,
             final RadiusRequestHandler.Client client,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CompletionStage<Outcome<AccountingResponse>> stage;
         try {
             stage = handler.accounting(providerId, client, request, context, timeout);
@@ -334,6 +337,7 @@ public final class AccountingService {
                     timeout);
             case Outcome.Rejected<AccountingResponse> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<AccountingResponse> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -344,7 +348,7 @@ public final class AccountingService {
      * @param request  matching request
      * @param client   resolved client
      * @param context  verified-client context
-     * @param timeout  operation budget
+     * @param timeout  operation timeout
      * @return transport-ready Accounting-Response stage
      */
     private CompletionStage<Outcome<AccountingResponse>> finish(
@@ -352,7 +356,7 @@ public final class AccountingService {
             final AccountingRequest request,
             final RadiusRequestHandler.Client client,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (response == null || !response.header().equals(request.header())) {
             return unavailable("RADIUS Accounting handler returned an invalid response correlation");
         }
@@ -373,6 +377,7 @@ public final class AccountingService {
                     case Outcome.Succeeded<SecretLease> succeeded -> sign(correlated, request, succeeded.value());
                     case Outcome.Rejected<SecretLease> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<SecretLease> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -419,16 +424,17 @@ public final class AccountingService {
      *
      * @param reference exact shared-secret reference
      * @param context   invocation context
-     * @param timeout   operation budget
+     * @param timeout   operation timeout
      * @return loader/parser stage or {@code null} when the loader returned no stage
      */
     private CompletionStage<Outcome<SecretLease>> resolveSecret(
             final Credential.Reference reference,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         try {
             return Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), reference, context, timeout),
+                    () -> services.secretLoader()
+                            .load(new SecretLoader.Request(services.registration(), reference), context, timeout),
                     loaded -> services.secretParser().parse(services.registration(), reference, loaded));
         } catch (RuntimeException exception) {
             return completed(

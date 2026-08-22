@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
@@ -38,7 +40,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Declares the immutable JD OAuth 2.0 Vendor manifest and its Zeus profile-operation deviations.
@@ -49,7 +50,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class JdManifest implements VariantManifest<JdOptions> {
+public class JdManifest implements VariantManifest<JdOptions> {
 
     /**
      * Stable JD platform routing identifier.
@@ -73,7 +74,7 @@ public final class JdManifest implements VariantManifest<JdOptions> {
      * Complete immutable endpoint, scope, capability, and deviation manifest.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OAUTH2,
-            List.of("snsapi_base"),
+            VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of("snsapi_base"),
             new VendorTargets(Optional.of(
                     fixed("https://open-oauth.jd.com/oauth2/to_login", Http.Method.GET, Endpoint.Authentication.NONE)),
                     Optional.of(
@@ -188,7 +189,7 @@ public final class JdManifest implements VariantManifest<JdOptions> {
             final String value,
             final Http.Method method,
             final Endpoint.Authentication authentication) {
-        return new VendorTargets.Fixed(new Endpoint(UnoUrl.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
+        return new VendorTargets.Fixed(new Endpoint(Url.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
                 Set.of(authentication), Optional.empty(), TlsClientAuth.NONE));
     }
 

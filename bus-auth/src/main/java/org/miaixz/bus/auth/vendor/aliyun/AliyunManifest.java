@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.auth.protocol.oidc.client.OpenIdClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
@@ -36,14 +38,13 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Declares the frozen Alibaba Cloud OpenID Connect Vendor manifest.
  *
  * @author Kimi Liu
  */
-public final class AliyunManifest implements VariantManifest<AliyunOptions> {
+public class AliyunManifest implements VariantManifest<AliyunOptions> {
 
     /**
      * Stable platform routing identifier shared by registration, catalog, and runtime compilation.
@@ -72,7 +73,8 @@ public final class AliyunManifest implements VariantManifest<AliyunOptions> {
      * Complete immutable endpoint, client-policy, scope, capability, and form manifest for the default variant.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OIDC,
-            VariantManifest.Pkce.REQUIRED, List.of(OpenIdConnect.Scopes.OPENID, OpenIdConnect.Scopes.PROFILE),
+            VariantManifest.Pkce.REQUIRED, Credential.Type.CLIENT_SECRET,
+            List.of(OpenIdConnect.Scopes.OPENID, OpenIdConnect.Scopes.PROFILE),
             new VendorTargets(Optional.of(
                     fixed("https://signin.aliyun.com/oauth2/v1/auth", Http.Method.GET, Endpoint.Authentication.NONE)),
                     Optional.of(
@@ -127,7 +129,7 @@ public final class AliyunManifest implements VariantManifest<AliyunOptions> {
             final String value,
             final Http.Method method,
             final Endpoint.Authentication authentication) {
-        return new VendorTargets.Fixed(new Endpoint(UnoUrl.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
+        return new VendorTargets.Fixed(new Endpoint(Url.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
                 Set.of(authentication), Optional.empty(), TlsClientAuth.NONE));
     }
 

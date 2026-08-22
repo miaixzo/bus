@@ -24,7 +24,7 @@ import org.miaixz.bus.core.lang.Assert;
 /**
  * Represents the unsigned one-octet RADIUS Code registry value.
  * <p>
- * The value object accepts only the six packet Codes represented by the sealed packet model. Numeric registration
+ * The value object accepts only the six packet Codes represented by the built-in packet model. Numeric registration
  * remains exclusively in {@link Radius.Codes}; this type adds validation and value semantics without duplicating the
  * registry table.
  * </p>
@@ -35,10 +35,10 @@ import org.miaixz.bus.core.lang.Assert;
 public record RadiusCode(int value) {
 
     /**
-     * Validates one packet Code supported by the sealed Access and Accounting model.
+     * Validates one packet Code supported by the built-in Access and Accounting model.
      *
      * @param value unsigned one-octet Code value
-     * @throws IllegalArgumentException if the value is not implemented by the sealed packet model
+     * @throws IllegalArgumentException if the value is not implemented by the built-in packet model
      */
     public RadiusCode {
         Assert.isTrue(implemented(value), "RADIUS Code is not implemented by the packet model");

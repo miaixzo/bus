@@ -42,6 +42,7 @@ import org.miaixz.bus.auth.source.*;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.worker.SourceWorker;
 import org.miaixz.bus.auth.worker.WorkerSlots;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -61,7 +62,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
+public class LdapClientDriver implements SourceDriver<LdapClientOptions> {
 
     /**
      * Creates the stateless LDAP Source driver.
@@ -95,10 +96,8 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
 
     @Override
     public Dependencies dependencies(final Source source, final LdapClientOptions options) {
-        return Dependencies.of(
-                Dependencies.Service.FABRIC_CONTEXT,
-                Dependencies.Service.EXECUTOR,
-                Dependencies.Service.SECURITY_BASELINE);
+        return Dependencies
+                .of(Dependencies.Service.FABRIC, Dependencies.Service.EXECUTOR, Dependencies.Service.SECURITY_BASELINE);
     }
 
     /**
@@ -114,7 +113,7 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
     public SourceWorker compile(final Prepared<LdapClientOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "LDAP Source preparation must not be null");
         Assert.notNull(services, "LDAP Source execution services must not be null");
-        final Registration.SourceEntry record = prepared.registration();
+        final Blueprint.SourceEntry record = prepared.registration();
         final Provider provider = prepared.provider();
         final Library library = prepared.library();
         final Source source = record.resource();
@@ -132,7 +131,7 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
                 options.maximumBerDepth());
         final LdapMessageDecoder decoder = new LdapMessageDecoder(options.maximumMessageBytes(),
                 options.maximumBerDepth());
-        final LdapIdentityParser identity = new LdapIdentityParser(options, services.fabricContext().clock());
+        final LdapIdentityParser identity = new LdapIdentityParser(options, FabricX.clock(services.fabric()));
         return new CompiledClient(source.getId(), options, services, frameCodec, encoder, decoder, identity);
     }
 
@@ -253,14 +252,14 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
          * @param client  exclusive LDAP client
          * @param outcome completed authentication outcome
          * @param context immutable invocation context
-         * @param timeout shared budget
+         * @param timeout shared timeout
          * @return original outcome after deterministic cleanup
          */
         private static CompletionStage<Outcome<SourceWorkflow.Stage>> finish(
                 final LdapClient client,
                 final Outcome<SourceWorkflow.Stage> outcome,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             if (!(outcome instanceof Outcome.Succeeded<SourceWorkflow.Stage>)) {
                 client.close();
                 return completed(outcome);
@@ -303,6 +302,7 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
                 case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
                 case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
                 case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+                default -> Outcome.failed(failure(ErrorCode._500, "LDAP Source returned an unsupported outcome"));
             });
         }
 
@@ -366,7 +366,7 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
          * @param capability exact declared capability
          * @param request    direct Source authentication request
          * @param context    immutable invocation context
-         * @param timeout    shared end-to-end budget
+         * @param timeout    shared end-to-end timeout
          * @param <Q>        declared request type
          * @param <S>        declared success type
          * @return completed direct identity initiation or a closed rejection/failure
@@ -376,10 +376,10 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
                 final Capability<Q, S> capability,
                 final Q request,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             Assert.notNull(capability, "LDAP Source capability must not be null");
             Assert.notNull(context, "LDAP Source context must not be null");
-            Assert.notNull(timeout, "LDAP Source time budget must not be null");
+            Assert.notNull(timeout, "LDAP Source timeout must not be null");
             if (!MANIFEST.capabilities().contains(capability)) {
                 return missing();
             }
@@ -397,19 +397,18 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
          *
          * @param request validated direct request
          * @param context immutable invocation context
-         * @param timeout shared operation budget
+         * @param timeout shared operation timeout
          * @return direct completed initiation outcome
          */
         private CompletionStage<Outcome<SourceWorkflow.Stage>> authenticate(
                 final SourceWorkflow.Request.Direct request,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             if (timeout.expired()) {
-                return completed(
-                        Outcome.failed(failure(ErrorCode._408, "LDAP Source authentication time budget expired")));
+                return completed(Outcome.failed(failure(ErrorCode._408, "LDAP Source authentication timeout expired")));
             }
-            final LdapClient client = new LdapClient(services.fabricContext(), services.executor(), options,
-                    frameCodec.fork(), encoder, decoder);
+            final LdapClient client = new LdapClient(services.fabric(), services.executor(), options, frameCodec.fork(),
+                    encoder, decoder);
             final CompletionStage<Outcome<BindResponse>> initial = options.bindDn().isEmpty()
                     ? client.bind(anonymousBind(), context, timeout)
                     : bind(
@@ -431,7 +430,7 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
          * @param client  exclusive LDAP client
          * @param request direct authentication request
          * @param context immutable invocation context
-         * @param timeout shared budget
+         * @param timeout shared timeout
          * @return next-stage completed initiation outcome
          */
         private CompletionStage<Outcome<SourceWorkflow.Stage>> afterServiceBind(
@@ -439,7 +438,7 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
                 final LdapClient client,
                 final SourceWorkflow.Request.Direct request,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             if (outcome instanceof Outcome.Rejected<BindResponse> rejected) {
                 return completed(Outcome.rejected(rejected.failure()));
             }
@@ -470,7 +469,7 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
          * @param client  exclusive LDAP client
          * @param request direct authentication request
          * @param context immutable invocation context
-         * @param timeout shared budget
+         * @param timeout shared timeout
          * @return user-Bind continuation
          */
         private CompletionStage<Outcome<SourceWorkflow.Stage>> afterSearch(
@@ -478,7 +477,7 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
                 final LdapClient client,
                 final SourceWorkflow.Request.Direct request,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             if (outcome instanceof Outcome.Rejected<List<LdapMessage>> rejected) {
                 return completed(Outcome.rejected(rejected.failure()));
             }
@@ -528,7 +527,7 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
          * @param dn        Bind distinguished name
          * @param reference external PASSWORD reference
          * @param context   immutable invocation context
-         * @param timeout   shared budget
+         * @param timeout   shared timeout
          * @return standard Bind outcome
          */
         private CompletionStage<Outcome<BindResponse>> bind(
@@ -536,11 +535,12 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
                 final DistinguishedName dn,
                 final Credential.Reference reference,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             final CompletionStage<Outcome<SecretLease>> resolution;
             try {
                 resolution = Outcome.mapStage(
-                        () -> services.secretLoader().load(services.registration(), reference, context, timeout),
+                        () -> services.secretLoader()
+                                .load(new SecretLoader.Request(services.registration(), reference), context, timeout),
                         loaded -> services.secretParser().parse(services.registration(), reference, loaded));
             } catch (RuntimeException exception) {
                 return completed(Outcome.failed(failure(ErrorCode._503, "LDAP Source password resolution failed")));
@@ -563,6 +563,9 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
                                 timeout);
                         case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                         case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                        default -> completed(
+                                Outcome.failed(
+                                        failure(ErrorCode._503, "LDAP secret loader returned an unsupported outcome")));
                     });
         }
 
@@ -573,7 +576,7 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
          * @param dn      Bind distinguished name
          * @param lease   exclusively owned password lease
          * @param context immutable invocation context
-         * @param timeout shared budget
+         * @param timeout shared timeout
          * @return standard Bind outcome stage
          */
         private CompletionStage<Outcome<BindResponse>> bindLease(
@@ -581,7 +584,7 @@ public final class LdapClientDriver implements SourceDriver<LdapClientOptions> {
                 final DistinguishedName dn,
                 final SecretLease lease,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             if (lease == null) {
                 return completed(
                         Outcome.failed(failure(ErrorCode._503, "LDAP Source password loader returned no lease")));

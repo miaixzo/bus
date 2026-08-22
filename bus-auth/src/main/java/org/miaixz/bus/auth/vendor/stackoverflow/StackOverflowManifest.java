@@ -24,7 +24,10 @@ import java.util.Set;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
+import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
@@ -39,7 +42,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Declares the Stack Overflow OAuth 2.0 browser Vendor manifest.
@@ -51,7 +53,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class StackOverflowManifest implements VariantManifest<StackOverflowOptions> {
+public class StackOverflowManifest implements VariantManifest<StackOverflowOptions> {
 
     /**
      * Stable Stack Overflow platform routing identifier.
@@ -126,7 +128,7 @@ public final class StackOverflowManifest implements VariantManifest<StackOverflo
      * Complete immutable Stack Overflow endpoint, client, scope, capability, form, and deviation manifest.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OAUTH2,
-            List.of("read_inbox"),
+            VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of("read_inbox"),
             new VendorTargets(
                     Optional.of(
                             fixed("https://stackoverflow.com/oauth", Http.Method.GET, Endpoint.Authentication.NONE)),
@@ -164,7 +166,7 @@ public final class StackOverflowManifest implements VariantManifest<StackOverflo
             final String value,
             final Http.Method method,
             final Endpoint.Authentication authentication) {
-        return new VendorTargets.Fixed(new Endpoint(UnoUrl.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
+        return new VendorTargets.Fixed(new Endpoint(Url.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
                 Set.of(authentication), Optional.empty(), TlsClientAuth.NONE));
     }
 
@@ -190,6 +192,20 @@ public final class StackOverflowManifest implements VariantManifest<StackOverflo
             final boolean enveloped) {
         return new VendorDeviation(operation, location, vendorName, Optional.ofNullable(standardName), mediaType,
                 method, enveloped);
+    }
+
+    /**
+     * Returns the one-time Stack Overflow client form including public API selectors.
+     *
+     * @return immutable Stack Overflow client configuration form
+     */
+    @Override
+    public Scheme.Form form() {
+        return VariantManifest.Forms.extended(
+                false,
+                List.of(
+                        VariantManifest.Forms.field("key", "Stack Apps API key", Scheme.Form.Type.TEXT, true),
+                        VariantManifest.Forms.field("siteId", "Stack Exchange site", Scheme.Form.Type.TEXT, true)));
     }
 
     /**

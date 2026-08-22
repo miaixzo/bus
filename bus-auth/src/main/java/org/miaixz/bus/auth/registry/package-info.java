@@ -20,11 +20,11 @@
 /**
  * Defines registration validation, immutable indexes, fault reporting, and the read-only Registry query boundary.
  * <p>
- * External projects implement {@link org.miaixz.bus.auth.worker.RegistrationLoader} to supply complete registration
- * snapshots. CRUD and management data access remain project responsibilities. Registration entries detach the
- * framework-owned Library, Provider, and Source fields on entry and return detached copies, while snapshot record lists
- * are structurally frozen. The loader converts persisted Source configuration into typed Options before this boundary.
- * {@link org.miaixz.bus.auth.registry.SnapshotValidator} applies only framework-required identity,
+ * External projects implement {@link org.miaixz.bus.auth.worker.loader.RegistrationLoader} to supply complete
+ * registration snapshots. CRUD and management data access remain project responsibilities. Registration entries detach
+ * the framework-owned Library, Provider, and Source fields on entry and return detached copies, while snapshot record
+ * lists are structurally frozen. The loader converts persisted Source configuration into typed Options before this
+ * boundary. {@link org.miaixz.bus.auth.registry.SnapshotValidator} applies only framework-required identity,
  * Library-to-Provider-to-Source ownership, enabled-parent, and Source routing rules before compilation. Presentation,
  * launch, code, name, icon, ordering, CRUD, and project uniqueness policies remain outside bus-auth.
  * {@link org.miaixz.bus.auth.worker.RegistryListener} observes publication lifecycle, while

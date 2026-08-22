@@ -76,8 +76,7 @@ public record TokenRequest(Grant grant, JsonValue.ObjectValue extensions) {
      *
      * @author Kimi Liu
      */
-    public sealed interface Grant permits AuthorizationCodeGrant, RefreshTokenGrant, ClientCredentialsGrant,
-            TokenExchangeGrant, DeviceCodeGrant {
+    public interface Grant {
 
         /**
          * Returns the exact standard grant type determined by the concrete parameter object.
@@ -91,6 +90,7 @@ public record TokenRequest(Grant grant, JsonValue.ObjectValue extensions) {
                 case ClientCredentialsGrant ignored -> GrantType.CLIENT_CREDENTIALS;
                 case TokenExchangeGrant ignored -> GrantType.TOKEN_EXCHANGE;
                 case DeviceCodeGrant ignored -> GrantType.DEVICE_CODE;
+                default -> throw new IllegalStateException("Unsupported OAuth grant implementation");
             };
         }
 

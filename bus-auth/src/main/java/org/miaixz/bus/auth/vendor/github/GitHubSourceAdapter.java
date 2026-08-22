@@ -25,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationRequest;
@@ -45,6 +45,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -56,8 +57,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements GitHub.com OAuth App login while publishing only standard OAuth authorization.
@@ -69,7 +68,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class GitHubSourceAdapter implements VendorAdapter {
+public class GitHubSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted GitHub API authority recorded in federated identity evidence.
@@ -311,6 +310,7 @@ public final class GitHubSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -391,7 +391,7 @@ public final class GitHubSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing GitHub-private response models
@@ -401,10 +401,10 @@ public final class GitHubSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "GitHub capability must not be null");
         Assert.notNull(context, "GitHub invocation context must not be null");
-        Assert.notNull(timeout, "GitHub invocation budget must not be null");
+        Assert.notNull(timeout, "GitHub invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("GitHub capability is not declared by the selected manifest"));
         }
@@ -430,16 +430,16 @@ public final class GitHubSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated state and S256 challenge
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return exact redirect and state correlation
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "GitHub authorization context must not be null");
         if (timeout.expired()) {
-            return completed(failed(ErrorCode._408, "GitHub authorization has no remaining time budget"));
+            return completed(failed(ErrorCode._408, "GitHub authorization has no remaining timeout"));
         }
         try {
             final var challenge = initiation.codeChallenge().getOrNull();
@@ -474,13 +474,13 @@ public final class GitHubSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback and PKCE verifier
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified GitHub identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CallbackWire values;
         try {
             values = callback(completion.callback());
@@ -496,8 +496,10 @@ public final class GitHubSourceAdapter implements VendorAdapter {
         final String verifier = completion.codeVerifier().getOrNull().value();
         return Outcome
                 .mapStage(
-                        () -> services.secretLoader()
-                                .load(services.registration(), options.credential(), context, timeout),
+                        () -> services.secretLoader().load(
+                                new SecretLoader.Request(services.registration(), options.credential()),
+                                context,
+                                timeout),
                         loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> authenticate(
@@ -507,6 +509,7 @@ public final class GitHubSourceAdapter implements VendorAdapter {
                             timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -516,20 +519,21 @@ public final class GitHubSourceAdapter implements VendorAdapter {
      * @param code     one-time authorization code
      * @param verifier one-time RFC 7636 verifier
      * @param secret   owned Client Secret lease
-     * @param timeout  shared end-to-end budget
+     * @param timeout  shared end-to-end timeout
      * @return verified external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> authenticate(
             final String code,
             final String verifier,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try (secret) {
                 return switch (token(code, verifier, secret, timeout)) {
                     case Outcome.Succeeded<Access> success -> profile(success.value(), timeout);
                     case Outcome.Rejected<Access> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<Access> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 };
             } catch (RuntimeException cause) {
                 return failed(ErrorCode._502, "GitHub authentication completion failed");
@@ -543,18 +547,18 @@ public final class GitHubSourceAdapter implements VendorAdapter {
      * @param code     one-time authorization code
      * @param verifier one-time RFC 7636 verifier
      * @param secret   open Client Secret lease
-     * @param timeout  shared end-to-end budget
+     * @param timeout  shared end-to-end timeout
      * @return private access result
      */
     private Outcome<Access> token(
             final String code,
             final String verifier,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "GitHub token request has no remaining time budget");
+                return failed(ErrorCode._408, "GitHub token request has no remaining timeout");
             }
             body = formCodec.encode(
                     List.of(
@@ -566,10 +570,9 @@ public final class GitHubSourceAdapter implements VendorAdapter {
                             new NameValue(OAuth2.Parameters.CODE_VERIFIER,
                                     Assert.notBlank(verifier, "GitHub verifier must not be blank"))));
             final var endpoint = variant.targets().resolve(options).token().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.POST)
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 return token(response);
             }
@@ -586,7 +589,7 @@ public final class GitHubSourceAdapter implements VendorAdapter {
      * @param response owned token response
      * @return private access result or classified failure
      */
-    private Outcome<Access> token(final HttpResponse response) {
+    private Outcome<Access> token(final Response response) {
         try {
             final JsonValue.ObjectValue object = object(response);
             if (errorMembers(object)) {
@@ -637,17 +640,16 @@ public final class GitHubSourceAdapter implements VendorAdapter {
      * Retrieves and validates the versioned GitHub current-user resource.
      *
      * @param access  private access-token result
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
-    private Outcome<ExternalIdentity> profile(final Access access, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final Access access, final Timeout timeout) {
         try {
             final var endpoint = variant.targets().resolve(options).userInfo().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.GET).header(Http.Header.ACCEPT, REST_MEDIA)
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.GET).header(Http.Header.ACCEPT, REST_MEDIA)
                     .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + access.accessToken())
-                    .header("X-GitHub-Api-Version", REST_VERSION).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute()) {
+                    .header("X-GitHub-Api-Version", REST_VERSION).execute()) {
                 if (response.code() != Http.Status.OK) {
                     return status(response.code(), "GitHub current-user endpoint rejected or failed the request");
                 }
@@ -745,7 +747,7 @@ public final class GitHubSourceAdapter implements VendorAdapter {
      * @param response response whose body remains open
      * @return strict provider-neutral JSON object
      */
-    private JsonValue.ObjectValue object(final HttpResponse response) {
+    private JsonValue.ObjectValue object(final Response response) {
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("GitHub response must use application/json");
         }

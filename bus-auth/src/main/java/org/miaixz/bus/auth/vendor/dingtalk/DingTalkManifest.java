@@ -24,7 +24,10 @@ import java.util.Set;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
+import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
@@ -38,7 +41,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Declares DingTalk's current OAuth 2.0 delegated-login and proprietary account-login Source variants.
@@ -50,7 +52,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class DingTalkManifest implements VariantManifest<DingTalkOptions> {
+public class DingTalkManifest implements VariantManifest<DingTalkOptions> {
 
     /**
      * Stable platform routing identifier shared by registration, catalog, and runtime compilation.
@@ -179,7 +181,7 @@ public final class DingTalkManifest implements VariantManifest<DingTalkOptions> 
      * Complete immutable delegated OAuth 2.0 variant manifest.
      */
     private static final VariantManifest.Variant OAUTH2_VARIANT = new VariantManifest.Variant(ID, OAUTH2,
-            Protocol.OAUTH2, List.of("openid"),
+            Protocol.OAUTH2, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of("openid"),
             targets(
                     fixed("https://login.dingtalk.com/oauth2/auth", Http.Method.GET, Endpoint.Authentication.NONE),
                     fixed("https://api.dingtalk.com/v1.0/oauth2/userAccessToken", Http.Method.POST, CLIENT_SECRET_JSON),
@@ -194,7 +196,7 @@ public final class DingTalkManifest implements VariantManifest<DingTalkOptions> 
      * Complete immutable proprietary account-login variant manifest.
      */
     private static final VariantManifest.Variant ACCOUNT_VARIANT = new VariantManifest.Variant(ID, ACCOUNT,
-            Protocol.VENDOR_AUTH, List.of("snsapi_login"),
+            Protocol.VENDOR_AUTH, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of("snsapi_login"),
             targets(
                     fixed(
                             "https://oapi.dingtalk.com/connect/oauth2/sns_authorize",
@@ -247,7 +249,7 @@ public final class DingTalkManifest implements VariantManifest<DingTalkOptions> 
             final String value,
             final Http.Method method,
             final Endpoint.Authentication authentication) {
-        return new VendorTargets.Fixed(new Endpoint(UnoUrl.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
+        return new VendorTargets.Fixed(new Endpoint(Url.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
                 Set.of(authentication), Optional.empty(), TlsClientAuth.NONE));
     }
 
@@ -273,6 +275,30 @@ public final class DingTalkManifest implements VariantManifest<DingTalkOptions> 
             final boolean enveloped) {
         return new VendorDeviation(operation, location, vendorName, Optional.ofNullable(standardName), mediaType,
                 method, enveloped);
+    }
+
+    /**
+     * Returns the one-time DingTalk form for optional organization selectors.
+     *
+     * @return immutable DingTalk client configuration form
+     */
+    @Override
+    public Scheme.Form form() {
+        return VariantManifest.Forms.extended(
+                false,
+                List.of(
+                        VariantManifest.Forms.field("orgType", "Organization type", Scheme.Form.Type.TEXT, false),
+                        VariantManifest.Forms.field("corpId", "Organization identifier", Scheme.Form.Type.TEXT, false),
+                        VariantManifest.Forms.field(
+                                "exclusiveLogin",
+                                "Exclusive organization login",
+                                Scheme.Form.Type.BOOLEAN,
+                                false),
+                        VariantManifest.Forms.field(
+                                "exclusiveCorpId",
+                                "Exclusive organization identifier",
+                                Scheme.Form.Type.TEXT,
+                                false)));
     }
 
     /**

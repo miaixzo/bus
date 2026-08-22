@@ -34,7 +34,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  * Represents the closed internal result of an asynchronous authentication operation.
  * <p>
  * {@link Rejected} denotes an expected refusal caused by invalid input, policy, credentials, or protocol state.
- * {@link Failed} denotes an operational failure such as unavailable dependencies or exhausted time budget. Normal
+ * {@link Failed} denotes an operational failure such as unavailable dependencies or exhausted timeout. Normal
  * authentication failures are values rather than exceptional stage completions; cancellation and unrecoverable
  * programming errors may still complete a {@code CompletionStage} exceptionally.
  * </p>
@@ -46,7 +46,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  * @param <T> success value type
  * @author Kimi Liu
  */
-public sealed interface Outcome<T> permits Outcome.Succeeded, Outcome.Rejected, Outcome.Failed {
+public interface Outcome<T> {
 
     /**
      * Maps a successful value while preserving rejection and operational failure outcomes.
@@ -61,6 +61,7 @@ public sealed interface Outcome<T> permits Outcome.Succeeded, Outcome.Rejected, 
             case Succeeded<T> success -> Outcome.succeeded(mapper.apply(success.value()));
             case Rejected<T> rejected -> Outcome.rejected(rejected.failure());
             case Failed<T> failed -> Outcome.failed(failed.failure());
+            default -> operationFailed("Unsupported outcome implementation");
         };
     }
 
@@ -78,6 +79,7 @@ public sealed interface Outcome<T> permits Outcome.Succeeded, Outcome.Rejected, 
                     .notNull(mapper.apply(success.value()), "Outcome mapper returned no outcome");
             case Rejected<T> rejected -> Outcome.rejected(rejected.failure());
             case Failed<T> failed -> Outcome.failed(failed.failure());
+            default -> operationFailed("Unsupported outcome implementation");
         };
     }
 

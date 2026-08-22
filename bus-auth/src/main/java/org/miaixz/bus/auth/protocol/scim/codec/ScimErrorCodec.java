@@ -22,6 +22,10 @@ package org.miaixz.bus.auth.protocol.scim.codec;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.miaixz.bus.auth.FabricX.Body;
+import org.miaixz.bus.auth.FabricX.Headers;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.protocol.scim.ErrorResponse;
 import org.miaixz.bus.auth.protocol.scim.Scim;
 import org.miaixz.bus.core.lang.Assert;
@@ -32,11 +36,6 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonRecordVerifier;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * Encodes RFC 7644 Error representations as status-consistent SCIM Service Provider HTTP responses.
@@ -46,7 +45,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  *
  * @author Kimi Liu
  */
-public final class ScimErrorCodec {
+public class ScimErrorCodec {
 
     /**
      * Verifies the exact RFC 7644 Error object shape from its structural record.
@@ -127,8 +126,8 @@ public final class ScimErrorCodec {
      * @throws ValidateException        if the status cannot be represented as an HTTP error status or limits are
      *                                  exceeded
      */
-    public HttpResponse encode(final HttpRequest request, final ErrorResponse response) {
-        final HttpRequest origin = Assert.notNull(request, "SCIM Error origin request must not be null");
+    public Response encode(final Request request, final ErrorResponse response) {
+        final Request origin = Assert.notNull(request, "SCIM Error origin request must not be null");
         final ErrorResponse value = Assert.notNull(response, "SCIM Error response must not be null");
         final int status;
         try {
@@ -146,9 +145,9 @@ public final class ScimErrorCodec {
         put(members, Scim.Attributes.DETAIL, value.detail());
         final byte[] body = ScimResourceCodec
                 .bytes(new JsonValue.ObjectValue(members), jsonProvider, maximumBytes, maximumDepth);
-        return HttpResponse.builder().request(origin).code(status).headers(
+        return Response.builder().request(origin).code(status).headers(
                 Headers.of(Http.Header.CACHE_CONTROL, Http.Cache.NO_STORE, Http.Header.PRAGMA, Http.Cache.NO_CACHE))
-                .body(PayloadBody.of(Payload.of(body), MediaType.APPLICATION_SCIM_JSON_TYPE)).build();
+                .body(Body.of(body, MediaType.APPLICATION_SCIM_JSON_TYPE)).build();
     }
 
     /**

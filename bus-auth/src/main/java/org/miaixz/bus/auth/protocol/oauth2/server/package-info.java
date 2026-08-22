@@ -36,7 +36,7 @@
  * </p>
  * <p>
  * Every endpoint enforces its registered HTTP method, media type, client-authentication policy, redirect URI, grant,
- * scope, issuer, and one shared Budget. Authorization codes and device codes are single-use, refresh-token rotation is
+ * scope, issuer, and one shared Timeout. Authorization codes and device codes are single-use, refresh-token rotation is
  * atomic, PKCE and redirect matching fail closed, and token material is never placed in diagnostics. Revocation success
  * remains an empty response, inactive introspection remains {@code active=false}, and an endpoint emits only the
  * success or error representation defined by its governing RFC.

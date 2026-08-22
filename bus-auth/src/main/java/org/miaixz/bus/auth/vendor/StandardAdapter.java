@@ -42,7 +42,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class StandardAdapter implements VendorAdapter {
+public class StandardAdapter implements VendorAdapter {
 
     /**
      * Selected immutable platform variant manifest.
@@ -115,7 +115,7 @@ public final class StandardAdapter implements VendorAdapter {
      * @param capability caller capability
      * @param request    caller request
      * @param context    invocation context
-     * @param timeout    time budget
+     * @param timeout    timeout
      * @param <Q>        request type
      * @param <S>        success type
      * @return delegated standard outcome
@@ -125,7 +125,7 @@ public final class StandardAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (request != null && !capability.requestType().isInstance(request)) {
             return CompletableFuture.completedFuture(
                     Outcome.rejected(
@@ -142,7 +142,7 @@ public final class StandardAdapter implements VendorAdapter {
      * @param capability equal caller capability
      * @param request    caller request
      * @param context    invocation context
-     * @param timeout    time budget
+     * @param timeout    timeout
      * @param <Q>        request type
      * @param <S>        success type
      * @return delegated outcome
@@ -152,12 +152,13 @@ public final class StandardAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final Binding<Q, S> typed = (Binding<Q, S>) binding;
         return typed.operation().invoke(request, context, timeout).thenApply(outcome -> switch (outcome) {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(capability.responseType().cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -177,7 +178,7 @@ public final class StandardAdapter implements VendorAdapter {
      * @param capability declared standard capability
      * @param request    exact standard request
      * @param context    invocation context
-     * @param timeout    end-to-end budget
+     * @param timeout    end-to-end timeout
      * @param <Q>        request type
      * @param <S>        success type
      * @return standard protocol outcome or safe rejection
@@ -187,10 +188,10 @@ public final class StandardAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final Capability<Q, S> selected = Assert.notNull(capability, "Standard Vendor capability must not be null");
         Assert.notNull(context, "Standard Vendor context must not be null");
-        Assert.notNull(timeout, "Standard Vendor time budget must not be null");
+        Assert.notNull(timeout, "Standard Vendor timeout must not be null");
         for (Binding<?, ?> binding : bindings) {
             if (binding.capability().equals(selected)) {
                 return invoke(binding, selected, request, context, timeout);
@@ -218,10 +219,10 @@ public final class StandardAdapter implements VendorAdapter {
          *
          * @param request standard request
          * @param context invocation context
-         * @param timeout end-to-end budget
+         * @param timeout end-to-end timeout
          * @return asynchronous standard outcome
          */
-        CompletionStage<? extends Outcome<? extends S>> invoke(Q request, Context context, Timeout.Budget timeout);
+        CompletionStage<? extends Outcome<? extends S>> invoke(Q request, Context context, Timeout timeout);
 
     }
 

@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class SamlErrorMapper {
+public class SamlErrorMapper {
 
     /**
      * Validated identity-provider options used for Issuer construction.

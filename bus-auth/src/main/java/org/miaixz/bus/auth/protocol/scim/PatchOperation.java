@@ -169,7 +169,7 @@ public record PatchOperation(Op op, Optional<Path> path, Optional<Value> value) 
      *
      * @author Kimi Liu
      */
-    public sealed interface Value extends AutoCloseable permits JsonData, SecretData {
+    public interface Value extends AutoCloseable {
 
         /**
          * Releases sensitive state owned by this value.

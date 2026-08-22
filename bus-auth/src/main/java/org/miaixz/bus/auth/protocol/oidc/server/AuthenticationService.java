@@ -49,7 +49,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class AuthenticationService {
+public class AuthenticationService {
 
     /**
      * OpenID Connect authorization error indicating that end-user login is required.
@@ -212,23 +212,23 @@ public final class AuthenticationService {
      *
      * @param request standard OpenID Connect Authentication Request
      * @param context invocation context carrying the paired subject and authentication event
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return stage containing the standard authentication response, expected rejection, or operational failure
      */
     public CompletionStage<Outcome<AuthorizationResponse>> authorize(
             final AuthenticationRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OpenID Connect Authentication Request must not be null");
         Assert.notNull(context, "OpenID Connect authentication context must not be null");
-        Assert.notNull(timeout, "OpenID Connect authentication time budget must not be null");
+        Assert.notNull(timeout, "OpenID Connect authentication timeout must not be null");
         if (timeout.expired()) {
             return completed(
                     Outcome.failed(
                             failure(
                                     ErrorCode._408,
                                     OAuth2ErrorCode.TEMPORARILY_UNAVAILABLE,
-                                    "OpenID Connect authentication has no remaining time budget")));
+                                    "OpenID Connect authentication has no remaining timeout")));
         }
         final Subject subject = context.authenticatedSubject().getOrNull();
         final Context.Authentication authentication = context.authentication().getOrNull();
@@ -262,7 +262,7 @@ public final class AuthenticationService {
 
         final AuthorizationCodeCache.OpenIdBinding binding = new AuthorizationCodeCache.OpenIdBinding(request.nonce(),
                 session.issuedAt(), authentication.authenticationContextClass(), authentication.authenticationMethods(),
-                session.key(), request.claims());
+                session.key(), request.claims(), Optional.empty());
         return sessions.establish(session, context, timeout).thenCompose(established -> switch (established) {
             case Outcome.Succeeded<Void> ignored -> issuer.authorize(
                     AuthorizationCodeIssuer.Request.openId(request.authorizationRequest(), binding),
@@ -273,9 +273,11 @@ public final class AuthenticationService {
                         case Outcome.Rejected<AuthorizationCodeIssuer.Result> rejected -> Outcome
                                 .rejected(rejected.failure());
                         case Outcome.Failed<AuthorizationCodeIssuer.Result> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
             case Outcome.Rejected<Void> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<Void> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 

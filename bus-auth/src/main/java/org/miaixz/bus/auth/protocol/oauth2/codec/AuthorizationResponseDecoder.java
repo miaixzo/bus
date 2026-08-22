@@ -44,8 +44,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class AuthorizationResponseDecoder
-        implements Decoder<Callback.Inbound, AuthorizationResponseDecoder.Decoded> {
+public class AuthorizationResponseDecoder implements Decoder<Callback.Inbound, AuthorizationResponseDecoder.Decoded> {
 
     /**
      * Creates a stateless strict callback response decoder.
@@ -166,7 +165,7 @@ public final class AuthorizationResponseDecoder
      *
      * @author Kimi Liu
      */
-    public sealed interface Decoded permits Success, Error {
+    public interface Decoded {
 
     }
 

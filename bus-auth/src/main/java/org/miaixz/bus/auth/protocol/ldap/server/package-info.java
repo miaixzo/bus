@@ -33,7 +33,7 @@
  * </p>
  * <p>
  * Every PDU is bound to one trusted connection ID, current TCP or TLS transport, message ID, operation, controls, size
- * and time limits, and Budget. Bind replaces connection authentication state only after success; StartTLS rejects
+ * and time limits, and Timeout. Bind replaces connection authentication state only after success; StartTLS rejects
  * pipelined or already protected transitions; request message IDs cannot be reused while active. Search streams
  * entries, references, intermediate responses, and one final result in order. Unbind and Abandon deliberately emit no
  * response. Credentials, directory values, controls, and diagnostic causes never enter logs or unrelated responses.

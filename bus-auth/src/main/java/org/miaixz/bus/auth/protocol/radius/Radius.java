@@ -34,7 +34,7 @@ import org.miaixz.bus.core.net.Protocol;
  *
  * @author Kimi Liu
  */
-public final class Radius {
+public class Radius {
 
     /**
      * Fixed number of octets in either supported RADIUS packet header.
@@ -92,9 +92,9 @@ public final class Radius {
     public static final Capability.Key ACCOUNTING = Capability.Key.standard(Protocol.RADIUS, "accounting");
 
     /**
-     * Prevents construction of the RADIUS protocol-operation namespace.
+     * Creates a RADIUS protocol-operation namespace instance with no retained state.
      */
-    private Radius() {
+    public Radius() {
         // No initialization required.
     }
 
@@ -110,7 +110,7 @@ public final class Radius {
     /**
      * Defines the packet Codes implemented by the Access and Accounting profile.
      */
-    public static final class Codes {
+    public static class Codes {
 
         /**
          * Access-Request Code.
@@ -138,9 +138,9 @@ public final class Radius {
         public static final int ACCESS_CHALLENGE = Normal._11;
 
         /**
-         * Prevents construction of the packet Code namespace.
+         * Creates a packet Code namespace instance.
          */
-        private Codes() {
+        public Codes() {
             // No initialization required.
         }
 
@@ -149,7 +149,7 @@ public final class Radius {
     /**
      * Defines the registered Attribute Types used by the implemented profile.
      */
-    public static final class Attributes {
+    public static class Attributes {
 
         /**
          * User-Name Attribute Type.
@@ -209,9 +209,9 @@ public final class Radius {
         public static final int ERROR_CAUSE = 101;
 
         /**
-         * Prevents construction of the Attribute Type namespace.
+         * Creates an Attribute Type namespace instance.
          */
-        private Attributes() {
+        public Attributes() {
             // No initialization required.
         }
 

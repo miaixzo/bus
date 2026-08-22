@@ -23,6 +23,7 @@ import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -41,6 +42,7 @@ import org.miaixz.bus.auth.protocol.oidc.UserInfoResponse;
 import org.miaixz.bus.auth.protocol.oidc.codec.UserInfoCodec;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.worker.loader.AttributeLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -58,7 +60,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class UserInfoService {
+public class UserInfoService {
 
     /**
      * Safe failure-detail member consumed by the RFC 6750 endpoint error mapper.
@@ -106,39 +108,10 @@ public final class UserInfoService {
      * @param entry validated access-token state
      * @return mutable ordered claim-name set
      */
-    private static LinkedHashSet<String> claimsForScopes(final AccessTokenCache.Entry entry) {
+    private LinkedHashSet<String> claimsForScopes(final AccessTokenCache.Entry entry) {
         final LinkedHashSet<String> claims = new LinkedHashSet<>();
         for (String scope : entry.scope()) {
-            switch (scope) {
-                case OpenIdConnect.Scopes.PROFILE -> {
-                    claims.add(OpenIdConnect.Claims.NAME);
-                    claims.add(OpenIdConnect.Claims.FAMILY_NAME);
-                    claims.add(OpenIdConnect.Claims.GIVEN_NAME);
-                    claims.add(OpenIdConnect.Claims.MIDDLE_NAME);
-                    claims.add(OpenIdConnect.Claims.NICKNAME);
-                    claims.add(OpenIdConnect.Claims.PREFERRED_USERNAME);
-                    claims.add(OpenIdConnect.Claims.PROFILE);
-                    claims.add(OpenIdConnect.Claims.PICTURE);
-                    claims.add(OpenIdConnect.Claims.WEBSITE);
-                    claims.add(OpenIdConnect.Claims.GENDER);
-                    claims.add(OpenIdConnect.Claims.BIRTHDATE);
-                    claims.add(OpenIdConnect.Claims.ZONE_INFO);
-                    claims.add(OpenIdConnect.Claims.LOCALE);
-                    claims.add(OpenIdConnect.Claims.UPDATED_AT);
-                }
-                case OpenIdConnect.Scopes.EMAIL -> {
-                    claims.add(OpenIdConnect.Claims.EMAIL);
-                    claims.add(OpenIdConnect.Claims.EMAIL_VERIFIED);
-                }
-                case OpenIdConnect.Scopes.ADDRESS -> claims.add(OpenIdConnect.Claims.ADDRESS);
-                case OpenIdConnect.Scopes.PHONE -> {
-                    claims.add(OpenIdConnect.Claims.PHONE_NUMBER);
-                    claims.add(OpenIdConnect.Claims.PHONE_NUMBER_VERIFIED);
-                }
-                default -> {
-                    // Unknown or application scopes do not imply standard OIDC claim release.
-                }
-            }
+            claims.addAll(options.scopeClaims().getOrDefault(scope, Set.of()));
         }
         return claims;
     }
@@ -218,23 +191,23 @@ public final class UserInfoService {
      *
      * @param request decoded UserInfo request containing the sensitive bearer token
      * @param context immutable invocation context
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return stage containing the standard UserInfo response or a closed bearer failure
      */
     public CompletionStage<Outcome<UserInfoResponse>> userInfo(
             final UserInfoRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OpenID Connect UserInfo request must not be null");
         Assert.notNull(context, "OpenID Connect UserInfo context must not be null");
-        Assert.notNull(timeout, "OpenID Connect UserInfo time budget must not be null");
+        Assert.notNull(timeout, "OpenID Connect UserInfo timeout must not be null");
         if (timeout.expired()) {
             return completed(
                     Outcome.failed(
                             failure(
                                     ErrorCode._408,
                                     OAuth2ErrorCode.TEMPORARILY_UNAVAILABLE,
-                                    "OpenID Connect UserInfo request has no remaining time budget")));
+                                    "OpenID Connect UserInfo request has no remaining timeout")));
         }
         final CompletionStage<ExpiringValue<AccessTokenCache.Entry>> lookup;
         try {
@@ -256,13 +229,13 @@ public final class UserInfoService {
      *
      * @param result  completed cache lookup result
      * @param context immutable invocation context
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @return asynchronously completed UserInfo outcome
      */
     private CompletionStage<Outcome<UserInfoResponse>> validateAndResolve(
             final CacheResult result,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (result.failure() != null) {
             return completed(
                     Outcome.failed(
@@ -313,14 +286,14 @@ public final class UserInfoService {
      * @param result  authorization cache lookup result
      * @param entry   validated access-token metadata
      * @param context invocation context
-     * @param timeout operation budget
+     * @param timeout operation timeout
      * @return UserInfo outcome
      */
     private CompletionStage<Outcome<UserInfoResponse>> resolveAuthorized(
             final AuthorizationResult result,
             final AccessTokenCache.Entry entry,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (result.failure() != null) {
             return completed(
                     Outcome.failed(
@@ -343,11 +316,15 @@ public final class UserInfoService {
         }
         final CompletionStage<Outcome<JsonValue.ObjectValue>> resolution;
         try {
-            resolution = Outcome.mapStage(
-                    () -> services.attributeLoader()
-                            .load(services.registration(), new Subject.Key(entry.subjectId()), context, timeout),
-                    loaded -> services.attributeParser()
-                            .parse(services.registration(), new Subject.Key(entry.subjectId()), loaded));
+            resolution = Outcome
+                    .mapStage(
+                            () -> services.attributeLoader().load(
+                                    new AttributeLoader.Request(services.registration(),
+                                            new Subject.Key(entry.subjectId())),
+                                    context,
+                                    timeout),
+                            loaded -> services.attributeParser()
+                                    .parse(services.registration(), new Subject.Key(entry.subjectId()), loaded));
         } catch (RuntimeException exception) {
             return completed(
                     Outcome.failed(
@@ -395,6 +372,7 @@ public final class UserInfoService {
                             failed.failure().error(),
                             OAuth2ErrorCode.SERVER_ERROR,
                             "OpenID Connect UserInfo subject attribute resolution failed"));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         };
     }
 
@@ -440,7 +418,9 @@ public final class UserInfoService {
             selected.put(name, value);
         }
         try {
-            selected.put(JwtClaims.SUBJECT, new JsonValue.StringValue(entry.subjectId()));
+            selected.put(
+                    JwtClaims.SUBJECT,
+                    new JsonValue.StringValue(entry.openIdBinding().getOrNull().subject().getOrNull()));
             return Outcome.succeeded(codec.decodeClaims(new JsonValue.ObjectValue(selected)));
         } catch (RuntimeException exception) {
             return Outcome.failed(
@@ -477,6 +457,8 @@ public final class UserInfoService {
      *
      * @param value   stored authorization state or {@code null}
      * @param failure asynchronous failure or {@code null}
+     *
+     * @author Kimi Liu
      */
     private record AuthorizationResult(ExpiringValue<AuthorizationCache.Entry> value, Throwable failure) {
 

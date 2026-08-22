@@ -21,6 +21,7 @@ package org.miaixz.bus.auth.protocol.oauth2;
 
 import java.util.*;
 
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
 import org.miaixz.bus.core.lang.Assert;
@@ -29,7 +30,6 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Represents OAuth 2.0 Authorization Server Metadata defined by RFC 8414, including extension members implemented by
@@ -216,9 +216,9 @@ public record AuthorizationServerMetadata(String issuer, Optional<String> author
      */
     private static String validateSecureUrl(final String value, final boolean queryAllowed, final String label) {
         Assert.notBlank(value, label + " must not be blank");
-        final UnoUrl url;
+        final Url url;
         try {
-            url = UnoUrl.parse(value);
+            url = Url.parse(value);
         } catch (RuntimeException exception) {
             throw new ValidateException(label + " must be a valid URL", exception);
         }
@@ -244,9 +244,9 @@ public record AuthorizationServerMetadata(String issuer, Optional<String> author
             return null;
         }
         Assert.notBlank(text, label + " must not be blank when present");
-        final UnoUrl url;
+        final Url url;
         try {
-            url = UnoUrl.parse(text);
+            url = Url.parse(text);
         } catch (RuntimeException exception) {
             throw new ValidateException(label + " must be a valid URL", exception);
         }

@@ -30,7 +30,7 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.protocol.scim.server.*;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.SourceDriver;
-import org.miaixz.bus.auth.worker.BindingLoader;
+import org.miaixz.bus.auth.worker.BindingResolver;
 import org.miaixz.bus.auth.worker.SourceWorker;
 import org.miaixz.bus.auth.worker.WorkerSlots;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
@@ -50,7 +50,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class ScimServerDriver implements SourceDriver<ScimServerOptions> {
+public class ScimServerDriver implements SourceDriver<ScimServerOptions> {
 
     /**
      * Creates a stateless SCIM Provider driver.
@@ -124,7 +124,7 @@ public final class ScimServerDriver implements SourceDriver<ScimServerOptions> {
     public SourceWorker compile(final Prepared<ScimServerOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "SCIM Provider preparation must not be null");
         Assert.notNull(services, "SCIM Provider execution services must not be null");
-        final Registration.SourceEntry record = prepared.registration();
+        final Blueprint.SourceEntry record = prepared.registration();
         final Provider provider = prepared.provider();
         final Library library = prepared.library();
         final Source source = record.resource();
@@ -137,10 +137,10 @@ public final class ScimServerDriver implements SourceDriver<ScimServerOptions> {
         if (options.maximumRequestBytes() > services.securityBaseline().require(Protocol.SCIM).maximumMessageBytes()) {
             throw new ValidateException("SCIM Provider request limit exceeds the shared security baseline");
         }
-        final BindingLoader.Key<ScimResourceStore> binding = new BindingLoader.Key<>("scim-resource",
+        final BindingResolver.Key<ScimResourceStore> binding = new BindingResolver.Key<>("scim-resource",
                 ScimResourceStore.class);
         final ScimResourceStore store = Assert.notNull(
-                binding.require(services.bindingLoader().load(record, binding)),
+                binding.require(services.bindingResolver().resolve(record, binding)),
                 "SCIM external resource store binding must not be null");
         final ScimResourceService resources = new ScimResourceService(source.getId(), options, store);
         return new CompiledServer(manifest(options), options.resourceTypes(), resources, new ScimUserService(resources),
@@ -249,6 +249,7 @@ public final class ScimServerDriver implements SourceDriver<ScimServerOptions> {
                 case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
                 case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
                 case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             });
         }
 
@@ -317,7 +318,7 @@ public final class ScimServerDriver implements SourceDriver<ScimServerOptions> {
          * @param capability exact declared capability object
          * @param request    exact standard request or {@code null} for discovery
          * @param context    immutable invocation context
-         * @param timeout    shared end-to-end budget
+         * @param timeout    shared end-to-end timeout
          * @param <Q>        request type
          * @param <S>        success type
          * @return delegated typed outcome or a closed 400/404 rejection
@@ -327,10 +328,10 @@ public final class ScimServerDriver implements SourceDriver<ScimServerOptions> {
                 final Capability<Q, S> capability,
                 final Q request,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             Assert.notNull(capability, "SCIM Provider capability must not be null");
             Assert.notNull(context, "SCIM Provider context must not be null");
-            Assert.notNull(timeout, "SCIM Provider time budget must not be null");
+            Assert.notNull(timeout, "SCIM Provider timeout must not be null");
             if (!manifest.capabilities().contains(capability)) {
                 return missing();
             }
@@ -427,7 +428,7 @@ public final class ScimServerDriver implements SourceDriver<ScimServerOptions> {
          * @param request      standard writable resource
          * @param operation    selected create or replace operation
          * @param context      immutable invocation context
-         * @param timeout      shared end-to-end budget
+         * @param timeout      shared end-to-end timeout
          * @param responseType declared response class
          * @param <S>          expected success type
          * @return delegated typed outcome
@@ -436,7 +437,7 @@ public final class ScimServerDriver implements SourceDriver<ScimServerOptions> {
                 final Resource request,
                 final Operation operation,
                 final Context context,
-                final Timeout.Budget timeout,
+                final Timeout timeout,
                 final Class<S> responseType) {
             final CompletionStage<? extends Outcome<?>> stage = switch (request) {
                 case User user -> operation == Operation.CREATE ? users.create(user, context, timeout)
@@ -453,13 +454,10 @@ public final class ScimServerDriver implements SourceDriver<ScimServerOptions> {
          *
          * @param user    replacement User
          * @param context immutable invocation context
-         * @param timeout shared operation budget
+         * @param timeout shared operation timeout
          * @return delegated replacement outcome, or {@code null} when identity is absent
          */
-        private CompletionStage<Outcome<User>> replace(
-                final User user,
-                final Context context,
-                final Timeout.Budget timeout) {
+        private CompletionStage<Outcome<User>> replace(final User user, final Context context, final Timeout timeout) {
             final ResourceTarget target = target(Scim.ResourceTypes.USER, user.common().id().getOrNull());
             return target == null ? null : users.replace(target, user, version(user.common()), context, timeout);
         }
@@ -469,13 +467,13 @@ public final class ScimServerDriver implements SourceDriver<ScimServerOptions> {
          *
          * @param group   replacement Group
          * @param context immutable invocation context
-         * @param timeout shared operation budget
+         * @param timeout shared operation timeout
          * @return delegated replacement outcome, or {@code null} when identity is absent
          */
         private CompletionStage<Outcome<Group>> replace(
                 final Group group,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             final ResourceTarget target = target(Scim.ResourceTypes.GROUP, group.common().id().getOrNull());
             return target == null ? null : groups.replace(target, group, version(group.common()), context, timeout);
         }
@@ -486,7 +484,7 @@ public final class ScimServerDriver implements SourceDriver<ScimServerOptions> {
          * @param request      standard target reference
          * @param operation    selected retrieve operation
          * @param context      immutable invocation context
-         * @param timeout      shared end-to-end budget
+         * @param timeout      shared end-to-end timeout
          * @param responseType declared response class
          * @param <S>          expected success type
          * @return delegated typed outcome
@@ -495,7 +493,7 @@ public final class ScimServerDriver implements SourceDriver<ScimServerOptions> {
                 final Resource.Reference request,
                 final Operation operation,
                 final Context context,
-                final Timeout.Budget timeout,
+                final Timeout timeout,
                 final Class<S> responseType) {
             if (operation != Operation.RETRIEVE) {
                 return mismatch();
@@ -514,7 +512,7 @@ public final class ScimServerDriver implements SourceDriver<ScimServerOptions> {
          *
          * @param request      standard target reference
          * @param context      immutable invocation context
-         * @param timeout      shared end-to-end budget
+         * @param timeout      shared end-to-end timeout
          * @param responseType declared Void response class
          * @param <S>          expected success type
          * @return delegated typed outcome
@@ -522,7 +520,7 @@ public final class ScimServerDriver implements SourceDriver<ScimServerOptions> {
         private <S> CompletionStage<Outcome<S>> delete(
                 final Resource.Reference request,
                 final Context context,
-                final Timeout.Budget timeout,
+                final Timeout timeout,
                 final Class<S> responseType) {
             final ResourceTarget target = target(request.resourceType(), request.id());
             final CompletionStage<? extends Outcome<?>> stage = target == null ? null

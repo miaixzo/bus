@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class VendorDirectory {
+public class VendorDirectory {
 
     /**
      * Vendor manifests retained in deterministic construction order.

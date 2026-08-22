@@ -30,7 +30,7 @@ import org.miaixz.bus.auth.Timeout;
  * Defines the executable capability worker produced for one compiled Source registration.
  * <p>
  * Protocol and Vendor {@code SourceDriver} implementations return this contract to runtime compilation. The runtime
- * retains each instance in one runtime container and invokes it only after reference lookup, lifecycle, budget,
+ * retains each instance in one runtime container and invokes it only after reference lookup, lifecycle, timeout,
  * manifest, and request-type checks. Applications execute registered capabilities through
  * {@link org.miaixz.bus.auth.Dispatcher}; they do not construct or invoke Source workers directly.
  * </p>
@@ -52,21 +52,17 @@ public interface SourceWorker extends AutoCloseable {
     Capability.Manifest manifest();
 
     /**
-     * Executes one declared strongly typed capability within the caller's existing time budget.
+     * Executes one declared strongly typed capability within the caller's existing timeout.
      *
      * @param capability declared capability
      * @param request    exact capability request
      * @param context    current non-secret invocation context
-     * @param timeout    shared end-to-end time budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        success type
      * @return asynchronous internal outcome
      */
-    <Q, S> CompletionStage<Outcome<S>> invoke(
-            Capability<Q, S> capability,
-            Q request,
-            Context context,
-            Timeout.Budget timeout);
+    <Q, S> CompletionStage<Outcome<S>> invoke(Capability<Q, S> capability, Q request, Context context, Timeout timeout);
 
     /**
      * Releases resources owned exclusively by this compiled Source worker.

@@ -24,7 +24,10 @@ import java.util.Set;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
+import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -48,7 +51,7 @@ import org.miaixz.bus.core.net.tls.TlsClientAuth;
  *
  * @author Kimi Liu
  */
-public final class MicrosoftManifest implements VariantManifest<MicrosoftOptions> {
+public class MicrosoftManifest implements VariantManifest<MicrosoftOptions> {
 
     /**
      * Stable Microsoft platform routing identifier.
@@ -127,7 +130,8 @@ public final class MicrosoftManifest implements VariantManifest<MicrosoftOptions
             final String authorization,
             final String token,
             final String graph) {
-        return new VariantManifest.Variant(ID, variant, Protocol.OAUTH2, DEFAULT_SCOPES,
+        return new VariantManifest.Variant(ID, variant, Protocol.OAUTH2, VariantManifest.Pkce.DISABLED,
+                Credential.Type.CLIENT_SECRET, DEFAULT_SCOPES,
                 new VendorTargets(Optional.of(template(authorization, Http.Method.GET, Endpoint.Authentication.NONE)),
                         Optional.of(template(token, Http.Method.POST, Endpoint.Authentication.CLIENT_SECRET_POST)),
                         Optional.of(fixed(graph, Http.Method.GET, Endpoint.Authentication.BEARER)),
@@ -164,8 +168,20 @@ public final class MicrosoftManifest implements VariantManifest<MicrosoftOptions
             final String value,
             final Http.Method method,
             final Endpoint.Authentication authentication) {
-        return new VendorTargets.Fixed(new Endpoint(org.miaixz.bus.fabric.UnoUrl.parse(value), Endpoint.Transport.HTTPS,
-                Optional.of(method), Set.of(authentication), Optional.empty(), TlsClientAuth.NONE));
+        return new VendorTargets.Fixed(new Endpoint(Url.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
+                Set.of(authentication), Optional.empty(), TlsClientAuth.NONE));
+    }
+
+    /**
+     * Returns the one-time Microsoft client form with an optional tenant selector.
+     *
+     * @return immutable Microsoft client configuration form
+     */
+    @Override
+    public Scheme.Form form() {
+        return VariantManifest.Forms.extended(
+                false,
+                List.of(VariantManifest.Forms.field("tenant", "Microsoft tenant", Scheme.Form.Type.TEXT, false)));
     }
 
     /**

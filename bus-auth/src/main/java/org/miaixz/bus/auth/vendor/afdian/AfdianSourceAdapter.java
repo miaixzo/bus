@@ -27,6 +27,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
@@ -42,6 +43,7 @@ import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -50,15 +52,13 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements the frozen Afdian creator browser authentication contract.
  *
  * @author Kimi Liu
  */
-public final class AfdianSourceAdapter implements VendorAdapter {
+public class AfdianSourceAdapter implements VendorAdapter {
 
     /**
      * Registered Source identifier.
@@ -128,6 +128,7 @@ public final class AfdianSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -198,7 +199,7 @@ public final class AfdianSourceAdapter implements VendorAdapter {
      * @param capability runtime-owned capability
      * @param request    exact request
      * @param context    invocation context
-     * @param timeout    shared budget
+     * @param timeout    shared timeout
      * @param <Q>        request type
      * @param <S>        success type
      * @return Afdian outcome
@@ -208,10 +209,10 @@ public final class AfdianSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Afdian capability must not be null");
         Assert.notNull(context, "Afdian context must not be null");
-        Assert.notNull(timeout, "Afdian budget must not be null");
+        Assert.notNull(timeout, "Afdian timeout must not be null");
         if (!manifest().capabilities().contains(capability))
             return missing();
         if (capability.key().equals(SourceWorkflow.INITIATE.key())
@@ -232,15 +233,15 @@ public final class AfdianSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated state
      * @param context    unchanged invocation context
-     * @param timeout    shared budget
+     * @param timeout    shared timeout
      * @return prepared redirect
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (timeout.expired())
-            return completed(failed("Afdian authorization budget is exhausted"));
+            return completed(failed("Afdian authorization timeout is exhausted"));
         final List<String> scopes = options.scopes().isEmpty() ? variant.defaultScopes() : options.scopes();
         final List<NameValue> parameters = List.of(
                 new NameValue(OAuth2.Parameters.RESPONSE_TYPE, ResponseType.CODE.value()),
@@ -272,13 +273,13 @@ public final class AfdianSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback material
      * @param context    invocation context
-     * @param timeout    shared budget
+     * @param timeout    shared timeout
      * @return verified external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final String code;
         try {
             code = authorizationResponse(completion.callback()).code();
@@ -287,13 +288,16 @@ public final class AfdianSourceAdapter implements VendorAdapter {
         }
         return Outcome
                 .mapStage(
-                        () -> services.secretLoader()
-                                .load(services.registration(), options.credential(), context, timeout),
+                        () -> services.secretLoader().load(
+                                new SecretLoader.Request(services.registration(), options.credential()),
+                                context,
+                                timeout),
                         loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(outcome -> switch (outcome) {
                     case Outcome.Succeeded<SecretLease> success -> exchange(code, success.value(), timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -302,13 +306,13 @@ public final class AfdianSourceAdapter implements VendorAdapter {
      *
      * @param code    callback authorization code
      * @param secret  owned client-secret lease
-     * @param timeout shared budget
+     * @param timeout shared timeout
      * @return verified identity outcome
      */
     private CompletionStage<Outcome<ExternalIdentity>> exchange(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             byte[] body = null;
             try {
@@ -320,10 +324,8 @@ public final class AfdianSourceAdapter implements VendorAdapter {
                                 new NameValue(OAuth2.Parameters.CODE, code),
                                 new NameValue(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull())));
                 final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint)
-                        .method(Http.Method.POST).timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.VENDOR_AUTH).addressPolicy())
-                        .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
+                try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
+                        .method(Http.Method.POST).body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                     if (response.code() == 429 || response.code() >= Http.Status.INTERNAL_SERVER_ERROR) {
                         return failed("Afdian identity endpoint is unavailable");
                     }
@@ -353,7 +355,7 @@ public final class AfdianSourceAdapter implements VendorAdapter {
      * @param timeout shared clock
      * @return verified identity or closed failure
      */
-    private Outcome<ExternalIdentity> decode(final byte[] body, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> decode(final byte[] body, final Timeout timeout) {
         final JsonValue parsed = services.jsonProvider().readValue(body);
         if (!(parsed instanceof JsonValue.ObjectValue root)
                 || !(root.values().get("ec") instanceof JsonValue.NumberValue ec)) {
@@ -398,6 +400,7 @@ public final class AfdianSourceAdapter implements VendorAdapter {
             case AuthorizationResponseDecoder.Success success -> success.response();
             case AuthorizationResponseDecoder.Error error -> throw new IllegalArgumentException(
                     "Afdian returned an OAuth authorization error");
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 

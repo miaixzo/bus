@@ -24,7 +24,10 @@ import java.util.Set;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
+import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -38,7 +41,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Declares the immutable Ximalaya OAuth 2.0 browser-login manifest.
@@ -51,7 +53,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class XimalayaManifest implements VariantManifest<XimalayaOptions> {
+public class XimalayaManifest implements VariantManifest<XimalayaOptions> {
 
     /**
      * Stable Ximalaya platform routing identifier.
@@ -149,7 +151,7 @@ public final class XimalayaManifest implements VariantManifest<XimalayaOptions> 
      * Complete immutable Ximalaya endpoint, client, capability, form, and deviation manifest.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OAUTH2,
-            List.of(),
+            VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of(),
             new VendorTargets(
                     Optional.of(
                             fixed(
@@ -187,7 +189,7 @@ public final class XimalayaManifest implements VariantManifest<XimalayaOptions> 
             final String value,
             final Http.Method method,
             final Endpoint.Authentication authentication) {
-        return new VendorTargets.Fixed(new Endpoint(UnoUrl.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
+        return new VendorTargets.Fixed(new Endpoint(Url.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
                 Set.of(authentication), Optional.empty(), TlsClientAuth.NONE));
     }
 
@@ -213,6 +215,22 @@ public final class XimalayaManifest implements VariantManifest<XimalayaOptions> 
             final boolean enveloped) {
         return new VendorDeviation(operation, location, vendorName, Optional.ofNullable(standardName), mediaType,
                 method, enveloped);
+    }
+
+    /**
+     * Returns the one-time Ximalaya client form including device and application selectors.
+     *
+     * @return immutable Ximalaya client configuration form
+     */
+    @Override
+    public Scheme.Form form() {
+        return VariantManifest.Forms.extended(
+                false,
+                List.of(
+                        VariantManifest.Forms.field("deviceId", "Device identifier", Scheme.Form.Type.TEXT, true),
+                        VariantManifest.Forms
+                                .field("clientOsType", "Client operating-system type", Scheme.Form.Type.TEXT, true),
+                        VariantManifest.Forms.field("packageId", "Package identifier", Scheme.Form.Type.TEXT, true)));
     }
 
     /**
@@ -262,8 +280,10 @@ public final class XimalayaManifest implements VariantManifest<XimalayaOptions> 
 
     /**
      * Defines Ximalaya-specific wire parameter and response member names that are not owned by OAuth 2.0.
+     *
+     * @author Kimi Liu
      */
-    public static final class Parameters {
+    public static class Parameters {
 
         /**
          * Ximalaya client operating-system type parameter name.
@@ -281,9 +301,9 @@ public final class XimalayaManifest implements VariantManifest<XimalayaOptions> 
         public static final String PACKAGE_ID = "package_id";
 
         /**
-         * Prevents instantiation of the Ximalaya parameter namespace.
+         * Creates a Ximalaya request-parameter namespace instance.
          */
-        private Parameters() {
+        public Parameters() {
             // No initialization required.
         }
 

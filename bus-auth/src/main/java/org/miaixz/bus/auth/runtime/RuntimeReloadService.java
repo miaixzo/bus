@@ -26,11 +26,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.registry.SnapshotFault;
 import org.miaixz.bus.auth.registry.SnapshotValidator;
-import org.miaixz.bus.auth.worker.RegistrationLoader;
+import org.miaixz.bus.auth.worker.loader.RegistrationLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -41,7 +42,9 @@ import org.miaixz.bus.core.lang.Optional;
  * <p>
  * Every call captures one expected runtime container before loading. A candidate becomes visible only through a
  * successful compare-and-set replacement, so validation, compilation, timeout, revision, and concurrency failures
- * preserve the complete previous view. Listener failures are isolated after the commit or validation decision.
+ * preserve the complete previous view. A successful commit changes the protocol-state generation for every Source to
+ * the candidate revision, making Code, Token, Session, State, Nonce, and related cache entries from older revisions
+ * unreachable to new invocations. Listener failures are isolated after the commit or validation decision.
  * </p>
  *
  * @author Kimi Liu
@@ -124,13 +127,13 @@ final class RuntimeReloadService {
      * Attempts to publish one complete desired registration snapshot.
      *
      * @param context immutable non-secret invocation context
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return stage containing the candidate validation report after rejection or successful commit
      * @throws IllegalArgumentException if an argument is {@code null}
      */
-    public CompletionStage<Registry.Report> reload(final Context context, final Timeout.Budget timeout) {
+    public CompletionStage<Registry.Report> reload(final Context context, final Timeout timeout) {
         Assert.notNull(context, "Runtime reload context must not be null");
-        Assert.notNull(timeout, "Runtime reload budget must not be null");
+        Assert.notNull(timeout, "Runtime reload timeout must not be null");
         final RuntimeLifecycle.Lease lease = lifecycle.enter();
         if (lease == null) {
             return CompletableFuture.completedFuture(
@@ -149,12 +152,13 @@ final class RuntimeReloadService {
                             SnapshotFault.Stage.LOAD,
                             "timeout",
                             ErrorCode._408,
-                            "Runtime reload time budget has expired"));
+                            "Runtime reload timeout has expired"));
         }
         final RuntimeContainer expected = containers.current();
-        final CompletionStage<RegistrationLoader.Batch> loading;
+        final CompletionStage<Outcome<RegistrationLoader.Batch>> loading;
         try {
-            loading = loader.load(context, timeout);
+            loading = loader
+                    .load(new RegistrationLoader.Request(expected.registry().revision().value()), context, timeout);
         } catch (RuntimeException cause) {
             final Registry.Report report = report(
                     expected.registry().revision().value() + 1L,
@@ -179,7 +183,7 @@ final class RuntimeReloadService {
         }
         return loading
                 .handle(
-                        (batch, cause) -> cause == null ? process(batch, expected, timeout)
+                        (outcome, cause) -> cause == null ? process(outcome, expected, timeout)
                                 : reject(
                                         report(
                                                 expected.registry().revision().value() + 1L,
@@ -191,17 +195,64 @@ final class RuntimeReloadService {
     }
 
     /**
+     * Converts one closed registration-loading outcome into reload processing or a safe rejection report.
+     *
+     * @param outcome  external registration-loading outcome
+     * @param expected runtime container captured before loading
+     * @param timeout  shared operation timeout
+     * @return stage containing rejection or candidate processing report
+     */
+    private CompletionStage<Registry.Report> process(
+            final Outcome<RegistrationLoader.Batch> outcome,
+            final RuntimeContainer expected,
+            final Timeout timeout) {
+        if (outcome == null) {
+            return reject(
+                    report(
+                            expected.registry().revision().value() + 1L,
+                            SnapshotFault.Stage.LOAD,
+                            "loader",
+                            ErrorCode._500,
+                            "Registration loader returned no outcome"));
+        }
+        return switch (outcome) {
+            case Outcome.Succeeded<RegistrationLoader.Batch> succeeded -> process(succeeded.value(), expected, timeout);
+            case Outcome.Rejected<RegistrationLoader.Batch> rejected -> reject(
+                    report(
+                            expected.registry().revision().value() + 1L,
+                            SnapshotFault.Stage.LOAD,
+                            "loader",
+                            rejected.failure().error(),
+                            rejected.failure().safeDescription()));
+            case Outcome.Failed<RegistrationLoader.Batch> failed -> reject(
+                    report(
+                            expected.registry().revision().value() + 1L,
+                            SnapshotFault.Stage.LOAD,
+                            "loader",
+                            failed.failure().error(),
+                            failed.failure().safeDescription()));
+            default -> reject(
+                    report(
+                            expected.registry().revision().value() + 1L,
+                            SnapshotFault.Stage.LOAD,
+                            "loader",
+                            ErrorCode._500,
+                            "Registration loader returned an unsupported outcome"));
+        };
+    }
+
+    /**
      * Validates, compiles, and atomically commits one loaded snapshot.
      *
      * @param batch    externally loaded complete candidate batch
      * @param expected runtime container captured before loading
-     * @param timeout  shared operation budget
+     * @param timeout  shared operation timeout
      * @return stage containing validation or successful commit report
      */
     private CompletionStage<Registry.Report> process(
             final RegistrationLoader.Batch batch,
             final RuntimeContainer expected,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (batch == null) {
             return reject(
                     report(
@@ -229,7 +280,7 @@ final class RuntimeReloadService {
                             SnapshotFault.Stage.VALIDATE,
                             "timeout",
                             ErrorCode._408,
-                            "Runtime reload time budget expired after loading"));
+                            "Runtime reload timeout expired after loading"));
         }
         final Registry.Report report;
         try {
@@ -269,7 +320,7 @@ final class RuntimeReloadService {
                             SnapshotFault.Stage.COMMIT,
                             "timeout",
                             ErrorCode._408,
-                            "Runtime reload time budget expired before commit"));
+                            "Runtime reload timeout expired before commit"));
         }
         final AtomicBoolean replaced = new AtomicBoolean();
         final boolean admitted = lifecycle.commit(() -> {
@@ -323,7 +374,9 @@ final class RuntimeReloadService {
         notifier.rejected(report);
     }
 
-    /** Closes Registry notification delivery owned by this reload service. */
+    /**
+     * Closes Registry notification delivery owned by this reload service.
+     */
     void close() {
         notifier.close();
     }

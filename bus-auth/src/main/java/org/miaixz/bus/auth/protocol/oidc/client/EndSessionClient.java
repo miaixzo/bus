@@ -24,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oidc.EndSessionRequest;
@@ -32,7 +33,6 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Builds an RP-Initiated Logout URL for user-agent navigation.
@@ -43,7 +43,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class EndSessionClient {
+public class EndSessionClient {
 
     /**
      * Validated relying-party options containing the end-session endpoint.
@@ -97,22 +97,22 @@ public final class EndSessionClient {
      *
      * @param request standard end-session request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return completed stage containing the logout URL or framework failure
      */
-    public CompletionStage<Outcome<UnoUrl>> endSession(
+    public CompletionStage<Outcome<Url>> endSession(
             final EndSessionRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OpenID Connect end-session request must not be null");
         Assert.notNull(context, "OpenID Connect end-session context must not be null");
-        Assert.notNull(timeout, "OpenID Connect end-session time budget must not be null");
+        Assert.notNull(timeout, "OpenID Connect end-session timeout must not be null");
         if (timeout.expired()) {
             return completed(
-                    Outcome.failed(failure(ErrorCode._408, "OpenID Connect end-session request has no time budget")));
+                    Outcome.failed(failure(ErrorCode._408, "OpenID Connect end-session request has no timeout")));
         }
         try {
-            final UnoUrl endpoint = options.endSessionEndpoint().getOrNull().url();
+            final Url endpoint = options.endSessionEndpoint().getOrNull().url();
             return completed(Outcome.succeeded(codec.encode(endpoint, request)));
         } catch (RuntimeException exception) {
             return completed(

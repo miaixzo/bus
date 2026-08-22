@@ -24,6 +24,7 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.guard.ClientAuthentication;
 import org.miaixz.bus.auth.protocol.oauth2.RefreshTokenGrant;
 import org.miaixz.bus.auth.protocol.oauth2.TokenEndpointResponse;
 import org.miaixz.bus.auth.protocol.oauth2.TokenRequest;
@@ -37,7 +38,7 @@ import org.miaixz.bus.core.lang.Assert;
  *
  * @author Kimi Liu
  */
-public final class TokenService {
+public class TokenService {
 
     /**
      * Internal issuer for initial and exchanged access-token grants.
@@ -72,6 +73,7 @@ public final class TokenService {
             case Outcome.Succeeded<TokenResponse> success -> Outcome.succeeded(success.value());
             case Outcome.Rejected<TokenResponse> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<TokenResponse> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         };
     }
 
@@ -80,20 +82,23 @@ public final class TokenService {
      *
      * @param request standard token request
      * @param context invocation context carrying a verified client identifier
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return asynchronous standard token response outcome
      */
     public CompletionStage<Outcome<TokenEndpointResponse>> token(
             final TokenRequest request,
+            final ClientAuthentication authentication,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OAuth 2.x token request must not be null");
+        Assert.notNull(authentication, "OAuth 2.x client authentication must not be null");
         Assert.notNull(context, "OAuth 2.x token context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x token time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x token timeout must not be null");
         if (request.grant() instanceof RefreshTokenGrant) {
-            return rotator.token(request, context, timeout).thenApply(TokenService::endpoint);
+            return rotator.token(request, authentication.consumer(), context, timeout)
+                    .thenApply(TokenService::endpoint);
         }
-        return issuer.token(request, context, timeout);
+        return issuer.token(request, authentication, context, timeout);
     }
 
 }

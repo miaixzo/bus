@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.auth.FabricX.Request;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
@@ -35,7 +36,6 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 
 /**
  * Decodes the standard RFC 7009 token revocation form request.
@@ -46,7 +46,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
  *
  * @author Kimi Liu
  */
-public final class RevocationRequestDecoder implements Decoder<HttpRequest, RevocationRequest> {
+public class RevocationRequestDecoder implements Decoder<Request, RevocationRequest> {
 
     /**
      * Maximum form request size materialized by the decoder.
@@ -71,7 +71,7 @@ public final class RevocationRequestDecoder implements Decoder<HttpRequest, Revo
      * @param request request to inspect
      * @throws ValidateException if method, URL, media, size, or repeatability is invalid
      */
-    private static void validateTransport(final HttpRequest request) {
+    private static void validateTransport(final Request request) {
         if (request.method() != Http.Method.POST) {
             throw new ValidateException("OAuth 2.x revocation endpoint requires HTTP POST");
         }
@@ -121,7 +121,7 @@ public final class RevocationRequestDecoder implements Decoder<HttpRequest, Revo
      * @throws ValidateException        if transport, form, multiplicity, or parameter syntax is invalid
      */
     @Override
-    public RevocationRequest decode(final HttpRequest encoded) {
+    public RevocationRequest decode(final Request encoded) {
         Assert.notNull(encoded, "OAuth 2.x revocation HTTP request must not be null");
         validateTransport(encoded);
         final Map<String, String> parameters = unique(formCodec.decode(encoded.body().bytes(MAXIMUM_FORM_BYTES)));

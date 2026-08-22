@@ -29,7 +29,7 @@
  * <p>
  * SAML client and server services call this package after strict decoding and before identity or session effects. It
  * consumes typed SAML documents, explicit trust material, resolvers, atomic replay storage, SecurityBaseline, Context,
- * and Budget. It does not parse arbitrary XML, fetch untrusted keys, infer trust from KeyInfo, implement transport,
+ * and Timeout. It does not parse arbitrary XML, fetch untrusted keys, infer trust from KeyInfo, implement transport,
  * issue assertions, persist project state, invoke Registry, or contain Vendor-specific signing rules.
  * </p>
  * <p>

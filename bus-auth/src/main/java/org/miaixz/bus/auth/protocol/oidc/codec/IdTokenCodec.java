@@ -47,7 +47,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class IdTokenCodec {
+public class IdTokenCodec {
 
     /**
      * Shared cryptographic JWT verifier.

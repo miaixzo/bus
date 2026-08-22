@@ -21,7 +21,7 @@
  * Defines the standard OpenID Connect Core, Discovery, UserInfo, and RP-Initiated Logout models.
  * <p>
  * AuthenticationRequest extends the OAuth authorization request with OIDC parameters, while authorization responses
- * reuse the OAuth sealed response union. IdToken and IdTokenClaims represent the signed identity assertion;
+ * reuse the OAuth authorization-response contract. IdToken and IdTokenClaims represent the signed identity assertion;
  * OpenIdProviderMetadata represents Discovery; UserInfoRequest and UserInfoResponse represent the protected claims
  * operation; EndSessionRequest represents logout. Prompt, Display, SubjectType, and ClaimType retain their registered
  * OpenID Connect wire values.

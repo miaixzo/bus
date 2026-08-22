@@ -27,7 +27,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.*;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationRequestEncoder;
@@ -51,8 +52,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements Microsoft browser authentication for global and China cloud registrations.
@@ -64,7 +63,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class MicrosoftSourceAdapter implements VendorAdapter {
+public class MicrosoftSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted global Microsoft Graph evidence authority.
@@ -251,6 +250,7 @@ public final class MicrosoftSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -333,7 +333,7 @@ public final class MicrosoftSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing Microsoft-private Graph response objects
@@ -343,10 +343,10 @@ public final class MicrosoftSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Microsoft capability must not be null");
         Assert.notNull(context, "Microsoft invocation context must not be null");
-        Assert.notNull(timeout, "Microsoft invocation budget must not be null");
+        Assert.notNull(timeout, "Microsoft invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return missing();
         }
@@ -375,13 +375,13 @@ public final class MicrosoftSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated state with no nonce or PKCE material
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return standard-client-produced redirect bound to the generated state
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         try {
             if (initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
                 return completed(
@@ -392,11 +392,11 @@ public final class MicrosoftSourceAdapter implements VendorAdapter {
                     Optional.empty(), Optional.empty(), emptyObject());
             return standardAdapter.invoke(OAuth2ClientScheme.AUTHORIZATION, request, context, timeout)
                     .thenApply(outcome -> switch (outcome) {
-                        case Outcome.Succeeded<org.miaixz.bus.fabric.UnoUrl> success -> Outcome.succeeded(
+                        case Outcome.Succeeded<Url> success -> Outcome.succeeded(
                                 new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                        case Outcome.Rejected<org.miaixz.bus.fabric.UnoUrl> rejected -> Outcome
-                                .rejected(rejected.failure());
-                        case Outcome.Failed<org.miaixz.bus.fabric.UnoUrl> failed -> Outcome.failed(failed.failure());
+                        case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                        case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (RuntimeException cause) {
             return completed(rejected("Microsoft authorization request is invalid"));
@@ -416,6 +416,7 @@ public final class MicrosoftSourceAdapter implements VendorAdapter {
                     .orElseThrow(() -> new ValidateException("Microsoft authorization success requires state"));
             case AuthorizationResponseDecoder.Error error -> error.response().state()
                     .orElseThrow(() -> new ValidateException("Microsoft authorization error requires state"));
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -424,13 +425,13 @@ public final class MicrosoftSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback correlation
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified Microsoft Graph identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final AuthorizationResponseDecoder.Decoded decoded;
         try {
             decoded = callback(completion.callback());
@@ -452,6 +453,7 @@ public final class MicrosoftSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<TokenResponse> success -> profile(success.value(), timeout);
             case Outcome.Rejected<TokenResponse> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<TokenResponse> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -460,13 +462,13 @@ public final class MicrosoftSourceAdapter implements VendorAdapter {
      *
      * @param request standard token request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return standard token response with Microsoft Bearer type validation
      */
     private CompletionStage<Outcome<TokenResponse>> token(
             final TokenRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!request.extensions().values().isEmpty() || !valid(request.grant())) {
             return completed(rejected("Microsoft token request does not match its registered grant contract"));
         }
@@ -479,6 +481,7 @@ public final class MicrosoftSourceAdapter implements VendorAdapter {
                                             "Microsoft token endpoint must return a Bearer OAuth token response");
                     case Outcome.Rejected<TokenEndpointResponse> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<TokenEndpointResponse> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -486,12 +489,10 @@ public final class MicrosoftSourceAdapter implements VendorAdapter {
      * Retrieves the Microsoft Graph current-user resource asynchronously.
      *
      * @param token   standard OAuth token response containing the sensitive access token
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
-    private CompletionStage<Outcome<ExternalIdentity>> profile(
-            final TokenResponse token,
-            final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<ExternalIdentity>> profile(final TokenResponse token, final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> profile(token.accessToken(), timeout), services.executor());
     }
 
@@ -499,20 +500,18 @@ public final class MicrosoftSourceAdapter implements VendorAdapter {
      * Executes and strictly maps one Microsoft Graph {@code /me} response.
      *
      * @param accessToken sensitive Bearer access token
-     * @param timeout     shared end-to-end budget
+     * @param timeout     shared end-to-end timeout
      * @return verified external identity or safely classified upstream outcome
      */
-    private Outcome<ExternalIdentity> profile(final String accessToken, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final String accessToken, final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "Microsoft Graph request has no remaining time budget");
+            return failed(ErrorCode._408, "Microsoft Graph request has no remaining timeout");
         }
         try {
             final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                    .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + accessToken)
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute()) {
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
+                    .method(Http.Method.GET).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
+                    .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + accessToken).execute()) {
                 if (response.code() == Http.Status.TOO_MANY_REQUESTS) {
                     return failed(ErrorCode._429, "Microsoft Graph rate limited the current-user request");
                 }
@@ -546,7 +545,7 @@ public final class MicrosoftSourceAdapter implements VendorAdapter {
      * @param timeout shared clock used to timestamp evidence
      * @return verified external identity
      */
-    private Outcome<ExternalIdentity> identity(final JsonValue.ObjectValue profile, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> identity(final JsonValue.ObjectValue profile, final Timeout timeout) {
         try {
             if (profile.values().containsKey(OAuth2.Parameters.ERROR)) {
                 return failed(ErrorCode._502, "Microsoft Graph returned an unexpected error envelope");

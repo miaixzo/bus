@@ -23,21 +23,21 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oidc.UserInfoRequest;
 import org.miaixz.bus.auth.protocol.oidc.UserInfoResponse;
 import org.miaixz.bus.auth.protocol.oidc.codec.UserInfoCodec;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Adapts the OpenID Connect UserInfo protected resource to typed service execution.
  *
  * @author Kimi Liu
  */
-public final class UserInfoEndpoint {
+public class UserInfoEndpoint {
 
     /**
      * Strict bearer request and JSON response codec.
@@ -74,16 +74,13 @@ public final class UserInfoEndpoint {
      *
      * @param request immutable Fabric HTTP request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a complete standard HTTP response
      */
-    public CompletionStage<HttpResponse> handle(
-            final HttpRequest request,
-            final Context context,
-            final Timeout.Budget timeout) {
+    public CompletionStage<Response> handle(final Request request, final Context context, final Timeout timeout) {
         Assert.notNull(request, "OpenID Connect UserInfo HTTP request must not be null");
         Assert.notNull(context, "OpenID Connect UserInfo context must not be null");
-        Assert.notNull(timeout, "OpenID Connect UserInfo time budget must not be null");
+        Assert.notNull(timeout, "OpenID Connect UserInfo timeout must not be null");
         final UserInfoRequest decoded;
         try {
             decoded = codec.decodeRequest(request);
@@ -94,6 +91,7 @@ public final class UserInfoEndpoint {
             case Outcome.Succeeded<UserInfoResponse> success -> codec.encodeResponse(request, success.value());
             case Outcome.Rejected<UserInfoResponse> rejected -> errorMapper.userInfo(request, rejected.failure());
             case Outcome.Failed<UserInfoResponse> failed -> errorMapper.userInfo(request, failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 

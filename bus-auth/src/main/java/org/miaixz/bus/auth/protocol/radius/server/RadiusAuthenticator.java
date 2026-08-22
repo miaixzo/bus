@@ -46,7 +46,7 @@ import org.miaixz.bus.crypto.center.HMac;
  *
  * @author Kimi Liu
  */
-public final class RadiusAuthenticator {
+public class RadiusAuthenticator {
 
     /**
      * Exact Authenticator and Message-Authenticator size.
@@ -59,7 +59,7 @@ public final class RadiusAuthenticator {
     private final RadiusPacketEncoder packetEncoder;
 
     /**
-     * Creates a historic RADIUS security helper.
+     * Creates a historic RADIUS packet authenticator.
      *
      * @param packetEncoder exact packet encoder
      * @throws IllegalArgumentException if the encoder is {@code null}
@@ -180,6 +180,7 @@ public final class RadiusAuthenticator {
             case AccessChallenge ignored -> new AccessChallenge(header, attributes);
             case AccountingRequest ignored -> new AccountingRequest(header, attributes);
             case AccountingResponse ignored -> new AccountingResponse(header, attributes);
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 

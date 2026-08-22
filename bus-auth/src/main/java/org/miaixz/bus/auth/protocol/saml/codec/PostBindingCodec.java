@@ -45,7 +45,7 @@ import org.miaixz.bus.core.net.Protocol;
  *
  * @author Kimi Liu
  */
-public final class PostBindingCodec {
+public class PostBindingCodec {
 
     /**
      * Strict SAML protocol-message XML codec.

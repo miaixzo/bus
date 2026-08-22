@@ -136,7 +136,7 @@ public record Assertion(String version, String id, Instant issueInstant, Issuer 
      *
      * @author Kimi Liu
      */
-    public sealed interface StatementContent permits AuthenticationStatement, AttributesStatement, OtherStatement {
+    public interface StatementContent {
 
     }
 

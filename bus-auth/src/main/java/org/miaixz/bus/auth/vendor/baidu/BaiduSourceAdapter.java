@@ -28,6 +28,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.AuthorizationClient;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientOptions;
@@ -41,6 +43,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -51,9 +54,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements Baidu browser authentication while exposing only its standard OAuth authorization operation.
@@ -64,7 +64,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class BaiduSourceAdapter implements VendorAdapter {
+public class BaiduSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted Baidu authority recorded in successful federated identity evidence.
@@ -271,6 +271,7 @@ public final class BaiduSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -323,7 +324,7 @@ public final class BaiduSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing Baidu-private token or profile models
@@ -333,10 +334,10 @@ public final class BaiduSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Baidu capability must not be null");
         Assert.notNull(context, "Baidu invocation context must not be null");
-        Assert.notNull(timeout, "Baidu invocation budget must not be null");
+        Assert.notNull(timeout, "Baidu invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("Baidu capability is not declared"));
         }
@@ -362,13 +363,13 @@ public final class BaiduSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated browser correlation
      * @param context    immutable invocation context retained for the uniform operation signature
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return prepared standard authorization redirect
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "Baidu authorization context must not be null");
         if (timeout.expired() || initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(failed("Baidu authorization security material violates the frozen manifest"));
@@ -379,10 +380,11 @@ public final class BaiduSourceAdapter implements VendorAdapter {
                     Optional.empty(), Optional.empty(), emptyObject());
             return standardAdapter.invoke(OAuth2ClientScheme.AUTHORIZATION, request, context, timeout)
                     .thenApply(outcome -> switch (outcome) {
-                        case Outcome.Succeeded<UnoUrl> success -> Outcome.succeeded(
+                        case Outcome.Succeeded<Url> success -> Outcome.succeeded(
                                 new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                        case Outcome.Rejected<UnoUrl> rejected -> Outcome.rejected(rejected.failure());
-                        case Outcome.Failed<UnoUrl> failed -> Outcome.failed(failed.failure());
+                        case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                        case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (RuntimeException cause) {
             return completed(rejected("Baidu authorization request is invalid"));
@@ -420,13 +422,13 @@ public final class BaiduSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback correlation
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified Baidu external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CallbackWire callback;
         try {
             callback = callback(completion.callback());
@@ -439,7 +441,10 @@ public final class BaiduSourceAdapter implements VendorAdapter {
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed("Baidu client-secret resolution failed"));
@@ -455,6 +460,7 @@ public final class BaiduSourceAdapter implements VendorAdapter {
                     case Outcome.Succeeded<SecretLease> success -> token(callback.code(), success.value(), timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -463,27 +469,26 @@ public final class BaiduSourceAdapter implements VendorAdapter {
      *
      * @param code    consumed authorization code
      * @param secret  owned client-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified identity after token and profile processing
      */
     private CompletionStage<Outcome<ExternalIdentity>> token(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try (secret) {
                 if (timeout.expired()) {
-                    return BaiduSourceAdapter.<Access>failed("Baidu token request has no remaining time budget");
+                    return BaiduSourceAdapter.<Access>failed("Baidu token request has no remaining timeout");
                 }
                 final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
+                try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
+                        .method(Http.Method.GET)
                         .query(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value())
                         .query(OAuth2.Parameters.CODE, code).query(OAuth2.Parameters.CLIENT_ID, options.clientId())
                         .query(OAuth2.Parameters.CLIENT_SECRET, new String(secret.material()))
                         .query(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull())
-                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
-                        .execute()) {
+                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                     return decodeToken(response);
                 }
             } catch (RuntimeException cause) {
@@ -493,6 +498,7 @@ public final class BaiduSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<Access> success -> profile(success.value(), timeout);
             case Outcome.Rejected<Access> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<Access> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -502,7 +508,7 @@ public final class BaiduSourceAdapter implements VendorAdapter {
      * @param response owned Baidu HTTP response
      * @return private access-token result or safely classified failure
      */
-    private Outcome<Access> decodeToken(final HttpResponse response) {
+    private Outcome<Access> decodeToken(final Response response) {
         if (response.code() == Http.Status.TOO_MANY_REQUESTS || response.code() >= Http.Status.INTERNAL_SERVER_ERROR) {
             return failed("Baidu token endpoint is unavailable");
         }
@@ -540,17 +546,16 @@ public final class BaiduSourceAdapter implements VendorAdapter {
      * Retrieves the Baidu profile using its official access-token query field.
      *
      * @param access  private token result
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
-    private CompletionStage<Outcome<ExternalIdentity>> profile(final Access access, final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<ExternalIdentity>> profile(final Access access, final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                        .query(OAuth2.Parameters.ACCESS_TOKEN, access.accessToken()).query("get_unionid", Symbol.ONE)
-                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+                try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
+                        .method(Http.Method.GET).query(OAuth2.Parameters.ACCESS_TOKEN, access.accessToken())
+                        .query("get_unionid", Symbol.ONE).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                         .execute()) {
                     return decodeProfile(response, timeout);
                 }
@@ -567,7 +572,7 @@ public final class BaiduSourceAdapter implements VendorAdapter {
      * @param timeout  shared clock used for evidence
      * @return verified external identity or safely classified failure
      */
-    private Outcome<ExternalIdentity> decodeProfile(final HttpResponse response, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> decodeProfile(final Response response, final Timeout timeout) {
         if (response.code() == Http.Status.TOO_MANY_REQUESTS || response.code() >= Http.Status.INTERNAL_SERVER_ERROR) {
             return failed("Baidu profile endpoint is unavailable");
         }
@@ -602,7 +607,7 @@ public final class BaiduSourceAdapter implements VendorAdapter {
      * @return bounded provider-neutral JSON object
      * @throws ValidateException if status, media type, JSON shape, depth, or duplicate members are invalid
      */
-    private JsonValue.ObjectValue object(final HttpResponse response) {
+    private JsonValue.ObjectValue object(final Response response) {
         if (response.code() != Http.Status.OK
                 || !MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("Baidu response must use HTTP 200 application/json");

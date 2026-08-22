@@ -20,17 +20,22 @@
 package org.miaixz.bus.auth.resolver;
 
 import org.miaixz.bus.auth.Subject;
-import org.miaixz.bus.auth.worker.identity.IdentityLoader;
+import org.miaixz.bus.auth.worker.loader.IdentityLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Pure parser for project subject records.
+ *
+ * @author Kimi Liu
  */
-public final class SubjectParser {
+public class SubjectParser {
 
-    /** Creates a stateless Subject parser. */
+    /**
+     * Creates a stateless Subject parser.
+     */
     public SubjectParser() {
+        // No initialization required.
     }
 
     /**

@@ -37,7 +37,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class AbandonService {
+public class AbandonService {
 
     /**
      * Compiled server-role Source identifier.
@@ -82,16 +82,16 @@ public final class AbandonService {
      *
      * @param message complete Abandon request message
      * @param context immutable invocation context with trusted connection state
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing only internal empty success or a closed operational failure
      */
     public CompletionStage<Outcome<Void>> abandon(
             final LdapMessage message,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(message, "LDAP Abandon message must not be null");
         Assert.notNull(context, "LDAP Abandon context must not be null");
-        Assert.notNull(timeout, "LDAP Abandon time budget must not be null");
+        Assert.notNull(timeout, "LDAP Abandon timeout must not be null");
         if (!(message.protocolOp() instanceof AbandonRequest request) || message.messageId() <= 0
                 || message.controls().stream().anyMatch(control -> control.criticality())) {
             return CompletableFuture.completedFuture(Outcome.succeeded(null));
@@ -100,7 +100,7 @@ public final class AbandonService {
                 context.network().connection().isPresent(),
                 "LDAP Abandon requires a trusted connection snapshot");
         if (timeout.expired()) {
-            return CompletableFuture.completedFuture(Outcome.failed(failure("LDAP Abandon time budget expired")));
+            return CompletableFuture.completedFuture(Outcome.failed(failure("LDAP Abandon timeout expired")));
         }
         final CompletionStage<Outcome<Void>> stage;
         try {

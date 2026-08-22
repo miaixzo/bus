@@ -24,7 +24,9 @@ import java.util.Set;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -49,7 +51,7 @@ import org.miaixz.bus.core.net.tls.TlsClientAuth;
  *
  * @author Kimi Liu
  */
-public final class CodingManifest implements VariantManifest<CodingOptions> {
+public class CodingManifest implements VariantManifest<CodingOptions> {
 
     /**
      * Stable platform routing identifier shared by catalog and runtime compilation.
@@ -109,7 +111,7 @@ public final class CodingManifest implements VariantManifest<CodingOptions> {
      * Complete immutable endpoint, client policy, scope, capability, form, and deviation manifest.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OAUTH2,
-            List.of("user:profile:ro"),
+            VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of("user:profile:ro"),
             new VendorTargets(
                     Optional.of(
                             template(
@@ -175,6 +177,18 @@ public final class CodingManifest implements VariantManifest<CodingOptions> {
             final boolean enveloped) {
         return new VendorDeviation(operation, location, vendorName, Optional.ofNullable(standardName), mediaType,
                 method, enveloped);
+    }
+
+    /**
+     * Returns the one-time CODING client form including its constrained team label.
+     *
+     * @return immutable CODING client configuration form
+     */
+    @Override
+    public Scheme.Form form() {
+        return VariantManifest.Forms.extended(
+                false,
+                List.of(VariantManifest.Forms.field("team", "CODING team", Scheme.Form.Type.TEXT, true)));
     }
 
     /**

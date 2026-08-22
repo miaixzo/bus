@@ -25,6 +25,7 @@ import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Options;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.extra.json.JsonValue;
 
 /**
  * Defines project-supplied immutable deployment inputs for one third-party platform Source.
@@ -40,6 +41,41 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @author Kimi Liu
  */
 public interface VendorOptions<O extends VendorOptions<O>> extends Options<O> {
+
+    /**
+     * Constructs one exact immutable Vendor Options value from validated configuration inputs.
+     * <p>
+     * A factory never accesses Worker services or plaintext credential material. It accepts only the project-owned
+     * credential reference returned after secure storage and delegates final platform validation to the concrete
+     * Options constructor.
+     * </p>
+     *
+     * @param <O> exact immutable Vendor Options type produced by this factory
+     * @author Kimi Liu
+     */
+    @FunctionalInterface
+    interface Factory<O extends VendorOptions<?>> {
+
+        /**
+         * Creates one concrete immutable Vendor Options value.
+         *
+         * @param variant    selected immutable platform variant
+         * @param clientId   public client identifier
+         * @param credential externally stored credential reference
+         * @param callback   exact registered callback
+         * @param scopes     immutable effective scopes
+         * @param parameters validated manifest-form parameter values
+         * @return exact immutable Vendor Options value
+         */
+        O create(
+                VariantManifest.Variant variant,
+                String clientId,
+                Credential.Reference credential,
+                Optional<String> callback,
+                List<String> scopes,
+                JsonValue.ObjectValue parameters);
+
+    }
 
     /**
      * Retains built-in record options as their immutable runtime value.

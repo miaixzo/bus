@@ -47,7 +47,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class AuthorizationResponseValidator {
+public class AuthorizationResponseValidator {
 
     /**
      * Shared exact issuer comparison primitive.
@@ -98,19 +98,19 @@ public final class AuthorizationResponseValidator {
      *
      * @param request explicit expected response bindings
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return completed stage containing the accepted response or a closed failure
      */
     public CompletionStage<Outcome<AuthorizationResponse>> validate(
             final Request request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OpenID Connect authorization response validation request must not be null");
         Assert.notNull(context, "OpenID Connect authorization response context must not be null");
-        Assert.notNull(timeout, "OpenID Connect authorization response budget must not be null");
+        Assert.notNull(timeout, "OpenID Connect authorization response timeout must not be null");
         try {
             if (timeout.expired()) {
-                throw new ValidateException("OpenID Connect authorization response budget has expired");
+                throw new ValidateException("OpenID Connect authorization response timeout has expired");
             }
             if (request.response() instanceof AuthorizationErrorResponse) {
                 return completed(Outcome.succeeded(request.response()));

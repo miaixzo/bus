@@ -39,7 +39,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class ScimBulkService {
+public class ScimBulkService {
 
     /**
      * Compiled server-role Source identifier used to isolate Bulk execution.
@@ -106,16 +106,16 @@ public final class ScimBulkService {
      *
      * @param request standard typed Bulk request owned by the caller until stage completion
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the ordered Bulk response or a closed framework failure
      */
     public CompletionStage<Outcome<BulkResponse>> bulk(
             final BulkRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "SCIM Bulk request must not be null");
         Assert.notNull(context, "SCIM Bulk context must not be null");
-        Assert.notNull(timeout, "SCIM Bulk time budget must not be null");
+        Assert.notNull(timeout, "SCIM Bulk timeout must not be null");
         final ServiceProviderConfig.Bulk bulk = options.serviceProviderConfig().bulk();
         if (!bulk.supported() || request.operations().size() > bulk.maxOperations()) {
             return completed(
@@ -129,7 +129,7 @@ public final class ScimBulkService {
             }
         }
         if (timeout.expired()) {
-            return completed(Outcome.failed(failure(ErrorCode._408, "SCIM Bulk request has no remaining time budget")));
+            return completed(Outcome.failed(failure(ErrorCode._408, "SCIM Bulk request has no remaining timeout")));
         }
         try {
             final CompletionStage<Outcome<BulkResponse>> stage = store.bulk(providerId, request, context, timeout);

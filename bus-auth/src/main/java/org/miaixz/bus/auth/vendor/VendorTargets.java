@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -33,7 +34,6 @@ import org.miaixz.bus.core.net.tls.TlsClientAuth;
 import org.miaixz.bus.core.net.tls.TlsVersion;
 import org.miaixz.bus.core.net.url.RFC3986;
 import org.miaixz.bus.core.xyz.PatternKit;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Owns the immutable official endpoint targets declared by one platform variant.
@@ -108,7 +108,7 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tok
     public static String resolveIdentifier(final String value, final VendorOptions<?> options) {
         validateIdentifierTemplate(value);
         final String resolved = resolveValue(value, Assert.notNull(options, "Vendor Source options must not be null"));
-        final UnoUrl url = UnoUrl.parse(resolved);
+        final Url url = Url.parse(resolved);
         if (!Protocol.HTTPS.name.equalsIgnoreCase(url.scheme()) || url.host() == null || !url.username().isEmpty()
                 || !url.query().isEmpty() || url.fragment() != null) {
             throw new ValidateException(
@@ -317,9 +317,9 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tok
             throw new ValidateException("Vendor tenant and authorization server id variables must be path segments");
         }
         final String parseable = parseable(value);
-        final UnoUrl url;
+        final Url url;
         try {
-            url = UnoUrl.parse(parseable);
+            url = Url.parse(parseable);
         } catch (IllegalArgumentException cause) {
             throw new ValidateException("Vendor endpoint template is malformed", cause);
         }
@@ -399,7 +399,7 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tok
      *
      * @author Kimi Liu
      */
-    public sealed interface Target permits Fixed, Template {
+    public interface Target {
 
         /**
          * Resolves this target without performing network activity.
@@ -488,7 +488,7 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tok
         public Endpoint resolve(final VendorOptions<?> options) {
             final VendorOptions<?> checkedOptions = Assert.notNull(options, "Vendor Source options must not be null");
             final String resolved = resolveValue(value, checkedOptions);
-            final UnoUrl url = UnoUrl.parse(resolved);
+            final Url url = Url.parse(resolved);
             if (!Protocol.HTTPS.name.equalsIgnoreCase(url.scheme()) || !url.username().isEmpty()
                     || url.fragment() != null) {
                 throw new ValidateException(

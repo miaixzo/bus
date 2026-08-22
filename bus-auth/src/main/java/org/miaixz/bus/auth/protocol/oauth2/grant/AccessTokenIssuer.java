@@ -30,6 +30,7 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.cache.*;
+import org.miaixz.bus.auth.guard.ClientAuthentication;
 import org.miaixz.bus.auth.guard.ScopeValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
@@ -39,7 +40,7 @@ import org.miaixz.bus.auth.shared.pkce.CodeVerifier;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
 import org.miaixz.bus.auth.shared.pkce.PkceValidator;
 import org.miaixz.bus.auth.source.DriverServices;
-import org.miaixz.bus.auth.worker.ResourceLoader;
+import org.miaixz.bus.auth.worker.loader.ResourceLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -56,7 +57,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class AccessTokenIssuer {
+public class AccessTokenIssuer {
 
     /**
      * Maximum create-if-absent attempts used for an opaque token digest collision.
@@ -145,6 +146,7 @@ public final class AccessTokenIssuer {
             case ClientCredentialsGrant ignored -> GrantType.CLIENT_CREDENTIALS;
             case TokenExchangeGrant ignored -> GrantType.TOKEN_EXCHANGE;
             case DeviceCodeGrant ignored -> GrantType.DEVICE_CODE;
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -212,33 +214,27 @@ public final class AccessTokenIssuer {
      *
      * @param request standard token request
      * @param context invocation context carrying a verified client identifier
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return asynchronous standard token response outcome
      */
     public CompletionStage<Outcome<TokenEndpointResponse>> token(
             final TokenRequest request,
+            final ClientAuthentication authentication,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OAuth 2.x token request must not be null");
+        Assert.notNull(authentication, "OAuth 2.x client authentication must not be null");
         Assert.notNull(context, "OAuth 2.x token context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x token time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x token timeout must not be null");
         if (timeout.expired()) {
             return completed(
                     Outcome.failed(
                             failure(
                                     ErrorCode._408,
                                     OAuth2ErrorCode.TEMPORARILY_UNAVAILABLE,
-                                    "OAuth 2.x token request has no remaining time budget")));
+                                    "OAuth 2.x token request has no remaining timeout")));
         }
-        final String clientId = context.clientId().getOrNull();
-        if (clientId == null) {
-            return completed(
-                    Outcome.rejected(
-                            failure(
-                                    ErrorCode._401,
-                                    OAuth2ErrorCode.INVALID_CLIENT,
-                                    "OAuth 2.x token request requires an authenticated or identified client")));
-        }
+        final ConsumerMetadata client = authentication.consumer();
         final GrantType grantType = grantType(request.grant());
         if (grantType == null || request.grant() instanceof RefreshTokenGrant) {
             return completed(
@@ -257,80 +253,52 @@ public final class AccessTokenIssuer {
                                     "OAuth 2.x token grant is disabled by the Provider")));
         }
 
-        final CompletionStage<Outcome<ConsumerMetadata>> resolution;
-        try {
-            resolution = Outcome.mapStage(
-                    () -> services.consumerLoader().load(services.registration(), clientId, context, timeout),
-                    loaded -> services.consumerParser().parse(services.registration(), clientId, loaded));
-        } catch (RuntimeException exception) {
+        if (authentication.federation().isPresent() && !GrantType.CLIENT_CREDENTIALS.equals(grantType)) {
             return completed(
-                    Outcome.failed(
+                    Outcome.rejected(
                             failure(
-                                    ErrorCode._500,
-                                    OAuth2ErrorCode.SERVER_ERROR,
-                                    "OAuth 2.x client resolution failed")));
+                                    ErrorCode._400,
+                                    OAuth2ErrorCode.UNAUTHORIZED_CLIENT,
+                                    "Federated client authentication is restricted to client_credentials")));
         }
-        return resolution
-                .handle(
-                        (outcome, thrown) -> thrown == null && outcome != null ? outcome
-                                : Outcome.<ConsumerMetadata>failed(
-                                        failure(
-                                                ErrorCode._500,
-                                                OAuth2ErrorCode.SERVER_ERROR,
-                                                "OAuth 2.x client resolution failed")))
-                .thenCompose(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<ConsumerMetadata> success -> {
-                        final ConsumerMetadata client = success.value();
-                        if (client == null || !clientId.equals(client.id())) {
-                            yield completed(
-                                    Outcome.rejected(
-                                            failure(
-                                                    ErrorCode._401,
-                                                    OAuth2ErrorCode.INVALID_CLIENT,
-                                                    "OAuth 2.x client registration is unavailable")));
-                        }
-                        if (!client.grantTypes().contains(grantType.value())) {
-                            yield completed(
-                                    Outcome.rejected(
-                                            failure(
-                                                    ErrorCode._400,
-                                                    OAuth2ErrorCode.UNAUTHORIZED_CLIENT,
-                                                    "OAuth 2.x client is not registered for the requested grant")));
-                        }
-                        yield execute(request, client, context, timeout);
-                    }
-                    case Outcome.Rejected<ConsumerMetadata> rejected -> completed(
-                            Outcome.rejected(
-                                    failure(
-                                            rejected.failure().error(),
-                                            OAuth2ErrorCode.INVALID_CLIENT,
-                                            "OAuth 2.x client registration was rejected")));
-                    case Outcome.Failed<ConsumerMetadata> failed -> completed(
-                            Outcome.failed(
-                                    failure(
-                                            failed.failure().error(),
-                                            OAuth2ErrorCode.SERVER_ERROR,
-                                            "OAuth 2.x client resolution failed")));
-                });
+        if (!client.grantTypes().contains(grantType)) {
+            return completed(
+                    Outcome.rejected(
+                            failure(
+                                    ErrorCode._400,
+                                    OAuth2ErrorCode.UNAUTHORIZED_CLIENT,
+                                    "OAuth 2.x client is not registered for the requested grant")));
+        }
+        final String authenticatedSubject = authentication.federation().isPresent()
+                ? authentication.federation().getOrNull().subject().value()
+                : client.id();
+        return execute(request, client, authenticatedSubject, context, timeout);
     }
 
     /**
      * Dispatches a validated standard grant without exposing grant-specific public operations.
      *
-     * @param request standard token request
-     * @param client  resolved active client registration
-     * @param context immutable invocation context
-     * @param timeout shared operation budget
+     * @param request              standard token request
+     * @param client               resolved active client registration
+     * @param authenticatedSubject subject established by client authentication
+     * @param context              immutable invocation context
+     * @param timeout              shared operation timeout
      * @return asynchronous token outcome
      */
     private CompletionStage<Outcome<TokenEndpointResponse>> execute(
             final TokenRequest request,
             final ConsumerMetadata client,
+            final String authenticatedSubject,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return switch (request.grant()) {
             case AuthorizationCodeGrant grant -> authorizationCode(grant, client, context, timeout);
-            case ClientCredentialsGrant grant -> clientCredentials(grant, client, context, timeout);
+            case ClientCredentialsGrant grant -> clientCredentials(
+                    grant,
+                    client,
+                    authenticatedSubject,
+                    context,
+                    timeout);
             case TokenExchangeGrant grant -> tokenExchange(grant, client, context, timeout);
             case DeviceCodeGrant grant -> deviceCode(grant, client, context, timeout, 1);
             case RefreshTokenGrant ignored -> completed(
@@ -339,6 +307,7 @@ public final class AccessTokenIssuer {
                                     ErrorCode._400,
                                     OAuth2ErrorCode.UNSUPPORTED_GRANT_TYPE,
                                     "OAuth 2.x refresh tokens require the rotation processor")));
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -348,14 +317,14 @@ public final class AccessTokenIssuer {
      * @param grant   standard authorization-code grant
      * @param client  resolved client registration
      * @param context immutable invocation context
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @return asynchronous token outcome
      */
     private CompletionStage<Outcome<TokenEndpointResponse>> authorizationCode(
             final AuthorizationCodeGrant grant,
             final ConsumerMetadata client,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CompletionStage<ExpiringValue<AuthorizationCodeCache.Entry>> consumption;
         try {
             consumption = services.authorizationCodeCache().consume(tokenMaterial.key(grant.code()));
@@ -375,8 +344,7 @@ public final class AccessTokenIssuer {
                 return completed(invalidGrant("OAuth 2.x authorization code binding is invalid"));
             }
             return issue(
-                    new Grant(client.id(), entry.subjectId(), entry.scope(), entry.resource(),
-                            GrantType.AUTHORIZATION_CODE,
+                    new Grant(client, entry.subjectId(), entry.scope(), entry.resource(), GrantType.AUTHORIZATION_CODE,
                             options.grantTypesSupported().contains(GrantType.REFRESH_TOKEN), Optional.empty(),
                             Optional.empty(), Optional.empty(), entry.openIdBinding()),
                     context,
@@ -425,17 +393,19 @@ public final class AccessTokenIssuer {
     /**
      * Validates a client-credentials scope and issues a bearer token representing the client itself.
      *
-     * @param grant   standard client-credentials grant
-     * @param client  resolved client registration
-     * @param context immutable invocation context
-     * @param timeout shared operation budget
+     * @param grant                standard client-credentials grant
+     * @param client               resolved client registration
+     * @param authenticatedSubject subject established by standard or federated authentication
+     * @param context              immutable invocation context
+     * @param timeout              shared operation timeout
      * @return asynchronous token outcome
      */
     private CompletionStage<Outcome<TokenEndpointResponse>> clientCredentials(
             final ClientCredentialsGrant grant,
             final ConsumerMetadata client,
+            final String authenticatedSubject,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final List<String> scope = grant.scope().isEmpty() ? List.of() : grant.scope().getOrNull().values();
         if (!validScope(scope, client.scopes(), options.scopesSupported())) {
             return completed(
@@ -446,7 +416,7 @@ public final class AccessTokenIssuer {
                                     "OAuth 2.x client scope is not allowed")));
         }
         return issue(
-                new Grant(client.id(), client.id(), scope, List.of(), GrantType.CLIENT_CREDENTIALS, false,
+                new Grant(client, authenticatedSubject, scope, List.of(), GrantType.CLIENT_CREDENTIALS, false,
                         Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()),
                 context,
                 timeout);
@@ -458,14 +428,14 @@ public final class AccessTokenIssuer {
      * @param grant   standard token-exchange grant
      * @param client  resolved client registration
      * @param context immutable invocation context
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @return asynchronous token outcome
      */
     private CompletionStage<Outcome<TokenEndpointResponse>> tokenExchange(
             final TokenExchangeGrant grant,
             final ConsumerMetadata client,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!TokenExchangeGrant.ACCESS_TOKEN_TYPE.equals(grant.subjectTokenType())
                 || grant.requestedTokenType().isPresent()
                         && !TokenExchangeGrant.ACCESS_TOKEN_TYPE.equals(grant.requestedTokenType().getOrNull())
@@ -496,10 +466,12 @@ public final class AccessTokenIssuer {
                                         Outcome.rejected(rejected.failure()));
                                 case Outcome.Failed<Optional<String>> failed -> completed(
                                         Outcome.failed(failed.failure()));
+                                default -> throw new IllegalStateException("Unsupported Outcome implementation");
                             });
                     case Outcome.Rejected<AccessTokenCache.Entry> rejected -> completed(
                             Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<AccessTokenCache.Entry> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -509,14 +481,14 @@ public final class AccessTokenIssuer {
      * @param grant          standard token-exchange grant
      * @param clientId       verified client identifier
      * @param inheritedActor optional acting subject already bound to the subject token
-     * @param timeout        shared operation budget
+     * @param timeout        shared operation timeout
      * @return asynchronous optional acting-subject outcome
      */
     private CompletionStage<Outcome<Optional<String>>> actor(
             final TokenExchangeGrant grant,
             final String clientId,
             final Optional<String> inheritedActor,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final String actorToken = grant.actorToken().getOrNull();
         if (actorToken == null) {
             return completedValue(Outcome.succeeded(inheritedActor));
@@ -539,6 +511,7 @@ public final class AccessTokenIssuer {
                     : Outcome.succeeded(Optional.of(success.value().subjectId()));
             case Outcome.Rejected<AccessTokenCache.Entry> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<AccessTokenCache.Entry> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -550,7 +523,7 @@ public final class AccessTokenIssuer {
      * @param subject        active subject access-token metadata
      * @param actorSubjectId optional RFC 8693 acting-subject binding
      * @param context        immutable invocation context
-     * @param timeout        shared operation budget
+     * @param timeout        shared operation timeout
      * @return asynchronous token outcome
      */
     private CompletionStage<Outcome<TokenEndpointResponse>> exchangeTarget(
@@ -559,7 +532,7 @@ public final class AccessTokenIssuer {
             final AccessTokenCache.Entry subject,
             final Optional<String> actorSubjectId,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (grant.resource().isEmpty() && grant.audience().isEmpty()) {
             final List<String> effective = effectiveScope(
                     grant.scope(),
@@ -576,7 +549,7 @@ public final class AccessTokenIssuer {
                                         "OAuth 2.x exchange scope is not allowed")));
             }
             return issue(
-                    new Grant(client.id(), subject.subjectId(), effective, subject.audience(), GrantType.TOKEN_EXCHANGE,
+                    new Grant(client, subject.subjectId(), effective, subject.audience(), GrantType.TOKEN_EXCHANGE,
                             false, Optional.of(TokenExchangeGrant.ACCESS_TOKEN_TYPE), actorSubjectId,
                             subject.confirmation(), Optional.empty()),
                     context,
@@ -584,10 +557,10 @@ public final class AccessTokenIssuer {
         }
         final CompletionStage<Outcome<ProtectedResource>> resolution;
         try {
-            final ResourceLoader.Request request = new ResourceLoader.Request(providerId, grant.audience(),
-                    grant.resource());
+            final ResourceLoader.Request request = new ResourceLoader.Request(services.registration(), providerId,
+                    grant.audience(), grant.resource());
             resolution = Outcome.mapStage(
-                    () -> services.resourceLoader().load(services.registration(), request, context, timeout),
+                    () -> services.resourceLoader().load(request, context, timeout),
                     loaded -> services.resourceParser().parse(services.registration(), request, loaded));
         } catch (RuntimeException exception) {
             return completed(storeFailure("OAuth 2.x exchange target resolution failed"));
@@ -626,7 +599,7 @@ public final class AccessTokenIssuer {
                                                     "OAuth 2.x exchange scope exceeds the authorized target")));
                         }
                         yield issue(
-                                new Grant(client.id(), subject.subjectId(), effective, resource.audience(),
+                                new Grant(client, subject.subjectId(), effective, resource.audience(),
                                         GrantType.TOKEN_EXCHANGE, false,
                                         Optional.of(TokenExchangeGrant.ACCESS_TOKEN_TYPE), actorSubjectId,
                                         subject.confirmation(), Optional.empty()),
@@ -645,6 +618,7 @@ public final class AccessTokenIssuer {
                                             failed.failure().error(),
                                             OAuth2ErrorCode.SERVER_ERROR,
                                             "OAuth 2.x exchange target resolution failed")));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -687,13 +661,13 @@ public final class AccessTokenIssuer {
      *
      * @param token    opaque token material
      * @param clientId verified exchange client identifier
-     * @param timeout  shared operation budget
+     * @param timeout  shared operation timeout
      * @return asynchronous active token metadata outcome
      */
     private CompletionStage<Outcome<AccessTokenCache.Entry>> activeToken(
             final String token,
             final String clientId,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CompletionStage<ExpiringValue<AccessTokenCache.Entry>> lookup;
         try {
             lookup = services.accessTokenCache().find(tokenMaterial.key(token));
@@ -755,7 +729,7 @@ public final class AccessTokenIssuer {
      * @param grant   standard device-code grant
      * @param client  resolved client registration
      * @param context immutable invocation context
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @param attempt one-based compare-and-replace attempt number
      * @return asynchronous token or registered device error outcome
      */
@@ -763,7 +737,7 @@ public final class AccessTokenIssuer {
             final DeviceCodeGrant grant,
             final ConsumerMetadata client,
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final int attempt) {
         final String suppliedClient = grant.clientId().getOrNull();
         if (suppliedClient != null && !client.id().equals(suppliedClient)) {
@@ -822,7 +796,7 @@ public final class AccessTokenIssuer {
      * @param entry   current device entry
      * @param client  resolved client registration
      * @param context immutable invocation context
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @param attempt one-based compare-and-replace attempt
      * @param now     current shared-clock instant
      * @return asynchronous pending or slow-down outcome
@@ -834,7 +808,7 @@ public final class AccessTokenIssuer {
             final DeviceCodeCache.Entry entry,
             final ConsumerMetadata client,
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final int attempt,
             final Instant now) {
         final Instant last = entry.lastPolledAt().getOrNull();
@@ -872,7 +846,7 @@ public final class AccessTokenIssuer {
      * @param entry   approved device entry
      * @param client  resolved client registration
      * @param context immutable invocation context
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @param attempt one-based compare-and-replace attempt
      * @param now     current shared-clock instant
      * @return asynchronous token outcome
@@ -884,7 +858,7 @@ public final class AccessTokenIssuer {
             final DeviceCodeCache.Entry entry,
             final ConsumerMetadata client,
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final int attempt,
             final Instant now) {
         final DeviceCodeCache.Entry consumed = new DeviceCodeCache.Entry(entry.providerId(), entry.clientId(),
@@ -901,9 +875,9 @@ public final class AccessTokenIssuer {
                 return completed(storeFailure("OAuth 2.x approved device state contention exceeded its limit"));
             }
             return issue(
-                    new Grant(client.id(), entry.subjectId().getOrNull(), entry.scope(), List.of(),
-                            GrantType.DEVICE_CODE, options.grantTypesSupported().contains(GrantType.REFRESH_TOKEN),
-                            Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()),
+                    new Grant(client, entry.subjectId().getOrNull(), entry.scope(), List.of(), GrantType.DEVICE_CODE,
+                            options.grantTypesSupported().contains(GrantType.REFRESH_TOKEN), Optional.empty(),
+                            Optional.empty(), Optional.empty(), Optional.empty()),
                     context,
                     timeout);
         });
@@ -915,14 +889,14 @@ public final class AccessTokenIssuer {
      * @param key      isolated device-code digest
      * @param expected current expiring value
      * @param update   replacement device entry
-     * @param timeout  shared operation budget used to compute the remaining state TTL
+     * @param timeout  shared operation timeout used to compute the remaining state TTL
      * @return stage containing true/false, or {@code null} after a backend failure
      */
     private CompletionStage<Boolean> replaceDevice(
             final String key,
             final ExpiringValue<DeviceCodeCache.Entry> expected,
             final DeviceCodeCache.Entry update,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final long ttlMillis = Duration.between(timeout.clock().now(), expected.expiresAt()).toMillis();
         if (ttlMillis <= 0L) {
             return CompletableFuture.completedFuture(false);
@@ -940,16 +914,16 @@ public final class AccessTokenIssuer {
      *
      * @param grant   immutable authorized token grant
      * @param context immutable invocation context
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @return asynchronous standard token response outcome
      */
     CompletionStage<Outcome<TokenEndpointResponse>> issue(
             final Grant grant,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(grant, "OAuth 2.x internal token grant must not be null");
         Assert.notNull(context, "OAuth 2.x token context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x token time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x token timeout must not be null");
         if (grant.authorizationId().isPresent()) {
             return createAccess(grant, context, timeout, 1);
         }
@@ -961,14 +935,14 @@ public final class AccessTokenIssuer {
      *
      * @param grant   validated internal grant without an authorization identifier
      * @param context immutable invocation context
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @param attempt one-based collision retry attempt
      * @return asynchronous token response outcome
      */
     private CompletionStage<Outcome<TokenEndpointResponse>> createAuthorization(
             final Grant grant,
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final int attempt) {
         final String authorizationId = tokenMaterial.create();
         final Instant expiresAt = timeout.clock().now()
@@ -1014,14 +988,14 @@ public final class AccessTokenIssuer {
      *
      * @param grant   authorized token grant
      * @param context immutable invocation context
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @param attempt one-based create attempt number
      * @return asynchronous token outcome
      */
     private CompletionStage<Outcome<TokenEndpointResponse>> createAccess(
             final Grant grant,
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final int attempt) {
         if (timeout.expired()) {
             return completed(
@@ -1029,7 +1003,7 @@ public final class AccessTokenIssuer {
                             failure(
                                     ErrorCode._408,
                                     OAuth2ErrorCode.TEMPORARILY_UNAVAILABLE,
-                                    "OAuth 2.x token issuance has no remaining time budget")));
+                                    "OAuth 2.x token issuance has no remaining timeout")));
         }
         final String accessToken = tokenMaterial.create();
         final String accessKey = tokenMaterial.key(accessToken);
@@ -1071,7 +1045,7 @@ public final class AccessTokenIssuer {
      * @param accessKey   isolated access-token digest used for compensating cleanup
      * @param grant       authorized token grant
      * @param context     immutable invocation context
-     * @param timeout     shared operation budget
+     * @param timeout     shared operation timeout
      * @param attempt     one-based refresh create attempt
      * @return asynchronous complete token response outcome
      */
@@ -1080,7 +1054,7 @@ public final class AccessTokenIssuer {
             final String accessKey,
             final Grant grant,
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final int attempt) {
         final String refreshToken = tokenMaterial.create();
         final String familyId = grant.authorizationId().getOrNull();
@@ -1123,7 +1097,7 @@ public final class AccessTokenIssuer {
      * @param accessKey  persisted access-token digest
      * @param refreshKey persisted refresh-token digest, or {@code null} when none was issued
      * @param context    immutable invocation context
-     * @param timeout    shared operation budget
+     * @param timeout    shared operation timeout
      * @return augmented response or a failure after best-effort removal of all unreturned token state
      */
     private CompletionStage<Outcome<TokenEndpointResponse>> augment(
@@ -1132,7 +1106,7 @@ public final class AccessTokenIssuer {
             final String accessKey,
             final String refreshKey,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CompletionStage<Outcome<TokenEndpointResponse>> stage;
         try {
             stage = augmenter.augment(response, grant, context, timeout);
@@ -1162,6 +1136,7 @@ public final class AccessTokenIssuer {
                             accessKey,
                             refreshKey,
                             Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -1269,7 +1244,7 @@ public final class AccessTokenIssuer {
          * @param response base OAuth token response
          * @param grant    exact authorized internal grant
          * @param context  immutable invocation context
-         * @param timeout  shared operation budget
+         * @param timeout  shared operation timeout
          * @return completed successful outcome containing {@code response}
          */
         @Override
@@ -1277,11 +1252,11 @@ public final class AccessTokenIssuer {
                 final TokenResponse response,
                 final Grant grant,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             Assert.notNull(response, "OAuth 2.x base token response must not be null");
             Assert.notNull(grant, "OAuth 2.x internal grant must not be null");
             Assert.notNull(context, "OAuth 2.x token context must not be null");
-            Assert.notNull(timeout, "OAuth 2.x token time budget must not be null");
+            Assert.notNull(timeout, "OAuth 2.x token timeout must not be null");
             return completed(Outcome.succeeded(response));
         }
 
@@ -1315,21 +1290,21 @@ public final class AccessTokenIssuer {
          * @param response base OAuth token response with no ID Token
          * @param grant    exact authorized internal grant
          * @param context  immutable invocation context
-         * @param timeout  shared end-to-end operation budget
+         * @param timeout  shared end-to-end operation timeout
          * @return stage containing the augmented response, expected rejection, or operational failure
          */
         CompletionStage<Outcome<TokenEndpointResponse>> augment(
                 TokenResponse response,
                 Grant grant,
                 Context context,
-                Timeout.Budget timeout);
+                Timeout timeout);
 
     }
 
     /**
      * Carries the exact authorized state from a grant processor into common opaque-token persistence.
      *
-     * @param clientId        verified client identifier
+     * @param consumer        verified immutable consumer registration
      * @param subjectId       authorized subject or client identifier
      * @param scope           effective non-expanding scope
      * @param audience        intended resource audience
@@ -1342,7 +1317,7 @@ public final class AccessTokenIssuer {
      * @param authorizationId optional existing authorization identifier; initial grants allocate one before issuance
      * @author Kimi Liu
      */
-    public record Grant(String clientId, String subjectId, List<String> scope, List<String> audience,
+    public record Grant(ConsumerMetadata consumer, String subjectId, List<String> scope, List<String> audience,
             GrantType grantType, boolean refreshToken, Optional<String> issuedTokenType,
             Optional<String> actorSubjectId, Optional<String> confirmation,
             Optional<AuthorizationCodeCache.OpenIdBinding> openIdBinding, Optional<String> authorizationId) {
@@ -1350,7 +1325,7 @@ public final class AccessTokenIssuer {
         /**
          * Creates a grant that requires the issuer to allocate a new authorization lifecycle.
          *
-         * @param clientId        verified client identifier
+         * @param consumer        verified immutable consumer registration
          * @param subjectId       authorized subject or client identifier
          * @param scope           effective non-expanding scope
          * @param audience        intended resource audience
@@ -1361,10 +1336,11 @@ public final class AccessTokenIssuer {
          * @param confirmation    optional sender-constraining confirmation identifier
          * @param openIdBinding   optional OpenID Connect authorization context
          */
-        public Grant(String clientId, String subjectId, List<String> scope, List<String> audience, GrantType grantType,
-                boolean refreshToken, Optional<String> issuedTokenType, Optional<String> actorSubjectId,
-                Optional<String> confirmation, Optional<AuthorizationCodeCache.OpenIdBinding> openIdBinding) {
-            this(clientId, subjectId, scope, audience, grantType, refreshToken, issuedTokenType, actorSubjectId,
+        public Grant(ConsumerMetadata consumer, String subjectId, List<String> scope, List<String> audience,
+                GrantType grantType, boolean refreshToken, Optional<String> issuedTokenType,
+                Optional<String> actorSubjectId, Optional<String> confirmation,
+                Optional<AuthorizationCodeCache.OpenIdBinding> openIdBinding) {
+            this(consumer, subjectId, scope, audience, grantType, refreshToken, issuedTokenType, actorSubjectId,
                     confirmation, openIdBinding, Optional.empty());
         }
 
@@ -1374,7 +1350,7 @@ public final class AccessTokenIssuer {
          * @throws IllegalArgumentException if required text, a collection, or an optional container is invalid
          */
         public Grant {
-            Assert.notBlank(clientId, "OAuth 2.x internal grant client id must not be blank");
+            Assert.notNull(consumer, "OAuth 2.x internal grant consumer must not be null");
             Assert.notBlank(subjectId, "OAuth 2.x internal grant subject id must not be blank");
             scope = immutable(scope, "OAuth 2.x internal grant scope");
             audience = immutable(audience, "OAuth 2.x internal grant audience");
@@ -1399,13 +1375,22 @@ public final class AccessTokenIssuer {
         }
 
         /**
+         * Returns the identifier from the verified immutable consumer snapshot.
+         *
+         * @return verified consumer identifier
+         */
+        public String clientId() {
+            return consumer.id();
+        }
+
+        /**
          * Returns this immutable grant associated with a newly allocated authorization lifecycle.
          *
          * @param value non-blank authorization identifier
          * @return copied grant carrying the identifier
          */
         private Grant withAuthorizationId(final String value) {
-            return new Grant(clientId, subjectId, scope, audience, grantType, refreshToken, issuedTokenType,
+            return new Grant(consumer, subjectId, scope, audience, grantType, refreshToken, issuedTokenType,
                     actorSubjectId, confirmation, openIdBinding, Optional.of(value));
         }
 

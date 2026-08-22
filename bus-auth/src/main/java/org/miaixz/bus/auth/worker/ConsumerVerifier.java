@@ -19,54 +19,45 @@
 */
 package org.miaixz.bus.auth.worker;
 
-import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.Blueprint;
 import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.extra.json.JsonValue;
+import org.miaixz.bus.auth.protocol.oauth2.ClientAuthenticationMethod;
+import org.miaixz.bus.auth.shared.SecretLease;
 
 /**
- * Loads one externally managed protocol consumer record.
+ * Verifies submitted server-side consumer evidence without exposing the stored credential.
+ * <p>
+ * Implementations locate their verifier by Source and consumer id. If verification is asynchronous, the minimum
+ * representation needed by the backend must be captured before this method returns; the lease is closed immediately by
+ * the caller and must never cross the asynchronous boundary.
+ * </p>
+ *
+ * @author Kimi Liu
  */
 @FunctionalInterface
-public interface ConsumerLoader {
+public interface ConsumerVerifier {
 
     /**
-     * Loads the record identified by the exact consumer identifier.
+     * Verifies one submitted client secret using the project-owned credential backend.
      *
-     * @param registration exact Source registration requesting the data
-     * @param consumerId   exact external consumer identifier
+     * @param registration immutable Source registration
+     * @param consumerId   public consumer identifier
+     * @param method       submitted endpoint authentication method
+     * @param evidence     short-lived submitted secret lease
      * @param context      immutable non-secret invocation context
-     * @param timeout      shared end-to-end operation budget
-     * @return asynchronous external loading outcome
+     * @param timeout      shared end-to-end operation timeout
+     * @return asynchronous success, stable rejection, or operational failure without credential material
      */
-    CompletionStage<Outcome<Record>> load(
-            Registration.SourceEntry registration,
+    CompletionStage<Outcome<Void>> verify(
+            Blueprint.SourceEntry registration,
             String consumerId,
+            ClientAuthenticationMethod method,
+            SecretLease evidence,
             Context context,
-            Timeout.Budget timeout);
-
-    /**
-     * Project-adapted consumer data that has not yet been parsed by bus-auth.
-     *
-     * @param sourceId      exact Source identifier that owns the returned data
-     * @param id            exact external consumer identifier
-     * @param credential    optional project credential reference
-     * @param redirectUris  registered exact redirect URI values
-     * @param grantTypes    registered OAuth grant types
-     * @param responseTypes registered OAuth response types
-     * @param scopes        registered scope-token set
-     * @param metadata      protocol-specific non-secret registration metadata
-     */
-    record Record(String sourceId, String id, Optional<Credential.Reference> credential, List<String> redirectUris,
-            Set<String> grantTypes, Set<String> responseTypes, Set<String> scopes, JsonValue.ObjectValue metadata) {
-
-    }
+            Timeout timeout);
 
 }

@@ -22,6 +22,7 @@ package org.miaixz.bus.auth.shared.dpop;
 import java.time.Instant;
 import java.util.Set;
 
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.shared.jose.JoseHeader;
 import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
 import org.miaixz.bus.auth.shared.jose.Jwk;
@@ -35,7 +36,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Retains a structurally valid RFC 9449 DPoP proof JWT without exposing its replayable compact form in diagnostics.
@@ -46,7 +46,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class DpopProof {
+public class DpopProof {
 
     /**
      * Required DPoP proof media type value.
@@ -110,11 +110,11 @@ public final class DpopProof {
      * @param uri parsed request target
      * @return normalized absolute URI used in the {@code htu} claim
      */
-    static String normalize(final UnoUrl uri) {
+    static String normalize(final Url uri) {
         Assert.notNull(uri, "DPoP HTTP target URI must not be null");
         validateHttpTarget(uri);
-        final int port = uri.port() == UnoUrl.defaultPort(uri.scheme()) ? -1 : uri.port();
-        return UnoUrl.builder().scheme(uri.scheme()).host(uri.host()).port(port).path(uri.path()).build().encoded();
+        final int port = uri.port() == Url.defaultPort(uri.scheme()) ? -1 : uri.port();
+        return Url.builder().scheme(uri.scheme()).host(uri.host()).port(port).path(uri.path()).build().encoded();
     }
 
     /**
@@ -180,7 +180,7 @@ public final class DpopProof {
         if (!target.equals(target.trim())) {
             throw new ValidateException("DPoP htu must not contain surrounding whitespace");
         }
-        validateHttpTarget(UnoUrl.parse(target));
+        validateHttpTarget(Url.parse(target));
         candidate.issuedAt().orElseThrow(() -> new ValidateException("DPoP proof requires NumericDate iat"));
         candidate.jwtId().orElseThrow(() -> new ValidateException("DPoP proof requires string jti"));
         validateOptionalString(candidate, ACCESS_TOKEN_HASH);
@@ -192,7 +192,7 @@ public final class DpopProof {
      *
      * @param target parsed candidate URI
      */
-    private static void validateHttpTarget(final UnoUrl target) {
+    private static void validateHttpTarget(final Url target) {
         if (!Protocol.HTTP.name.equals(target.scheme()) && !Protocol.HTTPS.name.equals(target.scheme())) {
             throw new ValidateException("DPoP htu must use HTTP or HTTPS");
         }

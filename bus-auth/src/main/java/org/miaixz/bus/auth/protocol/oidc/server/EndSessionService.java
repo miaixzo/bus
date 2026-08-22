@@ -20,62 +20,39 @@
 package org.miaixz.bus.auth.protocol.oidc.server;
 
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Session;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.guard.TimeGuard;
+import org.miaixz.bus.auth.cache.ExpiringValue;
+import org.miaixz.bus.auth.cache.IdTokenCache;
 import org.miaixz.bus.auth.protocol.oidc.EndSessionRequest;
-import org.miaixz.bus.auth.protocol.oidc.IdToken;
-import org.miaixz.bus.auth.protocol.oidc.IdTokenClaims;
-import org.miaixz.bus.auth.protocol.oidc.codec.IdTokenCodec;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
-import org.miaixz.bus.auth.resolver.KeyMaterial;
-import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
 import org.miaixz.bus.auth.source.DriverServices;
-import org.miaixz.bus.auth.worker.KeyLoader;
 import org.miaixz.bus.auth.worker.SessionCoordinator;
+import org.miaixz.bus.auth.worker.loader.ConsumerLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
  * Validates an RP-Initiated Logout request and atomically ends its bound framework session.
  * <p>
- * ID Token hints are cryptographically verified with the Provider's exact configured key before any issuer, client,
- * session, or redirect value is trusted. The service returns no protocol response model; the endpoint codec alone
- * applies a previously validated redirect URI and optional state to the HTTP response.
+ * ID Token hints are matched only against the irreversible index created after successful issuance. This supports both
+ * signed and encrypted ID Tokens without decoding caller-controlled compact content in the logout path. The service
+ * returns no protocol response model; the endpoint codec alone applies a previously validated redirect URI and optional
+ * state to the HTTP response.
  * </p>
  *
  * @author Kimi Liu
  */
-public final class EndSessionService {
-
-    /**
-     * Standard signing-key use passed to the external key inventory.
-     */
-    private static final String SIGNATURE_USE = Builder.SIGNATURE;
-
-    /**
-     * Client metadata member registered by RP-Initiated Logout.
-     */
-    private static final String POST_LOGOUT_REDIRECT_URIS = "post_logout_redirect_uris";
-
-    /**
-     * Frozen issuer and signing options.
-     */
-    private final OpenIdServerOptions options;
+public class EndSessionService {
 
     /**
      * External key, client, session, clock, and security dependencies.
@@ -83,9 +60,9 @@ public final class EndSessionService {
     private final DriverServices services;
 
     /**
-     * JOSE-aware typed ID Token codec.
+     * Compiled Source identifier used to isolate irreversible ID Token indexes.
      */
-    private final IdTokenCodec codec;
+    private final String sourceId;
 
     /**
      * Source-isolated framework and project Session lifecycle coordinator.
@@ -93,48 +70,19 @@ public final class EndSessionService {
     private final SessionCoordinator sessions;
 
     /**
-     * Shared clock-skew validator scoped to OIDC.
-     */
-    private final TimeGuard timeGuard;
-
-    /**
      * Creates an end-session service for one compiled OpenID Provider.
      *
      * @param options  validated OpenID Provider options
      * @param services externally implemented runtime dependencies
-     * @param codec    JOSE-aware typed ID Token codec
      * @param sessions Source-isolated Session lifecycle coordinator
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public EndSessionService(final OpenIdServerOptions options, final DriverServices services, final IdTokenCodec codec,
+    public EndSessionService(final OpenIdServerOptions options, final DriverServices services,
             final SessionCoordinator sessions) {
-        this.options = Assert.notNull(options, "OpenID Connect end-session options must not be null");
+        Assert.notNull(options, "OpenID Connect end-session options must not be null");
         this.services = Assert.notNull(services, "OpenID Connect end-session execution services must not be null");
-        this.codec = Assert.notNull(codec, "OpenID Connect end-session ID Token codec must not be null");
+        this.sourceId = services.registration().resource().getId();
         this.sessions = Assert.notNull(sessions, "OpenID Connect Session coordinator must not be null");
-        this.timeGuard = services.securityBaseline().timeGuard(Protocol.OIDC, services.fabricContext().clock());
-    }
-
-    /**
-     * Determines the exact relying-party client bound by verified audience and authorized-party claims.
-     *
-     * @param claims verified ID Token claims
-     * @return exact client identifier
-     * @throws ValidateException if audience and authorized-party claims are ambiguous or inconsistent
-     */
-    private static String hintClientId(final IdTokenClaims claims) {
-        final String authorizedParty = claims.authorizedParty().getOrNull();
-        if (claims.audience().size() == 1) {
-            final String audience = claims.audience().get(0);
-            if (authorizedParty != null && !audience.equals(authorizedParty)) {
-                throw new ValidateException("OpenID Connect single-audience hint has an inconsistent azp");
-            }
-            return audience;
-        }
-        if (authorizedParty == null || !claims.audience().contains(authorizedParty)) {
-            throw new ValidateException("OpenID Connect multi-audience hint requires an audience-bound azp");
-        }
-        return authorizedParty;
     }
 
     /**
@@ -152,18 +100,7 @@ public final class EndSessionService {
         if (client == null || !expectedClientId.equals(client.id())) {
             return false;
         }
-        final JsonValue value = client.metadata().values().get(POST_LOGOUT_REDIRECT_URIS);
-        if (!(value instanceof JsonValue.ArrayValue array)) {
-            return false;
-        }
-        final Set<String> registered = new HashSet<>(array.values().size());
-        for (JsonValue element : array.values()) {
-            if (!(element instanceof JsonValue.StringValue string) || string.value().isBlank()
-                    || !registered.add(string.value())) {
-                return false;
-            }
-        }
-        return registered.contains(requestedRedirect);
+        return client.postLogoutRedirectUris().contains(requestedRedirect);
     }
 
     /**
@@ -193,22 +130,20 @@ public final class EndSessionService {
      *
      * @param request standard RP-Initiated Logout request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return stage containing a successful void outcome or a closed failure
      */
     public CompletionStage<Outcome<Void>> endSession(
             final EndSessionRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OpenID Connect end-session request must not be null");
         Assert.notNull(context, "OpenID Connect end-session context must not be null");
-        Assert.notNull(timeout, "OpenID Connect end-session time budget must not be null");
+        Assert.notNull(timeout, "OpenID Connect end-session timeout must not be null");
         if (timeout.expired()) {
             return completed(
                     Outcome.failed(
-                            failure(
-                                    ErrorCode._408,
-                                    "OpenID Connect end-session request has no remaining time budget")));
+                            failure(ErrorCode._408, "OpenID Connect end-session request has no remaining timeout")));
         }
         final String hint = request.idTokenHint().getOrNull();
         if (hint == null) {
@@ -223,105 +158,49 @@ public final class EndSessionService {
                             success.value());
                     case Outcome.Rejected<Hint> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<Hint> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
     /**
-     * Resolves the exact signing key and verifies the supplied ID Token hint.
+     * Resolves a supplied ID Token hint from the irreversible issued-token index.
      *
      * @param compact           sensitive ID Token hint
      * @param requestedClientId optional request client identifier
      * @param context           immutable invocation context
-     * @param timeout           shared operation budget
+     * @param timeout           shared operation timeout
      * @return asynchronously verified hint binding
      */
     private CompletionStage<Outcome<Hint>> verifyHint(
             final String compact,
             final String requestedClientId,
             final Context context,
-            final Timeout.Budget timeout) {
-        final Instant now = timeout.clock().now();
-        final KeyLoader.Request query = new KeyLoader.Request(options.issuer(),
-                Optional.of(options.idTokenSigningKeyId()), SIGNATURE_USE, options.idTokenSigningAlgorithm().name(),
-                now);
-        final CompletionStage<Outcome<KeyMaterial>> resolution;
+            final Timeout timeout) {
+        final String digest = IdTokenCache.key(sourceId, compact);
+        final CompletionStage<ExpiringValue<IdTokenCache.Entry>> resolution;
         try {
-            resolution = Outcome.mapStage(
-                    () -> services.keyLoader().load(services.registration(), query, context, timeout),
-                    loaded -> services.keyParser().parse(services.registration(), query, loaded));
+            resolution = services.idTokenCache().find(digest);
         } catch (RuntimeException exception) {
-            return completed(
-                    Outcome.failed(
-                            failure(ErrorCode._500, "OpenID Connect end-session signing key resolution failed")));
+            return completed(Outcome.failed(failure(ErrorCode._500, "OpenID Connect ID Token hint lookup failed")));
         }
-        return resolution.handle(
-                (outcome, thrown) -> thrown == null && outcome != null ? outcome
-                        : Outcome.<KeyMaterial>failed(
-                                failure(ErrorCode._500, "OpenID Connect end-session signing key resolution failed")))
-                .thenApply(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<KeyMaterial> success -> decodeHint(
-                            compact,
-                            requestedClientId,
-                            success.value(),
-                            timeout);
-                    case Outcome.Rejected<KeyMaterial> rejected -> Outcome
-                            .rejected(failure(ErrorCode._400, "OpenID Connect ID Token hint cannot be verified"));
-                    case Outcome.Failed<KeyMaterial> failed -> Outcome.failed(
-                            failure(
-                                    failed.failure().error(),
-                                    "OpenID Connect end-session signing key resolution failed"));
-                });
-    }
-
-    /**
-     * Verifies JOSE protection and every logout-relevant ID Token claim binding.
-     *
-     * @param compact           sensitive ID Token hint
-     * @param requestedClientId optional request client identifier
-     * @param resolvedKey       exact configured signing key
-     * @param timeout           shared operation budget
-     * @return verified hint outcome
-     */
-    private Outcome<Hint> decodeHint(
-            final String compact,
-            final String requestedClientId,
-            final KeyMaterial resolvedKey,
-            final Timeout.Budget timeout) {
-        try {
+        return resolution.handle((stored, thrown) -> {
+            if (thrown != null) {
+                return Outcome.<Hint>failed(failure(ErrorCode._500, "OpenID Connect ID Token hint lookup failed"));
+            }
             final Instant now = timeout.clock().now();
-            if (resolvedKey == null || !options.idTokenSigningKeyId().equals(resolvedKey.keyId())
-                    || !options.idTokenSigningAlgorithm().name().equals(resolvedKey.algorithm())
-                    || now.isBefore(resolvedKey.notBefore()) || !now.isBefore(resolvedKey.notAfter())) {
-                throw new ValidateException("OpenID Connect end-session key does not match Provider options");
+            if (stored == null || stored.value() == null || !stored.expiresAt().isAfter(now)) {
+                return Outcome.<Hint>rejected(failure(ErrorCode._400, "OpenID Connect ID Token hint is unavailable"));
             }
-            final IdTokenCodec.Decoded decoded = codec
-                    .decode(new IdToken(compact), new JwtVerifier.Signed(resolvedKey.key(), Set.of()));
-            if (!options.idTokenSigningAlgorithm().name().equals(decoded.jwt().header().algorithm())
-                    || !decoded.jwt().header().keyId().filter(options.idTokenSigningKeyId()::equals).isPresent()) {
-                throw new ValidateException("OpenID Connect ID Token hint header does not match Provider options");
-            }
-            final IdTokenClaims claims = decoded.claims();
-            if (!options.issuer().equals(claims.issuer())) {
-                throw new ValidateException("OpenID Connect ID Token hint issuer does not match Provider options");
-            }
-            timeGuard.validateIssuedAt(claims.issuedAt(), timeout);
-            timeGuard.validateExpiration(claims.expiration(), timeout);
-            if (!claims.issuedAt().isBefore(claims.expiration())) {
-                throw new ValidateException("OpenID Connect ID Token hint has an invalid validity interval");
-            }
-            final String clientId = hintClientId(claims);
-            if (requestedClientId != null && !requestedClientId.equals(clientId)) {
-                throw new ValidateException("OpenID Connect logout client_id does not match the ID Token hint");
+            final IdTokenCache.Entry entry = stored.value();
+            if (!sourceId.equals(entry.sourceId())
+                    || requestedClientId != null && !requestedClientId.equals(entry.consumerId())) {
+                return Outcome
+                        .<Hint>rejected(failure(ErrorCode._400, "OpenID Connect ID Token hint binding is invalid"));
             }
             return Outcome.succeeded(
-                    new Hint(Optional.of(clientId), Optional.ofNullable(claims.sessionId().getOrNull()),
-                            Optional.of(claims.subject())));
-        } catch (ValidateException exception) {
-            return Outcome.rejected(failure(ErrorCode._400, "OpenID Connect ID Token hint validation failed"));
-        } catch (RuntimeException exception) {
-            return Outcome
-                    .failed(failure(ErrorCode._500, "OpenID Connect ID Token hint verification could not complete"));
-        }
+                    new Hint(Optional.of(entry.consumerId()), entry.sessionId(), Optional.of(entry.subject()),
+                            Optional.of(digest)));
+        });
     }
 
     /**
@@ -329,14 +208,14 @@ public final class EndSessionService {
      *
      * @param request validated protocol request
      * @param context immutable invocation context
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @param hint    verified or absent ID Token hint facts
      * @return asynchronously completed logout outcome
      */
     private CompletionStage<Outcome<Void>> continueAfterHint(
             final EndSessionRequest request,
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final Hint hint) {
         final String explicitClient = request.clientId().getOrNull();
         final String clientId = hint.clientId().getOrNull() == null ? explicitClient : hint.clientId().getOrNull();
@@ -351,7 +230,8 @@ public final class EndSessionService {
         final CompletionStage<Outcome<ConsumerMetadata>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.consumerLoader().load(services.registration(), clientId, context, timeout),
+                    () -> services.consumerLoader()
+                            .load(new ConsumerLoader.Request(services.registration(), clientId), context, timeout),
                     loaded -> services.consumerParser().parse(services.registration(), clientId, loaded));
         } catch (RuntimeException exception) {
             return completed(Outcome.failed(failure(ErrorCode._500, "OpenID Connect logout client resolution failed")));
@@ -382,6 +262,7 @@ public final class EndSessionService {
                                     failure(
                                             failed.failure().error(),
                                             "OpenID Connect logout client resolution failed")));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -390,13 +271,13 @@ public final class EndSessionService {
      *
      * @param hint    verified or absent hint facts
      * @param context immutable invocation context
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @return asynchronously completed session transition outcome
      */
     private CompletionStage<Outcome<Void>> endSelectedSession(
             final Hint hint,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         String sessionId = hint.sessionId().getOrNull();
         if (sessionId == null && context.authentication().isPresent()) {
             sessionId = context.authentication().getOrNull().session().key().value();
@@ -405,11 +286,33 @@ public final class EndSessionService {
             return completed(
                     Outcome.rejected(failure(ErrorCode._400, "OpenID Connect logout has no verified session binding")));
         }
-        return sessions.end(new Session.Key(sessionId), context, timeout).thenApply(outcome -> switch (outcome) {
-            case Outcome.Succeeded<SessionCoordinator.End> ignored -> Outcome.succeeded(null);
-            case Outcome.Rejected<SessionCoordinator.End> rejected -> Outcome.rejected(rejected.failure());
-            case Outcome.Failed<SessionCoordinator.End> failed -> Outcome.failed(failed.failure());
+        return sessions.end(new Session.Key(sessionId), context, timeout).thenCompose(outcome -> switch (outcome) {
+            case Outcome.Succeeded<SessionCoordinator.End> ignored -> revokeHint(hint);
+            case Outcome.Rejected<SessionCoordinator.End> rejected -> completed(Outcome.rejected(rejected.failure()));
+            case Outcome.Failed<SessionCoordinator.End> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
+    }
+
+    /**
+     * Revokes a consumed ID Token hint after the project session ended successfully.
+     *
+     * @param hint verified hint binding
+     * @return successful void outcome when no hint exists or the indexed hint was removed
+     */
+    private CompletionStage<Outcome<Void>> revokeHint(final Hint hint) {
+        final String digest = hint.digest().getOrNull();
+        if (digest == null) {
+            return completed(Outcome.succeeded(null));
+        }
+        try {
+            return services.idTokenCache().revoke(digest).handle(
+                    (revoked, thrown) -> thrown == null && Boolean.TRUE.equals(revoked) ? Outcome.<Void>succeeded(null)
+                            : Outcome.<Void>failed(
+                                    failure(ErrorCode._500, "OpenID Connect ID Token hint revocation failed")));
+        } catch (RuntimeException exception) {
+            return completed(Outcome.failed(failure(ErrorCode._500, "OpenID Connect ID Token hint revocation failed")));
+        }
     }
 
     /**
@@ -420,7 +323,8 @@ public final class EndSessionService {
      * @param subjectId optional verified {@code sub} claim retained for audit correlation only
      * @author Kimi Liu
      */
-    private record Hint(Optional<String> clientId, Optional<String> sessionId, Optional<String> subjectId) {
+    private record Hint(Optional<String> clientId, Optional<String> sessionId, Optional<String> subjectId,
+            Optional<String> digest) {
 
         /**
          * Creates an immutable normalized verified hint view.
@@ -431,9 +335,11 @@ public final class EndSessionService {
             Assert.notNull(clientId, "Verified logout client container must not be null");
             Assert.notNull(sessionId, "Verified logout session container must not be null");
             Assert.notNull(subjectId, "Verified logout subject container must not be null");
+            Assert.notNull(digest, "Verified logout digest container must not be null");
             clientId = Optional.ofNullable(clientId.getOrNull());
             sessionId = Optional.ofNullable(sessionId.getOrNull());
             subjectId = Optional.ofNullable(subjectId.getOrNull());
+            digest = Optional.ofNullable(digest.getOrNull());
         }
 
         /**
@@ -442,7 +348,7 @@ public final class EndSessionService {
          * @return empty hint facts
          */
         private static Hint absent() {
-            return new Hint(Optional.empty(), Optional.empty(), Optional.empty());
+            return new Hint(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
         }
 
     }

@@ -21,22 +21,25 @@ package org.miaixz.bus.auth.resolver;
 
 import java.time.Instant;
 
-import org.miaixz.bus.auth.Registration;
+import org.miaixz.bus.auth.Blueprint;
 import org.miaixz.bus.auth.shared.jose.Jwk;
 import org.miaixz.bus.auth.shared.jose.JwkSet;
-import org.miaixz.bus.auth.worker.KeyLoader;
+import org.miaixz.bus.auth.worker.loader.KeyLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Pure parser for project-loaded cryptographic keys.
+ *
+ * @author Kimi Liu
  */
-public final class KeyParser {
+public class KeyParser {
 
     /**
      * Creates a stateless cryptographic key parser.
      */
     public KeyParser() {
+        // No initialization required.
     }
 
     /**
@@ -48,7 +51,7 @@ public final class KeyParser {
      * @return validated key material
      */
     public KeyMaterial parse(
-            final Registration.SourceEntry registration,
+            final Blueprint.SourceEntry registration,
             final KeyLoader.Request request,
             final KeyLoader.Record record) {
         final String sourceId = Assert.notNull(registration, "Key Source registration must not be null").resource()
@@ -83,18 +86,18 @@ public final class KeyParser {
      * Validates Source ownership and rejects private or symmetric material from a public key set.
      *
      * @param registration exact Source registration that requested the keys
-     * @param request      exact public-key lookup request
-     * @param record       project-loaded public-key record
+     * @param criteria     exact public-key listing criteria
+     * @param listing      project-loaded public-key listing
      * @return detached public-only key set
      */
     public JwkSet parsePublic(
-            final Registration.SourceEntry registration,
-            final KeyLoader.PublicRequest request,
-            final KeyLoader.PublicRecord record) {
+            final Blueprint.SourceEntry registration,
+            final KeyLoader.Criteria criteria,
+            final KeyLoader.Listing listing) {
         final String sourceId = Assert.notNull(registration, "Public key Source registration must not be null")
                 .resource().getId();
-        final KeyLoader.PublicRequest expected = Assert.notNull(request, "Public key request must not be null");
-        final KeyLoader.PublicRecord loaded = Assert.notNull(record, "Loaded public key record must not be null");
+        final KeyLoader.Criteria expected = Assert.notNull(criteria, "Public key criteria must not be null");
+        final KeyLoader.Listing loaded = Assert.notNull(listing, "Loaded public key listing must not be null");
         if (!sourceId.equals(loaded.sourceId()) || !expected.issuer().equals(loaded.issuer())
                 || !expected.use().equals(loaded.use())) {
             throw new ValidateException("Loaded public keys do not match the requested Source, issuer, or use");

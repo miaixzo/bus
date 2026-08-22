@@ -40,7 +40,7 @@ import org.miaixz.bus.core.net.Protocol;
  *
  * @author Kimi Liu
  */
-public final class RadiusServerScheme implements Scheme<RadiusServerOptions> {
+public class RadiusServerScheme implements Scheme<RadiusServerOptions> {
 
     /**
      * Stable registration type identifier for RADIUS Providers.

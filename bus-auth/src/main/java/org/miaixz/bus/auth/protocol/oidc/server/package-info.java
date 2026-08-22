@@ -34,7 +34,7 @@
  * </p>
  * <p>
  * Authentication binds issuer, client, exact redirect URI, response type, scope, state, nonce, prompt, max_age, PKCE,
- * authenticated subject, consent, and one Budget. ID Tokens use an allowed algorithm and active key and preserve
+ * authenticated subject, consent, and one Timeout. ID Tokens use an allowed algorithm and active key and preserve
  * issuer, audience, azp, auth_time, nonce, acr, amr, sid, and applicable hash semantics. UserInfo authorization and
  * subject binding are mandatory. Discovery and JWK Set metadata advertise only operational capabilities. End-session
  * processing either performs the validated redirect with state or ends without inventing a JSON response entity.

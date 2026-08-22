@@ -25,6 +25,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -37,6 +38,7 @@ import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
@@ -48,8 +50,6 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements both frozen DingTalk browser authentication variants behind one Source adapter contract.
@@ -61,7 +61,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class DingTalkSourceAdapter implements VendorAdapter {
+public class DingTalkSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted authority of delegated DingTalk identity responses.
@@ -341,7 +341,7 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
             final String name,
             final String subject,
             final String authority,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return new Evidence(Evidence.Type.FEDERATED, Evidence.Strength.SINGLE_FACTOR,
                 new Evidence.Claim(name, new JsonValue.StringValue(subject), authority, timeout.clock().now()));
     }
@@ -370,6 +370,7 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
                     "DingTalk response propagation received an unexpected success");
             case Outcome.Rejected<JsonValue.ObjectValue> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<JsonValue.ObjectValue> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         };
     }
 
@@ -388,6 +389,7 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -463,7 +465,7 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed operation outcome
@@ -473,10 +475,10 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "DingTalk capability must not be null");
         Assert.notNull(context, "DingTalk invocation context must not be null");
-        Assert.notNull(timeout, "DingTalk invocation budget must not be null");
+        Assert.notNull(timeout, "DingTalk invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("DingTalk capability is not declared by the selected variant"));
         }
@@ -502,16 +504,16 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
      *
      * @param request      caller-supplied standard authorization request
      * @param responseType declared capability response type
-     * @param timeout      shared end-to-end budget
+     * @param timeout      shared end-to-end timeout
      * @param <S>          successful response type
      * @return encoded absolute authorization URL outcome
      */
     private <S> CompletionStage<Outcome<S>> authorize(
             final AuthorizationRequest request,
             final Class<S> responseType,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (timeout.expired()) {
-            return completed(failed("DingTalk authorization request has no remaining time budget"));
+            return completed(failed("DingTalk authorization request has no remaining timeout"));
         }
         try {
             final AuthorizationRequest enriched = authorization(request, request.state());
@@ -526,13 +528,13 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated browser correlation
      * @param context    immutable invocation context retained by the uniform operation signature
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return prepared authorization redirect
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "DingTalk authorization context must not be null");
         if (timeout.expired() || initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(failed("DingTalk authorization security material violates the selected manifest"));
@@ -637,13 +639,13 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback correlation
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified DingTalk external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CallbackWire values;
         try {
             values = callback(completion.callback());
@@ -656,7 +658,10 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed("DingTalk credential resolution failed"));
@@ -674,6 +679,7 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
                             : account(values.code(), success.value(), timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -682,18 +688,18 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
      *
      * @param code    consumed delegated authorization code
      * @param secret  owned client-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified identity after token and current-user processing
      */
     private CompletionStage<Outcome<ExternalIdentity>> token(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             byte[] body = null;
             try (secret) {
                 if (timeout.expired()) {
-                    return DingTalkSourceAdapter.<Access>failed("DingTalk token request has no remaining time budget");
+                    return DingTalkSourceAdapter.<Access>failed("DingTalk token request has no remaining timeout");
                 }
                 final Map<String, JsonValue> fields = new LinkedHashMap<>();
                 fields.put("clientId", new JsonValue.StringValue(options.clientId()));
@@ -704,10 +710,8 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
                 fields.put("grantType", new JsonValue.StringValue(GrantType.AUTHORIZATION_CODE.value()));
                 body = services.jsonProvider().writeValue(new JsonValue.ObjectValue(fields));
                 final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint)
+                try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
                         .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                        .timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
                         .body(body, MediaType.APPLICATION_JSON_TYPE).execute()) {
                     return decodeToken(response);
                 }
@@ -720,6 +724,7 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<Access> success -> profile(success.value(), timeout);
             case Outcome.Rejected<Access> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<Access> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -729,7 +734,7 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
      * @param response owned token HTTP response
      * @return private token value or safely classified failure
      */
-    private Outcome<Access> decodeToken(final HttpResponse response) {
+    private Outcome<Access> decodeToken(final Response response) {
         final Outcome<JsonValue.ObjectValue> decoded = response(response, "token");
         if (!(decoded instanceof Outcome.Succeeded<JsonValue.ObjectValue> success)) {
             return propagate(decoded);
@@ -756,22 +761,20 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
      * Retrieves and validates the current delegated DingTalk user.
      *
      * @param access  private delegated access token
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
-    private CompletionStage<Outcome<ExternalIdentity>> profile(final Access access, final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<ExternalIdentity>> profile(final Access access, final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 if (timeout.expired()) {
                     return DingTalkSourceAdapter
-                            .<ExternalIdentity>failed("DingTalk profile request has no remaining time budget");
+                            .<ExternalIdentity>failed("DingTalk profile request has no remaining timeout");
                 }
                 final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                        .header("x-acs-dingtalk-access-token", access.accessToken())
-                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
-                        .execute()) {
+                try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
+                        .method(Http.Method.GET).header("x-acs-dingtalk-access-token", access.accessToken())
+                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                     return decodeProfile(response, timeout);
                 }
             } catch (RuntimeException cause) {
@@ -787,7 +790,7 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
      * @param timeout  shared clock used for evidence
      * @return verified external identity
      */
-    private Outcome<ExternalIdentity> decodeProfile(final HttpResponse response, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> decodeProfile(final Response response, final Timeout timeout) {
         final Outcome<JsonValue.ObjectValue> decoded = response(response, "profile");
         if (!(decoded instanceof Outcome.Succeeded<JsonValue.ObjectValue> success)) {
             return propagate(decoded);
@@ -816,13 +819,13 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
      *
      * @param code    consumed temporary authorization code
      * @param secret  owned shared-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified account identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> account(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             byte[] key = null;
             byte[] message = null;
@@ -831,7 +834,7 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
             try (secret) {
                 if (timeout.expired()) {
                     return DingTalkSourceAdapter
-                            .<ExternalIdentity>failed("DingTalk account request has no remaining time budget");
+                            .<ExternalIdentity>failed("DingTalk account request has no remaining timeout");
                 }
                 final String timestamp = Long.toString(timeout.clock().now().toEpochMilli());
                 key = new String(secret.material()).getBytes(Charset.UTF_8);
@@ -844,11 +847,9 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
                                 new JsonValue.StringValue(Assert
                                         .notBlank(code, "DingTalk temporary authorization code must not be blank")))));
                 final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint)
+                try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
                         .method(Http.Method.POST).query("accessKey", options.clientId()).query("timestamp", timestamp)
                         .query("signature", signature).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                        .timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.VENDOR_AUTH).addressPolicy())
                         .body(body, MediaType.APPLICATION_JSON_TYPE).execute()) {
                     return decodeAccount(response, timeout);
                 }
@@ -870,7 +871,7 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
      * @param timeout  shared clock used for evidence
      * @return verified external identity or safely classified failure
      */
-    private Outcome<ExternalIdentity> decodeAccount(final HttpResponse response, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> decodeAccount(final Response response, final Timeout timeout) {
         final Outcome<JsonValue.ObjectValue> decoded = response(response, "account");
         if (!(decoded instanceof Outcome.Succeeded<JsonValue.ObjectValue> success)) {
             return propagate(decoded);
@@ -962,7 +963,7 @@ public final class DingTalkSourceAdapter implements VendorAdapter {
      * @param operation non-sensitive operation label
      * @return decoded object or closed rejection/failure
      */
-    private Outcome<JsonValue.ObjectValue> response(final HttpResponse response, final String operation) {
+    private Outcome<JsonValue.ObjectValue> response(final Response response, final String operation) {
         if (response.code() == Http.Status.TOO_MANY_REQUESTS || response.code() >= Http.Status.INTERNAL_SERVER_ERROR) {
             return failed("DingTalk " + operation + " endpoint is unavailable");
         }

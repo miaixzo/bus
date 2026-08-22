@@ -23,20 +23,20 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oidc.EndSessionRequest;
 import org.miaixz.bus.auth.protocol.oidc.codec.EndSessionRequestCodec;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Adapts the RP-Initiated Logout endpoint without creating a non-standard response entity.
  *
  * @author Kimi Liu
  */
-public final class EndSessionEndpoint {
+public class EndSessionEndpoint {
 
     /**
      * Strict end-session query and success-response codec.
@@ -73,16 +73,13 @@ public final class EndSessionEndpoint {
      *
      * @param request immutable Fabric HTTP request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing an empty success or validated post-logout redirect response
      */
-    public CompletionStage<HttpResponse> handle(
-            final HttpRequest request,
-            final Context context,
-            final Timeout.Budget timeout) {
+    public CompletionStage<Response> handle(final Request request, final Context context, final Timeout timeout) {
         Assert.notNull(request, "OpenID Connect end-session HTTP request must not be null");
         Assert.notNull(context, "OpenID Connect end-session context must not be null");
-        Assert.notNull(timeout, "OpenID Connect end-session time budget must not be null");
+        Assert.notNull(timeout, "OpenID Connect end-session timeout must not be null");
         final EndSessionRequest decoded;
         try {
             decoded = codec.decodeRequest(request);
@@ -93,6 +90,7 @@ public final class EndSessionEndpoint {
             case Outcome.Succeeded<Void> success -> codec.encodeSuccess(request, decoded);
             case Outcome.Rejected<Void> rejected -> errorMapper.endSession(request, rejected.failure());
             case Outcome.Failed<Void> failed -> errorMapper.endSession(request, failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 

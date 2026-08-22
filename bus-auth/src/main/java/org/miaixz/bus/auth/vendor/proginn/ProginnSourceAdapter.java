@@ -27,6 +27,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.*;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationRequestEncoder;
@@ -50,8 +52,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements Proginn browser authentication while preserving standard OAuth 2.0 public operations.
@@ -62,7 +62,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class ProginnSourceAdapter implements VendorAdapter {
+public class ProginnSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted Proginn authority recorded in federated identity evidence.
@@ -273,6 +273,7 @@ public final class ProginnSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -335,7 +336,7 @@ public final class ProginnSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end time budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing private Proginn models
@@ -345,10 +346,10 @@ public final class ProginnSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Proginn capability must not be null");
         Assert.notNull(context, "Proginn invocation context must not be null");
-        Assert.notNull(timeout, "Proginn invocation budget must not be null");
+        Assert.notNull(timeout, "Proginn invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("Proginn capability is not declared"));
         }
@@ -373,13 +374,13 @@ public final class ProginnSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated browser correlation material
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end time budget
+     * @param timeout    shared end-to-end timeout
      * @return shared-client-produced authorization redirect
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(failed(ErrorCode._500, "Proginn browser material violates the frozen manifest"));
         }
@@ -388,11 +389,11 @@ public final class ProginnSourceAdapter implements VendorAdapter {
                 Optional.empty(), Optional.empty(), emptyObject());
         return standardAdapter.invoke(OAuth2ClientScheme.AUTHORIZATION, request, context, timeout)
                 .thenApply(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<org.miaixz.bus.fabric.UnoUrl> success -> Outcome
+                    case Outcome.Succeeded<Url> success -> Outcome
                             .succeeded(new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                    case Outcome.Rejected<org.miaixz.bus.fabric.UnoUrl> rejected -> Outcome
-                            .rejected(rejected.failure());
-                    case Outcome.Failed<org.miaixz.bus.fabric.UnoUrl> failed -> Outcome.failed(failed.failure());
+                    case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                    case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -408,6 +409,7 @@ public final class ProginnSourceAdapter implements VendorAdapter {
                     .orElseThrow(() -> new ValidateException("Proginn authorization success requires state"));
             case AuthorizationResponseDecoder.Error error -> error.response().state()
                     .orElseThrow(() -> new ValidateException("Proginn authorization error requires state"));
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -416,13 +418,13 @@ public final class ProginnSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback correlation
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end time budget
+     * @param timeout    shared end-to-end timeout
      * @return verified Proginn external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final AuthorizationResponseDecoder.Decoded decoded;
         try {
             decoded = decode(completion.callback());
@@ -447,6 +449,7 @@ public final class ProginnSourceAdapter implements VendorAdapter {
                     case Outcome.Rejected<TokenEndpointResponse> rejected -> completed(
                             Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<TokenEndpointResponse> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -454,26 +457,22 @@ public final class ProginnSourceAdapter implements VendorAdapter {
      * Retrieves and maps the private query-token Proginn profile.
      *
      * @param token   standard token response carrying sensitive bearer material
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return verified Proginn external identity
      */
-    private CompletionStage<Outcome<ExternalIdentity>> profile(
-            final TokenResponse token,
-            final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<ExternalIdentity>> profile(final TokenResponse token, final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             if (!TokenType.BEARER.equals(token.tokenType())) {
                 return rejected("Proginn token response must use the Bearer token type");
             }
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Proginn profile request has no remaining time budget");
+                return failed(ErrorCode._408, "Proginn profile request has no remaining timeout");
             }
             try {
                 final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                        .query(OAuth2.Parameters.ACCESS_TOKEN, token.accessToken())
-                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
-                        .execute()) {
+                try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
+                        .method(Http.Method.GET).query(OAuth2.Parameters.ACCESS_TOKEN, token.accessToken())
+                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                     return profile(response, timeout);
                 }
             } catch (RuntimeException cause) {
@@ -489,7 +488,7 @@ public final class ProginnSourceAdapter implements VendorAdapter {
      * @param timeout  shared clock used for evidence timestamping
      * @return verified external identity or safely classified failure
      */
-    private Outcome<ExternalIdentity> profile(final HttpResponse response, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final Response response, final Timeout timeout) {
         try {
             final JsonValue.ObjectValue object = object(response);
             if (object.values().containsKey(OAuth2.Parameters.ERROR)) {
@@ -569,7 +568,7 @@ public final class ProginnSourceAdapter implements VendorAdapter {
      * @param response response whose body remains owned by the caller
      * @return immutable provider-neutral JSON object
      */
-    private JsonValue.ObjectValue object(final HttpResponse response) {
+    private JsonValue.ObjectValue object(final Response response) {
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("Proginn response must use application/json");
         }

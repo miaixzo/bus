@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.FabricX.Clock;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.fabric.Clock;
 
 /**
  * Stores OAuth 2.0 Device Authorization Grant state for atomic polling and token issuance.
@@ -42,7 +42,7 @@ import org.miaixz.bus.fabric.Clock;
  *
  * @author Kimi Liu
  */
-public final class DeviceCodeCache extends AuthCache<DeviceCodeCache.Entry> {
+public class DeviceCodeCache extends AuthCache<DeviceCodeCache.Entry> {
 
     /**
      * Isolates device-code state from every other bus-cache consumer.
@@ -58,6 +58,20 @@ public final class DeviceCodeCache extends AuthCache<DeviceCodeCache.Entry> {
      */
     public DeviceCodeCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
         super(cache, deployment, PURPOSE, Entry.class, clock);
+    }
+
+    /**
+     * Creates a Source-generation-scoped device-code cache view for compiled runtime use.
+     *
+     * @param cache      shared bus-cache backend
+     * @param deployment deployment-unique cache namespace
+     * @param sourceId   exact Source registration identifier
+     * @param generation non-negative Source configuration generation
+     * @param clock      shared runtime clock used to derive entry lifetimes
+     */
+    public DeviceCodeCache(final CacheX<String, Object> cache, final String deployment, final String sourceId,
+            final long generation, final Clock clock) {
+        super(cache, deployment, PURPOSE, Entry.class, sourceId, generation, clock);
     }
 
     /**

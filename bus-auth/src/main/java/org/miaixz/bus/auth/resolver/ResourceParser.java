@@ -19,18 +19,23 @@
 */
 package org.miaixz.bus.auth.resolver;
 
-import org.miaixz.bus.auth.Registration;
-import org.miaixz.bus.auth.worker.ResourceLoader;
+import org.miaixz.bus.auth.Blueprint;
+import org.miaixz.bus.auth.worker.loader.ResourceLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Pure parser for project-loaded protected-resource records.
+ *
+ * @author Kimi Liu
  */
-public final class ResourceParser {
+public class ResourceParser {
 
-    /** Creates a stateless protected-resource parser. */
+    /**
+     * Creates a stateless protected-resource parser.
+     */
     public ResourceParser() {
+        // No initialization required.
     }
 
     /**
@@ -42,7 +47,7 @@ public final class ResourceParser {
      * @return validated immutable protected-resource metadata
      */
     public ProtectedResource parse(
-            final Registration.SourceEntry registration,
+            final Blueprint.SourceEntry registration,
             final ResourceLoader.Request request,
             final ResourceLoader.Record record) {
         final String sourceId = Assert.notNull(registration, "Resource Source registration must not be null").resource()

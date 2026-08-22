@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.auth.protocol.oidc.codec;
 
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationResponse;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationResponseEncoder;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Encodes an OIDC Authorization Code Flow response by delegating to the standard OAuth response encoder.
@@ -34,7 +34,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class AuthenticationResponseEncoder {
+public class AuthenticationResponseEncoder {
 
     /**
      * Shared successful OAuth authorization response encoder.
@@ -60,10 +60,7 @@ public final class AuthenticationResponseEncoder {
      * @param response    standard OAuth authorization response
      * @return complete empty redirect response
      */
-    public HttpResponse encode(
-            final HttpRequest request,
-            final String redirectUri,
-            final AuthorizationResponse response) {
+    public Response encode(final Request request, final String redirectUri, final AuthorizationResponse response) {
         Assert.notNull(response, "OpenID Connect Authentication Response must not be null");
         return oauthEncoder.encode(request, redirectUri, response);
     }

@@ -28,13 +28,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.FabricX.Clock;
 import org.miaixz.bus.auth.Session;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Clock;
 
 /**
  * Stores the server-side binding required to redeem an OAuth 2.0 authorization code exactly once.
@@ -46,7 +46,7 @@ import org.miaixz.bus.fabric.Clock;
  *
  * @author Kimi Liu
  */
-public final class AuthorizationCodeCache extends AuthCache<AuthorizationCodeCache.Entry> {
+public class AuthorizationCodeCache extends AuthCache<AuthorizationCodeCache.Entry> {
 
     /**
      * Isolates authorization-code state from every other bus-cache consumer.
@@ -62,6 +62,20 @@ public final class AuthorizationCodeCache extends AuthCache<AuthorizationCodeCac
      */
     public AuthorizationCodeCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
         super(cache, deployment, PURPOSE, Entry.class, clock);
+    }
+
+    /**
+     * Creates a Source-generation-scoped authorization-code cache view for compiled runtime use.
+     *
+     * @param cache      shared bus-cache backend
+     * @param deployment deployment-unique cache namespace
+     * @param sourceId   exact Source registration identifier
+     * @param generation non-negative Source configuration generation
+     * @param clock      shared runtime clock used to derive entry lifetimes
+     */
+    public AuthorizationCodeCache(final CacheX<String, Object> cache, final String deployment, final String sourceId,
+            final long generation, final Clock clock) {
+        super(cache, deployment, PURPOSE, Entry.class, sourceId, generation, clock);
     }
 
     /**
@@ -177,7 +191,7 @@ public final class AuthorizationCodeCache extends AuthCache<AuthorizationCodeCac
      */
     public record OpenIdBinding(Optional<String> nonce, Instant authenticatedAt,
             Optional<String> authenticationContextClass, List<String> authenticationMethods, Session.Key sessionKey,
-            Optional<JsonValue.ObjectValue> requestedClaims) implements Serializable {
+            Optional<JsonValue.ObjectValue> requestedClaims, Optional<String> subject) implements Serializable {
 
         /**
          * Validates and freezes one authorization-code-bound OpenID Connect context.
@@ -218,6 +232,18 @@ public final class AuthorizationCodeCache extends AuthCache<AuthorizationCodeCac
             final JsonValue.ObjectValue claims = requestedClaims.getOrNull();
             requestedClaims = claims == null ? Optional.empty()
                     : Optional.of(new JsonValue.ObjectValue(claims.values()));
+            Assert.notNull(subject, "OpenID Connect subject container must not be null");
+            final String subjectValue = subject.getOrNull();
+            subject = subjectValue == null ? Optional.empty()
+                    : Optional.of(Assert.notBlank(subjectValue, "OpenID Connect wire subject must not be blank"));
+        }
+
+        /**
+         * Returns a binding completed with its final public or pairwise wire subject.
+         */
+        public OpenIdBinding withSubject(final String value) {
+            return new OpenIdBinding(nonce, authenticatedAt, authenticationContextClass, authenticationMethods,
+                    sessionKey, requestedClaims, Optional.of(Assert.notBlank(value, "Wire subject must not be blank")));
         }
 
         /**

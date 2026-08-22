@@ -33,9 +33,9 @@
  * </p>
  * <p>
  * Operations enforce resource type, schema, mutability, uniqueness, If-Match/ETag, pagination, sorting, filtering,
- * patch-path cardinality, bulk dependency, failOnErrors, payload limits, authentication scheme, and one Budget. Create,
- * replace, patch, delete, and bulk changes are atomic according to the store contract. Returned attributes honor
- * {@code returned} and request selection rules; writeOnly secrets are closed after use and never returned. Errors
+ * patch-path cardinality, bulk dependency, failOnErrors, payload limits, authentication scheme, and one Timeout.
+ * Create, replace, patch, delete, and bulk changes are atomic according to the store contract. Returned attributes
+ * honor {@code returned} and request selection rules; writeOnly secrets are closed after use and never returned. Errors
  * retain the exact HTTP status and registered {@code scimType} without exposing records, credentials, or framework
  * failures.
  * </p>

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.Conformance;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -32,14 +33,13 @@ import org.miaixz.bus.auth.shared.jose.JwkSet;
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Describes the generic standards-based OpenID Connect relying-party client scheme.
  *
  * @author Kimi Liu
  */
-public final class OpenIdClientScheme implements Scheme<OpenIdClientOptions> {
+public class OpenIdClientScheme implements Scheme<OpenIdClientOptions> {
 
     /**
      * Stable registration type identifier.
@@ -48,10 +48,10 @@ public final class OpenIdClientScheme implements Scheme<OpenIdClientOptions> {
     /**
      * Builds an OIDC Authentication Request URL for user-agent navigation.
      */
-    public static final Capability<AuthenticationRequest, UnoUrl> AUTHENTICATION = capability(
+    public static final Capability<AuthenticationRequest, Url> AUTHENTICATION = capability(
             OpenIdConnect.AUTHENTICATION,
             AuthenticationRequest.class,
-            UnoUrl.class,
+            Url.class,
             Capability.Interaction.REDIRECT,
             Capability.Security.PUBLIC);
     /**
@@ -104,10 +104,10 @@ public final class OpenIdClientScheme implements Scheme<OpenIdClientOptions> {
     /**
      * Builds an RP-Initiated Logout URL for user-agent navigation.
      */
-    public static final Capability<EndSessionRequest, UnoUrl> END_SESSION = capability(
+    public static final Capability<EndSessionRequest, Url> END_SESSION = capability(
             OpenIdConnect.END_SESSION,
             EndSessionRequest.class,
-            UnoUrl.class,
+            Url.class,
             Capability.Interaction.REDIRECT,
             Capability.Security.PUBLIC);
     /**

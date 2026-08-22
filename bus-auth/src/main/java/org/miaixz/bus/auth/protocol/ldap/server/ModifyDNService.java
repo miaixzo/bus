@@ -31,6 +31,7 @@ import org.miaixz.bus.auth.protocol.ldap.*;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -38,7 +39,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class ModifyDNService {
+public class ModifyDNService {
 
     /**
      * Compiled server-role Source identifier.
@@ -89,6 +90,7 @@ public final class ModifyDNService {
                     : Outcome.succeeded(new LdapMessage(messageId, succeeded.value(), List.of()));
             case Outcome.Rejected<ModifyDNResponse> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<ModifyDNResponse> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         };
     }
 
@@ -101,7 +103,7 @@ public final class ModifyDNService {
      */
     private static Outcome<LdapMessage> local(final int messageId, final LdapResultCode code) {
         final LdapResult result = new LdapResult(code, new DistinguishedName(Normal.EMPTY),
-                "The LDAP Modify DN request was not accepted.", org.miaixz.bus.core.lang.Optional.empty());
+                "The LDAP Modify DN request was not accepted.", Optional.empty());
         return Outcome.succeeded(new LdapMessage(Math.max(0, messageId), new ModifyDNResponse(result), List.of()));
     }
 
@@ -131,16 +133,16 @@ public final class ModifyDNService {
      *
      * @param message complete Modify DN request message
      * @param context immutable invocation context with trusted connection state
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a correlated ModifyDNResponse or closed failure
      */
     public CompletionStage<Outcome<LdapMessage>> modifyDN(
             final LdapMessage message,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(message, "LDAP Modify DN message must not be null");
         Assert.notNull(context, "LDAP Modify DN context must not be null");
-        Assert.notNull(timeout, "LDAP Modify DN time budget must not be null");
+        Assert.notNull(timeout, "LDAP Modify DN timeout must not be null");
         if (!(message.protocolOp() instanceof ModifyDNRequest request) || message.messageId() <= 0) {
             return completed(local(message.messageId(), LdapResultCode.PROTOCOL_ERROR));
         }
@@ -151,7 +153,7 @@ public final class ModifyDNService {
                 context.network().connection().isPresent(),
                 "LDAP Modify DN requires a trusted connection snapshot");
         if (timeout.expired()) {
-            return completed(Outcome.failed(failure("LDAP Modify DN time budget expired")));
+            return completed(Outcome.failed(failure("LDAP Modify DN timeout expired")));
         }
         final CompletionStage<Outcome<ModifyDNResponse>> stage;
         try {

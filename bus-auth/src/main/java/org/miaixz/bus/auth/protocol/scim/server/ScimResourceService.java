@@ -40,7 +40,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class ScimResourceService {
+public class ScimResourceService {
 
     /**
      * Compiled server-role Source identifier used to isolate external data access.
@@ -97,12 +97,12 @@ public final class ScimResourceService {
      *
      * @param request operation request
      * @param context invocation context
-     * @param timeout time budget
+     * @param timeout shared operation timeout
      */
-    private static void require(final Object request, final Context context, final Timeout.Budget timeout) {
+    private static void require(final Object request, final Context context, final Timeout timeout) {
         Assert.notNull(request, "SCIM operation request must not be null");
         Assert.notNull(context, "SCIM operation context must not be null");
-        Assert.notNull(timeout, "SCIM operation time budget must not be null");
+        Assert.notNull(timeout, "SCIM operation timeout must not be null");
     }
 
     /**
@@ -123,7 +123,7 @@ public final class ScimResourceService {
      * @return timeout failure
      */
     private static Outcome.Failure timeoutFailure(final String operation) {
-        return failure(ErrorCode._408, "SCIM " + operation + " has no remaining time budget");
+        return failure(ErrorCode._408, "SCIM " + operation + " has no remaining timeout");
     }
 
     /**
@@ -152,13 +152,13 @@ public final class ScimResourceService {
      *
      * @param resource inbound resource body
      * @param context  invocation context
-     * @param timeout  end-to-end budget
+     * @param timeout  end-to-end timeout
      * @return created standard resource or framework failure
      */
     public CompletionStage<Outcome<Resource>> create(
             final Resource resource,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         require(resource, context, timeout);
         final String type = type(resource);
         final Outcome.Failure invalid = writable(resource, type);
@@ -185,13 +185,13 @@ public final class ScimResourceService {
      *
      * @param target  route-derived individual target
      * @param context invocation context
-     * @param timeout end-to-end budget
+     * @param timeout end-to-end timeout
      * @return current resource or framework failure
      */
     public CompletionStage<Outcome<Resource>> retrieve(
             final ResourceTarget target,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         require(target, context, timeout);
         final Outcome.Failure invalid = target(target, true);
         if (invalid != null) {
@@ -214,7 +214,7 @@ public final class ScimResourceService {
      * @param resource complete replacement body
      * @param ifMatch  optional If-Match entity-tag
      * @param context  invocation context
-     * @param timeout  end-to-end budget
+     * @param timeout  end-to-end timeout
      * @return replacement resource or framework failure
      */
     public CompletionStage<Outcome<Resource>> replace(
@@ -222,7 +222,7 @@ public final class ScimResourceService {
             final Resource resource,
             final Optional<String> ifMatch,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         require(resource, context, timeout);
         final Outcome.Failure invalid = mutation(target, ifMatch);
         final String type = type(resource);
@@ -253,13 +253,13 @@ public final class ScimResourceService {
      *
      * @param request typed patch request association
      * @param context invocation context
-     * @param timeout end-to-end budget
+     * @param timeout end-to-end timeout
      * @return patched resource or framework failure
      */
     public CompletionStage<Outcome<Resource>> patch(
             final PatchRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         require(request, context, timeout);
         if (!options.serviceProviderConfig().patch().supported()) {
             return completed(Outcome.rejected(failure(ErrorCode._400, "SCIM PATCH is disabled")));
@@ -290,14 +290,14 @@ public final class ScimResourceService {
      * @param target  route-derived individual target
      * @param ifMatch optional If-Match entity-tag
      * @param context invocation context
-     * @param timeout end-to-end budget
+     * @param timeout end-to-end timeout
      * @return empty success or framework failure
      */
     public CompletionStage<Outcome<Void>> delete(
             final ResourceTarget target,
             final Optional<String> ifMatch,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         require(target, context, timeout);
         final Outcome.Failure invalid = mutation(target, ifMatch);
         if (invalid != null) {
@@ -322,13 +322,13 @@ public final class ScimResourceService {
      *
      * @param request typed collection query
      * @param context invocation context
-     * @param timeout end-to-end budget
+     * @param timeout end-to-end timeout
      * @return standard ListResponse or framework failure
      */
     public CompletionStage<Outcome<ListResponse>> search(
             final SearchQuery request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         require(request, context, timeout);
         final Outcome.Failure invalid = target(request.target(), false);
         return invalid == null ? searchValidated(request, context, timeout) : completed(Outcome.rejected(invalid));
@@ -339,13 +339,13 @@ public final class ScimResourceService {
      *
      * @param request standard POST search body
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return standard ListResponse or framework failure
      */
     public CompletionStage<Outcome<ListResponse>> search(
             final SearchRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         require(request, context, timeout);
         final SearchParameters parameters = request.parameters();
         final Outcome.Failure invalid = searchParameters(parameters);
@@ -371,14 +371,14 @@ public final class ScimResourceService {
      * @param target  route-derived collection target
      * @param request standard SearchRequest body
      * @param context invocation context
-     * @param timeout end-to-end budget
+     * @param timeout end-to-end timeout
      * @return standard ListResponse or framework failure
      */
     public CompletionStage<Outcome<ListResponse>> search(
             final ResourceTarget target,
             final SearchRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         require(request, context, timeout);
         final Outcome.Failure invalid = target(target, false);
         return invalid == null ? searchValidated(new SearchQuery(target, request.parameters()), context, timeout)
@@ -390,13 +390,13 @@ public final class ScimResourceService {
      *
      * @param request validated collection target and common search parameters
      * @param context invocation context
-     * @param timeout end-to-end budget
+     * @param timeout end-to-end timeout
      * @return standard list response stage
      */
     private CompletionStage<Outcome<ListResponse>> searchValidated(
             final SearchQuery request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final ResourceTarget target = request.target();
         final SearchParameters parameters = request.parameters();
         final Outcome.Failure invalid = searchParameters(parameters);
@@ -550,6 +550,7 @@ public final class ScimResourceService {
             }
             case Outcome.Rejected<Result<Resource>> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<Result<Resource>> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         };
     }
 

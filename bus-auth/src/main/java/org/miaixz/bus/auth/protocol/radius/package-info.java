@@ -20,7 +20,7 @@
 /**
  * Defines the RADIUS Access, Accounting, EAP-Message, attribute, and packet models.
  * <p>
- * RadiusPacket is the sealed common contract for Access-Request, Access-Accept, Access-Reject, Access-Challenge,
+ * RadiusPacket is the common contract for Access-Request, Access-Accept, Access-Reject, Access-Challenge,
  * Accounting-Request, and Accounting-Response. LegacyHeader preserves the one-octet Identifier and sixteen-octet
  * Authenticator of RFC 2865 and RFC 2866; Radius11Header preserves the four-octet opaque Token of RFC 9765. RadiusCode,
  * RadiusAttribute, VendorSpecificAttribute, and EapMessage retain unsigned wire ranges and raw octet values.

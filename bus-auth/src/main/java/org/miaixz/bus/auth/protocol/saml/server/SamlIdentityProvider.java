@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.Assert;
  *
  * @author Kimi Liu
  */
-public final class SamlIdentityProvider {
+public class SamlIdentityProvider {
 
     /**
      * Service that validates Authentication Requests and issues SAML Responses.
@@ -73,13 +73,13 @@ public final class SamlIdentityProvider {
      *
      * @param request standard Authentication Request
      * @param context immutable invocation context containing the authenticated subject
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a standard SAML Response or a closed framework failure
      */
     public CompletionStage<Outcome<Response>> singleSignOn(
             final AuthnRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return singleSignOnService.singleSignOn(request, context, timeout);
     }
 
@@ -88,13 +88,13 @@ public final class SamlIdentityProvider {
      *
      * @param request standard Logout Request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a standard SAML Logout Response or a closed framework failure
      */
     public CompletionStage<Outcome<LogoutResponse>> singleLogout(
             final LogoutRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return singleLogoutService.singleLogout(request, context, timeout);
     }
 
@@ -102,10 +102,10 @@ public final class SamlIdentityProvider {
      * Publishes this identity provider's standard SAML Metadata entity descriptor.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a standard EntityDescriptor or a closed framework failure
      */
-    public CompletionStage<Outcome<EntityDescriptor>> metadata(final Context context, final Timeout.Budget timeout) {
+    public CompletionStage<Outcome<EntityDescriptor>> metadata(final Context context, final Timeout timeout) {
         return metadataService.metadata(context, timeout);
     }
 

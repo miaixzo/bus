@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.Options;
 import org.miaixz.bus.auth.protocol.oauth2.ClientAuthenticationMethod;
 import org.miaixz.bus.auth.protocol.oauth2.GrantType;
@@ -38,7 +39,6 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Holds immutable deployment and security policy for one OAuth 2.x authorization server Provider.
@@ -63,6 +63,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  * @param pkceRequired                        whether every authorization-code request requires PKCE
  * @param refreshTokenRotationRequired        whether every refresh use rotates the token family
  * @param dpopSupported                       whether the Provider can issue DPoP-constrained access tokens
+ * @param federatedJwtEnabled                 whether explicit federated machine JWT authentication is enabled
  * @author Kimi Liu
  */
 public record OAuth2ServerOptions(String issuer, Optional<Endpoint> authorizationEndpoint,
@@ -73,7 +74,7 @@ public record OAuth2ServerOptions(String issuer, Optional<Endpoint> authorizatio
         Set<ClientAuthenticationMethod> tokenEndpointAuthMethodsSupported, Duration authorizationCodeLifetime,
         Duration accessTokenLifetime, Duration refreshTokenLifetime, Duration deviceCodeLifetime,
         Duration devicePollingInterval, boolean pkceRequired, boolean refreshTokenRotationRequired,
-        boolean dpopSupported) implements Options<OAuth2ServerOptions>, GrantPolicy {
+        boolean dpopSupported, boolean federatedJwtEnabled) implements Options<OAuth2ServerOptions>, GrantPolicy {
 
     /**
      * Maximum authorization code lifetime permitted by the frozen server policy.
@@ -106,7 +107,15 @@ public record OAuth2ServerOptions(String issuer, Optional<Endpoint> authorizatio
     private static final Set<ClientAuthenticationMethod> IMPLEMENTED_AUTHENTICATION = Set.of(
             ClientAuthenticationMethod.NONE,
             ClientAuthenticationMethod.CLIENT_SECRET_BASIC,
-            ClientAuthenticationMethod.CLIENT_SECRET_POST);
+            ClientAuthenticationMethod.CLIENT_SECRET_POST,
+            ClientAuthenticationMethod.PRIVATE_KEY_JWT);
+
+    /**
+     * Creates a secure-default mutable builder for one immutable authorization-server configuration.
+     */
+    public static Builder builder(final String issuer) {
+        return new Builder(issuer);
+    }
 
     /**
      * Normalizes immutable collections and enforces endpoint, grant, lifetime, PKCE, and rotation invariants.
@@ -164,6 +173,11 @@ public record OAuth2ServerOptions(String issuer, Optional<Endpoint> authorizatio
         if (dpopSupported) {
             throw new ValidateException(
                     "OAuth 2.x Provider options cannot enable DPoP without a complete token transport contract");
+        }
+        if (federatedJwtEnabled
+                && (tokenEndpoint.isEmpty() || !grantTypesSupported.contains(GrantType.CLIENT_CREDENTIALS))) {
+            throw new ValidateException(
+                    "Federated JWT authentication requires a token endpoint and client_credentials grant");
         }
         final Endpoint token = tokenEndpoint.getOrNull();
         if (token != null) {
@@ -254,7 +268,7 @@ public record OAuth2ServerOptions(String issuer, Optional<Endpoint> authorizatio
             throw new ValidateException(
                     "OAuth 2.x device verification URI must be an HTTPS URL without userinfo or fragment");
         }
-        if (UnoUrl.parse(verification).queryParameterNames().contains(OAuth2.Parameters.USER_CODE)) {
+        if (Url.parse(verification).queryParameterNames().contains(OAuth2.Parameters.USER_CODE)) {
             throw new ValidateException("OAuth 2.x device verification URI must not predefine the user_code parameter");
         }
         return Optional.of(verification);
@@ -383,6 +397,123 @@ public record OAuth2ServerOptions(String issuer, Optional<Endpoint> authorizatio
     @Override
     public OAuth2ServerOptions snapshot() {
         return this;
+    }
+
+    /**
+     * Collects server configuration without moving validation out of the immutable record.
+     *
+     * @author Kimi Liu
+     */
+    public static class Builder {
+
+        private final String issuer;
+        private Endpoint authorizationEndpoint;
+        private Endpoint tokenEndpoint;
+        private Endpoint introspectionEndpoint;
+        private Endpoint revocationEndpoint;
+        private Endpoint deviceAuthorizationEndpoint;
+        private String deviceVerificationUri;
+        private Endpoint metadataEndpoint;
+        private Set<String> scopes = Set.of();
+        private Set<GrantType> grants = Set.of();
+        private Set<ClientAuthenticationMethod> authenticationMethods = Set.of();
+        private Duration authorizationCodeLifetime = Duration.ofMinutes(5);
+        private Duration accessTokenLifetime = Duration.ofMinutes(5);
+        private Duration refreshTokenLifetime = Duration.ofDays(30);
+        private Duration deviceCodeLifetime = Duration.ofMinutes(10);
+        private Duration devicePollingInterval = Duration.ofSeconds(5);
+        private boolean pkceRequired = true;
+        private boolean refreshTokenRotationRequired = true;
+        private boolean federatedJwtEnabled;
+
+        public Builder(final String issuer) {
+            this.issuer = Assert.notBlank(issuer, "OAuth 2.x issuer must not be blank");
+        }
+
+        public Builder authorizationEndpoint(final Endpoint value) {
+            this.authorizationEndpoint = Assert.notNull(value, "Authorization endpoint must not be null");
+            return this;
+        }
+
+        public Builder tokenEndpoint(final Endpoint value) {
+            this.tokenEndpoint = Assert.notNull(value, "Token endpoint must not be null");
+            return this;
+        }
+
+        public Builder introspectionEndpoint(final Endpoint value) {
+            this.introspectionEndpoint = Assert.notNull(value, "Introspection endpoint must not be null");
+            return this;
+        }
+
+        public Builder revocationEndpoint(final Endpoint value) {
+            this.revocationEndpoint = Assert.notNull(value, "Revocation endpoint must not be null");
+            return this;
+        }
+
+        public Builder deviceAuthorizationEndpoint(final Endpoint value, final String verificationUri) {
+            this.deviceAuthorizationEndpoint = Assert.notNull(value, "Device authorization endpoint must not be null");
+            this.deviceVerificationUri = Assert.notBlank(verificationUri, "Device verification URI must not be blank");
+            return this;
+        }
+
+        public Builder metadataEndpoint(final Endpoint value) {
+            this.metadataEndpoint = Assert.notNull(value, "Metadata endpoint must not be null");
+            return this;
+        }
+
+        public Builder scopes(final Set<String> values) {
+            this.scopes = Set.copyOf(Assert.notNull(values, "OAuth scopes must not be null"));
+            return this;
+        }
+
+        public Builder grants(final Set<GrantType> values) {
+            this.grants = Set.copyOf(Assert.notNull(values, "OAuth grants must not be null"));
+            return this;
+        }
+
+        public Builder authenticationMethods(final Set<ClientAuthenticationMethod> values) {
+            this.authenticationMethods = Set.copyOf(Assert.notNull(values, "Authentication methods must not be null"));
+            return this;
+        }
+
+        public Builder lifetimes(final Duration code, final Duration access, final Duration refresh) {
+            this.authorizationCodeLifetime = Assert.notNull(code, "Authorization code lifetime must not be null");
+            this.accessTokenLifetime = Assert.notNull(access, "Access token lifetime must not be null");
+            this.refreshTokenLifetime = Assert.notNull(refresh, "Refresh token lifetime must not be null");
+            return this;
+        }
+
+        public Builder device(final Duration lifetime, final Duration pollingInterval) {
+            this.deviceCodeLifetime = Assert.notNull(lifetime, "Device code lifetime must not be null");
+            this.devicePollingInterval = Assert.notNull(pollingInterval, "Device polling interval must not be null");
+            return this;
+        }
+
+        public Builder pkceRequired(final boolean value) {
+            this.pkceRequired = value;
+            return this;
+        }
+
+        public Builder refreshTokenRotationRequired(final boolean value) {
+            this.refreshTokenRotationRequired = value;
+            return this;
+        }
+
+        public Builder federatedJwtEnabled(final boolean value) {
+            this.federatedJwtEnabled = value;
+            return this;
+        }
+
+        public OAuth2ServerOptions build() {
+            return new OAuth2ServerOptions(issuer, Optional.ofNullable(authorizationEndpoint),
+                    Optional.ofNullable(tokenEndpoint), Optional.ofNullable(introspectionEndpoint),
+                    Optional.ofNullable(revocationEndpoint), Optional.ofNullable(deviceAuthorizationEndpoint),
+                    Optional.ofNullable(deviceVerificationUri), Optional.ofNullable(metadataEndpoint), scopes, grants,
+                    authenticationMethods, authorizationCodeLifetime, accessTokenLifetime, refreshTokenLifetime,
+                    deviceCodeLifetime, devicePollingInterval, pkceRequired, refreshTokenRotationRequired, false,
+                    federatedJwtEnabled);
+        }
+
     }
 
 }

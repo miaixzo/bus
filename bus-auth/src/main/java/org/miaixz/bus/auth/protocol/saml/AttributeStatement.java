@@ -54,7 +54,7 @@ public record AttributeStatement(List<AttributeContent> attributes) {
      *
      * @author Kimi Liu
      */
-    public sealed interface AttributeContent permits PlainAttribute, EncryptedAttribute {
+    public interface AttributeContent {
 
     }
 

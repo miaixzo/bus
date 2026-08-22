@@ -23,6 +23,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationResponse;
@@ -31,15 +33,13 @@ import org.miaixz.bus.auth.protocol.oauth2.server.OAuth2ErrorMapper;
 import org.miaixz.bus.auth.protocol.oidc.AuthenticationRequest;
 import org.miaixz.bus.auth.protocol.oidc.codec.AuthenticationRequestDecoder;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Adapts one OpenID Connect Authentication Request HTTP boundary to the typed authentication service.
  *
  * @author Kimi Liu
  */
-public final class AuthenticationEndpoint {
+public class AuthenticationEndpoint {
 
     /**
      * Strict decoder for the incoming OpenID Connect Authentication Request.
@@ -82,16 +82,13 @@ public final class AuthenticationEndpoint {
      *
      * @param request incoming authorization endpoint HTTP request
      * @param context immutable invocation context containing authenticated subject state
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return stage containing the complete HTTP response
      */
-    public CompletionStage<HttpResponse> handle(
-            final HttpRequest request,
-            final Context context,
-            final Timeout.Budget timeout) {
+    public CompletionStage<Response> handle(final Request request, final Context context, final Timeout timeout) {
         Assert.notNull(request, "OpenID Connect authentication HTTP request must not be null");
         Assert.notNull(context, "OpenID Connect authentication context must not be null");
-        Assert.notNull(timeout, "OpenID Connect authentication budget must not be null");
+        Assert.notNull(timeout, "OpenID Connect authentication timeout must not be null");
         final AuthenticationRequest decoded;
         try {
             decoded = decoder.decode(request);
@@ -105,6 +102,7 @@ public final class AuthenticationEndpoint {
                     .authorization(request, decoded.authorizationRequest(), rejected.failure());
             case Outcome.Failed<AuthorizationResponse> failed -> errorMapper
                     .authorization(request, decoded.authorizationRequest(), failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 

@@ -22,42 +22,45 @@ package org.miaixz.bus.auth.worker;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Registration;
-import org.miaixz.bus.auth.Subject;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.extra.json.JsonValue;
+import org.miaixz.bus.auth.shared.SecretLease;
+import org.miaixz.bus.auth.vendor.Vendor;
 
 /**
- * Loads project-maintained subject attributes.
+ * Stores recoverable client-side Vendor credential material in project-owned secure storage.
+ * <p>
+ * Implementations must synchronously capture the minimum material needed by their backend before this method returns.
+ * The caller closes and erases the supplied lease immediately after the returned stage is obtained, so an
+ * implementation must never read the lease later from an asynchronous callback. Encryption, KMS, Vault, database,
+ * replacement, and lifecycle policy remain entirely project-owned.
+ * </p>
+ *
+ * @author Kimi Liu
  */
 @FunctionalInterface
-public interface AttributeLoader {
+public interface CredentialWriter {
 
     /**
-     * Loads subject attributes within the exact Source registration scope.
+     * Stores one plaintext client-side credential and returns only its non-secret external reference.
      *
-     * @param registration exact Source registration requesting the data
-     * @param subject      exact external subject key
-     * @param context      immutable non-secret invocation context
-     * @param timeout      shared end-to-end operation budget
-     * @return asynchronous project loading outcome
+     * @param vendor     exact external platform identifier
+     * @param variant    exact external platform variant
+     * @param type       credential type fixed by the selected manifest variant
+     * @param clientId   public external client identifier
+     * @param credential short-lived caller-owned plaintext lease
+     * @param context    immutable non-secret invocation context
+     * @param timeout    shared end-to-end operation timeout
+     * @return asynchronous project storage outcome containing only a credential reference
      */
-    CompletionStage<Outcome<Record>> load(
-            Registration.SourceEntry registration,
-            Subject.Key subject,
+    CompletionStage<Outcome<Credential.Reference>> write(
+            Vendor.Id vendor,
+            Vendor.Variant variant,
+            Credential.Type type,
+            String clientId,
+            SecretLease credential,
             Context context,
-            Timeout.Budget timeout);
-
-    /**
-     * Loaded subject attributes awaiting framework parsing.
-     *
-     * @param sourceId exact Source identifier that owns the returned data
-     * @param subject  exact subject key resolved by the project
-     * @param values   project-provided attribute object
-     */
-    record Record(String sourceId, Subject.Key subject, JsonValue.ObjectValue values) {
-
-    }
+            Timeout timeout);
 
 }

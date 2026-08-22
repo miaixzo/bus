@@ -45,10 +45,10 @@ public interface SessionWorker {
      *
      * @param binding exact Source and framework Session binding
      * @param context current authentication invocation context
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return asynchronous project integration outcome
      */
-    CompletionStage<Outcome<Void>> establish(Binding binding, Context context, Timeout.Budget timeout);
+    CompletionStage<Outcome<Void>> establish(Binding binding, Context context, Timeout timeout);
 
     /**
      * Ends the project login state mapped to one framework session.
@@ -59,10 +59,10 @@ public interface SessionWorker {
      *
      * @param binding exact Source and framework Session binding
      * @param context current authentication invocation context
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return asynchronous project integration outcome
      */
-    CompletionStage<Outcome<Void>> end(Binding binding, Context context, Timeout.Budget timeout);
+    CompletionStage<Outcome<Void>> end(Binding binding, Context context, Timeout timeout);
 
     /**
      * Carries the exact compiled Source identity with its framework Session.

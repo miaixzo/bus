@@ -33,7 +33,7 @@ import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.shared.jose.Jwk;
 import org.miaixz.bus.auth.shared.jose.JwkSet;
 import org.miaixz.bus.auth.source.DriverServices;
-import org.miaixz.bus.auth.worker.KeyLoader;
+import org.miaixz.bus.auth.worker.loader.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -50,7 +50,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class JwkSetService {
+public class JwkSetService {
 
     /**
      * Standard public-key use value for signature keys.
@@ -104,24 +104,24 @@ public final class JwkSetService {
      * Resolves and validates the Provider's current public signing keys.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return stage containing a public-only standard JWK Set or a closed failure
      */
-    public CompletionStage<Outcome<JwkSet>> jwks(final Context context, final Timeout.Budget timeout) {
+    public CompletionStage<Outcome<JwkSet>> jwks(final Context context, final Timeout timeout) {
         Assert.notNull(context, "OpenID Connect JWK Set context must not be null");
-        Assert.notNull(timeout, "OpenID Connect JWK Set time budget must not be null");
+        Assert.notNull(timeout, "OpenID Connect JWK Set timeout must not be null");
         if (timeout.expired()) {
             return completed(
-                    Outcome.failed(
-                            failure(ErrorCode._408, "OpenID Connect JWK Set request has no remaining time budget")));
+                    Outcome.failed(failure(ErrorCode._408, "OpenID Connect JWK Set request has no remaining timeout")));
         }
         final Instant now = timeout.clock().now();
         final CompletionStage<Outcome<JwkSet>> resolution;
         try {
-            final KeyLoader.PublicRequest request = new KeyLoader.PublicRequest(options.issuer(), SIGNATURE_USE, now);
+            final KeyLoader.Criteria criteria = new KeyLoader.Criteria(services.registration(), options.issuer(),
+                    SIGNATURE_USE, now);
             resolution = Outcome.mapStage(
-                    () -> services.keyLoader().loadPublic(services.registration(), request, context, timeout),
-                    loaded -> services.keyParser().parsePublic(services.registration(), request, loaded));
+                    () -> services.keyLoader().list(criteria, context, timeout),
+                    listing -> services.keyParser().parsePublic(services.registration(), criteria, listing));
         } catch (RuntimeException exception) {
             return completed(Outcome.failed(failure(ErrorCode._500, "OpenID Connect public key resolution failed")));
         }
@@ -146,6 +146,7 @@ public final class JwkSetService {
                     failure(rejected.failure().error(), "OpenID Connect public signing keys are unavailable"));
             case Outcome.Failed<JwkSet> failed -> Outcome
                     .failed(failure(failed.failure().error(), "OpenID Connect public key resolution failed"));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         };
     }
 

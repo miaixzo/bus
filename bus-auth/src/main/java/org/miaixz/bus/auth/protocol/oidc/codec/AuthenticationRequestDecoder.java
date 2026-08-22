@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.auth.FabricX.Request;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationRequest;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationRequestDecoder;
 import org.miaixz.bus.auth.protocol.oidc.AuthenticationRequest;
@@ -36,7 +37,6 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 
 /**
  * Decodes an OpenID Connect Authorization Code Flow Authentication Request over the shared OAuth query decoder.
@@ -48,7 +48,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
  *
  * @author Kimi Liu
  */
-public final class AuthenticationRequestDecoder implements Decoder<HttpRequest, AuthenticationRequest> {
+public class AuthenticationRequestDecoder implements Decoder<Request, AuthenticationRequest> {
 
     /**
      * Maximum accepted UTF-8 size of the claims parameter JSON document.
@@ -174,7 +174,7 @@ public final class AuthenticationRequestDecoder implements Decoder<HttpRequest, 
      * @throws ProtocolException        with a registered OIDC error code for unsupported Request Object parameters
      */
     @Override
-    public AuthenticationRequest decode(final HttpRequest encoded) {
+    public AuthenticationRequest decode(final Request encoded) {
         final AuthorizationRequest oauth = oauthDecoder
                 .decode(Assert.notNull(encoded, "OpenID Connect Authentication HTTP request must not be null"));
         final Map<String, JsonValue> parameters = new LinkedHashMap<>(oauth.extensions().values());

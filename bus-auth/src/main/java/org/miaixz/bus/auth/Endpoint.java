@@ -22,13 +22,13 @@ package org.miaixz.bus.auth;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
 import org.miaixz.bus.core.net.tls.TlsVersion;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Describes one immutable protocol endpoint without executing network operations or retaining credentials.
@@ -45,8 +45,8 @@ import org.miaixz.bus.fabric.UnoUrl;
  * @param clientAuth        TLS client-certificate authentication requirement
  * @author Kimi Liu
  */
-public record Endpoint(UnoUrl url, Transport transport, Optional<Http.Method> method,
-        Set<Authentication> authentication, Optional<TlsVersion> minimumTlsVersion, TlsClientAuth clientAuth) {
+public record Endpoint(Url url, Transport transport, Optional<Http.Method> method, Set<Authentication> authentication,
+        Optional<TlsVersion> minimumTlsVersion, TlsClientAuth clientAuth) {
 
     /**
      * Creates and validates an immutable endpoint declaration.

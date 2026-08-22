@@ -24,6 +24,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -35,6 +37,7 @@ import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.*;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -46,11 +49,9 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements Ximalaya browser authentication and signed profile retrieval.
@@ -62,7 +63,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class XimalayaSourceAdapter implements VendorAdapter {
+public class XimalayaSourceAdapter implements VendorAdapter {
 
     /**
      * Maximum bounded Ximalaya response size.
@@ -194,7 +195,7 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
             offset += value.length;
         }
         final byte[] encoded = Base64.encode(canonical, false);
-        final byte[] key = org.miaixz.bus.core.xyz.ByteKit.toBytes(secret);
+        final byte[] key = ByteKit.toBytes(secret);
         try {
             final byte[] hmac = Builder.hmacSha1(key).digest(encoded);
             try {
@@ -423,6 +424,7 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -514,7 +516,7 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing private Ximalaya models
@@ -524,10 +526,10 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Ximalaya capability must not be null");
         Assert.notNull(context, "Ximalaya invocation context must not be null");
-        Assert.notNull(timeout, "Ximalaya invocation budget must not be null");
+        Assert.notNull(timeout, "Ximalaya invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("Ximalaya capability is not declared"));
         }
@@ -552,13 +554,13 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated browser correlation material
      * @param context    immutable invocation context retained by the uniform signature
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return prepared authorization redirect
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "Ximalaya authorization context must not be null");
         if (timeout.expired() || initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(failed(ErrorCode._500, "Ximalaya browser material violates the frozen manifest"));
@@ -580,7 +582,7 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
      * @param request standard OAuth authorization request
      * @return exact Ximalaya authorization URL
      */
-    private UnoUrl authorize(final AuthorizationRequest request) {
+    private Url authorize(final AuthorizationRequest request) {
         final Map<String, JsonValue> extensions = new LinkedHashMap<>(request.extensions().values());
         extensions.put(XimalayaManifest.Parameters.CLIENT_OS_TYPE, new JsonValue.StringValue(options.clientOsType()));
         extensions.put(XimalayaManifest.Parameters.DEVICE_ID, new JsonValue.StringValue(options.deviceId()));
@@ -596,7 +598,7 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
      * @param request standard OAuth authorization request
      * @return completed authorization URL outcome
      */
-    private CompletionStage<Outcome<UnoUrl>> authorization(final AuthorizationRequest request) {
+    private CompletionStage<Outcome<Url>> authorization(final AuthorizationRequest request) {
         try {
             return valid(request) ? completed(Outcome.succeeded(authorize(request)))
                     : completed(rejected("Ximalaya authorization request does not match the compiled Source"));
@@ -630,6 +632,7 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
                     .orElseThrow(() -> new ValidateException("Ximalaya authorization success requires state"));
             case AuthorizationResponseDecoder.Error error -> error.response().state()
                     .orElseThrow(() -> new ValidateException("Ximalaya authorization error requires state"));
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -638,13 +641,13 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed browser correlation
      * @param context    immutable invocation context used for secret resolution
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified Ximalaya identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final AuthorizationResponseDecoder.Decoded decoded;
         try {
             decoded = decode(completion.callback());
@@ -668,6 +671,7 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<SecretLease> success -> authenticate(response.code(), success.value(), timeout);
             case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -676,19 +680,20 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
      *
      * @param code    consumed authorization code
      * @param secret  owned client-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified Ximalaya identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> authenticate(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try (secret) {
                 return switch (token(code, secret, timeout)) {
                     case Outcome.Succeeded<Access> success -> profile(success.value(), secret, timeout);
                     case Outcome.Rejected<Access> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<Access> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 };
             } catch (RuntimeException cause) {
                 return failed(ErrorCode._502, "Ximalaya authentication completion failed");
@@ -701,14 +706,14 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
      *
      * @param code    consumed authorization code
      * @param secret  live client-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return private access result without a fabricated token type
      */
-    private Outcome<Access> token(final String code, final SecretLease secret, final Timeout.Budget timeout) {
+    private Outcome<Access> token(final String code, final SecretLease secret, final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Ximalaya token request has no remaining time budget");
+                return failed(ErrorCode._408, "Ximalaya token request has no remaining timeout");
             }
             final List<NameValue> parameters = List.of(
                     new NameValue(OAuth2.Parameters.CODE,
@@ -720,10 +725,9 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
                     new NameValue(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()));
             body = formCodec.encode(parameters);
             final var endpoint = variant.targets().resolve(options).token().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.POST)
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 return token(response);
             }
@@ -742,7 +746,7 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
      * @param response owned token endpoint response
      * @return private access result or safely classified failure
      */
-    private Outcome<Access> token(final HttpResponse response) {
+    private Outcome<Access> token(final Response response) {
         if (response.code() != Http.Status.OK) {
             return status(response.code(), "Ximalaya token endpoint rejected or failed the request");
         }
@@ -774,15 +778,12 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
      *
      * @param access  private access token and token-bound user identifier
      * @param secret  live client-secret lease used only for the registered signature
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified identity
      */
-    private Outcome<ExternalIdentity> profile(
-            final Access access,
-            final SecretLease secret,
-            final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final Access access, final SecretLease secret, final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "Ximalaya profile request has no remaining time budget");
+            return failed(ErrorCode._408, "Ximalaya profile request has no remaining timeout");
         }
         final Map<String, String> query = new TreeMap<>();
         query.put(OAuth2.Parameters.ACCESS_TOKEN, access.accessToken());
@@ -801,12 +802,11 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
         }
         try {
             final var endpoint = variant.targets().resolve(options).userInfo().getOrNull();
-            final var request = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
+            final var request = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint.url().toString())
                     .method(Http.Method.GET);
             query.forEach(request::query);
-            try (HttpResponse response = request.query(org.miaixz.bus.auth.Builder.SIGNATURE, signature)
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute()) {
+            try (Response response = request.query(org.miaixz.bus.auth.Builder.SIGNATURE, signature)
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                 return profile(response, access, timeout);
             }
         } catch (RuntimeException cause) {
@@ -822,10 +822,7 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
      * @param timeout  shared clock used for evidence timestamping
      * @return verified Ximalaya identity
      */
-    private Outcome<ExternalIdentity> profile(
-            final HttpResponse response,
-            final Access access,
-            final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final Response response, final Access access, final Timeout timeout) {
         if (response.code() != Http.Status.OK) {
             return status(response.code(), "Ximalaya profile endpoint rejected or failed the request");
         }
@@ -856,13 +853,16 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
      * Resolves one operation-scoped Ximalaya application secret.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return secret resolution outcome stage
      */
-    private CompletionStage<Outcome<SecretLease>> resolve(final Context context, final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<SecretLease>> resolve(final Context context, final Timeout timeout) {
         try {
             final CompletionStage<Outcome<SecretLease>> stage = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
             if (stage == null) {
                 return completed(failed(ErrorCode._502, "Ximalaya application-secret loader returned no stage"));
@@ -921,7 +921,7 @@ public final class XimalayaSourceAdapter implements VendorAdapter {
      * @param operation safe operation name used in validation failures
      * @return immutable provider-neutral JSON object
      */
-    private JsonValue.ObjectValue object(final HttpResponse response, final String operation) {
+    private JsonValue.ObjectValue object(final Response response, final String operation) {
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("Ximalaya " + operation + " response must use application/json");
         }

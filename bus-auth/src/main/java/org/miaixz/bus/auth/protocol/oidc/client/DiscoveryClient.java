@@ -24,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdProviderMetadata;
@@ -35,14 +36,13 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
 
 /**
  * Retrieves OpenID Provider Metadata and binds it to the configured issuer.
  *
  * @author Kimi Liu
  */
-public final class DiscoveryClient {
+public class DiscoveryClient {
 
     /**
      * Validated relying-party options containing the trusted issuer and discovery endpoint.
@@ -101,17 +101,15 @@ public final class DiscoveryClient {
      * Retrieves metadata and verifies its exact issuer binding.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing issuer-bound metadata or framework failure
      */
-    public CompletionStage<Outcome<OpenIdProviderMetadata>> discover(
-            final Context context,
-            final Timeout.Budget timeout) {
+    public CompletionStage<Outcome<OpenIdProviderMetadata>> discover(final Context context, final Timeout timeout) {
         Assert.notNull(context, "OpenID Connect discovery context must not be null");
-        Assert.notNull(timeout, "OpenID Connect discovery time budget must not be null");
+        Assert.notNull(timeout, "OpenID Connect discovery timeout must not be null");
         if (timeout.expired()) {
             return completed(
-                    Outcome.failed(failure(ErrorCode._408, "OpenID Connect discovery request has no time budget")));
+                    Outcome.failed(failure(ErrorCode._408, "OpenID Connect discovery request has no timeout")));
         }
         return CompletableFuture.supplyAsync(() -> execute(timeout), services.executor());
     }
@@ -119,19 +117,18 @@ public final class DiscoveryClient {
     /**
      * Executes one unauthenticated metadata request and performs exact issuer matching.
      *
-     * @param timeout decreasing operation budget
+     * @param timeout decreasing operation timeout
      * @return standard metadata outcome
      */
-    private Outcome<OpenIdProviderMetadata> execute(final Timeout.Budget timeout) {
+    private Outcome<OpenIdProviderMetadata> execute(final Timeout timeout) {
         try {
             if (timeout.expired()) {
                 return Outcome
-                        .failed(failure(ErrorCode._408, "OpenID Connect discovery request exhausted its time budget"));
+                        .failed(failure(ErrorCode._408, "OpenID Connect discovery request exhausted its timeout"));
             }
             final var endpoint = options.discoveryEndpoint().getOrNull();
-            final var response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.GET).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy()).execute();
+            final var response = FabricX.http(services.fabric(), Protocol.OIDC, timeout).url(endpoint.url().toString())
+                    .method(Http.Method.GET).execute();
             final OpenIdProviderMetadata metadata = codec.decode(response);
             if (!options.expectedIssuer().equals(metadata.authorizationServerMetadata().issuer())) {
                 return Outcome.rejected(

@@ -46,7 +46,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class AssertionConsumerService {
+public class AssertionConsumerService {
 
     /**
      * Validated service-provider trust and response policy.
@@ -113,18 +113,18 @@ public final class AssertionConsumerService {
      * @param response             decoded standard SAML Response
      * @param expectedInResponseTo exact Authentication Request ID retained in one-time correlation state
      * @param context              immutable invocation context
-     * @param timeout              shared end-to-end time budget
+     * @param timeout              shared end-to-end timeout
      * @return stage containing the validated standard response or a closed framework failure
      */
     public CompletionStage<Outcome<Response>> consume(
             final Response response,
             final String expectedInResponseTo,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(response, "SAML Response must not be null");
         Assert.notBlank(expectedInResponseTo, "SAML expected InResponseTo value must not be blank");
         Assert.notNull(context, "SAML assertion-consumer context must not be null");
-        Assert.notNull(timeout, "SAML assertion-consumer time budget must not be null");
+        Assert.notNull(timeout, "SAML assertion-consumer timeout must not be null");
         final Outcome<Response> envelope = validateEnvelope(response, expectedInResponseTo, timeout);
         if (!(envelope instanceof Outcome.Succeeded<Response>)) {
             return completed(envelope);
@@ -135,28 +135,30 @@ public final class AssertionConsumerService {
                             .validate(success.value(), expectedInResponseTo, options, context, timeout);
                     case Outcome.Rejected<Response> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<Response> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 }).thenCompose(validated -> switch (validated) {
                     case Outcome.Succeeded<Response> success -> replayValidator
                             .validate(success.value(), options, context, timeout);
                     case Outcome.Rejected<Response> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<Response> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
     /**
-     * Validates status, destination, request correlation, and the available time budget before cryptographic work.
+     * Validates status, destination, request correlation, and the available timeout before cryptographic work.
      *
      * @param response             decoded SAML Response
      * @param expectedInResponseTo expected request identifier
-     * @param timeout              shared operation budget
+     * @param timeout              shared operation timeout
      * @return successful unchanged response or an expected protocol rejection
      */
     private Outcome<Response> validateEnvelope(
             final Response response,
             final String expectedInResponseTo,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (timeout.expired()) {
-            return Outcome.failed(failure(ErrorCode._408, "SAML Response validation has no remaining time budget"));
+            return Outcome.failed(failure(ErrorCode._408, "SAML Response validation has no remaining timeout"));
         }
         if (!StatusCode.SUCCESS.equals(response.status().statusCode().value())) {
             return Outcome.rejected(failure(ErrorCode._401, "SAML identity provider returned a non-success status"));

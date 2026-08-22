@@ -45,7 +45,7 @@ import org.miaixz.bus.core.net.Protocol;
  *
  * @author Kimi Liu
  */
-public final class SamlReplayValidator {
+public class SamlReplayValidator {
 
     /**
      * Shared digesting atomic replay guard.
@@ -131,18 +131,18 @@ public final class SamlReplayValidator {
      * @param response fully validated plaintext SAML Response
      * @param options  trusted Source options supplying the IdP authority and maximum age
      * @param context  immutable invocation context retained for pipeline consistency
-     * @param timeout  shared end-to-end budget limiting every replay expiration
+     * @param timeout  shared end-to-end timeout limiting every replay expiration
      * @return stage containing the unchanged response, replay rejection, or store failure
      */
     public CompletionStage<Outcome<Response>> validate(
             final Response response,
             final SamlClientOptions options,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(response, "SAML Response must not be null");
         Assert.notNull(options, "SAML Source options must not be null");
         Assert.notNull(context, "SAML replay context must not be null");
-        Assert.notNull(timeout, "SAML replay budget must not be null");
+        Assert.notNull(timeout, "SAML replay timeout must not be null");
         final Instant responseExpiry = responseExpiry(response, options, timeout.deadline());
         CompletionStage<Outcome<Void>> stage = replayGuard.register(
                 namespace,
@@ -168,12 +168,14 @@ public final class SamlReplayValidator {
                         timeout);
                 case Outcome.Rejected<Void> rejected -> completed(Outcome.rejected(rejected.failure()));
                 case Outcome.Failed<Void> failed -> completed(Outcome.failed(failed.failure()));
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             });
         }
         return stage.thenApply(outcome -> switch (outcome) {
             case Outcome.Succeeded<Void> ignored -> Outcome.succeeded(response);
             case Outcome.Rejected<Void> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<Void> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 

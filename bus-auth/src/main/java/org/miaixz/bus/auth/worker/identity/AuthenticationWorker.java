@@ -29,6 +29,8 @@ import org.miaixz.bus.auth.resolver.ClaimParser;
 import org.miaixz.bus.auth.resolver.SubjectParser;
 import org.miaixz.bus.auth.shared.claim.ClaimSet;
 import org.miaixz.bus.auth.source.ExternalIdentity;
+import org.miaixz.bus.auth.worker.loader.ClaimLoader;
+import org.miaixz.bus.auth.worker.loader.IdentityLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -37,14 +39,14 @@ import org.miaixz.bus.extra.json.JsonValue;
  * Completes one verified Source authentication as a protocol-neutral framework identity.
  * <p>
  * This worker is the concrete framework consumer of {@link IdentityLoader} and {@link ClaimLoader}. It owns only
- * validation, ordered composition, budget enforcement, Principal construction, and typed failure propagation. The
+ * validation, ordered composition, timeout enforcement, Principal construction, and typed failure propagation. The
  * external project remains responsible for both loader implementations and for every business-session action after this
  * worker succeeds.
  * </p>
  *
  * @author Kimi Liu
  */
-public final class AuthenticationWorker {
+public class AuthenticationWorker {
 
     /**
      * Project-supplied external-account and Subject loading port.
@@ -97,13 +99,13 @@ public final class AuthenticationWorker {
      *
      * @param <T>      successful project-port value type
      * @param supplier deferred project-port invocation
-     * @param timeout  shared end-to-end operation budget
+     * @param timeout  shared end-to-end operation timeout
      * @param failure  safe description used for dependency failures
      * @return normalized asynchronous outcome
      */
     private static <T> CompletionStage<Outcome<T>> invoke(
             final StageSupplier<T> supplier,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final String failure) {
         if (timeout.expired()) {
             return completed(expired());
@@ -143,6 +145,7 @@ public final class AuthenticationWorker {
             }
             case Outcome.Rejected<A> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<A> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -158,14 +161,14 @@ public final class AuthenticationWorker {
     }
 
     /**
-     * Creates one safe operation-budget failure.
+     * Creates one safe operation-timeout failure.
      *
      * @param <T> expected operation value type
      * @return typed timeout failure outcome
      */
     private static <T> Outcome<T> expired() {
         return Outcome.failed(
-                new Outcome.Failure(ErrorCode._408, "Authentication worker budget has expired",
+                new Outcome.Failure(ErrorCode._408, "Authentication worker timeout has expired",
                         new JsonValue.ObjectValue(Map.of())));
     }
 
@@ -186,18 +189,18 @@ public final class AuthenticationWorker {
      * @param sourceId selected registered Source identifier
      * @param identity completed verified external identity
      * @param context  immutable non-secret invocation context
-     * @param timeout  shared end-to-end operation budget
+     * @param timeout  shared end-to-end operation timeout
      * @return stage containing the completed authentication result, expected rejection, or operational failure
      */
     public CompletionStage<Outcome<AuthenticationResult>> complete(
             final String sourceId,
             final ExternalIdentity identity,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notBlank(sourceId, "Authentication worker Source id must not be blank");
         Assert.notNull(identity, "Authentication worker external identity must not be null");
         Assert.notNull(context, "Authentication worker context must not be null");
-        Assert.notNull(timeout, "Authentication worker budget must not be null");
+        Assert.notNull(timeout, "Authentication worker timeout must not be null");
         if (timeout.expired()) {
             return completed(expired());
         }
@@ -229,14 +232,14 @@ public final class AuthenticationWorker {
      * @param subject  parsed stable subject
      * @param identity verified external identity
      * @param claims   parsed disclosed claim set
-     * @param timeout  shared end-to-end operation budget
+     * @param timeout  shared end-to-end operation timeout
      * @return stage containing the completed authentication result or a safe failure
      */
     private CompletionStage<Outcome<AuthenticationResult>> principal(
             final Subject subject,
             final ExternalIdentity identity,
             final ClaimSet claims,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (timeout.expired()) {
             return completed(expired());
         }

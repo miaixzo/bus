@@ -34,15 +34,24 @@ import org.miaixz.bus.core.Lifecycle;
  */
 final class RuntimeLifecycle {
 
-    /** Monitor guarding lifecycle state and operation count. */
+    /**
+     * Monitor guarding lifecycle state and operation count.
+     */
     private final Object gate = new Object();
-    /** Current lifecycle state guarded by {@link #gate}. */
+    /**
+     * Current lifecycle state guarded by {@link #gate}.
+     */
     private Lifecycle.State state = Lifecycle.State.RUNNING;
-    /** Number of admitted operations still holding leases. */
+    /**
+     * Number of admitted operations still holding leases.
+     */
     private int operations;
 
-    /** Creates a lifecycle gate in the running state. */
+    /**
+     * Creates a lifecycle gate in the running state.
+     */
     RuntimeLifecycle() {
+        // No initialization required.
     }
 
     /**
@@ -108,7 +117,9 @@ final class RuntimeLifecycle {
         }
     }
 
-    /** Releases one admitted operation and completes deferred close when it was the last lease. */
+    /**
+     * Releases one admitted operation and completes deferred close when it was the last lease.
+     */
     private void leave() {
         synchronized (gate) {
             if (operations > 0) {
@@ -122,12 +133,18 @@ final class RuntimeLifecycle {
 
     /**
      * Represents one operation admitted by the shared runtime lifecycle.
+     *
+     * @author Kimi Liu
      */
-    public static final class Lease implements AutoCloseable {
+    public static class Lease implements AutoCloseable {
 
-        /** Lifecycle gate that admitted this operation. */
+        /**
+         * Lifecycle gate that admitted this operation.
+         */
         private final RuntimeLifecycle lifecycle;
-        /** Idempotent release marker. */
+        /**
+         * Idempotent release marker.
+         */
         private final AtomicBoolean closed = new AtomicBoolean();
 
         /**
@@ -135,11 +152,13 @@ final class RuntimeLifecycle {
          *
          * @param lifecycle admitting lifecycle
          */
-        private Lease(final RuntimeLifecycle lifecycle) {
+        public Lease(final RuntimeLifecycle lifecycle) {
             this.lifecycle = lifecycle;
         }
 
-        /** Releases this operation lease at most once. */
+        /**
+         * Releases this operation lease at most once.
+         */
         @Override
         public void close() {
             if (closed.compareAndSet(false, true)) {

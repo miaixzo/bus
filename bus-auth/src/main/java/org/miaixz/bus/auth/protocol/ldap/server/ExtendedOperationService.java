@@ -32,6 +32,7 @@ import org.miaixz.bus.auth.protocol.ldap.*;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -39,7 +40,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class ExtendedOperationService {
+public class ExtendedOperationService {
 
     /**
      * Compiled server-role Source identifier.
@@ -91,6 +92,7 @@ public final class ExtendedOperationService {
                     : Outcome.succeeded(new LdapMessage(messageId, succeeded.value(), List.of()));
             case Outcome.Rejected<ExtendedResponse> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<ExtendedResponse> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         };
     }
 
@@ -109,9 +111,9 @@ public final class ExtendedOperationService {
         final String diagnostic = code.equals(LdapResultCode.SUCCESS) ? Normal.EMPTY
                 : "The LDAP Extended operation was not accepted.";
         final LdapResult result = new LdapResult(code, new DistinguishedName(Normal.EMPTY), diagnostic,
-                org.miaixz.bus.core.lang.Optional.empty());
-        final ExtendedResponse response = new ExtendedResponse(result,
-                org.miaixz.bus.core.lang.Optional.ofNullable(responseName), org.miaixz.bus.core.lang.Optional.empty());
+                Optional.empty());
+        final ExtendedResponse response = new ExtendedResponse(result, Optional.ofNullable(responseName),
+                Optional.empty());
         return Outcome.succeeded(new LdapMessage(Math.max(0, messageId), response, List.of()));
     }
 
@@ -145,16 +147,16 @@ public final class ExtendedOperationService {
      *
      * @param message complete Extended request message
      * @param context immutable invocation context with trusted connection state
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a correlated ExtendedResponse or closed failure
      */
     public CompletionStage<Outcome<LdapMessage>> extended(
             final LdapMessage message,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(message, "LDAP Extended message must not be null");
         Assert.notNull(context, "LDAP Extended context must not be null");
-        Assert.notNull(timeout, "LDAP Extended time budget must not be null");
+        Assert.notNull(timeout, "LDAP Extended timeout must not be null");
         if (!(message.protocolOp() instanceof ExtendedRequest request) || message.messageId() <= 0) {
             return completed(local(message.messageId(), LdapResultCode.PROTOCOL_ERROR, null));
         }
@@ -170,7 +172,7 @@ public final class ExtendedOperationService {
             return completed(startTls(message.messageId(), request, connection.transport()));
         }
         if (timeout.expired()) {
-            return completed(Outcome.failed(failure("LDAP Extended operation time budget expired")));
+            return completed(Outcome.failed(failure("LDAP Extended operation timeout expired")));
         }
         final CompletionStage<Outcome<ExtendedResponse>> stage;
         try {

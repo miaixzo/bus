@@ -23,7 +23,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationServerMetadata;
+import org.miaixz.bus.auth.protocol.oauth2.ClientAuthenticationMethod;
 import org.miaixz.bus.auth.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.ResponseType;
@@ -35,7 +37,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Represents OpenID Provider Metadata for OpenID Connect Discovery 1.0 and RP-Initiated Logout 1.0.
@@ -184,9 +185,9 @@ public record OpenIdProviderMetadata(AuthorizationServerMetadata authorizationSe
      */
     private static String secureUrl(final String value, final boolean queryAllowed, final String label) {
         Assert.notBlank(value, label + " must not be blank");
-        final UnoUrl url;
+        final Url url;
         try {
-            url = UnoUrl.parse(value);
+            url = Url.parse(value);
         } catch (RuntimeException cause) {
             throw new ValidateException(label + " must be a valid URL", cause);
         }
@@ -421,7 +422,7 @@ public record OpenIdProviderMetadata(AuthorizationServerMetadata authorizationSe
      *
      * @return immutable client authentication methods
      */
-    public List<org.miaixz.bus.auth.protocol.oauth2.ClientAuthenticationMethod> tokenEndpointAuthMethodsSupported() {
+    public List<ClientAuthenticationMethod> tokenEndpointAuthMethodsSupported() {
         return authorizationServerMetadata.tokenEndpointAuthMethodsSupported();
     }
 

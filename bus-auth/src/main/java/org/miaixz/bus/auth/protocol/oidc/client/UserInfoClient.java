@@ -24,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oidc.UserInfoRequest;
@@ -37,14 +38,13 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
 
 /**
  * Retrieves a standard JSON UserInfo response with an OAuth bearer access token.
  *
  * @author Kimi Liu
  */
-public final class UserInfoClient {
+public class UserInfoClient {
 
     /**
      * Validated relying-party options containing the UserInfo endpoint.
@@ -86,6 +86,7 @@ public final class UserInfoClient {
         return switch (decoded) {
             case UserInfoCodec.Success success -> Outcome.succeeded(success.response());
             case UserInfoCodec.Error error -> remote(error);
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -134,19 +135,18 @@ public final class UserInfoClient {
      *
      * @param request standard UserInfo request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a standard UserInfo response or framework failure
      */
     public CompletionStage<Outcome<UserInfoResponse>> userInfo(
             final UserInfoRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OpenID Connect UserInfo request must not be null");
         Assert.notNull(context, "OpenID Connect UserInfo context must not be null");
-        Assert.notNull(timeout, "OpenID Connect UserInfo time budget must not be null");
+        Assert.notNull(timeout, "OpenID Connect UserInfo timeout must not be null");
         if (timeout.expired()) {
-            return completed(
-                    Outcome.failed(failure(ErrorCode._408, "OpenID Connect UserInfo request has no time budget")));
+            return completed(Outcome.failed(failure(ErrorCode._408, "OpenID Connect UserInfo request has no timeout")));
         }
         return CompletableFuture.supplyAsync(() -> execute(request, timeout), services.executor());
     }
@@ -155,21 +155,19 @@ public final class UserInfoClient {
      * Executes one HTTPS UserInfo request and closes the response through the codec.
      *
      * @param request validated UserInfo request
-     * @param timeout decreasing operation budget
+     * @param timeout decreasing operation timeout
      * @return decoded UserInfo outcome
      */
-    private Outcome<UserInfoResponse> execute(final UserInfoRequest request, final Timeout.Budget timeout) {
+    private Outcome<UserInfoResponse> execute(final UserInfoRequest request, final Timeout timeout) {
         try {
             if (timeout.expired()) {
-                return Outcome
-                        .failed(failure(ErrorCode._408, "OpenID Connect UserInfo request exhausted its time budget"));
+                return Outcome.failed(failure(ErrorCode._408, "OpenID Connect UserInfo request exhausted its timeout"));
             }
             final var endpoint = options.userInfoEndpoint().getOrNull();
-            final var response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
+            final var response = FabricX.http(services.fabric(), Protocol.OIDC, timeout).url(endpoint.url().toString())
                     .method(Http.Method.GET)
                     .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + request.accessToken())
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy()).execute();
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute();
             return decoded(codec.decode(response));
         } catch (RuntimeException exception) {
             return Outcome.failed(failure(ErrorCode._502, "OpenID Connect UserInfo endpoint request failed"));

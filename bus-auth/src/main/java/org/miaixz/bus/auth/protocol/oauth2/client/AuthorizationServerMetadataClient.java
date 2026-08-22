@@ -24,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationServerMetadata;
@@ -35,14 +36,13 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
 
 /**
  * Retrieves and issuer-binds RFC 8414 authorization server metadata.
  *
  * @author Kimi Liu
  */
-public final class AuthorizationServerMetadataClient {
+public class AuthorizationServerMetadataClient {
 
     /**
      * Validated Source options containing the trusted issuer and metadata endpoint.
@@ -106,16 +106,16 @@ public final class AuthorizationServerMetadataClient {
      * Retrieves metadata and verifies that its issuer exactly matches the configured trusted issuer.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing issuer-bound metadata or closed framework failure
      */
     public CompletionStage<Outcome<AuthorizationServerMetadata>> metadata(
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "OAuth 2.x metadata context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x metadata time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x metadata timeout must not be null");
         if (timeout.expired()) {
-            return completed(Outcome.failed(failure(ErrorCode._408, "OAuth 2.x metadata request has no time budget")));
+            return completed(Outcome.failed(failure(ErrorCode._408, "OAuth 2.x metadata request has no timeout")));
         }
         return CompletableFuture.supplyAsync(() -> execute(timeout), services.executor());
     }
@@ -123,18 +123,17 @@ public final class AuthorizationServerMetadataClient {
     /**
      * Executes one unauthenticated metadata GET and performs exact issuer binding.
      *
-     * @param timeout decreasing operation budget
+     * @param timeout decreasing operation timeout
      * @return standard metadata outcome
      */
-    private Outcome<AuthorizationServerMetadata> execute(final Timeout.Budget timeout) {
+    private Outcome<AuthorizationServerMetadata> execute(final Timeout timeout) {
         try {
             if (timeout.expired()) {
-                return Outcome.failed(failure(ErrorCode._408, "OAuth 2.x metadata request exhausted its time budget"));
+                return Outcome.failed(failure(ErrorCode._408, "OAuth 2.x metadata request exhausted its timeout"));
             }
             final var endpoint = options.authorizationServerMetadataEndpoint().getOrNull();
-            final var response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.GET).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute();
+            final var response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.GET).execute();
             final AuthorizationServerMetadata metadata = codec.decode(response);
             if (!options.expectedIssuer().getOrNull().equals(metadata.issuer())) {
                 return Outcome.rejected(

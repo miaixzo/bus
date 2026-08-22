@@ -21,20 +21,23 @@ package org.miaixz.bus.auth.resolver;
 
 import java.time.Instant;
 
-import org.miaixz.bus.auth.Registration;
-import org.miaixz.bus.auth.worker.CertificateLoader;
+import org.miaixz.bus.auth.Blueprint;
+import org.miaixz.bus.auth.worker.loader.CertificateLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Pure parser for project-loaded certificate material.
+ *
+ * @author Kimi Liu
  */
-public final class CertificateParser {
+public class CertificateParser {
 
     /**
      * Creates a stateless certificate-material parser.
      */
     public CertificateParser() {
+        // No initialization required.
     }
 
     /**
@@ -46,7 +49,7 @@ public final class CertificateParser {
      * @return validated certificate material
      */
     public CertificateMaterial parse(
-            final Registration.SourceEntry registration,
+            final Blueprint.SourceEntry registration,
             final CertificateLoader.Request request,
             final CertificateLoader.Record record) {
         final String sourceId = Assert.notNull(registration, "Certificate Source registration must not be null")

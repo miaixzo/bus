@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
  *
  * @author Kimi Liu
  */
-public final class RadiusPacketEncoder implements Encoder<RadiusPacket, byte[]> {
+public class RadiusPacketEncoder implements Encoder<RadiusPacket, byte[]> {
 
     /**
      * Number of reserved octets after the RADIUS/1.1 Token.

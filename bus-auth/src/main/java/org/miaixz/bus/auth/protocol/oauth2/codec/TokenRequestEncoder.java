@@ -38,7 +38,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class TokenRequestEncoder implements Encoder<TokenRequest, List<NameValue>> {
+public class TokenRequestEncoder implements Encoder<TokenRequest, List<NameValue>> {
 
     /**
      * Creates a stateless standard token request encoder.
@@ -166,6 +166,7 @@ public final class TokenRequestEncoder implements Encoder<TokenRequest, List<Nam
             case ClientCredentialsGrant grant -> clientCredentials(parameters, grant);
             case TokenExchangeGrant grant -> exchange(parameters, grant);
             case DeviceCodeGrant grant -> deviceCode(parameters, grant);
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         }
         data.extensions().values().forEach((name, value) -> extension(parameters, name, value));
         return List.copyOf(parameters);

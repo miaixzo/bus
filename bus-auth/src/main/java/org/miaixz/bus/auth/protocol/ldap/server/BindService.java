@@ -32,6 +32,7 @@ import org.miaixz.bus.auth.protocol.ldap.*;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -39,7 +40,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class BindService {
+public class BindService {
 
     /**
      * Compiled server-role Source identifier forwarded to the external directory store.
@@ -91,6 +92,7 @@ public final class BindService {
                     : Outcome.succeeded(new LdapMessage(messageId, succeeded.value(), List.of()));
             case Outcome.Rejected<BindResponse> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<BindResponse> failed -> Outcome.failed(failed.failure());
+            default -> Outcome.failed(failure("LDAP Bind directory store returned an unsupported outcome"));
         };
     }
 
@@ -129,8 +131,8 @@ public final class BindService {
             final LdapResultCode code,
             final String diagnostic) {
         final LdapResult result = new LdapResult(code, new DistinguishedName(Normal.EMPTY), diagnostic,
-                org.miaixz.bus.core.lang.Optional.empty());
-        final BindResponse response = new BindResponse(result, org.miaixz.bus.core.lang.Optional.empty());
+                Optional.empty());
+        final BindResponse response = new BindResponse(result, Optional.empty());
         return Outcome.succeeded(new LdapMessage(Math.max(0, messageId), response, List.of()));
     }
 
@@ -160,16 +162,16 @@ public final class BindService {
      *
      * @param message complete Bind request message
      * @param context immutable invocation context with a trusted connection snapshot
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a formal Bind response or a closed store failure
      */
     public CompletionStage<Outcome<LdapMessage>> bind(
             final LdapMessage message,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(message, "LDAP Bind message must not be null");
         Assert.notNull(context, "LDAP Bind context must not be null");
-        Assert.notNull(timeout, "LDAP Bind time budget must not be null");
+        Assert.notNull(timeout, "LDAP Bind timeout must not be null");
         if (!(message.protocolOp() instanceof BindRequest request) || message.messageId() <= 0) {
             return completed(
                     response(
@@ -195,7 +197,7 @@ public final class BindService {
                     response(message.messageId(), rejection, "The LDAP Bind authentication choice is not permitted."));
         }
         if (timeout.expired()) {
-            return completed(Outcome.failed(failure("LDAP Bind has no remaining time budget")));
+            return completed(Outcome.failed(failure("LDAP Bind has no remaining timeout")));
         }
 
         final CompletionStage<Outcome<BindResponse>> stage;

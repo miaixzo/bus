@@ -24,7 +24,6 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.resolver.ConsumerMetadata;
 
 /**
  * Authenticates a protocol client from that protocol's real authentication-evidence boundary.
@@ -47,9 +46,9 @@ public interface ClientAuthenticator<Q> {
      *
      * @param request formal protocol request or existing transport containing standard authentication evidence
      * @param context current non-secret invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return asynchronous internal outcome containing the immutable resolved client view
      */
-    CompletionStage<Outcome<ConsumerMetadata>> authenticate(Q request, Context context, Timeout.Budget timeout);
+    CompletionStage<Outcome<ClientAuthentication>> authenticate(Q request, Context context, Timeout timeout);
 
 }

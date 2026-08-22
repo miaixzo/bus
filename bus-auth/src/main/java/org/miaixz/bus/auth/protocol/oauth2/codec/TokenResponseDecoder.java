@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.lang.Assert;
@@ -33,7 +34,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Decodes a token endpoint HTTP response into exactly one standard OAuth 2.x success or error model.
@@ -44,7 +44,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class TokenResponseDecoder implements Decoder<HttpResponse, TokenResponseDecoder.Decoded> {
+public class TokenResponseDecoder implements Decoder<Response, TokenResponseDecoder.Decoded> {
 
     /**
      * Maximum accepted token endpoint JSON document size in bytes.
@@ -72,7 +72,7 @@ public final class TokenResponseDecoder implements Decoder<HttpResponse, TokenRe
      * @param response response whose body metadata is inspected
      * @throws ValidateException if the body is oversized or is not UTF-8 JSON
      */
-    private static void validateMedia(final HttpResponse response) {
+    private static void validateMedia(final Response response) {
         if (response.body().length() > MAXIMUM_JSON_BYTES) {
             throw new ValidateException("OAuth 2.x token response exceeds the maximum JSON size");
         }
@@ -247,8 +247,8 @@ public final class TokenResponseDecoder implements Decoder<HttpResponse, TokenRe
      * @throws ValidateException        if status, media metadata, JSON shape, or registered members are invalid
      */
     @Override
-    public Decoded decode(final HttpResponse encoded) {
-        final HttpResponse response = Assert.notNull(encoded, "OAuth 2.x token HTTP response must not be null");
+    public Decoded decode(final Response encoded) {
+        final Response response = Assert.notNull(encoded, "OAuth 2.x token HTTP response must not be null");
         try (response) {
             validateMedia(response);
             final JsonValue value = jsonProvider.readValue(response.bytes(MAXIMUM_JSON_BYTES));
@@ -284,7 +284,7 @@ public final class TokenResponseDecoder implements Decoder<HttpResponse, TokenRe
      *
      * @author Kimi Liu
      */
-    public sealed interface Decoded permits Success, Error {
+    public interface Decoded {
 
     }
 

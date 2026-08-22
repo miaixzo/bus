@@ -35,7 +35,7 @@ import org.miaixz.bus.core.net.Protocol;
  *
  * @author Kimi Liu
  */
-public final class Ldap {
+public class Ldap {
 
     /**
      * LDAP protocol version number required by LDAPv3 Bind requests.
@@ -393,9 +393,9 @@ public final class Ldap {
     public static final Capability.Key EXTENDED = Capability.Key.standard(Protocol.LDAP, "extended");
 
     /**
-     * Prevents construction of the LDAP protocol operation namespace.
+     * Creates an LDAP protocol operation namespace instance with no retained state.
      */
-    private Ldap() {
+    public Ldap() {
         // No initialization required.
     }
 

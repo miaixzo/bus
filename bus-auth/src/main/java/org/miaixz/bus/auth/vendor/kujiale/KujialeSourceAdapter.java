@@ -26,7 +26,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.shared.SecretLease;
@@ -37,6 +38,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -48,9 +50,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements Kujiale browser login while publishing only its standard OAuth authorization operation.
@@ -62,7 +61,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class KujialeSourceAdapter implements VendorAdapter {
+public class KujialeSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted Kujiale authority recorded in federated identity evidence.
@@ -423,6 +422,7 @@ public final class KujialeSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -501,7 +501,7 @@ public final class KujialeSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing Kujiale-private token or profile records
@@ -511,10 +511,10 @@ public final class KujialeSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Kujiale capability must not be null");
         Assert.notNull(context, "Kujiale invocation context must not be null");
-        Assert.notNull(timeout, "Kujiale invocation budget must not be null");
+        Assert.notNull(timeout, "Kujiale invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("Kujiale capability is not declared"));
         }
@@ -539,16 +539,16 @@ public final class KujialeSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated browser correlation without nonce or PKCE
      * @param context    immutable invocation context retained for operation consistency
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return exact redirect and state correlation
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "Kujiale authorization context must not be null");
         if (timeout.expired()) {
-            return completed(failed(ErrorCode._408, "Kujiale authorization has no remaining time budget"));
+            return completed(failed(ErrorCode._408, "Kujiale authorization has no remaining timeout"));
         }
         if (initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(
@@ -561,10 +561,11 @@ public final class KujialeSourceAdapter implements VendorAdapter {
                 Optional.empty(), Optional.empty(), emptyObject());
         return standardAdapter.invoke(OAuth2ClientScheme.AUTHORIZATION, request, context, timeout)
                 .thenApply(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<UnoUrl> success -> Outcome
+                    case Outcome.Succeeded<Url> success -> Outcome
                             .succeeded(new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                    case Outcome.Rejected<UnoUrl> rejected -> Outcome.rejected(rejected.failure());
-                    case Outcome.Failed<UnoUrl> failed -> Outcome.failed(failed.failure());
+                    case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                    case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -574,12 +575,12 @@ public final class KujialeSourceAdapter implements VendorAdapter {
      * @param request standard OAuth Authorization Request
      * @return exact Kujiale authorization URL or a safe rejection
      */
-    private CompletionStage<Outcome<UnoUrl>> authorize(final AuthorizationRequest request) {
+    private CompletionStage<Outcome<Url>> authorize(final AuthorizationRequest request) {
         try {
             if (!valid(request)) {
                 return completed(rejected("Kujiale Authorization Request differs from the registered manifest"));
             }
-            final UnoUrl url = variant.targets().resolve(options).authorization().getOrNull().url().newBuilder()
+            final Url url = variant.targets().resolve(options).authorization().getOrNull().url().newBuilder()
                     .query(OAuth2.Parameters.RESPONSE_TYPE, ResponseType.CODE.value())
                     .query(OAuth2.Parameters.CLIENT_ID, options.clientId())
                     .query(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull())
@@ -628,13 +629,13 @@ public final class KujialeSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed browser correlation
      * @param context    immutable invocation context used for secret resolution
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified Kujiale external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CallbackWire values;
         try {
             values = callback(completion.callback());
@@ -653,7 +654,10 @@ public final class KujialeSourceAdapter implements VendorAdapter {
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "Kujiale client-secret resolution failed"));
@@ -673,6 +677,7 @@ public final class KujialeSourceAdapter implements VendorAdapter {
                             timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -681,13 +686,13 @@ public final class KujialeSourceAdapter implements VendorAdapter {
      *
      * @param code    consumed authorization code
      * @param secret  owned client-secret lease closed after the complete private chain
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> authenticate(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try (secret) {
                 return switch (token(code, secret, timeout)) {
@@ -695,9 +700,11 @@ public final class KujialeSourceAdapter implements VendorAdapter {
                         case Outcome.Succeeded<String> subject -> profile(token.value(), subject.value(), timeout);
                         case Outcome.Rejected<String> rejected -> Outcome.rejected(rejected.failure());
                         case Outcome.Failed<String> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     };
                     case Outcome.Rejected<Access> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<Access> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 };
             } catch (RuntimeException cause) {
                 return failed(ErrorCode._502, "Kujiale authentication completion failed");
@@ -710,24 +717,23 @@ public final class KujialeSourceAdapter implements VendorAdapter {
      *
      * @param code    sensitive one-time authorization code
      * @param secret  still-open client-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return private token result or safely classified failure
      */
-    private Outcome<Access> token(final String code, final SecretLease secret, final Timeout.Budget timeout) {
+    private Outcome<Access> token(final String code, final SecretLease secret, final Timeout timeout) {
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Kujiale token request has no remaining time budget");
+                return failed(ErrorCode._408, "Kujiale token request has no remaining timeout");
             }
             final var endpoint = variant.targets().resolve(options).token().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.POST)
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.POST)
                     .query(OAuth2.Parameters.CODE, required(code, "Kujiale authorization code must not be blank"))
                     .query(OAuth2.Parameters.CLIENT_ID, options.clientId())
                     .query(OAuth2.Parameters.CLIENT_SECRET, secret(secret))
                     .query(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value())
                     .query(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull())
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(Normal.EMPTY_BYTE_ARRAY, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 return token(response);
             }
@@ -742,7 +748,7 @@ public final class KujialeSourceAdapter implements VendorAdapter {
      * @param response owned token endpoint response
      * @return private token result without fabricating {@code token_type}, scope, or OpenID
      */
-    private Outcome<Access> token(final HttpResponse response) {
+    private Outcome<Access> token(final Response response) {
         final Outcome<Access> status = status(response.code(), "Kujiale token endpoint rejected or failed the request");
         if (status != null) {
             return status;
@@ -771,19 +777,19 @@ public final class KujialeSourceAdapter implements VendorAdapter {
      * Retrieves the canonical Kujiale OpenID using the private non-RFC 7662 lookup endpoint.
      *
      * @param access  private token result
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return canonical client-scoped OpenID
      */
-    private Outcome<String> openId(final Access access, final Timeout.Budget timeout) {
+    private Outcome<String> openId(final Access access, final Timeout timeout) {
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Kujiale OpenID lookup has no remaining time budget");
+                return failed(ErrorCode._408, "Kujiale OpenID lookup has no remaining timeout");
             }
             final var endpoint = variant.targets().resolve(options).introspection().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.GET).query(OAuth2.Parameters.ACCESS_TOKEN, access.accessToken())
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute()) {
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.GET)
+                    .query(OAuth2.Parameters.ACCESS_TOKEN, access.accessToken())
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                 return openId(response);
             }
         } catch (RuntimeException cause) {
@@ -797,7 +803,7 @@ public final class KujialeSourceAdapter implements VendorAdapter {
      * @param response owned OpenID lookup response
      * @return canonical OpenID or safely classified failure
      */
-    private Outcome<String> openId(final HttpResponse response) {
+    private Outcome<String> openId(final Response response) {
         final Outcome<String> status = status(
                 response.code(),
                 "Kujiale OpenID endpoint rejected or failed the request");
@@ -822,20 +828,20 @@ public final class KujialeSourceAdapter implements VendorAdapter {
      *
      * @param access  private token result
      * @param openId  canonical OpenID returned by the preceding lookup
-     * @param timeout shared end-to-end budget and evidence clock
+     * @param timeout shared end-to-end timeout and evidence clock
      * @return verified external identity
      */
-    private Outcome<ExternalIdentity> profile(final Access access, final String openId, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final Access access, final String openId, final Timeout timeout) {
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Kujiale profile request has no remaining time budget");
+                return failed(ErrorCode._408, "Kujiale profile request has no remaining timeout");
             }
             final var endpoint = variant.targets().resolve(options).userInfo().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.GET).query(OAuth2.Parameters.ACCESS_TOKEN, access.accessToken())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.GET)
+                    .query(OAuth2.Parameters.ACCESS_TOKEN, access.accessToken())
                     .query("open_id", required(openId, "Kujiale canonical OpenID must not be blank"))
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute()) {
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                 return profile(response, openId, timeout);
             }
         } catch (RuntimeException cause) {
@@ -851,10 +857,7 @@ public final class KujialeSourceAdapter implements VendorAdapter {
      * @param timeout  shared clock used for identity evidence
      * @return verified identity or safely classified failure
      */
-    private Outcome<ExternalIdentity> profile(
-            final HttpResponse response,
-            final String openId,
-            final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final Response response, final String openId, final Timeout timeout) {
         final Outcome<ExternalIdentity> status = status(
                 response.code(),
                 "Kujiale profile endpoint rejected or failed the request");
@@ -953,7 +956,7 @@ public final class KujialeSourceAdapter implements VendorAdapter {
      * @return strict provider-neutral JSON object
      * @throws ValidateException if media, JSON shape, depth, or duplicate members are invalid
      */
-    private JsonValue.ObjectValue object(final HttpResponse response, final String operation) {
+    private JsonValue.ObjectValue object(final Response response, final String operation) {
         if (response.code() != Http.Status.OK
                 || !MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("Kujiale " + operation + " response must use HTTP 200 application/json");

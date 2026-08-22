@@ -39,7 +39,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class ScimFilterParser {
+public class ScimFilterParser {
 
     /**
      * Filter source supplied by the caller.

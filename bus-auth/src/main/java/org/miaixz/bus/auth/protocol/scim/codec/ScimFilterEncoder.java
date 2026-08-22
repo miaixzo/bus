@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @author Kimi Liu
  */
-public final class ScimFilterEncoder {
+public class ScimFilterEncoder {
 
     /**
      * Lowest precedence assigned to logical OR.
@@ -56,9 +56,9 @@ public final class ScimFilterEncoder {
     private static final int PRIMARY_PRECEDENCE = Normal._4;
 
     /**
-     * Prevents instantiation of the stateless encoder.
+     * Creates a stateless SCIM filter encoder.
      */
-    private ScimFilterEncoder() {
+    public ScimFilterEncoder() {
         // No initialization required.
     }
 
@@ -92,6 +92,7 @@ public final class ScimFilterEncoder {
             case Filter.Or or -> expression(or.left(), OR_PRECEDENCE) + " or " + expression(or.right(), OR_PRECEDENCE);
             case Filter.ValuePath valuePath -> valuePath.attributePath().value() + Symbol.BRACKET_LEFT
                     + expression(valuePath.valueFilter(), 0) + Symbol.BRACKET_RIGHT;
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
         return precedence < parentPrecedence ? Symbol.PARENTHESE_LEFT + encoded + Symbol.PARENTHESE_RIGHT : encoded;
     }
@@ -110,6 +111,7 @@ public final class ScimFilterEncoder {
             case Filter.Present ignored -> PRIMARY_PRECEDENCE;
             case Filter.Compare ignored -> PRIMARY_PRECEDENCE;
             case Filter.ValuePath ignored -> PRIMARY_PRECEDENCE;
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -125,6 +127,7 @@ public final class ScimFilterEncoder {
             case Filter.BooleanValue bool -> Boolean.toString(bool.value());
             case Filter.NumberValue number -> number.value().toString();
             case Filter.NullValue ignored -> Normal.NULL;
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 

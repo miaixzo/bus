@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @author Kimi Liu
  */
-public sealed interface AuthenticationChoice permits AuthenticationChoice.Simple, AuthenticationChoice.Sasl {
+public interface AuthenticationChoice {
 
     /**
      * Represents the context-specific simple password authentication alternative.

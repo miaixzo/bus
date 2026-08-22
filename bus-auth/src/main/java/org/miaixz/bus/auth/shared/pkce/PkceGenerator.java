@@ -33,7 +33,7 @@ import org.miaixz.bus.crypto.Builder;
  *
  * @author Kimi Liu
  */
-public final class PkceGenerator {
+public class PkceGenerator {
 
     /**
      * Minimum entropy required by RFC 7636 for a generated verifier.

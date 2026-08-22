@@ -40,7 +40,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class Jwk {
+public class Jwk {
 
     /**
      * Required key type member name.
@@ -566,7 +566,7 @@ public final class Jwk {
      *
      * @author Kimi Liu
      */
-    public sealed interface Material permits Rsa, Ec, Oct, Okp, Extension {
+    public interface Material {
 
         /**
          * Returns the exact registered or extension key type.

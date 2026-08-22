@@ -30,10 +30,10 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.saml.*;
-import org.miaixz.bus.auth.protocol.saml.Saml;
 import org.miaixz.bus.auth.protocol.saml.codec.SamlMessageCodec;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
 import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.worker.loader.AttributeLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.data.id.UUID;
@@ -52,7 +52,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class AssertionIssuer {
+public class AssertionIssuer {
 
     /**
      * Persistent NameID format emitted by the identity-provider assertion issuer.
@@ -130,18 +130,18 @@ public final class AssertionIssuer {
      * @param request validated Authentication Request
      * @param client  validated registered service provider
      * @param context authenticated subject and session context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the successful semantic Response or a closed framework failure
      */
     public CompletionStage<Outcome<Response>> singleSignOn(
             final AuthnRequest request,
             final ConsumerMetadata client,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "SAML Authentication Request must not be null");
         Assert.notNull(client, "SAML registered service provider must not be null");
         Assert.notNull(context, "SAML assertion issuance context must not be null");
-        Assert.notNull(timeout, "SAML assertion issuance time budget must not be null");
+        Assert.notNull(timeout, "SAML assertion issuance timeout must not be null");
         final org.miaixz.bus.auth.Subject subject = context.authenticatedSubject().getOrNull();
         final Context.Authentication authentication = context.authentication().getOrNull();
         if (subject == null || authentication == null || timeout.expired()) {
@@ -151,15 +151,16 @@ public final class AssertionIssuer {
                                     ErrorCode._408,
                                     "SAML assertion issuance lacks authenticated context or remaining time")));
         }
-        return Outcome
-                .mapStage(
-                        () -> services.attributeLoader().load(services.registration(), subject.key(), context, timeout),
-                        loaded -> services.attributeParser().parse(services.registration(), subject.key(), loaded))
+        return Outcome.mapStage(
+                () -> services.attributeLoader()
+                        .load(new AttributeLoader.Request(services.registration(), subject.key()), context, timeout),
+                loaded -> services.attributeParser().parse(services.registration(), subject.key(), loaded))
                 .thenApply(outcome -> switch (outcome) {
                     case Outcome.Succeeded<JsonValue.ObjectValue> success -> Outcome.succeeded(
                             response(request, client, subject, authentication, success.value(), context, timeout));
                     case Outcome.Rejected<JsonValue.ObjectValue> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<JsonValue.ObjectValue> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -182,7 +183,7 @@ public final class AssertionIssuer {
             final Context.Authentication authentication,
             final JsonValue.ObjectValue attributes,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final Instant now = timeout.clock().now();
         final Instant configuredExpiry = now.plus(options.assertionLifetime());
         final Instant expiresAt = authentication.session().expiresAt().isBefore(configuredExpiry)

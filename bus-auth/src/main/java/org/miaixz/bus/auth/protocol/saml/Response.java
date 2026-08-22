@@ -194,7 +194,7 @@ public record Response(String id, Optional<String> inResponseTo, String version,
      *
      * @author Kimi Liu
      */
-    public sealed interface AssertionContent permits PlainAssertion, EncryptedAssertion {
+    public interface AssertionContent {
 
     }
 

@@ -38,7 +38,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class ScimDiscoveryService {
+public class ScimDiscoveryService {
 
     /**
      * Typed standard authentication-mechanism catalog in stable discovery order.
@@ -106,11 +106,11 @@ public final class ScimDiscoveryService {
      * Requires non-null discovery invocation arguments.
      *
      * @param context immutable invocation context
-     * @param timeout shared time budget
+     * @param timeout shared timeout
      */
-    private static void requireInvocation(final Context context, final Timeout.Budget timeout) {
+    private static void requireInvocation(final Context context, final Timeout timeout) {
         Assert.notNull(context, "SCIM discovery context must not be null");
-        Assert.notNull(timeout, "SCIM discovery time budget must not be null");
+        Assert.notNull(timeout, "SCIM discovery timeout must not be null");
     }
 
     /**
@@ -131,7 +131,7 @@ public final class ScimDiscoveryService {
      * @return safe timeout failure
      */
     private static Outcome.Failure timeoutFailure(final String operation) {
-        return failure(ErrorCode._408, "SCIM " + operation + " has no remaining time budget");
+        return failure(ErrorCode._408, "SCIM " + operation + " has no remaining timeout");
     }
 
     /**
@@ -159,12 +159,12 @@ public final class ScimDiscoveryService {
      * Generates the standard ServiceProviderConfig resource from validated Provider options.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return completed stage containing ServiceProviderConfig or a timeout failure
      */
     public CompletionStage<Outcome<ServiceProviderConfig>> serviceProviderConfig(
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         requireInvocation(context, timeout);
         if (timeout.expired()) {
             return completed(Outcome.failed(timeoutFailure("ServiceProviderConfig")));
@@ -176,10 +176,10 @@ public final class ScimDiscoveryService {
      * Loads the standard ResourceType ListResponse from the external catalog.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing validated ResourceType resources or a closed framework failure
      */
-    public CompletionStage<Outcome<ListResponse>> resourceTypes(final Context context, final Timeout.Budget timeout) {
+    public CompletionStage<Outcome<ListResponse>> resourceTypes(final Context context, final Timeout timeout) {
         requireInvocation(context, timeout);
         if (timeout.expired()) {
             return completed(Outcome.failed(timeoutFailure("ResourceTypes")));
@@ -196,10 +196,10 @@ public final class ScimDiscoveryService {
      * Loads the standard Schema ListResponse from the external catalog.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing validated Schema resources or a closed framework failure
      */
-    public CompletionStage<Outcome<ListResponse>> schemas(final Context context, final Timeout.Budget timeout) {
+    public CompletionStage<Outcome<ListResponse>> schemas(final Context context, final Timeout timeout) {
         requireInvocation(context, timeout);
         if (timeout.expired()) {
             return completed(Outcome.failed(timeoutFailure("Schemas")));

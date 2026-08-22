@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class SecretGuard {
+public class SecretGuard {
 
     /**
      * Creates a stateless secret-material guard.

@@ -19,17 +19,22 @@
 */
 package org.miaixz.bus.auth.protocol.oidc.server;
 
+import java.security.PublicKey;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Subject;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.cache.AuthorizationCodeCache;
+import org.miaixz.bus.auth.cache.ExpiringValue;
+import org.miaixz.bus.auth.cache.IdTokenCache;
 import org.miaixz.bus.auth.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2ErrorCode;
 import org.miaixz.bus.auth.protocol.oauth2.TokenEndpointResponse;
@@ -40,15 +45,18 @@ import org.miaixz.bus.auth.protocol.oidc.IdTokenClaims;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdTokenResponse;
 import org.miaixz.bus.auth.protocol.oidc.codec.IdTokenCodec;
+import org.miaixz.bus.auth.resolver.ConsumerMetadata;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
 import org.miaixz.bus.auth.shared.jose.JoseHeader;
 import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
+import org.miaixz.bus.auth.shared.jose.JweService;
 import org.miaixz.bus.auth.shared.jose.JwsService;
 import org.miaixz.bus.auth.shared.jwt.Jwt;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtIssuer;
 import org.miaixz.bus.auth.source.DriverServices;
-import org.miaixz.bus.auth.worker.KeyLoader;
+import org.miaixz.bus.auth.worker.loader.AttributeLoader;
+import org.miaixz.bus.auth.worker.loader.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -71,7 +79,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
+public class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
 
     /**
      * Standard JWK key-use value for signing keys.
@@ -104,6 +112,11 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
     private final IdTokenCodec codec;
 
     /**
+     * Optional profile-scoped ID Token encryption service.
+     */
+    private final JweService jweService;
+
+    /**
      * Creates an ID Token response augmenter for one compiled OpenID Provider.
      *
      * @param options  validated OpenID Provider options
@@ -121,7 +134,13 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
                                 "OpenID Connect ID Token signing algorithm is not enabled by the security baseline"));
         final JwsService jwsService = new JwsService(services.jsonProvider(),
                 services.securityBaseline().algorithmGuard(), Set.of(options.idTokenSigningAlgorithm().name()));
-        this.jwtIssuer = new JwtIssuer(services.jsonProvider(), jwsService, services.fabricContext().clock());
+        this.jwtIssuer = new JwtIssuer(services.jsonProvider(), jwsService, FabricX.clock(services.fabric()));
+        this.jweService = options.idTokenEncryptionAlgorithmsSupported().isEmpty() ? null
+                : new JweService(services.jsonProvider(), services.securityBaseline().algorithmGuard(),
+                        options.idTokenEncryptionAlgorithmsSupported().stream().map(JwaAlgorithm::name)
+                                .collect(Collectors.toUnmodifiableSet()),
+                        options.idTokenEncryptionMethodsSupported().stream().map(JwaAlgorithm::name)
+                                .collect(Collectors.toUnmodifiableSet()));
     }
 
     /**
@@ -224,7 +243,7 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
      * @param response persisted base OAuth token response
      * @param grant    exact authorized internal grant
      * @param context  immutable invocation context
-     * @param timeout  shared end-to-end operation budget
+     * @param timeout  shared end-to-end operation timeout
      * @return stage containing the augmented standard token response or a closed failure
      */
     @Override
@@ -232,11 +251,11 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
             final TokenResponse response,
             final AccessTokenIssuer.Grant grant,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(response, "OpenID Connect base token response must not be null");
         Assert.notNull(grant, "OpenID Connect internal token grant must not be null");
         Assert.notNull(context, "OpenID Connect token context must not be null");
-        Assert.notNull(timeout, "OpenID Connect token time budget must not be null");
+        Assert.notNull(timeout, "OpenID Connect token timeout must not be null");
         if (grant.grantType() != GrantType.AUTHORIZATION_CODE) {
             if (grant.grantType() != GrantType.REFRESH_TOKEN && grant.scope().contains(OpenIdConnect.Scopes.OPENID)) {
                 return completed(
@@ -249,7 +268,7 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
             return completed(Outcome.succeeded(response));
         }
         final AuthorizationCodeCache.OpenIdBinding binding = grant.openIdBinding().getOrNull();
-        if (binding == null || !grant.scope().contains(OpenIdConnect.Scopes.OPENID)) {
+        if (binding == null || binding.subject().isEmpty() || !grant.scope().contains(OpenIdConnect.Scopes.OPENID)) {
             return completed(
                     Outcome.rejected(
                             failure(
@@ -263,16 +282,20 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
                             failure(
                                     ErrorCode._408,
                                     OAuth2ErrorCode.TEMPORARILY_UNAVAILABLE,
-                                    "OpenID Connect ID Token issuance has no remaining time budget")));
+                                    "OpenID Connect ID Token issuance has no remaining timeout")));
         }
 
         final CompletionStage<Outcome<JsonValue.ObjectValue>> attributes;
         try {
-            attributes = Outcome.mapStage(
-                    () -> services.attributeLoader()
-                            .load(services.registration(), new Subject.Key(grant.subjectId()), context, timeout),
-                    loaded -> services.attributeParser()
-                            .parse(services.registration(), new Subject.Key(grant.subjectId()), loaded));
+            attributes = Outcome
+                    .mapStage(
+                            () -> services.attributeLoader().load(
+                                    new AttributeLoader.Request(services.registration(),
+                                            new Subject.Key(grant.subjectId())),
+                                    context,
+                                    timeout),
+                            loaded -> services.attributeParser()
+                                    .parse(services.registration(), new Subject.Key(grant.subjectId()), loaded));
         } catch (RuntimeException exception) {
             return completed(
                     Outcome.failed(
@@ -310,6 +333,7 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
                                             failed.failure().error(),
                                             OAuth2ErrorCode.SERVER_ERROR,
                                             "OpenID Connect subject attribute resolution failed")));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -321,7 +345,7 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
      * @param binding    authorization-code-bound OIDC context
      * @param attributes current subject attributes
      * @param context    immutable invocation context
-     * @param timeout    shared operation budget
+     * @param timeout    shared operation timeout
      * @return asynchronously augmented response
      */
     private CompletionStage<Outcome<TokenEndpointResponse>> resolveKey(
@@ -330,15 +354,15 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
             final AuthorizationCodeCache.OpenIdBinding binding,
             final JsonValue.ObjectValue attributes,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final Instant now = timeout.clock().now();
-        final KeyLoader.Request query = new KeyLoader.Request(options.issuer(),
+        final KeyLoader.Request query = new KeyLoader.Request(services.registration(), options.issuer(),
                 Optional.of(options.idTokenSigningKeyId()), SIGNATURE_USE, options.idTokenSigningAlgorithm().name(),
                 now);
         final CompletionStage<Outcome<KeyMaterial>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.keyLoader().load(services.registration(), query, context, timeout),
+                    () -> services.keyLoader().load(query, context, timeout),
                     loaded -> services.keyParser().parse(services.registration(), query, loaded));
         } catch (RuntimeException exception) {
             return completed(
@@ -356,24 +380,29 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
                                                 ErrorCode._500,
                                                 OAuth2ErrorCode.SERVER_ERROR,
                                                 "OpenID Connect signing key resolution failed")))
-                .thenApply(outcome -> switch (outcome) {
+                .thenCompose(outcome -> switch (outcome) {
                     case Outcome.Succeeded<KeyMaterial> success -> issue(
                             response,
                             grant,
                             binding,
                             attributes,
                             success.value(),
-                            now);
-                    case Outcome.Rejected<KeyMaterial> rejected -> Outcome.rejected(
-                            failure(
-                                    rejected.failure().error(),
-                                    OAuth2ErrorCode.SERVER_ERROR,
-                                    "OpenID Connect signing key is unavailable"));
-                    case Outcome.Failed<KeyMaterial> failed -> Outcome.failed(
-                            failure(
-                                    failed.failure().error(),
-                                    OAuth2ErrorCode.SERVER_ERROR,
-                                    "OpenID Connect signing key resolution failed"));
+                            now,
+                            context,
+                            timeout);
+                    case Outcome.Rejected<KeyMaterial> rejected -> completed(
+                            Outcome.rejected(
+                                    failure(
+                                            rejected.failure().error(),
+                                            OAuth2ErrorCode.SERVER_ERROR,
+                                            "OpenID Connect signing key is unavailable")));
+                    case Outcome.Failed<KeyMaterial> failed -> completed(
+                            Outcome.failed(
+                                    failure(
+                                            failed.failure().error(),
+                                            OAuth2ErrorCode.SERVER_ERROR,
+                                            "OpenID Connect signing key resolution failed")));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -386,19 +415,23 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
      * @param attributes  current subject attributes
      * @param resolvedKey exact signing key
      * @param now         current shared-clock instant
+     * @param context     immutable invocation context
+     * @param timeout     shared operation timeout
      * @return augmented token response outcome
      */
-    private Outcome<TokenEndpointResponse> issue(
+    private CompletionStage<Outcome<TokenEndpointResponse>> issue(
             final TokenResponse response,
             final AccessTokenIssuer.Grant grant,
             final AuthorizationCodeCache.OpenIdBinding binding,
             final JsonValue.ObjectValue attributes,
             final KeyMaterial resolvedKey,
-            final Instant now) {
+            final Instant now,
+            final Context context,
+            final Timeout timeout) {
         try {
             validateResolvedKey(resolvedKey, now);
             final Instant expiration = now.plus(options.idTokenLifetime());
-            final IdTokenClaims claims = new IdTokenClaims(options.issuer(), grant.subjectId(),
+            final IdTokenClaims claims = new IdTokenClaims(options.issuer(), binding.subject().getOrNull(),
                     List.of(grant.clientId()), expiration, now, Optional.of(binding.authenticatedAt()), binding.nonce(),
                     binding.authenticationContextClass(), binding.authenticationMethods(), Optional.empty(),
                     Optional.of(artifactHash(response.accessToken(), options.idTokenSigningAlgorithm().name())),
@@ -416,17 +449,201 @@ public final class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
                                     new JsonValue.ObjectValue(Map.of())),
                             codec.encodeClaims(claims)),
                     resolvedKey.key());
-            final IdToken idToken = codec.encode(jwt);
-            return Outcome.succeeded(new OpenIdTokenResponse(response, idToken));
+            final String signed = codec.encode(jwt).compact();
+            return grant.consumer().encryptsIdToken()
+                    ? encrypt(response, grant.consumer(), binding, signed, expiration, now, context, timeout)
+                    : bind(response, grant.consumer(), binding, signed, expiration);
         } catch (ValidateException exception) {
-            return Outcome.rejected(
-                    failure(
-                            ErrorCode._400,
-                            OAuth2ErrorCode.INVALID_GRANT,
-                            "OpenID Connect requested ID Token claims cannot be satisfied"));
+            return completed(
+                    Outcome.rejected(
+                            failure(
+                                    ErrorCode._400,
+                                    OAuth2ErrorCode.INVALID_GRANT,
+                                    "OpenID Connect requested ID Token claims cannot be satisfied")));
         } catch (RuntimeException exception) {
-            return Outcome.failed(
-                    failure(ErrorCode._500, OAuth2ErrorCode.SERVER_ERROR, "OpenID Connect ID Token signing failed"));
+            return completed(
+                    Outcome.failed(
+                            failure(
+                                    ErrorCode._500,
+                                    OAuth2ErrorCode.SERVER_ERROR,
+                                    "OpenID Connect ID Token signing failed")));
+        }
+    }
+
+    /**
+     * Resolves the registered consumer public key and encrypts a signed ID Token without downgrade.
+     *
+     * @param response   base OAuth token response
+     * @param consumer   verified consumer snapshot
+     * @param binding    authorization-bound OpenID context
+     * @param signed     compact signed ID Token
+     * @param expiration absolute ID Token expiration
+     * @param now        current shared-clock instant
+     * @param context    immutable invocation context
+     * @param timeout    shared operation timeout
+     * @return asynchronous encrypted and indexed token response
+     */
+    private CompletionStage<Outcome<TokenEndpointResponse>> encrypt(
+            final TokenResponse response,
+            final ConsumerMetadata consumer,
+            final AuthorizationCodeCache.OpenIdBinding binding,
+            final String signed,
+            final Instant expiration,
+            final Instant now,
+            final Context context,
+            final Timeout timeout) {
+        final String keyId = consumer.idTokenEncryptionKeyId().getOrNull();
+        final JwaAlgorithm algorithm = JwaAlgorithm.of(consumer.idTokenEncryptionAlgorithm().getOrNull());
+        final JwaAlgorithm method = JwaAlgorithm.of(consumer.idTokenEncryptionMethod().getOrNull());
+        if (jweService == null || !options.idTokenEncryptionAlgorithmsSupported().contains(algorithm)
+                || !options.idTokenEncryptionMethodsSupported().contains(method)) {
+            return completed(
+                    Outcome.rejected(
+                            failure(
+                                    ErrorCode._400,
+                                    OAuth2ErrorCode.INVALID_GRANT,
+                                    "OpenID Connect consumer ID Token encryption policy is unsupported")));
+        }
+        final KeyLoader.Request query = new KeyLoader.Request(services.registration(), consumer.id(),
+                Optional.of(keyId), "enc", algorithm.name(), now);
+        final CompletionStage<Outcome<KeyMaterial>> resolution;
+        try {
+            resolution = Outcome.mapStage(
+                    () -> services.keyLoader().load(query, context, timeout),
+                    loaded -> services.keyParser().parse(services.registration(), query, loaded));
+        } catch (RuntimeException exception) {
+            return completed(
+                    Outcome.failed(
+                            failure(
+                                    ErrorCode._500,
+                                    OAuth2ErrorCode.SERVER_ERROR,
+                                    "OpenID Connect consumer encryption key resolution failed")));
+        }
+        return resolution
+                .handle(
+                        (outcome, thrown) -> thrown == null && outcome != null ? outcome
+                                : Outcome.<KeyMaterial>failed(
+                                        failure(
+                                                ErrorCode._500,
+                                                OAuth2ErrorCode.SERVER_ERROR,
+                                                "OpenID Connect consumer encryption key resolution failed")))
+                .thenCompose(outcome -> switch (outcome) {
+                    case Outcome.Succeeded<KeyMaterial> success -> encryptResolved(
+                            response,
+                            consumer,
+                            binding,
+                            signed,
+                            expiration,
+                            algorithm,
+                            method,
+                            success.value(),
+                            now);
+                    case Outcome.Rejected<KeyMaterial> rejected -> completed(
+                            Outcome.rejected(
+                                    failure(
+                                            rejected.failure().error(),
+                                            OAuth2ErrorCode.INVALID_GRANT,
+                                            "OpenID Connect consumer encryption key is unavailable")));
+                    case Outcome.Failed<KeyMaterial> failed -> completed(
+                            Outcome.failed(
+                                    failure(
+                                            failed.failure().error(),
+                                            OAuth2ErrorCode.SERVER_ERROR,
+                                            "OpenID Connect consumer encryption key resolution failed")));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
+                });
+    }
+
+    /**
+     * Encrypts a signed token with one validated public key and persists its final compact binding.
+     *
+     * @return asynchronous encrypted and indexed token response
+     */
+    private CompletionStage<Outcome<TokenEndpointResponse>> encryptResolved(
+            final TokenResponse response,
+            final ConsumerMetadata consumer,
+            final AuthorizationCodeCache.OpenIdBinding binding,
+            final String signed,
+            final Instant expiration,
+            final JwaAlgorithm algorithm,
+            final JwaAlgorithm method,
+            final KeyMaterial material,
+            final Instant now) {
+        try {
+            if (!(material.key() instanceof PublicKey)
+                    || !consumer.idTokenEncryptionKeyId().getOrNull().equals(material.keyId())
+                    || !algorithm.name().equals(material.algorithm()) || now.isBefore(material.notBefore())
+                    || !now.isBefore(material.notAfter())) {
+                throw new ValidateException("OpenID Connect consumer encryption key is not an active public key");
+            }
+            final Map<String, JsonValue> parameters = new LinkedHashMap<>();
+            parameters.put(JoseHeader.ALGORITHM, new JsonValue.StringValue(algorithm.name()));
+            parameters.put(JoseHeader.ENCRYPTION, new JsonValue.StringValue(method.name()));
+            parameters.put(JoseHeader.KEY_ID, new JsonValue.StringValue(material.keyId()));
+            parameters.put(JoseHeader.CONTENT_TYPE, new JsonValue.StringValue("JWT"));
+            final byte[] plaintext = signed.getBytes(Charset.UTF_8);
+            final String compact;
+            try {
+                compact = jweService.compact(
+                        jweService.encrypt(
+                                new JweService.Encryption(plaintext, new JsonValue.ObjectValue(parameters),
+                                        new JsonValue.ObjectValue(Map.of()), new byte[0],
+                                        List.of(
+                                                new JweService.EncryptionRecipient(new JsonValue.ObjectValue(Map.of()),
+                                                        material.key())))));
+            } finally {
+                Arrays.fill(plaintext, (byte) 0);
+            }
+            return bind(response, consumer, binding, compact, expiration);
+        } catch (ValidateException exception) {
+            return completed(
+                    Outcome.rejected(
+                            failure(
+                                    ErrorCode._400,
+                                    OAuth2ErrorCode.INVALID_GRANT,
+                                    "OpenID Connect consumer ID Token encryption configuration is invalid")));
+        } catch (RuntimeException exception) {
+            return completed(
+                    Outcome.failed(
+                            failure(
+                                    ErrorCode._500,
+                                    OAuth2ErrorCode.SERVER_ERROR,
+                                    "OpenID Connect ID Token encryption failed")));
+        }
+    }
+
+    /**
+     * Persists the irreversible final-token binding before exposing the response.
+     *
+     * @return asynchronous indexed token response
+     */
+    private CompletionStage<Outcome<TokenEndpointResponse>> bind(
+            final TokenResponse response,
+            final ConsumerMetadata consumer,
+            final AuthorizationCodeCache.OpenIdBinding binding,
+            final String compact,
+            final Instant expiration) {
+        final String sourceId = services.registration().resource().getId();
+        final IdTokenCache.Entry entry = new IdTokenCache.Entry(sourceId, consumer.id(), binding.subject().getOrNull(),
+                Optional.of(binding.sessionKey().value()));
+        try {
+            return services.idTokenCache()
+                    .bind(IdTokenCache.key(sourceId, compact), new ExpiringValue<>(entry, expiration)).handle(
+                            (created, thrown) -> thrown == null && Boolean.TRUE.equals(created)
+                                    ? Outcome.<TokenEndpointResponse>succeeded(
+                                            new OpenIdTokenResponse(response, new IdToken(compact)))
+                                    : Outcome.<TokenEndpointResponse>failed(
+                                            failure(
+                                                    ErrorCode._500,
+                                                    OAuth2ErrorCode.SERVER_ERROR,
+                                                    "OpenID Connect ID Token binding could not be persisted")));
+        } catch (RuntimeException exception) {
+            return completed(
+                    Outcome.failed(
+                            failure(
+                                    ErrorCode._500,
+                                    OAuth2ErrorCode.SERVER_ERROR,
+                                    "OpenID Connect ID Token binding could not be persisted")));
         }
     }
 

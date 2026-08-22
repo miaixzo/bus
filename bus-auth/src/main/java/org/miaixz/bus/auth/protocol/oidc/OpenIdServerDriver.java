@@ -28,6 +28,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.guard.RedirectUriValidator;
 import org.miaixz.bus.auth.guard.ScopeValidator;
 import org.miaixz.bus.auth.guard.SecretGuard;
@@ -54,8 +56,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Compiles one validated server-role OpenID Source registration into OIDC and composed OAuth server services.
@@ -67,7 +67,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOptions> {
+public class OpenIdServerDriver implements SourceDriver<OpenIdServerOptions> {
 
     /**
      * Creates a stateless OpenID Provider driver.
@@ -168,7 +168,7 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
                 || usesClientSecret(oauth.introspectionEndpoint().getOrNull())
                 || usesClientSecret(oauth.revocationEndpoint().getOrNull())
                 || usesClientSecret(oauth.deviceAuthorizationEndpoint().getOrNull())) {
-            slots = slots.with(WorkerSlots.Slot.SECRET);
+            slots = slots.with(WorkerSlots.Slot.CONSUMER_VERIFIER);
         }
         if (options.jwkSetEndpoint().isPresent()) {
             slots = slots.with(WorkerSlots.Slot.KEY);
@@ -177,7 +177,10 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
             slots = slots.with(WorkerSlots.Slot.ATTRIBUTE);
         }
         if (options.endSessionEndpoint().isPresent()) {
-            slots = slots.with(WorkerSlots.Slot.CONSUMER, WorkerSlots.Slot.KEY, WorkerSlots.Slot.SESSION);
+            slots = slots.with(WorkerSlots.Slot.CONSUMER, WorkerSlots.Slot.SESSION);
+        }
+        if (oauth.federatedJwtEnabled()) {
+            slots = slots.with(WorkerSlots.Slot.FEDERATION, WorkerSlots.Slot.KEY);
         }
         return slots;
     }
@@ -185,7 +188,7 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
     @Override
     public Dependencies dependencies(final Source source, final OpenIdServerOptions options) {
         return Dependencies.of(
-                Dependencies.Service.FABRIC_CONTEXT,
+                Dependencies.Service.FABRIC,
                 Dependencies.Service.JSON_PROVIDER,
                 Dependencies.Service.AUTHORIZATION_CODE_CACHE,
                 Dependencies.Service.DEVICE_CODE_CACHE,
@@ -193,6 +196,8 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
                 Dependencies.Service.ACCESS_TOKEN_CACHE,
                 Dependencies.Service.REFRESH_TOKEN_CACHE,
                 Dependencies.Service.SESSION_CACHE,
+                Dependencies.Service.ID_TOKEN_CACHE,
+                Dependencies.Service.REPLAY_CACHE,
                 Dependencies.Service.SECURITY_BASELINE);
     }
 
@@ -209,7 +214,7 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
     public SourceWorker compile(final Prepared<OpenIdServerOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "OpenID Connect Provider preparation must not be null");
         Assert.notNull(services, "OpenID Connect Provider execution services must not be null");
-        final Registration.SourceEntry record = prepared.registration();
+        final Blueprint.SourceEntry record = prepared.registration();
         final Provider provider = prepared.provider();
         final Library library = prepared.library();
         final Source source = record.resource();
@@ -239,9 +244,18 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
         final Map<Capability<?, ?>, EndpointHandler> endpoints = new LinkedHashMap<>();
         final SessionCoordinator sessions = new SessionCoordinator(source.getId(), services.sessionCache(),
                 services.sessionWorker());
+        final SubjectIssuer subjectIssuer = new SubjectIssuer(source.getId(), options, services);
         if (options.oauth2Options().authorizationEndpoint().isPresent()) {
             final AuthorizationCodeIssuer issuer = new AuthorizationCodeIssuer(source.getId(), options.oauth2Options(),
-                    services, redirectUriValidator, scopeValidator);
+                    services, redirectUriValidator, scopeValidator,
+                    (subject, consumer, binding, context, timeout) -> subjectIssuer
+                            .issue(subject, consumer, context, timeout).thenApply(outcome -> switch (outcome) {
+                                case Outcome.Succeeded<String> success -> Outcome
+                                        .succeeded(binding.withSubject(success.value()));
+                                case Outcome.Rejected<String> rejected -> Outcome.rejected(rejected.failure());
+                                case Outcome.Failed<String> failed -> Outcome.failed(failed.failure());
+                                default -> throw new IllegalStateException("Unsupported Outcome implementation");
+                            }));
             final AuthenticationEndpoint endpoint = new AuthenticationEndpoint(
                     new AuthenticationRequestDecoder(new AuthorizationRequestDecoder(), services.jsonProvider()),
                     new AuthenticationService(issuer, sessions), new AuthorizationResponseEncoder(), oauthErrorMapper);
@@ -255,9 +269,8 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
             final RefreshTokenRotator rotator = new RefreshTokenRotator(source.getId(), options.oauth2Options(),
                     services, scopeValidator, issuer, tokenMaterial);
             final TokenEndpoint endpoint = new TokenEndpoint(new TokenRequestDecoder(),
-                    new OAuth2ClientAuthenticator(options.oauth2Options().tokenEndpoint().getOrNull(), services),
-                    new TokenService(issuer, rotator), new TokenResponseEncoder(services.jsonProvider()),
-                    oauthErrorMapper);
+                    new OAuth2ClientAuthenticator(options.oauth2Options(), services), new TokenService(issuer, rotator),
+                    new TokenResponseEncoder(services.jsonProvider()), oauthErrorMapper);
             endpoints.put(OpenIdServerScheme.TOKEN, endpoint::handle);
         }
         if (options.oauth2Options().introspectionEndpoint().isPresent()) {
@@ -307,7 +320,7 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
         }
         if (options.endSessionEndpoint().isPresent()) {
             final EndSessionEndpoint endpoint = new EndSessionEndpoint(new EndSessionRequestCodec(),
-                    new EndSessionService(options, services, idTokenCodec, sessions), openIdErrorMapper);
+                    new EndSessionService(options, services, sessions), openIdErrorMapper);
             endpoints.put(OpenIdServerScheme.END_SESSION, endpoint::handle);
         }
         return new CompiledServer(manifest(options), endpoints);
@@ -325,7 +338,9 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
          */
         private final Capability.Manifest manifest;
 
-        /** Exact endpoint handler indexed by its declared capability. */
+        /**
+         * Exact endpoint handler indexed by its declared capability.
+         */
         private final Map<Capability<?, ?>, EndpointHandler> endpoints;
 
         /**
@@ -370,7 +385,7 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
          * @param capability exact declared capability
          * @param request    exact standard request or {@code null} for metadata resources
          * @param context    immutable invocation context
-         * @param timeout    shared end-to-end time budget
+         * @param timeout    shared end-to-end timeout
          * @param <Q>        request type
          * @param <S>        success type
          * @return delegated typed outcome or an unsupported-capability rejection
@@ -380,15 +395,15 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
                 final Capability<Q, S> capability,
                 final Q request,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             Assert.notNull(capability, "OpenID Connect Provider capability must not be null");
             Assert.notNull(context, "OpenID Connect Provider context must not be null");
-            Assert.notNull(timeout, "OpenID Connect Provider time budget must not be null");
+            Assert.notNull(timeout, "OpenID Connect Provider timeout must not be null");
             if (!manifest.capabilities().contains(capability)) {
                 return rejected();
             }
             final EndpointHandler endpoint = endpoints.get(capability);
-            if (endpoint == null || !(request instanceof HttpRequest httpRequest)) {
+            if (endpoint == null || !(request instanceof Request httpRequest)) {
                 return rejected();
             }
             return endpoint.handle(httpRequest, context, timeout)
@@ -397,7 +412,11 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
 
     }
 
-    /** Adapts one compiled HTTP endpoint to the common Source-worker invocation shape. */
+    /**
+     * Adapts one compiled HTTP endpoint to the common Source-worker invocation shape.
+     *
+     * @author Kimi Liu
+     */
     @FunctionalInterface
     private interface EndpointHandler {
 
@@ -406,10 +425,10 @@ public final class OpenIdServerDriver implements SourceDriver<OpenIdServerOption
          *
          * @param request incoming HTTP request
          * @param context immutable invocation context
-         * @param timeout shared operation budget
+         * @param timeout shared operation timeout
          * @return asynchronous HTTP response
          */
-        CompletionStage<HttpResponse> handle(HttpRequest request, Context context, Timeout.Budget timeout);
+        CompletionStage<Response> handle(Request request, Context context, Timeout timeout);
 
     }
 

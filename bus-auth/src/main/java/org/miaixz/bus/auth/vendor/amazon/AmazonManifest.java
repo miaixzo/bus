@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -35,14 +37,13 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Declares the frozen Login with Amazon OAuth 2.0 Vendor manifest.
  *
  * @author Kimi Liu
  */
-public final class AmazonManifest implements VariantManifest<AmazonOptions> {
+public class AmazonManifest implements VariantManifest<AmazonOptions> {
 
     /**
      * Stable platform routing identifier shared by registration, catalog, and runtime compilation.
@@ -67,7 +68,8 @@ public final class AmazonManifest implements VariantManifest<AmazonOptions> {
      * Complete immutable endpoint, policy, scope, capability, and form manifest.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OAUTH2,
-            VariantManifest.Pkce.OPTIONAL, List.of("profile", "profile:user_id", "postal_code"),
+            VariantManifest.Pkce.OPTIONAL, Credential.Type.CLIENT_SECRET,
+            List.of("profile", "profile:user_id", "postal_code"),
             new VendorTargets(
                     Optional.of(fixed("https://www.amazon.com/ap/oa", Http.Method.GET, Endpoint.Authentication.NONE)),
                     Optional.of(
@@ -113,7 +115,7 @@ public final class AmazonManifest implements VariantManifest<AmazonOptions> {
             final String value,
             final Http.Method method,
             final Endpoint.Authentication authentication) {
-        return new VendorTargets.Fixed(new Endpoint(UnoUrl.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
+        return new VendorTargets.Fixed(new Endpoint(Url.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
                 Set.of(authentication), Optional.empty(), TlsClientAuth.NONE));
     }
 

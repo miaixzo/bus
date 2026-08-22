@@ -27,7 +27,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationCodeResponse;
@@ -45,6 +46,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -56,8 +58,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements Teambition browser authentication while exposing only standard OAuth authorization.
@@ -68,7 +68,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class TeambitionSourceAdapter implements VendorAdapter {
+public class TeambitionSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted Teambition authority recorded in federated identity evidence.
@@ -307,6 +307,7 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -369,7 +370,7 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing private Teambition models
@@ -379,10 +380,10 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Teambition capability must not be null");
         Assert.notNull(context, "Teambition invocation context must not be null");
-        Assert.notNull(timeout, "Teambition invocation budget must not be null");
+        Assert.notNull(timeout, "Teambition invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("Teambition capability is not declared"));
         }
@@ -407,13 +408,13 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated browser correlation material
      * @param context    immutable invocation context retained by the uniform signature
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return prepared authorization redirect
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "Teambition authorization context must not be null");
         if (timeout.expired() || initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(failed(ErrorCode._500, "Teambition browser material violates the frozen manifest"));
@@ -424,11 +425,11 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
                     Optional.empty(), emptyObject());
             return standardAdapter.invoke(OAuth2ClientScheme.AUTHORIZATION, request, context, timeout)
                     .thenApply(outcome -> switch (outcome) {
-                        case Outcome.Succeeded<org.miaixz.bus.fabric.UnoUrl> success -> Outcome.succeeded(
+                        case Outcome.Succeeded<Url> success -> Outcome.succeeded(
                                 new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                        case Outcome.Rejected<org.miaixz.bus.fabric.UnoUrl> rejected -> Outcome
-                                .rejected(rejected.failure());
-                        case Outcome.Failed<org.miaixz.bus.fabric.UnoUrl> failed -> Outcome.failed(failed.failure());
+                        case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                        case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (RuntimeException cause) {
             return completed(rejected("Teambition authorization request is invalid"));
@@ -441,7 +442,7 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
      * @param request standard authorization request
      * @return asynchronous exact authorization URL outcome
      */
-    private CompletionStage<Outcome<org.miaixz.bus.fabric.UnoUrl>> authorization(final AuthorizationRequest request) {
+    private CompletionStage<Outcome<Url>> authorization(final AuthorizationRequest request) {
         try {
             return valid(request) ? completed(Outcome.succeeded(authorizationEncoder.encode(request)))
                     : completed(rejected("Teambition authorization request differs from the registered Source"));
@@ -475,6 +476,7 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
                     .orElseThrow(() -> new ValidateException("Teambition authorization success requires state"));
             case AuthorizationResponseDecoder.Error error -> error.response().state()
                     .orElseThrow(() -> new ValidateException("Teambition authorization error requires state"));
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -483,13 +485,13 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed browser correlation
      * @param context    immutable invocation context used for secret resolution
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified Teambition identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final AuthorizationResponseDecoder.Decoded decoded;
         try {
             decoded = decode(completion.callback());
@@ -505,7 +507,10 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
         final AuthorizationCodeResponse response = ((AuthorizationResponseDecoder.Success) decoded).response();
         try {
             final CompletionStage<Outcome<SecretLease>> resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
             if (resolution == null) {
                 return completed(failed(ErrorCode._502, "Teambition secret loader returned no stage"));
@@ -522,6 +527,7 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
                                 timeout);
                         case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                         case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "Teambition secret resolution failed"));
@@ -533,19 +539,20 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
      *
      * @param code    consumed authorization code
      * @param secret  owned client-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified Teambition identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> authenticate(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try (secret) {
                 return switch (token(code, secret, timeout)) {
                     case Outcome.Succeeded<Access> success -> profile(success.value(), timeout);
                     case Outcome.Rejected<Access> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<Access> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 };
             } catch (RuntimeException cause) {
                 return failed(ErrorCode._502, "Teambition authentication completion failed");
@@ -558,14 +565,14 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
      *
      * @param code    consumed authorization code
      * @param secret  open client-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return private access result or safely classified failure
      */
-    private Outcome<Access> token(final String code, final SecretLease secret, final Timeout.Budget timeout) {
+    private Outcome<Access> token(final String code, final SecretLease secret, final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Teambition token request has no remaining time budget");
+                return failed(ErrorCode._408, "Teambition token request has no remaining timeout");
             }
             body = formCodec.encode(
                     List.of(
@@ -575,10 +582,9 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
                                     Assert.notBlank(code, "Teambition authorization code must not be blank")),
                             new NameValue(OAuth2.Parameters.GRANT_TYPE, "code")));
             final var endpoint = variant.targets().resolve(options).token().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.POST)
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 return token(response);
             }
@@ -597,7 +603,7 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
      * @param response owned token endpoint response
      * @return private access result or safely classified failure
      */
-    private Outcome<Access> token(final HttpResponse response) {
+    private Outcome<Access> token(final Response response) {
         if (response.code() < Http.Status.OK || response.code() >= Http.Status.MULTIPLE_CHOICES) {
             return status(response.code(), "Teambition token endpoint rejected or failed the request");
         }
@@ -620,20 +626,19 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
      * Retrieves the Teambition current user with its proprietary Authorization scheme.
      *
      * @param access  private access result
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified identity or safely classified failure
      */
-    private Outcome<ExternalIdentity> profile(final Access access, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final Access access, final Timeout timeout) {
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Teambition profile request has no remaining time budget");
+                return failed(ErrorCode._408, "Teambition profile request has no remaining timeout");
             }
             final var endpoint = variant.targets().resolve(options).userInfo().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.GET)
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.GET)
                     .header(Http.Header.AUTHORIZATION, PROFILE_AUTHORIZATION_PREFIX + access.accessToken())
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute()) {
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                 return profile(response, timeout);
             }
         } catch (RuntimeException cause) {
@@ -648,7 +653,7 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
      * @param timeout  shared clock used for evidence timestamping
      * @return verified Teambition identity
      */
-    private Outcome<ExternalIdentity> profile(final HttpResponse response, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final Response response, final Timeout timeout) {
         if (response.code() != Http.Status.OK) {
             return status(response.code(), "Teambition profile endpoint rejected or failed the request");
         }
@@ -693,7 +698,7 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
      * @param operation safe operation name used in validation failures
      * @return immutable provider-neutral JSON object
      */
-    private JsonValue.ObjectValue object(final HttpResponse response, final String operation) {
+    private JsonValue.ObjectValue object(final Response response, final String operation) {
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("Teambition " + operation + " response must use application/json");
         }
@@ -707,6 +712,8 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
 
     /**
      * Identifies each private Teambition response document validated by this adapter.
+     *
+     * @author Kimi Liu
      */
     private enum WireKind {
 
@@ -730,6 +737,8 @@ public final class TeambitionSourceAdapter implements VendorAdapter {
      * @param website   optional website URL
      * @param location  optional location text
      * @param email     optional email address
+     *
+     * @author Kimi Liu
      */
     private record ProfileWire(String name, String avatarUrl, String website, String location, String email) {
 

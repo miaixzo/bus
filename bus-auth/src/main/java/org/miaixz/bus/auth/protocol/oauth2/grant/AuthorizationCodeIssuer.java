@@ -39,6 +39,7 @@ import org.miaixz.bus.auth.resolver.ConsumerMetadata;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.worker.ConsentService;
+import org.miaixz.bus.auth.worker.loader.ConsumerLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -61,7 +62,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class AuthorizationCodeIssuer {
+public class AuthorizationCodeIssuer {
 
     /**
      * Number of random bytes providing 256 bits of authorization-code entropy.
@@ -124,6 +125,11 @@ public final class AuthorizationCodeIssuer {
     private final ScopeValidator scopeValidator;
 
     /**
+     * Compile-time selected OpenID wire-subject binder.
+     */
+    private final OpenIdBinder openIdBinder;
+
+    /**
      * Creates an authorization-code issuer for one compiled OAuth Provider.
      *
      * @param providerId           compiled server-role Source identifier used for state isolation
@@ -135,12 +141,24 @@ public final class AuthorizationCodeIssuer {
      */
     public AuthorizationCodeIssuer(final String providerId, final GrantPolicy options, final DriverServices services,
             final RedirectUriValidator redirectUriValidator, final ScopeValidator scopeValidator) {
+        this(providerId, options, services, redirectUriValidator, scopeValidator,
+                (subject, consumer, binding, context, timeout) -> CompletableFuture
+                        .completedFuture(Outcome.succeeded(binding)));
+    }
+
+    /**
+     * Creates an authorization-code issuer with an explicit OpenID subject binder.
+     */
+    public AuthorizationCodeIssuer(final String providerId, final GrantPolicy options, final DriverServices services,
+            final RedirectUriValidator redirectUriValidator, final ScopeValidator scopeValidator,
+            final OpenIdBinder openIdBinder) {
         this.providerId = Assert.notBlank(providerId, "OAuth 2.x Provider id must not be blank");
         this.options = Assert.notNull(options, "OAuth 2.x Provider options must not be null");
         this.services = Assert.notNull(services, "OAuth 2.x execution services must not be null");
         this.redirectUriValidator = Assert
                 .notNull(redirectUriValidator, "OAuth 2.x redirect URI validator must not be null");
         this.scopeValidator = Assert.notNull(scopeValidator, "OAuth 2.x scope validator must not be null");
+        this.openIdBinder = Assert.notNull(openIdBinder, "OpenID Connect subject binder must not be null");
     }
 
     /**
@@ -322,24 +340,24 @@ public final class AuthorizationCodeIssuer {
      *
      * @param request internal authorization request with an optional protocol binding
      * @param context invocation context carrying the already authenticated resource owner
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return asynchronous success, expected protocol rejection, or operational failure
      */
     public CompletionStage<Outcome<Result>> authorize(
             final Request request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OAuth 2.x authorization request must not be null");
         final AuthorizationRequest authorizationRequest = request.authorizationRequest();
         Assert.notNull(context, "OAuth 2.x authorization context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x authorization time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x authorization timeout must not be null");
         if (timeout.expired()) {
             return completed(
                     Outcome.failed(
                             failure(
                                     ErrorCode._408,
                                     OAuth2ErrorCode.TEMPORARILY_UNAVAILABLE,
-                                    "OAuth 2.x authorization has no remaining time budget",
+                                    "OAuth 2.x authorization has no remaining timeout",
                                     null)));
         }
         final Subject subject = context.authenticatedSubject().getOrNull();
@@ -355,11 +373,15 @@ public final class AuthorizationCodeIssuer {
 
         final CompletionStage<Outcome<ConsumerMetadata>> resolution;
         try {
-            resolution = Outcome.mapStage(
-                    () -> services.consumerLoader()
-                            .load(services.registration(), authorizationRequest.clientId(), context, timeout),
-                    loaded -> services.consumerParser()
-                            .parse(services.registration(), authorizationRequest.clientId(), loaded));
+            resolution = Outcome
+                    .mapStage(
+                            () -> services.consumerLoader().load(
+                                    new ConsumerLoader.Request(services.registration(),
+                                            authorizationRequest.clientId()),
+                                    context,
+                                    timeout),
+                            loaded -> services.consumerParser()
+                                    .parse(services.registration(), authorizationRequest.clientId(), loaded));
         } catch (RuntimeException exception) {
             return completed(
                     Outcome.failed(
@@ -407,6 +429,7 @@ public final class AuthorizationCodeIssuer {
                                             OAuth2ErrorCode.SERVER_ERROR,
                                             "OAuth 2.x client resolution failed",
                                             null)));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -418,7 +441,7 @@ public final class AuthorizationCodeIssuer {
      * @param subject       authenticated resource owner
      * @param client        resolved immutable client registration
      * @param context       immutable invocation context
-     * @param timeout       shared operation budget
+     * @param timeout       shared operation timeout
      * @return asynchronous authorization outcome
      */
     private CompletionStage<Outcome<Result>> authorizeRegistered(
@@ -427,7 +450,7 @@ public final class AuthorizationCodeIssuer {
             final Subject subject,
             final ConsumerMetadata client,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!request.clientId().equals(client.id())) {
             return completed(
                     Outcome.rejected(
@@ -437,7 +460,7 @@ public final class AuthorizationCodeIssuer {
                                     "OAuth 2.x resolved client identifier does not match the request",
                                     null)));
         }
-        if (!client.grantTypes().contains(GrantType.AUTHORIZATION_CODE.value())
+        if (!client.grantTypes().contains(GrantType.AUTHORIZATION_CODE)
                 || !client.responseTypes().contains(ResponseType.CODE.value())) {
             return completed(
                     Outcome.rejected(
@@ -512,6 +535,7 @@ public final class AuthorizationCodeIssuer {
                     redirectUri,
                     requestedScopes,
                     requestedResources,
+                    context,
                     timeout,
                     1);
         }
@@ -588,7 +612,7 @@ public final class AuthorizationCodeIssuer {
      * @param redirectUri    registration-validated redirect target
      * @param consentRequest validated consent display context
      * @param context        immutable invocation context
-     * @param timeout        shared operation budget
+     * @param timeout        shared operation timeout
      * @return asynchronous authorization outcome
      */
     private CompletionStage<Outcome<Result>> consent(
@@ -599,7 +623,7 @@ public final class AuthorizationCodeIssuer {
             final String redirectUri,
             final ConsentService.Request consentRequest,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CompletionStage<Outcome<Optional<ConsentService.Snapshot>>> lookup;
         try {
             lookup = services.consentService().find(consentRequest, context, timeout);
@@ -632,6 +656,7 @@ public final class AuthorizationCodeIssuer {
                                     redirectUri,
                                     List.copyOf(consentRequest.scopes()),
                                     consentRequest.resources(),
+                                    context,
                                     timeout,
                                     1);
                         }
@@ -659,6 +684,7 @@ public final class AuthorizationCodeIssuer {
                                             OAuth2ErrorCode.SERVER_ERROR,
                                             "OAuth 2.x consent lookup failed",
                                             redirectUri)));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -672,7 +698,7 @@ public final class AuthorizationCodeIssuer {
      * @param redirectUri    registration-validated redirect target
      * @param consentRequest validated consent display context
      * @param context        immutable invocation context
-     * @param timeout        shared operation budget
+     * @param timeout        shared operation timeout
      * @return asynchronous authorization outcome
      */
     private CompletionStage<Outcome<Result>> decide(
@@ -683,7 +709,7 @@ public final class AuthorizationCodeIssuer {
             final String redirectUri,
             final ConsentService.Request consentRequest,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CompletionStage<Outcome<ConsentService.Decision>> decision;
         try {
             decision = services.consentService().decide(consentRequest, context, timeout);
@@ -739,6 +765,7 @@ public final class AuthorizationCodeIssuer {
                                             OAuth2ErrorCode.SERVER_ERROR,
                                             "OAuth 2.x consent decision failed",
                                             redirectUri)));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -752,7 +779,7 @@ public final class AuthorizationCodeIssuer {
      * @param redirectUri   registration-validated redirect target
      * @param decision      approved consent decision
      * @param context       immutable invocation context
-     * @param timeout       shared operation budget
+     * @param timeout       shared operation timeout
      * @return asynchronous authorization outcome
      */
     private CompletionStage<Outcome<Result>> record(
@@ -763,7 +790,7 @@ public final class AuthorizationCodeIssuer {
             final String redirectUri,
             final ConsentService.Decision decision,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final Instant now = timeout.clock().now();
         final CompletionStage<Outcome<ConsentService.Snapshot>> recording;
         try {
@@ -796,6 +823,7 @@ public final class AuthorizationCodeIssuer {
                                 redirectUri,
                                 List.copyOf(decision.grantedScopes()),
                                 decision.request().resources(),
+                                context,
                                 timeout,
                                 1);
                     }
@@ -813,6 +841,7 @@ public final class AuthorizationCodeIssuer {
                                             OAuth2ErrorCode.SERVER_ERROR,
                                             "OAuth 2.x consent recording failed",
                                             redirectUri)));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -826,7 +855,7 @@ public final class AuthorizationCodeIssuer {
      * @param redirectUri   registration-validated redirect target
      * @param grantedScopes exact approved scope tokens
      * @param resources     exact validated resource indicators bound to the grant
-     * @param timeout       shared operation budget
+     * @param timeout       shared operation timeout
      * @param attempt       one-based create attempt number
      * @return asynchronous authorization outcome
      */
@@ -838,7 +867,8 @@ public final class AuthorizationCodeIssuer {
             final String redirectUri,
             final List<String> grantedScopes,
             final List<String> resources,
-            final Timeout.Budget timeout,
+            final Context context,
+            final Timeout timeout,
             final int attempt) {
         if (timeout.expired()) {
             return completed(
@@ -846,8 +876,55 @@ public final class AuthorizationCodeIssuer {
                             failure(
                                     ErrorCode._408,
                                     OAuth2ErrorCode.TEMPORARILY_UNAVAILABLE,
-                                    "OAuth 2.x authorization has no remaining time budget",
+                                    "OAuth 2.x authorization has no remaining timeout",
                                     redirectUri)));
+        }
+        final AuthorizationCodeCache.OpenIdBinding binding = openIdBinding.getOrNull();
+        if (binding != null && binding.subject().isEmpty()) {
+            final CompletionStage<Outcome<AuthorizationCodeCache.OpenIdBinding>> stage;
+            try {
+                stage = openIdBinder.bind(subject.key(), client, binding, context, timeout);
+            } catch (RuntimeException cause) {
+                return completed(
+                        Outcome.failed(
+                                failure(
+                                        ErrorCode._500,
+                                        OAuth2ErrorCode.SERVER_ERROR,
+                                        "OpenID Connect subject binding failed",
+                                        redirectUri)));
+            }
+            if (stage == null) {
+                return completed(
+                        Outcome.failed(
+                                failure(
+                                        ErrorCode._500,
+                                        OAuth2ErrorCode.SERVER_ERROR,
+                                        "OpenID Connect subject binder returned no stage",
+                                        redirectUri)));
+            }
+            return stage.handle((outcome, cause) -> cause == null ? outcome : null).thenCompose(outcome -> {
+                if (outcome instanceof Outcome.Succeeded<AuthorizationCodeCache.OpenIdBinding> success
+                        && success.value() != null && success.value().subject().isPresent()) {
+                    return issue(
+                            request,
+                            Optional.of(success.value()),
+                            subject,
+                            client,
+                            redirectUri,
+                            grantedScopes,
+                            resources,
+                            context,
+                            timeout,
+                            attempt);
+                }
+                return completed(
+                        Outcome.failed(
+                                failure(
+                                        ErrorCode._500,
+                                        OAuth2ErrorCode.SERVER_ERROR,
+                                        "OpenID Connect subject binding failed",
+                                        redirectUri)));
+            });
         }
         final String code = authorizationCode();
         final Instant expiresAt = timeout.clock().now().plus(options.authorizationCodeLifetime());
@@ -888,6 +965,7 @@ public final class AuthorizationCodeIssuer {
                                     redirectUri,
                                     grantedScopes,
                                     resources,
+                                    context,
                                     timeout,
                                     attempt + 1);
                         }
@@ -1042,6 +1120,26 @@ public final class AuthorizationCodeIssuer {
      * @author Kimi Liu
      */
     private record CreateResult(boolean created, Throwable failure) {
+
+    }
+
+    /**
+     * Completes an OpenID authorization binding with its final wire subject.
+     *
+     * @author Kimi Liu
+     */
+    @FunctionalInterface
+    public interface OpenIdBinder {
+
+        /**
+         * Binds one internal subject and Consumer to an immutable OpenID authorization context.
+         */
+        CompletionStage<Outcome<AuthorizationCodeCache.OpenIdBinding>> bind(
+                Subject.Key subject,
+                ConsumerMetadata consumer,
+                AuthorizationCodeCache.OpenIdBinding binding,
+                Context context,
+                Timeout timeout);
 
     }
 

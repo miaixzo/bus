@@ -50,7 +50,7 @@ public interface RadiusRequestHandler {
      * @param remoteAddress trusted remote address observed by the transport boundary
      * @param request       complete Access or Accounting packet
      * @param context       immutable non-secret invocation context
-     * @param timeout       shared end-to-end operation budget
+     * @param timeout       shared end-to-end operation timeout
      * @return stage containing the resolved client or a silent-discard failure
      */
     CompletionStage<Outcome<Client>> resolve(
@@ -58,7 +58,7 @@ public interface RadiusRequestHandler {
             String remoteAddress,
             RadiusPacket request,
             Context context,
-            Timeout.Budget timeout);
+            Timeout timeout);
 
     /**
      * Processes one wire-validated Access-Request.
@@ -71,7 +71,7 @@ public interface RadiusRequestHandler {
      * @param client     resolved RADIUS client binding
      * @param request    validated standard Access-Request
      * @param context    immutable invocation context carrying verified client identity only after resolution
-     * @param timeout    shared end-to-end operation budget
+     * @param timeout    shared end-to-end operation timeout
      * @return stage containing Access-Accept, Access-Reject, or Access-Challenge as a standard packet
      */
     CompletionStage<Outcome<RadiusPacket>> access(
@@ -79,7 +79,7 @@ public interface RadiusRequestHandler {
             Client client,
             AccessRequest request,
             Context context,
-            Timeout.Budget timeout);
+            Timeout timeout);
 
     /**
      * Durably processes one wire-validated Accounting-Request.
@@ -92,7 +92,7 @@ public interface RadiusRequestHandler {
      * @param client     resolved RADIUS client binding
      * @param request    validated standard Accounting-Request
      * @param context    immutable invocation context carrying verified client identity only after resolution
-     * @param timeout    shared end-to-end operation budget
+     * @param timeout    shared end-to-end operation timeout
      * @return stage containing the standard Accounting-Response after durable processing
      */
     CompletionStage<Outcome<AccountingResponse>> accounting(
@@ -100,7 +100,7 @@ public interface RadiusRequestHandler {
             Client client,
             AccountingRequest request,
             Context context,
-            Timeout.Budget timeout);
+            Timeout timeout);
 
     /**
      * Carries one resolved RADIUS client and its hop-by-hop protocol policy.

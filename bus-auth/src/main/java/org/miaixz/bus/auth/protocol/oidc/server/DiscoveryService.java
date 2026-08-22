@@ -49,7 +49,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class DiscoveryService {
+public class DiscoveryService {
 
     /**
      * Frozen OpenID Provider options used as the only metadata source.
@@ -97,18 +97,16 @@ public final class DiscoveryService {
      * Returns the deterministic OpenID Provider Metadata document model.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return completed metadata outcome
      */
-    public CompletionStage<Outcome<OpenIdProviderMetadata>> discover(
-            final Context context,
-            final Timeout.Budget timeout) {
+    public CompletionStage<Outcome<OpenIdProviderMetadata>> discover(final Context context, final Timeout timeout) {
         Assert.notNull(context, "OpenID Connect discovery context must not be null");
-        Assert.notNull(timeout, "OpenID Connect discovery time budget must not be null");
+        Assert.notNull(timeout, "OpenID Connect discovery timeout must not be null");
         if (timeout.expired()) {
             return CompletableFuture.completedFuture(
                     Outcome.failed(
-                            new Outcome.Failure(ErrorCode._408, "OpenID Connect discovery has no remaining time budget",
+                            new Outcome.Failure(ErrorCode._408, "OpenID Connect discovery has no remaining timeout",
                                     new JsonValue.ObjectValue(Map.of()))));
         }
         final OAuth2ServerOptions oauth = options.oauth2Options();
@@ -126,9 +124,10 @@ public final class DiscoveryService {
                 new JsonValue.ObjectValue(Map.of()));
         final OpenIdProviderMetadata metadata = new OpenIdProviderMetadata(authorizationServer,
                 optionalUrl(options.userInfoEndpoint()), List.of(), List.copyOf(options.subjectTypesSupported()),
-                List.of(options.idTokenSigningAlgorithm()), List.of(), List.of(), List.of(), List.of(), List.of(),
-                List.of(), List.of(ClaimType.NORMAL), List.copyOf(options.claimsSupported()), List.of(),
-                Optional.of(Boolean.TRUE), Optional.of(Boolean.FALSE), Optional.of(Boolean.FALSE), Optional.empty(),
+                List.of(options.idTokenSigningAlgorithm()), List.copyOf(options.idTokenEncryptionAlgorithmsSupported()),
+                List.copyOf(options.idTokenEncryptionMethodsSupported()), List.of(), List.of(), List.of(), List.of(),
+                List.of(ClaimType.NORMAL), List.copyOf(options.claimsSupported()), List.of(), Optional.of(Boolean.TRUE),
+                Optional.of(Boolean.FALSE), Optional.of(Boolean.FALSE), Optional.empty(),
                 optionalUrl(options.endSessionEndpoint()), new JsonValue.ObjectValue(Map.of()));
         return CompletableFuture.completedFuture(Outcome.succeeded(metadata));
     }

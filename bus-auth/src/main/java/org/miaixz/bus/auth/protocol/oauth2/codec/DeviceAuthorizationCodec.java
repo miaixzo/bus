@@ -26,6 +26,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Body;
+import org.miaixz.bus.auth.FabricX.Headers;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -38,11 +42,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * Encodes and decodes the standard RFC 8628 device authorization endpoint representations.
@@ -53,7 +52,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  *
  * @author Kimi Liu
  */
-public final class DeviceAuthorizationCodec {
+public class DeviceAuthorizationCodec {
 
     /**
      * Maximum accepted device authorization form size in bytes.
@@ -93,7 +92,7 @@ public final class DeviceAuthorizationCodec {
      * @param request request to inspect
      * @throws ValidateException if method, URL, media, size, or repeatability is invalid
      */
-    private static void validateRequest(final HttpRequest request) {
+    private static void validateRequest(final Request request) {
         if (request.method() != Http.Method.POST) {
             throw new ValidateException("OAuth 2.x device authorization endpoint requires HTTP POST");
         }
@@ -123,7 +122,7 @@ public final class DeviceAuthorizationCodec {
      * @param response response to inspect
      * @throws ValidateException if media, charset, or size is invalid
      */
-    private static void validateResponse(final HttpResponse response) {
+    private static void validateResponse(final Response response) {
         if (response.body().length() > MAXIMUM_JSON_BYTES) {
             throw new ValidateException("OAuth 2.x device authorization response exceeds the maximum JSON size");
         }
@@ -335,7 +334,7 @@ public final class DeviceAuthorizationCodec {
      * @throws IllegalArgumentException if request is {@code null}
      * @throws ValidateException        if transport, form, multiplicity, or parameter syntax is invalid
      */
-    public DeviceAuthorizationRequest decodeRequest(final HttpRequest request) {
+    public DeviceAuthorizationRequest decodeRequest(final Request request) {
         Assert.notNull(request, "OAuth 2.x device authorization HTTP request must not be null");
         validateRequest(request);
         final Map<String, String> values = unique(formCodec.decode(request.body().bytes(MAXIMUM_FORM_BYTES)));
@@ -360,7 +359,7 @@ public final class DeviceAuthorizationCodec {
      * @return complete HTTP 200 JSON response
      * @throws IllegalArgumentException if an argument is {@code null}
      */
-    public HttpResponse encodeResponse(final HttpRequest request, final DeviceAuthorizationResponse response) {
+    public Response encodeResponse(final Request request, final DeviceAuthorizationResponse response) {
         Assert.notNull(request, "OAuth 2.x device authorization HTTP request must not be null");
         Assert.notNull(response, "OAuth 2.x device authorization response must not be null");
         final Map<String, JsonValue> members = new LinkedHashMap<>();
@@ -372,9 +371,9 @@ public final class DeviceAuthorizationCodec {
         members.put(OAuth2.Parameters.EXPIRES_IN, number(response.expiresIn()));
         response.interval().ifPresent(value -> members.put(OAuth2.Parameters.INTERVAL, number(value)));
         final byte[] body = jsonProvider.writeValue(new JsonValue.ObjectValue(members));
-        return HttpResponse.builder().request(request).code(Http.Status.OK).headers(
+        return Response.builder().request(request).code(Http.Status.OK).headers(
                 Headers.of(Http.Header.CACHE_CONTROL, Http.Cache.NO_STORE, Http.Header.PRAGMA, Http.Cache.NO_CACHE))
-                .body(PayloadBody.of(Payload.of(body), MediaType.APPLICATION_JSON_TYPE)).build();
+                .body(Body.of(body, MediaType.APPLICATION_JSON_TYPE)).build();
     }
 
     /**
@@ -385,8 +384,8 @@ public final class DeviceAuthorizationCodec {
      * @throws IllegalArgumentException if response is {@code null}
      * @throws ValidateException        if HTTP, media, JSON, or member syntax is invalid
      */
-    public Decoded decode(final HttpResponse response) {
-        final HttpResponse encoded = Assert
+    public Decoded decode(final Response response) {
+        final Response encoded = Assert
                 .notNull(response, "OAuth 2.x device authorization HTTP response must not be null");
         try (encoded) {
             validateResponse(encoded);
@@ -409,7 +408,7 @@ public final class DeviceAuthorizationCodec {
      *
      * @author Kimi Liu
      */
-    public sealed interface Decoded permits Success, Error {
+    public interface Decoded {
 
     }
 

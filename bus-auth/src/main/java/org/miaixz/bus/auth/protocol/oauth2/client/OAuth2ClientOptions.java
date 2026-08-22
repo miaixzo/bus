@@ -146,6 +146,16 @@ public record OAuth2ClientOptions(Optional<Endpoint> authorizationEndpoint, Opti
     }
 
     /**
+     * Creates a one-shot Builder for a standards-based OAuth 2.x client.
+     *
+     * @param clientId public authorization-server-issued client identifier
+     * @return mutable build-scoped client Options builder
+     */
+    public static Builder builder(final String clientId) {
+        return new Builder(clientId);
+    }
+
+    /**
      * Normalizes one Bus optional endpoint container.
      *
      * @param value optional endpoint container
@@ -310,6 +320,194 @@ public record OAuth2ClientOptions(Optional<Endpoint> authorizationEndpoint, Opti
                 + ", clientId=[REDACTED], redirectUris=[REDACTED]" + ", clientAuthenticationMethod="
                 + clientAuthenticationMethod.value() + ", clientCredential=[REDACTED], pkceRequired=" + pkceRequired
                 + ", dpopRequired=" + dpopRequired + Symbol.BRACKET_RIGHT;
+    }
+
+    /**
+     * Collects OAuth 2.x client deployment values before immutable canonical validation.
+     *
+     * @author Kimi Liu
+     */
+    public static class Builder {
+
+        private final String clientId;
+        private Optional<Endpoint> authorizationEndpoint = Optional.empty();
+        private Optional<Endpoint> tokenEndpoint = Optional.empty();
+        private Optional<Endpoint> introspectionEndpoint = Optional.empty();
+        private Optional<Endpoint> revocationEndpoint = Optional.empty();
+        private Optional<Endpoint> deviceAuthorizationEndpoint = Optional.empty();
+        private Optional<Endpoint> metadataEndpoint = Optional.empty();
+        private Optional<String> expectedIssuer = Optional.empty();
+        private final Set<String> redirectUris = new LinkedHashSet<>();
+        private Endpoint.Authentication authentication = Endpoint.Authentication.NONE;
+        private Optional<Credential.Reference> credential = Optional.empty();
+        private boolean pkceRequired;
+        private boolean dpopRequired;
+
+        /**
+         * Creates a build-scoped collector for one public client identifier.
+         */
+        public Builder(final String clientId) {
+            this.clientId = Assert.notBlank(clientId, "OAuth 2.x client identifier must not be blank");
+        }
+
+        /**
+         * Selects the authorization endpoint.
+         *
+         * @param value immutable authorization endpoint
+         * @return this builder
+         */
+        public Builder authorizationEndpoint(final Endpoint value) {
+            authorizationEndpoint = Optional.of(Assert.notNull(value, "Authorization endpoint must not be null"));
+            return this;
+        }
+
+        /**
+         * Selects the token endpoint.
+         *
+         * @param value immutable token endpoint
+         * @return this builder
+         */
+        public Builder tokenEndpoint(final Endpoint value) {
+            tokenEndpoint = Optional.of(Assert.notNull(value, "Token endpoint must not be null"));
+            return this;
+        }
+
+        /**
+         * Selects the token introspection endpoint.
+         *
+         * @param value immutable introspection endpoint
+         * @return this builder
+         */
+        public Builder introspectionEndpoint(final Endpoint value) {
+            introspectionEndpoint = Optional.of(Assert.notNull(value, "Introspection endpoint must not be null"));
+            return this;
+        }
+
+        /**
+         * Selects the token revocation endpoint.
+         *
+         * @param value immutable revocation endpoint
+         * @return this builder
+         */
+        public Builder revocationEndpoint(final Endpoint value) {
+            revocationEndpoint = Optional.of(Assert.notNull(value, "Revocation endpoint must not be null"));
+            return this;
+        }
+
+        /**
+         * Selects the device authorization endpoint.
+         *
+         * @param value immutable device authorization endpoint
+         * @return this builder
+         */
+        public Builder deviceAuthorizationEndpoint(final Endpoint value) {
+            deviceAuthorizationEndpoint = Optional
+                    .of(Assert.notNull(value, "Device authorization endpoint must not be null"));
+            return this;
+        }
+
+        /**
+         * Selects the authorization-server metadata endpoint.
+         *
+         * @param value immutable metadata endpoint
+         * @return this builder
+         */
+        public Builder metadataEndpoint(final Endpoint value) {
+            metadataEndpoint = Optional.of(Assert.notNull(value, "Metadata endpoint must not be null"));
+            return this;
+        }
+
+        /**
+         * Selects the exact issuer expected in authorization-server metadata.
+         *
+         * @param value exact expected issuer
+         * @return this builder
+         */
+        public Builder expectedIssuer(final String value) {
+            expectedIssuer = Optional.of(Assert.notBlank(value, "Expected issuer must not be blank"));
+            return this;
+        }
+
+        /**
+         * Adds one exact registered redirect URI.
+         *
+         * @param value exact redirect URI lexical value
+         * @return this builder
+         */
+        public Builder redirectUri(final String value) {
+            redirectUris.add(Assert.notBlank(value, "Redirect URI must not be blank"));
+            return this;
+        }
+
+        /**
+         * Adds exact registered redirect URIs in caller order.
+         *
+         * @param values registered redirect URI values
+         * @return this builder
+         */
+        public Builder redirectUris(final Set<String> values) {
+            Assert.notNull(values, "Redirect URI values must not be null");
+            values.forEach(this::redirectUri);
+            return this;
+        }
+
+        /**
+         * Selects a public client without a recoverable client credential.
+         *
+         * @return this builder
+         */
+        public Builder publicClient() {
+            authentication = Endpoint.Authentication.NONE;
+            credential = Optional.empty();
+            return this;
+        }
+
+        /**
+         * Selects one confidential-client authentication method and external credential reference.
+         *
+         * @param method    registered endpoint authentication method
+         * @param reference external recoverable credential reference
+         * @return this builder
+         */
+        public Builder clientSecret(final Endpoint.Authentication method, final Credential.Reference reference) {
+            authentication = Assert.notNull(method, "Client authentication method must not be null");
+            credential = Optional.of(Assert.notNull(reference, "Client credential reference must not be null"));
+            return this;
+        }
+
+        /**
+         * Selects whether authorization requests must use PKCE.
+         *
+         * @param value required-state selection
+         * @return this builder
+         */
+        public Builder pkceRequired(final boolean value) {
+            pkceRequired = value;
+            return this;
+        }
+
+        /**
+         * Selects whether protected requests must use DPoP.
+         *
+         * @param value required-state selection
+         * @return this builder
+         */
+        public Builder dpopRequired(final boolean value) {
+            dpopRequired = value;
+            return this;
+        }
+
+        /**
+         * Builds and canonically validates one immutable OAuth 2.x client Options value.
+         *
+         * @return immutable OAuth 2.x client Options
+         */
+        public OAuth2ClientOptions build() {
+            return new OAuth2ClientOptions(authorizationEndpoint, tokenEndpoint, introspectionEndpoint,
+                    revocationEndpoint, deviceAuthorizationEndpoint, metadataEndpoint, expectedIssuer, clientId,
+                    redirectUris, authentication, credential, pkceRequired, dpopRequired);
+        }
+
     }
 
 }

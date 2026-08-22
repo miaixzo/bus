@@ -24,6 +24,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.auth.FabricX.Body;
+import org.miaixz.bus.auth.FabricX.Headers;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.protocol.scim.*;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
@@ -32,18 +36,13 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * Strictly encodes RFC 7644 User/Group search ListResponse representations for a SCIM Service Provider.
  *
  * @author Kimi Liu
  */
-public final class ScimListResponseCodec {
+public class ScimListResponseCodec {
 
     /**
      * Runtime-selected provider-neutral JSON implementation.
@@ -110,8 +109,8 @@ public final class ScimListResponseCodec {
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if a discovery resource or password-bearing User is present
      */
-    public HttpResponse encode(final HttpRequest request, final ListResponse response) {
-        final HttpRequest origin = Assert.notNull(request, "SCIM ListResponse origin request must not be null");
+    public Response encode(final Request request, final ListResponse response) {
+        final Request origin = Assert.notNull(request, "SCIM ListResponse origin request must not be null");
         final ListResponse value = Assert.notNull(response, "SCIM ListResponse must not be null");
         final Map<String, JsonValue> members = new LinkedHashMap<>();
         members.put(Scim.Attributes.SCHEMAS, ScimResourceCodec.array(value.schemas()));
@@ -131,9 +130,9 @@ public final class ScimListResponseCodec {
         members.put(Scim.Attributes.RESOURCES, new JsonValue.ArrayValue(resources));
         final byte[] body = ScimResourceCodec
                 .bytes(new JsonValue.ObjectValue(members), jsonProvider, maximumBytes, maximumDepth);
-        return HttpResponse.builder().request(origin).code(Http.Status.OK).headers(
+        return Response.builder().request(origin).code(Http.Status.OK).headers(
                 Headers.of(Http.Header.CACHE_CONTROL, Http.Cache.NO_STORE, Http.Header.PRAGMA, Http.Cache.NO_CACHE))
-                .body(PayloadBody.of(Payload.of(body), MediaType.APPLICATION_SCIM_JSON_TYPE)).build();
+                .body(Body.of(body, MediaType.APPLICATION_SCIM_JSON_TYPE)).build();
     }
 
 }

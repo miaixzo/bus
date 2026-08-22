@@ -47,15 +47,23 @@ import org.miaixz.bus.core.net.Protocol;
  *
  * @author Kimi Liu
  */
-public final class RuntimeDescriptor {
+public class RuntimeDescriptor {
 
-    /** Schemes in deterministic runtime assembly order. */
+    /**
+     * Schemes in deterministic runtime assembly order.
+     */
     private final List<SchemeDescriptor> schemes;
-    /** Exact scheme identifier index over {@link #schemes}. */
+    /**
+     * Exact scheme identifier index over {@link #schemes}.
+     */
     private final Map<String, SchemeDescriptor> schemesById;
-    /** Vendor manifests in deterministic module order. */
+    /**
+     * Vendor manifests in deterministic module order.
+     */
     private final List<VendorDescriptor> vendors;
-    /** Exact Vendor identifier index over {@link #vendors}. */
+    /**
+     * Exact Vendor identifier index over {@link #vendors}.
+     */
     private final Map<Vendor.Id, VendorDescriptor> vendorsById;
 
     /**
@@ -169,11 +177,15 @@ public final class RuntimeDescriptor {
      * @param manifest    capabilities exposed by the assembled scheme
      * @param conformance optional protocol conformance metadata
      * @param form        configuration form metadata
+     *
+     * @author Kimi Liu
      */
     public record SchemeDescriptor(String id, Protocol protocol, Set<Protocol> protocols, Capability.Manifest manifest,
             Optional<Conformance> conformance, Scheme.Form form) {
 
-        /** Validates and freezes one assembled scheme projection. */
+        /**
+         * Validates and freezes one assembled scheme projection.
+         */
         public SchemeDescriptor {
             Assert.notBlank(id, "Scheme descriptor id must not be blank");
             Assert.notNull(protocol, "Scheme descriptor protocol must not be null");
@@ -192,11 +204,15 @@ public final class RuntimeDescriptor {
      * @param metadata Vendor display and classification metadata
      * @param form     common Vendor configuration form
      * @param variants immutable supported platform variants
+     *
+     * @author Kimi Liu
      */
     public record VendorDescriptor(Vendor.Id id, Vendor.Metadata metadata, Scheme.Form form,
             List<VariantManifest.Variant> variants) {
 
-        /** Validates and freezes one assembled Vendor manifest projection. */
+        /**
+         * Validates and freezes one assembled Vendor manifest projection.
+         */
         public VendorDescriptor {
             Assert.notNull(id, "Vendor descriptor id must not be null");
             Assert.notNull(metadata, "Vendor descriptor metadata must not be null");

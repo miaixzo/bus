@@ -23,22 +23,23 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.guard.ClientAuthentication;
 import org.miaixz.bus.auth.guard.ClientAuthenticator;
 import org.miaixz.bus.auth.protocol.oauth2.IntrospectionRequest;
 import org.miaixz.bus.auth.protocol.oauth2.IntrospectionResponse;
 import org.miaixz.bus.auth.protocol.oauth2.codec.IntrospectionCodec;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Adapts RFC 7662 Fabric HTTP messages to typed token introspection processing.
  *
  * @author Kimi Liu
  */
-public final class IntrospectionEndpoint {
+public class IntrospectionEndpoint {
 
     /**
      * Bidirectional RFC 7662 transport codec.
@@ -48,7 +49,7 @@ public final class IntrospectionEndpoint {
     /**
      * Standard HTTP client authentication strategy for this protected endpoint.
      */
-    private final ClientAuthenticator<HttpRequest> authenticator;
+    private final ClientAuthenticator<Request> authenticator;
 
     /**
      * Typed token introspection service.
@@ -69,7 +70,7 @@ public final class IntrospectionEndpoint {
      * @param errorMapper   standard endpoint error mapper
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public IntrospectionEndpoint(final IntrospectionCodec codec, final ClientAuthenticator<HttpRequest> authenticator,
+    public IntrospectionEndpoint(final IntrospectionCodec codec, final ClientAuthenticator<Request> authenticator,
             final IntrospectionService service, final OAuth2ErrorMapper errorMapper) {
         this.codec = Assert.notNull(codec, "OAuth 2.x introspection codec must not be null");
         this.authenticator = Assert
@@ -83,16 +84,13 @@ public final class IntrospectionEndpoint {
      *
      * @param request immutable Fabric HTTP request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a complete standard HTTP response
      */
-    public CompletionStage<HttpResponse> handle(
-            final HttpRequest request,
-            final Context context,
-            final Timeout.Budget timeout) {
+    public CompletionStage<Response> handle(final Request request, final Context context, final Timeout timeout) {
         Assert.notNull(request, "OAuth 2.x introspection HTTP request must not be null");
         Assert.notNull(context, "OAuth 2.x introspection context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x introspection time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x introspection timeout must not be null");
         final IntrospectionRequest decoded;
         try {
             decoded = codec.decodeRequest(request);
@@ -101,8 +99,8 @@ public final class IntrospectionEndpoint {
         }
         return authenticator.authenticate(request, context, timeout)
                 .thenCompose(authenticated -> switch (authenticated) {
-                    case Outcome.Succeeded<org.miaixz.bus.auth.resolver.ConsumerMetadata> success -> service
-                            .introspect(decoded, context.withClientId(success.value().id()), timeout)
+                    case Outcome.Succeeded<ClientAuthentication> success -> service
+                            .introspect(decoded, context.withClientId(success.value().consumer().id()), timeout)
                             .thenApply(outcome -> switch (outcome) {
                                 case Outcome.Succeeded<IntrospectionResponse> value -> codec
                                         .encodeResponse(request, value.value());
@@ -110,11 +108,13 @@ public final class IntrospectionEndpoint {
                                         .introspection(request, rejected.failure());
                                 case Outcome.Failed<IntrospectionResponse> failed -> errorMapper
                                         .introspection(request, failed.failure());
+                                default -> throw new IllegalStateException("Unsupported Outcome implementation");
                             });
-                    case Outcome.Rejected<org.miaixz.bus.auth.resolver.ConsumerMetadata> rejected -> CompletableFuture
+                    case Outcome.Rejected<ClientAuthentication> rejected -> CompletableFuture
                             .completedFuture(errorMapper.introspection(request, rejected.failure()));
-                    case Outcome.Failed<org.miaixz.bus.auth.resolver.ConsumerMetadata> failed -> CompletableFuture
+                    case Outcome.Failed<ClientAuthentication> failed -> CompletableFuture
                             .completedFuture(errorMapper.introspection(request, failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 

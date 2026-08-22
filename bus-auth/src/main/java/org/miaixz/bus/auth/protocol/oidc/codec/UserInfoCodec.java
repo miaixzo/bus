@@ -24,6 +24,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Body;
+import org.miaixz.bus.auth.FabricX.Challenge;
+import org.miaixz.bus.auth.FabricX.Headers;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2ErrorCode;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2ErrorResponse;
@@ -40,12 +45,6 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.auth.Challenge;
-import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * Encodes and decodes the OpenID Connect UserInfo protected-resource representations.
@@ -57,7 +56,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  *
  * @author Kimi Liu
  */
-public final class UserInfoCodec {
+public class UserInfoCodec {
 
     /**
      * Maximum accepted UserInfo or OAuth error JSON response size.
@@ -365,7 +364,7 @@ public final class UserInfoCodec {
      * @return standard OAuth error response or {@code null} when no challenge exists
      * @throws ValidateException if multiplicity, scheme, or registered parameters are invalid
      */
-    private static OAuth2ErrorResponse bearerChallenge(final HttpResponse response) {
+    private static OAuth2ErrorResponse bearerChallenge(final Response response) {
         final List<String> values = response.headers().values(Http.Header.WWW_AUTHENTICATE);
         if (values.isEmpty()) {
             return null;
@@ -479,7 +478,7 @@ public final class UserInfoCodec {
      * @throws IllegalArgumentException if {@code request} is {@code null}
      * @throws ValidateException        if transport, target, body, header multiplicity, or token syntax is invalid
      */
-    public UserInfoRequest decodeRequest(final HttpRequest request) {
+    public UserInfoRequest decodeRequest(final Request request) {
         Assert.notNull(request, "OpenID Connect UserInfo HTTP request must not be null");
         if (request.method() != Http.Method.GET || !Protocol.HTTPS.name.equalsIgnoreCase(request.url().scheme())) {
             throw new ValidateException("OpenID Connect UserInfo endpoint requires HTTPS GET");
@@ -502,7 +501,7 @@ public final class UserInfoCodec {
      * @param response standard UserInfo response
      * @return complete HTTP 200 JSON response
      */
-    public HttpResponse encodeResponse(final HttpRequest request, final UserInfoResponse response) {
+    public Response encodeResponse(final Request request, final UserInfoResponse response) {
         Assert.notNull(request, "OpenID Connect UserInfo HTTP request must not be null");
         Assert.notNull(response, "OpenID Connect UserInfo response must not be null");
         final Map<String, JsonValue> members = new LinkedHashMap<>();
@@ -551,9 +550,9 @@ public final class UserInfoCodec {
             members.put(name, value);
         });
         final byte[] body = jsonProvider.writeValue(new JsonValue.ObjectValue(members));
-        return HttpResponse.builder().request(request).code(Http.Status.OK).headers(
+        return Response.builder().request(request).code(Http.Status.OK).headers(
                 Headers.of(Http.Header.CACHE_CONTROL, Http.Cache.NO_STORE, Http.Header.PRAGMA, Http.Cache.NO_CACHE))
-                .body(PayloadBody.of(Payload.of(body), MediaType.APPLICATION_JSON_TYPE)).build();
+                .body(Body.of(body, MediaType.APPLICATION_JSON_TYPE)).build();
     }
 
     /**
@@ -564,8 +563,8 @@ public final class UserInfoCodec {
      * @throws IllegalArgumentException if {@code response} is {@code null}
      * @throws ValidateException        if status, media, JSON, challenge, or branch shape is invalid
      */
-    public Decoded decode(final HttpResponse response) {
-        final HttpResponse encoded = Assert.notNull(response, "OpenID Connect UserInfo HTTP response must not be null");
+    public Decoded decode(final Response response) {
+        final Response encoded = Assert.notNull(response, "OpenID Connect UserInfo HTTP response must not be null");
         try (encoded) {
             if (encoded.body().length() > MAXIMUM_JSON_BYTES) {
                 throw new ValidateException("OpenID Connect UserInfo response exceeds one MiB");
@@ -595,7 +594,7 @@ public final class UserInfoCodec {
      * @return parsed provider-neutral object
      * @throws ValidateException if media, charset, size, JSON, or root type is invalid
      */
-    private JsonValue.ObjectValue jsonObject(final HttpResponse response) {
+    private JsonValue.ObjectValue jsonObject(final Response response) {
         final MediaType media = response.body().media();
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(media)) {
             throw new ValidateException("OpenID Connect UserInfo JSON response must use application/json");
@@ -616,7 +615,7 @@ public final class UserInfoCodec {
      *
      * @author Kimi Liu
      */
-    public sealed interface Decoded permits Success, Error {
+    public interface Decoded {
 
     }
 

@@ -35,7 +35,7 @@
  * </p>
  * <p>
  * A relying-party flow binds the exact issuer, client, redirect URI, response type, scope, state, nonce, PKCE verifier,
- * and one Budget. Discovery issuer and authorization-response issuer prevent mix-up; JWK selection is unambiguous and
+ * and one Timeout. Discovery issuer and authorization-response issuer prevent mix-up; JWK selection is unambiguous and
  * algorithm/key compatible; ID Token signature, issuer, audience, azp, time, nonce, and applicable hashes are verified
  * before UserInfo; UserInfo {@code sub} must equal the verified ID Token subject. Cached JWK Sets obey response policy,
  * unknown keys trigger at most one bounded refresh, and tokens, verifiers, assertions, or claims never enter logs.

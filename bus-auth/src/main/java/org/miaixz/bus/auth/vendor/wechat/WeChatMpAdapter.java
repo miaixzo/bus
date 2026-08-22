@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class WeChatMpAdapter extends WeChatAdapterSupport {
+public class WeChatMpAdapter extends WeChatAdapterSupport {
 
     /**
      * Creates one Official Account adapter for an exact compiled Source.

@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class SecretLease implements AutoCloseable {
+public class SecretLease implements AutoCloseable {
 
     /**
      * Exclusively owned secret array, or {@code null} after close.

@@ -38,6 +38,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.cache.StateCache;
 import org.miaixz.bus.auth.guard.ReplayGuard;
@@ -51,22 +52,21 @@ import org.miaixz.bus.auth.protocol.saml.security.SamlDecryptionService;
 import org.miaixz.bus.auth.protocol.saml.security.SamlReplayValidator;
 import org.miaixz.bus.auth.protocol.saml.security.SamlSignatureValidator;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
-import org.miaixz.bus.auth.source.*;
 import org.miaixz.bus.auth.source.DriverServices;
-import org.miaixz.bus.auth.worker.KeyLoader;
+import org.miaixz.bus.auth.source.ExternalIdentity;
+import org.miaixz.bus.auth.source.SourceDriver;
+import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.worker.SourceWorker;
 import org.miaixz.bus.auth.worker.WorkerSlots;
+import org.miaixz.bus.auth.worker.loader.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.center.Sign;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Compiles one registered SAML 2.0 service-provider Source into its typed protocol runtime.
@@ -79,7 +79,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
+public class SamlClientDriver implements SourceDriver<SamlClientOptions> {
 
     /**
      * Secure maximum DOM nesting depth shared by Source codecs.
@@ -134,12 +134,12 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
                 return completed(rejected("SAML Redirect signing selection does not match Source options"));
             }
             final Instant now = timeout.clock().now();
-            final KeyLoader.Request query = new KeyLoader.Request(options.entityId(), Optional.of(keyId), SIGNING_USE,
-                    algorithm, now);
+            final KeyLoader.Request query = new KeyLoader.Request(services.registration(), options.entityId(),
+                    Optional.of(keyId), SIGNING_USE, algorithm, now);
             final CompletionStage<Outcome<KeyMaterial>> resolution;
             try {
                 resolution = Outcome.mapStage(
-                        () -> services.keyLoader().load(services.registration(), query, context, timeout),
+                        () -> services.keyLoader().load(query, context, timeout),
                         loaded -> services.keyParser().parse(services.registration(), query, loaded));
             } catch (RuntimeException exception) {
                 return completed(failed("SAML Redirect signing key resolution failed"));
@@ -157,6 +157,7 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
                                 now);
                         case Outcome.Rejected<KeyMaterial> rejected -> Outcome.rejected(rejected.failure());
                         case Outcome.Failed<KeyMaterial> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         };
     }
@@ -284,7 +285,7 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
     @Override
     public Dependencies dependencies(final Source source, final SamlClientOptions options) {
         return Dependencies.of(
-                Dependencies.Service.FABRIC_CONTEXT,
+                Dependencies.Service.FABRIC,
                 Dependencies.Service.EXECUTOR,
                 Dependencies.Service.STATE_CACHE,
                 Dependencies.Service.REPLAY_CACHE,
@@ -304,7 +305,7 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
     public SourceWorker compile(final Prepared<SamlClientOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "SAML Source preparation must not be null");
         Assert.notNull(services, "SAML Source execution services must not be null");
-        final Registration.SourceEntry record = prepared.registration();
+        final Blueprint.SourceEntry record = prepared.registration();
         final Provider provider = prepared.provider();
         final Library library = prepared.library();
         final Source source = record.resource();
@@ -395,6 +396,7 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
                 case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
                 case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
                 case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             });
         }
 
@@ -441,7 +443,7 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
          * @param capability exact declared capability object
          * @param request    exact standard request or {@code null} for Metadata
          * @param context    immutable invocation context
-         * @param timeout    shared end-to-end budget
+         * @param timeout    shared end-to-end timeout
          * @param <Q>        request type
          * @param <S>        success type
          * @return delegated typed outcome or a closed mismatch rejection
@@ -451,15 +453,15 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
                 final Capability<Q, S> capability,
                 final Q request,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             Assert.notNull(capability, "SAML Source capability must not be null");
             Assert.notNull(context, "SAML Source context must not be null");
-            Assert.notNull(timeout, "SAML Source budget must not be null");
+            Assert.notNull(timeout, "SAML Source timeout must not be null");
             if (!manifest.capabilities().contains(capability))
                 return missing();
             if (capability == SamlClientScheme.SINGLE_SIGN_ON) {
                 if (request == null || request.getClass() != AuthnRequest.class
-                        || capability.requestType() != AuthnRequest.class || capability.responseType() != UnoUrl.class)
+                        || capability.requestType() != AuthnRequest.class || capability.responseType() != Url.class)
                     return mismatch();
                 return narrow(
                         serviceProvider.singleSignOn((AuthnRequest) request, Optional.empty(), context, timeout),
@@ -467,7 +469,7 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
             }
             if (capability == SamlClientScheme.SINGLE_LOGOUT) {
                 if (request == null || request.getClass() != LogoutRequest.class
-                        || capability.requestType() != LogoutRequest.class || capability.responseType() != UnoUrl.class)
+                        || capability.requestType() != LogoutRequest.class || capability.responseType() != Url.class)
                     return mismatch();
                 return narrow(
                         serviceProvider.singleLogout((LogoutRequest) request, Optional.empty(), context, timeout),
@@ -642,12 +644,12 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
          * Validates common invocation containers.
          *
          * @param context immutable invocation context
-         * @param timeout shared end-to-end budget
+         * @param timeout shared end-to-end timeout
          * @throws IllegalArgumentException if a component is {@code null}
          */
-        private static void invocation(final Context context, final Timeout.Budget timeout) {
+        private static void invocation(final Context context, final Timeout timeout) {
             Assert.notNull(context, "SAML Source invocation context must not be null");
-            Assert.notNull(timeout, "SAML Source invocation budget must not be null");
+            Assert.notNull(timeout, "SAML Source invocation timeout must not be null");
         }
 
         /**
@@ -655,13 +657,13 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
          *
          * @param request Source-bound browser start request
          * @param context immutable invocation context
-         * @param timeout shared end-to-end budget
+         * @param timeout shared end-to-end timeout
          * @return stage containing a redirect and durable one-time correlation
          */
         private CompletionStage<Outcome<SourceWorkflow.Stage>> initiate(
                 final SourceWorkflow.Request.BrowserStart request,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             Assert.notNull(request, "SAML browser start request must not be null");
             invocation(context, timeout);
             if (!sourceId.equals(request.sourceId())
@@ -669,7 +671,7 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
                 return completed(rejected("SAML browser start does not match the registered Source callback"));
             }
             if (timeout.expired())
-                return completed(failed("SAML browser initiation has no remaining time budget"));
+                return completed(failed("SAML browser initiation has no remaining timeout"));
             final String requestId = Symbol.C_UNDERLINE + UUID.randomUUID().toString(true);
             final Instant now = timeout.clock().now();
             final Instant expiresAt = now.plus(BROWSER_INTERACTION_LIFETIME);
@@ -678,13 +680,14 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
             final AuthnRequest authenticationRequest = authenticationRequest(requestId, now);
             return serviceProvider.singleSignOn(authenticationRequest, Optional.of(requestId), context, timeout)
                     .thenCompose(outcome -> switch (outcome) {
-                        case Outcome.Succeeded<UnoUrl> success -> store(
+                        case Outcome.Succeeded<Url> success -> store(
                                 correlation,
                                 success.value().toString(),
                                 context,
                                 timeout);
-                        case Outcome.Rejected<UnoUrl> rejected -> completed(Outcome.rejected(rejected.failure()));
-                        case Outcome.Failed<UnoUrl> failed -> completed(Outcome.failed(failed.failure()));
+                        case Outcome.Rejected<Url> rejected -> completed(Outcome.rejected(rejected.failure()));
+                        case Outcome.Failed<Url> failed -> completed(Outcome.failed(failed.failure()));
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         }
 
@@ -693,13 +696,13 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
          *
          * @param request Source-bound browser callback
          * @param context immutable invocation context
-         * @param timeout shared end-to-end budget
+         * @param timeout shared end-to-end timeout
          * @return stage containing a verified external identity
          */
         private CompletionStage<Outcome<ExternalIdentity>> complete(
                 final SourceWorkflow.Request.BrowserCallback request,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             Assert.notNull(request, "SAML browser callback request must not be null");
             invocation(context, timeout);
             if (!sourceId.equals(request.sourceId())
@@ -740,6 +743,7 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
                                 Outcome.rejected(rejected.failure()));
                         case Outcome.Failed<ExpiringValue<Callback.Correlation>> failed -> completed(
                                 Outcome.failed(failed.failure()));
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         }
 
@@ -749,14 +753,14 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
          * @param correlation Source-bound correlation
          * @param location    generated SAML Redirect URL
          * @param context     immutable invocation context retained for signature parity
-         * @param timeout     shared end-to-end budget retained for deadline validation
+         * @param timeout     shared end-to-end timeout retained for deadline validation
          * @return stage containing the redirect only when atomic state creation succeeds
          */
         private CompletionStage<Outcome<SourceWorkflow.Stage>> store(
                 final Callback.Correlation correlation,
                 final String location,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             invocation(context, timeout);
             if (timeout.expired()) {
                 return completed(failed("SAML browser initiation expired before correlation storage"));
@@ -787,7 +791,7 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
          * @param relayState exact callback RelayState
          * @param decoded    original decoded SAML Response document
          * @param context    immutable invocation context
-         * @param timeout    shared end-to-end budget
+         * @param timeout    shared end-to-end timeout
          * @return stage containing the verified identity or a closed failure
          */
         private CompletionStage<Outcome<ExternalIdentity>> validateCorrelation(
@@ -795,7 +799,7 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
                 final String relayState,
                 final PostBindingCodec.Decoded<Response> decoded,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             if (stored == null) {
                 return completed(rejected("SAML browser correlation is missing or already consumed"));
             }
@@ -813,10 +817,12 @@ public final class SamlClientDriver implements SourceDriver<SamlClientOptions> {
                                 Outcome.rejected(rejected.failure()));
                         case Outcome.Failed<SamlMessageCodec.Document<Response>> failed -> completed(
                                 Outcome.failed(failed.failure()));
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     }).thenApply(outcome -> switch (outcome) {
                         case Outcome.Succeeded<Response> success -> identity(success.value(), timeout.clock().now());
                         case Outcome.Rejected<Response> rejected -> Outcome.rejected(rejected.failure());
                         case Outcome.Failed<Response> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         }
 

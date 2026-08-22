@@ -35,7 +35,7 @@ import org.miaixz.bus.crypto.Builder;
  *
  * @author Kimi Liu
  */
-public final class PkceValidator {
+public class PkceValidator {
 
     /**
      * Shared secret comparison primitive.

@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Optional;
  *
  * @author Kimi Liu
  */
-public final class ScimErrorMapper {
+public class ScimErrorMapper {
 
     /**
      * Creates a stateless SCIM error mapper.

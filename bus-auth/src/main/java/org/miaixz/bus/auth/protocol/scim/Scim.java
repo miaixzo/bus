@@ -29,7 +29,7 @@ import org.miaixz.bus.core.net.Protocol;
  *
  * @author Kimi Liu
  */
-public final class Scim {
+public class Scim {
 
     /**
      * SCIM resource creation operation key.
@@ -143,9 +143,9 @@ public final class Scim {
     public static final String SEARCH_REQUEST_SCHEMA = "urn:ietf:params:scim:api:messages:2.0:SearchRequest";
 
     /**
-     * Prevents construction of the SCIM protocol namespace.
+     * Creates a SCIM protocol namespace instance with no retained state.
      */
-    private Scim() {
+    public Scim() {
         // No initialization required.
     }
 
@@ -161,7 +161,7 @@ public final class Scim {
     /**
      * Defines standard relative endpoint paths used by SCIM HTTP bindings.
      */
-    public static final class Paths {
+    public static class Paths {
 
         /**
          * User resource collection path.
@@ -193,9 +193,9 @@ public final class Scim {
         public static final String SCHEMAS = "/Schemas";
 
         /**
-         * Prevents construction of the endpoint path registry.
+         * Creates an endpoint path registry instance.
          */
-        private Paths() {
+        public Paths() {
             // No initialization required.
         }
 
@@ -204,7 +204,7 @@ public final class Scim {
     /**
      * Defines standard resource type names used by routing and membership values.
      */
-    public static final class ResourceTypes {
+    public static class ResourceTypes {
 
         /**
          * User resource type name.
@@ -216,9 +216,9 @@ public final class Scim {
         public static final String GROUP = "Group";
 
         /**
-         * Prevents construction of the resource type registry.
+         * Creates a resource type registry instance.
          */
-        private ResourceTypes() {
+        public ResourceTypes() {
             // No initialization required.
         }
 
@@ -227,7 +227,7 @@ public final class Scim {
     /**
      * Defines standard PatchOp operation values.
      */
-    public static final class Operations {
+    public static class Operations {
 
         /**
          * Add operation value.
@@ -243,9 +243,9 @@ public final class Scim {
         public static final String REPLACE = "replace";
 
         /**
-         * Prevents construction of the PatchOp operation registry.
+         * Creates a PatchOp operation registry instance.
          */
-        private Operations() {
+        public Operations() {
             // No initialization required.
         }
 
@@ -254,7 +254,7 @@ public final class Scim {
     /**
      * Defines standard SCIM JSON attribute and message member names.
      */
-    public static final class Attributes {
+    public static class Attributes {
 
         /**
          *
@@ -640,9 +640,9 @@ public final class Scim {
         public static final String COUNTRY = "country";
 
         /**
-         * Prevents construction of the attribute-name registry.
+         * Creates an attribute-name registry instance.
          */
-        private Attributes() {
+        public Attributes() {
             // No initialization required.
         }
 

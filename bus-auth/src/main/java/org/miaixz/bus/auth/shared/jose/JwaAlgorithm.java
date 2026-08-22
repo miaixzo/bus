@@ -43,7 +43,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class JwaAlgorithm {
+public class JwaAlgorithm {
 
     /**
      * Unsecured JWS algorithm identifier, recognized solely so execution can reject it explicitly.
@@ -347,7 +347,7 @@ public final class JwaAlgorithm {
      *
      * @param name case-sensitive registration or collision-resistant identifier
      */
-    private JwaAlgorithm(final String name) {
+    public JwaAlgorithm(final String name) {
         this(name, null);
     }
 

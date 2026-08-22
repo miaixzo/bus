@@ -20,18 +20,21 @@
 package org.miaixz.bus.auth.resolver;
 
 import org.miaixz.bus.auth.shared.claim.ClaimSet;
-import org.miaixz.bus.auth.worker.identity.ClaimLoader;
+import org.miaixz.bus.auth.worker.loader.ClaimLoader;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
  * Pure parser for project-loaded claim records.
+ *
+ * @author Kimi Liu
  */
-public final class ClaimParser {
+public class ClaimParser {
 
     /**
      * Creates a stateless claim parser.
      */
     public ClaimParser() {
+        // No initialization required.
     }
 
     /**

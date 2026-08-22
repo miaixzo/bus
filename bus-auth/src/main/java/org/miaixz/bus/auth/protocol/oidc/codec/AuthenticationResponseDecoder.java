@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class AuthenticationResponseDecoder implements Decoder<Callback.Inbound, AuthorizationResponse> {
+public class AuthenticationResponseDecoder implements Decoder<Callback.Inbound, AuthorizationResponse> {
 
     /**
      * Shared strict OAuth authorization callback decoder.
@@ -109,6 +109,7 @@ public final class AuthenticationResponseDecoder implements Decoder<Callback.Inb
         return switch (oauthDecoder.decode(encoded)) {
             case AuthorizationResponseDecoder.Success success -> success.response();
             case AuthorizationResponseDecoder.Error error -> error.response();
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 

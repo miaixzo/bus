@@ -43,17 +43,27 @@ import org.miaixz.bus.extra.json.JsonValue;
  * It owns key derivation, atomic cache transitions, bounded compare-and-replace retries, and project notification. It
  * does not create project users, business sessions, cookies, authorization, or persistence records.
  * </p>
+ *
+ * @author Kimi Liu
  */
-public final class SessionCoordinator {
+public class SessionCoordinator {
 
-    /** Maximum compare-and-replace attempts for one Session transition. */
+    /**
+     * Maximum compare-and-replace attempts for one Session transition.
+     */
     private static final int MAXIMUM_REPLACE_ATTEMPTS = Normal._3;
 
-    /** Exact compiled Source identifier. */
+    /**
+     * Exact compiled Source identifier.
+     */
     private final String sourceId;
-    /** Framework protocol Session cache. */
+    /**
+     * Framework protocol Session cache.
+     */
     private final SessionCache sessionCache;
-    /** Project Session integration port. */
+    /**
+     * Project Session integration port.
+     */
     private final SessionWorker sessionWorker;
 
     /**
@@ -106,20 +116,20 @@ public final class SessionCoordinator {
      *
      * @param session active Session to establish
      * @param context invocation context
-     * @param timeout operation budget
+     * @param timeout operation timeout
      * @return establishment outcome
      */
     public CompletionStage<Outcome<Void>> establish(
             final Session session,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(session, "Authentication Session must not be null");
         Assert.notNull(context, "Authentication Session context must not be null");
-        Assert.notNull(timeout, "Authentication Session budget must not be null");
+        Assert.notNull(timeout, "Authentication Session timeout must not be null");
         final Instant now = timeout.clock().now();
         if (timeout.expired() || session.state() != Session.State.ACTIVE || !session.expiresAt().isAfter(now)) {
             return completed(
-                    Outcome.failed(failure("Authentication Session is not active within the operation budget")));
+                    Outcome.failed(failure("Authentication Session is not active within the operation timeout")));
         }
         final String cacheKey = key(session.key());
         final ExpiringValue<Session> value = new ExpiringValue<>(session, session.expiresAt());
@@ -145,14 +155,14 @@ public final class SessionCoordinator {
      * @param cacheKey derived cache key
      * @param session  requested Session
      * @param context  invocation context
-     * @param timeout  operation budget
+     * @param timeout  operation timeout
      * @return establishment outcome
      */
     private CompletionStage<Outcome<Void>> confirmExisting(
             final String cacheKey,
             final Session session,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CompletionStage<ExpiringValue<Session>> lookup;
         try {
             lookup = sessionCache.find(cacheKey);
@@ -176,7 +186,7 @@ public final class SessionCoordinator {
      * @param cacheKey derived cache key
      * @param session  established Session
      * @param context  invocation context
-     * @param timeout  operation budget
+     * @param timeout  operation timeout
      * @param rollback whether framework state was newly created
      * @return project notification outcome
      */
@@ -184,7 +194,7 @@ public final class SessionCoordinator {
             final String cacheKey,
             final Session session,
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final boolean rollback) {
         final CompletionStage<Outcome<Void>> stage;
         try {
@@ -245,16 +255,16 @@ public final class SessionCoordinator {
      *
      * @param sessionKey Session key to end
      * @param context    invocation context
-     * @param timeout    operation budget
+     * @param timeout    operation timeout
      * @return ending outcome
      */
     public CompletionStage<Outcome<End>> end(
             final Session.Key sessionKey,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(sessionKey, "Session key must not be null");
         Assert.notNull(context, "Session ending context must not be null");
-        Assert.notNull(timeout, "Session ending budget must not be null");
+        Assert.notNull(timeout, "Session ending timeout must not be null");
         return end(sessionKey, context, timeout, 1);
     }
 
@@ -263,17 +273,17 @@ public final class SessionCoordinator {
      *
      * @param sessionKey Session key
      * @param context    invocation context
-     * @param timeout    operation budget
+     * @param timeout    operation timeout
      * @param attempt    one-based attempt
      * @return ending outcome
      */
     private CompletionStage<Outcome<End>> end(
             final Session.Key sessionKey,
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final int attempt) {
         if (timeout.expired()) {
-            return completed(Outcome.failed(failure("Authentication Session ending exhausted its time budget")));
+            return completed(Outcome.failed(failure("Authentication Session ending exhausted its timeout")));
         }
         final String cacheKey = key(sessionKey);
         final CompletionStage<ExpiringValue<Session>> lookup;
@@ -296,7 +306,7 @@ public final class SessionCoordinator {
      * @param requestedKey requested Session key
      * @param stored       current cached state
      * @param context      invocation context
-     * @param timeout      operation budget
+     * @param timeout      operation timeout
      * @param attempt      one-based attempt
      * @return ending outcome
      */
@@ -305,7 +315,7 @@ public final class SessionCoordinator {
             final Session.Key requestedKey,
             final ExpiringValue<Session> stored,
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final int attempt) {
         final Instant now = timeout.clock().now();
         if (stored == null || stored.value() == null || !stored.expiresAt().isAfter(now)) {
@@ -355,7 +365,7 @@ public final class SessionCoordinator {
      * @param cacheKey derived cache key
      * @param ending   current ending state
      * @param context  invocation context
-     * @param timeout  operation budget
+     * @param timeout  operation timeout
      * @param attempt  one-based attempt
      * @return ending outcome
      */
@@ -363,7 +373,7 @@ public final class SessionCoordinator {
             final String cacheKey,
             final ExpiringValue<Session> ending,
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final int attempt) {
         final CompletionStage<Outcome<Void>> stage;
         try {
@@ -391,7 +401,7 @@ public final class SessionCoordinator {
      * @param cacheKey derived Session cache key
      * @param ending   current ending state
      * @param context  invocation context
-     * @param timeout  operation budget
+     * @param timeout  operation timeout
      * @param attempt  one-based attempt
      * @return finalization outcome
      */
@@ -399,10 +409,10 @@ public final class SessionCoordinator {
             final String cacheKey,
             final ExpiringValue<Session> ending,
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final int attempt) {
         if (timeout.expired()) {
-            return completed(Outcome.failed(failure("Authentication Session ending exhausted its time budget")));
+            return completed(Outcome.failed(failure("Authentication Session ending exhausted its timeout")));
         }
         final Session current = ending.value();
         final Session ended = new Session(current.key(), Session.State.ENDED, current.issuedAt(), current.expiresAt());
@@ -432,7 +442,7 @@ public final class SessionCoordinator {
      * @param cacheKey   derived Session cache key
      * @param sessionKey public Session key
      * @param context    invocation context
-     * @param timeout    operation budget
+     * @param timeout    operation timeout
      * @param attempt    one-based attempt
      * @return confirmed terminal outcome
      */
@@ -440,7 +450,7 @@ public final class SessionCoordinator {
             final String cacheKey,
             final Session.Key sessionKey,
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final int attempt) {
         final CompletionStage<ExpiringValue<Session>> lookup;
         try {
@@ -465,13 +475,21 @@ public final class SessionCoordinator {
 
     /**
      * Reports the framework transition observed by a logout protocol.
+     *
+     * @author Kimi Liu
      */
     public enum End {
-        /** Session transitioned to the terminal ended state. */
+        /**
+         * Session transitioned to the terminal ended state.
+         */
         ENDED,
-        /** Session was already in a terminal state. */
+        /**
+         * Session was already in a terminal state.
+         */
         ALREADY_ENDED,
-        /** No active Session existed for the requested key. */
+        /**
+         * No active Session existed for the requested key.
+         */
         MISSING
 
     }

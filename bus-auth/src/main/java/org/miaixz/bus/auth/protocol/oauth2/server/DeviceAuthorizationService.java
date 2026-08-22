@@ -28,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.cache.DeviceCodeCache;
@@ -47,7 +48,6 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Issues RFC 8628 device and user codes and creates their initial pending atomic state.
@@ -59,7 +59,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class DeviceAuthorizationService {
+public class DeviceAuthorizationService {
 
     /**
      * Minimum entropy applied to generated device codes.
@@ -186,23 +186,25 @@ public final class DeviceAuthorizationService {
      *
      * @param request standard device authorization request
      * @param context invocation context carrying an authenticated or identified client
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return asynchronous standard device authorization response outcome
      */
     public CompletionStage<Outcome<DeviceAuthorizationResponse>> deviceAuthorization(
             final DeviceAuthorizationRequest request,
+            final ConsumerMetadata client,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OAuth 2.x device authorization request must not be null");
+        Assert.notNull(client, "OAuth 2.x device authorization client must not be null");
         Assert.notNull(context, "OAuth 2.x device authorization context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x device authorization time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x device authorization timeout must not be null");
         if (timeout.expired()) {
             return completed(
                     Outcome.failed(
                             failure(
                                     ErrorCode._408,
                                     OAuth2ErrorCode.TEMPORARILY_UNAVAILABLE,
-                                    "OAuth 2.x device authorization has no remaining time budget")));
+                                    "OAuth 2.x device authorization has no remaining timeout")));
         }
         if (!options.grantTypesSupported().contains(GrantType.DEVICE_CODE)
                 || options.deviceAuthorizationEndpoint().isEmpty() || options.deviceVerificationUri().isEmpty()) {
@@ -213,7 +215,7 @@ public final class DeviceAuthorizationService {
                                     OAuth2ErrorCode.UNSUPPORTED_GRANT_TYPE,
                                     "OAuth 2.x device authorization is disabled by the Provider")));
         }
-        final String clientId = context.clientId().getOrNull();
+        final String clientId = client.id();
         if (clientId == null || !clientId.equals(request.clientId())) {
             return completed(
                     Outcome.rejected(
@@ -223,71 +225,24 @@ public final class DeviceAuthorizationService {
                                     "OAuth 2.x device authorization client binding is invalid")));
         }
 
-        final CompletionStage<Outcome<ConsumerMetadata>> resolution;
-        try {
-            resolution = Outcome.mapStage(
-                    () -> services.consumerLoader().load(services.registration(), clientId, context, timeout),
-                    loaded -> services.consumerParser().parse(services.registration(), clientId, loaded));
-        } catch (RuntimeException exception) {
+        if (!client.grantTypes().contains(GrantType.DEVICE_CODE)) {
             return completed(
-                    Outcome.failed(
+                    Outcome.rejected(
                             failure(
-                                    ErrorCode._500,
-                                    OAuth2ErrorCode.SERVER_ERROR,
-                                    "OAuth 2.x device authorization client resolution failed")));
+                                    ErrorCode._400,
+                                    OAuth2ErrorCode.UNAUTHORIZED_CLIENT,
+                                    "OAuth 2.x client is not registered for the device authorization grant")));
         }
-        return resolution
-                .handle(
-                        (outcome, thrown) -> thrown == null && outcome != null ? outcome
-                                : Outcome.<ConsumerMetadata>failed(
-                                        failure(
-                                                ErrorCode._500,
-                                                OAuth2ErrorCode.SERVER_ERROR,
-                                                "OAuth 2.x device authorization client resolution failed")))
-                .thenCompose(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<ConsumerMetadata> success -> {
-                        final ConsumerMetadata client = success.value();
-                        if (client == null || !clientId.equals(client.id())) {
-                            yield completed(
-                                    Outcome.rejected(
-                                            failure(
-                                                    ErrorCode._401,
-                                                    OAuth2ErrorCode.INVALID_CLIENT,
-                                                    "OAuth 2.x device authorization client is unavailable")));
-                        }
-                        if (!client.grantTypes().contains(GrantType.DEVICE_CODE.value())) {
-                            yield completed(
-                                    Outcome.rejected(
-                                            failure(
-                                                    ErrorCode._400,
-                                                    OAuth2ErrorCode.UNAUTHORIZED_CLIENT,
-                                                    "OAuth 2.x client is not registered for the device authorization grant")));
-                        }
-                        final List<String> scope = request.scope().isEmpty() ? List.of()
-                                : request.scope().getOrNull().values();
-                        if (!validScope(scope, client)) {
-                            yield completed(
-                                    Outcome.rejected(
-                                            failure(
-                                                    ErrorCode._400,
-                                                    OAuth2ErrorCode.INVALID_SCOPE,
-                                                    "OAuth 2.x device authorization scope is not allowed")));
-                        }
-                        yield create(clientId, scope, timeout, 1);
-                    }
-                    case Outcome.Rejected<ConsumerMetadata> rejected -> completed(
-                            Outcome.rejected(
-                                    failure(
-                                            rejected.failure().error(),
-                                            OAuth2ErrorCode.INVALID_CLIENT,
-                                            "OAuth 2.x device authorization client was rejected")));
-                    case Outcome.Failed<ConsumerMetadata> failed -> completed(
-                            Outcome.failed(
-                                    failure(
-                                            failed.failure().error(),
-                                            OAuth2ErrorCode.SERVER_ERROR,
-                                            "OAuth 2.x device authorization client resolution failed")));
-                });
+        final List<String> scope = request.scope().isEmpty() ? List.of() : request.scope().getOrNull().values();
+        if (!validScope(scope, client)) {
+            return completed(
+                    Outcome.rejected(
+                            failure(
+                                    ErrorCode._400,
+                                    OAuth2ErrorCode.INVALID_SCOPE,
+                                    "OAuth 2.x device authorization scope is not allowed")));
+        }
+        return create(clientId, scope, timeout, 1);
     }
 
     /**
@@ -295,14 +250,14 @@ public final class DeviceAuthorizationService {
      *
      * @param clientId verified client identifier
      * @param scope    validated requested scope
-     * @param timeout  shared operation budget
+     * @param timeout  shared operation timeout
      * @param attempt  one-based create attempt number
      * @return asynchronous device authorization response outcome
      */
     private CompletionStage<Outcome<DeviceAuthorizationResponse>> create(
             final String clientId,
             final List<String> scope,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final int attempt) {
         if (timeout.expired()) {
             return completed(
@@ -310,7 +265,7 @@ public final class DeviceAuthorizationService {
                             failure(
                                     ErrorCode._408,
                                     OAuth2ErrorCode.TEMPORARILY_UNAVAILABLE,
-                                    "OAuth 2.x device authorization has no remaining time budget")));
+                                    "OAuth 2.x device authorization has no remaining timeout")));
         }
         final String deviceCode = deviceCode();
         final String userCode = userCode();
@@ -350,7 +305,7 @@ public final class DeviceAuthorizationService {
                                                 "OAuth 2.x device authorization code allocation failed")));
                     }
                     final String verificationUri = options.deviceVerificationUri().getOrNull();
-                    final String complete = UnoUrl.parse(verificationUri).newBuilder()
+                    final String complete = Url.parse(verificationUri).newBuilder()
                             .query(OAuth2.Parameters.USER_CODE, userCode).build().toString();
                     return completed(
                             Outcome.succeeded(
