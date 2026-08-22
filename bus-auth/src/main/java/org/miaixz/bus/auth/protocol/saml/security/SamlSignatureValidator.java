@@ -54,7 +54,7 @@ import org.miaixz.bus.auth.protocol.saml.server.SamlServerOptions;
 import org.miaixz.bus.auth.resolver.CertificateMaterial;
 import org.miaixz.bus.auth.shared.SecurityBaseline;
 import org.miaixz.bus.auth.source.DriverServices;
-import org.miaixz.bus.auth.worker.CertificateLoader;
+import org.miaixz.bus.auth.worker.loader.CertificateLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Algorithm;
@@ -79,7 +79,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class SamlSignatureValidator {
+public class SamlSignatureValidator {
 
     /**
      * SAML certificate use passed to the external certificate loader.
@@ -286,11 +286,11 @@ public final class SamlSignatureValidator {
      * Validates common asynchronous invocation arguments.
      *
      * @param context immutable invocation context
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      */
-    private static void invocation(final Context context, final Timeout.Budget timeout) {
+    private static void invocation(final Context context, final Timeout timeout) {
         Assert.notNull(context, "SAML signature context must not be null");
-        Assert.notNull(timeout, "SAML signature budget must not be null");
+        Assert.notNull(timeout, "SAML signature timeout must not be null");
     }
 
     /**
@@ -306,6 +306,7 @@ public final class SamlSignatureValidator {
             case Outcome.Succeeded<Void> ignored -> Outcome.succeeded(value);
             case Outcome.Rejected<Void> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<Void> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         };
     }
 
@@ -359,14 +360,14 @@ public final class SamlSignatureValidator {
      * @param document         original metadata document
      * @param expectedEntityId exact configured entityID
      * @param context          immutable invocation context
-     * @param timeout          shared end-to-end budget
+     * @param timeout          shared end-to-end timeout
      * @return stage containing the unchanged trusted document or closed failure
      */
     public CompletionStage<Outcome<SamlMessageCodec.Document<EntityDescriptor>>> validateMetadata(
             final SamlMessageCodec.Document<EntityDescriptor> document,
             final String expectedEntityId,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(document, "SAML Metadata document must not be null");
         Assert.notBlank(expectedEntityId, "Expected SAML Metadata entityID must not be blank");
         invocation(context, timeout);
@@ -390,14 +391,14 @@ public final class SamlSignatureValidator {
      * @param document original Response document
      * @param options  trusted service-provider Source options
      * @param context  immutable invocation context
-     * @param timeout  shared end-to-end budget
+     * @param timeout  shared end-to-end timeout
      * @return stage containing the unchanged trusted document or closed failure
      */
     public CompletionStage<Outcome<SamlMessageCodec.Document<Response>>> validateResponse(
             final SamlMessageCodec.Document<Response> document,
             final SamlClientOptions options,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(document, "SAML Response document must not be null");
         Assert.notNull(options, "SAML Source options must not be null");
         invocation(context, timeout);
@@ -434,14 +435,14 @@ public final class SamlSignatureValidator {
      * @param decoded decoded request retaining exact signed input
      * @param options identity-provider signature policy
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the unchanged decoded request or closed failure
      */
     public CompletionStage<Outcome<RedirectBindingCodec.Decoded<AuthnRequest>>> validateAuthnRequest(
             final RedirectBindingCodec.Decoded<AuthnRequest> decoded,
             final SamlServerOptions options,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(decoded, "SAML Authentication Request must not be null");
         Assert.notNull(options, "SAML Provider options must not be null");
         return validateRedirect(
@@ -459,14 +460,14 @@ public final class SamlSignatureValidator {
      * @param decoded decoded request retaining exact signed input
      * @param options identity-provider signature policy
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the unchanged decoded request or closed failure
      */
     public CompletionStage<Outcome<RedirectBindingCodec.Decoded<LogoutRequest>>> validateLogoutRequest(
             final RedirectBindingCodec.Decoded<LogoutRequest> decoded,
             final SamlServerOptions options,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(decoded, "SAML Logout Request must not be null");
         Assert.notNull(options, "SAML Provider options must not be null");
         return validateRedirect(
@@ -484,14 +485,14 @@ public final class SamlSignatureValidator {
      * @param document decrypted assertion document
      * @param options  trusted service-provider Source options
      * @param context  immutable invocation context
-     * @param timeout  shared end-to-end budget
+     * @param timeout  shared end-to-end timeout
      * @return stage containing the unchanged trusted assertion document or closed failure
      */
     CompletionStage<Outcome<SamlMessageCodec.Document<Assertion>>> validateAssertion(
             final SamlMessageCodec.Document<Assertion> document,
             final SamlClientOptions options,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final Assertion assertion = Assert.notNull(document, "SAML Assertion document must not be null").message();
         final String issuer = issuer(assertion.issuer(), "SAML Assertion");
         if (!options.identityProviderEntityId().equals(issuer)) {
@@ -520,7 +521,7 @@ public final class SamlSignatureValidator {
      * @param rootSigned   whether a root Signature is present
      * @param assertionIds signed or potentially signed plain assertion IDs
      * @param context      invocation context
-     * @param timeout      shared budget
+     * @param timeout      shared timeout
      * @return stage containing the original trusted document or failure
      */
     private CompletionStage<Outcome<SamlMessageCodec.Document<Response>>> validateResponseSignatures(
@@ -530,7 +531,7 @@ public final class SamlSignatureValidator {
             final boolean rootSigned,
             final List<String> assertionIds,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         CompletionStage<Outcome<Void>> stage = rootSigned
                 ? validateXml(
                         document.xml(),
@@ -557,6 +558,7 @@ public final class SamlSignatureValidator {
                             timeout);
                     case Outcome.Rejected<Void> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<Void> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
             }
         }
@@ -571,7 +573,7 @@ public final class SamlSignatureValidator {
      * @param configuredAlgorithm exact configured signature algorithm
      * @param issuer              certificate authority coordinate
      * @param context             invocation context
-     * @param timeout             shared budget
+     * @param timeout             shared timeout
      * @param <T>                 request message type
      * @return unchanged decoded value or closed failure
      */
@@ -581,7 +583,7 @@ public final class SamlSignatureValidator {
             final String configuredAlgorithm,
             final String issuer,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         invocation(context, timeout);
         if (!decoded.signature().isPresent()) {
             return required ? completed(rejected("SAML Redirect request requires a signature"))
@@ -597,6 +599,7 @@ public final class SamlSignatureValidator {
                     : rejected("SAML Redirect signature is invalid");
             case Outcome.Rejected<PublicKey> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<PublicKey> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -610,7 +613,7 @@ public final class SamlSignatureValidator {
      * @param configuredAlgorithm optional exact profile algorithm
      * @param required            whether the signature is mandatory
      * @param context             invocation context
-     * @param timeout             shared budget
+     * @param timeout             shared timeout
      * @return success or closed validation/resolution failure
      */
     private CompletionStage<Outcome<Void>> validateXml(
@@ -621,7 +624,7 @@ public final class SamlSignatureValidator {
             final String configuredAlgorithm,
             final boolean required,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (expectedId == null || !ids.contains(expectedId)) {
             return completed(rejected("Signed SAML element requires a unique registered XML ID"));
         }
@@ -648,6 +651,7 @@ public final class SamlSignatureValidator {
                     success.value()) ? Outcome.succeeded(null) : rejected("SAML XML Signature is invalid");
             case Outcome.Rejected<PublicKey> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<PublicKey> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -656,19 +660,19 @@ public final class SamlSignatureValidator {
      *
      * @param issuer  trusted SAML issuer
      * @param context invocation context
-     * @param timeout shared budget
+     * @param timeout shared timeout
      * @return stage containing the cleaned leaf public key
      */
     private CompletionStage<Outcome<PublicKey>> certificate(
             final String issuer,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (timeout.expired())
-            return completed(failed("SAML signature validation has no remaining time budget"));
-        final CertificateLoader.Request request = new CertificateLoader.Request(issuer, SIGNING_USE,
-                timeout.clock().now());
+            return completed(failed("SAML signature validation has no remaining timeout"));
+        final CertificateLoader.Request request = new CertificateLoader.Request(services.registration(), issuer,
+                SIGNING_USE, timeout.clock().now());
         final CompletionStage<Outcome<CertificateMaterial>> resolution = Outcome.mapStage(
-                () -> services.certificateLoader().load(services.registration(), request, context, timeout),
+                () -> services.certificateLoader().load(request, context, timeout),
                 loaded -> services.certificateParser().parse(services.registration(), request, loaded));
         if (resolution == null)
             return completed(failed("SAML certificate loader returned no result stage"));
@@ -692,6 +696,7 @@ public final class SamlSignatureValidator {
                 }
                 case Outcome.Rejected<CertificateMaterial> rejected -> Outcome.rejected(rejected.failure());
                 case Outcome.Failed<CertificateMaterial> failed -> Outcome.failed(failed.failure());
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             };
         });
     }

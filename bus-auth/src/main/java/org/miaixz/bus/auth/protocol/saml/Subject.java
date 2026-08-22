@@ -73,7 +73,7 @@ public record Subject(Optional<Identifier> identifier, List<SubjectConfirmation>
      *
      * @author Kimi Liu
      */
-    public sealed interface Identifier permits NamedIdentifier, BaseIdentifier, EncryptedIdentifier {
+    public interface Identifier {
 
     }
 

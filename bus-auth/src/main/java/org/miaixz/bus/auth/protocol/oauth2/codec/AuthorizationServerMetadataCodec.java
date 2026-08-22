@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Body;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
@@ -37,10 +40,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * Validates and translates OAuth 2.0 Authorization Server Metadata defined by RFC 8414.
@@ -51,7 +50,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  *
  * @author Kimi Liu
  */
-public final class AuthorizationServerMetadataCodec {
+public class AuthorizationServerMetadataCodec {
 
     /**
      * Maximum accepted metadata document size in bytes.
@@ -79,7 +78,7 @@ public final class AuthorizationServerMetadataCodec {
      * @param response response to inspect
      * @throws ValidateException if the transport representation is invalid
      */
-    private static void validateResponse(final HttpResponse response) {
+    private static void validateResponse(final Response response) {
         if (response.code() != Http.Status.OK) {
             throw new ValidateException("OAuth 2.x metadata endpoint must return HTTP 200");
         }
@@ -295,7 +294,7 @@ public final class AuthorizationServerMetadataCodec {
      * @throws IllegalArgumentException if request is {@code null}
      * @throws ValidateException        if method, URL, or body is invalid
      */
-    public void validateRequest(final HttpRequest request) {
+    public void validateRequest(final Request request) {
         Assert.notNull(request, "OAuth 2.x metadata HTTP request must not be null");
         if (request.method() != Http.Method.GET) {
             throw new ValidateException("OAuth 2.x metadata resource requires HTTP GET");
@@ -317,7 +316,7 @@ public final class AuthorizationServerMetadataCodec {
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if an extension uses a registered metadata name
      */
-    public HttpResponse encodeResponse(final HttpRequest request, final AuthorizationServerMetadata metadata) {
+    public Response encodeResponse(final Request request, final AuthorizationServerMetadata metadata) {
         Assert.notNull(request, "OAuth 2.x metadata HTTP request must not be null");
         Assert.notNull(metadata, "OAuth 2.x authorization server metadata must not be null");
         final Map<String, JsonValue> members = new LinkedHashMap<>();
@@ -389,8 +388,8 @@ public final class AuthorizationServerMetadataCodec {
                 JwaAlgorithm::name);
         metadata.extensions().values().forEach((name, value) -> extension(members, name, value));
         final byte[] body = jsonProvider.writeValue(new JsonValue.ObjectValue(members));
-        return HttpResponse.builder().request(request).code(Http.Status.OK)
-                .body(PayloadBody.of(Payload.of(body), MediaType.APPLICATION_JSON_TYPE)).build();
+        return Response.builder().request(request).code(Http.Status.OK)
+                .body(Body.of(body, MediaType.APPLICATION_JSON_TYPE)).build();
     }
 
     /**
@@ -401,8 +400,8 @@ public final class AuthorizationServerMetadataCodec {
      * @throws IllegalArgumentException if response is {@code null}
      * @throws ValidateException        if status, media, JSON shape, or a registered member is invalid
      */
-    public AuthorizationServerMetadata decode(final HttpResponse response) {
-        final HttpResponse encoded = Assert.notNull(response, "OAuth 2.x metadata HTTP response must not be null");
+    public AuthorizationServerMetadata decode(final Response response) {
+        final Response encoded = Assert.notNull(response, "OAuth 2.x metadata HTTP response must not be null");
         try (encoded) {
             validateResponse(encoded);
             final JsonValue value = jsonProvider.readValue(encoded.bytes(MAXIMUM_JSON_BYTES));

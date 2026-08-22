@@ -23,6 +23,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Body;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.protocol.oauth2.TokenErrorResponse;
 import org.miaixz.bus.auth.protocol.oauth2.TokenResponse;
 import org.miaixz.bus.auth.protocol.oauth2.codec.TokenResponseDecoder;
@@ -37,17 +40,13 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * Composes the OAuth token response codecs with the OpenID Connect ID Token response member.
  *
  * @author Kimi Liu
  */
-public final class OpenIdTokenResponseCodec {
+public class OpenIdTokenResponseCodec {
 
     /**
      * Maximum accepted token endpoint JSON document size.
@@ -89,7 +88,7 @@ public final class OpenIdTokenResponseCodec {
      *
      * @param response response to validate
      */
-    private static void validateMedia(final HttpResponse response) {
+    private static void validateMedia(final Response response) {
         if (response.body().length() > MAXIMUM_JSON_BYTES) {
             throw new ValidateException("OpenID Connect token response exceeds the maximum JSON size");
         }
@@ -109,8 +108,8 @@ public final class OpenIdTokenResponseCodec {
      * @param response owned token endpoint response
      * @return OpenID Connect success or standard token error branch
      */
-    public Decoded decode(final HttpResponse response) {
-        final HttpResponse encoded = Assert.notNull(response, "OpenID Connect token HTTP response must not be null");
+    public Decoded decode(final Response response) {
+        final Response encoded = Assert.notNull(response, "OpenID Connect token HTTP response must not be null");
         try (encoded) {
             validateMedia(encoded);
             final JsonValue value = jsonProvider.readValue(encoded.bytes(MAXIMUM_JSON_BYTES));
@@ -152,6 +151,7 @@ public final class OpenIdTokenResponseCodec {
                 yield new Success(
                         new OpenIdTokenResponse((TokenResponse) success.response(), new IdToken(text.value())));
             }
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -162,10 +162,10 @@ public final class OpenIdTokenResponseCodec {
      * @param response OpenID Connect token response
      * @return complete HTTP 200 JSON response
      */
-    public HttpResponse encode(final HttpRequest request, final OpenIdTokenResponse response) {
+    public Response encode(final Request request, final OpenIdTokenResponse response) {
         Assert.notNull(request, "OpenID Connect token HTTP request must not be null");
         Assert.notNull(response, "OpenID Connect token response must not be null");
-        try (HttpResponse oauth = oauthEncoder.encode(request, response.tokenResponse())) {
+        try (Response oauth = oauthEncoder.encode(request, response.tokenResponse())) {
             final JsonValue value = jsonProvider.readValue(oauth.bytes(MAXIMUM_JSON_BYTES));
             if (!(value instanceof JsonValue.ObjectValue object)) {
                 throw new ValidateException("OAuth token response encoder returned a non-object JSON body");
@@ -177,8 +177,8 @@ public final class OpenIdTokenResponseCodec {
                 throw new ValidateException("OAuth token response unexpectedly contains id_token");
             }
             final byte[] body = jsonProvider.writeValue(new JsonValue.ObjectValue(members));
-            return HttpResponse.builder().request(request).code(Http.Status.OK).headers(oauth.headers())
-                    .body(PayloadBody.of(Payload.of(body), MediaType.APPLICATION_JSON_TYPE)).build();
+            return Response.builder().request(request).code(Http.Status.OK).headers(oauth.headers())
+                    .body(Body.of(body, MediaType.APPLICATION_JSON_TYPE)).build();
         }
     }
 
@@ -187,7 +187,7 @@ public final class OpenIdTokenResponseCodec {
      *
      * @author Kimi Liu
      */
-    public sealed interface Decoded permits Success, Error {
+    public interface Decoded {
 
     }
 

@@ -23,6 +23,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationRequest;
@@ -30,15 +32,13 @@ import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationRequestDecoder;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationResponseEncoder;
 import org.miaixz.bus.auth.protocol.oauth2.grant.AuthorizationCodeIssuer;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Adapts a Fabric HTTP authorization request to the typed OAuth 2.x authorization service.
  *
  * @author Kimi Liu
  */
-public final class AuthorizationEndpoint {
+public class AuthorizationEndpoint {
 
     /**
      * Strict authorization request decoder.
@@ -82,16 +82,13 @@ public final class AuthorizationEndpoint {
      *
      * @param request immutable Fabric HTTP request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a complete standard HTTP response
      */
-    public CompletionStage<HttpResponse> handle(
-            final HttpRequest request,
-            final Context context,
-            final Timeout.Budget timeout) {
+    public CompletionStage<Response> handle(final Request request, final Context context, final Timeout timeout) {
         Assert.notNull(request, "OAuth 2.x authorization HTTP request must not be null");
         Assert.notNull(context, "OAuth 2.x authorization context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x authorization time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x authorization timeout must not be null");
         final AuthorizationRequest decoded;
         try {
             decoded = decoder.decode(request);
@@ -105,6 +102,7 @@ public final class AuthorizationEndpoint {
                     .authorization(request, decoded, rejected.failure());
             case Outcome.Failed<AuthorizationCodeIssuer.Result> failed -> errorMapper
                     .authorization(request, decoded, failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 

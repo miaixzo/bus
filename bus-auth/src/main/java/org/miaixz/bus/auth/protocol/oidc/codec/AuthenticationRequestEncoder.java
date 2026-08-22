@@ -21,6 +21,8 @@ package org.miaixz.bus.auth.protocol.oidc.codec;
 
 import java.net.URI;
 
+import org.miaixz.bus.auth.FabricX.Url;
+import org.miaixz.bus.auth.FabricX.UrlBuilder;
 import org.miaixz.bus.auth.protocol.oidc.AuthenticationRequest;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.core.lang.Assert;
@@ -30,7 +32,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Appends OpenID Connect Authentication Request parameters to an already encoded OAuth authorization URL.
@@ -42,7 +43,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class AuthenticationRequestEncoder {
+public class AuthenticationRequestEncoder {
 
     /**
      * Externally selected provider-neutral JSON implementation.
@@ -66,7 +67,7 @@ public final class AuthenticationRequestEncoder {
      * @param url candidate OAuth authorization URL
      * @throws ValidateException if transport, authority, userinfo, fragment, or query ownership is invalid
      */
-    private static void validateBase(final UnoUrl url) {
+    private static void validateBase(final Url url) {
         final URI uri = url.toUri();
         if (!uri.isAbsolute() || !Protocol.HTTPS.name.equalsIgnoreCase(uri.getScheme()) || uri.getHost() == null
                 || uri.getRawUserInfo() != null || uri.getRawFragment() != null) {
@@ -89,7 +90,7 @@ public final class AuthenticationRequestEncoder {
      * @param value provider-neutral scalar value
      * @throws ValidateException if a registered name or non-scalar JSON value is supplied
      */
-    private static void extension(final UnoUrl.Builder url, final String name, final JsonValue value) {
+    private static void extension(final UrlBuilder url, final String name, final JsonValue value) {
         Assert.notBlank(name, "OpenID Connect Authentication extension name must not be blank");
         if (registered(name)) {
             throw new ValidateException("OpenID Connect Authentication extension duplicates a registered parameter");
@@ -127,11 +128,11 @@ public final class AuthenticationRequestEncoder {
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if the base URL or an extension violates the query contract
      */
-    public UnoUrl encode(final UnoUrl oauthAuthorizationUrl, final AuthenticationRequest request) {
+    public Url encode(final Url oauthAuthorizationUrl, final AuthenticationRequest request) {
         Assert.notNull(oauthAuthorizationUrl, "OpenID Connect OAuth authorization URL must not be null");
         Assert.notNull(request, "OpenID Connect Authentication Request must not be null");
         validateBase(oauthAuthorizationUrl);
-        final UnoUrl.Builder url = oauthAuthorizationUrl.newBuilder();
+        final UrlBuilder url = oauthAuthorizationUrl.newBuilder();
         request.nonce().ifPresent(value -> url.query(OpenIdConnect.Parameters.NONCE, value));
         request.display().ifPresent(value -> url.query(OpenIdConnect.Parameters.DISPLAY, value.value()));
         request.prompt().ifPresent(value -> url.query(OpenIdConnect.Parameters.PROMPT, value.format()));

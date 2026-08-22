@@ -33,7 +33,7 @@
  * </p>
  * <p>
  * Each operation binds the configured endpoint, TLS mode, connection identity, message ID, DN, search base, filter,
- * requested attributes, size and time limits, and one Budget. StartTLS must complete before credentials are sent and
+ * requested attributes, size and time limits, and one Timeout. StartTLS must complete before credentials are sent and
  * the same trusted connection identifier records the TCP-to-TLS transition. Responses must match the request message ID
  * and operation; referrals, SASL mechanisms, controls, and extensions are accepted only when configured. Bind
  * credentials, assertion values, entries, and returned attributes remain operation-scoped and never enter logs or

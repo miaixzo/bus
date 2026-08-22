@@ -55,7 +55,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class IdTokenVerifier {
+public class IdTokenVerifier {
 
     /**
      * Codec that performs JOSE verification and typed claim conversion.
@@ -91,13 +91,13 @@ public final class IdTokenVerifier {
      *
      * @param maximumAge      optional maximum age in seconds
      * @param authenticatedAt optional authentication instant
-     * @param timeout         shared operation budget carrying the common clock
+     * @param timeout         shared operation timeout carrying the common clock
      * @throws ValidateException if auth_time is missing or too old
      */
     private static void validateAuthenticationAge(
             final Long maximumAge,
             final Instant authenticatedAt,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (maximumAge == null) {
             return;
         }
@@ -196,18 +196,18 @@ public final class IdTokenVerifier {
      *
      * @param request explicit ID Token verification inputs
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return completed stage containing verified typed claims or a closed failure
      */
     public CompletionStage<Outcome<IdTokenClaims>> verify(
             final Request request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OpenID Connect ID Token verification request must not be null");
         Assert.notNull(context, "OpenID Connect ID Token verification context must not be null");
-        Assert.notNull(timeout, "OpenID Connect ID Token verification budget must not be null");
+        Assert.notNull(timeout, "OpenID Connect ID Token verification timeout must not be null");
         try {
-            timeGuard.validateBudget(timeout);
+            timeGuard.validateTimeout(timeout);
             final IdTokenCodec.Decoded decoded = codec.decode(request.idToken(), request.verification());
             validate(request, decoded, timeout);
             return completed(Outcome.succeeded(decoded.claims()));
@@ -230,10 +230,10 @@ public final class IdTokenVerifier {
      *
      * @param request explicit expected values and related artifacts
      * @param decoded cryptographically verified JWT and typed claims
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @throws ValidateException if any required binding fails
      */
-    private void validate(final Request request, final IdTokenCodec.Decoded decoded, final Timeout.Budget timeout) {
+    private void validate(final Request request, final IdTokenCodec.Decoded decoded, final Timeout timeout) {
         final IdTokenClaims claims = decoded.claims();
         issuerValidator.validate(request.expectedIssuer(), claims.issuer());
         if (!claims.audience().contains(request.clientId())) {

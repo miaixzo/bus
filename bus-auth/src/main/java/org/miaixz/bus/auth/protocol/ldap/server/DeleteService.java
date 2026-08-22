@@ -31,6 +31,7 @@ import org.miaixz.bus.auth.protocol.ldap.*;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -38,7 +39,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class DeleteService {
+public class DeleteService {
 
     /**
      * Compiled server-role Source identifier.
@@ -89,6 +90,7 @@ public final class DeleteService {
                     : Outcome.succeeded(new LdapMessage(messageId, succeeded.value(), List.of()));
             case Outcome.Rejected<DeleteResponse> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<DeleteResponse> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         };
     }
 
@@ -101,7 +103,7 @@ public final class DeleteService {
      */
     private static Outcome<LdapMessage> local(final int messageId, final LdapResultCode code) {
         final LdapResult result = new LdapResult(code, new DistinguishedName(Normal.EMPTY),
-                "The LDAP Delete request was not accepted.", org.miaixz.bus.core.lang.Optional.empty());
+                "The LDAP Delete request was not accepted.", Optional.empty());
         return Outcome.succeeded(new LdapMessage(Math.max(0, messageId), new DeleteResponse(result), List.of()));
     }
 
@@ -131,16 +133,16 @@ public final class DeleteService {
      *
      * @param message complete Delete request message
      * @param context immutable invocation context with trusted connection state
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a correlated DeleteResponse or closed failure
      */
     public CompletionStage<Outcome<LdapMessage>> delete(
             final LdapMessage message,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(message, "LDAP Delete message must not be null");
         Assert.notNull(context, "LDAP Delete context must not be null");
-        Assert.notNull(timeout, "LDAP Delete time budget must not be null");
+        Assert.notNull(timeout, "LDAP Delete timeout must not be null");
         if (!(message.protocolOp() instanceof DeleteRequest request) || message.messageId() <= 0) {
             return completed(local(message.messageId(), LdapResultCode.PROTOCOL_ERROR));
         }
@@ -149,7 +151,7 @@ public final class DeleteService {
         }
         Assert.isTrue(context.network().connection().isPresent(), "LDAP Delete requires a trusted connection snapshot");
         if (timeout.expired()) {
-            return completed(Outcome.failed(failure("LDAP Delete time budget expired")));
+            return completed(Outcome.failed(failure("LDAP Delete timeout expired")));
         }
         final CompletionStage<Outcome<DeleteResponse>> stage;
         try {

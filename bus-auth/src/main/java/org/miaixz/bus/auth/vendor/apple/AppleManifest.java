@@ -24,7 +24,10 @@ import java.util.Set;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
+import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oidc.client.OpenIdClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
@@ -39,14 +42,13 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Declares the frozen Sign in with Apple OpenID Connect Vendor manifest.
  *
  * @author Kimi Liu
  */
-public final class AppleManifest implements VariantManifest<AppleOptions> {
+public class AppleManifest implements VariantManifest<AppleOptions> {
 
     /**
      * Stable platform routing identifier shared by registration, catalog, and runtime compilation.
@@ -87,7 +89,7 @@ public final class AppleManifest implements VariantManifest<AppleOptions> {
      * Complete immutable endpoint, policy, scope, capability, form, and deviation manifest.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OIDC,
-            List.of("name", "email"),
+            VariantManifest.Pkce.DISABLED, Credential.Type.PRIVATE_KEY, List.of("name", "email"),
             new VendorTargets(Optional.of(
                     fixed("https://appleid.apple.com/auth/authorize", Http.Method.GET, Endpoint.Authentication.NONE)),
                     Optional.of(
@@ -141,8 +143,24 @@ public final class AppleManifest implements VariantManifest<AppleOptions> {
             final String value,
             final Http.Method method,
             final Endpoint.Authentication authentication) {
-        return new VendorTargets.Fixed(new Endpoint(UnoUrl.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
+        return new VendorTargets.Fixed(new Endpoint(Url.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
                 Set.of(authentication), Optional.empty(), TlsClientAuth.NONE));
+    }
+
+    /**
+     * Returns the one-time Apple client form including Developer Team and signing-key identifiers.
+     *
+     * @return immutable Sign in with Apple client configuration form
+     */
+    @Override
+    public Scheme.Form form() {
+        return VariantManifest.Forms.extended(
+                false,
+                List.of(
+                        VariantManifest.Forms
+                                .field("teamId", "Apple Developer Team identifier", Scheme.Form.Type.TEXT, true),
+                        VariantManifest.Forms
+                                .field("keyId", "Apple signing key identifier", Scheme.Form.Type.TEXT, true)));
     }
 
     /**

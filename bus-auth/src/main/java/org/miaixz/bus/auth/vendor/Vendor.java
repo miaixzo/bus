@@ -20,8 +20,13 @@
 package org.miaixz.bus.auth.vendor;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
+import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.extra.json.JsonValue;
 
 /**
  * Provides the stable identifiers and immutable presentation metadata used by registered third-party platforms.
@@ -32,12 +37,12 @@ import org.miaixz.bus.core.lang.Assert;
  *
  * @author Kimi Liu
  */
-public final class Vendor {
+public class Vendor {
 
     /**
-     * Prevents construction of the Vendor namespace.
+     * Creates a Vendor namespace instance with no retained state.
      */
-    private Vendor() {
+    public Vendor() {
         // No initialization required.
     }
 
@@ -66,6 +71,67 @@ public final class Vendor {
      */
     public static VendorDirectory directory() {
         return module().directory();
+    }
+
+    /**
+     * Carries one short-lived client-side Vendor configuration command.
+     * <p>
+     * The credential lease contains caller-supplied plaintext only until {@link VendorConfigurer#configure} hands the
+     * material to the project {@code CredentialWriter}. This command is never a persistent Options value and must not
+     * be logged or serialized.
+     * </p>
+     *
+     * @param vendor     exact Vendor platform identifier
+     * @param variant    exact platform variant identifier
+     * @param clientId   public client identifier issued by the external platform
+     * @param credential short-lived plaintext client secret or private key lease
+     * @param callback   exact registered callback, empty only for direct variants
+     * @param scopes     requested scopes, or empty to use manifest defaults
+     * @param parameters immutable manifest-form parameter values
+     * @author Kimi Liu
+     */
+    public record Configuration(Id vendor, Variant variant, String clientId, SecretLease credential,
+            Optional<String> callback, List<String> scopes, JsonValue.ObjectValue parameters) {
+
+        /**
+         * Validates and freezes one short-lived Vendor configuration command.
+         */
+        public Configuration {
+            vendor = Assert.notNull(vendor, "Vendor configuration platform must not be null");
+            variant = Assert.notNull(variant, "Vendor configuration variant must not be null");
+            clientId = Assert.notBlank(clientId, "Vendor configuration client id must not be blank");
+            credential = Assert.notNull(credential, "Vendor configuration credential lease must not be null");
+            callback = Assert.notNull(callback, "Vendor configuration callback container must not be null");
+            callback = Optional.ofNullable(callback.getOrNull());
+            if (callback.isPresent()) {
+                Assert.notBlank(callback.getOrNull(), "Vendor configuration callback must not be blank");
+            }
+            Assert.notNull(scopes, "Vendor configuration scopes must not be null");
+            scopes = List.copyOf(scopes);
+            parameters = new JsonValue.ObjectValue(
+                    Assert.notNull(parameters, "Vendor configuration parameters must not be null").values());
+        }
+
+        /**
+         * Creates the ordinary client configuration shape used by fixed Vendor platforms.
+         *
+         * @param vendor     exact Vendor platform identifier
+         * @param variant    exact platform variant identifier
+         * @param clientId   public client identifier
+         * @param credential short-lived plaintext credential lease
+         * @param callback   exact registered callback
+         * @return configuration using manifest default scopes and no platform parameters
+         */
+        public static Configuration client(
+                final Id vendor,
+                final Variant variant,
+                final String clientId,
+                final SecretLease credential,
+                final String callback) {
+            return new Configuration(vendor, variant, clientId, credential, Optional.ofNullable(callback), List.of(),
+                    new JsonValue.ObjectValue(Map.of()));
+        }
+
     }
 
     /**

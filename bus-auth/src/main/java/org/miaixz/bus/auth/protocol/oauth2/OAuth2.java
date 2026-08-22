@@ -30,7 +30,7 @@ import org.miaixz.bus.core.net.Protocol;
  *
  * @author Kimi Liu
  */
-public final class OAuth2 {
+public class OAuth2 {
 
     /**
      * OAuth authorization endpoint operation key.
@@ -60,9 +60,9 @@ public final class OAuth2 {
             .standard(Protocol.OAUTH2, "authorization_server_metadata");
 
     /**
-     * Prevents instantiation of the OAuth 2.x operation namespace.
+     * Creates an OAuth 2.x operation namespace instance with no retained state.
      */
-    private OAuth2() {
+    public OAuth2() {
         // No initialization required.
     }
 
@@ -86,8 +86,10 @@ public final class OAuth2 {
 
     /**
      * Defines standard OAuth request and response member names used on the wire.
+     *
+     * @author Kimi Liu
      */
-    public static final class Parameters {
+    public static class Parameters {
 
         /**
          * Standard access token member name.
@@ -129,6 +131,18 @@ public final class OAuth2 {
          * Standard client identifier parameter name.
          */
         public static final String CLIENT_ID = "client_id";
+        /**
+         * Standard JWT client assertion parameter name.
+         */
+        public static final String CLIENT_ASSERTION = "client_assertion";
+        /**
+         * Standard JWT client assertion type parameter name.
+         */
+        public static final String CLIENT_ASSERTION_TYPE = "client_assertion_type";
+        /**
+         * Standard RFC 7523 JWT bearer client assertion type value.
+         */
+        public static final String JWT_BEARER_ASSERTION_TYPE = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
         /**
          * Standard client secret parameter name.
          */
@@ -235,9 +249,9 @@ public final class OAuth2 {
         public static final String VERIFICATION_URI_COMPLETE = "verification_uri_complete";
 
         /**
-         * Prevents instantiation of the OAuth parameter namespace.
+         * Creates an OAuth request-parameter namespace instance.
          */
-        private Parameters() {
+        public Parameters() {
             // No initialization required.
         }
 
@@ -245,8 +259,10 @@ public final class OAuth2 {
 
     /**
      * Defines OAuth authorization response-mode values published by authorization-server metadata.
+     *
+     * @author Kimi Liu
      */
-    public static final class ResponseModes {
+    public static class ResponseModes {
 
         /**
          * Query-encoded authorization response mode.
@@ -254,9 +270,9 @@ public final class OAuth2 {
         public static final String QUERY = "query";
 
         /**
-         * Prevents instantiation of the OAuth response-mode namespace.
+         * Creates an OAuth response-mode namespace instance.
          */
-        private ResponseModes() {
+        public ResponseModes() {
             // No initialization required.
         }
 
@@ -264,8 +280,10 @@ public final class OAuth2 {
 
     /**
      * Defines standard RFC 8414 authorization-server metadata member names.
+     *
+     * @author Kimi Liu
      */
-    public static final class Metadata {
+    public static class Metadata {
 
         /**
          * Authorization endpoint metadata member name.
@@ -373,9 +391,9 @@ public final class OAuth2 {
         public static final String UI_LOCALES_SUPPORTED = "ui_locales_supported";
 
         /**
-         * Prevents instantiation of the OAuth metadata namespace.
+         * Creates an OAuth metadata-name namespace instance.
          */
-        private Metadata() {
+        public Metadata() {
             // No initialization required.
         }
 

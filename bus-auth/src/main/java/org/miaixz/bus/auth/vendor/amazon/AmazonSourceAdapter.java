@@ -28,6 +28,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.*;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationRequestEncoder;
@@ -53,8 +55,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements Login with Amazon browser authentication while preserving standard OAuth 2.0 public operations.
@@ -66,7 +66,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class AmazonSourceAdapter implements VendorAdapter {
+public class AmazonSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted authority recorded for verified Login with Amazon identity evidence.
@@ -272,6 +272,7 @@ public final class AmazonSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -354,7 +355,7 @@ public final class AmazonSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing Amazon response objects
@@ -364,10 +365,10 @@ public final class AmazonSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Login with Amazon capability must not be null");
         Assert.notNull(context, "Login with Amazon invocation context must not be null");
-        Assert.notNull(timeout, "Login with Amazon invocation budget must not be null");
+        Assert.notNull(timeout, "Login with Amazon invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return missing();
         }
@@ -399,13 +400,13 @@ public final class AmazonSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated state and optional PKCE challenge
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return standard-client-produced authorization redirect
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         try {
             final var challenge = initiation.codeChallenge().getOrNull();
             if ((options.pkce() && (challenge == null || !PkceMethod.S256.equals(challenge.method())))
@@ -421,11 +422,11 @@ public final class AmazonSourceAdapter implements VendorAdapter {
                     challenge == null ? Optional.empty() : Optional.of(PkceMethod.S256.value()), emptyObject());
             return standardAdapter.invoke(OAuth2ClientScheme.AUTHORIZATION, authorization, context, timeout)
                     .thenApply(outcome -> switch (outcome) {
-                        case Outcome.Succeeded<org.miaixz.bus.fabric.UnoUrl> success -> Outcome.succeeded(
+                        case Outcome.Succeeded<Url> success -> Outcome.succeeded(
                                 new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                        case Outcome.Rejected<org.miaixz.bus.fabric.UnoUrl> rejected -> Outcome
-                                .rejected(rejected.failure());
-                        case Outcome.Failed<org.miaixz.bus.fabric.UnoUrl> failed -> Outcome.failed(failed.failure());
+                        case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                        case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (RuntimeException cause) {
             return completed(rejected("Login with Amazon authorization request is invalid"));
@@ -445,6 +446,7 @@ public final class AmazonSourceAdapter implements VendorAdapter {
                     .orElseThrow(() -> new ValidateException("Login with Amazon authorization success requires state"));
             case AuthorizationResponseDecoder.Error error -> error.response().state()
                     .orElseThrow(() -> new ValidateException("Login with Amazon authorization error requires state"));
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -453,13 +455,13 @@ public final class AmazonSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback correlation and optional PKCE verifier
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final AuthorizationResponseDecoder.Decoded decoded;
         try {
             decoded = callback(completion.callback());
@@ -487,6 +489,7 @@ public final class AmazonSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<TokenResponse> success -> identity(success.value(), context, timeout);
             case Outcome.Rejected<TokenResponse> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<TokenResponse> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -495,13 +498,13 @@ public final class AmazonSourceAdapter implements VendorAdapter {
      *
      * @param request standard authorization-code or refresh-token request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return unchanged standard token response after Amazon profile validation
      */
     private CompletionStage<Outcome<TokenResponse>> token(
             final TokenRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!request.extensions().values().isEmpty() || !valid(request.grant())) {
             return completed(rejected("Login with Amazon token endpoint does not support the requested grant type"));
         }
@@ -512,6 +515,7 @@ public final class AmazonSourceAdapter implements VendorAdapter {
                                     : rejected("Login with Amazon token endpoint returned a non-OAuth token response");
                     case Outcome.Rejected<TokenEndpointResponse> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<TokenEndpointResponse> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -557,13 +561,13 @@ public final class AmazonSourceAdapter implements VendorAdapter {
      *
      * @param token   standard token response containing sensitive bearer material
      * @param context immutable invocation context retained for operation consistency
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final TokenResponse token,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "Login with Amazon identity context must not be null");
         return CompletableFuture.supplyAsync(() -> tokenInfo(token.accessToken(), timeout), services.executor())
                 .thenCompose(info -> switch (info) {
@@ -574,6 +578,7 @@ public final class AmazonSourceAdapter implements VendorAdapter {
                     case Outcome.Rejected<JsonValue.ObjectValue> rejected -> completed(
                             Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<JsonValue.ObjectValue> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -581,10 +586,10 @@ public final class AmazonSourceAdapter implements VendorAdapter {
      * Retrieves the Amazon token information resource using its registered query parameter.
      *
      * @param accessToken sensitive Bearer access token
-     * @param timeout     shared end-to-end budget
+     * @param timeout     shared end-to-end timeout
      * @return strict JSON token information object
      */
-    private Outcome<JsonValue.ObjectValue> tokenInfo(final String accessToken, final Timeout.Budget timeout) {
+    private Outcome<JsonValue.ObjectValue> tokenInfo(final String accessToken, final Timeout timeout) {
         final String endpoint = variant.targets().resolve(options).introspection().getOrNull().url().toString();
         return resource(endpoint, accessToken, true, timeout);
     }
@@ -609,15 +614,16 @@ public final class AmazonSourceAdapter implements VendorAdapter {
      * Retrieves and maps the verified Login with Amazon customer profile.
      *
      * @param accessToken sensitive Bearer access token
-     * @param timeout     shared end-to-end budget
+     * @param timeout     shared end-to-end timeout
      * @return external identity or a closed platform failure
      */
-    private Outcome<ExternalIdentity> profile(final String accessToken, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final String accessToken, final Timeout timeout) {
         final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
         return switch (resource(endpoint, accessToken, false, timeout)) {
             case Outcome.Succeeded<JsonValue.ObjectValue> success -> profile(success.value(), timeout);
             case Outcome.Rejected<JsonValue.ObjectValue> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<JsonValue.ObjectValue> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         };
     }
 
@@ -628,7 +634,7 @@ public final class AmazonSourceAdapter implements VendorAdapter {
      * @param timeout shared clock used to timestamp verification evidence
      * @return verified external identity or a safe rejection
      */
-    private Outcome<ExternalIdentity> profile(final JsonValue.ObjectValue profile, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final JsonValue.ObjectValue profile, final Timeout timeout) {
         try {
             final CustomerProfile customer = CustomerProfile.decode(profile);
             if (customer.error()) {
@@ -650,27 +656,26 @@ public final class AmazonSourceAdapter implements VendorAdapter {
      * @param endpoint    fixed manifest-owned resource endpoint
      * @param accessToken sensitive access token
      * @param queryToken  whether the token uses the Amazon tokeninfo query parameter instead of Bearer authentication
-     * @param timeout     shared end-to-end budget
+     * @param timeout     shared end-to-end timeout
      * @return strict JSON object or a safely classified failure
      */
     private Outcome<JsonValue.ObjectValue> resource(
             final String endpoint,
             final String accessToken,
             final boolean queryToken,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "Login with Amazon resource request has no remaining time budget");
+            return failed(ErrorCode._408, "Login with Amazon resource request has no remaining timeout");
         }
         try {
-            final var builder = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy());
+            final var builder = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
+                    .method(Http.Method.GET).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON);
             if (queryToken) {
                 builder.query(OAuth2.Parameters.ACCESS_TOKEN, accessToken);
             } else {
                 builder.header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + accessToken);
             }
-            try (HttpResponse response = builder.execute()) {
+            try (Response response = builder.execute()) {
                 if (response.code() == Http.Status.TOO_MANY_REQUESTS) {
                     return failed(ErrorCode._429, "Login with Amazon resource endpoint rate limited the request");
                 }

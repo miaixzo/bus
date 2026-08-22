@@ -28,6 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.miaixz.bus.auth.FabricX.Body;
+import org.miaixz.bus.auth.FabricX.Headers;
+import org.miaixz.bus.auth.FabricX.HeadersBuilder;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.protocol.scim.Group;
 import org.miaixz.bus.auth.protocol.scim.Resource;
 import org.miaixz.bus.auth.protocol.scim.Scim;
@@ -43,11 +48,6 @@ import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonRecordVerifier;
 import org.miaixz.bus.extra.json.JsonRecordVerifier.Member;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * Converts RFC 7643 User and Group resources between typed protocol objects and provider-neutral JSON.
@@ -58,7 +58,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  *
  * @author Kimi Liu
  */
-public final class ScimResourceCodec {
+public class ScimResourceCodec {
 
     /**
      * Verifies the exact core User document after declared extension objects are removed.
@@ -147,7 +147,7 @@ public final class ScimResourceCodec {
      * @return parsed JSON object
      */
     static JsonValue.ObjectValue object(
-            final PayloadBody body,
+            final Body body,
             final JsonProvider provider,
             final long maximumBytes,
             final int maximumDepth) {
@@ -942,8 +942,8 @@ public final class ScimResourceCodec {
      * @param <R>          requested resource type
      * @return typed resource owning any inbound password lease
      */
-    public <R extends Resource> R decode(final HttpRequest request, final Class<R> resourceType) {
-        final HttpRequest encoded = Assert.notNull(request, "SCIM resource HTTP request must not be null");
+    public <R extends Resource> R decode(final Request request, final Class<R> resourceType) {
+        final Request encoded = Assert.notNull(request, "SCIM resource HTTP request must not be null");
         final Class<R> type = Assert.notNull(resourceType, "SCIM resource class must not be null");
         if (type != User.class && type != Group.class) {
             throw new ValidateException("SCIM resource decoder supports only User and Group");
@@ -951,7 +951,7 @@ public final class ScimResourceCodec {
         if (encoded.method() != Http.Method.POST && encoded.method() != Http.Method.PUT) {
             throw new ValidateException("SCIM resource body requires HTTP POST or PUT");
         }
-        final PayloadBody body = encoded.body();
+        final Body body = encoded.body();
         try (body) {
             return type.cast(decodeResource(object(body, jsonProvider, maximumBytes, maximumDepth), type));
         }
@@ -965,8 +965,8 @@ public final class ScimResourceCodec {
      * @param status   HTTP 200 or 201 status
      * @return complete SCIM JSON response
      */
-    public HttpResponse encode(final HttpRequest request, final Resource resource, final int status) {
-        final HttpRequest origin = Assert.notNull(request, "SCIM resource origin request must not be null");
+    public Response encode(final Request request, final Resource resource, final int status) {
+        final Request origin = Assert.notNull(request, "SCIM resource origin request must not be null");
         final Resource value = Assert.notNull(resource, "SCIM response resource must not be null");
         if (status != Http.Status.OK && status != Http.Status.CREATED) {
             throw new ValidateException("SCIM resource success status must be 200 or 201");
@@ -982,7 +982,7 @@ public final class ScimResourceCodec {
         if (status == Http.Status.CREATED && (meta == null || meta.location().isEmpty())) {
             throw new ValidateException("SCIM 201 response requires meta.location");
         }
-        final Headers.Builder headers = Headers.builder().add(Http.Header.CACHE_CONTROL, Http.Cache.NO_STORE)
+        final HeadersBuilder headers = Headers.builder().add(Http.Header.CACHE_CONTROL, Http.Cache.NO_STORE)
                 .add(Http.Header.PRAGMA, Http.Cache.NO_CACHE);
         if (meta != null && !meta.location().isEmpty()) {
             headers.add(Http.Header.LOCATION, meta.location().getOrThrow());
@@ -991,8 +991,8 @@ public final class ScimResourceCodec {
             headers.add(Http.Header.ETAG, meta.version().getOrThrow());
         }
         final byte[] body = bytes(encodeResource(value), jsonProvider, maximumBytes, maximumDepth);
-        return HttpResponse.builder().request(origin).code(status).headers(headers.build())
-                .body(PayloadBody.of(Payload.of(body), MediaType.APPLICATION_SCIM_JSON_TYPE)).build();
+        return Response.builder().request(origin).code(status).headers(headers.build())
+                .body(Body.of(body, MediaType.APPLICATION_SCIM_JSON_TYPE)).build();
     }
 
     /**
@@ -1001,8 +1001,8 @@ public final class ScimResourceCodec {
      * @param request originating Fabric request
      * @return HTTP 204 response without a body
      */
-    public HttpResponse deleted(final HttpRequest request) {
-        return HttpResponse.builder().request(Assert.notNull(request, "SCIM delete origin request must not be null"))
+    public Response deleted(final Request request) {
+        return Response.builder().request(Assert.notNull(request, "SCIM delete origin request must not be null"))
                 .code(Http.Status.NO_CONTENT)
                 .headers(
                         Headers.of(

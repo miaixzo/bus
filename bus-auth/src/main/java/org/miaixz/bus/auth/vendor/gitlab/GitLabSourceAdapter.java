@@ -25,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -43,6 +43,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -54,8 +55,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements the GitLab.com OAuth application and Source identity runtime.
@@ -67,7 +66,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class GitLabSourceAdapter implements VendorAdapter {
+public class GitLabSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted GitLab authority recorded in federated identity evidence.
@@ -443,6 +442,7 @@ public final class GitLabSourceAdapter implements VendorAdapter {
                     .succeeded(success.value() == null ? null : responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -543,7 +543,7 @@ public final class GitLabSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing GitLab-private identity models
@@ -553,10 +553,10 @@ public final class GitLabSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "GitLab capability must not be null");
         Assert.notNull(context, "GitLab invocation context must not be null");
-        Assert.notNull(timeout, "GitLab invocation budget must not be null");
+        Assert.notNull(timeout, "GitLab invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return missing();
         }
@@ -581,16 +581,16 @@ public final class GitLabSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated browser correlation and PKCE challenge
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return exact redirect and state correlation
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "GitLab authorization context must not be null");
         if (timeout.expired()) {
-            return completed(failed(ErrorCode._408, "GitLab authorization has no remaining time budget"));
+            return completed(failed(ErrorCode._408, "GitLab authorization has no remaining timeout"));
         }
         try {
             final var challenge = initiation.codeChallenge().getOrNull();
@@ -626,13 +626,13 @@ public final class GitLabSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback and PKCE verifier
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified GitLab identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CallbackWire values;
         try {
             values = callback(completion.callback());
@@ -655,13 +655,16 @@ public final class GitLabSourceAdapter implements VendorAdapter {
         final TokenRequest request = new TokenRequest(grant, emptyObject());
         return Outcome
                 .mapStage(
-                        () -> services.secretLoader()
-                                .load(services.registration(), options.credential(), context, timeout),
+                        () -> services.secretLoader().load(
+                                new SecretLoader.Request(services.registration(), options.credential()),
+                                context,
+                                timeout),
                         loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> authenticate(request, success.value(), timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -670,19 +673,20 @@ public final class GitLabSourceAdapter implements VendorAdapter {
      *
      * @param request standard authorization-code token request
      * @param secret  owned Client Secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> authenticate(
             final TokenRequest request,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try (secret) {
                 return switch (sendToken(request, secret, timeout)) {
                     case Outcome.Succeeded<TokenResponse> success -> profile(success.value(), timeout);
                     case Outcome.Rejected<TokenResponse> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<TokenResponse> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 };
             } catch (RuntimeException cause) {
                 return failed(ErrorCode._502, "GitLab authentication completion failed");
@@ -695,20 +699,22 @@ public final class GitLabSourceAdapter implements VendorAdapter {
      *
      * @param request standard token request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return standard token response
      */
     private CompletionStage<Outcome<TokenResponse>> token(
             final TokenRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!valid(request)) {
             return completed(rejected("GitLab token request does not match the registered grant contract"));
         }
         return Outcome
                 .mapStage(
-                        () -> services.secretLoader()
-                                .load(services.registration(), options.credential(), context, timeout),
+                        () -> services.secretLoader().load(
+                                new SecretLoader.Request(services.registration(), options.credential()),
+                                context,
+                                timeout),
                         loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> CompletableFuture.supplyAsync(() -> {
@@ -720,6 +726,7 @@ public final class GitLabSourceAdapter implements VendorAdapter {
                     }, services.executor());
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -728,24 +735,23 @@ public final class GitLabSourceAdapter implements VendorAdapter {
      *
      * @param request validated standard token request
      * @param secret  open Client Secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return standard token response or safely classified failure
      */
     private Outcome<TokenResponse> sendToken(
             final TokenRequest request,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "GitLab token request has no remaining time budget");
+                return failed(ErrorCode._408, "GitLab token request has no remaining timeout");
             }
             body = formCodec.encode(tokenParameters(request, secret));
             final var endpoint = variant.targets().resolve(options).token().getOrNull();
-            final HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+            final Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.POST)
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute();
             return decoded(tokenResponseDecoder.decode(response));
         } catch (RuntimeException cause) {
@@ -793,6 +799,7 @@ public final class GitLabSourceAdapter implements VendorAdapter {
                     ? validate(token)
                     : failed(ErrorCode._502, "GitLab token endpoint returned an unsupported success type");
             case TokenResponseDecoder.Error error -> tokenError(error);
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -826,20 +833,22 @@ public final class GitLabSourceAdapter implements VendorAdapter {
      *
      * @param request standard revocation request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return standard empty revocation success
      */
     private CompletionStage<Outcome<Void>> revoke(
             final RevocationRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!valid(request)) {
             return completed(rejected("GitLab revocation token type hint is unsupported"));
         }
         return Outcome
                 .mapStage(
-                        () -> services.secretLoader()
-                                .load(services.registration(), options.credential(), context, timeout),
+                        () -> services.secretLoader().load(
+                                new SecretLoader.Request(services.registration(), options.credential()),
+                                context,
+                                timeout),
                         loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> CompletableFuture.supplyAsync(() -> {
@@ -851,6 +860,7 @@ public final class GitLabSourceAdapter implements VendorAdapter {
                     }, services.executor());
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -859,17 +869,17 @@ public final class GitLabSourceAdapter implements VendorAdapter {
      *
      * @param request validated standard revocation request
      * @param secret  open Client Secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return empty success or classified failure
      */
     private Outcome<Void> sendRevocation(
             final RevocationRequest request,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "GitLab revocation has no remaining time budget");
+                return failed(ErrorCode._408, "GitLab revocation has no remaining timeout");
             }
             final List<NameValue> parameters = new ArrayList<>();
             parameters.add(new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()));
@@ -881,10 +891,9 @@ public final class GitLabSourceAdapter implements VendorAdapter {
             }
             body = formCodec.encode(parameters);
             final var endpoint = variant.targets().resolve(options).revocation().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.POST)
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 return revocation(response);
             }
@@ -901,7 +910,7 @@ public final class GitLabSourceAdapter implements VendorAdapter {
      * @param response owned revocation response
      * @return empty success or safely classified failure
      */
-    private Outcome<Void> revocation(final HttpResponse response) {
+    private Outcome<Void> revocation(final Response response) {
         if (response.code() == Http.Status.OK) {
             if (response.body().length() == 0L) {
                 return Outcome.succeeded(null);
@@ -946,20 +955,18 @@ public final class GitLabSourceAdapter implements VendorAdapter {
      * Retrieves and maps the private GitLab current-user resource.
      *
      * @param token   standard token response from the immediately preceding Source completion
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
-    private Outcome<ExternalIdentity> profile(final TokenResponse token, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final TokenResponse token, final Timeout timeout) {
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "GitLab profile request has no remaining time budget");
+                return failed(ErrorCode._408, "GitLab profile request has no remaining timeout");
             }
             final var endpoint = variant.targets().resolve(options).userInfo().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.GET)
-                    .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + token.accessToken())
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute()) {
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.GET)
+                    .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + token.accessToken()).execute()) {
                 if (response.code() != Http.Status.OK) {
                     return status(response.code(), "GitLab current-user endpoint rejected or failed the request");
                 }
@@ -1058,7 +1065,7 @@ public final class GitLabSourceAdapter implements VendorAdapter {
      * @param response response whose body remains open
      * @return strict provider-neutral JSON object
      */
-    private JsonValue.ObjectValue object(final HttpResponse response) {
+    private JsonValue.ObjectValue object(final Response response) {
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("GitLab response must use application/json");
         }

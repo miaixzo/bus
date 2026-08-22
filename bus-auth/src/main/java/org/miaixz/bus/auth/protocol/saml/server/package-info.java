@@ -34,7 +34,7 @@
  * </p>
  * <p>
  * Requests are bound to issuer, destination, service endpoint, binding, request ID, issue instant, requested context,
- * exact registered ACS, and one Budget. Responses bind InResponseTo, destination, audience, recipient, subject
+ * exact registered ACS, and one Timeout. Responses bind InResponseTo, destination, audience, recipient, subject
  * confirmation, session, and time conditions. Signing and encryption use allowed algorithms and active keys; metadata
  * advertises only those operational bindings and keys. Unsafe or untrusted requests terminate without reflecting
  * attacker-controlled XML, identifiers, attributes, signatures, keys, or stack information.

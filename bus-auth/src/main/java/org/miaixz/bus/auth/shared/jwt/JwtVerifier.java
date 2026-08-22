@@ -43,7 +43,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class JwtVerifier {
+public class JwtVerifier {
 
     /**
      * Runtime-supplied provider-neutral JSON codec.
@@ -104,6 +104,7 @@ public final class JwtVerifier {
         return switch (verification) {
             case Signed signed -> verifySigned(compact, signed);
             case Encrypted encrypted -> verifyEncrypted(compact, encrypted);
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -173,7 +174,7 @@ public final class JwtVerifier {
      *
      * @author Kimi Liu
      */
-    public sealed interface Verification permits Signed, Encrypted {
+    public interface Verification {
 
     }
 

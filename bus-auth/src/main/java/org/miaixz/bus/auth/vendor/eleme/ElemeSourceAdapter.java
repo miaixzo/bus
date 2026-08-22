@@ -26,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -42,6 +43,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.data.id.UUID;
@@ -55,9 +57,6 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.auth.HttpAuth;
 
 /**
  * Implements Eleme service-provider authentication while preserving its standard OAuth 2.0 operations.
@@ -69,7 +68,7 @@ import org.miaixz.bus.fabric.protocol.http.auth.HttpAuth;
  *
  * @author Kimi Liu
  */
-public final class ElemeSourceAdapter implements VendorAdapter {
+public class ElemeSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted Eleme authority recorded in federated identity evidence.
@@ -444,6 +443,7 @@ public final class ElemeSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -544,7 +544,7 @@ public final class ElemeSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing Eleme private response objects
@@ -554,10 +554,10 @@ public final class ElemeSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Eleme capability must not be null");
         Assert.notNull(context, "Eleme invocation context must not be null");
-        Assert.notNull(timeout, "Eleme invocation budget must not be null");
+        Assert.notNull(timeout, "Eleme invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return missing();
         }
@@ -585,6 +585,7 @@ public final class ElemeSourceAdapter implements VendorAdapter {
                                 case Outcome.Succeeded<?> success -> validateToken((TokenResponse) success.value());
                                 case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
                                 case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+                                default -> throw new IllegalStateException("Unsupported Outcome implementation");
                             }),
                     capability.responseType());
         }
@@ -596,16 +597,16 @@ public final class ElemeSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated state without nonce or PKCE material
      * @param context    immutable invocation context retained for operation consistency
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return exact redirect and state correlation
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "Eleme authorization context must not be null");
         if (timeout.expired()) {
-            return completed(failed(ErrorCode._408, "Eleme authorization request has no remaining time budget"));
+            return completed(failed(ErrorCode._408, "Eleme authorization request has no remaining timeout"));
         }
         if (initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(
@@ -640,6 +641,7 @@ public final class ElemeSourceAdapter implements VendorAdapter {
                     .orElseThrow(() -> new ValidateException("Eleme authorization success requires state"));
             case AuthorizationResponseDecoder.Error error -> error.response().state()
                     .orElseThrow(() -> new ValidateException("Eleme authorization error requires state"));
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -648,13 +650,13 @@ public final class ElemeSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback correlation without PKCE verifier
      * @param context    immutable invocation context used for one secret resolution
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified merchant identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final AuthorizationResponseDecoder.Decoded decoded;
         try {
             decoded = callback(completion.callback());
@@ -676,13 +678,16 @@ public final class ElemeSourceAdapter implements VendorAdapter {
                 Optional.of(options.clientId()), Optional.empty()), emptyObject());
         return Outcome
                 .mapStage(
-                        () -> services.secretLoader()
-                                .load(services.registration(), options.credential(), context, timeout),
+                        () -> services.secretLoader().load(
+                                new SecretLoader.Request(services.registration(), options.credential()),
+                                context,
+                                timeout),
                         loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> authenticate(request, success.value(), timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -691,13 +696,13 @@ public final class ElemeSourceAdapter implements VendorAdapter {
      *
      * @param request exact standard authorization-code token request
      * @param secret  owned client-secret lease closed by this method's asynchronous boundary
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified merchant identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> authenticate(
             final TokenRequest request,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try (secret) {
                 return switch (token(request, secret, timeout)) {
@@ -707,6 +712,7 @@ public final class ElemeSourceAdapter implements VendorAdapter {
                             timeout);
                     case Outcome.Rejected<TokenResponse> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<TokenResponse> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 };
             } catch (RuntimeException cause) {
                 return failed(ErrorCode._502, "Eleme authentication completion failed");
@@ -719,32 +725,30 @@ public final class ElemeSourceAdapter implements VendorAdapter {
      *
      * @param request exact standard token request
      * @param secret  still-open client-secret lease shared with the merchant RPC
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return validated standard token response or closed protocol failure
      */
-    private Outcome<TokenResponse> token(
-            final TokenRequest request,
-            final SecretLease secret,
-            final Timeout.Budget timeout) {
+    private Outcome<TokenResponse> token(final TokenRequest request, final SecretLease secret, final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Eleme token request has no remaining time budget");
+                return failed(ErrorCode._408, "Eleme token request has no remaining timeout");
             }
             body = formCodec.encode(tokenRequestEncoder.encode(request));
             final var endpoint = variant.targets().resolve(options).token().getOrNull();
-            final String authorization = HttpAuth
-                    .basic(formComponent(options.clientId()), formComponent(new String(secret.material()))).value();
-            final var response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.POST).header(Http.Header.AUTHORIZATION, authorization)
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+            final String authorization = FabricX
+                    .basic(formComponent(options.clientId()), formComponent(new String(secret.material())));
+            final var response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.POST)
+                    .header(Http.Header.AUTHORIZATION, authorization)
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute();
             return switch (tokenResponseDecoder.decode(response)) {
                 case TokenResponseDecoder.Success success -> success.response() instanceof TokenResponse token
                         ? validateToken(token)
                         : failed(ErrorCode._502, "Eleme token endpoint returned an unsupported success type");
                 case TokenResponseDecoder.Error error -> tokenError(error);
+                default -> throw new IllegalStateException("Unsupported protocol model implementation");
             };
         } catch (RuntimeException cause) {
             return failed(ErrorCode._502, "Eleme token endpoint request failed");
@@ -760,20 +764,20 @@ public final class ElemeSourceAdapter implements VendorAdapter {
      *
      * @param accessToken sensitive Bearer access token returned by the token endpoint
      * @param secret      still-open client-secret lease used only for the RPC signature
-     * @param timeout     shared end-to-end budget
+     * @param timeout     shared end-to-end timeout
      * @return verified external merchant identity or a closed platform failure
      */
     private Outcome<ExternalIdentity> merchant(
             final String accessToken,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         byte[] body = null;
         byte[] signatureInput = null;
         byte[] appKeyJson = null;
         byte[] timestampJson = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Eleme merchant request has no remaining time budget");
+                return failed(ErrorCode._408, "Eleme merchant request has no remaining timeout");
             }
             final long timestamp = timeout.clock().now().toEpochMilli();
             final String requestId = UUID.randomUUID().toString();
@@ -800,11 +804,9 @@ public final class ElemeSourceAdapter implements VendorAdapter {
 
             final var endpoint = variant.targets().resolve(options).userInfo().getOrNull();
             final MediaType json = MediaType.APPLICATION_JSON_TYPE.withCharset(Charset.UTF_8);
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
-                    .body(body, json).execute()) {
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.POST)
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).body(body, json).execute()) {
                 return merchant(response, requestId, timeout);
             }
         } catch (RuntimeException cause) {
@@ -825,10 +827,7 @@ public final class ElemeSourceAdapter implements VendorAdapter {
      * @param timeout   shared clock used for evidence verification time
      * @return verified identity, expected platform rejection, or upstream failure
      */
-    private Outcome<ExternalIdentity> merchant(
-            final HttpResponse response,
-            final String requestId,
-            final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> merchant(final Response response, final String requestId, final Timeout timeout) {
         if (response.code() == Http.Status.TOO_MANY_REQUESTS) {
             return failed(ErrorCode._429, "Eleme merchant endpoint rate limited the request");
         }
@@ -857,7 +856,7 @@ public final class ElemeSourceAdapter implements VendorAdapter {
     private Outcome<ExternalIdentity> merchant(
             final JsonValue.ObjectValue object,
             final String requestId,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         try {
             merchantEnvelope(object);
             if (!requestId.equals(requiredString(object, "id"))) {
@@ -886,7 +885,7 @@ public final class ElemeSourceAdapter implements VendorAdapter {
      * @param timeout shared clock used for evidence verification time
      * @return verified external identity
      */
-    private Outcome<ExternalIdentity> identity(final JsonValue.ObjectValue result, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> identity(final JsonValue.ObjectValue result, final Timeout timeout) {
         final Merchant merchant = Merchant.decode(result);
         final Evidence evidence = new Evidence(Evidence.Type.FEDERATED, Evidence.Strength.SINGLE_FACTOR,
                 new Evidence.Claim("eleme_user_id", new JsonValue.StringValue(merchant.subject()), AUTHORITY,

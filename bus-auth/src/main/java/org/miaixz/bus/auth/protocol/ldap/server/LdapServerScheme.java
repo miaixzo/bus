@@ -43,7 +43,7 @@ import org.miaixz.bus.core.net.Protocol;
  *
  * @author Kimi Liu
  */
-public final class LdapServerScheme implements Scheme<LdapServerOptions> {
+public class LdapServerScheme implements Scheme<LdapServerOptions> {
 
     /**
      * Stable registration type identifier for LDAP Providers.

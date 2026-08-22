@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class ScopeValidator {
+public class ScopeValidator {
 
     /**
      * Creates a stateless scope validator.

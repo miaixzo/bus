@@ -26,6 +26,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.auth.FabricX.Headers;
+import org.miaixz.bus.auth.FabricX.HeadersBuilder;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
+import org.miaixz.bus.auth.FabricX.UrlBuilder;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
@@ -38,10 +44,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Encodes and decodes OpenID Connect RP-Initiated Logout requests without defining a response entity.
@@ -53,7 +55,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class EndSessionRequestCodec {
+public class EndSessionRequestCodec {
 
     /**
      * Creates a stateless RP-Initiated Logout codec.
@@ -69,7 +71,7 @@ public final class EndSessionRequestCodec {
      * @return immutable-name mutable-value map
      * @throws ValidateException if a name is unknown or repeated
      */
-    private static Map<String, String> parameters(final UnoUrl url) {
+    private static Map<String, String> parameters(final Url url) {
         final Map<String, String> values = new LinkedHashMap<>(url.querySize());
         for (int index = 0; index < url.querySize(); index++) {
             final String name = url.queryParameterName(index);
@@ -127,7 +129,7 @@ public final class EndSessionRequestCodec {
      * @param endpoint candidate deployment endpoint
      * @throws ValidateException if endpoint shape or query ownership is invalid
      */
-    private static void validateEndpoint(final UnoUrl endpoint) {
+    private static void validateEndpoint(final Url endpoint) {
         final URI uri = endpoint.toUri();
         if (!uri.isAbsolute() || !Protocol.HTTPS.name.equalsIgnoreCase(uri.getScheme()) || uri.getHost() == null
                 || uri.getRawUserInfo() != null || uri.getRawFragment() != null) {
@@ -182,7 +184,7 @@ public final class EndSessionRequestCodec {
      * @throws IllegalArgumentException if {@code request} is {@code null}
      * @throws ValidateException        if transport, body, multiplicity, name, or value syntax is invalid
      */
-    public EndSessionRequest decodeRequest(final HttpRequest request) {
+    public EndSessionRequest decodeRequest(final Request request) {
         Assert.notNull(request, "OpenID Connect end-session HTTP request must not be null");
         if (request.method() != Http.Method.GET || !Protocol.HTTPS.name.equalsIgnoreCase(request.url().scheme())) {
             throw new ValidateException("OpenID Connect end-session endpoint requires HTTPS GET");
@@ -208,11 +210,11 @@ public final class EndSessionRequestCodec {
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if endpoint transport or query ownership is invalid
      */
-    public UnoUrl encode(final UnoUrl endpoint, final EndSessionRequest request) {
+    public Url encode(final Url endpoint, final EndSessionRequest request) {
         Assert.notNull(endpoint, "OpenID Connect end-session endpoint must not be null");
         Assert.notNull(request, "OpenID Connect end-session request must not be null");
         validateEndpoint(endpoint);
-        final UnoUrl.Builder url = endpoint.newBuilder();
+        final UrlBuilder url = endpoint.newBuilder();
         request.idTokenHint().ifPresent(value -> url.query(OpenIdConnect.Parameters.ID_TOKEN_HINT, value));
         request.logoutHint().ifPresent(value -> url.query(OpenIdConnect.Parameters.LOGOUT_HINT, value));
         request.clientId().ifPresent(value -> url.query(OAuth2.Parameters.CLIENT_ID, value));
@@ -234,18 +236,17 @@ public final class EndSessionRequestCodec {
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if a validated redirect cannot safely receive state
      */
-    public HttpResponse encodeSuccess(final HttpRequest request, final EndSessionRequest decoded) {
+    public Response encodeSuccess(final Request request, final EndSessionRequest decoded) {
         Assert.notNull(request, "OpenID Connect end-session HTTP request must not be null");
         Assert.notNull(decoded, "OpenID Connect validated end-session request must not be null");
-        final Headers.Builder headers = Headers.builder().add(Http.Header.CACHE_CONTROL, Http.Cache.NO_STORE)
+        final HeadersBuilder headers = Headers.builder().add(Http.Header.CACHE_CONTROL, Http.Cache.NO_STORE)
                 .add(Http.Header.PRAGMA, Http.Cache.NO_CACHE);
         final String redirect = decoded.postLogoutRedirectUri().getOrNull();
         if (redirect == null) {
-            return HttpResponse.builder().request(request).code(Http.Status.NO_CONTENT).headers(headers.build())
-                    .build();
+            return Response.builder().request(request).code(Http.Status.NO_CONTENT).headers(headers.build()).build();
         }
         headers.add(Http.Header.LOCATION, appendState(redirect, decoded.state().getOrNull()));
-        return HttpResponse.builder().request(request).code(Http.Status.FOUND).headers(headers.build()).build();
+        return Response.builder().request(request).code(Http.Status.FOUND).headers(headers.build()).build();
     }
 
 }

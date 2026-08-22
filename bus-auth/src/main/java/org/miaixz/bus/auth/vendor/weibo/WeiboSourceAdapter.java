@@ -27,7 +27,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationResponseDecoder;
@@ -39,6 +40,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -50,9 +52,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements Weibo browser authentication and its registered revocation deviation.
@@ -64,7 +63,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class WeiboSourceAdapter implements VendorAdapter {
+public class WeiboSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted Weibo API authority recorded in federated identity evidence.
@@ -353,6 +352,7 @@ public final class WeiboSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -430,7 +430,7 @@ public final class WeiboSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing private Weibo models
@@ -440,10 +440,10 @@ public final class WeiboSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Weibo capability must not be null");
         Assert.notNull(context, "Weibo invocation context must not be null");
-        Assert.notNull(timeout, "Weibo invocation budget must not be null");
+        Assert.notNull(timeout, "Weibo invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("Weibo capability is not declared"));
         }
@@ -468,13 +468,13 @@ public final class WeiboSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated browser correlation material
      * @param context    immutable invocation context retained by the uniform signature
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return prepared authorization redirect
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "Weibo authorization context must not be null");
         if (timeout.expired() || initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(failed(ErrorCode._500, "Weibo browser material violates the frozen manifest"));
@@ -496,7 +496,7 @@ public final class WeiboSourceAdapter implements VendorAdapter {
      * @param request standard OAuth authorization request
      * @return exact Weibo authorization URL
      */
-    private UnoUrl authorize(final AuthorizationRequest request) {
+    private Url authorize(final AuthorizationRequest request) {
         final var endpoint = variant.targets().resolve(options).authorization().getOrNull();
         return endpoint.url().newBuilder().query(OAuth2.Parameters.RESPONSE_TYPE, request.responseType().value())
                 .query(OAuth2.Parameters.CLIENT_ID, request.clientId())
@@ -512,7 +512,7 @@ public final class WeiboSourceAdapter implements VendorAdapter {
      * @param request standard OAuth authorization request
      * @return completed authorization URL outcome
      */
-    private CompletionStage<Outcome<UnoUrl>> authorization(final AuthorizationRequest request) {
+    private CompletionStage<Outcome<Url>> authorization(final AuthorizationRequest request) {
         try {
             return valid(request) ? completed(Outcome.succeeded(authorize(request)))
                     : completed(rejected("Weibo authorization request does not match the compiled Source"));
@@ -548,6 +548,7 @@ public final class WeiboSourceAdapter implements VendorAdapter {
                     .orElseThrow(() -> new ValidateException("Weibo authorization success requires state"));
             case AuthorizationResponseDecoder.Error error -> error.response().state()
                     .orElseThrow(() -> new ValidateException("Weibo authorization error requires state"));
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -556,13 +557,13 @@ public final class WeiboSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed browser correlation
      * @param context    immutable invocation context used for secret resolution
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified Weibo identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final AuthorizationResponseDecoder.Decoded decoded;
         try {
             decoded = decode(completion.callback());
@@ -584,6 +585,7 @@ public final class WeiboSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<SecretLease> success -> authenticate(response.code(), success.value(), timeout);
             case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -592,13 +594,13 @@ public final class WeiboSourceAdapter implements VendorAdapter {
      *
      * @param code    consumed authorization code
      * @param secret  owned client-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified Weibo identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> authenticate(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             final Outcome<Access> token;
             try (secret) {
@@ -610,6 +612,7 @@ public final class WeiboSourceAdapter implements VendorAdapter {
                 case Outcome.Succeeded<Access> success -> profile(success.value(), timeout);
                 case Outcome.Rejected<Access> rejected -> Outcome.rejected(rejected.failure());
                 case Outcome.Failed<Access> failed -> Outcome.failed(failed.failure());
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             };
         }, services.executor());
     }
@@ -619,24 +622,23 @@ public final class WeiboSourceAdapter implements VendorAdapter {
      *
      * @param code    consumed authorization code
      * @param secret  live client-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return private access result
      */
-    private Outcome<Access> token(final String code, final SecretLease secret, final Timeout.Budget timeout) {
+    private Outcome<Access> token(final String code, final SecretLease secret, final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "Weibo token request has no remaining time budget");
+            return failed(ErrorCode._408, "Weibo token request has no remaining timeout");
         }
         try {
             final var endpoint = variant.targets().resolve(options).token().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.POST)
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.POST)
                     .query(OAuth2.Parameters.CODE, Assert.notBlank(code, "Weibo authorization code must not be blank"))
                     .query(OAuth2.Parameters.CLIENT_ID, options.clientId())
                     .query(OAuth2.Parameters.CLIENT_SECRET, secret(secret))
                     .query(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value())
                     .query(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull())
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(Normal.EMPTY_BYTE_ARRAY, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 return token(response);
             }
@@ -651,7 +653,7 @@ public final class WeiboSourceAdapter implements VendorAdapter {
      * @param response owned token endpoint response
      * @return private access result or safely classified failure
      */
-    private Outcome<Access> token(final HttpResponse response) {
+    private Outcome<Access> token(final Response response) {
         if (response.code() != Http.Status.OK) {
             return status(response.code(), "Weibo token endpoint rejected or failed the request");
         }
@@ -682,21 +684,21 @@ public final class WeiboSourceAdapter implements VendorAdapter {
      * Retrieves the Weibo profile using its historical query and OAuth2 authorization header.
      *
      * @param access  private access token and token-bound UID
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified identity
      */
-    private Outcome<ExternalIdentity> profile(final Access access, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final Access access, final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "Weibo profile request has no remaining time budget");
+            return failed(ErrorCode._408, "Weibo profile request has no remaining timeout");
         }
         try {
             final var endpoint = variant.targets().resolve(options).userInfo().getOrNull();
             final String authorization = "OAuth2 uid=" + access.userId() + "&access_token=" + access.accessToken();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.GET).query(OAuth2.Parameters.ACCESS_TOKEN, access.accessToken())
-                    .query("uid", access.userId()).header(Http.Header.AUTHORIZATION, authorization)
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute()) {
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.GET)
+                    .query(OAuth2.Parameters.ACCESS_TOKEN, access.accessToken()).query("uid", access.userId())
+                    .header(Http.Header.AUTHORIZATION, authorization)
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                 return profile(response, access, timeout);
             }
         } catch (RuntimeException cause) {
@@ -712,10 +714,7 @@ public final class WeiboSourceAdapter implements VendorAdapter {
      * @param timeout  shared clock used for evidence timestamping
      * @return verified Weibo identity
      */
-    private Outcome<ExternalIdentity> profile(
-            final HttpResponse response,
-            final Access access,
-            final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final Response response, final Access access, final Timeout timeout) {
         if (response.code() != Http.Status.OK) {
             return status(response.code(), "Weibo profile endpoint rejected or failed the request");
         }
@@ -753,10 +752,10 @@ public final class WeiboSourceAdapter implements VendorAdapter {
      * Adapts the standard revocation request to Weibo's GET query and JSON success marker.
      *
      * @param request standard RFC 7009 revocation request
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return successful empty result only for exact {@code result=true}
      */
-    private CompletionStage<Outcome<Void>> revoke(final RevocationRequest request, final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<Void>> revoke(final RevocationRequest request, final Timeout timeout) {
         if (request.tokenTypeHint().isPresent()
                 && !OAuth2.Parameters.ACCESS_TOKEN.equals(request.tokenTypeHint().getOrNull())) {
             return completed(rejected("Weibo revocation accepts only an access_token hint"));
@@ -764,15 +763,14 @@ public final class WeiboSourceAdapter implements VendorAdapter {
         return CompletableFuture.supplyAsync(() -> {
             if (timeout.expired()) {
                 return WeiboSourceAdapter
-                        .<Void>failed(ErrorCode._408, "Weibo revocation request has no remaining time budget");
+                        .<Void>failed(ErrorCode._408, "Weibo revocation request has no remaining timeout");
             }
             try {
                 final var endpoint = variant.targets().resolve(options).revocation().getOrNull();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                        .method(Http.Method.GET).query(OAuth2.Parameters.ACCESS_TOKEN, request.token())
-                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
-                        .execute()) {
+                try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                        .url(endpoint.url().toString()).method(Http.Method.GET)
+                        .query(OAuth2.Parameters.ACCESS_TOKEN, request.token())
+                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                     if (response.code() != Http.Status.OK) {
                         return WeiboSourceAdapter.<Void>status(
                                 response.code(),
@@ -805,13 +803,16 @@ public final class WeiboSourceAdapter implements VendorAdapter {
      * Resolves one operation-scoped Weibo client secret with closed exception handling.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return secret resolution outcome stage
      */
-    private CompletionStage<Outcome<SecretLease>> resolve(final Context context, final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<SecretLease>> resolve(final Context context, final Timeout timeout) {
         try {
             final CompletionStage<Outcome<SecretLease>> stage = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
             if (stage == null) {
                 return completed(failed(ErrorCode._502, "Weibo client-secret loader returned no stage"));
@@ -846,7 +847,7 @@ public final class WeiboSourceAdapter implements VendorAdapter {
      * @param operation safe operation name used in validation failures
      * @return immutable provider-neutral JSON object
      */
-    private JsonValue.ObjectValue object(final HttpResponse response, final String operation) {
+    private JsonValue.ObjectValue object(final Response response, final String operation) {
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("Weibo " + operation + " response must use application/json");
         }
@@ -860,6 +861,8 @@ public final class WeiboSourceAdapter implements VendorAdapter {
 
     /**
      * Identifies each private Weibo JSON document with a distinct member contract.
+     *
+     * @author Kimi Liu
      */
     private enum WireKind {
 
@@ -891,6 +894,8 @@ public final class WeiboSourceAdapter implements VendorAdapter {
      * @param location     optional location text
      * @param description  optional profile description
      * @param gender       optional platform gender code
+     *
+     * @author Kimi Liu
      */
     private record ProfileWire(String name, String profileImage, String url, String profileUrl, String screenName,
             String location, String description, String gender) {

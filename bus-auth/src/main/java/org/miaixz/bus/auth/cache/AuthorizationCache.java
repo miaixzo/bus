@@ -22,11 +22,11 @@ package org.miaixz.bus.auth.cache;
 import java.io.Serializable;
 import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.FabricX.Clock;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.crypto.Builder;
-import org.miaixz.bus.fabric.Clock;
 
 /**
  * Stores the authoritative lifecycle of one OAuth authorization shared by all derived token indexes.
@@ -38,7 +38,7 @@ import org.miaixz.bus.fabric.Clock;
  *
  * @author Kimi Liu
  */
-public final class AuthorizationCache extends AuthCache<AuthorizationCache.Entry> {
+public class AuthorizationCache extends AuthCache<AuthorizationCache.Entry> {
 
     /**
      * Isolates authorization lifecycle state from every other bus-cache consumer.
@@ -54,6 +54,20 @@ public final class AuthorizationCache extends AuthCache<AuthorizationCache.Entry
      */
     public AuthorizationCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
         super(cache, deployment, PURPOSE, Entry.class, clock);
+    }
+
+    /**
+     * Creates a Source-generation-scoped authorization lifecycle cache view for compiled runtime use.
+     *
+     * @param cache      shared bus-cache backend
+     * @param deployment deployment-unique cache namespace
+     * @param sourceId   exact Source registration identifier
+     * @param generation non-negative Source configuration generation
+     * @param clock      shared runtime clock used to derive entry lifetimes
+     */
+    public AuthorizationCache(final CacheX<String, Object> cache, final String deployment, final String sourceId,
+            final long generation, final Clock clock) {
+        super(cache, deployment, PURPOSE, Entry.class, sourceId, generation, clock);
     }
 
     /**
@@ -116,16 +130,26 @@ public final class AuthorizationCache extends AuthCache<AuthorizationCache.Entry
                         + Assert.notBlank(authorizationId, "Authorization id must not be blank"));
     }
 
-    /** Represents the security state shared by all credentials derived from one authorization. */
+    /**
+     * Represents the security state shared by all credentials derived from one authorization.
+     *
+     * @author Kimi Liu
+     */
     public enum Status {
 
-        /** Authorization and all derived credentials remain active. */
+        /**
+         * Authorization and all derived credentials remain active.
+         */
         ACTIVE,
 
-        /** Authorization was explicitly revoked. */
+        /**
+         * Authorization was explicitly revoked.
+         */
         REVOKED,
 
-        /** Authorization was invalidated after credential reuse or another compromise signal. */
+        /**
+         * Authorization was invalidated after credential reuse or another compromise signal.
+         */
         COMPROMISED
 
     }
@@ -136,6 +160,8 @@ public final class AuthorizationCache extends AuthCache<AuthorizationCache.Entry
      * @param providerId owning authorization-server Source
      * @param clientId   authorized OAuth client
      * @param status     current authorization lifecycle state
+     *
+     * @author Kimi Liu
      */
     public record Entry(String providerId, String clientId, Status status) implements Serializable {
 

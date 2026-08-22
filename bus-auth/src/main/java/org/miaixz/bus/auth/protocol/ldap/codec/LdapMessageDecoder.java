@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class LdapMessageDecoder implements Decoder<byte[], LdapMessage> {
+public class LdapMessageDecoder implements Decoder<byte[], LdapMessage> {
 
     /**
      * Maximum complete message bytes accepted by this decoder.

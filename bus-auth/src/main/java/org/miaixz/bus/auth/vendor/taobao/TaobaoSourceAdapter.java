@@ -28,6 +28,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationResponseDecoder;
@@ -40,6 +42,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -52,9 +55,6 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements Taobao browser authentication and registered OAuth-facing adaptations.
@@ -66,7 +66,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class TaobaoSourceAdapter implements VendorAdapter {
+public class TaobaoSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted Taobao authority recorded in federated identity evidence.
@@ -288,6 +288,7 @@ public final class TaobaoSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -350,7 +351,7 @@ public final class TaobaoSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing private Taobao response records
@@ -360,10 +361,10 @@ public final class TaobaoSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Taobao capability must not be null");
         Assert.notNull(context, "Taobao invocation context must not be null");
-        Assert.notNull(timeout, "Taobao invocation budget must not be null");
+        Assert.notNull(timeout, "Taobao invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("Taobao capability is not declared"));
         }
@@ -388,13 +389,13 @@ public final class TaobaoSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated browser correlation material
      * @param context    immutable invocation context retained by the uniform signature
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return prepared authorization redirect
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "Taobao authorization context must not be null");
         if (timeout.expired() || initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(failed(ErrorCode._500, "Taobao browser material violates the frozen manifest"));
@@ -405,10 +406,11 @@ public final class TaobaoSourceAdapter implements VendorAdapter {
                     Optional.empty(), emptyObject());
             return standardAdapter.invoke(OAuth2ClientScheme.AUTHORIZATION, request, context, timeout)
                     .thenApply(outcome -> switch (outcome) {
-                        case Outcome.Succeeded<UnoUrl> success -> Outcome.succeeded(
+                        case Outcome.Succeeded<Url> success -> Outcome.succeeded(
                                 new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                        case Outcome.Rejected<UnoUrl> rejected -> Outcome.rejected(rejected.failure());
-                        case Outcome.Failed<UnoUrl> failed -> Outcome.failed(failed.failure());
+                        case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                        case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (RuntimeException cause) {
             return completed(rejected("Taobao authorization request is invalid"));
@@ -421,13 +423,13 @@ public final class TaobaoSourceAdapter implements VendorAdapter {
      * @param request standard authorization request
      * @return asynchronous exact Taobao authorization URL outcome
      */
-    private CompletionStage<Outcome<UnoUrl>> authorization(final AuthorizationRequest request) {
+    private CompletionStage<Outcome<Url>> authorization(final AuthorizationRequest request) {
         if (!valid(request)) {
             return completed(rejected("Taobao authorization request differs from the registered Source"));
         }
         try {
             final var endpoint = variant.targets().resolve(options).authorization().getOrNull();
-            final UnoUrl location = endpoint.url().newBuilder()
+            final Url location = endpoint.url().newBuilder()
                     .query(OAuth2.Parameters.RESPONSE_TYPE, ResponseType.CODE.value())
                     .query(OAuth2.Parameters.CLIENT_ID, request.clientId())
                     .query(OAuth2.Parameters.REDIRECT_URI, request.redirectUri().getOrNull()).query("view", "web")
@@ -463,6 +465,7 @@ public final class TaobaoSourceAdapter implements VendorAdapter {
                     .orElseThrow(() -> new ValidateException("Taobao authorization success requires state"));
             case AuthorizationResponseDecoder.Error error -> error.response().state()
                     .orElseThrow(() -> new ValidateException("Taobao authorization error requires state"));
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -471,13 +474,13 @@ public final class TaobaoSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed browser correlation
      * @param context    immutable invocation context used for secret resolution
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified Taobao identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final AuthorizationResponseDecoder.Decoded decoded;
         try {
             decoded = decode(completion.callback());
@@ -501,6 +504,7 @@ public final class TaobaoSourceAdapter implements VendorAdapter {
                                     : rejected("Taobao token endpoint returned a non-OAuth token response");
                     case Outcome.Rejected<TokenEndpointResponse> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<TokenEndpointResponse> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -509,19 +513,22 @@ public final class TaobaoSourceAdapter implements VendorAdapter {
      *
      * @param request standard token request
      * @param context immutable invocation context used for secret resolution
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return standard token response with exact Taobao extensions
      */
     private CompletionStage<Outcome<TokenResponse>> token(
             final TokenRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!valid(request)) {
             return completed(rejected("Taobao token request differs from the registered grant contract"));
         }
         try {
             final CompletionStage<Outcome<SecretLease>> resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
             if (resolution == null) {
                 return completed(failed(ErrorCode._502, "Taobao secret loader returned no stage"));
@@ -541,6 +548,7 @@ public final class TaobaoSourceAdapter implements VendorAdapter {
                         }, services.executor());
                         case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                         case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "Taobao secret resolution failed"));
@@ -568,27 +576,26 @@ public final class TaobaoSourceAdapter implements VendorAdapter {
      *
      * @param request validated standard token request
      * @param secret  open client-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return standard token response or safely classified failure
      */
     private Outcome<TokenResponse> sendToken(
             final TokenRequest request,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "Taobao token request has no remaining time budget");
+            return failed(ErrorCode._408, "Taobao token request has no remaining timeout");
         }
         try {
             final AuthorizationCodeGrant grant = (AuthorizationCodeGrant) request.grant();
             final var endpoint = variant.targets().resolve(options).token().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.POST).query(OAuth2.Parameters.CODE, grant.code())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.POST).query(OAuth2.Parameters.CODE, grant.code())
                     .query(OAuth2.Parameters.CLIENT_ID, options.clientId())
                     .query(OAuth2.Parameters.CLIENT_SECRET, secret(secret))
                     .query(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value())
                     .query(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull())
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(Normal.EMPTY_BYTE_ARRAY, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 return token(response);
             }
@@ -603,7 +610,7 @@ public final class TaobaoSourceAdapter implements VendorAdapter {
      * @param response owned token endpoint response
      * @return standard token response or safely classified failure
      */
-    private Outcome<TokenResponse> token(final HttpResponse response) {
+    private Outcome<TokenResponse> token(final Response response) {
         if (response.code() < Http.Status.OK || response.code() >= Http.Status.MULTIPLE_CHOICES) {
             return status(response.code(), "Taobao token endpoint rejected or failed the request");
         }
@@ -640,7 +647,7 @@ public final class TaobaoSourceAdapter implements VendorAdapter {
      * @param timeout shared clock used for evidence timestamping
      * @return verified Taobao identity or safely classified failure
      */
-    private Outcome<ExternalIdentity> identity(final TokenResponse token, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> identity(final TokenResponse token, final Timeout timeout) {
         try {
             final JsonValue.ObjectValue extensions = token.extensions();
             final String userId = optionalString(extensions, "taobao_user_id");
@@ -699,7 +706,7 @@ public final class TaobaoSourceAdapter implements VendorAdapter {
      * @param response response whose body remains owned by the caller
      * @return immutable provider-neutral JSON object
      */
-    private JsonValue.ObjectValue object(final HttpResponse response) {
+    private JsonValue.ObjectValue object(final Response response) {
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("Taobao token response must use application/json");
         }

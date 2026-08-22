@@ -35,6 +35,7 @@ import org.miaixz.bus.auth.protocol.saml.SamlBinding;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.worker.SessionCoordinator;
+import org.miaixz.bus.auth.worker.loader.ConsumerLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -50,7 +51,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class SingleSignOnService {
+public class SingleSignOnService {
 
     /**
      * SAML entity identifier format used by Web Browser SSO request issuers.
@@ -81,7 +82,9 @@ public final class SingleSignOnService {
      * Standard SAML protocol error-response mapper.
      */
     private final SamlErrorMapper errorMapper;
-    /** Framework coordinator for Source-isolated authentication Session transitions. */
+    /**
+     * Framework coordinator for Source-isolated authentication Session transitions.
+     */
     private final SessionCoordinator sessions;
 
     /**
@@ -131,23 +134,25 @@ public final class SingleSignOnService {
      *
      * @param request standard SAML Authentication Request validated at the Redirect Binding boundary
      * @param context immutable invocation context containing the authenticated subject and session
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a success/error SAML Response or a closed framework failure when no safe response route
      *         exists
      */
     public CompletionStage<Outcome<Response>> singleSignOn(
             final AuthnRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "SAML Authentication Request must not be null");
         Assert.notNull(context, "SAML Single Sign-On context must not be null");
-        Assert.notNull(timeout, "SAML Single Sign-On time budget must not be null");
+        Assert.notNull(timeout, "SAML Single Sign-On timeout must not be null");
         final Outcome<String> requester = requester(request, timeout);
         return switch (requester) {
             case Outcome.Succeeded<String> success -> Outcome
                     .mapStage(
-                            () -> services.consumerLoader()
-                                    .load(services.registration(), success.value(), context, timeout),
+                            () -> services.consumerLoader().load(
+                                    new ConsumerLoader.Request(services.registration(), success.value()),
+                                    context,
+                                    timeout),
                             loaded -> services.consumerParser().parse(services.registration(), success.value(), loaded))
                     .thenCompose(resolved -> switch (resolved) {
                         case Outcome.Succeeded<ConsumerMetadata> client -> issue(
@@ -158,9 +163,11 @@ public final class SingleSignOnService {
                         case Outcome.Rejected<ConsumerMetadata> rejected -> completed(
                                 Outcome.rejected(rejected.failure()));
                         case Outcome.Failed<ConsumerMetadata> failed -> completed(Outcome.failed(failed.failure()));
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
             case Outcome.Rejected<String> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<String> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         };
     }
 
@@ -168,12 +175,12 @@ public final class SingleSignOnService {
      * Validates request fields that must be trusted before resolving the registered service provider.
      *
      * @param request standard Authentication Request
-     * @param timeout operation time budget
+     * @param timeout operation timeout
      * @return registered requester entityID candidate or a failure that must not be returned to an untrusted ACS
      */
-    private Outcome<String> requester(final AuthnRequest request, final Timeout.Budget timeout) {
+    private Outcome<String> requester(final AuthnRequest request, final Timeout timeout) {
         if (timeout.expired()) {
-            return Outcome.failed(failure(ErrorCode._408, "SAML Authentication Request has no remaining time budget"));
+            return Outcome.failed(failure(ErrorCode._408, "SAML Authentication Request has no remaining timeout"));
         }
         if (!options.singleSignOnServiceEndpoint().url().toString().equals(request.destination().getOrNull())) {
             return Outcome.rejected(failure(ErrorCode._400, "SAML Authentication Request Destination is invalid"));
@@ -212,14 +219,14 @@ public final class SingleSignOnService {
      * @param request validated standard Authentication Request
      * @param client  resolved registered service provider
      * @param context invocation context
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @return issued standard response stage
      */
     private CompletionStage<Outcome<Response>> issue(
             final AuthnRequest request,
             final ConsumerMetadata client,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final String issuer = request.issuer().getOrNull().nameId().value();
         final String destination = request.assertionConsumerServiceUrl().getOrNull();
         if (!issuer.equals(client.id()) || !client.redirectUris().contains(destination)) {
@@ -244,6 +251,7 @@ public final class SingleSignOnService {
             case Outcome.Succeeded<Void> ignored -> assertionIssuer.singleSignOn(request, client, context, timeout);
             case Outcome.Rejected<Void> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<Void> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 

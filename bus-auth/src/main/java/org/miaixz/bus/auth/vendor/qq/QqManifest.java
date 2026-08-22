@@ -24,7 +24,10 @@ import java.util.Set;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
+import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
@@ -38,7 +41,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Declares QQ Open Platform browser login and QQ Mini Program direct authentication.
@@ -50,7 +52,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class QqManifest implements VariantManifest<QqOptions> {
+public class QqManifest implements VariantManifest<QqOptions> {
 
     /**
      * Stable QQ platform routing identifier.
@@ -181,7 +183,7 @@ public final class QqManifest implements VariantManifest<QqOptions> {
      * Complete immutable QQ Open Platform manifest.
      */
     private static final VariantManifest.Variant OPEN_VARIANT = new VariantManifest.Variant(ID, OPEN, Protocol.OAUTH2,
-            List.of("get_user_info"),
+            VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of("get_user_info"),
             new VendorTargets(Optional.of(
                     fixed("https://graph.qq.com/oauth2.0/authorize", Http.Method.GET, Endpoint.Authentication.NONE)),
                     Optional.of(fixed("https://graph.qq.com/oauth2.0/token", Http.Method.POST, CLIENT_SECRET_QUERY)),
@@ -200,7 +202,7 @@ public final class QqManifest implements VariantManifest<QqOptions> {
      * Complete immutable QQ Mini Program manifest.
      */
     private static final VariantManifest.Variant MINI_VARIANT = new VariantManifest.Variant(ID, MINI_PROGRAM,
-            Protocol.VENDOR_AUTH, List.of(),
+            Protocol.VENDOR_AUTH, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of(),
             new VendorTargets(Optional.empty(),
                     Optional.of(fixed("https://api.q.qq.com/sns/jscode2session", Http.Method.GET, CLIENT_SECRET_QUERY)),
                     Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
@@ -227,7 +229,7 @@ public final class QqManifest implements VariantManifest<QqOptions> {
             final String value,
             final Http.Method method,
             final Endpoint.Authentication authentication) {
-        return new VendorTargets.Fixed(new Endpoint(UnoUrl.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
+        return new VendorTargets.Fixed(new Endpoint(Url.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
                 Set.of(authentication), Optional.empty(), TlsClientAuth.NONE));
     }
 
@@ -253,6 +255,20 @@ public final class QqManifest implements VariantManifest<QqOptions> {
             final boolean enveloped) {
         return new VendorDeviation(operation, location, vendorName, Optional.ofNullable(standardName), mediaType,
                 method, enveloped);
+    }
+
+    /**
+     * Returns the one-time QQ client form with its optional UnionID preference.
+     *
+     * @return immutable QQ client configuration form
+     */
+    @Override
+    public Scheme.Form form() {
+        return VariantManifest.Forms.extended(
+                false,
+                List.of(
+                        VariantManifest.Forms
+                                .field("preferUnionId", "Prefer UnionID", Scheme.Form.Type.BOOLEAN, false)));
     }
 
     /**

@@ -17,15 +17,16 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.auth.worker;
+package org.miaixz.bus.auth.worker.loader;
 
 import java.security.Key;
 import java.time.Instant;
 import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.Blueprint;
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Loader;
 import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.shared.jose.JwkSet;
 import org.miaixz.bus.core.lang.Assert;
@@ -34,54 +35,40 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Loads cryptographic key records from project-owned key storage.
+ *
+ * @author Kimi Liu
  */
-public interface KeyLoader {
-
-    /**
-     * Loads one exact key within the Source registration scope.
-     *
-     * @param registration exact Source registration requesting the key
-     * @param request      validated key lookup coordinates
-     * @param context      immutable non-secret invocation context
-     * @param timeout      shared end-to-end operation budget
-     * @return asynchronous project loading outcome
-     */
-    CompletionStage<Outcome<Record>> load(
-            Registration.SourceEntry registration,
-            Request request,
-            Context context,
-            Timeout.Budget timeout);
+public interface KeyLoader extends Loader<KeyLoader.Request, KeyLoader.Record> {
 
     /**
      * Loads the public key set exposed by one issuer and use.
      *
-     * @param registration exact Source registration requesting the keys
-     * @param request      validated public-key lookup coordinates
-     * @param context      immutable non-secret invocation context
-     * @param timeout      shared end-to-end operation budget
+     * @param criteria validated Source and public-key listing criteria
+     * @param context  immutable non-secret invocation context
+     * @param timeout  shared end-to-end operation timeout
      * @return asynchronous project loading outcome
      */
-    CompletionStage<Outcome<PublicRecord>> loadPublic(
-            Registration.SourceEntry registration,
-            PublicRequest request,
-            Context context,
-            Timeout.Budget timeout);
+    CompletionStage<Outcome<Listing>> list(Criteria criteria, Context context, Timeout timeout);
 
     /**
      * Identifies one exact cryptographic key required by a protocol operation.
      *
-     * @param issuer    expected key issuer
-     * @param keyId     optional exact key identifier
-     * @param use       expected protocol use
-     * @param algorithm expected registered algorithm
-     * @param at        required validity instant
+     * @param registration exact Source registration requesting the key
+     * @param issuer       expected key issuer
+     * @param keyId        optional exact key identifier
+     * @param use          expected protocol use
+     * @param algorithm    expected registered algorithm
+     * @param at           required validity instant
+     * @author Kimi Liu
      */
-    record Request(String issuer, Optional<String> keyId, String use, String algorithm, Instant at) {
+    record Request(Blueprint.SourceEntry registration, String issuer, Optional<String> keyId, String use,
+            String algorithm, Instant at) {
 
         /**
          * Validates one exact cryptographic key lookup request.
          */
         public Request {
+            Assert.notNull(registration, "Key registration must not be null");
             Assert.notBlank(issuer, "Key request issuer must not be blank");
             Assert.notNull(keyId, "Key request identifier container must not be null");
             final String identifier = keyId.getOrNull();
@@ -99,19 +86,22 @@ public interface KeyLoader {
     /**
      * Identifies the public key set required by a protocol operation.
      *
-     * @param issuer expected key issuer
-     * @param use    expected protocol use
-     * @param at     required validity instant
+     * @param registration exact Source registration requesting the keys
+     * @param issuer       expected key issuer
+     * @param use          expected protocol use
+     * @param at           required validity instant
+     * @author Kimi Liu
      */
-    record PublicRequest(String issuer, String use, Instant at) {
+    record Criteria(Blueprint.SourceEntry registration, String issuer, String use, Instant at) {
 
         /**
-         * Validates one public-key-set lookup request.
+         * Validates one public-key-set listing criteria.
          */
-        public PublicRequest {
-            Assert.notBlank(issuer, "Public key request issuer must not be blank");
-            Assert.notBlank(use, "Public key request use must not be blank");
-            Assert.notNull(at, "Public key request validity instant must not be null");
+        public Criteria {
+            Assert.notNull(registration, "Public key registration must not be null");
+            Assert.notBlank(issuer, "Public key criteria issuer must not be blank");
+            Assert.notBlank(use, "Public key criteria use must not be blank");
+            Assert.notNull(at, "Public key criteria validity instant must not be null");
         }
 
     }
@@ -127,6 +117,7 @@ public interface KeyLoader {
      * @param key       returned key material
      * @param notBefore inclusive validity start
      * @param notAfter  exclusive validity end
+     * @author Kimi Liu
      */
     record Record(String sourceId, String issuer, String keyId, String use, String algorithm, Key key,
             Instant notBefore, Instant notAfter) {
@@ -134,14 +125,15 @@ public interface KeyLoader {
     }
 
     /**
-     * Project-adapted public key set awaiting framework parsing.
+     * Project-adapted public key listing awaiting framework parsing.
      *
      * @param sourceId exact Source identifier that owns the returned data
      * @param issuer   returned issuer
      * @param use      returned protocol use
      * @param keys     public-only JSON Web Key set
+     * @author Kimi Liu
      */
-    record PublicRecord(String sourceId, String issuer, String use, JwkSet keys) {
+    record Listing(String sourceId, String issuer, String use, JwkSet keys) {
 
     }
 

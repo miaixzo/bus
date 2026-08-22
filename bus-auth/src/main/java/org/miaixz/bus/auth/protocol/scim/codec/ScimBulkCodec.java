@@ -23,6 +23,10 @@ import java.net.URI;
 import java.util.*;
 import java.util.function.Function;
 
+import org.miaixz.bus.auth.FabricX.Body;
+import org.miaixz.bus.auth.FabricX.Headers;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.protocol.scim.*;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
@@ -35,11 +39,6 @@ import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonRecordVerifier;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * Decodes RFC 7644 BulkRequest messages and encodes RFC 7644 BulkResponse messages for a SCIM Service Provider.
@@ -50,7 +49,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  *
  * @author Kimi Liu
  */
-public final class ScimBulkCodec {
+public class ScimBulkCodec {
 
     /**
      * Verifies the exact top-level BulkRequest members from its structural record.
@@ -150,7 +149,7 @@ public final class ScimBulkCodec {
      *
      * @param request candidate Bulk HTTP request
      */
-    private static void requireBulkEndpoint(final HttpRequest request) {
+    private static void requireBulkEndpoint(final Request request) {
         if (request.method() != Http.Method.POST) {
             throw new ValidateException("SCIM BulkRequest requires HTTP POST");
         }
@@ -336,11 +335,11 @@ public final class ScimBulkCodec {
      * @throws IllegalArgumentException if {@code request} is {@code null}
      * @throws ValidateException        if the endpoint, method, media, JSON, schema, or operation is invalid
      */
-    public BulkRequest decode(final HttpRequest request) {
-        final HttpRequest encoded = Assert.notNull(request, "SCIM Bulk HTTP request must not be null");
+    public BulkRequest decode(final Request request) {
+        final Request encoded = Assert.notNull(request, "SCIM Bulk HTTP request must not be null");
         requireBulkEndpoint(encoded);
         final List<BulkRequest.Operation> operations = new ArrayList<>();
-        final PayloadBody body = encoded.body();
+        final Body body = encoded.body();
         try (body) {
             final JsonValue.ObjectValue object = ScimResourceCodec
                     .object(body, jsonProvider, maximumBytes, maximumDepth);
@@ -378,8 +377,8 @@ public final class ScimBulkCodec {
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if an embedded error or encoded size is invalid
      */
-    public HttpResponse encode(final HttpRequest request, final BulkResponse response) {
-        final HttpRequest origin = Assert.notNull(request, "SCIM Bulk origin request must not be null");
+    public Response encode(final Request request, final BulkResponse response) {
+        final Request origin = Assert.notNull(request, "SCIM Bulk origin request must not be null");
         final BulkResponse value = Assert.notNull(response, "SCIM BulkResponse must not be null");
         final Map<String, JsonValue> members = new LinkedHashMap<>();
         members.put(Scim.Attributes.SCHEMAS, ScimResourceCodec.array(value.schemas()));
@@ -400,9 +399,9 @@ public final class ScimBulkCodec {
         members.put(Scim.Attributes.OPERATIONS, new JsonValue.ArrayValue(operations));
         final byte[] body = ScimResourceCodec
                 .bytes(new JsonValue.ObjectValue(members), jsonProvider, maximumBytes, maximumDepth);
-        return HttpResponse.builder().request(origin).code(Http.Status.OK).headers(
+        return Response.builder().request(origin).code(Http.Status.OK).headers(
                 Headers.of(Http.Header.CACHE_CONTROL, Http.Cache.NO_STORE, Http.Header.PRAGMA, Http.Cache.NO_CACHE))
-                .body(PayloadBody.of(Payload.of(body), MediaType.APPLICATION_SCIM_JSON_TYPE)).build();
+                .body(Body.of(body, MediaType.APPLICATION_SCIM_JSON_TYPE)).build();
     }
 
     /**

@@ -28,6 +28,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.codec.FormCodec;
@@ -38,6 +39,7 @@ import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.codec.IntrospectionCodec;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -47,15 +49,13 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.protocol.http.auth.HttpAuth;
 
 /**
  * Calls the RFC 7662 token introspection endpoint for one compiled OAuth 2.x Source.
  *
  * @author Kimi Liu
  */
-public final class IntrospectionClient {
+public class IntrospectionClient {
 
     /**
      * Validated client registration and selected client authentication method.
@@ -106,6 +106,7 @@ public final class IntrospectionClient {
         return switch (decoded) {
             case IntrospectionCodec.Success success -> Outcome.succeeded(success.response());
             case IntrospectionCodec.Error error -> remote(error);
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -152,32 +153,36 @@ public final class IntrospectionClient {
      *
      * @param request standard introspection request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the standard introspection response or closed framework failure
      */
     public CompletionStage<Outcome<IntrospectionResponse>> introspect(
             final IntrospectionRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OAuth 2.x introspection request must not be null");
         Assert.notNull(context, "OAuth 2.x introspection context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x introspection time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x introspection timeout must not be null");
         if (timeout.expired()) {
-            return completed(
-                    Outcome.failed(failure(ErrorCode._408, "OAuth 2.x introspection request has no time budget")));
+            return completed(Outcome.failed(failure(ErrorCode._408, "OAuth 2.x introspection request has no timeout")));
         }
         if (Endpoint.Authentication.NONE.equals(options.clientAuthenticationMethod())) {
             return execute(request, null, timeout);
         }
-        return Outcome.mapStage(
-                () -> services.secretLoader()
-                        .load(services.registration(), options.clientCredential().getOrNull(), context, timeout),
-                loaded -> services.secretParser()
-                        .parse(services.registration(), options.clientCredential().getOrNull(), loaded))
+        return Outcome
+                .mapStage(
+                        () -> services.secretLoader().load(
+                                new SecretLoader.Request(services.registration(),
+                                        options.clientCredential().getOrNull()),
+                                context,
+                                timeout),
+                        loaded -> services.secretParser()
+                                .parse(services.registration(), options.clientCredential().getOrNull(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> execute(request, success.value(), timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -186,32 +191,31 @@ public final class IntrospectionClient {
      *
      * @param request validated introspection request
      * @param secret  optional owned client-secret lease
-     * @param timeout decreasing operation budget
+     * @param timeout decreasing operation timeout
      * @return asynchronous introspection outcome
      */
     private CompletionStage<Outcome<IntrospectionResponse>> execute(
             final IntrospectionRequest request,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             byte[] body = null;
             try {
                 if (timeout.expired()) {
                     return Outcome.<IntrospectionResponse>failed(
-                            failure(ErrorCode._408, "OAuth 2.x introspection request exhausted its time budget"));
+                            failure(ErrorCode._408, "OAuth 2.x introspection request exhausted its timeout"));
                 }
                 body = formCodec.encode(authenticated(codec.encode(request), secret));
                 final var endpoint = options.introspectionEndpoint().getOrNull();
-                final var builder = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                        .method(Http.Method.POST).timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+                final var builder = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                        .url(endpoint.url().toString()).method(Http.Method.POST)
                         .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE);
                 if (Endpoint.Authentication.CLIENT_SECRET_BASIC.equals(options.clientAuthenticationMethod())) {
                     builder.header(
                             Http.Header.AUTHORIZATION,
-                            HttpAuth.basic(
+                            FabricX.basic(
                                     formComponent(options.clientId()),
-                                    formComponent(new String(secret.material()))).value());
+                                    formComponent(new String(secret.material()))));
                 }
                 return decoded(codec.decode(builder.execute()));
             } catch (RuntimeException exception) {

@@ -23,6 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Body;
+import org.miaixz.bus.auth.FabricX.Headers;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.shared.jose.Jwk;
 import org.miaixz.bus.auth.shared.jose.JwkSet;
 import org.miaixz.bus.core.lang.Assert;
@@ -32,11 +36,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * Encodes and decodes RFC 7517 JWK Set resource representations for OpenID Connect.
@@ -48,7 +47,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  *
  * @author Kimi Liu
  */
-public final class JwkSetCodec {
+public class JwkSetCodec {
 
     /**
      * Maximum accepted public JWK Set document size.
@@ -77,7 +76,7 @@ public final class JwkSetCodec {
      * @throws IllegalArgumentException if {@code request} is {@code null}
      * @throws ValidateException        if method, query, fragment, or body is invalid
      */
-    public void validateRequest(final HttpRequest request) {
+    public void validateRequest(final Request request) {
         Assert.notNull(request, "OpenID Connect JWK Set HTTP request must not be null");
         if (request.method() != Http.Method.GET || !request.url().query().isEmpty() || request.url().fragment() != null
                 || request.body().length() != 0L) {
@@ -95,7 +94,7 @@ public final class JwkSetCodec {
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if a key is private, symmetric, or not safely publishable
      */
-    public HttpResponse encodeResponse(final HttpRequest request, final JwkSet jwkSet) {
+    public Response encodeResponse(final Request request, final JwkSet jwkSet) {
         Assert.notNull(request, "OpenID Connect JWK Set HTTP request must not be null");
         Assert.notNull(jwkSet, "OpenID Connect JWK Set must not be null");
         final List<Jwk> publicKeys = new ArrayList<>(jwkSet.keys().size());
@@ -107,9 +106,9 @@ public final class JwkSetCodec {
         }
         final JwkSet publication = new JwkSet(publicKeys, jwkSet.extensions());
         final byte[] body = jsonProvider.writeValue(publication.toJson());
-        return HttpResponse.builder().request(request).code(Http.Status.OK).headers(
+        return Response.builder().request(request).code(Http.Status.OK).headers(
                 Headers.of(Http.Header.CACHE_CONTROL, Http.Cache.NO_STORE, Http.Header.PRAGMA, Http.Cache.NO_CACHE))
-                .body(PayloadBody.of(Payload.of(body), MediaType.APPLICATION_JWK_SET_JSON_TYPE)).build();
+                .body(Body.of(body, MediaType.APPLICATION_JWK_SET_JSON_TYPE)).build();
     }
 
     /**
@@ -120,8 +119,8 @@ public final class JwkSetCodec {
      * @throws IllegalArgumentException if {@code response} is {@code null}
      * @throws ValidateException        if status, media, size, JSON, or JWK shape is invalid
      */
-    public JwkSet decode(final HttpResponse response) {
-        final HttpResponse encoded = Assert.notNull(response, "OpenID Connect JWK Set HTTP response must not be null");
+    public JwkSet decode(final Response response) {
+        final Response encoded = Assert.notNull(response, "OpenID Connect JWK Set HTTP response must not be null");
         try (encoded) {
             if (encoded.code() != Http.Status.OK) {
                 throw new ValidateException("OpenID Connect JWK Set endpoint must return HTTP 200");

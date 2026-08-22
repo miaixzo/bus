@@ -28,6 +28,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationRequest;
@@ -43,6 +45,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.*;
@@ -53,9 +56,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements Meituan Waimai browser authentication while publishing only standard OAuth authorization.
@@ -67,7 +67,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class MeituanSourceAdapter implements VendorAdapter {
+public class MeituanSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted Meituan OpenAPI authority recorded in federated identity evidence.
@@ -361,6 +361,7 @@ public final class MeituanSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -439,7 +440,7 @@ public final class MeituanSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing private Meituan records
@@ -449,10 +450,10 @@ public final class MeituanSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Meituan capability must not be null");
         Assert.notNull(context, "Meituan invocation context must not be null");
-        Assert.notNull(timeout, "Meituan invocation budget must not be null");
+        Assert.notNull(timeout, "Meituan invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("Meituan capability is not declared"));
         }
@@ -477,16 +478,16 @@ public final class MeituanSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated browser correlation without nonce or PKCE
      * @param context    immutable invocation context retained for operation consistency
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return exact redirect and state correlation
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "Meituan authorization context must not be null");
         if (timeout.expired()) {
-            return completed(failed(ErrorCode._408, "Meituan authorization has no remaining time budget"));
+            return completed(failed(ErrorCode._408, "Meituan authorization has no remaining timeout"));
         }
         if (initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(
@@ -497,10 +498,11 @@ public final class MeituanSourceAdapter implements VendorAdapter {
                 Optional.empty(), emptyObject());
         return standardAdapter.invoke(OAuth2ClientScheme.AUTHORIZATION, request, context, timeout)
                 .thenApply(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<UnoUrl> success -> Outcome
+                    case Outcome.Succeeded<Url> success -> Outcome
                             .succeeded(new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                    case Outcome.Rejected<UnoUrl> rejected -> Outcome.rejected(rejected.failure());
-                    case Outcome.Failed<UnoUrl> failed -> Outcome.failed(failed.failure());
+                    case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                    case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -510,12 +512,12 @@ public final class MeituanSourceAdapter implements VendorAdapter {
      * @param request standard OAuth Authorization Request
      * @return exact Meituan authorization URL or safe rejection
      */
-    private CompletionStage<Outcome<UnoUrl>> authorize(final AuthorizationRequest request) {
+    private CompletionStage<Outcome<Url>> authorize(final AuthorizationRequest request) {
         try {
             if (!valid(request)) {
                 return completed(rejected("Meituan Authorization Request differs from the registered manifest"));
             }
-            final UnoUrl url = variant.targets().resolve(options).authorization().getOrNull().url().newBuilder()
+            final Url url = variant.targets().resolve(options).authorization().getOrNull().url().newBuilder()
                     .query(OAuth2.Parameters.RESPONSE_TYPE, ResponseType.CODE.value())
                     .query(OAuth2.Parameters.CLIENT_ID, options.clientId())
                     .query(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull())
@@ -560,13 +562,13 @@ public final class MeituanSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed browser correlation
      * @param context    immutable invocation context used for secret resolution
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified Meituan external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CallbackWire values;
         try {
             values = callback(completion.callback());
@@ -584,7 +586,10 @@ public final class MeituanSourceAdapter implements VendorAdapter {
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "Meituan application-secret resolution failed"));
@@ -605,6 +610,7 @@ public final class MeituanSourceAdapter implements VendorAdapter {
                             timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -613,19 +619,20 @@ public final class MeituanSourceAdapter implements VendorAdapter {
      *
      * @param code    consumed authorization code
      * @param secret  owned application-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> authenticate(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try (secret) {
                 return switch (token(code, secret, timeout)) {
                     case Outcome.Succeeded<TokenEnvelope> token -> profile(token.value(), secret, timeout);
                     case Outcome.Rejected<TokenEnvelope> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<TokenEnvelope> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 };
             } catch (RuntimeException cause) {
                 return failed(ErrorCode._502, "Meituan authentication completion failed");
@@ -638,10 +645,10 @@ public final class MeituanSourceAdapter implements VendorAdapter {
      *
      * @param code    sensitive one-time authorization code
      * @param secret  open application-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return private token envelope or classified failure
      */
-    private Outcome<TokenEnvelope> token(final String code, final SecretLease secret, final Timeout.Budget timeout) {
+    private Outcome<TokenEnvelope> token(final String code, final SecretLease secret, final Timeout timeout) {
         return tokenRequest(
                 variant.targets().resolve(options).token().getOrNull().url().toString(),
                 OAuth2.Parameters.CODE,
@@ -656,18 +663,21 @@ public final class MeituanSourceAdapter implements VendorAdapter {
      *
      * @param current private token envelope whose refresh token is replaced atomically on success
      * @param context immutable invocation context used for one independent secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return replacement private access and refresh token pair
      */
     private CompletionStage<Outcome<TokenEnvelope>> refresh(
             final TokenEnvelope current,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(current, "Meituan current private token must not be null");
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "Meituan refresh secret resolution failed"));
@@ -689,6 +699,7 @@ public final class MeituanSourceAdapter implements VendorAdapter {
             }, services.executor());
             case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -700,7 +711,7 @@ public final class MeituanSourceAdapter implements VendorAdapter {
      * @param value     sensitive grant credential
      * @param grantType exact grant type
      * @param secret    open application-secret lease
-     * @param timeout   shared end-to-end budget
+     * @param timeout   shared end-to-end timeout
      * @return private replacement token envelope or classified failure
      */
     private Outcome<TokenEnvelope> tokenRequest(
@@ -709,11 +720,11 @@ public final class MeituanSourceAdapter implements VendorAdapter {
             final String value,
             final String grantType,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Meituan token request has no remaining time budget");
+                return failed(ErrorCode._408, "Meituan token request has no remaining timeout");
             }
             body = formCodec.encode(
                     List.of(
@@ -721,9 +732,8 @@ public final class MeituanSourceAdapter implements VendorAdapter {
                             new NameValue("secret", secret(secret)),
                             new NameValue(field, Assert.notBlank(value, "Meituan grant credential must not be blank")),
                             new NameValue(OAuth2.Parameters.GRANT_TYPE, grantType)));
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
+                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 return token(response);
             }
@@ -740,7 +750,7 @@ public final class MeituanSourceAdapter implements VendorAdapter {
      * @param response owned token or refresh response
      * @return private token envelope or safely classified error
      */
-    private Outcome<TokenEnvelope> token(final HttpResponse response) {
+    private Outcome<TokenEnvelope> token(final Response response) {
         final Outcome<TokenEnvelope> status = status(response.code(), "Meituan token endpoint rejected the request");
         if (status != null) {
             return status;
@@ -767,17 +777,17 @@ public final class MeituanSourceAdapter implements VendorAdapter {
      *
      * @param token   private access and refresh token envelope
      * @param secret  still-open application-secret lease
-     * @param timeout shared end-to-end budget and evidence clock
+     * @param timeout shared end-to-end timeout and evidence clock
      * @return verified external identity
      */
     private Outcome<ExternalIdentity> profile(
             final TokenEnvelope token,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Meituan profile request has no remaining time budget");
+                return failed(ErrorCode._408, "Meituan profile request has no remaining timeout");
             }
             body = formCodec.encode(
                     List.of(
@@ -785,9 +795,8 @@ public final class MeituanSourceAdapter implements VendorAdapter {
                             new NameValue("secret", secret(secret)),
                             new NameValue(OAuth2.Parameters.ACCESS_TOKEN, token.accessToken())));
             final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
+                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 return profile(response, timeout);
             }
@@ -805,7 +814,7 @@ public final class MeituanSourceAdapter implements VendorAdapter {
      * @param timeout  shared clock used for identity evidence
      * @return verified external identity or classified failure
      */
-    private Outcome<ExternalIdentity> profile(final HttpResponse response, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final Response response, final Timeout timeout) {
         final Outcome<ExternalIdentity> status = status(
                 response.code(),
                 "Meituan profile endpoint rejected the request");
@@ -895,7 +904,7 @@ public final class MeituanSourceAdapter implements VendorAdapter {
      * @return strict provider-neutral JSON object
      * @throws ValidateException if media, charset, JSON shape, depth, size, or duplicate members are invalid
      */
-    private JsonValue.ObjectValue object(final HttpResponse response) {
+    private JsonValue.ObjectValue object(final Response response) {
         final MediaType media = response.body().media();
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(media)) {
             throw new ValidateException("Meituan response must use application/json");

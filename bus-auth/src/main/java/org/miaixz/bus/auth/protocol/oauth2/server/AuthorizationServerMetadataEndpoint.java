@@ -23,20 +23,20 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationServerMetadata;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationServerMetadataCodec;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Adapts the RFC 8414 metadata resource to typed authorization server metadata production.
  *
  * @author Kimi Liu
  */
-public final class AuthorizationServerMetadataEndpoint {
+public class AuthorizationServerMetadataEndpoint {
 
     /**
      * Strict RFC 8414 request validator and response codec.
@@ -73,16 +73,13 @@ public final class AuthorizationServerMetadataEndpoint {
      *
      * @param request immutable Fabric HTTP request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a complete RFC 8414 HTTP response
      */
-    public CompletionStage<HttpResponse> handle(
-            final HttpRequest request,
-            final Context context,
-            final Timeout.Budget timeout) {
+    public CompletionStage<Response> handle(final Request request, final Context context, final Timeout timeout) {
         Assert.notNull(request, "OAuth 2.x metadata HTTP request must not be null");
         Assert.notNull(context, "OAuth 2.x metadata context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x metadata time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x metadata timeout must not be null");
         try {
             codec.validateRequest(request);
         } catch (RuntimeException exception) {
@@ -94,6 +91,7 @@ public final class AuthorizationServerMetadataEndpoint {
             case Outcome.Rejected<AuthorizationServerMetadata> rejected -> errorMapper
                     .metadata(request, rejected.failure());
             case Outcome.Failed<AuthorizationServerMetadata> failed -> errorMapper.metadata(request, failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 

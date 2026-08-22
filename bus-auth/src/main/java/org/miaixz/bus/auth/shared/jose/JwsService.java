@@ -54,7 +54,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class JwsService {
+public class JwsService {
 
     /**
      * Critical extension used by RFC 7797, which this version deliberately does not implement.

@@ -26,6 +26,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Body;
+import org.miaixz.bus.auth.FabricX.Headers;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationServerMetadata;
 import org.miaixz.bus.auth.protocol.oauth2.ClientAuthenticationMethod;
 import org.miaixz.bus.auth.protocol.oauth2.GrantType;
@@ -42,11 +46,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * Encodes and decodes OpenID Provider Metadata using the Discovery 1.0 registered JSON representation.
@@ -58,7 +57,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  *
  * @author Kimi Liu
  */
-public final class OpenIdProviderMetadataCodec {
+public class OpenIdProviderMetadataCodec {
 
     /**
      * Maximum accepted metadata document size.
@@ -97,7 +96,7 @@ public final class OpenIdProviderMetadataCodec {
      * @param response response to inspect
      * @throws ValidateException if a transport constraint is invalid
      */
-    private static void validateResponse(final HttpResponse response) {
+    private static void validateResponse(final Response response) {
         if (response.code() != Http.Status.OK) {
             throw new ValidateException("OpenID Connect discovery endpoint must return HTTP 200");
         }
@@ -356,7 +355,7 @@ public final class OpenIdProviderMetadataCodec {
      * @throws IllegalArgumentException if {@code request} is {@code null}
      * @throws ValidateException        if method, query, fragment, or body is invalid
      */
-    public void validateRequest(final HttpRequest request) {
+    public void validateRequest(final Request request) {
         Assert.notNull(request, "OpenID Connect metadata HTTP request must not be null");
         if (request.method() != Http.Method.GET || !request.url().query().isEmpty() || request.url().fragment() != null
                 || request.body().length() != 0L) {
@@ -372,11 +371,11 @@ public final class OpenIdProviderMetadataCodec {
      * @param metadata standard OpenID Provider Metadata
      * @return complete cache-prevented HTTP response
      */
-    public HttpResponse encodeResponse(final HttpRequest request, final OpenIdProviderMetadata metadata) {
+    public Response encodeResponse(final Request request, final OpenIdProviderMetadata metadata) {
         Assert.notNull(request, "OpenID Connect metadata HTTP request must not be null");
         Assert.notNull(metadata, "OpenID Connect Provider Metadata must not be null");
         final Map<String, JsonValue> members;
-        try (HttpResponse oauth = oauthCodec.encodeResponse(request, metadata.authorizationServerMetadata())) {
+        try (Response oauth = oauthCodec.encodeResponse(request, metadata.authorizationServerMetadata())) {
             final JsonValue value = jsonProvider.readValue(oauth.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
             if (!(value instanceof JsonValue.ObjectValue object)) {
                 throw new ValidateException("OAuth authorization server metadata encoder returned a non-object body");
@@ -439,9 +438,9 @@ public final class OpenIdProviderMetadataCodec {
         put(members, OpenIdConnect.Metadata.END_SESSION_ENDPOINT, metadata.endSessionEndpoint());
         members.putAll(metadata.extensions().values());
         final byte[] body = jsonProvider.writeValue(new JsonValue.ObjectValue(members));
-        return HttpResponse.builder().request(request).code(Http.Status.OK).headers(
+        return Response.builder().request(request).code(Http.Status.OK).headers(
                 Headers.of(Http.Header.CACHE_CONTROL, Http.Cache.NO_STORE, Http.Header.PRAGMA, Http.Cache.NO_CACHE))
-                .body(PayloadBody.of(Payload.of(body), MediaType.APPLICATION_JSON_TYPE)).build();
+                .body(Body.of(body, MediaType.APPLICATION_JSON_TYPE)).build();
     }
 
     /**
@@ -452,8 +451,8 @@ public final class OpenIdProviderMetadataCodec {
      * @throws IllegalArgumentException if {@code response} is {@code null}
      * @throws ValidateException        if HTTP, media, JSON, or registered-member shape is invalid
      */
-    public OpenIdProviderMetadata decode(final HttpResponse response) {
-        final HttpResponse encoded = Assert.notNull(response, "OpenID Connect metadata HTTP response must not be null");
+    public OpenIdProviderMetadata decode(final Response response) {
+        final Response encoded = Assert.notNull(response, "OpenID Connect metadata HTTP response must not be null");
         try (encoded) {
             validateResponse(encoded);
             final JsonValue root = jsonProvider.readValue(encoded.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
@@ -489,8 +488,8 @@ public final class OpenIdProviderMetadataCodec {
                         List.of(ClientAuthenticationMethod.CLIENT_SECRET_BASIC.value()));
             }
             final byte[] oauthBody = jsonProvider.writeValue(new JsonValue.ObjectValue(oauthMembers));
-            final HttpResponse oauthResponse = HttpResponse.builder().request(encoded.request()).code(Http.Status.OK)
-                    .body(PayloadBody.of(Payload.of(oauthBody), MediaType.APPLICATION_JSON_TYPE)).build();
+            final Response oauthResponse = Response.builder().request(encoded.request()).code(Http.Status.OK)
+                    .body(Body.of(oauthBody, MediaType.APPLICATION_JSON_TYPE)).build();
             final AuthorizationServerMetadata oauth = oauthCodec.decode(oauthResponse);
             return new OpenIdProviderMetadata(oauth,
                     Optional.ofNullable(optionalString(values, OpenIdConnect.Metadata.USERINFO_ENDPOINT)),

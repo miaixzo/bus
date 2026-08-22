@@ -27,6 +27,9 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
+import org.miaixz.bus.auth.FabricX.UrlBuilder;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationResponseDecoder;
@@ -38,6 +41,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.*;
@@ -49,9 +53,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements Xiaomi browser authentication and its registered OAuth-compatible public operations.
@@ -63,7 +64,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class MiSourceAdapter implements VendorAdapter {
+public class MiSourceAdapter implements VendorAdapter {
 
     /**
      * Prefix required before every Xiaomi token JSON document.
@@ -336,6 +337,7 @@ public final class MiSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -434,7 +436,7 @@ public final class MiSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing Xiaomi-private profile envelopes
@@ -444,10 +446,10 @@ public final class MiSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Xiaomi capability must not be null");
         Assert.notNull(context, "Xiaomi invocation context must not be null");
-        Assert.notNull(timeout, "Xiaomi invocation budget must not be null");
+        Assert.notNull(timeout, "Xiaomi invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return missing();
         }
@@ -472,16 +474,16 @@ public final class MiSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated state without nonce or PKCE challenge
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return Xiaomi redirect bound to the generated state
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "Xiaomi authorization context must not be null");
         if (timeout.expired()) {
-            return completed(failed(ErrorCode._408, "Xiaomi authorization has no remaining time budget"));
+            return completed(failed(ErrorCode._408, "Xiaomi authorization has no remaining timeout"));
         }
         try {
             if (initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
@@ -494,10 +496,11 @@ public final class MiSourceAdapter implements VendorAdapter {
                     new JsonValue.ObjectValue(Map.of("skip_confirm", new JsonValue.BooleanValue(false))));
             return standardAdapter.invoke(OAuth2ClientScheme.AUTHORIZATION, request, context, timeout)
                     .thenApply(outcome -> switch (outcome) {
-                        case Outcome.Succeeded<UnoUrl> success -> Outcome.succeeded(
+                        case Outcome.Succeeded<Url> success -> Outcome.succeeded(
                                 new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                        case Outcome.Rejected<UnoUrl> rejected -> Outcome.rejected(rejected.failure());
-                        case Outcome.Failed<UnoUrl> failed -> Outcome.failed(failed.failure());
+                        case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                        case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (RuntimeException cause) {
             return completed(rejected("Xiaomi authorization request is invalid"));
@@ -510,7 +513,7 @@ public final class MiSourceAdapter implements VendorAdapter {
      * @param request validated standard authorization request plus registered Xiaomi extension
      * @return immutable authorization redirect URL
      */
-    private UnoUrl authorize(final AuthorizationRequest request) {
+    private Url authorize(final AuthorizationRequest request) {
         final String state = request.state().getOrNull();
         final Scope scope = request.scope().getOrNull();
         return variant.targets().resolve(options).authorization().getOrNull().url().newBuilder()
@@ -527,7 +530,7 @@ public final class MiSourceAdapter implements VendorAdapter {
      * @param request standard OAuth authorization request
      * @return exact redirect URL or a safe rejection
      */
-    private CompletionStage<Outcome<UnoUrl>> authorization(final AuthorizationRequest request) {
+    private CompletionStage<Outcome<Url>> authorization(final AuthorizationRequest request) {
         try {
             return valid(request) ? completed(Outcome.succeeded(authorize(request)))
                     : completed(rejected("Xiaomi authorization request differs from the registered manifest"));
@@ -549,6 +552,7 @@ public final class MiSourceAdapter implements VendorAdapter {
                     .orElseThrow(() -> new ValidateException("Xiaomi authorization success requires state"));
             case AuthorizationResponseDecoder.Error error -> error.response().state()
                     .orElseThrow(() -> new ValidateException("Xiaomi authorization error requires state"));
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -557,13 +561,13 @@ public final class MiSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback correlation
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified Xiaomi identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final AuthorizationResponseDecoder.Decoded decoded;
         try {
             decoded = callback(completion.callback());
@@ -585,6 +589,7 @@ public final class MiSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<TokenResponse> success -> profile(success.value(), timeout);
             case Outcome.Rejected<TokenResponse> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<TokenResponse> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -593,20 +598,22 @@ public final class MiSourceAdapter implements VendorAdapter {
      *
      * @param request standard authorization-code or refresh-token request
      * @param context immutable invocation context used for secret resolution
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return mapped standard token response preserving registered Xiaomi extensions
      */
     private CompletionStage<Outcome<TokenResponse>> token(
             final TokenRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!request.extensions().values().isEmpty() || !valid(request.grant())) {
             return completed(rejected("Xiaomi token request does not match its registered grant contract"));
         }
         return Outcome
                 .mapStage(
-                        () -> services.secretLoader()
-                                .load(services.registration(), options.credential(), context, timeout),
+                        () -> services.secretLoader().load(
+                                new SecretLoader.Request(services.registration(), options.credential()),
+                                context,
+                                timeout),
                         loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> CompletableFuture.supplyAsync(() -> {
@@ -618,6 +625,7 @@ public final class MiSourceAdapter implements VendorAdapter {
                     }, services.executor());
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -626,20 +634,20 @@ public final class MiSourceAdapter implements VendorAdapter {
      *
      * @param grant   validated authorization-code or refresh-token grant
      * @param secret  open Client Secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return decoded standard token response or safely classified failure
      */
     private Outcome<TokenResponse> send(
             final TokenRequest.Grant grant,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "Xiaomi token request has no remaining time budget");
+            return failed(ErrorCode._408, "Xiaomi token request has no remaining timeout");
         }
         final char[] secretChars = secret.material();
         try {
             final String secretValue = new String(secretChars);
-            final UnoUrl.Builder target = variant.targets().resolve(options).token().getOrNull().url().newBuilder();
+            final UrlBuilder target = variant.targets().resolve(options).token().getOrNull().url().newBuilder();
             if (grant instanceof AuthorizationCodeGrant authorization) {
                 target.query(OAuth2.Parameters.CODE, authorization.code())
                         .query(OAuth2.Parameters.CLIENT_ID, options.clientId())
@@ -655,10 +663,9 @@ public final class MiSourceAdapter implements VendorAdapter {
             } else {
                 return rejected("Xiaomi token grant is unsupported");
             }
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(target.build().toString())
-                    .method(Http.Method.GET).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute()) {
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(target.build().toString()).method(Http.Method.GET)
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                 return token(response);
             }
         } catch (RuntimeException cause) {
@@ -674,7 +681,7 @@ public final class MiSourceAdapter implements VendorAdapter {
      * @param response owned token endpoint response
      * @return mapped standard token response or closed failure
      */
-    private Outcome<TokenResponse> token(final HttpResponse response) {
+    private Outcome<TokenResponse> token(final Response response) {
         byte[] body = null;
         byte[] json = null;
         try {
@@ -774,12 +781,10 @@ public final class MiSourceAdapter implements VendorAdapter {
      * Retrieves the Xiaomi profile and optional contact projection asynchronously.
      *
      * @param token   mapped token response containing the access token and OpenID extension
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
-    private CompletionStage<Outcome<ExternalIdentity>> profile(
-            final TokenResponse token,
-            final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<ExternalIdentity>> profile(final TokenResponse token, final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> profileNow(token, timeout), services.executor());
     }
 
@@ -787,10 +792,10 @@ public final class MiSourceAdapter implements VendorAdapter {
      * Retrieves and maps Xiaomi profile resources using the token response OpenID as subject.
      *
      * @param token   mapped token response
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity or safely classified outcome
      */
-    private Outcome<ExternalIdentity> profileNow(final TokenResponse token, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profileNow(final TokenResponse token, final Timeout timeout) {
         final JsonValue openIdValue = token.extensions().values().get("openId");
         if (!(openIdValue instanceof JsonValue.StringValue openId) || openId.value().isBlank()) {
             return failed(ErrorCode._502, "Xiaomi token response lacks its stable OpenID");
@@ -805,6 +810,7 @@ public final class MiSourceAdapter implements VendorAdapter {
                     timeout);
             case Outcome.Rejected<JsonValue.ObjectValue> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<JsonValue.ObjectValue> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         };
     }
 
@@ -814,14 +820,14 @@ public final class MiSourceAdapter implements VendorAdapter {
      * @param subject     stable token OpenID
      * @param envelope    decoded profile envelope
      * @param accessToken sensitive access token used for optional contact lookup
-     * @param timeout     shared clock and network budget
+     * @param timeout     shared clock and network timeout
      * @return verified external identity
      */
     private Outcome<ExternalIdentity> identity(
             final String subject,
             final JsonValue.ObjectValue envelope,
             final String accessToken,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         try {
             final JsonValue.ObjectValue data = successData(envelope, "Xiaomi profile");
             final String nickname = requiredString(data, "miliaoNick");
@@ -862,20 +868,19 @@ public final class MiSourceAdapter implements VendorAdapter {
      *
      * @param endpoint    fixed profile or contact endpoint
      * @param accessToken sensitive access token
-     * @param timeout     shared end-to-end budget
+     * @param timeout     shared end-to-end timeout
      * @return decoded JSON object or safely classified outcome
      */
     private Outcome<JsonValue.ObjectValue> resource(
             final String endpoint,
             final String accessToken,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "Xiaomi profile request has no remaining time budget");
+            return failed(ErrorCode._408, "Xiaomi profile request has no remaining timeout");
         }
-        try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                .query("clientId", options.clientId()).query("token", accessToken)
-                .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute()) {
+        try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
+                .method(Http.Method.GET).query("clientId", options.clientId()).query("token", accessToken)
+                .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
             if (response.code() == Http.Status.TOO_MANY_REQUESTS) {
                 return failed(ErrorCode._429, "Xiaomi profile endpoint rate limited the request");
             }

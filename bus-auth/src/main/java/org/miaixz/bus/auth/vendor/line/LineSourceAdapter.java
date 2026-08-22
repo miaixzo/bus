@@ -28,6 +28,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.guard.IssuerValidator;
@@ -54,6 +56,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -67,9 +70,6 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements the frozen LINE Login OpenID Connect relying-party and Source-authentication contract.
@@ -81,7 +81,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class LineSourceAdapter implements VendorAdapter {
+public class LineSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted LINE OpenID Provider issuer.
@@ -266,7 +266,7 @@ public final class LineSourceAdapter implements VendorAdapter {
                 Set.of(JwaAlgorithm.A256GCM.name()));
         this.idTokenVerifier = new IdTokenVerifier(
                 new IdTokenCodec(new JwtVerifier(services.jsonProvider(), jwsService, dormantJwe)), issuerValidator,
-                services.securityBaseline().timeGuard(Protocol.OIDC, services.fabricContext().clock()));
+                services.securityBaseline().timeGuard(Protocol.OIDC, FabricX.clock(services.fabric())));
     }
 
     /**
@@ -477,6 +477,7 @@ public final class LineSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -631,7 +632,7 @@ public final class LineSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing LINE-private token or profile records
@@ -641,10 +642,10 @@ public final class LineSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "LINE capability must not be null");
         Assert.notNull(context, "LINE invocation context must not be null");
-        Assert.notNull(timeout, "LINE invocation budget must not be null");
+        Assert.notNull(timeout, "LINE invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("LINE capability is not declared"));
         }
@@ -669,16 +670,16 @@ public final class LineSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated one-time browser security material
      * @param context    immutable invocation context retained for operation consistency
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return exact redirect and state correlation
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "LINE authorization context must not be null");
         if (timeout.expired()) {
-            return completed(failed(ErrorCode._408, "LINE authorization has no remaining time budget"));
+            return completed(failed(ErrorCode._408, "LINE authorization has no remaining timeout"));
         }
         final var challenge = initiation.codeChallenge().getOrNull();
         final String nonce = initiation.nonce().getOrNull();
@@ -694,10 +695,11 @@ public final class LineSourceAdapter implements VendorAdapter {
                 List.of(), Optional.empty(), Optional.empty(), emptyObject());
         return standardAdapter.invoke(OpenIdClientScheme.AUTHENTICATION, authentication, context, timeout)
                 .thenApply(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<UnoUrl> success -> Outcome
+                    case Outcome.Succeeded<Url> success -> Outcome
                             .succeeded(new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                    case Outcome.Rejected<UnoUrl> rejected -> Outcome.rejected(rejected.failure());
-                    case Outcome.Failed<UnoUrl> failed -> Outcome.failed(failed.failure());
+                    case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                    case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -707,13 +709,13 @@ public final class LineSourceAdapter implements VendorAdapter {
      * @param request standard OpenID Connect Authentication Request
      * @return exact authorization URL or a safe rejection
      */
-    private CompletionStage<Outcome<UnoUrl>> authentication(final AuthenticationRequest request) {
+    private CompletionStage<Outcome<Url>> authentication(final AuthenticationRequest request) {
         try {
             if (!valid(request)) {
                 return completed(rejected("LINE Authentication Request differs from the registered manifest"));
             }
             final AuthorizationRequest authorization = request.authorizationRequest();
-            final UnoUrl url = variant.targets().resolve(options).authorization().getOrNull().url().newBuilder()
+            final Url url = variant.targets().resolve(options).authorization().getOrNull().url().newBuilder()
                     .query(OAuth2.Parameters.RESPONSE_TYPE, ResponseType.CODE.value())
                     .query(OAuth2.Parameters.CLIENT_ID, options.clientId())
                     .query(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull())
@@ -770,13 +772,13 @@ public final class LineSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed state, nonce, and PKCE verifier
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return fully verified LINE external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CallbackWire values;
         try {
             values = callback(completion.callback());
@@ -800,7 +802,10 @@ public final class LineSourceAdapter implements VendorAdapter {
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "LINE channel-secret resolution failed"));
@@ -823,6 +828,7 @@ public final class LineSourceAdapter implements VendorAdapter {
                             timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -834,7 +840,7 @@ public final class LineSourceAdapter implements VendorAdapter {
      * @param secret     owned channel-secret lease
      * @param completion consumed browser security material
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified LINE identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> authenticate(
@@ -843,7 +849,7 @@ public final class LineSourceAdapter implements VendorAdapter {
             final SecretLease secret,
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CompletionStage<Outcome<ExternalIdentity>> stage = CompletableFuture
                 .supplyAsync(() -> sendToken(request, secret, timeout), services.executor())
                 .thenCompose(token -> switch (token) {
@@ -854,6 +860,7 @@ public final class LineSourceAdapter implements VendorAdapter {
                     case Outcome.Rejected<TokenEndpointResponse> rejected -> completed(
                             Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<TokenEndpointResponse> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
         return stage.whenComplete((ignored, cause) -> secret.close());
     }
@@ -863,20 +870,23 @@ public final class LineSourceAdapter implements VendorAdapter {
      *
      * @param request standard token request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return strict standard token response or closed failure
      */
     private CompletionStage<Outcome<TokenEndpointResponse>> token(
             final TokenRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!valid(request)) {
             return completed(rejected("LINE token request does not match the registered grant contract"));
         }
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "LINE channel-secret resolution failed"));
@@ -894,6 +904,7 @@ public final class LineSourceAdapter implements VendorAdapter {
             }, services.executor());
             case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -920,24 +931,23 @@ public final class LineSourceAdapter implements VendorAdapter {
      *
      * @param request validated standard token request
      * @param secret  open channel-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return standard token response or safely classified failure
      */
     private Outcome<TokenEndpointResponse> sendToken(
             final TokenRequest request,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "LINE token request has no remaining time budget");
+                return failed(ErrorCode._408, "LINE token request has no remaining timeout");
             }
             body = formCodec.encode(tokenParameters(request, secret));
             final var endpoint = variant.targets().resolve(options).token().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OIDC, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.POST)
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 return token(response, request.grant() instanceof AuthorizationCodeGrant);
             }
@@ -982,7 +992,7 @@ public final class LineSourceAdapter implements VendorAdapter {
      * @param initial  whether an authorization-code response must carry an ID Token
      * @return standard token response or safely classified failure
      */
-    private Outcome<TokenEndpointResponse> token(final HttpResponse response, final boolean initial) {
+    private Outcome<TokenEndpointResponse> token(final Response response, final boolean initial) {
         try {
             final JsonValue.ObjectValue object = object(response, "token");
             if (response.code() == Http.Status.OK) {
@@ -1053,7 +1063,7 @@ public final class LineSourceAdapter implements VendorAdapter {
      * @param secret     still-open channel-secret lease for HS256 verification
      * @param completion consumed nonce and state binding
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return identity stage after ID Token and profile verification
      */
     private CompletionStage<Outcome<ExternalIdentity>> verifyToken(
@@ -1062,7 +1072,7 @@ public final class LineSourceAdapter implements VendorAdapter {
             final SecretLease secret,
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final String compact = token.idToken().compact();
         final JwsService.Jws parsed;
         final JoseHeader header;
@@ -1091,6 +1101,7 @@ public final class LineSourceAdapter implements VendorAdapter {
                         false);
                 case Outcome.Rejected<JwkSet> rejected -> completed(Outcome.rejected(rejected.failure()));
                 case Outcome.Failed<JwkSet> failed -> completed(Outcome.failed(failed.failure()));
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             });
         }
         return completed(rejected("LINE ID Token uses an unsupported algorithm"));
@@ -1104,7 +1115,7 @@ public final class LineSourceAdapter implements VendorAdapter {
      * @param secret     open channel-secret lease
      * @param completion consumed nonce and state
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param header     parsed protected JOSE header
      * @return identity stage after symmetric verification and profile binding
      */
@@ -1114,7 +1125,7 @@ public final class LineSourceAdapter implements VendorAdapter {
             final SecretLease secret,
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final JoseHeader header) {
         if (header.keyId().isPresent() || header.protectedParameters().values().size() != 2
                 || !header.protectedParameters().values().containsKey("alg")
@@ -1140,7 +1151,7 @@ public final class LineSourceAdapter implements VendorAdapter {
      * @param code       consumed authorization code
      * @param completion consumed nonce and state
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param header     parsed protected JOSE header
      * @param keys       current issuer public JWK Set
      * @param refreshed  whether an unknown key has already forced its single allowed refresh
@@ -1151,7 +1162,7 @@ public final class LineSourceAdapter implements VendorAdapter {
             final String code,
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final JoseHeader header,
             final JwkSet keys,
             final boolean refreshed) {
@@ -1193,6 +1204,7 @@ public final class LineSourceAdapter implements VendorAdapter {
                         true);
                 case Outcome.Rejected<JwkSet> rejected -> completed(Outcome.rejected(rejected.failure()));
                 case Outcome.Failed<JwkSet> failed -> completed(Outcome.failed(failed.failure()));
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             });
         }
         return verify(token, code, completion, context, timeout, key);
@@ -1205,7 +1217,7 @@ public final class LineSourceAdapter implements VendorAdapter {
      * @param code       consumed authorization code
      * @param completion consumed nonce and state
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param key        explicit symmetric or public verification key
      * @return identity stage after profile subject binding
      */
@@ -1214,7 +1226,7 @@ public final class LineSourceAdapter implements VendorAdapter {
             final String code,
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final Key key) {
         final IdTokenVerifier.Request verification = new IdTokenVerifier.Request(token.idToken(),
                 new JwtVerifier.Signed(key, Set.of()), ISSUER, options.clientId(),
@@ -1224,6 +1236,7 @@ public final class LineSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<IdTokenClaims> success -> profile(token, success.value(), timeout);
             case Outcome.Rejected<IdTokenClaims> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<IdTokenClaims> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -1232,23 +1245,23 @@ public final class LineSourceAdapter implements VendorAdapter {
      *
      * @param token   strict token response
      * @param claims  cryptographically verified ID Token claims
-     * @param timeout shared end-to-end budget and evidence clock
+     * @param timeout shared end-to-end timeout and evidence clock
      * @return subject-bound external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> profile(
             final OpenIdTokenResponse token,
             final IdTokenClaims claims,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 if (timeout.expired()) {
-                    return failed(ErrorCode._408, "LINE profile request has no remaining time budget");
+                    return failed(ErrorCode._408, "LINE profile request has no remaining timeout");
                 }
                 final var endpoint = variant.targets().resolve(options).userInfo().getOrNull();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                        .method(Http.Method.GET).header(Http.Header.AUTHORIZATION, "Bearer " + token.accessToken())
-                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy()).execute()) {
+                try (Response response = FabricX.http(services.fabric(), Protocol.OIDC, timeout)
+                        .url(endpoint.url().toString()).method(Http.Method.GET)
+                        .header(Http.Header.AUTHORIZATION, "Bearer " + token.accessToken())
+                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                     return profile(response, claims, timeout);
                 }
             } catch (RuntimeException cause) {
@@ -1266,9 +1279,9 @@ public final class LineSourceAdapter implements VendorAdapter {
      * @return verified external identity or safely classified failure
      */
     private Outcome<ExternalIdentity> profile(
-            final HttpResponse response,
+            final Response response,
             final IdTokenClaims claims,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (response.code() == Http.Status.UNAUTHORIZED || response.code() == Http.Status.FORBIDDEN) {
             return rejected("LINE profile endpoint rejected the access token");
         }
@@ -1291,7 +1304,7 @@ public final class LineSourceAdapter implements VendorAdapter {
             final String pictureUrl = optionalString(object, "pictureUrl");
             final String statusMessage = optionalString(object, "statusMessage");
             if (pictureUrl != null) {
-                final UnoUrl picture = UnoUrl.parse(pictureUrl);
+                final Url picture = Url.parse(pictureUrl);
                 if (!Protocol.HTTPS.name.equals(picture.scheme()) || picture.host().isEmpty()
                         || !picture.username().isEmpty() || !picture.password().isEmpty()) {
                     throw new ValidateException("LINE pictureUrl must be a credential-free HTTPS URL");
@@ -1324,13 +1337,13 @@ public final class LineSourceAdapter implements VendorAdapter {
      *
      * @param request standard RFC 7009 request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return standard empty success or safely classified failure
      */
     private CompletionStage<Outcome<Void>> revoke(
             final RevocationRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final String hint = request.tokenTypeHint().getOrNull();
         if (hint != null && !OAuth2.Parameters.ACCESS_TOKEN.equals(hint)) {
             return completed(rejected("LINE revocation only accepts the access_token hint"));
@@ -1338,7 +1351,10 @@ public final class LineSourceAdapter implements VendorAdapter {
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "LINE channel-secret resolution failed"));
@@ -1356,6 +1372,7 @@ public final class LineSourceAdapter implements VendorAdapter {
             }, services.executor());
             case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -1364,17 +1381,17 @@ public final class LineSourceAdapter implements VendorAdapter {
      *
      * @param request validated standard revocation request
      * @param secret  open channel-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return standard empty success or safely classified failure
      */
     private Outcome<Void> sendRevocation(
             final RevocationRequest request,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "LINE revocation has no remaining time budget");
+                return failed(ErrorCode._408, "LINE revocation has no remaining timeout");
             }
             body = formCodec.encode(
                     List.of(
@@ -1382,9 +1399,8 @@ public final class LineSourceAdapter implements VendorAdapter {
                             new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()),
                             new NameValue(OAuth2.Parameters.CLIENT_SECRET, secret(secret))));
             final var endpoint = variant.targets().resolve(options).revocation().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.POST).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OIDC, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.POST)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 if (response.code() == Http.Status.OK) {
                     return response.body().length() == 0L ? Outcome.succeeded(null)
@@ -1410,16 +1426,15 @@ public final class LineSourceAdapter implements VendorAdapter {
      * Delegates standard Discovery and binds every security-relevant value to the frozen LINE manifest.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return unchanged standard metadata only after exact profile validation
      */
-    private CompletionStage<Outcome<OpenIdProviderMetadata>> discover(
-            final Context context,
-            final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<OpenIdProviderMetadata>> discover(final Context context, final Timeout timeout) {
         return discoveryClient.discover(context, timeout).thenApply(outcome -> switch (outcome) {
             case Outcome.Succeeded<OpenIdProviderMetadata> success -> metadata(success.value());
             case Outcome.Rejected<OpenIdProviderMetadata> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<OpenIdProviderMetadata> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -1458,21 +1473,21 @@ public final class LineSourceAdapter implements VendorAdapter {
     /**
      * Retrieves and strictly decodes LINE's configured public JWK Set.
      *
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return current issuer public key set
      */
-    private CompletionStage<Outcome<JwkSet>> jwks(final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<JwkSet>> jwks(final Timeout timeout) {
         return jwks(timeout, false);
     }
 
     /**
      * Retrieves LINE's JWK Set with response-directive caching and one explicit rotation refresh path.
      *
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @param force   whether to bypass a still-fresh cached set after an unknown {@code kid}
      * @return current issuer public key set
      */
-    private CompletionStage<Outcome<JwkSet>> jwks(final Timeout.Budget timeout, final boolean force) {
+    private CompletionStage<Outcome<JwkSet>> jwks(final Timeout timeout, final boolean force) {
         final Instant now = timeout.clock().now();
         final JwkSet current = cachedJwkSet;
         if (!force && current != null && now.isBefore(cachedJwkSetExpiresAt)) {
@@ -1487,13 +1502,11 @@ public final class LineSourceAdapter implements VendorAdapter {
                 }
                 try {
                     if (timeout.expired()) {
-                        return failed(ErrorCode._408, "LINE JWK Set request has no remaining time budget");
+                        return failed(ErrorCode._408, "LINE JWK Set request has no remaining timeout");
                     }
                     final String endpoint = variant.targets().resolve(options).jwks().getOrNull().url().toString();
-                    final HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint)
-                            .method(Http.Method.GET).timeout(timeout.forFabric())
-                            .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy())
-                            .execute();
+                    final Response response = FabricX.http(services.fabric(), Protocol.OIDC, timeout).url(endpoint)
+                            .method(Http.Method.GET).execute();
                     final var control = response.cacheControl();
                     final int maximumAge = control.maxAgeSeconds();
                     final JwkSet fetched = jwkSetCodec.decode(response);
@@ -1573,7 +1586,7 @@ public final class LineSourceAdapter implements VendorAdapter {
      * @return strict provider-neutral JSON object
      * @throws ValidateException if media type, shape, depth, or duplicate members are invalid
      */
-    private JsonValue.ObjectValue object(final HttpResponse response, final String operation) {
+    private JsonValue.ObjectValue object(final Response response, final String operation) {
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("LINE " + operation + " response must use application/json");
         }

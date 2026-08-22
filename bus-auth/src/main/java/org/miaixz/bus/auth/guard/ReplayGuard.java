@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.auth.guard;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -47,7 +46,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class ReplayGuard {
+public class ReplayGuard {
 
     /**
      * Atomic replay cache supplied by the runtime assembly.
@@ -76,21 +75,6 @@ public final class ReplayGuard {
             builder.append(value.length()).append(Symbol.C_COLON).append(value);
         }
         return builder.toString();
-    }
-
-    /**
-     * Calculates a positive backend TTL while saturating durations beyond the millisecond range.
-     *
-     * @param now       shared-clock instant used for the registration decision
-     * @param expiresAt effective expiration instant
-     * @return positive backend TTL in milliseconds
-     */
-    private static long ttlMillis(final Instant now, final Instant expiresAt) {
-        try {
-            return Math.max(1L, Duration.between(now, expiresAt).toMillis());
-        } catch (ArithmeticException ignored) {
-            return Long.MAX_VALUE;
-        }
     }
 
     /**
@@ -124,7 +108,7 @@ public final class ReplayGuard {
      * @param purpose   non-sensitive artifact purpose such as JWT jti or SAML assertion identifier
      * @param artifact  raw artifact lexical value used only as digest input
      * @param expiresAt absolute artifact expiration
-     * @param timeout   existing end-to-end operation budget
+     * @param timeout   existing end-to-end operation timeout
      * @return stage containing success, replay rejection, or operational cache failure
      * @throws IllegalArgumentException if any argument is {@code null} or a required string is blank
      */
@@ -135,24 +119,24 @@ public final class ReplayGuard {
             final String purpose,
             final String artifact,
             final Instant expiresAt,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notBlank(namespace, "Replay namespace must not be blank");
         Assert.notNull(protocol, "Replay protocol must not be null");
         Assert.notBlank(authority, "Replay authority must not be blank");
         Assert.notBlank(purpose, "Replay purpose must not be blank");
         Assert.notBlank(artifact, "Replay artifact must not be blank");
         Assert.notNull(expiresAt, "Replay artifact expiration must not be null");
-        Assert.notNull(timeout, "Replay operation budget must not be null");
+        Assert.notNull(timeout, "Replay operation timeout must not be null");
 
+        if (timeout.expired()) {
+            return completed(Outcome.failed(failure(ErrorCode._408, "Replay registration timeout expired")));
+        }
         final Instant now = timeout.clock().now();
-        final Instant effectiveExpiry = expiresAt.isBefore(timeout.deadline()) ? expiresAt : timeout.deadline();
-        if (!effectiveExpiry.isAfter(now)) {
+        if (!expiresAt.isAfter(now)) {
             return completed(Outcome.failed(failure(ErrorCode._408, "Replay registration has no remaining lifetime")));
         }
         final String key = Builder.sha256(tuple(namespace, protocol.name(), authority, purpose, artifact));
-        final ExpiringValue<String> value = new ExpiringValue<>(protocol.name() + Symbol.C_COLON + purpose,
-                effectiveExpiry);
-        final long ttlMillis = ttlMillis(now, effectiveExpiry);
+        final ExpiringValue<String> value = new ExpiringValue<>(protocol.name() + Symbol.C_COLON + purpose, expiresAt);
         try {
             final CompletionStage<Boolean> creation = cache.mark(key, value);
             if (creation == null) {

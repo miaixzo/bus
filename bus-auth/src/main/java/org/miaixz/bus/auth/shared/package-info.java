@@ -32,7 +32,7 @@
  * event as a top-level authentication protocol.
  * </p>
  * <p>
- * Every operation receives explicit Context, Budget, keys or leases, and a frozen baseline. Shared services reject
+ * Every operation receives explicit Context, Timeout, keys or leases, and a frozen baseline. Shared services reject
  * algorithm confusion, unbounded input, replay, unsafe addresses, and ambiguous claims; they do not use global crypto
  * state or log tokens, keys, assertions, signatures, personal data, or complete payloads.
  * </p>

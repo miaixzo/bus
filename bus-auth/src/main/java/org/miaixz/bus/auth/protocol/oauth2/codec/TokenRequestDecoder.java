@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.auth.FabricX.Request;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -35,7 +36,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 
 /**
  * Decodes every enabled OAuth token grant from the single standard form-encoded token endpoint.
@@ -46,7 +46,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
  *
  * @author Kimi Liu
  */
-public final class TokenRequestDecoder implements Decoder<HttpRequest, TokenRequest> {
+public class TokenRequestDecoder implements Decoder<Request, TokenRequest> {
 
     /**
      * Maximum form body materialized by the token endpoint decoder.
@@ -71,7 +71,7 @@ public final class TokenRequestDecoder implements Decoder<HttpRequest, TokenRequ
      * @param request immutable Fabric HTTP request
      * @throws ValidateException if method, URL, media type, charset, or body size is invalid
      */
-    private static void validateTransport(final HttpRequest request) {
+    private static void validateTransport(final Request request) {
         if (request.method() != Http.Method.POST) {
             throw new ValidateException("OAuth 2.x token endpoint requires HTTP POST");
         }
@@ -284,7 +284,7 @@ public final class TokenRequestDecoder implements Decoder<HttpRequest, TokenRequ
      * @throws ValidateException        if transport, form, multiplicity, or grant parameter syntax is invalid
      */
     @Override
-    public TokenRequest decode(final HttpRequest encoded) {
+    public TokenRequest decode(final Request encoded) {
         Assert.notNull(encoded, "OAuth 2.x token HTTP request must not be null");
         validateTransport(encoded);
         final Map<String, List<String>> parameters = parameters(

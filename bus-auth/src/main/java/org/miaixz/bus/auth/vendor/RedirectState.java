@@ -53,18 +53,30 @@ import org.miaixz.bus.extra.json.JsonValue;
  */
 final class RedirectState {
 
-    /** Cache-key purpose for authoritative callback correlation. */
+    /**
+     * Cache-key purpose for authoritative callback correlation.
+     */
     private static final String STATE_PURPOSE = "vendor-state";
-    /** Credential-store purpose for one-time PKCE verifier material. */
+    /**
+     * Credential-store purpose for one-time PKCE verifier material.
+     */
     private static final String PKCE_PURPOSE = "vendor-pkce";
 
-    /** Registration namespace isolating all derived keys. */
+    /**
+     * Registration namespace isolating all derived keys.
+     */
     private final String namespaceId;
-    /** Exact configured Source identifier. */
+    /**
+     * Exact configured Source identifier.
+     */
     private final String sourceId;
-    /** Source-scoped cache and credential services. */
+    /**
+     * Source-scoped cache and credential services.
+     */
     private final DriverServices services;
-    /** Whether this selected Vendor flow persists a PKCE verifier. */
+    /**
+     * Whether this selected Vendor flow persists a PKCE verifier.
+     */
     private final boolean pkceEnabled;
 
     /**
@@ -93,18 +105,18 @@ final class RedirectState {
      * @param correlation generated authoritative callback correlation
      * @param verifier    optional caller-owned PKCE verifier
      * @param context     immutable invocation context
-     * @param timeout     shared end-to-end operation budget
+     * @param timeout     shared end-to-end operation timeout
      * @return stage containing persistence success, expected collision rejection, or operational failure
      */
     CompletionStage<Outcome<Void>> store(
             final Callback.Correlation correlation,
             final Optional<CodeVerifier> verifier,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(correlation, "Vendor callback correlation must not be null");
         Assert.notNull(verifier, "Vendor PKCE verifier container must not be null");
         Assert.notNull(context, "Vendor redirect context must not be null");
-        Assert.notNull(timeout, "Vendor redirect budget must not be null");
+        Assert.notNull(timeout, "Vendor redirect timeout must not be null");
         Assert.equals(sourceId, correlation.sourceId(), "Vendor callback correlation Source must match");
         return storeVerifier(correlation.state(), verifier, correlation.expiresAt(), context, timeout)
                 .thenCompose(stored -> switch (stored) {
@@ -121,9 +133,11 @@ final class RedirectState {
                                         verifier.isPresent(),
                                         context,
                                         timeout).thenApply(ignoredRollback -> Outcome.failed(failed.failure()));
+                                default -> throw new IllegalStateException("Unsupported Outcome implementation");
                             });
                     case Outcome.Rejected<Void> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<Void> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -137,16 +151,16 @@ final class RedirectState {
      *
      * @param correlationValue callback correlation value extracted by the adapter
      * @param context          immutable invocation context
-     * @param timeout          shared end-to-end operation budget
+     * @param timeout          shared end-to-end operation timeout
      * @return consumed correlation and optional verifier lease outcome
      */
     CompletionStage<Outcome<Consumed>> consume(
             final String correlationValue,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notBlank(correlationValue, "Vendor callback correlation value must not be blank");
         Assert.notNull(context, "Vendor redirect context must not be null");
-        Assert.notNull(timeout, "Vendor redirect budget must not be null");
+        Assert.notNull(timeout, "Vendor redirect timeout must not be null");
         return takeCorrelation(correlationValue, timeout).thenCompose(correlation -> switch (correlation) {
             case Outcome.Succeeded<Callback.Correlation> success -> consumeVerifier(correlationValue, context, timeout)
                     .thenCompose(verifier -> switch (verifier) {
@@ -160,9 +174,11 @@ final class RedirectState {
                                 correlationValue,
                                 context,
                                 timeout).thenApply(ignored -> Outcome.failed(failed.failure()));
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
             case Outcome.Rejected<Callback.Correlation> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<Callback.Correlation> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -173,7 +189,7 @@ final class RedirectState {
      * @param verifier         optional PKCE verifier
      * @param expiresAt        verifier expiry instant
      * @param context          invocation context
-     * @param timeout          operation budget
+     * @param timeout          operation timeout
      * @return verifier persistence outcome
      */
     private CompletionStage<Outcome<Void>> storeVerifier(
@@ -181,7 +197,7 @@ final class RedirectState {
             final Optional<CodeVerifier> verifier,
             final Instant expiresAt,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (verifier.isEmpty()) {
             return completed(Outcome.succeeded(null));
         }
@@ -226,12 +242,12 @@ final class RedirectState {
      * Atomically consumes and validates authoritative callback correlation.
      *
      * @param correlationValue callback correlation value
-     * @param timeout          operation budget used for expiry validation
+     * @param timeout          operation timeout used for expiry validation
      * @return consumed valid correlation outcome
      */
     private CompletionStage<Outcome<Callback.Correlation>> takeCorrelation(
             final String correlationValue,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CompletionStage<ExpiringValue<Callback.Correlation>> stage;
         try {
             stage = services.stateCache().consume(digest(STATE_PURPOSE, correlationValue));
@@ -260,13 +276,13 @@ final class RedirectState {
      *
      * @param correlationValue callback correlation binding
      * @param context          invocation context
-     * @param timeout          operation budget
+     * @param timeout          operation timeout
      * @return optional caller-owned verifier lease outcome
      */
     private CompletionStage<Outcome<Optional<SecretLease>>> consumeVerifier(
             final String correlationValue,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!pkceEnabled) {
             return completed(Outcome.succeeded(Optional.empty()));
         }
@@ -289,6 +305,7 @@ final class RedirectState {
                         : Outcome.succeeded(Optional.of(success.value()));
                 case Outcome.Rejected<SecretLease> rejected -> Outcome.rejected(rejected.failure());
                 case Outcome.Failed<SecretLease> failed -> Outcome.failed(failed.failure());
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             };
         });
     }
@@ -299,14 +316,14 @@ final class RedirectState {
      * @param correlationValue callback correlation binding
      * @param verifierStored   whether verifier persistence succeeded
      * @param context          invocation context
-     * @param timeout          operation budget
+     * @param timeout          operation timeout
      * @return stage completed after rollback attempt
      */
     private CompletionStage<Void> rollback(
             final String correlationValue,
             final boolean verifierStored,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         CompletionStage<Void> result = CompletableFuture.completedFuture(null);
         if (verifierStored) {
             result = result.thenCompose(ignored -> deleteVerifier(correlationValue, context, timeout));
@@ -319,13 +336,13 @@ final class RedirectState {
      *
      * @param correlationValue callback correlation binding
      * @param context          invocation context
-     * @param timeout          operation budget
+     * @param timeout          operation timeout
      * @return stage completed after deletion attempt
      */
     private CompletionStage<Void> deleteVerifier(
             final String correlationValue,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         try {
             final CompletionStage<Outcome<Void>> stage = services.credentialStore()
                     .delete(credentialKey(correlationValue), context, timeout);
@@ -419,10 +436,14 @@ final class RedirectState {
      *
      * @param correlation consumed one-time callback correlation
      * @param verifier    optional caller-owned PKCE verifier lease
+     *
+     * @author Kimi Liu
      */
     record Consumed(Callback.Correlation correlation, Optional<SecretLease> verifier) {
 
-        /** Validates the consumed callback material transferred to orchestration. */
+        /**
+         * Validates the consumed callback material transferred to orchestration.
+         */
         Consumed {
             Assert.notNull(correlation, "Consumed Vendor callback correlation must not be null");
             Assert.notNull(verifier, "Consumed Vendor verifier container must not be null");

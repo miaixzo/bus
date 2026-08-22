@@ -25,6 +25,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
+import org.miaixz.bus.auth.FabricX.UrlBuilder;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationRequest;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.core.codec.Encoder;
@@ -32,7 +34,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Encodes a standard OAuth 2.x authorization request into an authorization endpoint URL.
@@ -43,7 +44,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class AuthorizationRequestEncoder implements Encoder<AuthorizationRequest, UnoUrl> {
+public class AuthorizationRequestEncoder implements Encoder<AuthorizationRequest, Url> {
 
     /**
      * Validated deployment authorization endpoint.
@@ -83,7 +84,7 @@ public final class AuthorizationRequestEncoder implements Encoder<AuthorizationR
      * @param value provider-neutral extension value
      * @throws ValidateException if a reserved name or unsupported JSON shape is supplied
      */
-    private static void extension(final UnoUrl.Builder url, final String name, final JsonValue value) {
+    private static void extension(final UrlBuilder url, final String name, final JsonValue value) {
         if (coreParameter(name)) {
             throw new ValidateException("OAuth 2.x authorization extension duplicates a registered parameter");
         }
@@ -133,7 +134,7 @@ public final class AuthorizationRequestEncoder implements Encoder<AuthorizationR
      * @param value string scalar or string-array extension value
      * @throws ValidateException if type, cardinality, uniqueness, or URI syntax is invalid
      */
-    private static void resources(final UnoUrl.Builder url, final JsonValue value) {
+    private static void resources(final UrlBuilder url, final JsonValue value) {
         final Set<String> resources = new LinkedHashSet<>();
         if (value instanceof JsonValue.StringValue text) {
             resources.add(resource(text.value()));
@@ -178,9 +179,9 @@ public final class AuthorizationRequestEncoder implements Encoder<AuthorizationR
      * @throws ValidateException        if an extension cannot be represented by the standard query contract
      */
     @Override
-    public UnoUrl encode(final AuthorizationRequest data) {
+    public Url encode(final AuthorizationRequest data) {
         Assert.notNull(data, "OAuth 2.x authorization request must not be null");
-        final UnoUrl.Builder url = endpoint.url().newBuilder()
+        final UrlBuilder url = endpoint.url().newBuilder()
                 .query(OAuth2.Parameters.RESPONSE_TYPE, data.responseType().value())
                 .query(OAuth2.Parameters.CLIENT_ID, data.clientId());
         data.redirectUri().ifPresent(value -> url.query(OAuth2.Parameters.REDIRECT_URI, value));

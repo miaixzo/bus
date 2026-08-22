@@ -49,9 +49,11 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class RevocationService {
+public class RevocationService {
 
-    /** Maximum compare-and-replace attempts for one authoritative authorization transition. */
+    /**
+     * Maximum compare-and-replace attempts for one authoritative authorization transition.
+     */
     private static final int MAXIMUM_UPDATE_ATTEMPTS = org.miaixz.bus.auth.Builder.MAXIMUM_RETRY_ATTEMPTS;
 
     /**
@@ -103,16 +105,16 @@ public final class RevocationService {
      *
      * @param request standard token revocation request
      * @param context invocation context carrying a verified client identifier
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return asynchronous empty standard success or closed framework failure
      */
     public CompletionStage<Outcome<Void>> revoke(
             final RevocationRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OAuth 2.x revocation request must not be null");
         Assert.notNull(context, "OAuth 2.x revocation context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x revocation time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x revocation timeout must not be null");
         final String clientId = context.clientId().getOrNull();
         if (clientId == null) {
             return completed(
@@ -121,7 +123,7 @@ public final class RevocationService {
         }
         if (timeout.expired()) {
             return completed(
-                    Outcome.failed(failure(ErrorCode._408, "OAuth 2.x token revocation has no remaining time budget")));
+                    Outcome.failed(failure(ErrorCode._408, "OAuth 2.x token revocation has no remaining timeout")));
         }
         final String key = key(request.token());
         final CompletionStage<ExpiringValue<AccessTokenCache.Entry>> access;
@@ -145,14 +147,14 @@ public final class RevocationService {
      * @param key      isolated token digest key
      * @param state    current access and refresh token state
      * @param clientId authenticated client identifier
-     * @param timeout  shared end-to-end operation budget
+     * @param timeout  shared end-to-end operation timeout
      * @return stage completed after all applicable atomic deletes
      */
     private CompletionStage<Void> revoke(
             final String key,
             final TokenState state,
             final String clientId,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final Instant now = timeout.clock().now();
         final boolean deleteAccess = accessOwned(state.access(), clientId, now);
         final boolean deleteRefresh = refreshOwned(state.refresh(), clientId, now);
@@ -181,18 +183,18 @@ public final class RevocationService {
      *
      * @param authorizationId internal authorization identifier
      * @param clientId        authenticated client identifier
-     * @param timeout         shared operation budget
+     * @param timeout         shared operation timeout
      * @param attempt         one-based compare-and-set attempt
      * @return stage completed after conclusive revocation or an already non-active state
      */
     private CompletionStage<Void> revokeAuthorization(
             final String authorizationId,
             final String clientId,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final int attempt) {
         if (timeout.expired()) {
             return CompletableFuture.failedFuture(
-                    new IllegalStateException("OAuth 2.x authorization revocation exhausted its time budget"));
+                    new IllegalStateException("OAuth 2.x authorization revocation exhausted its timeout"));
         }
         final Instant now = timeout.clock().now();
         final String authorizationKey = AuthorizationCache.key(providerId, authorizationId);
@@ -223,13 +225,13 @@ public final class RevocationService {
      *
      * @param authorizationKey Provider-isolated authorization key
      * @param clientId         authenticated client identifier
-     * @param timeout          shared operation budget
+     * @param timeout          shared operation timeout
      * @return stage completed when authorization is conclusively non-active
      */
     private CompletionStage<Void> confirmAuthorizationInactive(
             final String authorizationKey,
             final String clientId,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return services.authorizationCache().find(authorizationKey).thenCompose(stored -> {
             if (stored != null && stored.expiresAt().isAfter(timeout.clock().now())
                     && providerId.equals(stored.value().providerId()) && clientId.equals(stored.value().clientId())

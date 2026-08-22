@@ -22,7 +22,7 @@
  * <p>
  * Parsers synchronously validate, normalize, and freeze the explicit records supplied by the matching loader in
  * {@link org.miaixz.bus.auth.worker}. They contain no external loading, persistence, cache, network, executor, Context,
- * Budget, Registry, audit, consent, or project-business behavior.
+ * Timeout, Registry, audit, consent, or project-business behavior.
  * </p>
  * <p>
  * Protocol and runtime services explicitly call a Loader first and then pass only its successful record to the matching

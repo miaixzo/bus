@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.miaixz.bus.auth.FabricX.Body;
 import org.miaixz.bus.auth.protocol.scim.PatchOp;
 import org.miaixz.bus.auth.protocol.scim.PatchOperation;
 import org.miaixz.bus.auth.protocol.scim.Scim;
@@ -34,7 +35,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonRecordVerifier;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * Strictly decodes an RFC 7644 PATCH request for a SCIM Service Provider.
@@ -45,7 +45,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  *
  * @author Kimi Liu
  */
-public final class ScimPatchCodec {
+public class ScimPatchCodec {
 
     /**
      * Verifies the exact top-level RFC 7644 PatchOp members.
@@ -229,8 +229,8 @@ public final class ScimPatchCodec {
      * @throws IllegalArgumentException if {@code body} is {@code null}
      * @throws ValidateException        if the media type, JSON, schema, or operation is invalid
      */
-    public PatchOp decode(final PayloadBody body) {
-        final PayloadBody encoded = Assert.notNull(body, "SCIM PatchOp body must not be null");
+    public PatchOp decode(final Body body) {
+        final Body encoded = Assert.notNull(body, "SCIM PatchOp body must not be null");
         try (encoded) {
             final JsonValue.ObjectValue object = ScimResourceCodec
                     .object(encoded, jsonProvider, maximumBytes, maximumDepth);

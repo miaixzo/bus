@@ -19,9 +19,12 @@
 */
 package org.miaixz.bus.auth.protocol.oidc.client;
 
+import static org.miaixz.bus.auth.Builder.ABSENT_VALUE;
+import static org.miaixz.bus.auth.Builder.CONFIGURED_VALUE;
+
+import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.Options;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientOptions;
@@ -94,6 +97,16 @@ public record OpenIdClientOptions(OAuth2ClientOptions oauth2Options, Optional<En
     }
 
     /**
+     * Creates a one-shot Builder around validated OAuth 2.x client Options.
+     *
+     * @param oauth2Options immutable OAuth 2.x client foundation
+     * @return mutable build-scoped OpenID client Options builder
+     */
+    public static Builder builder(final OAuth2ClientOptions oauth2Options) {
+        return new Builder(oauth2Options);
+    }
+
+    /**
      * Normalizes one Bus optional endpoint container.
      *
      * @param value optional endpoint container
@@ -137,7 +150,7 @@ public record OpenIdClientOptions(OAuth2ClientOptions oauth2Options, Optional<En
      * @return stable presence label
      */
     private static String present(final Optional<Endpoint> endpoint) {
-        return endpoint.isPresent() ? Builder.CONFIGURED_VALUE : Builder.ABSENT_VALUE;
+        return endpoint.isPresent() ? CONFIGURED_VALUE : ABSENT_VALUE;
     }
 
     /**
@@ -184,6 +197,106 @@ public record OpenIdClientOptions(OAuth2ClientOptions oauth2Options, Optional<En
                 + ", userInfoEndpoint=" + present(userInfoEndpoint) + ", jwkSetEndpoint=" + present(jwkSetEndpoint)
                 + ", endSessionEndpoint=" + present(endSessionEndpoint) + ", idTokenSigningAlgorithms="
                 + idTokenSigningAlgorithms + Symbol.BRACKET_RIGHT;
+    }
+
+    /**
+     * Collects OpenID relying-party endpoints and algorithms before immutable canonical validation.
+     *
+     * @author Kimi Liu
+     */
+    public static class Builder {
+
+        private final OAuth2ClientOptions oauth2Options;
+        private Optional<Endpoint> discoveryEndpoint = Optional.empty();
+        private Optional<Endpoint> userInfoEndpoint = Optional.empty();
+        private Optional<Endpoint> jwkSetEndpoint = Optional.empty();
+        private Optional<Endpoint> endSessionEndpoint = Optional.empty();
+        private final Set<JwaAlgorithm> signingAlgorithms = new LinkedHashSet<>();
+
+        /**
+         * Creates a build-scoped collector around immutable OAuth 2.x client Options.
+         */
+        public Builder(final OAuth2ClientOptions oauth2Options) {
+            this.oauth2Options = Assert.notNull(oauth2Options, "OpenID OAuth 2.x options must not be null");
+        }
+
+        /**
+         * Selects the OpenID Provider discovery endpoint.
+         *
+         * @param value immutable discovery endpoint
+         * @return this builder
+         */
+        public Builder discoveryEndpoint(final Endpoint value) {
+            discoveryEndpoint = Optional.of(Assert.notNull(value, "Discovery endpoint must not be null"));
+            return this;
+        }
+
+        /**
+         * Selects the UserInfo endpoint.
+         *
+         * @param value immutable UserInfo endpoint
+         * @return this builder
+         */
+        public Builder userInfoEndpoint(final Endpoint value) {
+            userInfoEndpoint = Optional.of(Assert.notNull(value, "UserInfo endpoint must not be null"));
+            return this;
+        }
+
+        /**
+         * Selects the provider JWK Set endpoint.
+         *
+         * @param value immutable JWK Set endpoint
+         * @return this builder
+         */
+        public Builder jwkSetEndpoint(final Endpoint value) {
+            jwkSetEndpoint = Optional.of(Assert.notNull(value, "JWK Set endpoint must not be null"));
+            return this;
+        }
+
+        /**
+         * Selects the relying-party initiated end-session endpoint.
+         *
+         * @param value immutable end-session endpoint
+         * @return this builder
+         */
+        public Builder endSessionEndpoint(final Endpoint value) {
+            endSessionEndpoint = Optional.of(Assert.notNull(value, "End-session endpoint must not be null"));
+            return this;
+        }
+
+        /**
+         * Adds one accepted ID Token signing algorithm.
+         *
+         * @param value accepted signing algorithm
+         * @return this builder
+         */
+        public Builder signingAlgorithm(final JwaAlgorithm value) {
+            signingAlgorithms.add(Assert.notNull(value, "ID Token signing algorithm must not be null"));
+            return this;
+        }
+
+        /**
+         * Adds accepted ID Token signing algorithms in caller order.
+         *
+         * @param values accepted signing algorithms
+         * @return this builder
+         */
+        public Builder signingAlgorithms(final Set<JwaAlgorithm> values) {
+            Assert.notNull(values, "ID Token signing algorithms must not be null");
+            values.forEach(this::signingAlgorithm);
+            return this;
+        }
+
+        /**
+         * Builds and canonically validates one immutable OpenID client Options value.
+         *
+         * @return immutable OpenID client Options
+         */
+        public OpenIdClientOptions build() {
+            return new OpenIdClientOptions(oauth2Options, discoveryEndpoint, userInfoEndpoint, jwkSetEndpoint,
+                    endSessionEndpoint, signingAlgorithms);
+        }
+
     }
 
 }

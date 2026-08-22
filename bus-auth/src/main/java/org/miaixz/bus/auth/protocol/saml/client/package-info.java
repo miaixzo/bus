@@ -34,7 +34,7 @@
  * </p>
  * <p>
  * Each flow binds the exact SP and IdP entity IDs, destination, assertion consumer URL, binding, RelayState,
- * InResponseTo, audience, recipient, time window, requested authentication context, and one Budget. Signatures are
+ * InResponseTo, audience, recipient, time window, requested authentication context, and one Timeout. Signatures are
  * validated over the consumed object, encrypted content is revalidated after decryption, assertion IDs are consumed
  * once, and only a verified NameID or explicitly configured stable attribute may become the external subject. XML,
  * assertions, attributes, private keys, session indexes, and RelayState never enter logs or failure details.

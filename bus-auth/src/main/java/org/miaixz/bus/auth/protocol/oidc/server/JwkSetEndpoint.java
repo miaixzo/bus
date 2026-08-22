@@ -23,20 +23,20 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oidc.codec.JwkSetCodec;
 import org.miaixz.bus.auth.shared.jose.JwkSet;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Adapts the OpenID Provider JWK Set resource to public-key publication service execution.
  *
  * @author Kimi Liu
  */
-public final class JwkSetEndpoint {
+public class JwkSetEndpoint {
 
     /**
      * Strict JWK Set request validator and response codec.
@@ -72,16 +72,13 @@ public final class JwkSetEndpoint {
      *
      * @param request immutable Fabric HTTP request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a complete standard HTTP response
      */
-    public CompletionStage<HttpResponse> handle(
-            final HttpRequest request,
-            final Context context,
-            final Timeout.Budget timeout) {
+    public CompletionStage<Response> handle(final Request request, final Context context, final Timeout timeout) {
         Assert.notNull(request, "OpenID Connect JWK Set HTTP request must not be null");
         Assert.notNull(context, "OpenID Connect JWK Set context must not be null");
-        Assert.notNull(timeout, "OpenID Connect JWK Set time budget must not be null");
+        Assert.notNull(timeout, "OpenID Connect JWK Set timeout must not be null");
         try {
             codec.validateRequest(request);
         } catch (RuntimeException exception) {
@@ -91,6 +88,7 @@ public final class JwkSetEndpoint {
             case Outcome.Succeeded<JwkSet> success -> codec.encodeResponse(request, success.value());
             case Outcome.Rejected<JwkSet> rejected -> errorMapper.jwks(request, rejected.failure());
             case Outcome.Failed<JwkSet> failed -> errorMapper.jwks(request, failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 

@@ -31,8 +31,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public sealed interface Filter
-        permits Filter.Present, Filter.Compare, Filter.Not, Filter.And, Filter.Or, Filter.ValuePath {
+public interface Filter {
 
     /**
      * Represents one of the registered lowercase RFC 7644 comparison operators.
@@ -108,7 +107,7 @@ public sealed interface Filter
      *
      * @author Kimi Liu
      */
-    sealed interface ComparisonValue permits StringValue, BooleanValue, NumberValue, NullValue {
+    interface ComparisonValue {
 
     }
 

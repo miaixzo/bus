@@ -21,9 +21,9 @@ package org.miaixz.bus.auth.cache;
 
 import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.FabricX.Clock;
 import org.miaixz.bus.auth.Session;
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.fabric.Clock;
 
 /**
  * Stores the framework's single root Session model by an isolated session-key digest.
@@ -35,7 +35,7 @@ import org.miaixz.bus.fabric.Clock;
  *
  * @author Kimi Liu
  */
-public final class SessionCache extends AuthCache<Session> {
+public class SessionCache extends AuthCache<Session> {
 
     /**
      * Isolates authentication sessions from every other bus-cache consumer.
@@ -51,6 +51,20 @@ public final class SessionCache extends AuthCache<Session> {
      */
     public SessionCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
         super(cache, deployment, PURPOSE, Session.class, clock);
+    }
+
+    /**
+     * Creates a Source-generation-scoped Session cache view for compiled runtime use.
+     *
+     * @param cache      shared bus-cache backend
+     * @param deployment deployment-unique cache namespace
+     * @param sourceId   exact Source registration identifier
+     * @param generation non-negative Source configuration generation
+     * @param clock      shared runtime clock used to derive entry lifetimes
+     */
+    public SessionCache(final CacheX<String, Object> cache, final String deployment, final String sourceId,
+            final long generation, final Clock clock) {
+        super(cache, deployment, PURPOSE, Session.class, sourceId, generation, clock);
     }
 
     /**

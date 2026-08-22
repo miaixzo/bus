@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class JwkSelector {
+public class JwkSelector {
 
     /**
      * Creates a stateless JWK selector.

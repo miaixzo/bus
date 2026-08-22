@@ -34,7 +34,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class ClaimMapper {
+public class ClaimMapper {
 
     /**
      * Creates a stateless deterministic claim mapper.

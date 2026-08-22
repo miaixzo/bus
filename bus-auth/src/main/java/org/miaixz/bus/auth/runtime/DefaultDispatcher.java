@@ -23,12 +23,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Dispatcher;
-import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.worker.SourceWorker;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -191,7 +186,7 @@ final class DefaultDispatcher implements Dispatcher {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!lifecycle.running()) {
             return failed(ErrorCode._503, "Dispatcher is closed");
         }
@@ -199,7 +194,7 @@ final class DefaultDispatcher implements Dispatcher {
             return rejected(ErrorCode._100100, "Authentication invocation requires all routing and context values");
         }
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "Authentication invocation time budget is exhausted");
+            return failed(ErrorCode._408, "Authentication invocation timeout is exhausted");
         }
         final RuntimeLifecycle.Lease operation = lifecycle.enter();
         if (operation == null) {

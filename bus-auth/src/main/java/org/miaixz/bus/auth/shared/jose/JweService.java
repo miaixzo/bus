@@ -54,7 +54,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class JweService {
+public class JweService {
 
     /**
      * Exact JWE JSON protected Header member name.

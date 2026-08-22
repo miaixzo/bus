@@ -17,51 +17,41 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.auth.worker;
+package org.miaixz.bus.auth.worker.loader;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Registration;
-import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.Blueprint;
+import org.miaixz.bus.auth.Loader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
  * Loads project-maintained protected-resource records.
+ *
+ * @author Kimi Liu
  */
 @FunctionalInterface
-public interface ResourceLoader {
-
-    /**
-     * Loads a protected-resource record within the exact Source registration scope.
-     *
-     * @param registration exact Source registration requesting the resource
-     * @param request      validated resource lookup coordinates
-     * @param context      immutable non-secret invocation context
-     * @param timeout      shared end-to-end operation budget
-     * @return asynchronous project loading outcome
-     */
-    CompletionStage<Outcome<Record>> load(
-            Registration.SourceEntry registration,
-            Request request,
-            Context context,
-            Timeout.Budget timeout);
+public interface ResourceLoader extends Loader<ResourceLoader.Request, ResourceLoader.Record> {
 
     /**
      * Identifies the protected resource required by one protocol operation.
      *
-     * @param namespaceId project resource namespace, independent of the Source registration identifier
-     * @param audience    requested token audiences
-     * @param resource    requested resource indicators
+     * @param registration exact Source registration requesting the resource
+     * @param namespaceId  project resource namespace, independent of the Source registration identifier
+     * @param audience     requested token audiences
+     * @param resource     requested resource indicators
+     * @author Kimi Liu
      */
-    record Request(String namespaceId, List<String> audience, List<String> resource) {
+    record Request(Blueprint.SourceEntry registration, String namespaceId, List<String> audience,
+            List<String> resource) {
 
-        /** Validates and freezes one protected-resource lookup request. */
+        /**
+         * Validates and freezes one protected-resource lookup request.
+         */
         public Request {
+            Assert.notNull(registration, "Resource registration must not be null");
             Assert.notBlank(namespaceId, "Resource request namespace id must not be blank");
             audience = immutable(audience, "Resource request audience");
             resource = immutable(resource, "Resource request indicator");
@@ -94,6 +84,7 @@ public interface ResourceLoader {
      * @param audience   authorized token audiences
      * @param scopes     scopes allowed for the resource
      * @param attributes protocol-specific non-secret resource attributes
+     * @author Kimi Liu
      */
     record Record(String sourceId, Request request, String id, List<String> audience, List<String> scopes,
             JsonValue.ObjectValue attributes) {

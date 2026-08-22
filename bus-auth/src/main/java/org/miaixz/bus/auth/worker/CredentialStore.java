@@ -29,6 +29,7 @@ import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.shared.SecretLease;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Regex;
@@ -59,7 +60,7 @@ public interface CredentialStore {
      * @param secret    caller-owned live secret lease
      * @param expiresAt optional absolute material expiration
      * @param context   immutable non-secret invocation context
-     * @param timeout   shared end-to-end operation budget
+     * @param timeout   shared end-to-end operation timeout
      * @return stage containing success, an expected refusal, or an operational failure
      */
     CompletionStage<Outcome<Void>> store(
@@ -67,37 +68,37 @@ public interface CredentialStore {
             SecretLease secret,
             Optional<Instant> expiresAt,
             Context context,
-            Timeout.Budget timeout);
+            Timeout timeout);
 
     /**
      * Resolves a new lease without consuming the stored dynamic credential.
      *
      * @param key     isolated dynamic credential key
      * @param context immutable non-secret invocation context
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return stage containing a newly owned lease, an expected refusal, or an operational failure
      */
-    CompletionStage<Outcome<SecretLease>> resolve(Key key, Context context, Timeout.Budget timeout);
+    CompletionStage<Outcome<SecretLease>> resolve(Key key, Context context, Timeout timeout);
 
     /**
      * Atomically resolves a new lease and removes the stored dynamic credential.
      *
      * @param key     isolated one-time dynamic credential key
      * @param context immutable non-secret invocation context
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return stage containing a newly owned lease, an expected refusal, or an operational failure
      */
-    CompletionStage<Outcome<SecretLease>> take(Key key, Context context, Timeout.Budget timeout);
+    CompletionStage<Outcome<SecretLease>> take(Key key, Context context, Timeout timeout);
 
     /**
      * Deletes one dynamic credential without returning its material.
      *
      * @param key     isolated dynamic credential key
      * @param context immutable non-secret invocation context
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return stage containing success, an expected refusal, or an operational failure
      */
-    CompletionStage<Outcome<Void>> delete(Key key, Context context, Timeout.Budget timeout);
+    CompletionStage<Outcome<Void>> delete(Key key, Context context, Timeout timeout);
 
     /**
      * Identifies dynamic credential material without containing its raw protocol binding.

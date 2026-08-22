@@ -24,6 +24,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.auth.FabricX.Headers;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationCodeResponse;
@@ -36,9 +39,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Encodes an OAuth 2.x authorization success or error response as a safe HTTP redirect.
@@ -49,7 +49,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class AuthorizationResponseEncoder {
+public class AuthorizationResponseEncoder {
 
     /**
      * Creates a stateless authorization response encoder.
@@ -100,6 +100,7 @@ public final class AuthorizationResponseEncoder {
                 error.state().ifPresent(value -> parameters.add(new NameValue(OAuth2.Parameters.STATE, value)));
                 error.extensions().values().forEach((name, value) -> extension(parameters, name, value));
             }
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         }
         return List.copyOf(parameters);
     }
@@ -145,10 +146,7 @@ public final class AuthorizationResponseEncoder {
      * @throws IllegalArgumentException if an argument is {@code null} or redirect text is blank
      * @throws ValidateException        if the redirect or an extension cannot be represented safely
      */
-    public HttpResponse encode(
-            final HttpRequest request,
-            final String redirectUri,
-            final AuthorizationResponse response) {
+    public Response encode(final Request request, final String redirectUri, final AuthorizationResponse response) {
         Assert.notNull(request, "OAuth 2.x authorization HTTP request must not be null");
         Assert.notBlank(redirectUri, "OAuth 2.x authorization redirect URI must not be blank");
         Assert.notNull(response, "OAuth 2.x authorization response must not be null");
@@ -168,7 +166,7 @@ public final class AuthorizationResponseEncoder {
                 : target.getRawQuery().isEmpty() || target.getRawQuery().endsWith(Symbol.AND) ? Normal.EMPTY
                         : Symbol.AND;
         final String location = redirectUri + separator + encoded;
-        return HttpResponse.builder().request(request).code(Http.Status.FOUND)
+        return Response.builder().request(request).code(Http.Status.FOUND)
                 .headers(
                         Headers.of(
                                 Http.Header.LOCATION,

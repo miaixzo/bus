@@ -55,7 +55,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class SamlMessageCodec {
+public class SamlMessageCodec {
 
     /**
      * Maximum accepted XML byte length.
@@ -319,6 +319,7 @@ public final class SamlMessageCodec {
                     "SAML AttributeValue arrays must be expanded by the assertion issuer");
             case JsonValue.ObjectValue ignored -> throw new ValidateException(
                     "SAML AttributeValue has no standard arbitrary JSON object mapping");
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         }
         return serialize(document);
     }
@@ -576,6 +577,7 @@ public final class SamlMessageCodec {
                             .appendChild(assertionElement(document, plain.assertion()));
                     case Response.EncryptedAssertion encrypted -> root
                             .appendChild(requiredFragment(document, encrypted.xml(), "SAML EncryptedAssertion"));
+                    default -> throw new IllegalStateException("Unsupported protocol model implementation");
                 }
             }
             return document;
@@ -684,6 +686,7 @@ public final class SamlMessageCodec {
                             .appendChild(attributeStatement(document, attributes.statement()));
                     case Assertion.OtherStatement other -> root
                             .appendChild(requiredFragment(document, other.xml(), "SAML Statement"));
+                    default -> throw new IllegalStateException("Unsupported protocol model implementation");
                 }
             }
             return root;
@@ -828,6 +831,7 @@ public final class SamlMessageCodec {
                         document,
                         encrypted.xml(),
                         "SAML EncryptedID");
+                default -> throw new IllegalStateException("Unsupported protocol model implementation");
             };
         }
 
@@ -920,6 +924,7 @@ public final class SamlMessageCodec {
                     case Conditions.ProxyRestriction proxy -> element.appendChild(proxyRestriction(document, proxy));
                     case Conditions.Extension extension -> element
                             .appendChild(requiredFragment(document, extension.xml(), "SAML extension Condition"));
+                    default -> throw new IllegalStateException("Unsupported protocol model implementation");
                 }
             }
             return element;
@@ -1101,6 +1106,7 @@ public final class SamlMessageCodec {
                             .appendChild(attribute(document, plain.attribute()));
                     case AttributeStatement.EncryptedAttribute encrypted -> element
                             .appendChild(requiredFragment(document, encrypted.xml(), "SAML EncryptedAttribute"));
+                    default -> throw new IllegalStateException("Unsupported protocol model implementation");
                 }
             }
             return element;
@@ -1284,9 +1290,7 @@ public final class SamlMessageCodec {
                             SamlXmlReader::requestedAuthnContext),
                     optionalXml(child(root, Saml.Namespaces.PROTOCOL, Saml.Xml.SCOPING)),
                     optionalBoolean(root, Saml.Xml.FORCE_AUTHN), optionalBoolean(root, Saml.Xml.IS_PASSIVE),
-                    optionalObject(
-                            optional(root, Saml.Xml.PROTOCOL_BINDING).getOrNull(),
-                            org.miaixz.bus.auth.protocol.saml.SamlBinding::new),
+                    optionalObject(optional(root, Saml.Xml.PROTOCOL_BINDING).getOrNull(), SamlBinding::new),
                     optionalInteger(root, Saml.Xml.ASSERTION_CONSUMER_SERVICE_INDEX),
                     optional(root, Saml.Xml.ASSERTION_CONSUMER_SERVICE_URL),
                     optionalInteger(root, Saml.Xml.ATTRIBUTE_CONSUMING_SERVICE_INDEX),
@@ -1728,12 +1732,8 @@ public final class SamlMessageCodec {
             final Element message = child(element, Saml.Namespaces.PROTOCOL, Saml.Xml.STATUS_MESSAGE);
             final Element detail = child(element, Saml.Namespaces.PROTOCOL, Saml.Xml.STATUS_DETAIL);
             return new Status(statusCode(requiredChild(element, Saml.Namespaces.PROTOCOL, Saml.Xml.STATUS_CODE)),
-                    message == null ? Optional.empty()
-                            : Optional
-                                    .of(new org.miaixz.bus.auth.protocol.saml.StatusMessage(message.getTextContent())),
-                    detail == null ? Optional.empty()
-                            : Optional
-                                    .of(new org.miaixz.bus.auth.protocol.saml.StatusDetail(extensionChildren(detail))));
+                    message == null ? Optional.empty() : Optional.of(new StatusMessage(message.getTextContent())),
+                    detail == null ? Optional.empty() : Optional.of(new StatusDetail(extensionChildren(detail))));
         }
 
         /**
@@ -1742,9 +1742,9 @@ public final class SamlMessageCodec {
          * @param element validated StatusCode element
          * @return immutable recursively nested StatusCode model
          */
-        private static org.miaixz.bus.auth.protocol.saml.StatusCode statusCode(final Element element) {
+        private static StatusCode statusCode(final Element element) {
             final Element nested = child(element, Saml.Namespaces.PROTOCOL, Saml.Xml.STATUS_CODE);
-            return new org.miaixz.bus.auth.protocol.saml.StatusCode(required(element, Saml.Xml.VALUE),
+            return new StatusCode(required(element, Saml.Xml.VALUE),
                     nested == null ? Optional.empty() : Optional.of(statusCode(nested)));
         }
 

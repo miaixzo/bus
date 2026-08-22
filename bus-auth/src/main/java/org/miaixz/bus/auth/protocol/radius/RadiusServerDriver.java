@@ -30,7 +30,7 @@ import org.miaixz.bus.auth.protocol.radius.codec.RadiusPacketEncoder;
 import org.miaixz.bus.auth.protocol.radius.server.*;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.SourceDriver;
-import org.miaixz.bus.auth.worker.BindingLoader;
+import org.miaixz.bus.auth.worker.BindingResolver;
 import org.miaixz.bus.auth.worker.SourceWorker;
 import org.miaixz.bus.auth.worker.WorkerSlots;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
@@ -48,7 +48,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class RadiusServerDriver implements SourceDriver<RadiusServerOptions> {
+public class RadiusServerDriver implements SourceDriver<RadiusServerOptions> {
 
     /**
      * Creates the stateless RADIUS Provider driver.
@@ -98,7 +98,7 @@ public final class RadiusServerDriver implements SourceDriver<RadiusServerOption
     public SourceWorker compile(final Prepared<RadiusServerOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "RADIUS Provider preparation must not be null");
         Assert.notNull(services, "RADIUS Provider execution services must not be null");
-        final Registration.SourceEntry record = prepared.registration();
+        final Blueprint.SourceEntry record = prepared.registration();
         final Provider provider = prepared.provider();
         final Library library = prepared.library();
         final Source source = record.resource();
@@ -111,10 +111,10 @@ public final class RadiusServerDriver implements SourceDriver<RadiusServerOption
         if (options.maximumPacketBytes() > services.securityBaseline().require(Protocol.RADIUS).maximumMessageBytes()) {
             throw new ValidateException("RADIUS Provider packet limit exceeds the shared security baseline");
         }
-        final BindingLoader.Key<RadiusRequestHandler> binding = new BindingLoader.Key<>("radius-request",
+        final BindingResolver.Key<RadiusRequestHandler> binding = new BindingResolver.Key<>("radius-request",
                 RadiusRequestHandler.class);
         final RadiusRequestHandler handler = Assert.notNull(
-                binding.require(services.bindingLoader().load(record, binding)),
+                binding.require(services.bindingResolver().resolve(record, binding)),
                 "RADIUS external request handler binding must not be null");
         final RadiusAttributeCodec attributes = new RadiusAttributeCodec();
         final RadiusPacketEncoder encoder = new RadiusPacketEncoder(options.maximumPacketBytes(),
@@ -179,6 +179,7 @@ public final class RadiusServerDriver implements SourceDriver<RadiusServerOption
                         .succeeded(success.value() == null ? null : responseType.cast(success.value()));
                 case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
                 case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             });
         }
 
@@ -236,7 +237,7 @@ public final class RadiusServerDriver implements SourceDriver<RadiusServerOption
          * @param capability exact declared capability
          * @param request    exact complete packet request
          * @param context    immutable invocation context
-         * @param timeout    shared end-to-end budget
+         * @param timeout    shared end-to-end timeout
          * @param <Q>        declared request type
          * @param <S>        declared success type
          * @return delegated typed outcome or a closed 400/404 rejection
@@ -246,10 +247,10 @@ public final class RadiusServerDriver implements SourceDriver<RadiusServerOption
                 final Capability<Q, S> capability,
                 final Q request,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             Assert.notNull(capability, "RADIUS Provider capability must not be null");
             Assert.notNull(context, "RADIUS Provider context must not be null");
-            Assert.notNull(timeout, "RADIUS Provider time budget must not be null");
+            Assert.notNull(timeout, "RADIUS Provider timeout must not be null");
             if (!manifest.capabilities().contains(capability)) {
                 return missing();
             }

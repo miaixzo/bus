@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class AudienceValidator {
+public class AudienceValidator {
 
     /**
      * Creates a stateless audience validator.

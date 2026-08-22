@@ -24,6 +24,11 @@ import java.net.URISyntaxException;
 import java.util.*;
 
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Body;
+import org.miaixz.bus.auth.FabricX.Headers;
+import org.miaixz.bus.auth.FabricX.HeadersBuilder;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
@@ -40,11 +45,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * Maps closed framework failures to endpoint-specific standard OAuth 2.x HTTP error responses.
@@ -56,7 +56,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  *
  * @author Kimi Liu
  */
-public final class OAuth2ErrorMapper {
+public class OAuth2ErrorMapper {
 
     /**
      * Failure detail containing a registered OAuth error string.
@@ -275,8 +275,8 @@ public final class OAuth2ErrorMapper {
      * @param status  HTTP status
      * @return complete empty response
      */
-    private static HttpResponse empty(final HttpRequest request, final int status) {
-        return HttpResponse.builder().request(request).code(status).headers(noStoreHeaders().build()).build();
+    private static Response empty(final Request request, final int status) {
+        return Response.builder().request(request).code(status).headers(noStoreHeaders().build()).build();
     }
 
     /**
@@ -284,7 +284,7 @@ public final class OAuth2ErrorMapper {
      *
      * @return mutable header builder containing no-store and no-cache directives
      */
-    private static Headers.Builder noStoreHeaders() {
+    private static HeadersBuilder noStoreHeaders() {
         return Headers.builder().add(Http.Header.CACHE_CONTROL, Http.Cache.NO_STORE)
                 .add(Http.Header.PRAGMA, Http.Cache.NO_CACHE);
     }
@@ -331,7 +331,7 @@ public final class OAuth2ErrorMapper {
      * @param request originating HTTP request
      * @return whether the Authorization scheme is Basic
      */
-    private static boolean basic(final HttpRequest request) {
+    private static boolean basic(final Request request) {
         final String authorization = request.headers().get(Http.Header.AUTHORIZATION);
         return authorization != null && authorization.length() > 6
                 && authorization.regionMatches(true, 0, "Basic ", 0, 6);
@@ -383,8 +383,8 @@ public final class OAuth2ErrorMapper {
      * @param failure       closed internal failure
      * @return complete authorization endpoint response
      */
-    public HttpResponse authorization(
-            final HttpRequest request,
+    public Response authorization(
+            final Request request,
             final AuthorizationRequest authorization,
             final Outcome.Failure failure) {
         Assert.notNull(request, "OAuth 2.x authorization HTTP request must not be null");
@@ -401,7 +401,7 @@ public final class OAuth2ErrorMapper {
         }
         try {
             final String location = redirectLocation(redirectUri, error);
-            return HttpResponse.builder().request(request).code(Http.Status.FOUND)
+            return Response.builder().request(request).code(Http.Status.FOUND)
                     .headers(
                             Headers.of(
                                     Http.Header.LOCATION,
@@ -422,7 +422,7 @@ public final class OAuth2ErrorMapper {
      * @param request originating Fabric HTTP request
      * @return local invalid_request response
      */
-    public HttpResponse authorizationMalformed(final HttpRequest request) {
+    public Response authorizationMalformed(final Request request) {
         return malformed(request);
     }
 
@@ -433,7 +433,7 @@ public final class OAuth2ErrorMapper {
      * @param failure closed internal failure
      * @return complete token endpoint response
      */
-    public HttpResponse token(final HttpRequest request, final Outcome.Failure failure) {
+    public Response token(final Request request, final Outcome.Failure failure) {
         return endpoint(request, failure, TOKEN_ERRORS);
     }
 
@@ -444,7 +444,7 @@ public final class OAuth2ErrorMapper {
      * @param failure shared Bus parsing failure, optionally carrying a registered OAuth error identifier
      * @return standard malformed token response
      */
-    public HttpResponse tokenMalformed(final HttpRequest request, final RuntimeException failure) {
+    public Response tokenMalformed(final Request request, final RuntimeException failure) {
         Assert.notNull(request, "OAuth 2.x token HTTP request must not be null");
         Assert.notNull(failure, "OAuth 2.x token parsing failure must not be null");
         final OAuth2ErrorCode error = failure instanceof UncheckedException unchecked
@@ -464,7 +464,7 @@ public final class OAuth2ErrorMapper {
      * @param failure closed internal failure
      * @return complete introspection error response
      */
-    public HttpResponse introspection(final HttpRequest request, final Outcome.Failure failure) {
+    public Response introspection(final Request request, final Outcome.Failure failure) {
         return endpoint(request, failure, INTROSPECTION_ERRORS);
     }
 
@@ -474,7 +474,7 @@ public final class OAuth2ErrorMapper {
      * @param request originating Fabric HTTP request
      * @return standard malformed introspection response
      */
-    public HttpResponse introspectionMalformed(final HttpRequest request) {
+    public Response introspectionMalformed(final Request request) {
         return malformed(request);
     }
 
@@ -485,7 +485,7 @@ public final class OAuth2ErrorMapper {
      * @param failure closed internal failure
      * @return complete revocation error response
      */
-    public HttpResponse revocation(final HttpRequest request, final Outcome.Failure failure) {
+    public Response revocation(final Request request, final Outcome.Failure failure) {
         return endpoint(request, failure, REVOCATION_ERRORS);
     }
 
@@ -495,7 +495,7 @@ public final class OAuth2ErrorMapper {
      * @param request originating Fabric HTTP request
      * @return standard malformed revocation response
      */
-    public HttpResponse revocationMalformed(final HttpRequest request) {
+    public Response revocationMalformed(final Request request) {
         return malformed(request);
     }
 
@@ -506,7 +506,7 @@ public final class OAuth2ErrorMapper {
      * @param failure closed internal failure
      * @return complete device authorization error response
      */
-    public HttpResponse deviceAuthorization(final HttpRequest request, final Outcome.Failure failure) {
+    public Response deviceAuthorization(final Request request, final Outcome.Failure failure) {
         return endpoint(request, failure, DEVICE_ERRORS);
     }
 
@@ -516,7 +516,7 @@ public final class OAuth2ErrorMapper {
      * @param request originating Fabric HTTP request
      * @return standard malformed device authorization response
      */
-    public HttpResponse deviceAuthorizationMalformed(final HttpRequest request) {
+    public Response deviceAuthorizationMalformed(final Request request) {
         return malformed(request);
     }
 
@@ -527,7 +527,7 @@ public final class OAuth2ErrorMapper {
      * @param failure closed internal failure
      * @return empty metadata error response
      */
-    public HttpResponse metadata(final HttpRequest request, final Outcome.Failure failure) {
+    public Response metadata(final Request request, final Outcome.Failure failure) {
         Assert.notNull(request, "OAuth 2.x metadata HTTP request must not be null");
         Assert.notNull(failure, "OAuth 2.x metadata failure must not be null");
         return empty(request, metadataStatus(failure));
@@ -539,7 +539,7 @@ public final class OAuth2ErrorMapper {
      * @param request originating Fabric HTTP request
      * @return empty metadata bad-request response
      */
-    public HttpResponse metadataMalformed(final HttpRequest request) {
+    public Response metadataMalformed(final Request request) {
         Assert.notNull(request, "OAuth 2.x metadata HTTP request must not be null");
         return empty(request, Http.Status.BAD_REQUEST);
     }
@@ -552,8 +552,8 @@ public final class OAuth2ErrorMapper {
      * @param allowed exact endpoint error allow-list
      * @return complete JSON error response
      */
-    private HttpResponse endpoint(
-            final HttpRequest request,
+    private Response endpoint(
+            final Request request,
             final Outcome.Failure failure,
             final Set<OAuth2ErrorCode> allowed) {
         Assert.notNull(request, "OAuth 2.x HTTP request must not be null");
@@ -568,7 +568,7 @@ public final class OAuth2ErrorMapper {
      * @param request originating HTTP request
      * @return standard invalid_request response
      */
-    private HttpResponse malformed(final HttpRequest request) {
+    private Response malformed(final Request request) {
         Assert.notNull(request, "OAuth 2.x malformed HTTP request must not be null");
         return tokenJson(
                 request,
@@ -585,20 +585,20 @@ public final class OAuth2ErrorMapper {
      * @param status  HTTP status
      * @return complete JSON response
      */
-    private HttpResponse tokenJson(final HttpRequest request, final TokenErrorResponse error, final int status) {
+    private Response tokenJson(final Request request, final TokenErrorResponse error, final int status) {
         final Map<String, JsonValue> members = new LinkedHashMap<>();
         members.put(OAuth2.Parameters.ERROR, new JsonValue.StringValue(error.error().value()));
         error.errorDescription()
                 .ifPresent(value -> members.put(OAuth2.Parameters.ERROR_DESCRIPTION, new JsonValue.StringValue(value)));
         error.errorUri().ifPresent(value -> members.put(OAuth2.Parameters.ERROR_URI, new JsonValue.StringValue(value)));
         error.extensions().values().forEach(members::put);
-        final Headers.Builder headers = noStoreHeaders();
+        final HeadersBuilder headers = noStoreHeaders();
         if (status == Http.Status.UNAUTHORIZED && basic(request)) {
             headers.add(Http.Header.WWW_AUTHENTICATE, "Basic realm=\"oauth2\"");
         }
         final byte[] body = jsonProvider.writeValue(new JsonValue.ObjectValue(members));
-        return HttpResponse.builder().request(request).code(status).headers(headers.build())
-                .body(PayloadBody.of(Payload.of(body), MediaType.APPLICATION_JSON_TYPE)).build();
+        return Response.builder().request(request).code(status).headers(headers.build())
+                .body(Body.of(body, MediaType.APPLICATION_JSON_TYPE)).build();
     }
 
     /**
@@ -609,8 +609,8 @@ public final class OAuth2ErrorMapper {
      * @param status  HTTP status
      * @return complete JSON response
      */
-    private HttpResponse authorizationJson(
-            final HttpRequest request,
+    private Response authorizationJson(
+            final Request request,
             final AuthorizationErrorResponse error,
             final int status) {
         final Map<String, JsonValue> members = new LinkedHashMap<>();
@@ -621,8 +621,8 @@ public final class OAuth2ErrorMapper {
         error.state().ifPresent(value -> members.put(OAuth2.Parameters.STATE, new JsonValue.StringValue(value)));
         error.extensions().values().forEach(members::put);
         final byte[] body = jsonProvider.writeValue(new JsonValue.ObjectValue(members));
-        return HttpResponse.builder().request(request).code(status).headers(noStoreHeaders().build())
-                .body(PayloadBody.of(Payload.of(body), MediaType.APPLICATION_JSON_TYPE)).build();
+        return Response.builder().request(request).code(status).headers(noStoreHeaders().build())
+                .body(Body.of(body, MediaType.APPLICATION_JSON_TYPE)).build();
     }
 
 }

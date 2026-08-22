@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class WeChatMiniAdapter extends WeChatAdapterSupport {
+public class WeChatMiniAdapter extends WeChatAdapterSupport {
 
     /**
      * Creates one Mini Program adapter for an exact compiled Source.

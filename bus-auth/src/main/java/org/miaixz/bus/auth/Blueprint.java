@@ -25,7 +25,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Enumers;
 
 /**
- * Defines the single provider-neutral loading model for Library, Provider, and Source registrations.
+ * Defines the provider-neutral blueprint model used to assemble Library, Provider, and Source registrations.
  * <p>
  * External projects create complete records from databases, files, or remote services. The framework validates and
  * compiles one complete snapshot; this container performs no loading, persistence, protocol option materialization, or
@@ -35,171 +35,13 @@ import org.miaixz.bus.core.lang.Enumers;
  *
  * @author Kimi Liu
  */
-public final class Registration {
+public class Blueprint {
 
     /**
-     * Prevents instantiation of the registration namespace.
+     * Creates a blueprint namespace instance with no retained state.
      */
-    private Registration() {
+    public Blueprint() {
         // No initialization required.
-    }
-
-    /**
-     * Identifies the managed resource represented by a registration record.
-     *
-     * @author Kimi Liu
-     */
-    public enum Kind implements Enumers<Kind> {
-
-        /**
-         * Authentication application catalog entry.
-         */
-        LIBRARY(1),
-
-        /**
-         * Protocol-neutral Provider entity that groups one or more Sources under a Library.
-         */
-        PROVIDER(2),
-
-        /**
-         * Protocol or Vendor Source, including both client-role and server-role registrations.
-         */
-        SOURCE(3);
-
-        /**
-         * Stable persistence code independent of declaration order.
-         */
-        private final int code;
-
-        /**
-         * Creates a resource kind with its stable persistence code.
-         *
-         * @param code stable persistence code
-         */
-        Kind(final int code) {
-            this.code = code;
-        }
-
-        /**
-         * Returns the stable persistence code for this resource kind.
-         *
-         * @return stable resource kind code
-         */
-        @Override
-        public int code() {
-            return code;
-        }
-
-    }
-
-    /**
-     * Represents one type-safe registration entry accepted by the framework boundary.
-     * <p>
-     * Projects may load subclasses of the three framework entities, but an entry always projects them to their exact
-     * framework base type. This prevents a project subtype from being advertised after its project-owned fields have
-     * intentionally been discarded.
-     * </p>
-     *
-     * @author Kimi Liu
-     */
-    public sealed interface Entry permits LibraryEntry, ProviderEntry, SourceEntry {
-
-        /**
-         * Returns the exact resource category.
-         *
-         * @return registration kind
-         */
-        Kind kind();
-
-        /**
-         * Returns whether this entry participates in the compiled runtime view.
-         *
-         * @return {@code true} when enabled
-         */
-        boolean enabled();
-
-        /**
-         * Returns a detached framework entity.
-         *
-         * @return mutable copy that cannot change this entry
-         */
-        Entity resource();
-
-    }
-
-    /**
-     * Carries one detached Library registration.
-     *
-     * @param enabled  whether the Library participates in the compiled view
-     * @param resource project-supplied Library or subclass
-     */
-    public record LibraryEntry(boolean enabled, Library resource) implements Entry {
-
-        /** Validates and detaches one Library registration. */
-        public LibraryEntry {
-            resource = copy(Assert.notNull(resource, "Library registration must not be null"));
-        }
-
-        @Override
-        public Kind kind() {
-            return Kind.LIBRARY;
-        }
-
-        @Override
-        public Library resource() {
-            return copy(resource);
-        }
-
-    }
-
-    /**
-     * Carries one detached Provider registration.
-     *
-     * @param enabled  whether the Provider participates in the compiled view
-     * @param resource project-supplied Provider or subclass
-     */
-    public record ProviderEntry(boolean enabled, Provider resource) implements Entry {
-
-        /** Validates and detaches one Provider registration. */
-        public ProviderEntry {
-            resource = copy(Assert.notNull(resource, "Provider registration must not be null"));
-        }
-
-        @Override
-        public Kind kind() {
-            return Kind.PROVIDER;
-        }
-
-        @Override
-        public Provider resource() {
-            return copy(resource);
-        }
-
-    }
-
-    /**
-     * Carries one detached Source registration.
-     *
-     * @param enabled  whether the Source participates in the compiled view
-     * @param resource project-supplied Source or subclass
-     */
-    public record SourceEntry(boolean enabled, Source resource) implements Entry {
-
-        /** Validates and detaches one Source registration. */
-        public SourceEntry {
-            resource = copy(Assert.notNull(resource, "Source registration must not be null"));
-        }
-
-        @Override
-        public Kind kind() {
-            return Kind.SOURCE;
-        }
-
-        @Override
-        public Source resource() {
-            return copy(resource);
-        }
-
     }
 
     /**
@@ -281,6 +123,176 @@ public final class Registration {
         target.setMetadata(source.getMetadata());
         target.setDescription(source.getDescription());
         return target;
+    }
+
+    /**
+     * Identifies the managed resource represented by a registration record.
+     *
+     * @author Kimi Liu
+     */
+    public enum Kind implements Enumers<Kind> {
+
+        /**
+         * Authentication application catalog entry.
+         */
+        LIBRARY(1),
+
+        /**
+         * Protocol-neutral Provider entity that groups one or more Sources under a Library.
+         */
+        PROVIDER(2),
+
+        /**
+         * Protocol or Vendor Source, including both client-role and server-role registrations.
+         */
+        SOURCE(3);
+
+        /**
+         * Stable persistence code independent of declaration order.
+         */
+        private final int code;
+
+        /**
+         * Creates a resource kind with its stable persistence code.
+         *
+         * @param code stable persistence code
+         */
+        Kind(final int code) {
+            this.code = code;
+        }
+
+        /**
+         * Returns the stable persistence code for this resource kind.
+         *
+         * @return stable resource kind code
+         */
+        @Override
+        public int code() {
+            return code;
+        }
+
+    }
+
+    /**
+     * Represents one type-safe registration entry accepted by the framework boundary.
+     * <p>
+     * Projects may load subclasses of the three framework entities, but an entry always projects them to their exact
+     * framework base type. This prevents a project subtype from being advertised after its project-owned fields have
+     * intentionally been discarded.
+     * </p>
+     *
+     * @author Kimi Liu
+     */
+    public interface Entry {
+
+        /**
+         * Returns the exact resource category.
+         *
+         * @return registration kind
+         */
+        Kind kind();
+
+        /**
+         * Returns whether this entry participates in the compiled runtime view.
+         *
+         * @return {@code true} when enabled
+         */
+        boolean enabled();
+
+        /**
+         * Returns a detached framework entity.
+         *
+         * @return mutable copy that cannot change this entry
+         */
+        Entity resource();
+
+    }
+
+    /**
+     * Carries one detached Library registration.
+     *
+     * @param enabled  whether the Library participates in the compiled view
+     * @param resource project-supplied Library or subclass
+     *
+     * @author Kimi Liu
+     */
+    public record LibraryEntry(boolean enabled, Library resource) implements Entry {
+
+        /**
+         * Validates and detaches one Library registration.
+         */
+        public LibraryEntry {
+            resource = copy(Assert.notNull(resource, "Library registration must not be null"));
+        }
+
+        @Override
+        public Kind kind() {
+            return Kind.LIBRARY;
+        }
+
+        @Override
+        public Library resource() {
+            return copy(resource);
+        }
+
+    }
+
+    /**
+     * Carries one detached Provider registration.
+     *
+     * @param enabled  whether the Provider participates in the compiled view
+     * @param resource project-supplied Provider or subclass
+     *
+     * @author Kimi Liu
+     */
+    public record ProviderEntry(boolean enabled, Provider resource) implements Entry {
+
+        /**
+         * Validates and detaches one Provider registration.
+         */
+        public ProviderEntry {
+            resource = copy(Assert.notNull(resource, "Provider registration must not be null"));
+        }
+
+        @Override
+        public Kind kind() {
+            return Kind.PROVIDER;
+        }
+
+        @Override
+        public Provider resource() {
+            return copy(resource);
+        }
+
+    }
+
+    /**
+     * Carries one detached Source registration.
+     *
+     * @param enabled  whether the Source participates in the compiled view
+     * @param resource project-supplied Source or subclass
+     *
+     * @author Kimi Liu
+     */
+    public record SourceEntry(boolean enabled, Source resource) implements Entry {
+
+        /**
+         * Validates and detaches one Source registration.
+         */
+        public SourceEntry {
+            resource = copy(Assert.notNull(resource, "Source registration must not be null"));
+        }
+
+        @Override
+        public Kind kind() {
+            return Kind.SOURCE;
+        }
+
+        @Override
+        public Source resource() {
+            return copy(resource);
+        }
+
     }
 
 }

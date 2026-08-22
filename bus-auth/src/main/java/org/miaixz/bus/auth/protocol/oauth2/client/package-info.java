@@ -34,7 +34,7 @@
  * </p>
  * <p>
  * Each operation binds the exact client, endpoint, redirect URI, scope, grant, authentication method, Context, and one
- * Budget. Redirect state, PKCE verifier, device code, and nonce lifecycles use isolated atomic storage; secrets and
+ * Timeout. Redirect state, PKCE verifier, device code, and nonce lifecycles use isolated atomic storage; secrets and
  * encoded forms remain operation-scoped, endpoints pass Fabric address policy, and responses use strict standard
  * decoders without post-failure vendor repair.
  * </p>

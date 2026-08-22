@@ -32,6 +32,7 @@ import org.miaixz.bus.auth.protocol.ldap.*;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -39,7 +40,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class SearchService {
+public class SearchService {
 
     /**
      * Compiled server-role Source identifier.
@@ -94,6 +95,7 @@ public final class SearchService {
                     succeeded.value());
             case Outcome.Rejected<List<LdapMessage.ProtocolOp>> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<List<LdapMessage.ProtocolOp>> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         };
     }
 
@@ -146,7 +148,7 @@ public final class SearchService {
             final LdapResultCode code,
             final String diagnostic) {
         final LdapResult result = new LdapResult(code, new DistinguishedName(Normal.EMPTY), diagnostic,
-                org.miaixz.bus.core.lang.Optional.empty());
+                Optional.empty());
         final LdapMessage response = new LdapMessage(Math.max(0, messageId), new SearchResultDone(result), List.of());
         return Outcome.succeeded(List.of(response));
     }
@@ -177,16 +179,16 @@ public final class SearchService {
      *
      * @param message complete Search request message
      * @param context immutable invocation context with a trusted connection snapshot
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the immutable complete Search message sequence or a closed failure
      */
     public CompletionStage<Outcome<List<LdapMessage>>> search(
             final LdapMessage message,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(message, "LDAP Search message must not be null");
         Assert.notNull(context, "LDAP Search context must not be null");
-        Assert.notNull(timeout, "LDAP Search time budget must not be null");
+        Assert.notNull(timeout, "LDAP Search timeout must not be null");
         if (!(message.protocolOp() instanceof SearchRequest request) || message.messageId() <= 0) {
             return completed(
                     local(message.messageId(), LdapResultCode.PROTOCOL_ERROR, "The LDAP Search request is malformed."));
@@ -200,7 +202,7 @@ public final class SearchService {
         }
         Assert.isTrue(context.network().connection().isPresent(), "LDAP Search requires a trusted connection snapshot");
         if (timeout.expired()) {
-            return completed(Outcome.failed(failure("LDAP Search time budget expired")));
+            return completed(Outcome.failed(failure("LDAP Search timeout expired")));
         }
 
         final SearchRequest bounded = bounded(request);

@@ -46,7 +46,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class SamlAssertionValidator {
+public class SamlAssertionValidator {
 
     /**
      * Shared non-relaxable SAML timing policy.
@@ -143,6 +143,7 @@ public final class SamlAssertionValidator {
                 case Conditions.Extension ignored -> {
                     return "SAML Assertion contains an unsupported extension Condition";
                 }
+                default -> throw new IllegalStateException("Unsupported protocol model implementation");
             }
         }
         return audiences == 0 ? "SAML Assertion requires AudienceRestriction" : null;
@@ -255,7 +256,7 @@ public final class SamlAssertionValidator {
      * @param expectedInResponseTo exact one-time Authentication Request ID
      * @param options              trusted service-provider Source options
      * @param context              immutable invocation context including observed remote address
-     * @param timeout              shared end-to-end operation budget and clock
+     * @param timeout              shared end-to-end operation timeout and clock
      * @return completed stage containing the unchanged response or a safe protocol rejection
      */
     public CompletionStage<Outcome<Response>> validate(
@@ -263,17 +264,16 @@ public final class SamlAssertionValidator {
             final String expectedInResponseTo,
             final SamlClientOptions options,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(response, "SAML Response must not be null");
         Assert.notBlank(expectedInResponseTo, "Expected SAML InResponseTo must not be blank");
         Assert.notNull(options, "SAML Source options must not be null");
         Assert.notNull(context, "SAML assertion context must not be null");
-        Assert.notNull(timeout, "SAML assertion budget must not be null");
+        Assert.notNull(timeout, "SAML assertion timeout must not be null");
         if (timeout.expired()) {
             return completed(
                     Outcome.failed(
-                            new Outcome.Failure(ErrorCode._408,
-                                    "SAML assertion validation has no remaining time budget",
+                            new Outcome.Failure(ErrorCode._408, "SAML assertion validation has no remaining timeout",
                                     new JsonValue.ObjectValue(Map.of()))));
         }
         final Duration baselineSkew = securityBaseline.require(Protocol.SAML).maximumClockSkew();

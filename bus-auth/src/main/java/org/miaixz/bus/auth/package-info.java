@@ -22,7 +22,7 @@
  * <p>
  * The root types identify managed {@link org.miaixz.bus.auth.Library Libraries}, server-side
  * {@link org.miaixz.bus.auth.Provider Providers}, external {@link org.miaixz.bus.auth.Source Sources}, immutable
- * {@link org.miaixz.bus.auth.Registration Registrations}, and invocation contracts such as
+ * {@link org.miaixz.bus.auth.Blueprint Blueprints}, and invocation contracts such as
  * {@link org.miaixz.bus.auth.Capability}, {@link org.miaixz.bus.auth.Context}, {@link org.miaixz.bus.auth.Timeout},
  * {@link org.miaixz.bus.auth.Callback}, and {@link org.miaixz.bus.auth.Outcome}. Credentials, subjects, principals,
  * sessions, evidence, endpoints, and forms retain cross-cutting semantics shared by protocol, registry, runtime,

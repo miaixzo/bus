@@ -24,7 +24,10 @@ import java.util.Set;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
+import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
@@ -38,7 +41,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Declares the six frozen WeChat identity-source variants and their exact platform wire boundaries.
@@ -51,7 +53,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class WeChatManifest implements VariantManifest<WeChatOptions> {
+public class WeChatManifest implements VariantManifest<WeChatOptions> {
 
     /**
      * Stable WeChat platform routing identifier.
@@ -389,7 +391,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
      * Complete immutable WeChat Open Platform manifest.
      */
     private static final VariantManifest.Variant OPEN_VARIANT = new VariantManifest.Variant(ID, OPEN, Protocol.OAUTH2,
-            List.of("snsapi_login"),
+            VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of("snsapi_login"),
             targets(
                     fixed(
                             "https://open.weixin.qq.com/connect/qrconnect",
@@ -407,7 +409,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
      * Complete immutable WeChat Official Account manifest.
      */
     private static final VariantManifest.Variant MP_VARIANT = new VariantManifest.Variant(ID, MP, Protocol.OAUTH2,
-            List.of("snsapi_userinfo"),
+            VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of("snsapi_userinfo"),
             targets(
                     fixed(
                             "https://open.weixin.qq.com/connect/oauth2/authorize",
@@ -425,7 +427,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
      * Complete immutable WeChat Mini Program manifest.
      */
     private static final VariantManifest.Variant MINI_VARIANT = new VariantManifest.Variant(ID, MINI,
-            Protocol.VENDOR_AUTH, List.of(),
+            Protocol.VENDOR_AUTH, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of(),
             targets(
                     null,
                     fixed("https://api.weixin.qq.com/sns/jscode2session", Http.Method.GET, CLIENT_SECRET_QUERY),
@@ -437,7 +439,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
      * Complete immutable WeCom corporate QR-code manifest.
      */
     private static final VariantManifest.Variant EE_VARIANT = new VariantManifest.Variant(ID, EE, Protocol.VENDOR_AUTH,
-            List.of(),
+            VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of(),
             targets(
                     fixed(
                             "https://login.work.weixin.qq.com/wwlogin/sso/login",
@@ -455,7 +457,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
      * Complete immutable WeCom service-provider QR-code manifest.
      */
     private static final VariantManifest.Variant EE_QRCODE_VARIANT = new VariantManifest.Variant(ID, EE_QRCODE,
-            Protocol.VENDOR_AUTH, List.of(),
+            Protocol.VENDOR_AUTH, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of(),
             targets(
                     fixed(
                             "https://open.work.weixin.qq.com/wwopen/sso/3rd_qrConnect",
@@ -476,7 +478,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
      * Complete immutable WeCom web authorization manifest.
      */
     private static final VariantManifest.Variant EE_WEB_VARIANT = new VariantManifest.Variant(ID, EE_WEB,
-            Protocol.VENDOR_AUTH, List.of("snsapi_base"),
+            Protocol.VENDOR_AUTH, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of("snsapi_base"),
             targets(
                     fixed(
                             "https://open.weixin.qq.com/connect/oauth2/authorize",
@@ -529,7 +531,7 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
             final String value,
             final Http.Method method,
             final Endpoint.Authentication authentication) {
-        return new VendorTargets.Fixed(new Endpoint(UnoUrl.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
+        return new VendorTargets.Fixed(new Endpoint(Url.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
                 Set.of(authentication), Optional.empty(), TlsClientAuth.NONE));
     }
 
@@ -555,6 +557,22 @@ public final class WeChatManifest implements VariantManifest<WeChatOptions> {
             final boolean enveloped) {
         return new VendorDeviation(operation, location, vendorName, Optional.ofNullable(standardName), mediaType,
                 method, enveloped);
+    }
+
+    /**
+     * Returns the one-time WeChat client form for variant-scoped WeCom selectors.
+     *
+     * @return immutable WeChat client configuration form
+     */
+    @Override
+    public Scheme.Form form() {
+        return VariantManifest.Forms.extended(
+                false,
+                List.of(
+                        VariantManifest.Forms.field("loginType", "WeCom login type", Scheme.Form.Type.TEXT, false),
+                        VariantManifest.Forms.field("agentId", "WeCom agent identifier", Scheme.Form.Type.TEXT, false),
+                        VariantManifest.Forms.field("language", "WeCom language", Scheme.Form.Type.TEXT, false),
+                        VariantManifest.Forms.field("userType", "WeCom user type", Scheme.Form.Type.TEXT, false)));
     }
 
     /**

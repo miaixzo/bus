@@ -49,7 +49,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class IntrospectionService {
+public class IntrospectionService {
 
     /**
      * Provider identifier used to isolate opaque token digests.
@@ -117,16 +117,16 @@ public final class IntrospectionService {
      *
      * @param request standard opaque-token introspection request
      * @param context invocation context carrying an authenticated client identifier
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return asynchronous standard introspection response outcome
      */
     public CompletionStage<Outcome<IntrospectionResponse>> introspect(
             final IntrospectionRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OAuth 2.x introspection request must not be null");
         Assert.notNull(context, "OAuth 2.x introspection context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x introspection time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x introspection timeout must not be null");
         if (context.clientId().isEmpty()) {
             return completed(
                     Outcome.rejected(
@@ -134,7 +134,7 @@ public final class IntrospectionService {
         }
         if (timeout.expired()) {
             return completed(
-                    Outcome.failed(failure(ErrorCode._408, "OAuth 2.x introspection has no remaining time budget")));
+                    Outcome.failed(failure(ErrorCode._408, "OAuth 2.x introspection has no remaining timeout")));
         }
         final CompletionStage<ExpiringValue<AccessTokenCache.Entry>> lookup;
         try {
@@ -193,7 +193,10 @@ public final class IntrospectionService {
                 entry.scope().isEmpty() ? Optional.empty() : Optional.of(new Scope(entry.scope())),
                 Optional.of(entry.clientId()), Optional.empty(), Optional.of(TokenType.BEARER),
                 Optional.of(stored.expiresAt().getEpochSecond()), Optional.empty(), Optional.empty(),
-                Optional.of(entry.subjectId()), entry.audience(), Optional.of(options.issuer()), Optional.empty());
+                Optional.of(
+                        entry.openIdBinding().isEmpty() ? entry.subjectId()
+                                : entry.openIdBinding().getOrNull().subject().getOrNull()),
+                entry.audience(), Optional.of(options.issuer()), Optional.empty());
         return new IntrospectionResponse(true, Optional.of(metadata), new JsonValue.ObjectValue(extensions));
     }
 
@@ -212,6 +215,8 @@ public final class IntrospectionService {
      *
      * @param value   cached token validation state, or {@code null}
      * @param failure asynchronous cache failure, or {@code null}
+     *
+     * @author Kimi Liu
      */
     private record CacheResult(ExpiringValue<AccessTokenCache.Entry> value, Throwable failure) {
 

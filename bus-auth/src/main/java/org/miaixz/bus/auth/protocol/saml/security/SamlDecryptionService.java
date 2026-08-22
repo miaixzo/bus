@@ -50,7 +50,7 @@ import org.miaixz.bus.auth.protocol.saml.codec.SamlMessageCodec;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
 import org.miaixz.bus.auth.shared.SecurityBaseline;
 import org.miaixz.bus.auth.source.DriverServices;
-import org.miaixz.bus.auth.worker.KeyLoader;
+import org.miaixz.bus.auth.worker.loader.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.Normal;
@@ -71,7 +71,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class SamlDecryptionService {
+public class SamlDecryptionService {
 
     /**
      * XML Encryption 1.0 namespace used by EncryptedData and CipherData.
@@ -489,18 +489,18 @@ public final class SamlDecryptionService {
      * @param response signature-validated SAML Response
      * @param options  trusted service-provider Source options
      * @param context  immutable invocation context
-     * @param timeout  shared end-to-end budget
+     * @param timeout  shared end-to-end timeout
      * @return stage containing an unchanged or completely decrypted Response, or a closed failure
      */
     public CompletionStage<Outcome<Response>> decrypt(
             final Response response,
             final SamlClientOptions options,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(response, "SAML Response must not be null");
         Assert.notNull(options, "SAML Source options must not be null");
         Assert.notNull(context, "SAML decryption context must not be null");
-        Assert.notNull(timeout, "SAML decryption budget must not be null");
+        Assert.notNull(timeout, "SAML decryption timeout must not be null");
         if (response.assertions().stream().noneMatch(Response.EncryptedAssertion.class::isInstance)) {
             return completed(Outcome.succeeded(response));
         }
@@ -517,11 +517,13 @@ public final class SamlDecryptionService {
                                             new Response.PlainAssertion(assertion.value()));
                                     case Outcome.Rejected<Assertion> rejected -> Outcome.rejected(rejected.failure());
                                     case Outcome.Failed<Assertion> failed -> Outcome.failed(failed.failure());
+                                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                                 });
                 case Outcome.Rejected<List<Response.AssertionContent>> rejected -> completed(
                         Outcome.rejected(rejected.failure()));
                 case Outcome.Failed<List<Response.AssertionContent>> failed -> completed(
                         Outcome.failed(failed.failure()));
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             });
         }
         return stage.thenApply(outcome -> switch (outcome) {
@@ -529,6 +531,7 @@ public final class SamlDecryptionService {
                     .succeeded(copy(response, success.value()));
             case Outcome.Rejected<List<Response.AssertionContent>> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<List<Response.AssertionContent>> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -538,16 +541,16 @@ public final class SamlDecryptionService {
      * @param encrypted encrypted assertion choice
      * @param options   trusted Source options
      * @param context   invocation context
-     * @param timeout   shared budget
+     * @param timeout   shared timeout
      * @return stage containing one trusted plaintext assertion
      */
     private CompletionStage<Outcome<Assertion>> decryptOne(
             final Response.EncryptedAssertion encrypted,
             final SamlClientOptions options,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (timeout.expired())
-            return completed(failed("SAML assertion decryption has no remaining time budget"));
+            return completed(failed("SAML assertion decryption has no remaining timeout"));
         final EncryptedPayload payload;
         try {
             payload = payload(encrypted.xml());
@@ -555,10 +558,10 @@ public final class SamlDecryptionService {
         } catch (RuntimeException exception) {
             return completed(rejected("SAML EncryptedAssertion structure or algorithm is invalid"));
         }
-        final KeyLoader.Request query = new KeyLoader.Request(options.entityId(), Optional.of(payload.keyName()),
-                "decryption", payload.keyAlgorithm(), timeout.clock().now());
+        final KeyLoader.Request query = new KeyLoader.Request(services.registration(), options.entityId(),
+                Optional.of(payload.keyName()), "decryption", payload.keyAlgorithm(), timeout.clock().now());
         final CompletionStage<Outcome<KeyMaterial>> resolution = Outcome.mapStage(
-                () -> services.keyLoader().load(services.registration(), query, context, timeout),
+                () -> services.keyLoader().load(query, context, timeout),
                 loaded -> services.keyParser().parse(services.registration(), query, loaded));
         if (resolution == null)
             return completed(failed("SAML decryption key loader returned no result stage"));
@@ -574,6 +577,7 @@ public final class SamlDecryptionService {
                             timeout);
                     case Outcome.Rejected<KeyMaterial> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<KeyMaterial> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -584,7 +588,7 @@ public final class SamlDecryptionService {
      * @param resolved exact private key
      * @param options  trusted Source options
      * @param context  invocation context
-     * @param timeout  shared budget
+     * @param timeout  shared timeout
      * @return stage containing a signature-validated assertion
      */
     private CompletionStage<Outcome<Assertion>> decryptPlaintext(
@@ -592,7 +596,7 @@ public final class SamlDecryptionService {
             final KeyMaterial resolved,
             final SamlClientOptions options,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         byte[] contentKey = null;
         byte[] plaintext = null;
         try {
@@ -644,6 +648,7 @@ public final class SamlDecryptionService {
                                 .rejected(rejected.failure());
                         case Outcome.Failed<SamlMessageCodec.Document<Assertion>> failed -> Outcome
                                 .failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (Exception exception) {
             return completed(rejected("SAML EncryptedAssertion decryption or authentication failed"));

@@ -106,8 +106,7 @@ public record SearchRequest(DistinguishedName baseObject, Scope scope, DerefAlia
      *
      * @author Kimi Liu
      */
-    public sealed interface Filter permits And, Or, Not, EqualityMatch, Substrings, GreaterOrEqual, LessOrEqual,
-            Present, ApproxMatch, ExtensibleMatch {
+    public interface Filter {
 
     }
 
@@ -116,7 +115,7 @@ public record SearchRequest(DistinguishedName baseObject, Scope scope, DerefAlia
      *
      * @author Kimi Liu
      */
-    public sealed interface Substring permits Initial, Any, Final {
+    public interface Substring {
 
         /**
          * Returns the opaque assertion value carried by the substring alternative.

@@ -39,15 +39,21 @@ import org.miaixz.bus.crypto.Builder;
  *
  * @author Kimi Liu
  */
-public final class TokenMaterial {
+public class TokenMaterial {
 
-    /** Non-relaxable minimum entropy for generated opaque tokens. */
+    /**
+     * Non-relaxable minimum entropy for generated opaque tokens.
+     */
     private static final int MINIMUM_TOKEN_BITS = Normal._256;
 
-    /** Exact Provider identifier included in derived storage keys. */
+    /**
+     * Exact Provider identifier included in derived storage keys.
+     */
     private final String providerId;
 
-    /** Policy-derived number of random bytes per token. */
+    /**
+     * Policy-derived number of random bytes per token.
+     */
     private final int tokenBytes;
 
     /**

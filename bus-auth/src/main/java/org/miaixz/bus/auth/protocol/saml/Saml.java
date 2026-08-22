@@ -33,7 +33,7 @@ import org.miaixz.bus.core.net.Protocol;
  *
  * @author Kimi Liu
  */
-public final class Saml {
+public class Saml {
 
     /**
      * Required SAML protocol version lexical value.
@@ -58,9 +58,9 @@ public final class Saml {
     public static final Capability.Key METADATA = Capability.Key.standard(Protocol.SAML, "metadata");
 
     /**
-     * Prevents construction of the SAML protocol operation namespace.
+     * Creates a SAML protocol operation namespace instance with no retained state.
      */
-    private Saml() {
+    public Saml() {
         // No initialization required.
     }
 
@@ -85,7 +85,7 @@ public final class Saml {
     /**
      * Defines namespaces used by the SAML protocol, assertion, metadata, signature, and encryption vocabularies.
      */
-    public static final class Namespaces {
+    public static class Namespaces {
 
         /**
          * SAML 2.0 protocol namespace.
@@ -121,9 +121,9 @@ public final class Saml {
         public static final String SCHEMA = XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
         /**
-         * Prevents construction of the namespace registry.
+         * Creates an XML namespace registry instance.
          */
-        private Namespaces() {
+        public Namespaces() {
             // No initialization required.
         }
 
@@ -132,7 +132,7 @@ public final class Saml {
     /**
      * Defines SAML 2.0 binding identifiers implemented by this framework.
      */
-    public static final class Bindings {
+    public static class Bindings {
 
         /**
          * HTTP-POST Binding identifier.
@@ -144,9 +144,9 @@ public final class Saml {
         public static final String HTTP_REDIRECT = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect";
 
         /**
-         * Prevents construction of the binding registry.
+         * Creates a SAML binding registry instance.
          */
-        private Bindings() {
+        public Bindings() {
             // No initialization required.
         }
 
@@ -155,7 +155,7 @@ public final class Saml {
     /**
      * Defines standard top-level and commonly emitted SAML StatusCode values.
      */
-    public static final class Statuses {
+    public static class Statuses {
 
         /**
          * Successful processing status.
@@ -199,9 +199,9 @@ public final class Saml {
         public static final String REQUEST_UNSUPPORTED = "urn:oasis:names:tc:SAML:2.0:status:RequestUnsupported";
 
         /**
-         * Prevents construction of the status registry.
+         * Creates a SAML status registry instance.
          */
-        private Statuses() {
+        public Statuses() {
             // No initialization required.
         }
 
@@ -210,7 +210,7 @@ public final class Saml {
     /**
      * Defines standard SAML NameID format identifiers used by the implemented profiles.
      */
-    public static final class NameIdFormats {
+    public static class NameIdFormats {
 
         /**
          * Unspecified NameID format.
@@ -234,9 +234,9 @@ public final class Saml {
         public static final String ENTITY = "urn:oasis:names:tc:SAML:2.0:nameid-format:entity";
 
         /**
-         * Prevents construction of the NameID format registry.
+         * Creates a NameID format registry instance.
          */
-        private NameIdFormats() {
+        public NameIdFormats() {
             // No initialization required.
         }
 
@@ -245,7 +245,7 @@ public final class Saml {
     /**
      * Defines standard SubjectConfirmation method identifiers used by the profiles.
      */
-    public static final class ConfirmationMethods {
+    public static class ConfirmationMethods {
 
         /**
          * Bearer SubjectConfirmation method.
@@ -261,9 +261,9 @@ public final class Saml {
         public static final String SENDER_VOUCHES = "urn:oasis:names:tc:SAML:2.0:cm:sender-vouches";
 
         /**
-         * Prevents construction of the confirmation-method registry.
+         * Creates a subject-confirmation method registry instance.
          */
-        private ConfirmationMethods() {
+        public ConfirmationMethods() {
             // No initialization required.
         }
 
@@ -272,7 +272,7 @@ public final class Saml {
     /**
      * Defines HTTP Binding form and query parameter names.
      */
-    public static final class Parameters {
+    public static class Parameters {
 
         /**
          * SAML request message parameter.
@@ -296,9 +296,9 @@ public final class Saml {
         public static final String SIGNATURE = "Signature";
 
         /**
-         * Prevents construction of the HTTP parameter registry.
+         * Creates a SAML HTTP parameter registry instance.
          */
-        private Parameters() {
+        public Parameters() {
             // No initialization required.
         }
 
@@ -307,7 +307,7 @@ public final class Saml {
     /**
      * Defines XML local names used by the implemented SAML protocol and assertion model.
      */
-    public static final class Xml {
+    public static class Xml {
 
         /**
          *
@@ -661,9 +661,9 @@ public final class Saml {
         public static final String PROTOCOL_PREFIX = "samlp:";
 
         /**
-         * Prevents construction of the XML local-name registry.
+         * Creates an XML local-name registry instance.
          */
-        private Xml() {
+        public Xml() {
             // No initialization required.
         }
 

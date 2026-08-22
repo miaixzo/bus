@@ -49,7 +49,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class JwtValidator {
+public class JwtValidator {
 
     /**
      * Shared exact issuer comparison primitive.
@@ -100,18 +100,18 @@ public final class JwtValidator {
      * @param jwt          cryptographically verified JWT
      * @param requirements explicit common-claim requirements
      * @param context      current immutable authentication context
-     * @param timeout      shared end-to-end operation budget
+     * @param timeout      shared end-to-end operation timeout
      * @return stage containing the accepted JWT, expected rejection, or replay-cache failure
      */
     public CompletionStage<Outcome<Jwt>> validate(
             final Jwt jwt,
             final Requirements requirements,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(jwt, "JWT must not be null");
         Assert.notNull(requirements, "JWT validation requirements must not be null");
         Assert.notNull(context, "JWT validation context must not be null");
-        Assert.notNull(timeout, "JWT validation budget must not be null");
+        Assert.notNull(timeout, "JWT validation timeout must not be null");
         try {
             validateClaims(jwt.claims(), requirements, timeout);
         } catch (ValidateException cause) {
@@ -132,6 +132,7 @@ public final class JwtValidator {
                     case Outcome.Succeeded<Void> ignored -> Outcome.succeeded(jwt);
                     case Outcome.Rejected<Void> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<Void> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -140,9 +141,9 @@ public final class JwtValidator {
      *
      * @param claims       verified JWT Claims Set
      * @param requirements validation requirements
-     * @param timeout      shared operation budget
+     * @param timeout      shared operation timeout
      */
-    private void validateClaims(final JwtClaims claims, final Requirements requirements, final Timeout.Budget timeout) {
+    private void validateClaims(final JwtClaims claims, final Requirements requirements, final Timeout timeout) {
         final String issuer = claims.issuer().orElseThrow(() -> new ValidateException("JWT issuer claim is required"));
         issuerValidator.validate(requirements.issuer(), issuer);
         if (claims.audiences().isEmpty()) {
@@ -168,9 +169,9 @@ public final class JwtValidator {
      *
      * @param claims       verified JWT Claims Set
      * @param requirements validation requirements
-     * @param timeout      shared operation budget
+     * @param timeout      shared operation timeout
      */
-    private void validateTimes(final JwtClaims claims, final Requirements requirements, final Timeout.Budget timeout) {
+    private void validateTimes(final JwtClaims claims, final Requirements requirements, final Timeout timeout) {
         final Optional<Instant> expiration = claims.expiration();
         final Optional<Instant> issuedAt = claims.issuedAt();
         if (requirements.expirationRequired() && expiration.isEmpty()) {

@@ -29,14 +29,13 @@ import org.miaixz.bus.core.lang.Symbol;
 /**
  * Defines the common contract of the six typed RADIUS packets implemented by the packet codecs.
  * <p>
- * Historic RADIUS and RFC 9765 use mutually exclusive header meanings. The sealed {@link Header} hierarchy prevents a
+ * Historic RADIUS and RFC 9765 use mutually exclusive header meanings. Distinct {@link Header} implementations keep a
  * packet from exposing an Identifier or Authenticator when its wire header actually carries a RADIUS/1.1 Token.
  * </p>
  *
  * @author Kimi Liu
  */
-public sealed interface RadiusPacket
-        permits AccessRequest, AccessAccept, AccessReject, AccessChallenge, AccountingRequest, AccountingResponse {
+public interface RadiusPacket {
 
     /**
      * Returns the Code fixed by the concrete packet type.
@@ -107,7 +106,7 @@ public sealed interface RadiusPacket
      *
      * @author Kimi Liu
      */
-    sealed interface Header permits LegacyHeader, Radius11Header {
+    interface Header {
 
         /**
          * Returns the wire semantics represented by this header.

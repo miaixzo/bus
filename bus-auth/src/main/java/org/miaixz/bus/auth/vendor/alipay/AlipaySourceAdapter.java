@@ -31,6 +31,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
@@ -43,7 +44,7 @@ import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
-import org.miaixz.bus.auth.worker.KeyLoader;
+import org.miaixz.bus.auth.worker.loader.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
@@ -54,15 +55,13 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.crypto.center.Sign;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements the frozen Alipay RSA2 browser and signed gateway identity flow.
  *
  * @author Kimi Liu
  */
-public final class AlipaySourceAdapter implements VendorAdapter {
+public class AlipaySourceAdapter implements VendorAdapter {
 
     /**
      * Trusted Alipay gateway authority.
@@ -172,6 +171,7 @@ public final class AlipaySourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -244,7 +244,7 @@ public final class AlipaySourceAdapter implements VendorAdapter {
      * @param capability runtime-owned capability
      * @param request    exact request
      * @param context    invocation context
-     * @param timeout    shared budget
+     * @param timeout    shared timeout
      * @param <Q>        request type
      * @param <S>        success type
      * @return Alipay outcome
@@ -254,10 +254,10 @@ public final class AlipaySourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Alipay capability must not be null");
         Assert.notNull(context, "Alipay invocation context must not be null");
-        Assert.notNull(timeout, "Alipay time budget must not be null");
+        Assert.notNull(timeout, "Alipay timeout must not be null");
         if (!manifest().capabilities().contains(capability))
             return missing();
         if (capability.key().equals(SourceWorkflow.INITIATE.key())
@@ -278,13 +278,13 @@ public final class AlipaySourceAdapter implements VendorAdapter {
      *
      * @param initiation generated state
      * @param context    invocation context
-     * @param timeout    shared budget
+     * @param timeout    shared timeout
      * @return prepared redirect
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final URI redirect = URI.create(options.redirectUri().getOrNull());
         if (redirect.getHost() == null || Protocol.HOST_LOCAL.equalsIgnoreCase(redirect.getHost())) {
             return completed(rejected("Alipay redirect URI must use a registered non-local host"));
@@ -316,13 +316,13 @@ public final class AlipaySourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback material
      * @param context    invocation context
-     * @param timeout    shared budget
+     * @param timeout    shared timeout
      * @return verified Alipay identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final String code;
         try {
             code = callback(completion.callback()).authorizationCode();
@@ -342,6 +342,7 @@ public final class AlipaySourceAdapter implements VendorAdapter {
                     case Outcome.Rejected<JsonValue.ObjectValue> rejected -> completed(
                             Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<JsonValue.ObjectValue> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -350,13 +351,13 @@ public final class AlipaySourceAdapter implements VendorAdapter {
      *
      * @param token   verified token gateway object
      * @param context invocation context
-     * @param timeout shared budget
+     * @param timeout shared timeout
      * @return verified Alipay identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> token(
             final JsonValue.ObjectValue token,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final String accessToken = string(token, OAuth2.Parameters.ACCESS_TOKEN);
         final String tokenUser = string(token, "user_id");
         if (accessToken == null || tokenUser == null) {
@@ -370,6 +371,7 @@ public final class AlipaySourceAdapter implements VendorAdapter {
                             timeout);
                     case Outcome.Rejected<JsonValue.ObjectValue> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<JsonValue.ObjectValue> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -384,7 +386,7 @@ public final class AlipaySourceAdapter implements VendorAdapter {
     private Outcome<ExternalIdentity> profile(
             final JsonValue.ObjectValue profile,
             final String tokenUser,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final String profileUser = string(profile, "user_id");
         if (profileUser == null || !tokenUser.equals(profileUser)) {
             return rejected("Alipay token and profile user identifiers do not match");
@@ -404,20 +406,20 @@ public final class AlipaySourceAdapter implements VendorAdapter {
      * @param method   official gateway method
      * @param business exact business parameters
      * @param context  invocation context
-     * @param timeout  shared budget
+     * @param timeout  shared timeout
      * @return signature-verified business response object
      */
     private CompletionStage<Outcome<JsonValue.ObjectValue>> gateway(
             final String method,
             final Map<String, String> business,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final Instant now = timeout.clock().now();
-        final KeyLoader.Request query = new KeyLoader.Request(AUTHORITY, Optional.of(options.credential().id()),
-                Builder.SIGNATURE, Algorithm.SHA256WITHRSA.getValue(), now);
+        final KeyLoader.Request query = new KeyLoader.Request(services.registration(), AUTHORITY,
+                Optional.of(options.credential().id()), Builder.SIGNATURE, Algorithm.SHA256WITHRSA.getValue(), now);
         return Outcome
                 .mapStage(
-                        () -> services.keyLoader().load(services.registration(), query, context, timeout),
+                        () -> services.keyLoader().load(query, context, timeout),
                         loaded -> services.keyParser().parse(services.registration(), query, loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<KeyMaterial> success -> send(
@@ -429,6 +431,7 @@ public final class AlipaySourceAdapter implements VendorAdapter {
                             timeout);
                     case Outcome.Rejected<KeyMaterial> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<KeyMaterial> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -440,7 +443,7 @@ public final class AlipaySourceAdapter implements VendorAdapter {
      * @param key      resolved signing key
      * @param now      shared-clock instant
      * @param context  invocation context
-     * @param timeout  shared budget
+     * @param timeout  shared timeout
      * @return verified response stage
      */
     private CompletionStage<Outcome<JsonValue.ObjectValue>> send(
@@ -449,7 +452,7 @@ public final class AlipaySourceAdapter implements VendorAdapter {
             final KeyMaterial key,
             final Instant now,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!options.credential().id().equals(key.keyId())
                 || !Algorithm.SHA256WITHRSA.getValue().equals(key.algorithm())
                 || !(key.key() instanceof PrivateKey privateKey) || now.isBefore(key.notBefore())
@@ -477,6 +480,7 @@ public final class AlipaySourceAdapter implements VendorAdapter {
                     case Outcome.Succeeded<byte[]> success -> verify(method, success.value(), context, timeout);
                     case Outcome.Rejected<byte[]> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<byte[]> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -484,20 +488,18 @@ public final class AlipaySourceAdapter implements VendorAdapter {
      * Sends the signed form and returns only a bounded raw JSON document.
      *
      * @param fields  complete signed form fields
-     * @param timeout shared budget
+     * @param timeout shared timeout
      * @return raw response outcome
      */
-    private Outcome<byte[]> request(final Map<String, String> fields, final Timeout.Budget timeout) {
+    private Outcome<byte[]> request(final Map<String, String> fields, final Timeout timeout) {
         byte[] body = null;
         try {
             final List<NameValue> parameters = new ArrayList<>(fields.size());
             fields.forEach((name, value) -> parameters.add(new NameValue(name, value)));
             body = formCodec.encode(parameters);
             final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.VENDOR_AUTH).addressPolicy())
-                    .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
+            try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
+                    .method(Http.Method.POST).body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 if (response.code() == Http.Status.TOO_MANY_REQUESTS
                         || response.code() >= Http.Status.INTERNAL_SERVER_ERROR)
                     return failed("Alipay gateway is unavailable");
@@ -523,21 +525,21 @@ public final class AlipaySourceAdapter implements VendorAdapter {
      * @param method  official gateway method
      * @param body    original raw JSON body
      * @param context invocation context
-     * @param timeout shared budget
+     * @param timeout shared timeout
      * @return verified business response object
      */
     private CompletionStage<Outcome<JsonValue.ObjectValue>> verify(
             final String method,
             final byte[] body,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final Instant now = timeout.clock().now();
-        final KeyLoader.Request query = new KeyLoader.Request(AUTHORITY, Optional.of(options.verificationKeyId()),
-                Builder.SIGNATURE, Algorithm.SHA256WITHRSA.getValue(), now);
+        final KeyLoader.Request query = new KeyLoader.Request(services.registration(), AUTHORITY,
+                Optional.of(options.verificationKeyId()), Builder.SIGNATURE, Algorithm.SHA256WITHRSA.getValue(), now);
         try {
             return Outcome
                     .mapStage(
-                            () -> services.keyLoader().load(services.registration(), query, context, timeout),
+                            () -> services.keyLoader().load(query, context, timeout),
                             loaded -> services.keyParser().parse(services.registration(), query, loaded))
                     .handle((resolved, cause) -> {
                         try {
@@ -553,6 +555,7 @@ public final class AlipaySourceAdapter implements VendorAdapter {
                                         now);
                                 case Outcome.Rejected<KeyMaterial> rejected -> Outcome.rejected(rejected.failure());
                                 case Outcome.Failed<KeyMaterial> failed -> Outcome.failed(failed.failure());
+                                default -> throw new IllegalStateException("Unsupported Outcome implementation");
                             };
                         } finally {
                             Arrays.fill(body, (byte) 0);

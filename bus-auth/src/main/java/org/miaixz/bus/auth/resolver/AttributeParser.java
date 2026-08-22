@@ -19,22 +19,25 @@
 */
 package org.miaixz.bus.auth.resolver;
 
-import org.miaixz.bus.auth.Registration;
+import org.miaixz.bus.auth.Blueprint;
 import org.miaixz.bus.auth.Subject;
-import org.miaixz.bus.auth.worker.AttributeLoader;
+import org.miaixz.bus.auth.worker.loader.AttributeLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
  * Pure parser for project-loaded subject attributes.
+ *
+ * @author Kimi Liu
  */
-public final class AttributeParser {
+public class AttributeParser {
 
     /**
      * Creates a stateless subject-attribute parser.
      */
     public AttributeParser() {
+        // No initialization required.
     }
 
     /**
@@ -46,7 +49,7 @@ public final class AttributeParser {
      * @return detached validated attributes
      */
     public JsonValue.ObjectValue parse(
-            final Registration.SourceEntry registration,
+            final Blueprint.SourceEntry registration,
             final Subject.Key subject,
             final AttributeLoader.Record record) {
         final String sourceId = Assert.notNull(registration, "Attribute Source registration must not be null")

@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oidc.client.OpenIdClientScheme;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
@@ -39,7 +41,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Declares the frozen Huawei Account Kit OpenID Connect Vendor manifest.
@@ -51,7 +52,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class HuaweiManifest implements VariantManifest<HuaweiOptions> {
+public class HuaweiManifest implements VariantManifest<HuaweiOptions> {
 
     /**
      * Stable Huawei platform routing identifier.
@@ -78,7 +79,7 @@ public final class HuaweiManifest implements VariantManifest<HuaweiOptions> {
      * Complete immutable manifest for Huawei's default web Authorization Code Flow.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT, Protocol.OIDC,
-            VariantManifest.Pkce.REQUIRED, List.of("openid", "profile", "email"),
+            VariantManifest.Pkce.REQUIRED, Credential.Type.CLIENT_SECRET, List.of("openid", "profile", "email"),
             new VendorTargets(
                     Optional.of(
                             fixed(
@@ -229,7 +230,7 @@ public final class HuaweiManifest implements VariantManifest<HuaweiOptions> {
             final String value,
             final Http.Method method,
             final Endpoint.Authentication authentication) {
-        return new VendorTargets.Fixed(new Endpoint(UnoUrl.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
+        return new VendorTargets.Fixed(new Endpoint(Url.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
                 Set.of(authentication), Optional.empty(), TlsClientAuth.NONE));
     }
 

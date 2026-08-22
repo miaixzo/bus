@@ -41,7 +41,7 @@ import org.miaixz.bus.core.net.Protocol;
  *
  * @author Kimi Liu
  */
-public final class LdapClientScheme implements Scheme<LdapClientOptions> {
+public class LdapClientScheme implements Scheme<LdapClientOptions> {
 
     /**
      * Stable registration type identifier for generic LDAP Sources.

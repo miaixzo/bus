@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class Jwt {
+public class Jwt {
 
     /**
      * Sensitive compact JWS or JWE representation.

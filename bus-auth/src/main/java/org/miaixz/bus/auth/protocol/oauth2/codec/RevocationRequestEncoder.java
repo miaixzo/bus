@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Assert;
  *
  * @author Kimi Liu
  */
-public final class RevocationRequestEncoder implements Encoder<RevocationRequest, List<NameValue>> {
+public class RevocationRequestEncoder implements Encoder<RevocationRequest, List<NameValue>> {
 
     /**
      * Creates a stateless revocation request encoder.

@@ -21,11 +21,13 @@ package org.miaixz.bus.auth.runtime;
 
 import java.util.concurrent.Executor;
 
-import org.miaixz.bus.auth.Registration;
+import org.miaixz.bus.auth.Blueprint;
+import org.miaixz.bus.auth.FabricX;
 import org.miaixz.bus.auth.cache.AccessTokenCache;
 import org.miaixz.bus.auth.cache.AuthorizationCache;
 import org.miaixz.bus.auth.cache.AuthorizationCodeCache;
 import org.miaixz.bus.auth.cache.DeviceCodeCache;
+import org.miaixz.bus.auth.cache.IdTokenCache;
 import org.miaixz.bus.auth.cache.NonceCache;
 import org.miaixz.bus.auth.cache.RefreshTokenCache;
 import org.miaixz.bus.auth.cache.ReplayCache;
@@ -34,27 +36,29 @@ import org.miaixz.bus.auth.cache.StateCache;
 import org.miaixz.bus.auth.resolver.AttributeParser;
 import org.miaixz.bus.auth.resolver.CertificateParser;
 import org.miaixz.bus.auth.resolver.ConsumerParser;
+import org.miaixz.bus.auth.resolver.FederationParser;
 import org.miaixz.bus.auth.resolver.KeyParser;
 import org.miaixz.bus.auth.resolver.ResourceParser;
 import org.miaixz.bus.auth.resolver.SecretParser;
 import org.miaixz.bus.auth.shared.SecurityBaseline;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.SourceDriver;
-import org.miaixz.bus.auth.worker.AttributeLoader;
-import org.miaixz.bus.auth.worker.BindingLoader;
-import org.miaixz.bus.auth.worker.CertificateLoader;
+import org.miaixz.bus.auth.worker.BindingResolver;
 import org.miaixz.bus.auth.worker.ConsentService;
-import org.miaixz.bus.auth.worker.ConsumerLoader;
+import org.miaixz.bus.auth.worker.ConsumerVerifier;
 import org.miaixz.bus.auth.worker.CredentialStore;
-import org.miaixz.bus.auth.worker.KeyLoader;
-import org.miaixz.bus.auth.worker.ResourceLoader;
-import org.miaixz.bus.auth.worker.SecretLoader;
 import org.miaixz.bus.auth.worker.SessionWorker;
 import org.miaixz.bus.auth.worker.WorkerSlots;
+import org.miaixz.bus.auth.worker.loader.AttributeLoader;
+import org.miaixz.bus.auth.worker.loader.CertificateLoader;
+import org.miaixz.bus.auth.worker.loader.ConsumerLoader;
+import org.miaixz.bus.auth.worker.loader.FederationLoader;
+import org.miaixz.bus.auth.worker.loader.KeyLoader;
+import org.miaixz.bus.auth.worker.loader.ResourceLoader;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonProvider;
-import org.miaixz.bus.fabric.Context;
 
 /**
  * Enforces the complete capability boundary declared by one prepared Source driver.
@@ -69,17 +73,70 @@ import org.miaixz.bus.fabric.Context;
  */
 final class ScopedDriverServices implements DriverServices {
 
-    /** Complete runtime service inventory behind this capability boundary. */
+    /**
+     * Complete runtime service inventory behind this capability boundary.
+     */
     private final RuntimeServices services;
 
-    /** Exact immutable Source registration owning this view. */
-    private final Registration.SourceEntry registration;
+    /**
+     * Exact immutable Source registration owning this view.
+     */
+    private final Blueprint.SourceEntry registration;
 
-    /** Project data slots declared by the prepared Source. */
+    /**
+     * Project data slots declared by the prepared Source.
+     */
     private final WorkerSlots slots;
 
-    /** Framework dependencies declared by the prepared Source. */
+    /**
+     * Framework dependencies declared by the prepared Source.
+     */
     private final SourceDriver.Dependencies dependencies;
+
+    /**
+     * Callback correlation cache isolated to this Source configuration generation.
+     */
+    private final StateCache stateCache;
+
+    /**
+     * Nonce cache isolated to this Source configuration generation.
+     */
+    private final NonceCache nonceCache;
+
+    /**
+     * Authorization-code cache isolated to this Source configuration generation.
+     */
+    private final AuthorizationCodeCache authorizationCodeCache;
+
+    /**
+     * Device-code cache isolated to this Source configuration generation.
+     */
+    private final DeviceCodeCache deviceCodeCache;
+
+    /**
+     * Authorization lifecycle cache isolated to this Source configuration generation.
+     */
+    private final AuthorizationCache authorizationCache;
+
+    /**
+     * Access-token cache isolated to this Source configuration generation.
+     */
+    private final AccessTokenCache accessTokenCache;
+
+    /**
+     * Refresh-token cache isolated to this Source configuration generation.
+     */
+    private final RefreshTokenCache refreshTokenCache;
+
+    /**
+     * Session cache isolated to this Source configuration generation.
+     */
+    private final SessionCache sessionCache;
+
+    /**
+     * ID Token binding cache isolated to this Source configuration generation.
+     */
+    private final IdTokenCache idTokenCache;
 
     /**
      * Creates one capability-limited Source service view.
@@ -88,17 +145,30 @@ final class ScopedDriverServices implements DriverServices {
      * @param registration exact Source registration
      * @param slots        declared project data slots
      * @param dependencies declared framework dependencies
+     * @param generation   security-state generation assigned during Source compilation
      */
-    ScopedDriverServices(final RuntimeServices services, final Registration.SourceEntry registration,
-            final WorkerSlots slots, final SourceDriver.Dependencies dependencies) {
+    ScopedDriverServices(final RuntimeServices services, final Blueprint.SourceEntry registration,
+            final WorkerSlots slots, final SourceDriver.Dependencies dependencies, final long generation) {
         this.services = Assert.notNull(services, "Runtime services must not be null");
         this.registration = Assert.notNull(registration, "Scoped Source registration must not be null");
         this.slots = Assert.notNull(slots, "Driver service slots must not be null");
         this.dependencies = Assert.notNull(dependencies, "Driver framework dependencies must not be null");
+        Assert.isTrue(generation >= 0L, "Scoped Source generation must not be negative");
+        final String sourceId = Assert
+                .notBlank(this.registration.resource().getId(), "Scoped Source registration id must not be blank");
+        this.stateCache = services.stateCache(sourceId, generation);
+        this.nonceCache = services.nonceCache(sourceId, generation);
+        this.authorizationCodeCache = services.authorizationCodeCache(sourceId, generation);
+        this.deviceCodeCache = services.deviceCodeCache(sourceId, generation);
+        this.authorizationCache = services.authorizationCache(sourceId, generation);
+        this.accessTokenCache = services.accessTokenCache(sourceId, generation);
+        this.refreshTokenCache = services.refreshTokenCache(sourceId, generation);
+        this.sessionCache = services.sessionCache(sourceId, generation);
+        this.idTokenCache = services.idTokenCache(sourceId, generation);
     }
 
     @Override
-    public Registration.SourceEntry registration() {
+    public Blueprint.SourceEntry registration() {
         return registration;
     }
 
@@ -125,9 +195,9 @@ final class ScopedDriverServices implements DriverServices {
     }
 
     @Override
-    public Context fabricContext() {
-        require(SourceDriver.Dependencies.Service.FABRIC_CONTEXT);
-        return services.fabricContext();
+    public FabricX fabric() {
+        require(SourceDriver.Dependencies.Service.FABRIC);
+        return services.fabric();
     }
 
     @Override
@@ -143,9 +213,9 @@ final class ScopedDriverServices implements DriverServices {
     }
 
     @Override
-    public BindingLoader bindingLoader() {
+    public BindingResolver bindingResolver() {
         require(WorkerSlots.Slot.BINDING);
-        return services.bindingLoader();
+        return services.bindingResolver();
     }
 
     @Override
@@ -158,6 +228,24 @@ final class ScopedDriverServices implements DriverServices {
     public ConsumerParser consumerParser() {
         require(WorkerSlots.Slot.CONSUMER);
         return services.consumerParser();
+    }
+
+    @Override
+    public ConsumerVerifier consumerVerifier() {
+        require(WorkerSlots.Slot.CONSUMER_VERIFIER);
+        return services.consumerVerifier();
+    }
+
+    @Override
+    public FederationLoader federationLoader() {
+        require(WorkerSlots.Slot.FEDERATION);
+        return services.federationLoader();
+    }
+
+    @Override
+    public FederationParser federationParser() {
+        require(WorkerSlots.Slot.FEDERATION);
+        return services.federationParser();
     }
 
     @Override
@@ -229,49 +317,55 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public StateCache stateCache() {
         require(SourceDriver.Dependencies.Service.STATE_CACHE);
-        return services.stateCache();
+        return stateCache;
     }
 
     @Override
     public NonceCache nonceCache() {
         require(SourceDriver.Dependencies.Service.NONCE_CACHE);
-        return services.nonceCache();
+        return nonceCache;
     }
 
     @Override
     public AuthorizationCodeCache authorizationCodeCache() {
         require(SourceDriver.Dependencies.Service.AUTHORIZATION_CODE_CACHE);
-        return services.authorizationCodeCache();
+        return authorizationCodeCache;
     }
 
     @Override
     public DeviceCodeCache deviceCodeCache() {
         require(SourceDriver.Dependencies.Service.DEVICE_CODE_CACHE);
-        return services.deviceCodeCache();
+        return deviceCodeCache;
     }
 
     @Override
     public AuthorizationCache authorizationCache() {
         require(SourceDriver.Dependencies.Service.AUTHORIZATION_CACHE);
-        return services.authorizationCache();
+        return authorizationCache;
     }
 
     @Override
     public AccessTokenCache accessTokenCache() {
         require(SourceDriver.Dependencies.Service.ACCESS_TOKEN_CACHE);
-        return services.accessTokenCache();
+        return accessTokenCache;
     }
 
     @Override
     public RefreshTokenCache refreshTokenCache() {
         require(SourceDriver.Dependencies.Service.REFRESH_TOKEN_CACHE);
-        return services.refreshTokenCache();
+        return refreshTokenCache;
     }
 
     @Override
     public SessionCache sessionCache() {
         require(SourceDriver.Dependencies.Service.SESSION_CACHE);
-        return services.sessionCache();
+        return sessionCache;
+    }
+
+    @Override
+    public IdTokenCache idTokenCache() {
+        require(SourceDriver.Dependencies.Service.ID_TOKEN_CACHE);
+        return idTokenCache;
     }
 
     @Override

@@ -24,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -34,7 +35,6 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Aggregates OpenID Connect relying-party operations with the underlying OAuth 2.x client operations.
@@ -45,7 +45,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class OpenIdClient {
+public class OpenIdClient {
 
     /**
      * Standard OAuth 2.x operation facade used by OpenID Connect.
@@ -144,17 +144,17 @@ public final class OpenIdClient {
      *
      * @param request standard OpenID Connect Authentication Request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the authorization URL or framework failure
      */
-    public CompletionStage<Outcome<UnoUrl>> authorize(
+    public CompletionStage<Outcome<Url>> authorize(
             final AuthenticationRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OpenID Connect Authentication Request must not be null");
         return oauth2Client.authorize(request.authorizationRequest(), context, timeout)
                 .thenApply(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<UnoUrl> success -> {
+                    case Outcome.Succeeded<Url> success -> {
                         try {
                             yield Outcome.succeeded(authenticationRequestEncoder.encode(success.value(), request));
                         } catch (RuntimeException exception) {
@@ -164,8 +164,9 @@ public final class OpenIdClient {
                                             new JsonValue.ObjectValue(Map.of())));
                         }
                     }
-                    case Outcome.Rejected<UnoUrl> rejected -> Outcome.rejected(rejected.failure());
-                    case Outcome.Failed<UnoUrl> failed -> Outcome.failed(failed.failure());
+                    case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                    case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -174,19 +175,20 @@ public final class OpenIdClient {
      *
      * @param request standard OAuth token request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the standard token response or framework failure
      */
     public CompletionStage<Outcome<TokenEndpointResponse>> token(
             final TokenRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return oauth2Client.token(request, context, timeout).thenApply(outcome -> switch (outcome) {
             case Outcome.Succeeded<TokenEndpointResponse> success -> openIdToken(
                     success.value(),
                     request.grant() instanceof AuthorizationCodeGrant);
             case Outcome.Rejected<TokenEndpointResponse> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<TokenEndpointResponse> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -195,13 +197,13 @@ public final class OpenIdClient {
      *
      * @param request standard introspection request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the standard introspection response or framework failure
      */
     public CompletionStage<Outcome<IntrospectionResponse>> introspect(
             final IntrospectionRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return oauth2Client.introspect(request, context, timeout);
     }
 
@@ -210,13 +212,13 @@ public final class OpenIdClient {
      *
      * @param request standard revocation request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage whose successful value is {@code null}
      */
     public CompletionStage<Outcome<Void>> revoke(
             final RevocationRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return oauth2Client.revoke(request, context, timeout);
     }
 
@@ -225,13 +227,13 @@ public final class OpenIdClient {
      *
      * @param request standard device authorization request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the standard device authorization response or framework failure
      */
     public CompletionStage<Outcome<DeviceAuthorizationResponse>> deviceAuthorization(
             final DeviceAuthorizationRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return oauth2Client.deviceAuthorization(request, context, timeout);
     }
 
@@ -239,12 +241,12 @@ public final class OpenIdClient {
      * Retrieves OAuth Authorization Server Metadata.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing RFC 8414 metadata or framework failure
      */
     public CompletionStage<Outcome<AuthorizationServerMetadata>> metadata(
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return oauth2Client.discover(context, timeout);
     }
 
@@ -252,12 +254,10 @@ public final class OpenIdClient {
      * Retrieves and issuer-binds OpenID Provider Metadata.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing OpenID Provider Metadata or framework failure
      */
-    public CompletionStage<Outcome<OpenIdProviderMetadata>> discover(
-            final Context context,
-            final Timeout.Budget timeout) {
+    public CompletionStage<Outcome<OpenIdProviderMetadata>> discover(final Context context, final Timeout timeout) {
         return discoveryClient.discover(context, timeout);
     }
 
@@ -266,13 +266,13 @@ public final class OpenIdClient {
      *
      * @param request standard UserInfo request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a standard UserInfo response or framework failure
      */
     public CompletionStage<Outcome<UserInfoResponse>> userInfo(
             final UserInfoRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final UserInfoClient client = userInfoClient.getOrNull();
         return client == null ? unavailable("OpenID Connect UserInfo capability is not configured")
                 : client.userInfo(request, context, timeout);
@@ -283,13 +283,13 @@ public final class OpenIdClient {
      *
      * @param request standard RP-Initiated Logout request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the absolute logout URL for user-agent navigation or framework failure
      */
-    public CompletionStage<Outcome<UnoUrl>> endSession(
+    public CompletionStage<Outcome<Url>> endSession(
             final EndSessionRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final EndSessionClient client = endSessionClient.getOrNull();
         return client == null ? unavailable("OpenID Connect end-session capability is not configured")
                 : client.endSession(request, context, timeout);

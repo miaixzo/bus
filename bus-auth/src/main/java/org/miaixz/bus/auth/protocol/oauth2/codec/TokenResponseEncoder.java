@@ -23,6 +23,10 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.miaixz.bus.auth.FabricX.Body;
+import org.miaixz.bus.auth.FabricX.Headers;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
@@ -31,11 +35,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
-import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * Encodes a successful OAuth 2.x token response as its standard HTTP JSON representation.
@@ -46,7 +45,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  *
  * @author Kimi Liu
  */
-public final class TokenResponseEncoder {
+public class TokenResponseEncoder {
 
     /**
      * Provider-neutral JSON service used for RFC 8259 serialization.
@@ -109,7 +108,7 @@ public final class TokenResponseEncoder {
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if an extension duplicates a registered response member
      */
-    public HttpResponse encode(final HttpRequest request, final TokenEndpointResponse response) {
+    public Response encode(final Request request, final TokenEndpointResponse response) {
         Assert.notNull(request, "OAuth 2.x token HTTP request must not be null");
         Assert.notNull(response, "OAuth 2.x token response must not be null");
         final Map<String, JsonValue> members = new LinkedHashMap<>();
@@ -138,9 +137,9 @@ public final class TokenResponseEncoder {
             throw new ValidateException("OAuth 2.x token response encoder accepts only OAuth success response types");
         }
         final byte[] body = jsonProvider.writeValue(new JsonValue.ObjectValue(members));
-        return HttpResponse.builder().request(request).code(Http.Status.OK).headers(
+        return Response.builder().request(request).code(Http.Status.OK).headers(
                 Headers.of(Http.Header.CACHE_CONTROL, Http.Cache.NO_STORE, Http.Header.PRAGMA, Http.Cache.NO_CACHE))
-                .body(PayloadBody.of(Payload.of(body), MediaType.APPLICATION_JSON_TYPE)).build();
+                .body(Body.of(body, MediaType.APPLICATION_JSON_TYPE)).build();
     }
 
 }

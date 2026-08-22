@@ -43,7 +43,7 @@ import org.miaixz.bus.core.net.url.UrlQuery;
  *
  * @author Kimi Liu
  */
-public final class QueryCodec implements DualCodec<List<NameValue>, String> {
+public class QueryCodec implements DualCodec<List<NameValue>, String> {
 
     /**
      * Creates a stateless strict query codec.

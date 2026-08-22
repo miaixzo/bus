@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
@@ -33,7 +34,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Represents the OpenID Connect claims carried by a verified or locally issued ID Token.
@@ -124,9 +124,9 @@ public record IdTokenClaims(String issuer, String subject, List<String> audience
      */
     private static String validateIssuer(final String value) {
         Assert.notBlank(value, "OpenID Connect ID Token issuer must not be blank");
-        final UnoUrl url;
+        final Url url;
         try {
-            url = UnoUrl.parse(value);
+            url = Url.parse(value);
         } catch (RuntimeException cause) {
             throw new ValidateException("OpenID Connect ID Token issuer must be a valid URL", cause);
         }

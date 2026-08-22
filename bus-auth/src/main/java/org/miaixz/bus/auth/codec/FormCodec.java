@@ -43,7 +43,7 @@ import org.miaixz.bus.core.net.url.UrlQuery;
  *
  * @author Kimi Liu
  */
-public final class FormCodec implements DualCodec<List<NameValue>, byte[]> {
+public class FormCodec implements DualCodec<List<NameValue>, byte[]> {
 
     /**
      * Creates a stateless form codec.

@@ -31,7 +31,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public sealed interface AuthorizationResponse permits AuthorizationCodeResponse, AuthorizationErrorResponse {
+public interface AuthorizationResponse {
 
     /**
      * Returns the exact request state carried by either response variant.

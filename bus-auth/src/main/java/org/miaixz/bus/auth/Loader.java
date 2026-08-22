@@ -17,47 +17,33 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.auth.worker;
+package org.miaixz.bus.auth;
 
 import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Credential;
-import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Registration;
-import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.shared.SecretLease;
-
 /**
- * Loads a fresh externally owned secret lease.
+ * Defines one asynchronous project-owned data input port.
+ * <p>
+ * A request contains only the validated coordinates required by one loading operation. Implementations obtain raw
+ * project data but do not parse authentication-domain records, apply protocol policy, mutate Registry state, or reset
+ * the caller's timeout.
+ * </p>
+ *
+ * @param <Q> validated loading request type
+ * @param <R> loaded raw record type
+ * @author Kimi Liu
  */
 @FunctionalInterface
-public interface SecretLoader {
+public interface Loader<Q, R> {
 
     /**
-     * Loads a fresh secret lease within the exact Source registration scope.
+     * Loads project-owned data within the caller's existing authentication operation.
      *
-     * @param registration exact Source registration requesting the secret
-     * @param reference    exact project credential reference
-     * @param context      immutable non-secret invocation context
-     * @param timeout      shared end-to-end operation budget
+     * @param request validated loading coordinates
+     * @param context immutable non-secret invocation context
+     * @param timeout shared end-to-end operation timeout
      * @return asynchronous project loading outcome
      */
-    CompletionStage<Outcome<Record>> load(
-            Registration.SourceEntry registration,
-            Credential.Reference reference,
-            Context context,
-            Timeout.Budget timeout);
-
-    /**
-     * Loaded secret lease paired with its exact external reference.
-     *
-     * @param sourceId  exact Source identifier that owns the returned data
-     * @param reference exact credential reference resolved by the project
-     * @param lease     fresh closeable secret lease
-     */
-    record Record(String sourceId, Credential.Reference reference, SecretLease lease) {
-
-    }
+    CompletionStage<Outcome<R>> load(Q request, Context context, Timeout timeout);
 
 }

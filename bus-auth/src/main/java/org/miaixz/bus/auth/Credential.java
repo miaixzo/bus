@@ -33,12 +33,12 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @author Kimi Liu
  */
-public final class Credential {
+public class Credential {
 
     /**
-     * Prevents instantiation of the credential contract namespace.
+     * Creates a credential contract namespace instance with no retained state.
      */
-    private Credential() {
+    public Credential() {
         // No initialization required.
     }
 

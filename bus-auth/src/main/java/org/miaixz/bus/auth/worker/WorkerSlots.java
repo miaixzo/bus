@@ -93,27 +93,57 @@ public record WorkerSlots(Set<Slot> slots) {
 
     /**
      * Identifies one project integration slot visible through {@link WorkerSet}.
+     *
+     * @author Kimi Liu
      */
     public enum Slot {
-        /** Typed project service binding. */
+        /**
+         * Typed project service binding.
+         */
         BINDING,
-        /** Protocol consumer metadata. */
+        /**
+         * Protocol consumer metadata.
+         */
         CONSUMER,
-        /** Secret material loading. */
+        /**
+         * Server-side consumer evidence verification.
+         */
+        CONSUMER_VERIFIER,
+        /**
+         * External issuer and subject trust relations.
+         */
+        FEDERATION,
+        /**
+         * Secret material loading.
+         */
         SECRET,
-        /** Mutable credential persistence. */
+        /**
+         * Mutable credential persistence.
+         */
         CREDENTIAL,
-        /** Cryptographic key material. */
+        /**
+         * Cryptographic key material.
+         */
         KEY,
-        /** Certificate chain and trust roots. */
+        /**
+         * Certificate chain and trust roots.
+         */
         CERTIFICATE,
-        /** Subject attribute loading. */
+        /**
+         * Subject attribute loading.
+         */
         ATTRIBUTE,
-        /** Protected-resource metadata. */
+        /**
+         * Protected-resource metadata.
+         */
         RESOURCE,
-        /** Consent interaction and persistence. */
+        /**
+         * Consent interaction and persistence.
+         */
         CONSENT,
-        /** Authentication Session integration. */
+        /**
+         * Authentication Session integration.
+         */
         SESSION
 
     }

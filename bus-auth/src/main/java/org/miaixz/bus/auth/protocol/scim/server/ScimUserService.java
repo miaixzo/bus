@@ -38,7 +38,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class ScimUserService {
+public class ScimUserService {
 
     /**
      * Generic resource operation delegate.
@@ -78,6 +78,7 @@ public final class ScimUserService {
                     : Outcome.failed(failure(ErrorCode._500, "SCIM User store returned another resource type"));
             case Outcome.Rejected<Resource> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<Resource> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -108,13 +109,10 @@ public final class ScimUserService {
      *
      * @param request inbound User resource
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the created User or a closed framework failure
      */
-    public CompletionStage<Outcome<User>> create(
-            final User request,
-            final Context context,
-            final Timeout.Budget timeout) {
+    public CompletionStage<Outcome<User>> create(final User request, final Context context, final Timeout timeout) {
         Assert.notNull(request, "SCIM User create request must not be null");
         return user(delegate.create(request, context, timeout));
     }
@@ -124,13 +122,13 @@ public final class ScimUserService {
      *
      * @param request registered User resource target
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the current User or a closed framework failure
      */
     public CompletionStage<Outcome<User>> retrieve(
             final ResourceTarget request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!target(request) || request.resourceId().isEmpty()) {
             return rejected();
         }
@@ -144,7 +142,7 @@ public final class ScimUserService {
      * @param request complete replacement User body
      * @param ifMatch optional If-Match entity-tag
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the replaced User or a closed framework failure
      */
     public CompletionStage<Outcome<User>> replace(
@@ -152,7 +150,7 @@ public final class ScimUserService {
             final User request,
             final Optional<String> ifMatch,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "SCIM User replace request must not be null");
         if (!target(target) || target.resourceId().isEmpty()) {
             return rejected();
@@ -165,13 +163,13 @@ public final class ScimUserService {
      *
      * @param request User-targeted standard PatchOp
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the patched User or a closed framework failure
      */
     public CompletionStage<Outcome<User>> patch(
             final PatchRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "SCIM User PatchOp must not be null");
         if (!target(request.target())) {
             return rejected();
@@ -185,14 +183,14 @@ public final class ScimUserService {
      * @param target  registered individual User target
      * @param ifMatch optional If-Match entity-tag
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing empty success or a closed framework failure
      */
     public CompletionStage<Outcome<Void>> delete(
             final ResourceTarget target,
             final Optional<String> ifMatch,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!target(target) || target.resourceId().isEmpty()) {
             return rejected();
         }
@@ -204,13 +202,13 @@ public final class ScimUserService {
      *
      * @param request GET search query targeting the User collection
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the standard ListResponse or a closed framework failure
      */
     public CompletionStage<Outcome<ListResponse>> search(
             final SearchQuery request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "SCIM User search request must not be null");
         if (!target(request.target())) {
             return rejected();
@@ -224,14 +222,14 @@ public final class ScimUserService {
      * @param target  registered User collection target
      * @param request standard POST SearchRequest body
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the standard ListResponse or a closed framework failure
      */
     public CompletionStage<Outcome<ListResponse>> search(
             final ResourceTarget target,
             final SearchRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "SCIM User SearchRequest must not be null");
         if (!target(target) || target.resourceId().isPresent()) {
             return rejected();

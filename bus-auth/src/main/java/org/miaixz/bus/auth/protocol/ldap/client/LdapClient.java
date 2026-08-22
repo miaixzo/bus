@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.auth.protocol.ldap.client;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.ldap.*;
@@ -39,19 +39,13 @@ import org.miaixz.bus.auth.protocol.ldap.codec.LdapMessageEncoder;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.network.tls.TlsPolicy;
-import org.miaixz.bus.fabric.protocol.socket.SocketOptions;
-import org.miaixz.bus.fabric.protocol.socket.SocketSession;
-import org.miaixz.bus.fabric.protocol.socket.SocketX;
 
 /**
- * Executes standard LDAPv3 Bind, Search, and Unbind operations on one exclusive Fabric socket session.
+ * Executes standard LDAPv3 Bind, Search, and Unbind operations on one exclusive FabricX socket session.
  * <p>
  * A client instance is intentionally not pooled or shared between authentication attempts because LDAP Bind state is
  * connection-scoped. Operations are serialized in submission order, message identifiers are assigned by the client, and
@@ -61,15 +55,15 @@ import org.miaixz.bus.fabric.protocol.socket.SocketX;
  *
  * @author Kimi Liu
  */
-public final class LdapClient implements AutoCloseable {
+public class LdapClient implements AutoCloseable {
 
     /**
-     * Shared Fabric transport context owned by the integrating runtime.
+     * Runtime-scoped Fabric protocol facade owned by bus-auth.
      */
-    private final org.miaixz.bus.fabric.Context fabricContext;
+    private final FabricX fabric;
 
     /**
-     * Caller-owned executor used for every blocking Fabric Call.
+     * Caller-owned executor used for every blocking transport operation.
      */
     private final Executor executor;
 
@@ -111,7 +105,7 @@ public final class LdapClient implements AutoCloseable {
     /**
      * Lazily opened exclusive socket session, or {@code null} before the first operation.
      */
-    private SocketSession session;
+    private FabricX.Socket session;
 
     /**
      * Whether this client has been permanently closed.
@@ -121,18 +115,17 @@ public final class LdapClient implements AutoCloseable {
     /**
      * Creates one exclusive lazy LDAP connection owner.
      *
-     * @param fabricContext shared Fabric transport context
-     * @param executor      caller-owned executor for blocking Fabric operations
-     * @param options       immutable LDAP Source options
-     * @param frameCodec    LDAP BER stream frame codec
-     * @param encoder       complete LDAPMessage encoder
-     * @param decoder       complete LDAPMessage decoder
+     * @param fabric     Runtime-scoped Fabric protocol facade
+     * @param executor   caller-owned executor for blocking transport operations
+     * @param options    immutable LDAP Source options
+     * @param frameCodec LDAP BER stream frame codec
+     * @param encoder    complete LDAPMessage encoder
+     * @param decoder    complete LDAPMessage decoder
      * @throws IllegalArgumentException if a dependency is {@code null}
      */
-    public LdapClient(final org.miaixz.bus.fabric.Context fabricContext, final Executor executor,
-            final LdapClientOptions options, final BerCodec frameCodec, final LdapMessageEncoder encoder,
-            final LdapMessageDecoder decoder) {
-        this.fabricContext = Assert.notNull(fabricContext, "LDAP Fabric context must not be null");
+    public LdapClient(final FabricX fabric, final Executor executor, final LdapClientOptions options,
+            final BerCodec frameCodec, final LdapMessageEncoder encoder, final LdapMessageDecoder decoder) {
+        this.fabric = Assert.notNull(fabric, "LDAP Fabric facade must not be null");
         this.executor = Assert.notNull(executor, "LDAP client executor must not be null");
         this.options = Assert.notNull(options, "LDAP client options must not be null");
         this.frameCodec = Assert.notNull(frameCodec, "LDAP client BER frame codec must not be null");
@@ -141,22 +134,6 @@ public final class LdapClient implements AutoCloseable {
         this.nextMessageId = new AtomicInteger(1);
         this.lifecycleLock = new Object();
         this.tail = CompletableFuture.completedFuture(null);
-    }
-
-    /**
-     * Executes and waits for one Fabric Call within the remaining shared operation budget.
-     *
-     * @param call    single-use Fabric Call
-     * @param timeout shared operation budget
-     * @param <T>     Fabric result type
-     * @return completed Fabric value
-     */
-    private static <T> T await(final Call<T> call, final Timeout.Budget timeout) {
-        final Duration remaining = timeout.remaining();
-        if (remaining.isZero()) {
-            throw new ValidateException("LDAP operation time budget has expired");
-        }
-        return call.await(remaining);
     }
 
     /**
@@ -176,13 +153,13 @@ public final class LdapClient implements AutoCloseable {
      *
      * @param request standard Bind request
      * @param context immutable authentication invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the exact Bind response or a closed transport/protocol failure
      */
     public CompletionStage<Outcome<BindResponse>> bind(
             final BindRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "LDAP Bind request must not be null");
         return serial(context, timeout, () -> {
             final LdapMessage response = exchange(request, timeout);
@@ -198,13 +175,13 @@ public final class LdapClient implements AutoCloseable {
      *
      * @param request standard Search request
      * @param context immutable authentication invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing immutable Entry/Reference/Done messages or a closed failure
      */
     public CompletionStage<Outcome<List<LdapMessage>>> search(
             final SearchRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "LDAP Search request must not be null");
         return serial(context, timeout, () -> Outcome.succeeded(searchNow(request, timeout)));
     }
@@ -214,16 +191,16 @@ public final class LdapClient implements AutoCloseable {
      *
      * @param request standard Unbind request
      * @param context immutable authentication invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing empty success after the request is sent and the session is closed
      */
     public CompletionStage<Outcome<Void>> unbind(
             final UnbindRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "LDAP Unbind request must not be null");
         return serial(context, timeout, () -> {
-            final SocketSession current = requireSession(timeout);
+            final FabricX.Socket current = requireSession(timeout);
             final int messageId = messageId();
             send(current, new LdapMessage(messageId, request, List.of()), timeout);
             closeSession();
@@ -246,17 +223,17 @@ public final class LdapClient implements AutoCloseable {
      * Adds one operation to the exclusive serialized connection tail.
      *
      * @param context   immutable invocation context validated before scheduling
-     * @param timeout   shared operation budget validated before scheduling
+     * @param timeout   shared operation timeout validated before scheduling
      * @param operation blocking operation executed on the caller-owned executor
      * @param <T>       operation success type
      * @return serialized asynchronous closed Outcome
      */
     private <T> CompletionStage<Outcome<T>> serial(
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final Supplier<Outcome<T>> operation) {
         Assert.notNull(context, "LDAP client invocation context must not be null");
-        Assert.notNull(timeout, "LDAP client time budget must not be null");
+        Assert.notNull(timeout, "LDAP client timeout must not be null");
         Assert.notNull(operation, "LDAP client operation must not be null");
         synchronized (lifecycleLock) {
             if (closed) {
@@ -273,14 +250,14 @@ public final class LdapClient implements AutoCloseable {
      * Executes one serialized blocking operation and closes the session after any exceptional failure.
      *
      * @param operation blocking operation body
-     * @param timeout   shared operation budget
+     * @param timeout   shared operation timeout
      * @param <T>       success type
      * @return successful, rejected, or operational failure value
      */
-    private <T> Outcome<T> execute(final Supplier<Outcome<T>> operation, final Timeout.Budget timeout) {
+    private <T> Outcome<T> execute(final Supplier<Outcome<T>> operation, final Timeout timeout) {
         if (timeout.expired()) {
             closeSession();
-            return failed(ErrorCode._504, "LDAP operation time budget expired.");
+            return failed(ErrorCode._504, "LDAP operation timeout expired.");
         }
         try {
             return operation.get();
@@ -290,7 +267,7 @@ public final class LdapClient implements AutoCloseable {
                 return failed(ErrorCode._502, "LDAP peer returned an invalid protocol message.");
             }
             if (exception instanceof ValidateException && timeout.expired()) {
-                return failed(ErrorCode._504, "LDAP operation time budget expired.");
+                return failed(ErrorCode._504, "LDAP operation timeout expired.");
             }
             return failed(ErrorCode._503, "LDAP transport operation failed.");
         }
@@ -300,11 +277,11 @@ public final class LdapClient implements AutoCloseable {
      * Exchanges one request for exactly one response with the same message identifier.
      *
      * @param operation standard request protocol operation
-     * @param timeout   shared operation budget
+     * @param timeout   shared operation timeout
      * @return matching complete response message
      */
-    private LdapMessage exchange(final LdapMessage.ProtocolOp operation, final Timeout.Budget timeout) {
-        final SocketSession current = requireSession(timeout);
+    private LdapMessage exchange(final LdapMessage.ProtocolOp operation, final Timeout timeout) {
+        final FabricX.Socket current = requireSession(timeout);
         final int messageId = messageId();
         send(current, new LdapMessage(messageId, operation, List.of()), timeout);
         return receive(current, messageId, timeout);
@@ -314,11 +291,11 @@ public final class LdapClient implements AutoCloseable {
      * Executes Search and stops only after a single final SearchResultDone.
      *
      * @param request standard Search request
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @return immutable ordered LDAP Search response messages
      */
-    private List<LdapMessage> searchNow(final SearchRequest request, final Timeout.Budget timeout) {
-        final SocketSession current = requireSession(timeout);
+    private List<LdapMessage> searchNow(final SearchRequest request, final Timeout timeout) {
+        final FabricX.Socket current = requireSession(timeout);
         final int messageId = messageId();
         send(current, new LdapMessage(messageId, request, List.of()), timeout);
         final List<LdapMessage> responses = new ArrayList<>();
@@ -339,10 +316,10 @@ public final class LdapClient implements AutoCloseable {
     /**
      * Opens and protects the exclusive socket session on first use.
      *
-     * @param timeout shared operation budget used for connection and optional StartTLS
+     * @param timeout shared operation timeout used for connection and optional StartTLS
      * @return open TLS-protected socket session
      */
-    private SocketSession requireSession(final Timeout.Budget timeout) {
+    private FabricX.Socket requireSession(final Timeout timeout) {
         synchronized (lifecycleLock) {
             if (closed) {
                 throw new ValidateException("LDAP client is closed");
@@ -350,14 +327,13 @@ public final class LdapClient implements AutoCloseable {
             if (session != null) {
                 return session;
             }
-            final SocketX.Builder builder = SocketX.builder(fabricContext).timeout(timeout.forFabric())
-                    .frame(frameCodec);
-            if (options.securityMode() == LdapClientOptions.SecurityMode.LDAPS) {
-                builder.tls(options.host(), options.port());
-            } else {
-                builder.tcp(options.host(), options.port());
-            }
-            session = await(builder.build().call(), timeout);
+            session = FabricX.socket(
+                    fabric,
+                    timeout,
+                    frameCodec,
+                    options.host(),
+                    options.port(),
+                    options.securityMode() == LdapClientOptions.SecurityMode.LDAPS);
             if (options.securityMode() == LdapClientOptions.SecurityMode.START_TLS) {
                 startTls(session, timeout);
             }
@@ -369,14 +345,13 @@ public final class LdapClient implements AutoCloseable {
      * Performs the standard StartTLS extended exchange and upgrades the same Fabric session.
      *
      * @param current open plaintext TCP session
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      */
-    private void startTls(final SocketSession current, final Timeout.Budget timeout) {
+    private void startTls(final FabricX.Socket current, final Timeout timeout) {
         final int requestId = messageId();
         send(
                 current,
-                new LdapMessage(requestId,
-                        new ExtendedRequest(ExtendedRequest.START_TLS_OID, org.miaixz.bus.core.lang.Optional.empty()),
+                new LdapMessage(requestId, new ExtendedRequest(ExtendedRequest.START_TLS_OID, Optional.empty()),
                         List.of()),
                 timeout);
         final LdapMessage response = receive(current, requestId, timeout);
@@ -384,9 +359,7 @@ public final class LdapClient implements AutoCloseable {
                 || !LdapResultCode.SUCCESS.equals(extended.result().resultCode())) {
             throw new ProtocolException("LDAP StartTLS did not return a successful ExtendedResponse");
         }
-        final TlsPolicy socketPolicy = fabricContext.options().get(SocketOptions.TLS_POLICY);
-        final TlsPolicy policy = socketPolicy == null ? TlsPolicy.resolve(fabricContext.options()) : socketPolicy;
-        await(current.upgradeTls(policy), timeout);
+        current.upgradeTls(timeout);
     }
 
     /**
@@ -394,10 +367,10 @@ public final class LdapClient implements AutoCloseable {
      *
      * @param current open socket session
      * @param message complete request message
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      */
-    private void send(final SocketSession current, final LdapMessage message, final Timeout.Budget timeout) {
-        await(current.send(Payload.of(encoder.encode(message))), timeout);
+    private void send(final FabricX.Socket current, final LdapMessage message, final Timeout timeout) {
+        current.send(encoder.encode(message), timeout);
     }
 
     /**
@@ -405,15 +378,11 @@ public final class LdapClient implements AutoCloseable {
      *
      * @param current           open socket session
      * @param expectedMessageId request message identifier
-     * @param timeout           shared operation budget
+     * @param timeout           shared operation timeout
      * @return matching complete response message
      */
-    private LdapMessage receive(
-            final SocketSession current,
-            final int expectedMessageId,
-            final Timeout.Budget timeout) {
-        final Message message = await(current.receive(), timeout);
-        final LdapMessage response = decoder.decode(message.payload().bytes(options.maximumMessageBytes()));
+    private LdapMessage receive(final FabricX.Socket current, final int expectedMessageId, final Timeout timeout) {
+        final LdapMessage response = decoder.decode(current.receive(options.maximumMessageBytes(), timeout));
         if (response.messageId() != expectedMessageId) {
             throw new ProtocolException("LDAP response messageID does not match the outstanding request");
         }
@@ -437,7 +406,7 @@ public final class LdapClient implements AutoCloseable {
      */
     private void closeSession() {
         synchronized (lifecycleLock) {
-            final SocketSession current = session;
+            final FabricX.Socket current = session;
             session = null;
             if (current != null) {
                 current.close();

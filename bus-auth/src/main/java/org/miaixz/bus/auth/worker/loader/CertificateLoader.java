@@ -17,53 +17,40 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.auth.worker;
+package org.miaixz.bus.auth.worker.loader;
 
 import java.time.Instant;
-import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Registration;
-import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.Blueprint;
+import org.miaixz.bus.auth.Loader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.crypto.builtin.CertificateChain;
 import org.miaixz.bus.crypto.builtin.TrustRootIndex;
 
 /**
  * Loads certificate material from project-owned storage.
+ *
+ * @author Kimi Liu
  */
 @FunctionalInterface
-public interface CertificateLoader {
-
-    /**
-     * Loads certificate material within the exact Source registration scope.
-     *
-     * @param registration exact Source registration requesting the data
-     * @param request      validated certificate lookup coordinates
-     * @param context      immutable non-secret invocation context
-     * @param timeout      shared end-to-end operation budget
-     * @return asynchronous project loading outcome
-     */
-    CompletionStage<Outcome<Record>> load(
-            Registration.SourceEntry registration,
-            Request request,
-            Context context,
-            Timeout.Budget timeout);
+public interface CertificateLoader extends Loader<CertificateLoader.Request, CertificateLoader.Record> {
 
     /**
      * Identifies certificate material required by one protocol operation.
      *
-     * @param issuer expected certificate issuer
-     * @param use    expected protocol use
-     * @param at     required validity instant
+     * @param registration exact Source registration requesting the certificate
+     * @param issuer       expected certificate issuer
+     * @param use          expected protocol use
+     * @param at           required validity instant
+     * @author Kimi Liu
      */
-    record Request(String issuer, String use, Instant at) {
+    record Request(Blueprint.SourceEntry registration, String issuer, String use, Instant at) {
 
         /**
          * Validates one complete certificate lookup request.
          */
         public Request {
+            Assert.notNull(registration, "Certificate registration must not be null");
             Assert.notBlank(issuer, "Certificate request issuer must not be blank");
             Assert.notBlank(use, "Certificate request use must not be blank");
             Assert.notNull(at, "Certificate request validity instant must not be null");
@@ -81,6 +68,7 @@ public interface CertificateLoader {
      * @param trustRoots project trust boundary used to validate the chain
      * @param notBefore  inclusive validity start
      * @param notAfter   exclusive validity end
+     * @author Kimi Liu
      */
     record Record(String sourceId, String issuer, String use, CertificateChain chain, TrustRootIndex trustRoots,
             Instant notBefore, Instant notAfter) {

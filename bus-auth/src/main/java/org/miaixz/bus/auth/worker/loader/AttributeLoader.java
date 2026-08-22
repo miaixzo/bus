@@ -17,59 +17,50 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.auth.worker.identity;
+package org.miaixz.bus.auth.worker.loader;
 
-import java.util.List;
-import java.util.concurrent.CompletionStage;
-
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Outcome;
+import org.miaixz.bus.auth.Blueprint;
+import org.miaixz.bus.auth.Loader;
 import org.miaixz.bus.auth.Subject;
-import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.shared.claim.ClaimSet;
-import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Loads project-disclosed claim records for one verified identity and stable subject.
+ * Loads project-maintained subject attributes.
+ *
+ * @author Kimi Liu
  */
 @FunctionalInterface
-public interface ClaimLoader {
+public interface AttributeLoader extends Loader<AttributeLoader.Request, AttributeLoader.Record> {
 
     /**
-     * Loads project-disclosed claims for a stable subject and verified external identity.
+     * Identifies the subject attributes requested within one exact Source registration.
      *
-     * @param request validated claim-loading coordinates
-     * @param context immutable non-secret invocation context
-     * @param timeout shared end-to-end operation budget
-     * @return asynchronous project loading outcome
+     * @param registration exact Source registration requesting the data
+     * @param subject      exact external subject key
+     * @author Kimi Liu
      */
-    CompletionStage<Outcome<Record>> load(Request request, Context context, Timeout.Budget timeout);
-
-    /**
-     * Binds the stable subject to the verified external identity used for claim loading.
-     *
-     * @param subject  stable framework subject
-     * @param identity verified completed external identity
-     */
-    record Request(Subject subject, ExternalIdentity identity) {
+    record Request(Blueprint.SourceEntry registration, Subject.Key subject) {
 
         /**
-         * Validates one complete claim-loading request.
+         * Validates one complete attribute-loading request.
          */
         public Request {
-            Assert.notNull(subject, "Claim loading Subject must not be null");
-            Assert.notNull(identity, "Claim loading external identity must not be null");
+            Assert.notNull(registration, "Attribute registration must not be null");
+            Assert.notNull(subject, "Attribute subject must not be null");
         }
 
     }
 
     /**
-     * Project-loaded claim entries awaiting framework parsing.
+     * Loaded subject attributes awaiting framework parsing.
      *
-     * @param entries ordered claim entries disclosed by the project
+     * @param sourceId exact Source identifier that owns the returned data
+     * @param subject  exact subject key resolved by the project
+     * @param values   project-provided attribute object
+     * @author Kimi Liu
      */
-    record Record(List<ClaimSet.Entry> entries) {
+    record Record(String sourceId, Subject.Key subject, JsonValue.ObjectValue values) {
 
     }
 

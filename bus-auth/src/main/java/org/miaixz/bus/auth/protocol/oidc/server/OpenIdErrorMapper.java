@@ -22,15 +22,16 @@ package org.miaixz.bus.auth.protocol.oidc.server;
 import java.util.Set;
 
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Headers;
+import org.miaixz.bus.auth.FabricX.HeadersBuilder;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Maps OpenID Provider resource failures to endpoint-specific standard HTTP responses.
@@ -42,7 +43,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class OpenIdErrorMapper {
+public class OpenIdErrorMapper {
 
     /**
      * Failure detail member carrying one registered OAuth bearer error.
@@ -92,14 +93,14 @@ public final class OpenIdErrorMapper {
      * @param challenge optional prevalidated WWW-Authenticate field value
      * @return complete empty HTTP response
      */
-    private static HttpResponse empty(final HttpRequest request, final int status, final String challenge) {
+    private static Response empty(final Request request, final int status, final String challenge) {
         Assert.notNull(request, "OpenID Connect originating HTTP request must not be null");
-        final Headers.Builder headers = Headers.builder().add(Http.Header.CACHE_CONTROL, Http.Cache.NO_STORE)
+        final HeadersBuilder headers = Headers.builder().add(Http.Header.CACHE_CONTROL, Http.Cache.NO_STORE)
                 .add(Http.Header.PRAGMA, Http.Cache.NO_CACHE);
         if (challenge != null) {
             headers.add(Http.Header.WWW_AUTHENTICATE, challenge);
         }
-        return HttpResponse.builder().request(request).code(status).headers(headers.build()).build();
+        return Response.builder().request(request).code(status).headers(headers.build()).build();
     }
 
     /**
@@ -120,7 +121,7 @@ public final class OpenIdErrorMapper {
      * @param failure closed internal failure
      * @return complete empty error response
      */
-    public HttpResponse discovery(final HttpRequest request, final Outcome.Failure failure) {
+    public Response discovery(final Request request, final Outcome.Failure failure) {
         Assert.notNull(failure, "OpenID Connect discovery failure must not be null");
         return empty(request, Http.Status.INTERNAL_SERVER_ERROR, null);
     }
@@ -131,7 +132,7 @@ public final class OpenIdErrorMapper {
      * @param request originating Fabric HTTP request
      * @return complete empty error response
      */
-    public HttpResponse discoveryMalformed(final HttpRequest request) {
+    public Response discoveryMalformed(final Request request) {
         return empty(request, Http.Status.BAD_REQUEST, null);
     }
 
@@ -142,7 +143,7 @@ public final class OpenIdErrorMapper {
      * @param failure closed internal failure
      * @return complete empty error response
      */
-    public HttpResponse jwks(final HttpRequest request, final Outcome.Failure failure) {
+    public Response jwks(final Request request, final Outcome.Failure failure) {
         Assert.notNull(failure, "OpenID Connect JWK Set failure must not be null");
         return empty(request, Http.Status.INTERNAL_SERVER_ERROR, null);
     }
@@ -153,7 +154,7 @@ public final class OpenIdErrorMapper {
      * @param request originating Fabric HTTP request
      * @return complete empty error response
      */
-    public HttpResponse jwksMalformed(final HttpRequest request) {
+    public Response jwksMalformed(final Request request) {
         return empty(request, Http.Status.BAD_REQUEST, null);
     }
 
@@ -164,7 +165,7 @@ public final class OpenIdErrorMapper {
      * @param failure closed internal failure
      * @return complete UserInfo error response
      */
-    public HttpResponse userInfo(final HttpRequest request, final Outcome.Failure failure) {
+    public Response userInfo(final Request request, final Outcome.Failure failure) {
         Assert.notNull(failure, "OpenID Connect UserInfo failure must not be null");
         if (serverFailure(failure)) {
             return empty(request, Http.Status.INTERNAL_SERVER_ERROR, null);
@@ -181,7 +182,7 @@ public final class OpenIdErrorMapper {
      * @param request originating Fabric HTTP request
      * @return complete empty bad-request response
      */
-    public HttpResponse userInfoMalformed(final HttpRequest request) {
+    public Response userInfoMalformed(final Request request) {
         return empty(request, Http.Status.BAD_REQUEST, "Bearer error=\"invalid_request\"");
     }
 
@@ -192,7 +193,7 @@ public final class OpenIdErrorMapper {
      * @param failure closed internal failure
      * @return complete empty local error response
      */
-    public HttpResponse endSession(final HttpRequest request, final Outcome.Failure failure) {
+    public Response endSession(final Request request, final Outcome.Failure failure) {
         Assert.notNull(failure, "OpenID Connect end-session failure must not be null");
         return empty(
                 request,
@@ -206,7 +207,7 @@ public final class OpenIdErrorMapper {
      * @param request originating Fabric HTTP request
      * @return complete empty bad-request response
      */
-    public HttpResponse endSessionMalformed(final HttpRequest request) {
+    public Response endSessionMalformed(final Request request) {
         return empty(request, Http.Status.BAD_REQUEST, null);
     }
 

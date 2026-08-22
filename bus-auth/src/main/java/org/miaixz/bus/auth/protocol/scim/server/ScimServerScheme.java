@@ -35,7 +35,7 @@ import org.miaixz.bus.core.net.Protocol;
  *
  * @author Kimi Liu
  */
-public final class ScimServerScheme implements Scheme<ScimServerOptions> {
+public class ScimServerScheme implements Scheme<ScimServerOptions> {
 
     /**
      * Stable registration type identifier for generic SCIM Service Providers.

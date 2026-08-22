@@ -41,8 +41,8 @@ import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.auth.vendor.Vendor;
 import org.miaixz.bus.auth.vendor.VendorDirectory;
 import org.miaixz.bus.auth.vendor.VendorModule;
-import org.miaixz.bus.auth.worker.RegistrationLoader;
 import org.miaixz.bus.auth.worker.RegistryListener;
+import org.miaixz.bus.auth.worker.loader.RegistrationLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -60,7 +60,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class RuntimeBuilder {
+public class RuntimeBuilder {
 
     /**
      * Externally supplied protocol execution service set.
@@ -98,7 +98,7 @@ public final class RuntimeBuilder {
      * @param services           complete externally owned execution services
      * @param registrationLoader project registration-state input
      */
-    private RuntimeBuilder(final RuntimeServices services, final RegistrationLoader registrationLoader) {
+    public RuntimeBuilder(final RuntimeServices services, final RegistrationLoader registrationLoader) {
         this.services = Assert.notNull(services, "Runtime execution services must not be null");
         this.registrationLoader = Assert.notNull(registrationLoader, "Registration loader must not be null");
         this.sources = new ArrayList<>();
@@ -208,14 +208,14 @@ public final class RuntimeBuilder {
      * commit.
      *
      * @param context immutable non-secret startup context
-     * @param timeout shared end-to-end startup budget
+     * @param timeout shared end-to-end startup timeout
      * @return stage containing the fully initialized RuntimeManager
      * @throws ValidateException        if build was already attempted or contributions conflict
      * @throws IllegalArgumentException if a driver or listener is invalid
      */
-    public synchronized CompletionStage<RuntimeManager> build(final Context context, final Timeout.Budget timeout) {
+    public synchronized CompletionStage<RuntimeManager> build(final Context context, final Timeout timeout) {
         Assert.notNull(context, "Runtime startup context must not be null");
-        Assert.notNull(timeout, "Runtime startup budget must not be null");
+        Assert.notNull(timeout, "Runtime startup timeout must not be null");
         final RuntimeManager runtime = assemble();
         return runtime.reload(context, timeout).thenApply(report -> {
             if (!report.faults().isEmpty()) {

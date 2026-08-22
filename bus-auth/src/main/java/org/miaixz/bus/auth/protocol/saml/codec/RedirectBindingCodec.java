@@ -33,6 +33,7 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.saml.AuthnRequest;
 import org.miaixz.bus.auth.protocol.saml.LogoutRequest;
 import org.miaixz.bus.auth.protocol.saml.LogoutResponse;
@@ -46,7 +47,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Implements the SAML 2.0 HTTP-Redirect Binding for request messages and logout-response messages.
@@ -58,7 +58,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class RedirectBindingCodec {
+public class RedirectBindingCodec {
 
     /**
      * Strict SAML XML message codec.
@@ -95,14 +95,14 @@ public final class RedirectBindingCodec {
     }
 
     /**
-     * Validates endpoint, correlation, key, algorithm, context, and budget inputs.
+     * Validates endpoint, correlation, key, algorithm, context, and timeout inputs.
      *
      * @param endpoint           exact redirect destination
      * @param relayState         optional opaque binding correlation value
      * @param keyId              external signing key identifier
      * @param signatureAlgorithm standard XML Signature algorithm URI
      * @param context            immutable invocation context
-     * @param timeout            shared operation budget
+     * @param timeout            shared operation timeout
      */
     private static void validateInvocation(
             final Endpoint endpoint,
@@ -110,7 +110,7 @@ public final class RedirectBindingCodec {
             final String keyId,
             final String signatureAlgorithm,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(endpoint, "SAML Redirect endpoint must not be null");
         if (endpoint.transport() != Endpoint.Transport.HTTPS || endpoint.method().isEmpty()
                 || endpoint.method().getOrNull() != Http.Method.GET
@@ -121,7 +121,7 @@ public final class RedirectBindingCodec {
         Assert.notBlank(keyId, "SAML Redirect signing key identifier must not be blank");
         Assert.notBlank(signatureAlgorithm, "SAML Redirect signature algorithm must not be blank");
         Assert.notNull(context, "SAML Redirect context must not be null");
-        Assert.notNull(timeout, "SAML Redirect time budget must not be null");
+        Assert.notNull(timeout, "SAML Redirect timeout must not be null");
     }
 
     /**
@@ -407,7 +407,7 @@ public final class RedirectBindingCodec {
      * @param query    complete encoded SAML query
      * @return completed stage containing the URL outcome
      */
-    private static CompletionStage<Outcome<UnoUrl>> url(final Endpoint endpoint, final String query) {
+    private static CompletionStage<Outcome<Url>> url(final Endpoint endpoint, final String query) {
         return completed(urlValue(endpoint, query));
     }
 
@@ -418,11 +418,11 @@ public final class RedirectBindingCodec {
      * @param query    complete encoded SAML query
      * @return successful URL or a sanitized construction failure
      */
-    private static Outcome<UnoUrl> urlValue(final Endpoint endpoint, final String query) {
+    private static Outcome<Url> urlValue(final Endpoint endpoint, final String query) {
         try {
             final String base = endpoint.url().encoded();
             return Outcome.succeeded(
-                    UnoUrl.parse(
+                    Url.parse(
                             base + (base.contains(Symbol.QUESTION_MARK) ? Symbol.C_AND : Symbol.C_QUESTION_MARK)
                                     + query));
         } catch (RuntimeException exception) {
@@ -462,10 +462,10 @@ public final class RedirectBindingCodec {
      * @param keyId              external signing key identifier
      * @param signatureAlgorithm XML Signature algorithm URI
      * @param context            immutable invocation context
-     * @param timeout            shared end-to-end time budget
+     * @param timeout            shared end-to-end timeout
      * @return stage containing an absolute redirect URL or closed framework failure
      */
-    public CompletionStage<Outcome<UnoUrl>> encode(
+    public CompletionStage<Outcome<Url>> encode(
             final Endpoint endpoint,
             final AuthnRequest request,
             final Optional<String> relayState,
@@ -473,7 +473,7 @@ public final class RedirectBindingCodec {
             final String keyId,
             final String signatureAlgorithm,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "SAML Authentication Request must not be null");
         return encode(
                 endpoint,
@@ -497,10 +497,10 @@ public final class RedirectBindingCodec {
      * @param keyId              external signing key identifier
      * @param signatureAlgorithm XML Signature algorithm URI
      * @param context            immutable invocation context
-     * @param timeout            shared end-to-end time budget
+     * @param timeout            shared end-to-end timeout
      * @return stage containing an absolute redirect URL or closed framework failure
      */
-    public CompletionStage<Outcome<UnoUrl>> encode(
+    public CompletionStage<Outcome<Url>> encode(
             final Endpoint endpoint,
             final LogoutRequest request,
             final Optional<String> relayState,
@@ -508,7 +508,7 @@ public final class RedirectBindingCodec {
             final String keyId,
             final String signatureAlgorithm,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "SAML Logout Request must not be null");
         return encode(
                 endpoint,
@@ -583,10 +583,10 @@ public final class RedirectBindingCodec {
      * @param keyId              external signing key identifier
      * @param signatureAlgorithm standard XML Signature algorithm URI
      * @param context            immutable invocation context
-     * @param timeout            shared decreasing operation budget
+     * @param timeout            shared decreasing operation timeout
      * @return stage containing the complete redirect URL or a closed failure
      */
-    private CompletionStage<Outcome<UnoUrl>> encode(
+    private CompletionStage<Outcome<Url>> encode(
             final Endpoint endpoint,
             final String messageName,
             final byte[] xml,
@@ -595,11 +595,11 @@ public final class RedirectBindingCodec {
             final String keyId,
             final String signatureAlgorithm,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         validateInvocation(endpoint, relayState, keyId, signatureAlgorithm, context, timeout);
         if (timeout.expired()) {
             return completed(
-                    Outcome.failed(failure(ErrorCode._408, "SAML Redirect encoding has no remaining time budget")));
+                    Outcome.failed(failure(ErrorCode._408, "SAML Redirect encoding has no remaining timeout")));
         }
         final StringBuilder query = new StringBuilder(messageName).append(Symbol.C_EQUAL)
                 .append(percent(Base64.getEncoder().encodeToString(deflate(xml))));
@@ -631,6 +631,7 @@ public final class RedirectBindingCodec {
             }
             case Outcome.Rejected<byte[]> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<byte[]> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -669,7 +670,7 @@ public final class RedirectBindingCodec {
          * @param algorithm standard XML Signature algorithm URI
          * @param input     exact percent-encoded query bytes
          * @param context   immutable invocation context
-         * @param timeout   shared operation budget
+         * @param timeout   shared operation timeout
          * @return stage containing raw signature bytes or a closed framework failure
          */
         CompletionStage<Outcome<byte[]>> sign(
@@ -677,7 +678,7 @@ public final class RedirectBindingCodec {
                 String algorithm,
                 byte[] input,
                 Context context,
-                Timeout.Budget timeout);
+                Timeout timeout);
 
     }
 

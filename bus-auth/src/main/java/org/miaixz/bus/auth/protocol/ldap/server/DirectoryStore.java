@@ -48,7 +48,7 @@ public interface DirectoryStore {
      * @param connectionId stable trusted transport connection identifier
      * @param request      standard Bind request
      * @param context      immutable invocation context carrying the same connection snapshot
-     * @param timeout      shared end-to-end time budget
+     * @param timeout      shared end-to-end timeout
      * @return stage containing the standard Bind response or a closed Bus failure
      */
     CompletionStage<Outcome<BindResponse>> bind(
@@ -56,7 +56,7 @@ public interface DirectoryStore {
             String connectionId,
             BindRequest request,
             Context context,
-            Timeout.Budget timeout);
+            Timeout timeout);
 
     /**
      * Releases connection-level authentication and directory operation state without producing a protocol response.
@@ -65,7 +65,7 @@ public interface DirectoryStore {
      * @param connectionId stable trusted transport connection identifier
      * @param request      standard Unbind request
      * @param context      immutable invocation context carrying the same connection snapshot
-     * @param timeout      shared end-to-end time budget
+     * @param timeout      shared end-to-end timeout
      * @return stage containing empty success or a closed Bus failure; no LDAP response may be generated
      */
     CompletionStage<Outcome<Void>> unbind(
@@ -73,7 +73,7 @@ public interface DirectoryStore {
             String connectionId,
             UnbindRequest request,
             Context context,
-            Timeout.Budget timeout);
+            Timeout timeout);
 
     /**
      * Searches the directory under the current connection authentication state.
@@ -82,7 +82,7 @@ public interface DirectoryStore {
      * @param connectionId stable trusted transport connection identifier
      * @param request      standard Search request already tightened to Provider limits
      * @param context      immutable invocation context carrying the same connection snapshot
-     * @param timeout      shared end-to-end time budget
+     * @param timeout      shared end-to-end timeout
      * @return stage containing Entry/Reference operations followed by exactly one SearchResultDone, or a closed failure
      */
     CompletionStage<Outcome<List<LdapMessage.ProtocolOp>>> search(
@@ -90,7 +90,7 @@ public interface DirectoryStore {
             String connectionId,
             SearchRequest request,
             Context context,
-            Timeout.Budget timeout);
+            Timeout timeout);
 
     /**
      * Compares one assertion with an entry under the current connection authorization state.
@@ -99,7 +99,7 @@ public interface DirectoryStore {
      * @param connectionId stable trusted transport connection identifier
      * @param request      standard Compare request
      * @param context      immutable invocation context carrying the same connection snapshot
-     * @param timeout      shared end-to-end time budget
+     * @param timeout      shared end-to-end timeout
      * @return stage containing compareTrue, compareFalse, or another standard Compare result
      */
     CompletionStage<Outcome<CompareResponse>> compare(
@@ -107,7 +107,7 @@ public interface DirectoryStore {
             String connectionId,
             CompareRequest request,
             Context context,
-            Timeout.Budget timeout);
+            Timeout timeout);
 
     /**
      * Applies one ordered ModifyRequest atomically to an existing directory entry.
@@ -116,7 +116,7 @@ public interface DirectoryStore {
      * @param connectionId stable trusted transport connection identifier
      * @param request      complete ordered standard Modify request
      * @param context      immutable invocation context carrying the same connection snapshot
-     * @param timeout      shared end-to-end time budget
+     * @param timeout      shared end-to-end timeout
      * @return stage containing the standard Modify response or a closed Bus failure
      */
     CompletionStage<Outcome<ModifyResponse>> modify(
@@ -124,7 +124,7 @@ public interface DirectoryStore {
             String connectionId,
             ModifyRequest request,
             Context context,
-            Timeout.Budget timeout);
+            Timeout timeout);
 
     /**
      * Adds one complete entry atomically after schema and authorization validation.
@@ -133,7 +133,7 @@ public interface DirectoryStore {
      * @param connectionId stable trusted transport connection identifier
      * @param request      standard Add request
      * @param context      immutable invocation context carrying the same connection snapshot
-     * @param timeout      shared end-to-end time budget
+     * @param timeout      shared end-to-end timeout
      * @return stage containing the standard Add response or a closed Bus failure
      */
     CompletionStage<Outcome<AddResponse>> add(
@@ -141,7 +141,7 @@ public interface DirectoryStore {
             String connectionId,
             AddRequest request,
             Context context,
-            Timeout.Budget timeout);
+            Timeout timeout);
 
     /**
      * Deletes one entry under the current connection authorization state.
@@ -150,7 +150,7 @@ public interface DirectoryStore {
      * @param connectionId stable trusted transport connection identifier
      * @param request      standard Delete request
      * @param context      immutable invocation context carrying the same connection snapshot
-     * @param timeout      shared end-to-end time budget
+     * @param timeout      shared end-to-end timeout
      * @return stage containing the standard Delete response or a closed Bus failure
      */
     CompletionStage<Outcome<DeleteResponse>> delete(
@@ -158,7 +158,7 @@ public interface DirectoryStore {
             String connectionId,
             DeleteRequest request,
             Context context,
-            Timeout.Budget timeout);
+            Timeout timeout);
 
     /**
      * Atomically renames or moves one entry according to the complete ModifyDN request.
@@ -167,7 +167,7 @@ public interface DirectoryStore {
      * @param connectionId stable trusted transport connection identifier
      * @param request      standard Modify DN request
      * @param context      immutable invocation context carrying the same connection snapshot
-     * @param timeout      shared end-to-end time budget
+     * @param timeout      shared end-to-end timeout
      * @return stage containing the standard Modify DN response or a closed Bus failure
      */
     CompletionStage<Outcome<ModifyDNResponse>> modifyDN(
@@ -175,7 +175,7 @@ public interface DirectoryStore {
             String connectionId,
             ModifyDNRequest request,
             Context context,
-            Timeout.Budget timeout);
+            Timeout timeout);
 
     /**
      * Requests cancellation of the operation identified by the Abandon target message identifier.
@@ -184,7 +184,7 @@ public interface DirectoryStore {
      * @param connectionId stable trusted transport connection identifier
      * @param request      standard Abandon request containing the target message identifier
      * @param context      immutable invocation context carrying the same connection snapshot
-     * @param timeout      shared end-to-end time budget
+     * @param timeout      shared end-to-end timeout
      * @return stage containing empty success or a closed Bus failure; no LDAP response may be generated
      */
     CompletionStage<Outcome<Void>> abandon(
@@ -192,7 +192,7 @@ public interface DirectoryStore {
             String connectionId,
             AbandonRequest request,
             Context context,
-            Timeout.Budget timeout);
+            Timeout timeout);
 
     /**
      * Executes an externally implemented extended operation other than framework-handled StartTLS.
@@ -201,7 +201,7 @@ public interface DirectoryStore {
      * @param connectionId stable trusted transport connection identifier
      * @param request      standard Extended request
      * @param context      immutable invocation context carrying the same connection snapshot
-     * @param timeout      shared end-to-end time budget
+     * @param timeout      shared end-to-end timeout
      * @return stage containing the standard Extended response or a closed Bus failure
      */
     CompletionStage<Outcome<ExtendedResponse>> extended(
@@ -209,6 +209,6 @@ public interface DirectoryStore {
             String connectionId,
             ExtendedRequest request,
             Context context,
-            Timeout.Budget timeout);
+            Timeout timeout);
 
 }

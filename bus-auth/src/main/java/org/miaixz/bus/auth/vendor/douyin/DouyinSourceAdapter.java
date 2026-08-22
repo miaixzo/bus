@@ -29,6 +29,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
@@ -41,6 +42,7 @@ import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -50,8 +52,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements Douyin open-platform browser authentication and ordinary mini-program direct authentication.
@@ -63,7 +63,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class DouyinSourceAdapter implements VendorAdapter {
+public class DouyinSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted open-platform authority recorded in identity evidence.
@@ -315,7 +315,7 @@ public final class DouyinSourceAdapter implements VendorAdapter {
             final String name,
             final String subject,
             final String authority,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return new Evidence(Evidence.Type.FEDERATED, Evidence.Strength.SINGLE_FACTOR,
                 new Evidence.Claim(name, new JsonValue.StringValue(subject), authority, timeout.clock().now()));
     }
@@ -344,6 +344,7 @@ public final class DouyinSourceAdapter implements VendorAdapter {
                     "Douyin response propagation received an unexpected success");
             case Outcome.Rejected<JsonValue.ObjectValue> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<JsonValue.ObjectValue> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         };
     }
 
@@ -362,6 +363,7 @@ public final class DouyinSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -437,7 +439,7 @@ public final class DouyinSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed Source authentication outcome
@@ -447,10 +449,10 @@ public final class DouyinSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Douyin capability must not be null");
         Assert.notNull(context, "Douyin invocation context must not be null");
-        Assert.notNull(timeout, "Douyin invocation budget must not be null");
+        Assert.notNull(timeout, "Douyin invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("Douyin capability is not declared by the selected variant"));
         }
@@ -478,13 +480,13 @@ public final class DouyinSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated browser correlation
      * @param context    immutable invocation context retained by the uniform operation signature
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return prepared authorization redirect
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "Douyin authorization context must not be null");
         if (timeout.expired() || initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(failed("Douyin authorization security material violates the open variant manifest"));
@@ -522,13 +524,13 @@ public final class DouyinSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback correlation
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified open-platform external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final String code;
         try {
             code = callback(completion.callback()).code();
@@ -539,6 +541,7 @@ public final class DouyinSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<SecretLease> success -> token(code, success.value(), timeout);
             case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -547,18 +550,18 @@ public final class DouyinSourceAdapter implements VendorAdapter {
      *
      * @param code    consumed authorization code
      * @param secret  owned client-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified identity after token and profile processing
      */
     private CompletionStage<Outcome<ExternalIdentity>> token(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             byte[] body = null;
             try (secret) {
                 if (timeout.expired()) {
-                    return DouyinSourceAdapter.<Access>failed("Douyin token request has no remaining time budget");
+                    return DouyinSourceAdapter.<Access>failed("Douyin token request has no remaining timeout");
                 }
                 body = formCodec.encode(
                         List.of(
@@ -568,10 +571,8 @@ public final class DouyinSourceAdapter implements VendorAdapter {
                                         Assert.notBlank(code, "Douyin authorization code must not be blank")),
                                 new NameValue(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value())));
                 final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint)
+                try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
                         .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                        .timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
                         .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                     return decodeToken(response);
                 }
@@ -584,6 +585,7 @@ public final class DouyinSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<Access> success -> profile(success.value(), timeout);
             case Outcome.Rejected<Access> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<Access> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -593,7 +595,7 @@ public final class DouyinSourceAdapter implements VendorAdapter {
      * @param response owned token HTTP response
      * @return private access result or safely classified failure
      */
-    private Outcome<Access> decodeToken(final HttpResponse response) {
+    private Outcome<Access> decodeToken(final Response response) {
         final Outcome<JsonValue.ObjectValue> decoded = object(response, "token");
         if (!(decoded instanceof Outcome.Succeeded<JsonValue.ObjectValue> success)) {
             return propagate(decoded);
@@ -626,26 +628,24 @@ public final class DouyinSourceAdapter implements VendorAdapter {
      * Retrieves the open-platform user profile using only its official form fields.
      *
      * @param access  private token and open identifier
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
-    private CompletionStage<Outcome<ExternalIdentity>> profile(final Access access, final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<ExternalIdentity>> profile(final Access access, final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             byte[] body = null;
             try {
                 if (timeout.expired()) {
                     return DouyinSourceAdapter
-                            .<ExternalIdentity>failed("Douyin profile request has no remaining time budget");
+                            .<ExternalIdentity>failed("Douyin profile request has no remaining timeout");
                 }
                 body = formCodec.encode(
                         List.of(
                                 new NameValue(OAuth2.Parameters.ACCESS_TOKEN, access.accessToken()),
                                 new NameValue("open_id", access.openId())));
                 final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint)
+                try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
                         .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                        .timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
                         .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                     return decodeProfile(response, timeout);
                 }
@@ -664,7 +664,7 @@ public final class DouyinSourceAdapter implements VendorAdapter {
      * @param timeout  shared clock used for evidence
      * @return verified external identity
      */
-    private Outcome<ExternalIdentity> decodeProfile(final HttpResponse response, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> decodeProfile(final Response response, final Timeout timeout) {
         final Outcome<JsonValue.ObjectValue> decoded = object(response, "profile");
         if (!(decoded instanceof Outcome.Succeeded<JsonValue.ObjectValue> success)) {
             return propagate(decoded);
@@ -718,13 +718,13 @@ public final class DouyinSourceAdapter implements VendorAdapter {
      *
      * @param code    runtime one-time code
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return completed direct Source initiation
      */
     private CompletionStage<Outcome<SourceWorkflow.Stage>> mini(
             final String code,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final var policy = services.securityBaseline().require(Protocol.VENDOR_AUTH);
         return services.securityBaseline().replayGuard(services.replayCache())
                 .register(
@@ -745,9 +745,11 @@ public final class DouyinSourceAdapter implements VendorAdapter {
                                 case Outcome.Rejected<SecretLease> rejected -> completed(
                                         Outcome.rejected(rejected.failure()));
                                 case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                                default -> throw new IllegalStateException("Unsupported Outcome implementation");
                             });
                     case Outcome.Rejected<Void> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<Void> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -756,19 +758,19 @@ public final class DouyinSourceAdapter implements VendorAdapter {
      *
      * @param code    replay-registered one-time code
      * @param secret  owned App Secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return completed direct Source initiation
      */
     private CompletionStage<Outcome<SourceWorkflow.Stage>> codeSession(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             byte[] body = null;
             try (secret) {
                 if (timeout.expired()) {
                     return DouyinSourceAdapter.<SourceWorkflow.Stage>failed(
-                            "Douyin mini-program request has no remaining time budget");
+                            "Douyin mini-program request has no remaining timeout");
                 }
                 final Map<String, JsonValue> fields = new LinkedHashMap<>();
                 fields.put("appid", new JsonValue.StringValue(options.clientId()));
@@ -777,10 +779,8 @@ public final class DouyinSourceAdapter implements VendorAdapter {
                 fields.put("code", new JsonValue.StringValue(code));
                 body = services.jsonProvider().writeValue(new JsonValue.ObjectValue(fields));
                 final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint)
+                try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
                         .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                        .timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.VENDOR_AUTH).addressPolicy())
                         .body(body, MediaType.APPLICATION_JSON_TYPE).execute()) {
                     final Outcome<ExternalIdentity> identity = decodeMini(response, timeout);
                     return switch (identity) {
@@ -788,6 +788,7 @@ public final class DouyinSourceAdapter implements VendorAdapter {
                                 .succeeded(new SourceWorkflow.Stage.Completed(success.value()));
                         case Outcome.Rejected<ExternalIdentity> rejected -> Outcome.rejected(rejected.failure());
                         case Outcome.Failed<ExternalIdentity> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     };
                 }
             } catch (RuntimeException cause) {
@@ -805,7 +806,7 @@ public final class DouyinSourceAdapter implements VendorAdapter {
      * @param timeout  shared clock used for evidence
      * @return verified mini-program identity
      */
-    private Outcome<ExternalIdentity> decodeMini(final HttpResponse response, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> decodeMini(final Response response, final Timeout timeout) {
         final Outcome<JsonValue.ObjectValue> decoded = object(response, "mini-program");
         if (!(decoded instanceof Outcome.Succeeded<JsonValue.ObjectValue> success)) {
             return propagate(decoded);
@@ -849,13 +850,16 @@ public final class DouyinSourceAdapter implements VendorAdapter {
      * Resolves one short-lived client secret lease with closed exception handling.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return secret resolution outcome stage
      */
-    private CompletionStage<Outcome<SecretLease>> resolve(final Context context, final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<SecretLease>> resolve(final Context context, final Timeout timeout) {
         try {
             final CompletionStage<Outcome<SecretLease>> stage = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
             if (stage == null) {
                 return completed(failed("Douyin client-secret loader returned no stage"));
@@ -910,7 +914,7 @@ public final class DouyinSourceAdapter implements VendorAdapter {
      * @param operation non-sensitive operation label
      * @return decoded object or closed rejection/failure
      */
-    private Outcome<JsonValue.ObjectValue> object(final HttpResponse response, final String operation) {
+    private Outcome<JsonValue.ObjectValue> object(final Response response, final String operation) {
         if (response.code() == Http.Status.TOO_MANY_REQUESTS || response.code() >= Http.Status.INTERNAL_SERVER_ERROR) {
             return failed("Douyin " + operation + " endpoint is unavailable");
         }

@@ -28,6 +28,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -41,6 +43,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -52,9 +55,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements Stack Overflow browser authentication and its standard authorization operation.
@@ -66,7 +66,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class StackOverflowSourceAdapter implements VendorAdapter {
+public class StackOverflowSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted Stack Overflow authority recorded in federated identity evidence.
@@ -348,6 +348,7 @@ public final class StackOverflowSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -410,7 +411,7 @@ public final class StackOverflowSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing private Stack Overflow models
@@ -420,10 +421,10 @@ public final class StackOverflowSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Stack Overflow capability must not be null");
         Assert.notNull(context, "Stack Overflow invocation context must not be null");
-        Assert.notNull(timeout, "Stack Overflow invocation budget must not be null");
+        Assert.notNull(timeout, "Stack Overflow invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("Stack Overflow capability is not declared"));
         }
@@ -448,13 +449,13 @@ public final class StackOverflowSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated browser correlation material
      * @param context    immutable invocation context retained by the uniform signature
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return prepared authorization redirect
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "Stack Overflow authorization context must not be null");
         if (timeout.expired() || initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(failed(ErrorCode._500, "Stack Overflow browser material violates the frozen manifest"));
@@ -465,10 +466,11 @@ public final class StackOverflowSourceAdapter implements VendorAdapter {
                     Optional.empty(), Optional.empty(), emptyObject());
             return standardAdapter.invoke(OAuth2ClientScheme.AUTHORIZATION, request, context, timeout)
                     .thenApply(outcome -> switch (outcome) {
-                        case Outcome.Succeeded<UnoUrl> success -> Outcome.succeeded(
+                        case Outcome.Succeeded<Url> success -> Outcome.succeeded(
                                 new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                        case Outcome.Rejected<UnoUrl> rejected -> Outcome.rejected(rejected.failure());
-                        case Outcome.Failed<UnoUrl> failed -> Outcome.failed(failed.failure());
+                        case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                        case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (RuntimeException cause) {
             return completed(rejected("Stack Overflow authorization request is invalid"));
@@ -481,13 +483,13 @@ public final class StackOverflowSourceAdapter implements VendorAdapter {
      * @param request standard authorization request
      * @return asynchronous exact Stack Overflow authorization URL outcome
      */
-    private CompletionStage<Outcome<UnoUrl>> authorization(final AuthorizationRequest request) {
+    private CompletionStage<Outcome<Url>> authorization(final AuthorizationRequest request) {
         if (!valid(request)) {
             return completed(rejected("Stack Overflow authorization request differs from the registered Source"));
         }
         try {
             final var endpoint = variant.targets().resolve(options).authorization().getOrNull();
-            final UnoUrl location = endpoint.url().newBuilder()
+            final Url location = endpoint.url().newBuilder()
                     .query(OAuth2.Parameters.RESPONSE_TYPE, ResponseType.CODE.value())
                     .query(OAuth2.Parameters.CLIENT_ID, request.clientId())
                     .query(OAuth2.Parameters.REDIRECT_URI, request.redirectUri().getOrNull())
@@ -526,6 +528,7 @@ public final class StackOverflowSourceAdapter implements VendorAdapter {
                     .orElseThrow(() -> new ValidateException("Stack Overflow authorization success requires state"));
             case AuthorizationResponseDecoder.Error error -> error.response().state()
                     .orElseThrow(() -> new ValidateException("Stack Overflow authorization error requires state"));
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -534,13 +537,13 @@ public final class StackOverflowSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed browser correlation
      * @param context    immutable invocation context used for secret resolution
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified Stack Overflow identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final AuthorizationResponseDecoder.Decoded decoded;
         try {
             decoded = decode(completion.callback());
@@ -556,7 +559,10 @@ public final class StackOverflowSourceAdapter implements VendorAdapter {
         final AuthorizationCodeResponse response = ((AuthorizationResponseDecoder.Success) decoded).response();
         try {
             final CompletionStage<Outcome<SecretLease>> resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
             if (resolution == null) {
                 return completed(failed(ErrorCode._502, "Stack Overflow secret loader returned no stage"));
@@ -574,6 +580,7 @@ public final class StackOverflowSourceAdapter implements VendorAdapter {
                                 timeout);
                         case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                         case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "Stack Overflow secret resolution failed"));
@@ -585,19 +592,20 @@ public final class StackOverflowSourceAdapter implements VendorAdapter {
      *
      * @param code    consumed authorization code
      * @param secret  owned client-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified Stack Overflow external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> authenticate(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try (secret) {
                 return switch (token(code, secret, timeout)) {
                     case Outcome.Succeeded<Access> success -> profile(success.value(), timeout);
                     case Outcome.Rejected<Access> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<Access> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 };
             } catch (RuntimeException cause) {
                 return failed(ErrorCode._502, "Stack Overflow authentication completion failed");
@@ -610,14 +618,14 @@ public final class StackOverflowSourceAdapter implements VendorAdapter {
      *
      * @param code    consumed authorization code
      * @param secret  open client-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return private access result or safely classified failure
      */
-    private Outcome<Access> token(final String code, final SecretLease secret, final Timeout.Budget timeout) {
+    private Outcome<Access> token(final String code, final SecretLease secret, final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Stack Overflow token request has no remaining time budget");
+                return failed(ErrorCode._408, "Stack Overflow token request has no remaining timeout");
             }
             final String clientSecret = secret(secret);
             final List<NameValue> parameters = List.of(
@@ -629,14 +637,12 @@ public final class StackOverflowSourceAdapter implements VendorAdapter {
                     new NameValue(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull()));
             body = formCodec.encode(parameters);
             final var endpoint = variant.targets().resolve(options).token().getOrNull();
-            final var request = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
+            final var request = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint.url().toString())
                     .method(Http.Method.POST);
             for (NameValue parameter : parameters) {
                 request.query(parameter.name(), parameter.value());
             }
-            try (HttpResponse response = request.header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+            try (Response response = request.header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 return token(response);
             }
@@ -655,7 +661,7 @@ public final class StackOverflowSourceAdapter implements VendorAdapter {
      * @param response owned token endpoint response
      * @return private access result or safely classified failure
      */
-    private Outcome<Access> token(final HttpResponse response) {
+    private Outcome<Access> token(final Response response) {
         if (response.code() < Http.Status.OK || response.code() >= Http.Status.MULTIPLE_CHOICES) {
             return status(response.code(), "Stack Overflow token endpoint rejected or failed the request");
         }
@@ -679,20 +685,19 @@ public final class StackOverflowSourceAdapter implements VendorAdapter {
      * Retrieves the authenticated Stack Exchange user with the registered key and site.
      *
      * @param access  private access result
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified identity or safely classified failure
      */
-    private Outcome<ExternalIdentity> profile(final Access access, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final Access access, final Timeout timeout) {
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Stack Exchange profile request has no remaining time budget");
+                return failed(ErrorCode._408, "Stack Exchange profile request has no remaining timeout");
             }
             final var endpoint = variant.targets().resolve(options).userInfo().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.GET).query(OAuth2.Parameters.ACCESS_TOKEN, access.accessToken())
-                    .query("key", options.key()).query("site", options.siteId())
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute()) {
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.GET)
+                    .query(OAuth2.Parameters.ACCESS_TOKEN, access.accessToken()).query("key", options.key())
+                    .query("site", options.siteId()).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                 return profile(response, timeout);
             }
         } catch (RuntimeException cause) {
@@ -707,7 +712,7 @@ public final class StackOverflowSourceAdapter implements VendorAdapter {
      * @param timeout  shared clock used for evidence timestamping
      * @return verified Stack Overflow identity
      */
-    private Outcome<ExternalIdentity> profile(final HttpResponse response, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> profile(final Response response, final Timeout timeout) {
         if (response.code() != Http.Status.OK) {
             return status(response.code(), "Stack Exchange profile endpoint rejected or failed the request");
         }
@@ -755,7 +760,7 @@ public final class StackOverflowSourceAdapter implements VendorAdapter {
      * @param operation safe operation name used in validation failures
      * @return immutable provider-neutral JSON object
      */
-    private JsonValue.ObjectValue object(final HttpResponse response, final String operation) {
+    private JsonValue.ObjectValue object(final Response response, final String operation) {
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("Stack Overflow " + operation + " response must use application/json");
         }

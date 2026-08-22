@@ -41,22 +41,38 @@ import org.miaixz.bus.core.lang.Normal;
  */
 final class RegistryNotifier {
 
-    /** Maximum queued observation events before the oldest event is dropped. */
+    /**
+     * Maximum queued observation events before the oldest event is dropped.
+     */
     private static final int MAXIMUM_PENDING = Normal._256;
 
-    /** Immutable project listeners in deterministic delivery order. */
+    /**
+     * Immutable project listeners in deterministic delivery order.
+     */
     private final List<RegistryListener> listeners;
-    /** Caller-owned executor used to deliver listener callbacks. */
+    /**
+     * Caller-owned executor used to deliver listener callbacks.
+     */
     private final Executor executor;
-    /** Bounded pending notification queue guarded by this instance monitor. */
+    /**
+     * Bounded pending notification queue guarded by this instance monitor.
+     */
     private final Queue<Notification> pending = new ArrayDeque<>();
-    /** Whether one queue-draining task is currently scheduled or running. */
+    /**
+     * Whether one queue-draining task is currently scheduled or running.
+     */
     private boolean dispatching;
-    /** Whether shutdown has permanently disabled new notifications. */
+    /**
+     * Whether shutdown has permanently disabled new notifications.
+     */
     private boolean closed;
-    /** Number of dropped observations awaiting one overflow callback. */
+    /**
+     * Number of dropped observations awaiting one overflow callback.
+     */
     private long dropped;
-    /** Latest committed revision reported with an observation gap. */
+    /**
+     * Latest committed revision reported with an observation gap.
+     */
     private Registry.Revision latestCommitted = new Registry.Revision(0L);
 
     /**
@@ -139,7 +155,9 @@ final class RegistryNotifier {
         });
     }
 
-    /** Drains pending callbacks in order until the queue becomes empty. */
+    /**
+     * Drains pending callbacks in order until the queue becomes empty.
+     */
     private void drain() {
         while (true) {
             deliverOverflow();
@@ -155,7 +173,9 @@ final class RegistryNotifier {
         }
     }
 
-    /** Delivers and resets the accumulated observation gap before later queued events. */
+    /**
+     * Delivers and resets the accumulated observation gap before later queued events.
+     */
     private void deliverOverflow() {
         final long count;
         final Registry.Revision revision;
@@ -191,13 +211,19 @@ final class RegistryNotifier {
         }
     }
 
-    /** Permanently disables notification delivery and clears queued callbacks. */
+    /**
+     * Permanently disables notification delivery and clears queued callbacks.
+     */
     synchronized void close() {
         closed = true;
         pending.clear();
     }
 
-    /** Represents one isolated listener callback. */
+    /**
+     * Represents one isolated listener callback.
+     *
+     * @author Kimi Liu
+     */
     @FunctionalInterface
     private interface Notification {
 

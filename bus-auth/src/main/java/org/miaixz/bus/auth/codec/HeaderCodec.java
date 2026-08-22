@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class HeaderCodec implements DualCodec<HeaderValue, String> {
+public class HeaderCodec implements DualCodec<HeaderValue, String> {
 
     /**
      * Creates a stateless authentication Header value codec.

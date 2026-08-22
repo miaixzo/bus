@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.miaixz.bus.auth.source.SourceDriver;
+import org.miaixz.bus.auth.worker.CredentialWriter;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -40,7 +41,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class VendorModule {
+public class VendorModule {
 
     /**
      * Immutable management and compilation manifest directory.
@@ -53,22 +54,35 @@ public final class VendorModule {
     private final AdapterBindings adapterBindings;
 
     /**
+     * Immutable exact platform-variant Options factory bindings.
+     */
+    private final OptionsBindings optionsBindings;
+
+    /**
      * Creates an immutable Vendor module from a validated manifest directory and adapter bindings.
      *
      * @param vendorDirectory complete Vendor manifest directory
      * @param adapterBindings complete adapter factory bindings
+     * @param optionsBindings complete Options factory bindings
      */
-    private VendorModule(final VendorDirectory vendorDirectory, final AdapterBindings adapterBindings) {
+    public VendorModule(final VendorDirectory vendorDirectory, final AdapterBindings adapterBindings,
+            final OptionsBindings optionsBindings) {
         this.vendorDirectory = Assert.notNull(vendorDirectory, "Vendor module directory must not be null");
         this.adapterBindings = Assert.notNull(adapterBindings, "Vendor module adapter bindings must not be null");
+        this.optionsBindings = Assert.notNull(optionsBindings, "Vendor module Options bindings must not be null");
         final Set<AdapterBindings.Key> expected = new HashSet<>();
+        final Set<OptionsBindings.Key> expectedOptions = new HashSet<>();
         for (VariantManifest<?> manifest : vendorDirectory.manifests()) {
             for (VariantManifest.Variant variant : manifest.variants()) {
                 expected.add(new AdapterBindings.Key(manifest.vendor(), variant.variant()));
+                expectedOptions.add(new OptionsBindings.Key(manifest.vendor(), variant.variant()));
             }
         }
         if (!expected.equals(adapterBindings.bindings().keySet())) {
             throw new ValidateException("Vendor manifests and adapter bindings must have exact variant coverage");
+        }
+        if (!expectedOptions.equals(optionsBindings.keys())) {
+            throw new ValidateException("Vendor manifests and Options bindings must have exact variant coverage");
         }
     }
 
@@ -100,11 +114,21 @@ public final class VendorModule {
     }
 
     /**
+     * Creates the client-side configuration coordinator backed by this module's exact Options factories.
+     *
+     * @param writer project-owned recoverable credential storage port
+     * @return immutable client-side Vendor configuration coordinator
+     */
+    public VendorConfigurer configurer(final CredentialWriter writer) {
+        return new VendorConfigurer(optionsBindings, writer);
+    }
+
+    /**
      * Builds one immutable Vendor module from explicit built-in and external platform drivers.
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Collected Vendor manifests in deterministic contribution order.
@@ -115,6 +139,11 @@ public final class VendorModule {
          * Collected exact platform-variant adapter bindings.
          */
         private final Map<AdapterBindings.Key, AdapterBindings.Binding> adapterBindings = new LinkedHashMap<>();
+
+        /**
+         * Collected exact platform-variant Options bindings.
+         */
+        private final Map<OptionsBindings.Key, OptionsBindings.Binding> optionsBindings = new LinkedHashMap<>();
 
         /**
          * Whether the built-in platform baseline has already been contributed.
@@ -129,7 +158,7 @@ public final class VendorModule {
         /**
          * Creates an empty build-scoped collector.
          */
-        private Builder() {
+        public Builder() {
             // No initialization required.
         }
 
@@ -176,6 +205,13 @@ public final class VendorModule {
                 }
             });
             mergeBindings(selectedBindings);
+            final Map<OptionsBindings.Key, OptionsBindings.Binding> selectedOptions = new LinkedHashMap<>();
+            VendorSuite.options(directory).values().forEach((key, binding) -> {
+                if (selected == null || selected.contains(key.vendor())) {
+                    selectedOptions.put(key, binding);
+                }
+            });
+            mergeOptions(selectedOptions);
             return this;
         }
 
@@ -230,7 +266,8 @@ public final class VendorModule {
             if (manifests.isEmpty()) {
                 throw new ValidateException("Vendor module must contain at least one platform driver");
             }
-            return new VendorModule(new VendorDirectory(manifests), new AdapterBindings(adapterBindings));
+            return new VendorModule(new VendorDirectory(manifests), new AdapterBindings(adapterBindings),
+                    new OptionsBindings(optionsBindings));
         }
 
         /**
@@ -254,6 +291,13 @@ public final class VendorModule {
                         driver.binding(entry.getKey()));
             }
             mergeBindings(contributed);
+            final Map<OptionsBindings.Key, OptionsBindings.Binding> contributedOptions = new LinkedHashMap<>();
+            for (Map.Entry<Vendor.Variant, VendorOptions.Factory<S>> entry : driver.optionFactories().entrySet()) {
+                contributedOptions.put(
+                        new OptionsBindings.Key(manifest.vendor(), entry.getKey()),
+                        driver.optionsBinding(entry.getKey()));
+            }
+            mergeOptions(contributedOptions);
         }
 
         /**
@@ -265,6 +309,20 @@ public final class VendorModule {
             for (Map.Entry<AdapterBindings.Key, AdapterBindings.Binding> entry : contributed.entrySet()) {
                 if (adapterBindings.putIfAbsent(entry.getKey(), entry.getValue()) != null) {
                     throw new ValidateException("Duplicate Vendor adapter factory: " + entry.getKey().vendor().value()
+                            + Symbol.C_SLASH + entry.getKey().variant().value());
+                }
+            }
+        }
+
+        /**
+         * Merges exact Options bindings while rejecting platform-variant collisions.
+         *
+         * @param contributed immutable Options bindings to merge
+         */
+        private void mergeOptions(final Map<OptionsBindings.Key, OptionsBindings.Binding> contributed) {
+            for (Map.Entry<OptionsBindings.Key, OptionsBindings.Binding> entry : contributed.entrySet()) {
+                if (optionsBindings.putIfAbsent(entry.getKey(), entry.getValue()) != null) {
+                    throw new ValidateException("Duplicate Vendor Options factory: " + entry.getKey().vendor().value()
                             + Symbol.C_SLASH + entry.getKey().variant().value());
                 }
             }

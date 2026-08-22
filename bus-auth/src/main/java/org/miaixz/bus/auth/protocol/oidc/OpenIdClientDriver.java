@@ -47,7 +47,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
 
 /**
  * Compiles one OpenID Connect relying-party Source into endpoint-accurate standard client operations.
@@ -59,7 +58,7 @@ import org.miaixz.bus.fabric.Fabric;
  *
  * @author Kimi Liu
  */
-public final class OpenIdClientDriver implements SourceDriver<OpenIdClientOptions> {
+public class OpenIdClientDriver implements SourceDriver<OpenIdClientOptions> {
 
     /**
      * Creates a stateless OpenID Connect Source driver.
@@ -256,7 +255,7 @@ public final class OpenIdClientDriver implements SourceDriver<OpenIdClientOption
     @Override
     public Dependencies dependencies(final Source source, final OpenIdClientOptions options) {
         return Dependencies.of(
-                Dependencies.Service.FABRIC_CONTEXT,
+                Dependencies.Service.FABRIC,
                 Dependencies.Service.JSON_PROVIDER,
                 Dependencies.Service.EXECUTOR,
                 Dependencies.Service.SECURITY_BASELINE);
@@ -275,7 +274,7 @@ public final class OpenIdClientDriver implements SourceDriver<OpenIdClientOption
     public SourceWorker compile(final Prepared<OpenIdClientOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "OpenID Connect Source preparation must not be null");
         Assert.notNull(services, "OpenID Connect Source execution services must not be null");
-        final Registration.SourceEntry record = prepared.registration();
+        final Blueprint.SourceEntry record = prepared.registration();
         final Provider provider = prepared.provider();
         final Library library = prepared.library();
         final Source source = record.resource();
@@ -345,15 +344,15 @@ public final class OpenIdClientDriver implements SourceDriver<OpenIdClientOption
          * Retrieves the configured issuer's public JWK Set.
          *
          * @param context immutable invocation context
-         * @param timeout shared end-to-end time budget
+         * @param timeout shared end-to-end timeout
          * @return stage containing a standard public JWK Set or closed framework failure
          */
-        private CompletionStage<Outcome<JwkSet>> jwks(final Context context, final Timeout.Budget timeout) {
+        private CompletionStage<Outcome<JwkSet>> jwks(final Context context, final Timeout timeout) {
             Assert.notNull(context, "OpenID Connect JWK Set context must not be null");
-            Assert.notNull(timeout, "OpenID Connect JWK Set time budget must not be null");
+            Assert.notNull(timeout, "OpenID Connect JWK Set timeout must not be null");
             if (timeout.expired()) {
                 return CompletableFuture.completedFuture(
-                        Outcome.failed(failure(ErrorCode._408, "OpenID Connect JWK Set request has no time budget")));
+                        Outcome.failed(failure(ErrorCode._408, "OpenID Connect JWK Set request has no timeout")));
             }
             return CompletableFuture.supplyAsync(() -> execute(timeout), services.executor());
         }
@@ -361,18 +360,17 @@ public final class OpenIdClientDriver implements SourceDriver<OpenIdClientOption
         /**
          * Executes and decodes one public-key resource request.
          *
-         * @param timeout decreasing operation budget
+         * @param timeout decreasing operation timeout
          * @return decoded public-key outcome
          */
-        private Outcome<JwkSet> execute(final Timeout.Budget timeout) {
+        private Outcome<JwkSet> execute(final Timeout timeout) {
             try {
                 if (timeout.expired()) {
-                    return Outcome.failed(
-                            failure(ErrorCode._408, "OpenID Connect JWK Set request exhausted its time budget"));
+                    return Outcome
+                            .failed(failure(ErrorCode._408, "OpenID Connect JWK Set request exhausted its timeout"));
                 }
-                final var response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                        .method(Http.Method.GET).timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy()).execute();
+                final var response = FabricX.http(services.fabric(), Protocol.OIDC, timeout)
+                        .url(endpoint.url().toString()).method(Http.Method.GET).execute();
                 return Outcome.succeeded(codec.decode(response));
             } catch (RuntimeException exception) {
                 return Outcome.failed(failure(ErrorCode._502, "OpenID Connect JWK Set endpoint request failed"));
@@ -432,6 +430,7 @@ public final class OpenIdClientDriver implements SourceDriver<OpenIdClientOption
                 case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
                 case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
                 case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             });
         }
 
@@ -465,7 +464,7 @@ public final class OpenIdClientDriver implements SourceDriver<OpenIdClientOption
          * @param capability exact declared capability
          * @param request    exact request value or {@code null} for metadata resources
          * @param context    immutable invocation context
-         * @param timeout    shared end-to-end time budget
+         * @param timeout    shared end-to-end timeout
          * @param <Q>        request type
          * @param <S>        success type
          * @return delegated typed outcome or unsupported-capability rejection
@@ -475,10 +474,10 @@ public final class OpenIdClientDriver implements SourceDriver<OpenIdClientOption
                 final Capability<Q, S> capability,
                 final Q request,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             Assert.notNull(capability, "OpenID Connect Source capability must not be null");
             Assert.notNull(context, "OpenID Connect Source context must not be null");
-            Assert.notNull(timeout, "OpenID Connect Source time budget must not be null");
+            Assert.notNull(timeout, "OpenID Connect Source timeout must not be null");
             if (!manifest.capabilities().contains(capability)) {
                 return rejected();
             }

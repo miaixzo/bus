@@ -31,6 +31,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.guard.IssuerValidator;
@@ -55,7 +57,7 @@ import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
-import org.miaixz.bus.auth.worker.KeyLoader;
+import org.miaixz.bus.auth.worker.loader.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -67,9 +69,6 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements the frozen Sign in with Apple OpenID Connect Source contract.
@@ -80,7 +79,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class AppleSourceAdapter implements VendorAdapter {
+public class AppleSourceAdapter implements VendorAdapter {
 
     /**
      * Exact Sign in with Apple issuer and client-secret audience.
@@ -234,7 +233,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
         final IdTokenCodec idTokenCodec = new IdTokenCodec(
                 new JwtVerifier(services.jsonProvider(), idTokenJws, dormantJwe));
         this.idTokenVerifier = new IdTokenVerifier(idTokenCodec, issuerValidator,
-                services.securityBaseline().timeGuard(Protocol.OIDC, services.fabricContext().clock()));
+                services.securityBaseline().timeGuard(Protocol.OIDC, FabricX.clock(services.fabric())));
     }
 
     /**
@@ -393,6 +392,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -472,7 +472,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing an Apple-private DTO
@@ -482,10 +482,10 @@ public final class AppleSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Sign in with Apple capability must not be null");
         Assert.notNull(context, "Sign in with Apple invocation context must not be null");
-        Assert.notNull(timeout, "Sign in with Apple invocation budget must not be null");
+        Assert.notNull(timeout, "Sign in with Apple invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("Sign in with Apple capability is not declared"));
         }
@@ -519,15 +519,15 @@ public final class AppleSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated state and OpenID Connect nonce
      * @param context    immutable invocation context retained for the uniform operation signature
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return prepared Apple form-post authorization redirect
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "Sign in with Apple authorization context must not be null");
-        Assert.notNull(timeout, "Sign in with Apple authorization budget must not be null");
+        Assert.notNull(timeout, "Sign in with Apple authorization timeout must not be null");
         try {
             final String nonce = initiation.nonce().getOrNull();
             if (nonce == null || initiation.codeChallenge().isPresent()) {
@@ -539,7 +539,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
             final AuthorizationRequest request = new AuthorizationRequest(ResponseType.CODE, options.clientId(),
                     options.redirectUri(), Optional.of(new Scope(requestedScopes())), Optional.of(initiation.state()),
                     Optional.empty(), Optional.empty(), new JsonValue.ObjectValue(extensions));
-            final UnoUrl redirect = authorizationRequestEncoder.encode(request);
+            final Url redirect = authorizationRequestEncoder.encode(request);
             return completed(Outcome.succeeded(new RedirectManager.Prepared(redirect.toString(), initiation.state())));
         } catch (RuntimeException cause) {
             return completed(rejected("Sign in with Apple authorization request is invalid"));
@@ -562,16 +562,16 @@ public final class AppleSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback, nonce, and correlation material
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return terminal identity outcome once token and ID Token processing is available
      */
     private CompletionStage<Outcome<ExternalIdentity>> complete(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(completion, "Sign in with Apple browser completion must not be null");
         Assert.notNull(context, "Sign in with Apple completion context must not be null");
-        Assert.notNull(timeout, "Sign in with Apple completion budget must not be null");
+        Assert.notNull(timeout, "Sign in with Apple completion timeout must not be null");
         final CallbackWire callback;
         try {
             callback = callback(completion.callback());
@@ -596,6 +596,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
                                     rejected("Sign in with Apple authorization-code response omitted the ID Token"));
             case Outcome.Rejected<TokenEndpointResponse> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<TokenEndpointResponse> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -604,13 +605,13 @@ public final class AppleSourceAdapter implements VendorAdapter {
      *
      * @param request standard OAuth token request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return decoded standard token response
      */
     private CompletionStage<Outcome<TokenEndpointResponse>> token(
             final TokenRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!valid(request)) {
             return completed(rejected("Sign in with Apple token request differs from the registered OAuth manifest"));
         }
@@ -619,6 +620,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
                     .supplyAsync(() -> sendToken(request, success.value(), timeout), services.executor());
             case Outcome.Rejected<String> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<String> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -647,26 +649,25 @@ public final class AppleSourceAdapter implements VendorAdapter {
      *
      * @param request      validated standard token request
      * @param clientSecret sensitive short-lived Apple client-secret JWT
-     * @param timeout      shared end-to-end budget
+     * @param timeout      shared end-to-end timeout
      * @return standard token response or safely classified failure
      */
     private Outcome<TokenEndpointResponse> sendToken(
             final TokenRequest request,
             final String clientSecret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Sign in with Apple token request has no remaining time budget");
+                return failed(ErrorCode._408, "Sign in with Apple token request has no remaining timeout");
             }
             final List<NameValue> fields = new ArrayList<>(tokenRequestEncoder.encode(request));
             fields.add(new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()));
             fields.add(new NameValue(OAuth2.Parameters.CLIENT_SECRET, clientSecret));
             body = formCodec.encode(fields);
             final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-            final HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy())
+            final Response response = FabricX.http(services.fabric(), Protocol.OIDC, timeout).url(endpoint)
+                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute();
             if (response.code() == Http.Status.TOO_MANY_REQUESTS) {
                 response.close();
@@ -680,6 +681,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
                 case TokenResponseDecoder.Success success -> validateToken(success.response(), request.grant());
                 case TokenResponseDecoder.Error error -> rejected(
                         "Sign in with Apple token endpoint rejected the request");
+                default -> throw new IllegalStateException("Unsupported protocol model implementation");
             };
         } catch (RuntimeException cause) {
             return failed(ErrorCode._502, "Sign in with Apple token request failed");
@@ -695,13 +697,13 @@ public final class AppleSourceAdapter implements VendorAdapter {
      *
      * @param request standard revocation request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return successful empty response or safely classified failure
      */
     private CompletionStage<Outcome<Void>> revoke(
             final RevocationRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final String hint = request == null ? null : request.tokenTypeHint().getOrNull();
         if (request == null || hint != null && !OAuth2.Parameters.ACCESS_TOKEN.equals(hint)
                 && !OAuth2.Parameters.REFRESH_TOKEN.equals(hint)) {
@@ -712,6 +714,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
                     .supplyAsync(() -> sendRevocation(request, success.value(), timeout), services.executor());
             case Outcome.Rejected<String> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<String> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -720,26 +723,25 @@ public final class AppleSourceAdapter implements VendorAdapter {
      *
      * @param request      validated RFC 7009 request
      * @param clientSecret sensitive short-lived Apple client-secret JWT
-     * @param timeout      shared end-to-end budget
+     * @param timeout      shared end-to-end timeout
      * @return empty success, safe rejection, or operational failure
      */
     private Outcome<Void> sendRevocation(
             final RevocationRequest request,
             final String clientSecret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Sign in with Apple revocation has no remaining time budget");
+                return failed(ErrorCode._408, "Sign in with Apple revocation has no remaining timeout");
             }
             final List<NameValue> fields = new ArrayList<>(revocationRequestEncoder.encode(request));
             fields.add(new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId()));
             fields.add(new NameValue(OAuth2.Parameters.CLIENT_SECRET, clientSecret));
             body = formCodec.encode(fields);
             final String endpoint = variant.targets().resolve(options).revocation().getOrNull().url().toString();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OIDC, timeout).url(endpoint)
+                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 if (response.code() == Http.Status.TOO_MANY_REQUESTS) {
                     return failed(ErrorCode._429, "Sign in with Apple revocation endpoint rate limited the request");
@@ -774,17 +776,17 @@ public final class AppleSourceAdapter implements VendorAdapter {
      * Resolves the configured EC private key and produces a five-minute Apple client-secret JWT.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return dynamic client-secret JWT outcome
      */
-    private CompletionStage<Outcome<String>> clientSecret(final Context context, final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<String>> clientSecret(final Context context, final Timeout timeout) {
         final Instant now = timeout.clock().now();
-        final KeyLoader.Request query = new KeyLoader.Request(ISSUER, Optional.of(options.credential().id()),
-                SIGNATURE_USE, JwaAlgorithm.ES256.name(), now);
+        final KeyLoader.Request query = new KeyLoader.Request(services.registration(), ISSUER,
+                Optional.of(options.credential().id()), SIGNATURE_USE, JwaAlgorithm.ES256.name(), now);
         final CompletionStage<Outcome<KeyMaterial>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.keyLoader().load(services.registration(), query, context, timeout),
+                    () -> services.keyLoader().load(query, context, timeout),
                     loaded -> services.keyParser().parse(services.registration(), query, loaded));
         } catch (RuntimeException cause) {
             return completed(failed("Sign in with Apple signing key resolution failed"));
@@ -800,6 +802,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
                 case Outcome.Succeeded<KeyMaterial> success -> sign(success.value(), now);
                 case Outcome.Rejected<KeyMaterial> rejected -> Outcome.rejected(rejected.failure());
                 case Outcome.Failed<KeyMaterial> failed -> Outcome.failed(failed.failure());
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             };
         });
     }
@@ -846,24 +849,20 @@ public final class AppleSourceAdapter implements VendorAdapter {
      * Retrieves and validates Apple's OpenID Provider Metadata without allowing discovery to rewrite fixed endpoints.
      *
      * @param context immutable invocation context retained for the uniform operation signature
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return standard issuer-bound OpenID Provider Metadata
      */
-    private CompletionStage<Outcome<OpenIdProviderMetadata>> discover(
-            final Context context,
-            final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<OpenIdProviderMetadata>> discover(final Context context, final Timeout timeout) {
         Assert.notNull(context, "Sign in with Apple discovery context must not be null");
         return CompletableFuture.supplyAsync(() -> {
             try {
                 if (timeout.expired()) {
-                    return failed(ErrorCode._408, "Sign in with Apple discovery has no remaining time budget");
+                    return failed(ErrorCode._408, "Sign in with Apple discovery has no remaining timeout");
                 }
                 final String endpoint = variant.targets().resolve(options).discovery().getOrNull().url().toString();
                 final OpenIdProviderMetadata metadata = metadataCodec.decode(
-                        Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                                .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                                .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy())
-                                .execute());
+                        FabricX.http(services.fabric(), Protocol.OIDC, timeout).url(endpoint).method(Http.Method.GET)
+                                .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute());
                 return validateMetadata(metadata);
             } catch (RuntimeException cause) {
                 return failed(ErrorCode._502, "Sign in with Apple discovery request failed");
@@ -900,25 +899,22 @@ public final class AppleSourceAdapter implements VendorAdapter {
      * Retrieves Apple's current public JWK Set through the strict standard resource codec.
      *
      * @param context immutable invocation context retained for the uniform operation signature
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return current standard public JWK Set
      */
-    private CompletionStage<Outcome<JwkSet>> jwks(final Context context, final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<JwkSet>> jwks(final Context context, final Timeout timeout) {
         Assert.notNull(context, "Sign in with Apple JWK Set context must not be null");
         return CompletableFuture.supplyAsync(() -> {
             try {
                 if (timeout.expired()) {
-                    return failed(ErrorCode._408, "Sign in with Apple JWK Set request has no remaining time budget");
+                    return failed(ErrorCode._408, "Sign in with Apple JWK Set request has no remaining timeout");
                 }
                 final String endpoint = variant.targets().resolve(options).jwks().getOrNull().url().toString();
                 return Outcome.succeeded(
                         jwkSetCodec.decode(
-                                Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JWK_SET_JSON)
-                                        .timeout(timeout.forFabric())
-                                        .addressPolicy(
-                                                services.securityBaseline().require(Protocol.OIDC).addressPolicy())
-                                        .execute()));
+                                FabricX.http(services.fabric(), Protocol.OIDC, timeout).url(endpoint)
+                                        .method(Http.Method.GET)
+                                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JWK_SET_JSON).execute()));
             } catch (RuntimeException cause) {
                 return failed(ErrorCode._502, "Sign in with Apple JWK Set request failed");
             }
@@ -932,7 +928,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
      * @param callback   validated callback parameters
      * @param completion consumed browser correlation
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified Apple external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> verifyToken(
@@ -940,7 +936,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
             final CallbackWire callback,
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final String compact = token.idToken().compact();
         return jwks(context, timeout).thenCompose(keys -> switch (keys) {
             case Outcome.Succeeded<JwkSet> success -> verifyIdToken(
@@ -962,9 +958,11 @@ public final class AppleSourceAdapter implements VendorAdapter {
                         case Outcome.Rejected<IdTokenClaims> rejected -> completed(
                                 Outcome.rejected(rejected.failure()));
                         case Outcome.Failed<IdTokenClaims> failed -> completed(Outcome.failed(failed.failure()));
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
             case Outcome.Rejected<JwkSet> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<JwkSet> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -977,7 +975,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
      * @param callback   validated callback parameters
      * @param completion consumed browser correlation
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified Apple external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> verifyCallbackToken(
@@ -987,7 +985,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
             final CallbackWire callback,
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final String frontChannel = callback.idToken();
         if (frontChannel == null) {
             return completed(identity(primary, callback.user(), timeout));
@@ -999,6 +997,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
                             : rejected("Sign in with Apple ID Token subjects do not match");
                     case Outcome.Rejected<IdTokenClaims> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<IdTokenClaims> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -1011,7 +1010,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
      * @param code        authorization code for c_hash verification
      * @param completion  consumed nonce and state correlation
      * @param context     immutable invocation context
-     * @param timeout     shared end-to-end budget
+     * @param timeout     shared end-to-end timeout
      * @return cryptographically and semantically verified ID Token claims
      */
     private CompletionStage<Outcome<IdTokenClaims>> verifyIdToken(
@@ -1021,7 +1020,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
             final String code,
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final PublicKey key;
         try {
             final JwsService.Jws parsed = idTokenJws.parseCompact(compact, Set.of());
@@ -1060,7 +1059,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
     private Outcome<ExternalIdentity> identity(
             final IdTokenClaims claims,
             final String callbackUser,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         try {
             final Map<String, JsonValue> attributes = new LinkedHashMap<>();
             copyClaim(claims.extensions(), attributes, "email", JsonValue.StringValue.class);
@@ -1170,7 +1169,7 @@ public final class AppleSourceAdapter implements VendorAdapter {
      * @param response owned revocation response inspected before its enclosing resource scope closes
      * @return whether the response is a bounded JSON object with a non-blank {@code error} string
      */
-    private boolean appleError(final HttpResponse response) {
+    private boolean appleError(final Response response) {
         try {
             if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())
                     || response.body().length() > Normal.MEBI) {

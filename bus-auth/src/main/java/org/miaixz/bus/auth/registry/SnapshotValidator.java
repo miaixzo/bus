@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.miaixz.bus.auth.Blueprint;
 import org.miaixz.bus.auth.Provider;
-import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.Source;
 import org.miaixz.bus.core.basic.entity.Entity;
@@ -50,7 +50,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @author Kimi Liu
  */
-public final class SnapshotValidator {
+public class SnapshotValidator {
 
     /**
      * Validates Source routing against the exact drivers assembled for this runtime.
@@ -74,16 +74,16 @@ public final class SnapshotValidator {
      * @param faults    mutable fault accumulator
      */
     private void validateProviders(
-            final Map<String, Registration.Entry> providers,
-            final Map<String, Registration.Entry> libraries,
+            final Map<String, Blueprint.Entry> providers,
+            final Map<String, Blueprint.Entry> libraries,
             final List<SnapshotFault> faults) {
-        for (Registration.Entry record : providers.values()) {
+        for (Blueprint.Entry record : providers.values()) {
             final Provider provider = (Provider) record.resource();
             final String libraryId = provider.getLibrary_id();
             if (StringKit.isBlank(libraryId)) {
                 fault(faults, record, "library_id", ErrorCode._100100, "Provider Library id must not be blank");
             } else {
-                final Registration.Entry libraryRecord = libraries.get(libraryId);
+                final Blueprint.Entry libraryRecord = libraries.get(libraryId);
                 if (libraryRecord == null) {
                     fault(faults, record, "library_id", ErrorCode._404, "Provider references an unknown Library");
                 } else if (record.enabled() && !libraryRecord.enabled()) {
@@ -109,7 +109,7 @@ public final class SnapshotValidator {
      */
     private static void fault(
             final List<SnapshotFault> faults,
-            final Registration.Entry record,
+            final Blueprint.Entry record,
             final String field,
             final Errors error,
             final String description) {
@@ -134,7 +134,7 @@ public final class SnapshotValidator {
      */
     private static void violations(
             final List<SnapshotFault> faults,
-            final Registration.Entry record,
+            final Blueprint.Entry record,
             final List<FieldViolation> violations) {
         for (FieldViolation violation : violations) {
             fault(faults, record, violation.field(), violation.error(), violation.description());
@@ -149,15 +149,15 @@ public final class SnapshotValidator {
      * @param faults    mutable fault accumulator
      */
     private void validateSources(
-            final Map<String, Registration.Entry> sources,
-            final Map<String, Registration.Entry> providers,
+            final Map<String, Blueprint.Entry> sources,
+            final Map<String, Blueprint.Entry> providers,
             final List<SnapshotFault> faults) {
-        for (Registration.Entry record : sources.values()) {
+        for (Blueprint.Entry record : sources.values()) {
             final Source source = (Source) record.resource();
             violations(faults, record, sourceValidator.validate(source));
             final String providerId = source.getProvider_id();
             if (StringKit.isNotBlank(providerId)) {
-                final Registration.Entry providerRecord = providers.get(providerId);
+                final Blueprint.Entry providerRecord = providers.get(providerId);
                 if (providerRecord == null) {
                     fault(faults, record, "provider_id", ErrorCode._404, "Source references an unknown Provider");
                 } else if (record.enabled() && !providerRecord.enabled()) {
@@ -182,11 +182,11 @@ public final class SnapshotValidator {
     public Registry.Report validate(final Registry.Snapshot snapshot) {
         Assert.notNull(snapshot, "Registry snapshot must not be null");
         final List<SnapshotFault> faults = new ArrayList<>();
-        final Map<String, Registration.Entry> libraries = new HashMap<>();
-        final Map<String, Registration.Entry> providers = new HashMap<>();
-        final Map<String, Registration.Entry> sources = new HashMap<>();
+        final Map<String, Blueprint.Entry> libraries = new HashMap<>();
+        final Map<String, Blueprint.Entry> providers = new HashMap<>();
+        final Map<String, Blueprint.Entry> sources = new HashMap<>();
         final Set<String> identities = new HashSet<>();
-        for (Registration.Entry record : snapshot.records()) {
+        for (Blueprint.Entry record : snapshot.records()) {
             final Entity resource = record.resource();
             final String id = resource.getId();
             if (StringKit.isBlank(id)) {

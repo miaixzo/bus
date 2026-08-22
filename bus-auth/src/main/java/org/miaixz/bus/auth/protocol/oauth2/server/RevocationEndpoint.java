@@ -23,22 +23,23 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.guard.ClientAuthentication;
 import org.miaixz.bus.auth.guard.ClientAuthenticator;
 import org.miaixz.bus.auth.protocol.oauth2.RevocationRequest;
 import org.miaixz.bus.auth.protocol.oauth2.codec.RevocationRequestDecoder;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Adapts RFC 7009 Fabric HTTP requests to typed token revocation processing.
  *
  * @author Kimi Liu
  */
-public final class RevocationEndpoint {
+public class RevocationEndpoint {
 
     /**
      * Strict RFC 7009 request decoder.
@@ -48,7 +49,7 @@ public final class RevocationEndpoint {
     /**
      * Standard HTTP client authentication or public-client identification strategy.
      */
-    private final ClientAuthenticator<HttpRequest> authenticator;
+    private final ClientAuthenticator<Request> authenticator;
 
     /**
      * Typed token revocation service.
@@ -69,9 +70,8 @@ public final class RevocationEndpoint {
      * @param errorMapper   standard endpoint error mapper
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public RevocationEndpoint(final RevocationRequestDecoder decoder,
-            final ClientAuthenticator<HttpRequest> authenticator, final RevocationService service,
-            final OAuth2ErrorMapper errorMapper) {
+    public RevocationEndpoint(final RevocationRequestDecoder decoder, final ClientAuthenticator<Request> authenticator,
+            final RevocationService service, final OAuth2ErrorMapper errorMapper) {
         this.decoder = Assert.notNull(decoder, "OAuth 2.x revocation decoder must not be null");
         this.authenticator = Assert
                 .notNull(authenticator, "OAuth 2.x revocation client authenticator must not be null");
@@ -84,16 +84,13 @@ public final class RevocationEndpoint {
      *
      * @param request immutable Fabric HTTP request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a complete RFC 7009 HTTP response
      */
-    public CompletionStage<HttpResponse> handle(
-            final HttpRequest request,
-            final Context context,
-            final Timeout.Budget timeout) {
+    public CompletionStage<Response> handle(final Request request, final Context context, final Timeout timeout) {
         Assert.notNull(request, "OAuth 2.x revocation HTTP request must not be null");
         Assert.notNull(context, "OAuth 2.x revocation context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x revocation time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x revocation timeout must not be null");
         final RevocationRequest decoded;
         try {
             decoded = decoder.decode(request);
@@ -102,19 +99,21 @@ public final class RevocationEndpoint {
         }
         return authenticator.authenticate(request, context, timeout)
                 .thenCompose(authenticated -> switch (authenticated) {
-                    case Outcome.Succeeded<org.miaixz.bus.auth.resolver.ConsumerMetadata> success -> service
-                            .revoke(decoded, context.withClientId(success.value().id()), timeout)
+                    case Outcome.Succeeded<ClientAuthentication> success -> service
+                            .revoke(decoded, context.withClientId(success.value().consumer().id()), timeout)
                             .thenApply(outcome -> switch (outcome) {
-                                case Outcome.Succeeded<Void> value -> HttpResponse.builder().request(request)
+                                case Outcome.Succeeded<Void> value -> Response.builder().request(request)
                                         .code(Http.Status.OK).build();
                                 case Outcome.Rejected<Void> rejected -> errorMapper
                                         .revocation(request, rejected.failure());
                                 case Outcome.Failed<Void> failed -> errorMapper.revocation(request, failed.failure());
+                                default -> throw new IllegalStateException("Unsupported Outcome implementation");
                             });
-                    case Outcome.Rejected<org.miaixz.bus.auth.resolver.ConsumerMetadata> rejected -> CompletableFuture
+                    case Outcome.Rejected<ClientAuthentication> rejected -> CompletableFuture
                             .completedFuture(errorMapper.revocation(request, rejected.failure()));
-                    case Outcome.Failed<org.miaixz.bus.auth.resolver.ConsumerMetadata> failed -> CompletableFuture
+                    case Outcome.Failed<ClientAuthentication> failed -> CompletableFuture
                             .completedFuture(errorMapper.revocation(request, failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 

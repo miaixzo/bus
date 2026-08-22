@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.Conformance;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -30,14 +31,13 @@ import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Describes the generic standards-based OAuth 2.x client client scheme.
  *
  * @author Kimi Liu
  */
-public final class OAuth2ClientScheme implements Scheme<OAuth2ClientOptions> {
+public class OAuth2ClientScheme implements Scheme<OAuth2ClientOptions> {
 
     /**
      * Stable registration type identifier.
@@ -46,10 +46,10 @@ public final class OAuth2ClientScheme implements Scheme<OAuth2ClientOptions> {
     /**
      * Builds a standard authorization URL for user-agent redirection.
      */
-    public static final Capability<AuthorizationRequest, UnoUrl> AUTHORIZATION = capability(
+    public static final Capability<AuthorizationRequest, Url> AUTHORIZATION = capability(
             OAuth2.AUTHORIZATION,
             AuthorizationRequest.class,
-            UnoUrl.class,
+            Url.class,
             Capability.Interaction.REDIRECT,
             Capability.Security.PUBLIC);
     /**

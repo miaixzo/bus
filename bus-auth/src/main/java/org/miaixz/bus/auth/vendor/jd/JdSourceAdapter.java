@@ -28,6 +28,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
+import org.miaixz.bus.auth.FabricX.UrlBuilder;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -40,6 +43,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.*;
@@ -52,9 +56,6 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements JD's frozen OAuth authorization and Zeus account-profile Source flow.
@@ -66,7 +67,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class JdSourceAdapter implements VendorAdapter {
+public class JdSourceAdapter implements VendorAdapter {
 
     /**
      * Exact JD Zeus account-profile method name.
@@ -470,6 +471,7 @@ public final class JdSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -539,7 +541,7 @@ public final class JdSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing JD-private token or profile records
@@ -549,10 +551,10 @@ public final class JdSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "JD capability must not be null");
         Assert.notNull(context, "JD invocation context must not be null");
-        Assert.notNull(timeout, "JD invocation budget must not be null");
+        Assert.notNull(timeout, "JD invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("JD capability is not declared"));
         }
@@ -577,16 +579,16 @@ public final class JdSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated browser correlation
      * @param context    immutable invocation context retained for the uniform callback
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return exact prepared redirect and state binding
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "JD authorization context must not be null");
         if (timeout.expired()) {
-            return completed(failed(ErrorCode._408, "JD authorization has no remaining time budget"));
+            return completed(failed(ErrorCode._408, "JD authorization has no remaining timeout"));
         }
         if (initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(failed(ErrorCode._500, "JD browser flow must not generate nonce or PKCE material"));
@@ -596,10 +598,11 @@ public final class JdSourceAdapter implements VendorAdapter {
                 Optional.empty(), Optional.empty(), emptyObject());
         return standardAdapter.invoke(OAuth2ClientScheme.AUTHORIZATION, request, context, timeout)
                 .thenApply(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<UnoUrl> success -> Outcome
+                    case Outcome.Succeeded<Url> success -> Outcome
                             .succeeded(new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                    case Outcome.Rejected<UnoUrl> rejected -> Outcome.rejected(rejected.failure());
-                    case Outcome.Failed<UnoUrl> failed -> Outcome.failed(failed.failure());
+                    case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                    case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -609,12 +612,12 @@ public final class JdSourceAdapter implements VendorAdapter {
      * @param request standard OAuth Authorization Request
      * @return exact JD authorization URL or a safe rejection
      */
-    private CompletionStage<Outcome<UnoUrl>> authorize(final AuthorizationRequest request) {
+    private CompletionStage<Outcome<Url>> authorize(final AuthorizationRequest request) {
         try {
             if (!valid(request)) {
                 return completed(rejected("JD Authorization Request differs from the registered manifest"));
             }
-            final UnoUrl url = variant.targets().resolve(options).authorization().getOrNull().url().newBuilder()
+            final Url url = variant.targets().resolve(options).authorization().getOrNull().url().newBuilder()
                     .query("app_key", options.clientId())
                     .query(OAuth2.Parameters.RESPONSE_TYPE, ResponseType.CODE.value())
                     .query(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull())
@@ -686,13 +689,13 @@ public final class JdSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback and state correlation
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified JD external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> complete(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CallbackWire values;
         try {
             values = callback(completion.callback());
@@ -712,8 +715,10 @@ public final class JdSourceAdapter implements VendorAdapter {
         }
         return Outcome
                 .mapStage(
-                        () -> services.secretLoader()
-                                .load(services.registration(), options.credential(), context, timeout),
+                        () -> services.secretLoader().load(
+                                new SecretLoader.Request(services.registration(), options.credential()),
+                                context,
+                                timeout),
                         loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> authenticate(
@@ -722,6 +727,7 @@ public final class JdSourceAdapter implements VendorAdapter {
                             timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -730,19 +736,20 @@ public final class JdSourceAdapter implements VendorAdapter {
      *
      * @param code    one-time authorization code
      * @param secret  owned application-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> authenticate(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try (secret) {
                 return switch (token(code, secret, timeout)) {
                     case Outcome.Succeeded<PrivateToken> success -> profile(success.value(), secret, timeout);
                     case Outcome.Rejected<PrivateToken> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<PrivateToken> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 };
             } catch (RuntimeException cause) {
                 return failed(ErrorCode._502, "JD authentication completion failed");
@@ -755,14 +762,14 @@ public final class JdSourceAdapter implements VendorAdapter {
      *
      * @param code    one-time authorization code
      * @param secret  open application-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return private token data containing the canonical open identifier
      */
-    private Outcome<PrivateToken> token(final String code, final SecretLease secret, final Timeout.Budget timeout) {
+    private Outcome<PrivateToken> token(final String code, final SecretLease secret, final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "JD token request has no remaining time budget");
+                return failed(ErrorCode._408, "JD token request has no remaining timeout");
             }
             body = formCodec.encode(
                     List.of(
@@ -771,9 +778,8 @@ public final class JdSourceAdapter implements VendorAdapter {
                             new NameValue(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value()),
                             new NameValue(OAuth2.Parameters.CODE, code)));
             final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
+                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 return token(response);
             }
@@ -790,7 +796,7 @@ public final class JdSourceAdapter implements VendorAdapter {
      * @param response owned token endpoint response
      * @return private token or safely classified failure
      */
-    private Outcome<PrivateToken> token(final HttpResponse response) {
+    private Outcome<PrivateToken> token(final Response response) {
         try {
             final JsonValue.ObjectValue object = object(response, MediaType.APPLICATION_JSON_TYPE);
             final boolean currentError = object.values().containsKey("code") || object.values().containsKey("msg")
@@ -831,17 +837,17 @@ public final class JdSourceAdapter implements VendorAdapter {
      *
      * @param token   private token and canonical identity data
      * @param secret  open application-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
     private Outcome<ExternalIdentity> profile(
             final PrivateToken token,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         byte[] profileJson = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "JD profile request has no remaining time budget");
+                return failed(ErrorCode._408, "JD profile request has no remaining timeout");
             }
             profileJson = services.jsonProvider()
                     .writeValue(new JsonValue.ObjectValue(Map.of("openId", new JsonValue.StringValue(token.openId()))));
@@ -856,14 +862,13 @@ public final class JdSourceAdapter implements VendorAdapter {
             parameters.put("timestamp", timestamp);
             parameters.put("v", "2.0");
             final String signature = signature(secret(secret), parameters);
-            UnoUrl.Builder url = variant.targets().resolve(options).userInfo().getOrNull().url().newBuilder();
+            UrlBuilder url = variant.targets().resolve(options).userInfo().getOrNull().url().newBuilder();
             for (Map.Entry<String, String> parameter : parameters.entrySet()) {
                 url = url.query(parameter.getKey(), parameter.getValue());
             }
             final String endpoint = url.query("sign", signature).build().toString();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
-                    .header(Http.Header.ACCEPT, MediaType.TEXT_PLAIN).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute()) {
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
+                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.TEXT_PLAIN).execute()) {
                 if (response.code() == Http.Status.TOO_MANY_REQUESTS) {
                     return failed(ErrorCode._429, "JD profile endpoint rate limited the request");
                 }
@@ -897,7 +902,7 @@ public final class JdSourceAdapter implements VendorAdapter {
     private Outcome<ExternalIdentity> identity(
             final JsonValue.ObjectValue object,
             final String openId,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final boolean current = object.values().containsKey(PROFILE_RESPONSE);
         final boolean historical = object.values().containsKey(PROFILE_RESPONCE);
         if (current == historical || object.values().size() != 1) {
@@ -957,7 +962,7 @@ public final class JdSourceAdapter implements VendorAdapter {
      * @param mediaType expected compatible media type
      * @return immutable provider-neutral JSON object
      */
-    private JsonValue.ObjectValue object(final HttpResponse response, final MediaType mediaType) {
+    private JsonValue.ObjectValue object(final Response response, final MediaType mediaType) {
         if (!mediaType.isCompatible(response.body().media())) {
             throw new ValidateException("JD response media type is invalid");
         }

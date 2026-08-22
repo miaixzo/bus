@@ -41,7 +41,7 @@ import org.miaixz.bus.core.net.Protocol;
  *
  * @author Kimi Liu
  */
-public final class VendorScheme implements Scheme<VendorOptions<?>> {
+public class VendorScheme implements Scheme<VendorOptions<?>> {
 
     /**
      * Stable aggregate Vendor Source type.
@@ -59,7 +59,9 @@ public final class VendorScheme implements Scheme<VendorOptions<?>> {
      */
     private static final Form FORM = new Form(List.of());
 
-    /** Immutable protocols represented by all assembled Vendor variants. */
+    /**
+     * Immutable protocols represented by all assembled Vendor variants.
+     */
     private final Set<Protocol> protocols;
 
     /**

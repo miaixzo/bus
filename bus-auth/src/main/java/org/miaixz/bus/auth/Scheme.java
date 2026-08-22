@@ -126,19 +126,33 @@ public interface Scheme<O extends Options<?>> {
          */
         public enum Type {
 
-            /** Single-line textual input. */
+            /**
+             * Single-line textual input.
+             */
             TEXT,
-            /** Secret input that must remain redacted. */
+            /**
+             * Secret input that must remain redacted.
+             */
             SECRET,
-            /** Absolute or relative URL input. */
+            /**
+             * Absolute or relative URL input.
+             */
             URL,
-            /** Boolean toggle input. */
+            /**
+             * Boolean toggle input.
+             */
             BOOLEAN,
-            /** Numeric input. */
+            /**
+             * Numeric input.
+             */
             NUMBER,
-            /** Single-choice selection input. */
+            /**
+             * Single-choice selection input.
+             */
             SELECT,
-            /** Multiple-choice selection input. */
+            /**
+             * Multiple-choice selection input.
+             */
             MULTI_SELECT
 
         }
@@ -153,7 +167,9 @@ public interface Scheme<O extends Options<?>> {
          */
         public record Section(String key, String title, List<Field> fields) {
 
-            /** Validates and freezes one management form section. */
+            /**
+             * Validates and freezes one management form section.
+             */
             public Section {
                 Assert.notBlank(key, "Form section key must not be blank");
                 Assert.notBlank(title, "Form section title must not be blank");
@@ -181,7 +197,9 @@ public interface Scheme<O extends Options<?>> {
         public record Field(String key, String label, Type type, boolean required, Optional<JsonValue> defaultValue,
                 List<Constraint> constraints) {
 
-            /** Validates and freezes one management input description. */
+            /**
+             * Validates and freezes one management input description.
+             */
             public Field {
                 Assert.notBlank(key, "Form field key must not be blank");
                 Assert.notBlank(label, "Form field label must not be blank");
@@ -207,7 +225,9 @@ public interface Scheme<O extends Options<?>> {
          */
         public record Constraint(String validator, JsonValue.ObjectValue arguments) {
 
-            /** Validates and detaches one management field constraint. */
+            /**
+             * Validates and detaches one management field constraint.
+             */
             public Constraint {
                 Assert.notBlank(validator, "Form constraint validator must not be blank");
                 Assert.notNull(arguments, "Form constraint arguments must not be null");

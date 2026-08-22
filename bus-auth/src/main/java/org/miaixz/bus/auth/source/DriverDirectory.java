@@ -39,7 +39,7 @@ import org.miaixz.bus.core.lang.exception.NotFoundException;
  *
  * @author Kimi Liu
  */
-public final class DriverDirectory {
+public class DriverDirectory {
 
     /**
      * Drivers in deterministic runtime assembly order.

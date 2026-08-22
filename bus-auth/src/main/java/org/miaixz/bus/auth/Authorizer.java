@@ -21,7 +21,11 @@ package org.miaixz.bus.auth;
 
 import org.miaixz.bus.auth.runtime.RuntimeBuilder;
 import org.miaixz.bus.auth.runtime.RuntimeServices;
-import org.miaixz.bus.auth.worker.RegistrationLoader;
+import org.miaixz.bus.auth.vendor.VendorConfigurer;
+import org.miaixz.bus.auth.vendor.VendorModule;
+import org.miaixz.bus.auth.worker.CredentialWriter;
+import org.miaixz.bus.auth.worker.loader.RegistrationLoader;
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * Provides the unified public entry point for assembling a bus-auth runtime.
@@ -33,12 +37,12 @@ import org.miaixz.bus.auth.worker.RegistrationLoader;
  *
  * @author Kimi Liu
  */
-public final class Authorizer {
+public class Authorizer {
 
     /**
-     * Prevents construction of the stateless assembly facade.
+     * Creates a stateless authentication assembly facade.
      */
-    private Authorizer() {
+    public Authorizer() {
         // No initialization required.
     }
 
@@ -72,6 +76,22 @@ public final class Authorizer {
      */
     public static RuntimeBuilder custom(final RuntimeServices services, final RegistrationLoader registrationLoader) {
         return RuntimeBuilder.custom(services, registrationLoader);
+    }
+
+    /**
+     * Creates the unified client-side Vendor configuration entry point.
+     * <p>
+     * The returned coordinator accepts plaintext only through a short-lived lease, delegates secure storage to the
+     * supplied project Worker, and returns immutable concrete Vendor Options. This facade does not store credentials,
+     * create a Source, mutate a Registry, or start authentication.
+     * </p>
+     *
+     * @param vendors immutable built-in, custom, or combined Vendor module
+     * @param writer  project-owned recoverable credential storage port
+     * @return client-side Vendor configuration coordinator
+     */
+    public static VendorConfigurer clients(final VendorModule vendors, final CredentialWriter writer) {
+        return Assert.notNull(vendors, "Vendor module must not be null").configurer(writer);
     }
 
 }

@@ -29,6 +29,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.guard.IssuerValidator;
@@ -53,6 +55,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -67,9 +70,6 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements LinkedIn's current OpenID Connect Source and relying-party boundary.
@@ -81,7 +81,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class LinkedInSourceAdapter implements VendorAdapter {
+public class LinkedInSourceAdapter implements VendorAdapter {
 
     /**
      * Current issuer advertised by LinkedIn OpenID Provider Discovery.
@@ -252,7 +252,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
         this.jwkSetCodec = new JwkSetCodec(services.jsonProvider());
         this.jwkSelector = new JwkSelector();
         this.issuerValidator = new IssuerValidator();
-        this.timeGuard = services.securityBaseline().timeGuard(Protocol.OIDC, services.fabricContext().clock());
+        this.timeGuard = services.securityBaseline().timeGuard(Protocol.OIDC, FabricX.clock(services.fabric()));
         this.jwsService = new JwsService(services.jsonProvider(), services.securityBaseline().algorithmGuard(),
                 Set.of(JwaAlgorithm.RS256.name()));
         final JweService dormantJweService = new JweService(services.jsonProvider(),
@@ -481,6 +481,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -579,7 +580,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific request or {@code null} for JWK Set retrieval
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed operation outcome without private LinkedIn wire models
@@ -589,10 +590,10 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "LinkedIn capability must not be null");
         Assert.notNull(context, "LinkedIn invocation context must not be null");
-        Assert.notNull(timeout, "LinkedIn invocation budget must not be null");
+        Assert.notNull(timeout, "LinkedIn invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return missing();
         }
@@ -618,7 +619,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
      * @param request standard OpenID Connect Authentication Request
      * @return exact authorization URL or a safe request rejection
      */
-    private CompletionStage<Outcome<UnoUrl>> authentication(final AuthenticationRequest request) {
+    private CompletionStage<Outcome<Url>> authentication(final AuthenticationRequest request) {
         try {
             if (!valid(request)) {
                 return completed(rejected("LinkedIn Authentication Request differs from the registered manifest"));
@@ -663,7 +664,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
      * @param request validated standard Authentication Request
      * @return immutable exact LinkedIn authorization URL
      */
-    private UnoUrl authorizationUrl(final AuthenticationRequest request) {
+    private Url authorizationUrl(final AuthenticationRequest request) {
         final AuthorizationRequest authorization = request.authorizationRequest();
         return variant.targets().resolve(options).authorization().getOrNull().url().newBuilder()
                 .query(OAuth2.Parameters.RESPONSE_TYPE, ResponseType.CODE.value())
@@ -678,17 +679,18 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated one-time browser security material
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return prepared redirect only after the frozen Discovery subset is confirmed
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return discovery(timeout).thenApply(discovered -> switch (discovered) {
             case Outcome.Succeeded<Void> ignored -> prepare(initiation);
             case Outcome.Rejected<Void> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<Void> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -738,13 +740,13 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback and browser correlation
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified LinkedIn external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CallbackWire values;
         try {
             values = callback(completion.callback());
@@ -767,7 +769,10 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
         final CompletionStage<Outcome<SecretLease>> resolution;
         try {
             resolution = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
         } catch (RuntimeException cause) {
             return completed(failed(ErrorCode._502, "LinkedIn client-secret resolution failed"));
@@ -779,6 +784,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<SecretLease> success -> authenticate(code, success.value(), context, timeout);
             case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -788,14 +794,14 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
      * @param code    single-use authorization code
      * @param secret  owned client-secret lease
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return fully verified LinkedIn identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> authenticate(
             final String code,
             final SecretLease secret,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CompletionStage<Outcome<ExternalIdentity>> stage = CompletableFuture
                 .supplyAsync(() -> sendToken(code, secret, timeout), services.executor())
                 .thenCompose(token -> switch (token) {
@@ -806,6 +812,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
                     case Outcome.Rejected<OpenIdTokenResponse> rejected -> completed(
                             Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<OpenIdTokenResponse> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
         return stage.whenComplete((ignored, failure) -> secret.close());
     }
@@ -815,17 +822,14 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
      *
      * @param code    validated authorization code
      * @param secret  open client-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return private standard token model or safely classified failure
      */
-    private Outcome<OpenIdTokenResponse> sendToken(
-            final String code,
-            final SecretLease secret,
-            final Timeout.Budget timeout) {
+    private Outcome<OpenIdTokenResponse> sendToken(final String code, final SecretLease secret, final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "LinkedIn token request has no remaining time budget");
+                return failed(ErrorCode._408, "LinkedIn token request has no remaining timeout");
             }
             body = formCodec.encode(
                     List.of(
@@ -836,10 +840,9 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
                             new NameValue(OAuth2.Parameters.CLIENT_SECRET, secret(secret)),
                             new NameValue(OAuth2.Parameters.REDIRECT_URI, options.redirectUri().getOrNull())));
             final var endpoint = variant.targets().resolve(options).token().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OIDC, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.POST)
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 return token(response);
             }
@@ -856,7 +859,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
      * @param response owned token endpoint response
      * @return private standard token model, request rejection, or operational failure
      */
-    private Outcome<OpenIdTokenResponse> token(final HttpResponse response) {
+    private Outcome<OpenIdTokenResponse> token(final Response response) {
         try {
             final JsonValue.ObjectValue object = object(response);
             if (response.code() == Http.Status.OK) {
@@ -941,13 +944,13 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
      *
      * @param token   private token response containing access token and ID Token
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return identity stage after key selection, claim validation, and UserInfo binding
      */
     private CompletionStage<Outcome<ExternalIdentity>> verifyToken(
             final OpenIdTokenResponse token,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final String compact = token.idToken().compact();
         final JoseHeader header;
         try {
@@ -969,6 +972,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
                     timeout);
             case Outcome.Rejected<JwkSet> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<JwkSet> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -980,7 +984,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
      * @param header  structurally validated protected header
      * @param keys    current issuer-bound JWK Set
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified identity stage
      */
     private CompletionStage<Outcome<ExternalIdentity>> verifyWithRotation(
@@ -989,7 +993,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
             final JoseHeader header,
             final JwkSet keys,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         try {
             final Jwk selected = select(keys, header);
             return verifyIdToken(token, compact, selected, context, timeout);
@@ -1004,6 +1008,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
                 }
                 case Outcome.Rejected<JwkSet> rejected -> completed(Outcome.rejected(rejected.failure()));
                 case Outcome.Failed<JwkSet> failed -> completed(Outcome.failed(failed.failure()));
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             });
         }
     }
@@ -1037,7 +1042,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
      * @param compact  sensitive compact ID Token
      * @param selected selected public RSA JWK
      * @param context  immutable invocation context
-     * @param timeout  shared end-to-end budget
+     * @param timeout  shared end-to-end timeout
      * @return UserInfo and identity stage after successful ID Token validation
      */
     private CompletionStage<Outcome<ExternalIdentity>> verifyIdToken(
@@ -1045,7 +1050,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
             final String compact,
             final Jwk selected,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final IdTokenClaims claims;
         try {
             final IdTokenCodec.Decoded decoded = idTokenCodec
@@ -1081,20 +1086,21 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
      * @param token   private token response carrying the Bearer access token
      * @param claims  cryptographically verified ID Token claims
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> userInfo(
             final OpenIdTokenResponse token,
             final IdTokenClaims claims,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return standardAdapter
                 .invoke(OpenIdClientScheme.USERINFO, new UserInfoRequest(token.accessToken()), context, timeout)
                 .thenApply(outcome -> switch (outcome) {
                     case Outcome.Succeeded<UserInfoResponse> success -> identity(success.value(), claims, timeout);
                     case Outcome.Rejected<UserInfoResponse> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<UserInfoResponse> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -1109,7 +1115,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
     private Outcome<ExternalIdentity> identity(
             final UserInfoResponse userInfo,
             final IdTokenClaims claims,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!claims.subject().equals(userInfo.subject())) {
             return rejected("LinkedIn UserInfo subject does not match the verified ID Token");
         }
@@ -1145,22 +1151,21 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
     /**
      * Retrieves and validates the exact Discovery subset used privately by LinkedIn Source authentication.
      *
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return empty success after fixed metadata validation
      */
-    private CompletionStage<Outcome<Void>> discovery(final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<Void>> discovery(final Timeout timeout) {
         if (timeout.expired()) {
-            return completed(failed(ErrorCode._408, "LinkedIn Discovery has no remaining time budget"));
+            return completed(failed(ErrorCode._408, "LinkedIn Discovery has no remaining timeout"));
         }
         return CompletableFuture.supplyAsync(() -> {
             try {
                 if (timeout.expired()) {
-                    return failed(ErrorCode._408, "LinkedIn Discovery exhausted its time budget");
+                    return failed(ErrorCode._408, "LinkedIn Discovery exhausted its timeout");
                 }
                 final String endpoint = variant.targets().resolve(options).discovery().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy()).execute()) {
+                try (Response response = FabricX.http(services.fabric(), Protocol.OIDC, timeout).url(endpoint)
+                        .method(Http.Method.GET).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                     validateDiscovery(response);
                     return Outcome.succeeded(null);
                 }
@@ -1176,7 +1181,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
      * @param response owned Discovery HTTP response
      * @throws ValidateException if status, media, endpoints, issuer, or required arrays differ from the frozen manifest
      */
-    private void validateDiscovery(final HttpResponse response) {
+    private void validateDiscovery(final Response response) {
         if (response.code() != Http.Status.OK) {
             throw new ValidateException("LinkedIn Discovery endpoint must return HTTP 200");
         }
@@ -1215,11 +1220,11 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
     /**
      * Retrieves LinkedIn's JWK Set with response-directive caching and one explicit rotation-refresh path.
      *
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @param force   whether to bypass a still-fresh cache after unresolved protected {@code kid}
      * @return current issuer-bound public JWK Set
      */
-    private CompletionStage<Outcome<JwkSet>> jwks(final Timeout.Budget timeout, final boolean force) {
+    private CompletionStage<Outcome<JwkSet>> jwks(final Timeout timeout, final boolean force) {
         final Instant now = timeout.clock().now();
         final JwkSet current = cachedJwkSet;
         if (!force && current != null && now.isBefore(cachedJwkSetExpiresAt)) {
@@ -1234,13 +1239,11 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
                 }
                 try {
                     if (timeout.expired()) {
-                        return failed(ErrorCode._408, "LinkedIn JWK Set request has no remaining time budget");
+                        return failed(ErrorCode._408, "LinkedIn JWK Set request has no remaining timeout");
                     }
                     final String endpoint = variant.targets().resolve(options).jwks().getOrNull().url().toString();
-                    final HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint)
-                            .method(Http.Method.GET).timeout(timeout.forFabric())
-                            .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy())
-                            .execute();
+                    final Response response = FabricX.http(services.fabric(), Protocol.OIDC, timeout).url(endpoint)
+                            .method(Http.Method.GET).execute();
                     final var control = response.cacheControl();
                     final int maximumAge = control.maxAgeSeconds();
                     final JwkSet fetched = jwkSetCodec.decode(response);
@@ -1317,7 +1320,7 @@ public final class LinkedInSourceAdapter implements VendorAdapter {
      * @return provider-neutral immutable JSON object
      * @throws ValidateException if media type, size, JSON syntax, duplicate names, or root shape is invalid
      */
-    private JsonValue.ObjectValue object(final HttpResponse response) {
+    private JsonValue.ObjectValue object(final Response response) {
         final MediaType media = response.body().media();
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(media)) {
             throw new ValidateException("LinkedIn response must use application/json");

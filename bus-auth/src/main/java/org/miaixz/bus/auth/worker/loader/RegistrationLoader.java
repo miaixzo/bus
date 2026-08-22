@@ -17,14 +17,12 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.auth.worker;
+package org.miaixz.bus.auth.worker.loader;
 
 import java.util.List;
-import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Registration;
-import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.Blueprint;
+import org.miaixz.bus.auth.Loader;
 
 /**
  * Loads the complete desired authentication registration state from an integrating project.
@@ -39,24 +37,36 @@ import org.miaixz.bus.auth.Timeout;
  *
  * @author Kimi Liu
  */
-public interface RegistrationLoader {
+@FunctionalInterface
+public interface RegistrationLoader extends Loader<RegistrationLoader.Request, RegistrationLoader.Batch> {
 
     /**
-     * Loads one complete desired registration batch within the caller's existing time budget.
+     * Identifies the complete desired registration state requested by one reload operation.
      *
-     * @param context current non-secret authentication call context
-     * @param timeout shared end-to-end time budget
-     * @return asynchronous stage containing the complete desired registration batch
+     * @param currentRevision current committed Registry revision
+     * @author Kimi Liu
      */
-    CompletionStage<Batch> load(Context context, Timeout.Budget timeout);
+    record Request(long currentRevision) {
+
+        /**
+         * Validates one registration-loading request.
+         */
+        public Request {
+            if (currentRevision < 0L) {
+                throw new IllegalArgumentException("Current Registry revision must not be negative");
+            }
+        }
+
+    }
 
     /**
      * Carries one complete externally loaded registration revision without constructing Registry state.
      *
      * @param revision      monotonically increasing external data revision
      * @param registrations complete desired registration entries
+     * @author Kimi Liu
      */
-    record Batch(long revision, List<Registration.Entry> registrations) {
+    record Batch(long revision, List<Blueprint.Entry> registrations) {
 
         /**
          * Creates an immutable externally loaded registration batch.
@@ -68,7 +78,7 @@ public interface RegistrationLoader {
             if (registrations == null) {
                 throw new IllegalArgumentException("Registration entries must not be null");
             }
-            for (Registration.Entry registration : registrations) {
+            for (Blueprint.Entry registration : registrations) {
                 if (registration == null) {
                     throw new IllegalArgumentException("Registration entry must not be null");
                 }

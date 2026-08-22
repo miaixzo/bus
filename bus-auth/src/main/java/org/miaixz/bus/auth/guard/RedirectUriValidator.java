@@ -38,7 +38,7 @@ import org.miaixz.bus.core.net.Protocol;
  *
  * @author Kimi Liu
  */
-public final class RedirectUriValidator {
+public class RedirectUriValidator {
 
     /**
      * Creates a stateless redirect URI validator.

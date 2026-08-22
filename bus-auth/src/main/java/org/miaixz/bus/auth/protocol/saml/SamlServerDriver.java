@@ -50,10 +50,10 @@ import org.miaixz.bus.auth.protocol.saml.server.*;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.SourceDriver;
-import org.miaixz.bus.auth.worker.KeyLoader;
 import org.miaixz.bus.auth.worker.SessionCoordinator;
 import org.miaixz.bus.auth.worker.SourceWorker;
 import org.miaixz.bus.auth.worker.WorkerSlots;
+import org.miaixz.bus.auth.worker.loader.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.lang.*;
@@ -73,7 +73,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
+public class SamlServerDriver implements SourceDriver<SamlServerOptions> {
 
     /**
      * Secure maximum DOM nesting depth used by the SAML codecs.
@@ -149,7 +149,7 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
     public SourceWorker compile(final Prepared<SamlServerOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "SAML Provider preparation must not be null");
         Assert.notNull(services, "SAML Provider execution services must not be null");
-        final Registration.SourceEntry record = prepared.registration();
+        final Blueprint.SourceEntry record = prepared.registration();
         final Provider provider = prepared.provider();
         final Library library = prepared.library();
         final Source source = record.resource();
@@ -231,6 +231,7 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
                 case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
                 case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
                 case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             });
         }
 
@@ -288,7 +289,7 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
          * @param capability exact declared capability object
          * @param request    exact standard request or {@code null} for Metadata
          * @param context    immutable invocation context
-         * @param timeout    shared end-to-end budget
+         * @param timeout    shared end-to-end timeout
          * @param <Q>        request type
          * @param <S>        success type
          * @return delegated typed outcome or a closed mismatch rejection
@@ -298,10 +299,10 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
                 final Capability<Q, S> capability,
                 final Q request,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             Assert.notNull(capability, "SAML Provider capability must not be null");
             Assert.notNull(context, "SAML Provider context must not be null");
-            Assert.notNull(timeout, "SAML Provider budget must not be null");
+            Assert.notNull(timeout, "SAML Provider timeout must not be null");
             if (!manifest.capabilities().contains(capability))
                 return missing();
             if (capability == SamlServerScheme.SINGLE_SIGN_ON) {
@@ -317,6 +318,7 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
                                     case Outcome.Rejected<Response> rejected -> completed(
                                             Outcome.rejected(rejected.failure()));
                                     case Outcome.Failed<Response> failed -> completed(Outcome.failed(failed.failure()));
+                                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                                 }),
                         capability.responseType());
             }
@@ -334,6 +336,7 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
                                             Outcome.rejected(rejected.failure()));
                                     case Outcome.Failed<LogoutResponse> failed -> completed(
                                             Outcome.failed(failed.failure()));
+                                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                                 }),
                         capability.responseType());
             }
@@ -345,6 +348,7 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
                     case Outcome.Succeeded<EntityDescriptor> success -> signer.sign(success.value(), context, timeout);
                     case Outcome.Rejected<EntityDescriptor> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<EntityDescriptor> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 }), capability.responseType());
             }
             return missing();
@@ -549,13 +553,13 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
          *
          * @param response unsigned successful standard Response
          * @param context  immutable invocation context
-         * @param timeout  shared end-to-end budget
+         * @param timeout  shared end-to-end timeout
          * @return stage containing a policy-complete signed Response
          */
         private CompletionStage<Outcome<Response>> sign(
                 final Response response,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             Assert.notNull(response, "SAML Response to sign must not be null");
             return resolve(context, timeout).thenApply(outcome -> switch (outcome) {
                 case Outcome.Succeeded<KeyMaterial> success -> {
@@ -578,6 +582,7 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
                 }
                 case Outcome.Rejected<KeyMaterial> rejected -> Outcome.rejected(rejected.failure());
                 case Outcome.Failed<KeyMaterial> failed -> Outcome.failed(failed.failure());
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             });
         }
 
@@ -586,13 +591,13 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
          *
          * @param response unsigned standard LogoutResponse
          * @param context  immutable invocation context
-         * @param timeout  shared end-to-end budget
+         * @param timeout  shared end-to-end timeout
          * @return stage containing a signed LogoutResponse
          */
         private CompletionStage<Outcome<LogoutResponse>> sign(
                 final LogoutResponse response,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             Assert.notNull(response, "SAML LogoutResponse to sign must not be null");
             return resolve(context, timeout).thenApply(outcome -> switch (outcome) {
                 case Outcome.Succeeded<KeyMaterial> success -> {
@@ -610,6 +615,7 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
                 }
                 case Outcome.Rejected<KeyMaterial> rejected -> Outcome.rejected(rejected.failure());
                 case Outcome.Failed<KeyMaterial> failed -> Outcome.failed(failed.failure());
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             });
         }
 
@@ -618,13 +624,13 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
          *
          * @param descriptor unsigned standard EntityDescriptor
          * @param context    immutable invocation context
-         * @param timeout    shared end-to-end budget
+         * @param timeout    shared end-to-end timeout
          * @return stage containing a signed EntityDescriptor
          */
         private CompletionStage<Outcome<EntityDescriptor>> sign(
                 final EntityDescriptor descriptor,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             Assert.notNull(descriptor, "SAML EntityDescriptor to sign must not be null");
             final EntityDescriptor identified = descriptor.id().isPresent() ? descriptor
                     : identified(descriptor, Symbol.C_UNDERLINE + UUID.randomUUID().toString(true));
@@ -644,6 +650,7 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
                 }
                 case Outcome.Rejected<KeyMaterial> rejected -> Outcome.rejected(rejected.failure());
                 case Outcome.Failed<KeyMaterial> failed -> Outcome.failed(failed.failure());
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             });
         }
 
@@ -651,20 +658,20 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
          * Resolves the exact current Provider signing key.
          *
          * @param context immutable invocation context
-         * @param timeout shared end-to-end budget
+         * @param timeout shared end-to-end timeout
          * @return stage containing current key material or a closed failure
          */
-        private CompletionStage<Outcome<KeyMaterial>> resolve(final Context context, final Timeout.Budget timeout) {
+        private CompletionStage<Outcome<KeyMaterial>> resolve(final Context context, final Timeout timeout) {
             Assert.notNull(context, "SAML signing context must not be null");
-            Assert.notNull(timeout, "SAML signing budget must not be null");
+            Assert.notNull(timeout, "SAML signing timeout must not be null");
             if (timeout.expired())
-                return completed(failed("SAML XML signing has no remaining time budget"));
-            final KeyLoader.Request query = new KeyLoader.Request(options.entityId(),
+                return completed(failed("SAML XML signing has no remaining timeout"));
+            final KeyLoader.Request query = new KeyLoader.Request(services.registration(), options.entityId(),
                     Optional.of(options.signingKeyId()), SIGNING_USE, options.signatureAlgorithm(),
                     timeout.clock().now());
             try {
                 final CompletionStage<Outcome<KeyMaterial>> stage = Outcome.mapStage(
-                        () -> services.keyLoader().load(services.registration(), query, context, timeout),
+                        () -> services.keyLoader().load(query, context, timeout),
                         loaded -> services.keyParser().parse(services.registration(), query, loaded));
                 if (stage == null)
                     return completed(failed("SAML signing key loader returned no stage"));
@@ -684,7 +691,7 @@ public final class SamlServerDriver implements SourceDriver<SamlServerOptions> {
          * @return validated private key
          * @throws ValidateException if key identity, algorithm, type, or validity does not match options
          */
-        private PrivateKey privateKey(final KeyMaterial resolved, final Timeout.Budget timeout) {
+        private PrivateKey privateKey(final KeyMaterial resolved, final Timeout timeout) {
             Assert.notNull(resolved, "Resolved SAML signing key must not be null");
             final Instant now = timeout.clock().now();
             if (!options.signingKeyId().equals(resolved.keyId())

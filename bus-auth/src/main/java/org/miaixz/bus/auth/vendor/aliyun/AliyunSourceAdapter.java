@@ -27,6 +27,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.guard.IssuerValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
@@ -56,7 +57,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
 
 /**
  * Implements the frozen Alibaba Cloud OpenID Connect relying-party and Source authentication contract.
@@ -68,7 +68,7 @@ import org.miaixz.bus.fabric.Fabric;
  *
  * @author Kimi Liu
  */
-public final class AliyunSourceAdapter implements VendorAdapter {
+public class AliyunSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted Alibaba Cloud OpenID Provider issuer.
@@ -188,7 +188,7 @@ public final class AliyunSourceAdapter implements VendorAdapter {
         final IdTokenCodec idTokenCodec = new IdTokenCodec(
                 new JwtVerifier(services.jsonProvider(), jwsService, dormantJweService));
         this.idTokenVerifier = new IdTokenVerifier(idTokenCodec, issuerValidator,
-                services.securityBaseline().timeGuard(Protocol.OIDC, services.fabricContext().clock()));
+                services.securityBaseline().timeGuard(Protocol.OIDC, FabricX.clock(services.fabric())));
     }
 
     /**
@@ -381,6 +381,7 @@ public final class AliyunSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -463,7 +464,7 @@ public final class AliyunSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific request or {@code null} for a resource retrieval operation
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed operation outcome without exposing private Vendor response models
@@ -473,10 +474,10 @@ public final class AliyunSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Alibaba Cloud capability must not be null");
         Assert.notNull(context, "Alibaba Cloud invocation context must not be null");
-        Assert.notNull(timeout, "Alibaba Cloud invocation budget must not be null");
+        Assert.notNull(timeout, "Alibaba Cloud invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return missing();
         }
@@ -513,13 +514,13 @@ public final class AliyunSourceAdapter implements VendorAdapter {
      *
      * @param request standard token request carrying one supported grant
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return standard token response after profile-specific success constraints are checked
      */
     private CompletionStage<Outcome<TokenEndpointResponse>> token(
             final TokenRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!(request.grant() instanceof AuthorizationCodeGrant) && !(request.grant() instanceof RefreshTokenGrant)) {
             return completed(rejected("Alibaba Cloud token endpoint does not support the requested grant type"));
         }
@@ -528,6 +529,7 @@ public final class AliyunSourceAdapter implements VendorAdapter {
                     case Outcome.Succeeded<TokenEndpointResponse> success -> token(success.value(), request.grant());
                     case Outcome.Rejected<TokenEndpointResponse> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<TokenEndpointResponse> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -563,13 +565,13 @@ public final class AliyunSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated one-time browser security material
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return standard-client-produced authorization URL bound to the generated state
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         try {
             final List<String> requestedScopes = requestedScopes();
             final var challenge = initiation.codeChallenge().getOrNull();
@@ -588,11 +590,11 @@ public final class AliyunSourceAdapter implements VendorAdapter {
                     List.of(), Optional.empty(), Optional.empty(), emptyObject());
             return standardAdapter.invoke(OpenIdClientScheme.AUTHENTICATION, authentication, context, timeout)
                     .thenApply(outcome -> switch (outcome) {
-                        case Outcome.Succeeded<org.miaixz.bus.fabric.UnoUrl> success -> Outcome.succeeded(
+                        case Outcome.Succeeded<Url> success -> Outcome.succeeded(
                                 new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                        case Outcome.Rejected<org.miaixz.bus.fabric.UnoUrl> rejected -> Outcome
-                                .rejected(rejected.failure());
-                        case Outcome.Failed<org.miaixz.bus.fabric.UnoUrl> failed -> Outcome.failed(failed.failure());
+                        case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                        case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (RuntimeException cause) {
             return completed(rejected("Alibaba Cloud Authentication Request is invalid"));
@@ -613,6 +615,7 @@ public final class AliyunSourceAdapter implements VendorAdapter {
                     () -> new ValidateException("Alibaba Cloud authorization success response requires state"));
             case AuthorizationResponseDecoder.Error error -> error.response().state().orElseThrow(
                     () -> new ValidateException("Alibaba Cloud authorization error response requires state"));
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -621,13 +624,13 @@ public final class AliyunSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback, nonce, and PKCE verifier
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return fully verified Alibaba Cloud external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final AuthorizationResponseDecoder.Decoded decoded;
         try {
             decoded = callback(completion.callback());
@@ -667,6 +670,7 @@ public final class AliyunSourceAdapter implements VendorAdapter {
                     case Outcome.Rejected<TokenEndpointResponse> rejected -> completed(
                             Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<TokenEndpointResponse> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -677,7 +681,7 @@ public final class AliyunSourceAdapter implements VendorAdapter {
      * @param response   correlated authorization response
      * @param completion consumed browser correlation material
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified identity operation stage
      */
     private CompletionStage<Outcome<ExternalIdentity>> verifyToken(
@@ -685,7 +689,7 @@ public final class AliyunSourceAdapter implements VendorAdapter {
             final AuthorizationCodeResponse response,
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final String compact;
         try {
             requireToken(token);
@@ -704,6 +708,7 @@ public final class AliyunSourceAdapter implements VendorAdapter {
                     timeout);
             case Outcome.Rejected<JwkSet> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<JwkSet> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -716,7 +721,7 @@ public final class AliyunSourceAdapter implements VendorAdapter {
      * @param response   correlated authorization response
      * @param completion consumed nonce, state, and PKCE material
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return identity stage after ID Token and UserInfo verification
      */
     private CompletionStage<Outcome<ExternalIdentity>> verifyIdToken(
@@ -726,7 +731,7 @@ public final class AliyunSourceAdapter implements VendorAdapter {
             final AuthorizationCodeResponse response,
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final PublicKey key;
         try {
             final JwsService.Jws parsed = jwsService.parseCompact(compact, Set.of());
@@ -757,6 +762,7 @@ public final class AliyunSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<IdTokenClaims> success -> userInfo(token, success.value(), context, timeout);
             case Outcome.Rejected<IdTokenClaims> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<IdTokenClaims> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -766,20 +772,21 @@ public final class AliyunSourceAdapter implements VendorAdapter {
      * @param token   standard token response containing the bearer access token
      * @param claims  verified typed ID Token claims
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> userInfo(
             final OpenIdTokenResponse token,
             final IdTokenClaims claims,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return standardAdapter
                 .invoke(OpenIdClientScheme.USERINFO, new UserInfoRequest(token.accessToken()), context, timeout)
                 .thenApply(outcome -> switch (outcome) {
                     case Outcome.Succeeded<UserInfoResponse> success -> identity(success.value(), claims, timeout);
                     case Outcome.Rejected<UserInfoResponse> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<UserInfoResponse> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -794,7 +801,7 @@ public final class AliyunSourceAdapter implements VendorAdapter {
     private Outcome<ExternalIdentity> identity(
             final UserInfoResponse userInfo,
             final IdTokenClaims claims,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!claims.subject().equals(userInfo.subject())) {
             return rejected("Alibaba Cloud UserInfo subject does not match the verified ID Token");
         }
@@ -815,17 +822,16 @@ public final class AliyunSourceAdapter implements VendorAdapter {
      * frozen Alibaba Cloud manifest.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return standard metadata only after all fixed-profile bindings succeed
      */
-    private CompletionStage<Outcome<OpenIdProviderMetadata>> discover(
-            final Context context,
-            final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<OpenIdProviderMetadata>> discover(final Context context, final Timeout timeout) {
         return standardAdapter.invoke(OpenIdClientScheme.DISCOVERY, null, context, timeout)
                 .thenApply(outcome -> switch (outcome) {
                     case Outcome.Succeeded<OpenIdProviderMetadata> success -> metadata(success.value());
                     case Outcome.Rejected<OpenIdProviderMetadata> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<OpenIdProviderMetadata> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -892,28 +898,25 @@ public final class AliyunSourceAdapter implements VendorAdapter {
      * Retrieves and strictly decodes the configured Alibaba Cloud public JWK Set resource.
      *
      * @param context immutable invocation context retained for the uniform operation signature
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return current issuer public JWK Set or a closed framework failure
      */
-    private CompletionStage<Outcome<JwkSet>> jwks(final Context context, final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<JwkSet>> jwks(final Context context, final Timeout timeout) {
         Assert.notNull(context, "Alibaba Cloud JWK Set context must not be null");
-        Assert.notNull(timeout, "Alibaba Cloud JWK Set budget must not be null");
+        Assert.notNull(timeout, "Alibaba Cloud JWK Set timeout must not be null");
         if (timeout.expired()) {
-            return completed(failed(ErrorCode._408, "Alibaba Cloud JWK Set request has no remaining time budget"));
+            return completed(failed(ErrorCode._408, "Alibaba Cloud JWK Set request has no remaining timeout"));
         }
         return CompletableFuture.supplyAsync(() -> {
             try {
                 if (timeout.expired()) {
-                    return failed(ErrorCode._408, "Alibaba Cloud JWK Set request exhausted its time budget");
+                    return failed(ErrorCode._408, "Alibaba Cloud JWK Set request exhausted its timeout");
                 }
                 final String endpoint = variant.targets().resolve(options).jwks().getOrNull().url().toString();
                 return Outcome.succeeded(
                         jwkSetCodec.decode(
-                                Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                                        .timeout(timeout.forFabric())
-                                        .addressPolicy(
-                                                services.securityBaseline().require(Protocol.OIDC).addressPolicy())
-                                        .execute()));
+                                FabricX.http(services.fabric(), Protocol.OIDC, timeout).url(endpoint)
+                                        .method(Http.Method.GET).execute()));
             } catch (RuntimeException cause) {
                 return failed(ErrorCode._502, "Alibaba Cloud JWK Set endpoint request failed");
             }

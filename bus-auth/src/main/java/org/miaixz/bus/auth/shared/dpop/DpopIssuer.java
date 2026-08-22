@@ -26,6 +26,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.auth.FabricX.Clock;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.shared.jose.JoseHeader;
 import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
 import org.miaixz.bus.auth.shared.jose.Jwk;
@@ -41,8 +43,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Clock;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Issues one RFC 9449 DPoP proof JWT for an exact outbound HTTP request and optional access token or server nonce.
@@ -53,7 +53,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class DpopIssuer {
+public class DpopIssuer {
 
     /**
      * Provider-neutral JSON codec used for protected header and Claims Set octets.
@@ -193,7 +193,7 @@ public final class DpopIssuer {
      * @param claimExtensions     non-conflicting DPoP claim extensions
      * @author Kimi Liu
      */
-    public record Request(Http.Method method, UnoUrl uri, JwaAlgorithm algorithm, Jwk publicKey,
+    public record Request(Http.Method method, Url uri, JwaAlgorithm algorithm, Jwk publicKey,
             Optional<String> accessToken, Optional<String> nonce, JsonValue.ObjectValue protectedExtensions,
             JsonValue.ObjectValue claimExtensions) {
 

@@ -26,6 +26,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.miaixz.bus.auth.FabricX.Clock;
 import org.miaixz.bus.auth.shared.jose.JoseHeader;
 import org.miaixz.bus.auth.shared.jose.JwsService;
 import org.miaixz.bus.core.data.id.UUID;
@@ -34,14 +35,13 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Clock;
 
 /**
  * Issues profile-bounded compact signed JWTs using the runtime JSON provider, Fabric clock, and shared JWS service.
  *
  * @author Kimi Liu
  */
-public final class JwtIssuer {
+public class JwtIssuer {
 
     /**
      * Provider-neutral JSON codec used for exact payload serialization.

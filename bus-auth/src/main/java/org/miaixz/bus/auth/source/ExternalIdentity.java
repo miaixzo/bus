@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.auth.Evidence;
-import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**

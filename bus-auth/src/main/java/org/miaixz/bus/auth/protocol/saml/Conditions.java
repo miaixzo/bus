@@ -82,7 +82,7 @@ public record Conditions(Optional<Instant> notBefore, Optional<Instant> notOnOrA
      *
      * @author Kimi Liu
      */
-    public sealed interface Condition permits Audience, OneTimeUse, ProxyRestriction, Extension {
+    public interface Condition {
 
     }
 

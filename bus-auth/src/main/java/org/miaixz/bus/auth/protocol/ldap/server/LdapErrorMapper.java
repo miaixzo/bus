@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.Optional;
  *
  * @author Kimi Liu
  */
-public final class LdapErrorMapper {
+public class LdapErrorMapper {
 
     /**
      * Safe diagnostic used for every mapped operation failure.
@@ -72,7 +72,7 @@ public final class LdapErrorMapper {
      */
     private static LdapMessage.ProtocolOp response(final LdapMessage.ProtocolOp request, final LdapResult result) {
         if (request instanceof BindRequest) {
-            return new BindResponse(result, org.miaixz.bus.core.lang.Optional.empty());
+            return new BindResponse(result, Optional.empty());
         }
         if (request instanceof SearchRequest) {
             return new SearchResultDone(result);
@@ -93,8 +93,7 @@ public final class LdapErrorMapper {
             return new ModifyDNResponse(result);
         }
         if (request instanceof ExtendedRequest) {
-            return new ExtendedResponse(result, org.miaixz.bus.core.lang.Optional.empty(),
-                    org.miaixz.bus.core.lang.Optional.empty());
+            return new ExtendedResponse(result, Optional.empty(), Optional.empty());
         }
         throw new IllegalArgumentException("LDAP error mapper requires a response-bearing request operation");
     }
@@ -129,7 +128,7 @@ public final class LdapErrorMapper {
      * @return immutable common LDAP result
      */
     private static LdapResult result(final LdapResultCode code, final String diagnostic) {
-        return new LdapResult(code, EMPTY_DN, diagnostic, org.miaixz.bus.core.lang.Optional.empty());
+        return new LdapResult(code, EMPTY_DN, diagnostic, Optional.empty());
     }
 
     /**
@@ -166,8 +165,7 @@ public final class LdapErrorMapper {
         Assert.notNull(cause, "LDAP malformed-message cause must not be null");
         final ExtendedResponse response = new ExtendedResponse(
                 result(LdapResultCode.PROTOCOL_ERROR, MALFORMED_DIAGNOSTIC),
-                org.miaixz.bus.core.lang.Optional.of(ExtendedResponse.NOTICE_OF_DISCONNECTION_OID),
-                org.miaixz.bus.core.lang.Optional.empty());
+                Optional.of(ExtendedResponse.NOTICE_OF_DISCONNECTION_OID), Optional.empty());
         return new LdapMessage(0, response, List.of());
     }
 

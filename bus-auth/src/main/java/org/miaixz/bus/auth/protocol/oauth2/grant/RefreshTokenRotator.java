@@ -54,14 +54,16 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class RefreshTokenRotator {
+public class RefreshTokenRotator {
 
     /**
      * Maximum create-if-absent attempts for a generated refresh-token digest collision.
      */
     private static final int MAXIMUM_CREATE_ATTEMPTS = Builder.MAXIMUM_RETRY_ATTEMPTS;
 
-    /** Maximum compare-and-replace attempts for one authoritative family-state transition. */
+    /**
+     * Maximum compare-and-replace attempts for one authoritative family-state transition.
+     */
     private static final int MAXIMUM_STATE_ATTEMPTS = Builder.MAXIMUM_RETRY_ATTEMPTS;
 
     /**
@@ -183,16 +185,18 @@ public final class RefreshTokenRotator {
      *
      * @param request standard token request containing a refresh-token grant
      * @param context invocation context carrying a verified client identifier
-     * @param timeout shared end-to-end operation budget
+     * @param timeout shared end-to-end operation timeout
      * @return asynchronous standard token response outcome
      */
     public CompletionStage<Outcome<TokenResponse>> token(
             final TokenRequest request,
+            final ConsumerMetadata client,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "OAuth 2.x refresh token request must not be null");
+        Assert.notNull(client, "OAuth 2.x refresh client must not be null");
         Assert.notNull(context, "OAuth 2.x refresh token context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x refresh token time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x refresh token timeout must not be null");
         if (!(request.grant() instanceof RefreshTokenGrant grant)) {
             return completed(
                     Outcome.rejected(
@@ -207,16 +211,7 @@ public final class RefreshTokenRotator {
                             failure(
                                     ErrorCode._408,
                                     OAuth2ErrorCode.TEMPORARILY_UNAVAILABLE,
-                                    "OAuth 2.x refresh request has no remaining time budget")));
-        }
-        final String clientId = context.clientId().getOrNull();
-        if (clientId == null) {
-            return completed(
-                    Outcome.rejected(
-                            failure(
-                                    ErrorCode._401,
-                                    OAuth2ErrorCode.INVALID_CLIENT,
-                                    "OAuth 2.x refresh request requires an authenticated or identified client")));
+                                    "OAuth 2.x refresh request has no remaining timeout")));
         }
         if (!options.refreshTokenRotationRequired()
                 || !options.grantTypesSupported().contains(GrantType.REFRESH_TOKEN)) {
@@ -228,56 +223,15 @@ public final class RefreshTokenRotator {
                                     "OAuth 2.x refresh-token rotation is disabled by the Provider")));
         }
 
-        final CompletionStage<Outcome<ConsumerMetadata>> resolution;
-        try {
-            resolution = Outcome.mapStage(
-                    () -> services.consumerLoader().load(services.registration(), clientId, context, timeout),
-                    loaded -> services.consumerParser().parse(services.registration(), clientId, loaded));
-        } catch (RuntimeException exception) {
-            return completed(storeFailure("OAuth 2.x refresh client resolution failed"));
+        if (!client.grantTypes().contains(GrantType.REFRESH_TOKEN)) {
+            return completed(
+                    Outcome.rejected(
+                            failure(
+                                    ErrorCode._400,
+                                    OAuth2ErrorCode.UNAUTHORIZED_CLIENT,
+                                    "OAuth 2.x client is not registered for refresh_token")));
         }
-        return resolution
-                .handle(
-                        (outcome, thrown) -> thrown == null && outcome != null ? outcome
-                                : Outcome.<ConsumerMetadata>failed(
-                                        failure(
-                                                ErrorCode._500,
-                                                OAuth2ErrorCode.SERVER_ERROR,
-                                                "OAuth 2.x refresh client resolution failed")))
-                .thenCompose(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<ConsumerMetadata> success -> {
-                        final ConsumerMetadata client = success.value();
-                        if (client == null || !clientId.equals(client.id())) {
-                            yield completed(
-                                    Outcome.rejected(
-                                            failure(
-                                                    ErrorCode._401,
-                                                    OAuth2ErrorCode.INVALID_CLIENT,
-                                                    "OAuth 2.x refresh client registration is unavailable")));
-                        }
-                        if (!client.grantTypes().contains(GrantType.REFRESH_TOKEN.value())) {
-                            yield completed(
-                                    Outcome.rejected(
-                                            failure(
-                                                    ErrorCode._400,
-                                                    OAuth2ErrorCode.UNAUTHORIZED_CLIENT,
-                                                    "OAuth 2.x client is not registered for refresh_token")));
-                        }
-                        yield rotate(grant, client, context, timeout);
-                    }
-                    case Outcome.Rejected<ConsumerMetadata> rejected -> completed(
-                            Outcome.rejected(
-                                    failure(
-                                            rejected.failure().error(),
-                                            OAuth2ErrorCode.INVALID_CLIENT,
-                                            "OAuth 2.x refresh client registration was rejected")));
-                    case Outcome.Failed<ConsumerMetadata> failed -> completed(
-                            Outcome.failed(
-                                    failure(
-                                            failed.failure().error(),
-                                            OAuth2ErrorCode.SERVER_ERROR,
-                                            "OAuth 2.x refresh client resolution failed")));
-                });
+        return rotate(grant, client, context, timeout);
     }
 
     /**
@@ -286,14 +240,14 @@ public final class RefreshTokenRotator {
      * @param grant   standard refresh-token grant
      * @param client  resolved client registration
      * @param context immutable invocation context
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @return asynchronous token outcome
      */
     private CompletionStage<Outcome<TokenResponse>> rotate(
             final RefreshTokenGrant grant,
             final ConsumerMetadata client,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final String oldKey = tokenMaterial.key(grant.refreshToken());
         final CompletionStage<ExpiringValue<RefreshTokenCache.Entry>> lookup;
         try {
@@ -331,7 +285,7 @@ public final class RefreshTokenRotator {
      * @param stored  current expiring state
      * @param entry   active current generation
      * @param context immutable invocation context
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @return asynchronous token outcome
      */
     private CompletionStage<Outcome<TokenResponse>> checkFamily(
@@ -341,7 +295,7 @@ public final class RefreshTokenRotator {
             final ExpiringValue<RefreshTokenCache.Entry> stored,
             final RefreshTokenCache.Entry entry,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CompletionStage<ExpiringValue<AuthorizationCache.Entry>> lookup;
         try {
             lookup = services.authorizationCache().find(AuthorizationCache.key(providerId, entry.familyId()));
@@ -386,7 +340,7 @@ public final class RefreshTokenRotator {
      * @param entry   active current generation
      * @param scope   effective non-expanding scope
      * @param context immutable invocation context
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @param attempt one-based successor digest create attempt
      * @return asynchronous token outcome
      */
@@ -397,7 +351,7 @@ public final class RefreshTokenRotator {
             final RefreshTokenCache.Entry entry,
             final List<String> scope,
             final Context context,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final int attempt) {
         final long ttlMillis = remainingTtl(stored.expiresAt(), timeout.clock().now());
         if (ttlMillis <= 0L) {
@@ -426,10 +380,9 @@ public final class RefreshTokenRotator {
                     if (!result.created()) {
                         return completed(storeFailure("OAuth 2.x refresh successor allocation failed"));
                     }
-                    final AccessTokenIssuer.Grant accessGrant = new AccessTokenIssuer.Grant(client.id(),
-                            entry.subjectId(), scope, entry.audience(), GrantType.REFRESH_TOKEN, false,
-                            Optional.empty(), Optional.empty(), entry.confirmation(), entry.openIdBinding(),
-                            Optional.of(entry.familyId()));
+                    final AccessTokenIssuer.Grant accessGrant = new AccessTokenIssuer.Grant(client, entry.subjectId(),
+                            scope, entry.audience(), GrantType.REFRESH_TOKEN, false, Optional.empty(), Optional.empty(),
+                            entry.confirmation(), entry.openIdBinding(), Optional.of(entry.familyId()));
                     return issuer.issue(accessGrant, context, timeout)
                             .thenCompose(accessOutcome -> switch (accessOutcome) {
                                 case Outcome.Succeeded<TokenEndpointResponse> success -> success
@@ -452,6 +405,7 @@ public final class RefreshTokenRotator {
                                 case Outcome.Failed<TokenEndpointResponse> failed -> cleanupRefresh(
                                         refreshKey,
                                         Outcome.failed(failed.failure()));
+                                default -> throw new IllegalStateException("Unsupported Outcome implementation");
                             });
                 });
     }
@@ -465,7 +419,7 @@ public final class RefreshTokenRotator {
      * @param refreshToken   unreturned successor refresh token
      * @param refreshKey     isolated successor digest
      * @param accessResponse unreturned persisted access-token response
-     * @param timeout        shared operation budget
+     * @param timeout        shared operation timeout
      * @return asynchronous complete token response or cleaned failure
      */
     private CompletionStage<Outcome<TokenResponse>> rotateOld(
@@ -475,7 +429,7 @@ public final class RefreshTokenRotator {
             final String refreshToken,
             final String refreshKey,
             final TokenResponse accessResponse,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final RefreshTokenCache.Entry rotated = new RefreshTokenCache.Entry(entry.providerId(), entry.clientId(),
                 entry.subjectId(), entry.familyId(), entry.generation(), entry.scope(), entry.audience(),
                 entry.confirmation(), entry.openIdBinding(), RefreshTokenCache.Status.ROTATED);
@@ -525,14 +479,14 @@ public final class RefreshTokenRotator {
      * @param oldKey  isolated reused token digest
      * @param stored  current reused generation state
      * @param entry   reused generation entry
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @return asynchronous invalid-grant outcome after authoritative family-state persistence
      */
     private CompletionStage<Outcome<TokenResponse>> markReuse(
             final String oldKey,
             final ExpiringValue<RefreshTokenCache.Entry> stored,
             final RefreshTokenCache.Entry entry,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final long ttlMillis = remainingTtl(stored.expiresAt(), timeout.clock().now());
         if (ttlMillis <= 0L) {
             return completed(invalidGrant("OAuth 2.x refresh token is expired"));
@@ -561,17 +515,17 @@ public final class RefreshTokenRotator {
      * Conclusively transitions an active authorization family to compromised or observes an already non-active state.
      *
      * @param entry   reused refresh-token generation identifying the authorization family
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @param attempt one-based compare-and-set attempt
      * @return stage completed with a conclusive non-active family state
      */
     private CompletionStage<Boolean> compromiseFamily(
             final RefreshTokenCache.Entry entry,
-            final Timeout.Budget timeout,
+            final Timeout timeout,
             final int attempt) {
         if (timeout.expired()) {
             return CompletableFuture.failedFuture(
-                    new IllegalStateException("OAuth 2.x refresh family transition exhausted its time budget"));
+                    new IllegalStateException("OAuth 2.x refresh family transition exhausted its timeout"));
         }
         final String key = AuthorizationCache.key(providerId, entry.familyId());
         final CompletionStage<ExpiringValue<AuthorizationCache.Entry>> lookup;
@@ -624,13 +578,13 @@ public final class RefreshTokenRotator {
      *
      * @param key     Provider-isolated authorization family key
      * @param entry   reused refresh-token generation
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @return stage completed when the family is conclusively non-active
      */
     private CompletionStage<Boolean> confirmFamilyInactive(
             final String key,
             final RefreshTokenCache.Entry entry,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return services.authorizationCache().find(key).thenCompose(family -> {
             if (family != null && family.expiresAt().isAfter(timeout.clock().now())
                     && providerId.equals(family.value().providerId())
@@ -649,14 +603,14 @@ public final class RefreshTokenRotator {
      * @param oldKey  isolated active token digest
      * @param stored  current active generation state
      * @param entry   active generation entry
-     * @param timeout shared operation budget
+     * @param timeout shared operation timeout
      * @return asynchronous invalid-grant outcome
      */
     private CompletionStage<Outcome<TokenResponse>> revokeCompromised(
             final String oldKey,
             final ExpiringValue<RefreshTokenCache.Entry> stored,
             final RefreshTokenCache.Entry entry,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final RefreshTokenCache.Entry revoked = new RefreshTokenCache.Entry(entry.providerId(), entry.clientId(),
                 entry.subjectId(), entry.familyId(), entry.generation(), entry.scope(), entry.audience(),
                 entry.confirmation(), entry.openIdBinding(), RefreshTokenCache.Status.REVOKED);

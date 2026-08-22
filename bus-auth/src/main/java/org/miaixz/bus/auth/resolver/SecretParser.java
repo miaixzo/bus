@@ -19,20 +19,25 @@
 */
 package org.miaixz.bus.auth.resolver;
 
+import org.miaixz.bus.auth.Blueprint;
 import org.miaixz.bus.auth.Credential;
-import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.worker.SecretLoader;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Pure parser for externally leased character-based secrets.
+ *
+ * @author Kimi Liu
  */
-public final class SecretParser {
+public class SecretParser {
 
-    /** Creates a stateless secret-material parser. */
+    /**
+     * Creates a stateless secret-material parser.
+     */
     public SecretParser() {
+        // No initialization required.
     }
 
     /**
@@ -44,7 +49,7 @@ public final class SecretParser {
      * @return validated fresh secret lease
      */
     public SecretLease parse(
-            final Registration.SourceEntry registration,
+            final Blueprint.SourceEntry registration,
             final Credential.Reference expected,
             final SecretLoader.Record record) {
         final String sourceId = Assert.notNull(registration, "Secret Source registration must not be null").resource()

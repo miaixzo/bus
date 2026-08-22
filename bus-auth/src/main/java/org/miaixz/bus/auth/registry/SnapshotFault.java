@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.auth.registry;
 
-import org.miaixz.bus.auth.Registration;
+import org.miaixz.bus.auth.Blueprint;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
@@ -41,8 +41,8 @@ import org.miaixz.bus.core.lang.Optional;
  * @param safeDescription non-sensitive diagnostic description
  * @author Kimi Liu
  */
-public record SnapshotFault(Optional<Registration.Kind> kind, Optional<String> id, Stage stage,
-        Optional<String> standard, Optional<String> field, Errors error, String safeDescription) {
+public record SnapshotFault(Optional<Blueprint.Kind> kind, Optional<String> id, Stage stage, Optional<String> standard,
+        Optional<String> field, Errors error, String safeDescription) {
 
     /**
      * Creates an immutable safe Snapshot fault.
@@ -91,7 +91,7 @@ public record SnapshotFault(Optional<Registration.Kind> kind, Optional<String> i
      * @return structured entry fault
      */
     public static SnapshotFault entry(
-            final Registration.Kind kind,
+            final Blueprint.Kind kind,
             final String id,
             final Stage stage,
             final Optional<String> field,

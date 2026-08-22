@@ -28,6 +28,9 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
+import org.miaixz.bus.auth.FabricX.UrlBuilder;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.protocol.oauth2.codec.AuthorizationResponseDecoder;
@@ -38,6 +41,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -49,9 +53,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements the exact authentication chain of every frozen WeChat Source variant.
@@ -153,7 +154,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, variant, protocol, or options routing is inconsistent
      */
-    protected WeChatAdapterSupport(final String namespaceId, final String sourceId, final WeChatManifest manifest,
+    public WeChatAdapterSupport(final String namespaceId, final String sourceId, final WeChatManifest manifest,
             final VariantManifest.Variant variant, final WeChatOptions options, final DriverServices services) {
         final WeChatManifest selected = Assert.notNull(manifest, "WeChat manifest must not be null");
         this.namespaceId = Assert.notBlank(namespaceId, "WeChat namespace id must not be blank");
@@ -188,7 +189,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @return rejection/failure, or {@code null} for HTTP 200 with absent/zero errcode
      */
     private static <T> Outcome<T> platformError(
-            final HttpResponse response,
+            final Response response,
             final JsonValue.ObjectValue object,
             final String operation) {
         if (response.code() == Http.Status.TOO_MANY_REQUESTS || response.code() >= Http.Status.INTERNAL_SERVER_ERROR) {
@@ -482,7 +483,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
             final String claim,
             final String subject,
             final String authority,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return new Evidence(Evidence.Type.FEDERATED, Evidence.Strength.SINGLE_FACTOR,
                 new Evidence.Claim(claim, new JsonValue.StringValue(subject), authority, timeout.clock().now()));
     }
@@ -517,6 +518,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -637,7 +639,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing private WeChat response models
@@ -647,10 +649,10 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "WeChat capability must not be null");
         Assert.notNull(context, "WeChat invocation context must not be null");
-        Assert.notNull(timeout, "WeChat invocation budget must not be null");
+        Assert.notNull(timeout, "WeChat invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("WeChat capability is not declared by the selected variant"));
         }
@@ -680,13 +682,13 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      *
      * @param initiation generated browser correlation material
      * @param context    immutable invocation context retained by the uniform operation signature
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return prepared authorization redirect
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "WeChat authorization context must not be null");
         if (timeout.expired() || initiation.nonce().isPresent() || initiation.codeChallenge().isPresent()) {
             return completed(failed(ErrorCode._500, "WeChat browser material violates the selected manifest"));
@@ -710,9 +712,8 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @param request standard OAuth 2.0 authorization request
      * @return exact WeChat authorization URL
      */
-    private UnoUrl authorize(final AuthorizationRequest request) {
-        final UnoUrl.Builder builder = variant.targets().resolve(options).authorization().getOrNull().url()
-                .newBuilder();
+    private Url authorize(final AuthorizationRequest request) {
+        final UrlBuilder builder = variant.targets().resolve(options).authorization().getOrNull().url().newBuilder();
         if (WeChatManifest.OPEN.equals(options.variant())) {
             return builder.query(OAuth2.Parameters.RESPONSE_TYPE, request.responseType().value())
                     .query("appid", request.clientId())
@@ -733,7 +734,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @param request standard OAuth authorization request
      * @return completed authorization URL outcome
      */
-    private CompletionStage<Outcome<UnoUrl>> authorization(final AuthorizationRequest request) {
+    private CompletionStage<Outcome<Url>> authorization(final AuthorizationRequest request) {
         try {
             return valid(request) ? completed(Outcome.succeeded(authorize(request)))
                     : completed(rejected("WeChat authorization request does not match the compiled Source"));
@@ -763,9 +764,8 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @param state generated one-time correlation value
      * @return exact selected WeCom redirect target
      */
-    private UnoUrl workAuthorization(final String state) {
-        final UnoUrl.Builder builder = variant.targets().resolve(options).authorization().getOrNull().url()
-                .newBuilder();
+    private Url workAuthorization(final String state) {
+        final UrlBuilder builder = variant.targets().resolve(options).authorization().getOrNull().url().newBuilder();
         if (WeChatManifest.EE.equals(options.variant())) {
             builder.query("login_type", options.loginType()).query("appid", options.clientId());
             if (!options.agentId().isEmpty()) {
@@ -800,6 +800,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
                         .orElseThrow(() -> new ValidateException("WeChat OAuth success requires state"));
                 case AuthorizationResponseDecoder.Error error -> error.response().state()
                         .orElseThrow(() -> new ValidateException("WeChat OAuth error requires state"));
+                default -> throw new IllegalStateException("Unsupported protocol model implementation");
             };
         }
         return callback(callback).state();
@@ -810,13 +811,13 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      *
      * @param completion consumed browser correlation and raw callback
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified WeChat or WeCom external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> browserIdentity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final String code;
         try {
             if (oauthVariant()) {
@@ -847,6 +848,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
             case Outcome.Succeeded<SecretLease> success -> browserIdentity(code, success.value(), timeout);
             case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -855,13 +857,13 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      *
      * @param code    consumed browser authorization code
      * @param secret  owned application or provider secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> browserIdentity(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             final Outcome<PrivateAccess> access;
             try (secret) {
@@ -874,6 +876,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
                 case Outcome.Succeeded<PrivateAccess> success -> identity(success.value(), timeout);
                 case Outcome.Rejected<PrivateAccess> rejected -> Outcome.rejected(rejected.failure());
                 case Outcome.Failed<PrivateAccess> failed -> Outcome.failed(failed.failure());
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             };
         }, services.executor());
     }
@@ -883,15 +886,12 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      *
      * @param code    consumed callback code retained for the following identity request
      * @param secret  live client-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return private access material
      */
-    private Outcome<PrivateAccess> acquireAccess(
-            final String code,
-            final SecretLease secret,
-            final Timeout.Budget timeout) {
+    private Outcome<PrivateAccess> acquireAccess(final String code, final SecretLease secret, final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "WeChat token request has no remaining time budget");
+            return failed(ErrorCode._408, "WeChat token request has no remaining timeout");
         }
         return WeChatManifest.EE_QRCODE.equals(options.variant()) ? providerAccess(code, secret, timeout)
                 : queryAccess(code, secret, timeout);
@@ -902,16 +902,14 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      *
      * @param code    callback code retained for identity retrieval
      * @param secret  live App Secret or Corp Secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return private access material
      */
-    private Outcome<PrivateAccess> queryAccess(
-            final String code,
-            final SecretLease secret,
-            final Timeout.Budget timeout) {
+    private Outcome<PrivateAccess> queryAccess(final String code, final SecretLease secret, final Timeout timeout) {
         try {
             final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-            final var request = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET);
+            final var request = FabricX.http(services.fabric(), variant.protocol(), timeout).url(endpoint)
+                    .method(Http.Method.GET);
             if (oauthVariant()) {
                 request.query(
                         OAuth2.Parameters.CODE,
@@ -921,9 +919,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
             } else {
                 request.query("corpid", options.clientId()).query("corpsecret", secret(secret));
             }
-            try (HttpResponse response = request.header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(variant.protocol()).addressPolicy()).execute()) {
+            try (Response response = request.header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                 return oauthVariant() ? decodeWeChatAccess(response) : decodeWorkAccess(response, code, false);
             }
         } catch (RuntimeException cause) {
@@ -936,13 +932,10 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      *
      * @param code    callback authorization code retained for get_login_info
      * @param secret  live provider-secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return provider access material
      */
-    private Outcome<PrivateAccess> providerAccess(
-            final String code,
-            final SecretLease secret,
-            final Timeout.Budget timeout) {
+    private Outcome<PrivateAccess> providerAccess(final String code, final SecretLease secret, final Timeout timeout) {
         byte[] body = null;
         try {
             body = services.jsonProvider().writeValue(
@@ -952,9 +945,8 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
                             "provider_secret",
                             new JsonValue.StringValue(secret(secret)))));
             final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.VENDOR_AUTH).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
+                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_JSON_TYPE).execute()) {
                 return decodeWorkAccess(response, code, true);
             }
@@ -971,7 +963,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @param response owned token endpoint response
      * @return private access material or safely classified failure
      */
-    private Outcome<PrivateAccess> decodeWeChatAccess(final HttpResponse response) {
+    private Outcome<PrivateAccess> decodeWeChatAccess(final Response response) {
         try {
             final JsonValue.ObjectValue object = object(response);
             if (!members(WireKind.WECHAT_TOKEN, object)) {
@@ -1004,7 +996,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @return private WeCom access material
      */
     private Outcome<PrivateAccess> decodeWorkAccess(
-            final HttpResponse response,
+            final Response response,
             final String code,
             final boolean provider) {
         try {
@@ -1036,10 +1028,10 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * Selects the exact private identity operation after access acquisition.
      *
      * @param access  private access material
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
-    private Outcome<ExternalIdentity> identity(final PrivateAccess access, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> identity(final PrivateAccess access, final Timeout timeout) {
         if (oauthVariant()) {
             return wechatIdentity(access, timeout);
         }
@@ -1053,10 +1045,10 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * Builds a snapshot identity or retrieves and validates the public WeChat profile.
      *
      * @param access  private WeChat token result
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified OpenID identity
      */
-    private Outcome<ExternalIdentity> wechatIdentity(final PrivateAccess access, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> wechatIdentity(final PrivateAccess access, final Timeout timeout) {
         if (WeChatManifest.MP.equals(options.variant()) && (options.scopes().contains("snsapi_base")
                 || "snsapi_base".equals(access.scope()) || access.snapshot())) {
             final Map<String, JsonValue> attributes = new LinkedHashMap<>();
@@ -1066,15 +1058,14 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
             return Outcome.succeeded(external(access.subject(), attributes, "openid", WECHAT_AUTHORITY, timeout));
         }
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "WeChat profile request has no remaining time budget");
+            return failed(ErrorCode._408, "WeChat profile request has no remaining timeout");
         }
         try {
             final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                    .query(OAuth2.Parameters.ACCESS_TOKEN, access.token()).query("openid", access.subject())
-                    .query("lang", PROFILE_LANGUAGE).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy()).execute()) {
+            try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout).url(endpoint)
+                    .method(Http.Method.GET).query(OAuth2.Parameters.ACCESS_TOKEN, access.token())
+                    .query("openid", access.subject()).query("lang", PROFILE_LANGUAGE)
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                 return decodeWeChatProfile(response, access, timeout);
             }
         } catch (RuntimeException cause) {
@@ -1091,9 +1082,9 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @return verified OpenID identity
      */
     private Outcome<ExternalIdentity> decodeWeChatProfile(
-            final HttpResponse response,
+            final Response response,
             final PrivateAccess access,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         try {
             final JsonValue.ObjectValue object = object(response);
             if (!members(WireKind.WECHAT_PROFILE, object)) {
@@ -1130,19 +1121,18 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * Retrieves and maps a WeCom corporate QR or web identity.
      *
      * @param access  private application access and callback code
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified WeCom identity
      */
-    private Outcome<ExternalIdentity> workIdentity(final PrivateAccess access, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> workIdentity(final PrivateAccess access, final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "WeCom identity request has no remaining time budget");
+            return failed(ErrorCode._408, "WeCom identity request has no remaining timeout");
         }
         try {
             final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                    .query(OAuth2.Parameters.ACCESS_TOKEN, access.token()).query(OAuth2.Parameters.CODE, access.code())
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.VENDOR_AUTH).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
+                    .method(Http.Method.GET).query(OAuth2.Parameters.ACCESS_TOKEN, access.token())
+                    .query(OAuth2.Parameters.CODE, access.code()).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .execute()) {
                 return WeChatManifest.EE.equals(options.variant()) ? decodeWorkQrIdentity(response, access, timeout)
                         : decodeWorkWebIdentity(response, timeout);
@@ -1161,9 +1151,9 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @return verified WeCom user identity
      */
     private Outcome<ExternalIdentity> decodeWorkQrIdentity(
-            final HttpResponse response,
+            final Response response,
             final PrivateAccess access,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         try {
             final JsonValue.ObjectValue object = object(response);
             if (!members(WireKind.EE_IDENTITY, object)) {
@@ -1195,7 +1185,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @param subject    verified callback userid
      * @param userTicket optional one-time member ticket
      * @param attributes identity attributes established by the callback response
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified and enriched enterprise identity
      */
     private Outcome<ExternalIdentity> enterpriseIdentity(
@@ -1203,16 +1193,15 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
             final String subject,
             final String userTicket,
             final Map<String, JsonValue> attributes,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "WeCom member request has no remaining time budget");
+            return failed(ErrorCode._408, "WeCom member request has no remaining timeout");
         }
         final WeChatTargets targets = manifest.enterpriseTargets();
-        try (HttpResponse response = Fabric.http(services.fabricContext())
+        try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout)
                 .url(targets.member().endpoint().url().toString()).method(Http.Method.GET)
                 .query(OAuth2.Parameters.ACCESS_TOKEN, token).query("userid", subject)
-                .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                .addressPolicy(services.securityBaseline().require(Protocol.VENDOR_AUTH).addressPolicy()).execute()) {
+                .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
             final Outcome<ExternalIdentity> member = decodeEnterpriseMember(
                     response,
                     token,
@@ -1234,16 +1223,16 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @param subject    verified callback userid
      * @param userTicket optional one-time member ticket
      * @param attributes mutable operation-local safe attribute projection
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified and enriched enterprise identity
      */
     private Outcome<ExternalIdentity> decodeEnterpriseMember(
-            final HttpResponse response,
+            final Response response,
             final String token,
             final String subject,
             final String userTicket,
             final Map<String, JsonValue> attributes,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final JsonValue.ObjectValue object = object(response);
         if (!members(WireKind.EE_MEMBER, object)) {
             return failed(ErrorCode._502, "WeCom member response contains an unknown member");
@@ -1267,7 +1256,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @param subject    verified callback userid
      * @param userTicket one-time member ticket
      * @param attributes mutable operation-local safe attribute projection
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified enterprise identity containing authorized fields
      */
     private Outcome<ExternalIdentity> sensitiveIdentity(
@@ -1275,20 +1264,18 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
             final String subject,
             final String userTicket,
             final Map<String, JsonValue> attributes,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "WeCom sensitive-member request has no remaining time budget");
+            return failed(ErrorCode._408, "WeCom sensitive-member request has no remaining timeout");
         }
         byte[] body = null;
         try {
             body = services.jsonProvider().writeValue(
                     new JsonValue.ObjectValue(Map.of("user_ticket", new JsonValue.StringValue(userTicket))));
             final WeChatTargets targets = manifest.enterpriseTargets();
-            try (HttpResponse response = Fabric.http(services.fabricContext())
+            try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout)
                     .url(targets.sensitive().endpoint().url().toString()).method(Http.Method.POST)
                     .query(OAuth2.Parameters.ACCESS_TOKEN, token).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.VENDOR_AUTH).addressPolicy())
                     .body(body, MediaType.APPLICATION_JSON_TYPE).execute()) {
                 final JsonValue.ObjectValue object = object(response);
                 if (!members(WireKind.EE_SENSITIVE, object)) {
@@ -1321,7 +1308,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @param timeout  shared clock used for evidence timestamping
      * @return verified WeCom user identity
      */
-    private Outcome<ExternalIdentity> decodeWorkWebIdentity(final HttpResponse response, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> decodeWorkWebIdentity(final Response response, final Timeout timeout) {
         try {
             final JsonValue.ObjectValue object = object(response);
             if (!members(WireKind.EE_WEB_IDENTITY, object)) {
@@ -1345,23 +1332,22 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * Sends and maps the WeCom service-provider get_login_info request.
      *
      * @param access  private provider access and callback authorization code
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified service-provider user identity
      */
-    private Outcome<ExternalIdentity> thirdPartyIdentity(final PrivateAccess access, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> thirdPartyIdentity(final PrivateAccess access, final Timeout timeout) {
         if (timeout.expired()) {
-            return failed(ErrorCode._408, "WeCom service-provider identity request has no remaining time budget");
+            return failed(ErrorCode._408, "WeCom service-provider identity request has no remaining timeout");
         }
         byte[] body = null;
         try {
             body = services.jsonProvider().writeValue(
                     new JsonValue.ObjectValue(Map.of("auth_code", new JsonValue.StringValue(access.code()))));
             final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
-                    .query(OAuth2.Parameters.ACCESS_TOKEN, access.token())
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.VENDOR_AUTH).addressPolicy())
-                    .body(body, MediaType.APPLICATION_JSON_TYPE).execute()) {
+            try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
+                    .method(Http.Method.POST).query(OAuth2.Parameters.ACCESS_TOKEN, access.token())
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).body(body, MediaType.APPLICATION_JSON_TYPE)
+                    .execute()) {
                 return decodeThirdPartyIdentity(response, timeout);
             }
         } catch (RuntimeException cause) {
@@ -1378,9 +1364,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @param timeout  shared clock used for evidence timestamping
      * @return verified service-provider user identity
      */
-    private Outcome<ExternalIdentity> decodeThirdPartyIdentity(
-            final HttpResponse response,
-            final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> decodeThirdPartyIdentity(final Response response, final Timeout timeout) {
         try {
             final JsonValue.ObjectValue object = object(response);
             if (!members(WireKind.WORK_THIRD_PARTY, object)) {
@@ -1419,13 +1403,13 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      *
      * @param code    runtime one-time code
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return completed direct Source initiation
      */
     private CompletionStage<Outcome<SourceWorkflow.Stage>> miniProgram(
             final String code,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final var policy = services.securityBaseline().require(Protocol.VENDOR_AUTH);
         return services.securityBaseline().replayGuard(services.replayCache())
                 .register(
@@ -1446,9 +1430,11 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
                                 case Outcome.Rejected<SecretLease> rejected -> completed(
                                         Outcome.rejected(rejected.failure()));
                                 case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                                default -> throw new IllegalStateException("Unsupported Outcome implementation");
                             });
                     case Outcome.Rejected<Void> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<Void> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -1457,33 +1443,33 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      *
      * @param code    replay-registered one-time code
      * @param secret  owned App Secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return completed direct Source initiation
      */
     private CompletionStage<Outcome<SourceWorkflow.Stage>> codeSession(
             final String code,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try (secret) {
                 if (timeout.expired()) {
                     return WeChatAdapterSupport.<SourceWorkflow.Stage>failed(
                             ErrorCode._408,
-                            "WeChat Mini Program request has no remaining time budget");
+                            "WeChat Mini Program request has no remaining timeout");
                 }
                 final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                        .query("appid", options.clientId()).query("secret", secret(secret)).query("js_code", code)
+                try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
+                        .method(Http.Method.GET).query("appid", options.clientId()).query("secret", secret(secret))
+                        .query("js_code", code)
                         .query(OAuth2.Parameters.GRANT_TYPE, GrantType.AUTHORIZATION_CODE.value())
-                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.VENDOR_AUTH).addressPolicy())
-                        .execute()) {
+                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                     final Outcome<ExternalIdentity> identity = decodeMiniProgram(response, timeout);
                     return switch (identity) {
                         case Outcome.Succeeded<ExternalIdentity> success -> Outcome
                                 .succeeded(new SourceWorkflow.Stage.Completed(success.value()));
                         case Outcome.Rejected<ExternalIdentity> rejected -> Outcome.rejected(rejected.failure());
                         case Outcome.Failed<ExternalIdentity> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     };
                 }
             } catch (RuntimeException cause) {
@@ -1501,7 +1487,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @param timeout  shared clock used for evidence timestamping
      * @return verified Mini Program OpenID identity
      */
-    private Outcome<ExternalIdentity> decodeMiniProgram(final HttpResponse response, final Timeout.Budget timeout) {
+    private Outcome<ExternalIdentity> decodeMiniProgram(final Response response, final Timeout timeout) {
         try {
             final JsonValue.ObjectValue object = object(response);
             if (!members(WireKind.MINI, object)) {
@@ -1525,13 +1511,16 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * Resolves one operation-scoped WeChat client secret with closed exception handling.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return secret resolution outcome stage
      */
-    private CompletionStage<Outcome<SecretLease>> resolve(final Context context, final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<SecretLease>> resolve(final Context context, final Timeout timeout) {
         try {
             final CompletionStage<Outcome<SecretLease>> stage = Outcome.mapStage(
-                    () -> services.secretLoader().load(services.registration(), options.credential(), context, timeout),
+                    () -> services.secretLoader().load(
+                            new SecretLoader.Request(services.registration(), options.credential()),
+                            context,
+                            timeout),
                     loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded));
             if (stage == null) {
                 return completed(failed(ErrorCode._502, "WeChat client-secret loader returned no stage"));
@@ -1596,7 +1585,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @param response response whose body remains owned by the caller
      * @return immutable provider-neutral JSON object
      */
-    private JsonValue.ObjectValue object(final HttpResponse response) {
+    private JsonValue.ObjectValue object(final Response response) {
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("WeChat response must use application/json");
         }
@@ -1623,7 +1612,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
             final Map<String, JsonValue> attributes,
             final String claim,
             final String authority,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return new ExternalIdentity(sourceId, subject, new JsonValue.ObjectValue(attributes),
                 List.of(evidence(claim, subject, authority, timeout)));
     }

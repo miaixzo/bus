@@ -37,6 +37,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.*;
 
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.protocol.saml.*;
 import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.Optional;
@@ -45,7 +46,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xml.XXE;
 import org.miaixz.bus.crypto.builtin.CertificateChain;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Encodes and securely decodes the SAML 2.0 Metadata fields consumed and emitted by the SAML runtime.
@@ -57,7 +57,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class MetadataCodec {
+public class MetadataCodec {
 
     /**
      * SAML 2.0 Metadata namespace.
@@ -873,7 +873,7 @@ public final class MetadataCodec {
      * @throws ProtocolException if status or media type is not acceptable
      * @throws ValidateException if the metadata document is unsafe or invalid
      */
-    public SamlMessageCodec.Document<EntityDescriptor> decode(final HttpResponse response) {
+    public SamlMessageCodec.Document<EntityDescriptor> decode(final Response response) {
         Assert.notNull(response, "SAML Metadata HTTP response must not be null");
         try {
             if (!response.successful()) {

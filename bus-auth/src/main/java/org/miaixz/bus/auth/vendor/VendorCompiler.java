@@ -23,13 +23,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.Blueprint;
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Library;
 import org.miaixz.bus.auth.Options;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Provider;
-import org.miaixz.bus.auth.Registration;
 import org.miaixz.bus.auth.Source;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.source.DriverServices;
@@ -132,6 +132,9 @@ final class VendorCompiler implements SourceDriver<VendorOptions<?>> {
     private static void requireOptions(final VariantManifest.Variant variant, final VendorOptions<?> options) {
         Assert.notBlank(options.clientId(), "Vendor client identifier must not be blank");
         Assert.notNull(options.credential(), "Vendor credential reference must not be null");
+        if (options.credential().type() != variant.credentialType()) {
+            throw new ValidateException("Vendor credential reference type does not match the selected variant");
+        }
         Assert.notNull(options.scopes(), "Vendor scopes must not be null");
         variant.pkce().resolve(options);
         final Set<String> scopes = new HashSet<>(options.scopes().size());
@@ -243,7 +246,7 @@ final class VendorCompiler implements SourceDriver<VendorOptions<?>> {
     @Override
     public Dependencies dependencies(final Source source, final VendorOptions<?> options) {
         return Dependencies.of(
-                Dependencies.Service.FABRIC_CONTEXT,
+                Dependencies.Service.FABRIC,
                 Dependencies.Service.JSON_PROVIDER,
                 Dependencies.Service.EXECUTOR,
                 Dependencies.Service.STATE_CACHE,
@@ -264,7 +267,7 @@ final class VendorCompiler implements SourceDriver<VendorOptions<?>> {
     @Override
     public SourceWorker compile(final Prepared<VendorOptions<?>> prepared, final DriverServices services) {
         Assert.notNull(prepared, "Vendor Source preparation must not be null");
-        final Registration.SourceEntry record = prepared.registration();
+        final Blueprint.SourceEntry record = prepared.registration();
         final Provider provider = prepared.provider();
         final Library library = prepared.library();
         final DriverServices runtime = Assert.notNull(services, "Vendor execution services must not be null");
@@ -283,6 +286,8 @@ final class VendorCompiler implements SourceDriver<VendorOptions<?>> {
 
     /**
      * Adapts a validated Vendor adapter to the non-exported runtime execution contract.
+     *
+     * @author Kimi Liu
      */
     private static final class CompiledAdapter implements SourceWorker {
 
@@ -316,7 +321,7 @@ final class VendorCompiler implements SourceDriver<VendorOptions<?>> {
          * @param capability exact declared capability
          * @param request    exact request
          * @param context    invocation context
-         * @param timeout    shared end-to-end budget
+         * @param timeout    shared end-to-end timeout
          * @param <Q>        request type
          * @param <S>        success type
          * @return delegated outcome stage
@@ -326,7 +331,7 @@ final class VendorCompiler implements SourceDriver<VendorOptions<?>> {
                 final Capability<Q, S> capability,
                 final Q request,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             return adapter.invoke(capability, request, context, timeout);
         }
 

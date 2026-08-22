@@ -60,7 +60,7 @@ public interface Registry {
      * @param providerId owning Provider identifier
      * @return detached configured Source registrations, including disabled records
      */
-    List<Registration.SourceEntry> sources(String providerId);
+    List<Blueprint.SourceEntry> sources(String providerId);
 
     /**
      * Returns enabled Source registrations owned by one Provider in snapshot order.
@@ -68,7 +68,7 @@ public interface Registry {
      * @param providerId owning Provider identifier
      * @return detached enabled Source registrations
      */
-    List<Registration.SourceEntry> enabledSources(String providerId);
+    List<Blueprint.SourceEntry> enabledSources(String providerId);
 
     /**
      * Identifies the monotonically increasing version of a complete committed Registry snapshot.
@@ -97,7 +97,7 @@ public interface Registry {
      * @param id   managed resource identifier
      * @author Kimi Liu
      */
-    record Reference(Registration.Kind kind, String id) {
+    record Reference(Blueprint.Kind kind, String id) {
 
         /**
          * Creates an invocable Registry reference.
@@ -108,7 +108,7 @@ public interface Registry {
          */
         public Reference {
             Assert.notNull(kind, "Registry reference kind must not be null");
-            Assert.isTrue(kind == Registration.Kind.SOURCE, "Registry references only support Source registrations");
+            Assert.isTrue(kind == Blueprint.Kind.SOURCE, "Registry references only support Source registrations");
             Assert.notBlank(id, "Registry reference id must not be blank");
         }
 
@@ -119,7 +119,7 @@ public interface Registry {
          * @return Source Registry reference
          */
         public static Reference source(final String id) {
-            return new Reference(Registration.Kind.SOURCE, id);
+            return new Reference(Blueprint.Kind.SOURCE, id);
         }
 
     }
@@ -131,7 +131,7 @@ public interface Registry {
      * @param records  all Library, Provider, and Source records in loading order
      * @author Kimi Liu
      */
-    record Snapshot(Revision revision, List<Registration.Entry> records) {
+    record Snapshot(Revision revision, List<Blueprint.Entry> records) {
 
         /**
          * Creates a snapshot with a detached unmodifiable record list.
@@ -143,8 +143,8 @@ public interface Registry {
         public Snapshot {
             Assert.notNull(revision, "Registry snapshot revision must not be null");
             Assert.notNull(records, "Registry snapshot records must not be null");
-            final List<Registration.Entry> copy = new ArrayList<>(records.size());
-            for (Registration.Entry record : records) {
+            final List<Blueprint.Entry> copy = new ArrayList<>(records.size());
+            for (Blueprint.Entry record : records) {
                 copy.add(Assert.notNull(record, "Registry snapshot entry must not be null"));
             }
             records = List.copyOf(copy);

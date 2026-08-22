@@ -21,12 +21,16 @@ package org.miaixz.bus.auth.protocol.oauth2;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.guard.RedirectUriValidator;
 import org.miaixz.bus.auth.guard.ScopeValidator;
 import org.miaixz.bus.auth.guard.SecretGuard;
@@ -45,15 +49,13 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Compiles one validated server-role OAuth 2.x Source registration into typed authorization-server services.
  *
  * @author Kimi Liu
  */
-public final class OAuth2ServerDriver implements SourceDriver<OAuth2ServerOptions> {
+public class OAuth2ServerDriver implements SourceDriver<OAuth2ServerOptions> {
 
     /**
      * Immutable OAuth 2.x Provider scheme shared by compiled registrations.
@@ -142,21 +144,33 @@ public final class OAuth2ServerDriver implements SourceDriver<OAuth2ServerOption
                 || usesClientSecret(options.introspectionEndpoint().getOrNull())
                 || usesClientSecret(options.revocationEndpoint().getOrNull())
                 || usesClientSecret(options.deviceAuthorizationEndpoint().getOrNull())) {
-            slots = slots.with(WorkerSlots.Slot.SECRET);
+            slots = slots.with(WorkerSlots.Slot.CONSUMER_VERIFIER);
+        }
+        if (options.tokenEndpointAuthMethodsSupported().contains(ClientAuthenticationMethod.PRIVATE_KEY_JWT)) {
+            slots = slots.with(WorkerSlots.Slot.KEY);
+        }
+        if (options.federatedJwtEnabled()) {
+            slots = slots.with(WorkerSlots.Slot.KEY, WorkerSlots.Slot.FEDERATION);
         }
         return slots;
     }
 
     @Override
     public Dependencies dependencies(final Source source, final OAuth2ServerOptions options) {
-        return Dependencies.of(
+        final Set<Dependencies.Service> dependencies = new LinkedHashSet<>(List.of(
                 Dependencies.Service.JSON_PROVIDER,
                 Dependencies.Service.AUTHORIZATION_CODE_CACHE,
                 Dependencies.Service.DEVICE_CODE_CACHE,
                 Dependencies.Service.AUTHORIZATION_CACHE,
                 Dependencies.Service.ACCESS_TOKEN_CACHE,
                 Dependencies.Service.REFRESH_TOKEN_CACHE,
-                Dependencies.Service.SECURITY_BASELINE);
+                Dependencies.Service.SECURITY_BASELINE));
+        if (options.federatedJwtEnabled()
+                || options.tokenEndpointAuthMethodsSupported().contains(ClientAuthenticationMethod.PRIVATE_KEY_JWT)) {
+            dependencies.add(Dependencies.Service.FABRIC);
+            dependencies.add(Dependencies.Service.REPLAY_CACHE);
+        }
+        return new Dependencies(Set.copyOf(dependencies));
     }
 
     /**
@@ -172,7 +186,7 @@ public final class OAuth2ServerDriver implements SourceDriver<OAuth2ServerOption
     public SourceWorker compile(final Prepared<OAuth2ServerOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "OAuth 2.x Provider preparation must not be null");
         Assert.notNull(services, "OAuth 2.x Provider execution services must not be null");
-        final Registration.SourceEntry record = prepared.registration();
+        final Blueprint.SourceEntry record = prepared.registration();
         final Provider provider = prepared.provider();
         final Library library = prepared.library();
         final Source source = record.resource();
@@ -200,8 +214,8 @@ public final class OAuth2ServerDriver implements SourceDriver<OAuth2ServerOption
             final RefreshTokenRotator rotator = new RefreshTokenRotator(source.getId(), options, services,
                     scopeValidator, issuer, tokenMaterial);
             final TokenEndpoint endpoint = new TokenEndpoint(new TokenRequestDecoder(),
-                    new OAuth2ClientAuthenticator(options.tokenEndpoint().getOrNull(), services),
-                    new TokenService(issuer, rotator), new TokenResponseEncoder(services.jsonProvider()), errorMapper);
+                    new OAuth2ClientAuthenticator(options, services), new TokenService(issuer, rotator),
+                    new TokenResponseEncoder(services.jsonProvider()), errorMapper);
             endpoints.put(OAuth2ServerScheme.TOKEN, endpoint::handle);
         }
         if (options.introspectionEndpoint().isPresent()) {
@@ -245,7 +259,9 @@ public final class OAuth2ServerDriver implements SourceDriver<OAuth2ServerOption
          */
         private final Capability.Manifest manifest;
 
-        /** Exact endpoint handler indexed by its declared capability. */
+        /**
+         * Exact endpoint handler indexed by its declared capability.
+         */
         private final Map<Capability<?, ?>, EndpointHandler> endpoints;
 
         /**
@@ -290,7 +306,7 @@ public final class OAuth2ServerDriver implements SourceDriver<OAuth2ServerOption
          * @param capability exact declared capability
          * @param request    exact standard request or {@code null} for metadata
          * @param context    immutable invocation context
-         * @param timeout    shared end-to-end time budget
+         * @param timeout    shared end-to-end timeout
          * @param <Q>        request type
          * @param <S>        success type
          * @return delegated typed outcome or rejected unsupported capability
@@ -300,15 +316,15 @@ public final class OAuth2ServerDriver implements SourceDriver<OAuth2ServerOption
                 final Capability<Q, S> capability,
                 final Q request,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             Assert.notNull(capability, "OAuth 2.x Provider capability must not be null");
             Assert.notNull(context, "OAuth 2.x Provider context must not be null");
-            Assert.notNull(timeout, "OAuth 2.x Provider time budget must not be null");
+            Assert.notNull(timeout, "OAuth 2.x Provider timeout must not be null");
             if (!manifest.capabilities().contains(capability)) {
                 return rejected();
             }
             final EndpointHandler endpoint = endpoints.get(capability);
-            if (endpoint == null || !(request instanceof HttpRequest httpRequest)) {
+            if (endpoint == null || !(request instanceof Request httpRequest)) {
                 return rejected();
             }
             return endpoint.handle(httpRequest, context, timeout)
@@ -317,7 +333,11 @@ public final class OAuth2ServerDriver implements SourceDriver<OAuth2ServerOption
 
     }
 
-    /** Adapts one compiled HTTP endpoint to the common Source-worker invocation shape. */
+    /**
+     * Adapts one compiled HTTP endpoint to the common Source-worker invocation shape.
+     *
+     * @author Kimi Liu
+     */
     @FunctionalInterface
     private interface EndpointHandler {
 
@@ -326,10 +346,10 @@ public final class OAuth2ServerDriver implements SourceDriver<OAuth2ServerOption
          *
          * @param request incoming HTTP request
          * @param context immutable invocation context
-         * @param timeout shared operation budget
+         * @param timeout shared operation timeout
          * @return asynchronous HTTP response
          */
-        CompletionStage<HttpResponse> handle(HttpRequest request, Context context, Timeout.Budget timeout);
+        CompletionStage<Response> handle(Request request, Context context, Timeout timeout);
 
     }
 

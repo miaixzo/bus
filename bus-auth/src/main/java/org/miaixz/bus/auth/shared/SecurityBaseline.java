@@ -24,21 +24,17 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.miaixz.bus.auth.FabricX.AddressPolicy;
+import org.miaixz.bus.auth.FabricX.Clock;
 import org.miaixz.bus.auth.cache.ReplayCache;
 import org.miaixz.bus.auth.guard.AlgorithmGuard;
 import org.miaixz.bus.auth.guard.ReplayGuard;
 import org.miaixz.bus.auth.guard.TimeGuard;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.fabric.Clock;
-import org.miaixz.bus.fabric.guard.body.LimitGuard;
-import org.miaixz.bus.fabric.guard.route.AddressGuard;
-import org.miaixz.bus.fabric.guard.route.AddressPolicy;
-import org.miaixz.bus.fabric.guard.tls.TlsGuard;
 
 /**
  * Freezes the non-relaxable authentication security policy for every configured industry protocol.
@@ -50,7 +46,7 @@ import org.miaixz.bus.fabric.guard.tls.TlsGuard;
  *
  * @author Kimi Liu
  */
-public final class SecurityBaseline {
+public class SecurityBaseline {
 
     /**
      * Immutable policy index keyed by exact bus-core Protocol.
@@ -182,36 +178,6 @@ public final class SecurityBaseline {
     }
 
     /**
-     * Creates a Fabric AddressGuard from one protocol's immutable address policy.
-     *
-     * @param protocol exact owning protocol
-     * @return protocol-scoped Fabric address guard
-     */
-    public AddressGuard addressGuard(final Protocol protocol) {
-        return new AddressGuard(require(protocol).addressPolicy());
-    }
-
-    /**
-     * Returns the shared secure TLS guard when the protocol baseline requires secure transport.
-     *
-     * @param protocol exact owning protocol
-     * @return secure TLS guard or empty when this baseline permits another protected transport
-     */
-    public Optional<TlsGuard> tlsGuard(final Protocol protocol) {
-        return require(protocol).secureTransportRequired() ? Optional.of(TlsGuard.requireSecure()) : Optional.empty();
-    }
-
-    /**
-     * Creates a Fabric body-size guard from one protocol's maximum message size.
-     *
-     * @param protocol exact owning protocol
-     * @return protocol-scoped Fabric body limit guard
-     */
-    public LimitGuard messageGuard(final Protocol protocol) {
-        return LimitGuard.of(require(protocol).maximumMessageBytes());
-    }
-
-    /**
      * Carries immutable lower bounds and upper limits for one exact authentication protocol.
      *
      * @param algorithms              exact protocol algorithm allowlist
@@ -261,7 +227,9 @@ public final class SecurityBaseline {
             if (minimumReplayWindow.isNegative() || minimumReplayWindow.isZero()) {
                 throw new ValidateException("Security policy replay window must be positive");
             }
-            LimitGuard.of(maximumMessageBytes);
+            if (maximumMessageBytes <= 0L || maximumMessageBytes > 16_777_216L) {
+                throw new ValidateException("Security policy message limit must be between 1 and 16777216 bytes");
+            }
             Assert.notNull(addressPolicy, "Security policy address policy must not be null");
         }
 

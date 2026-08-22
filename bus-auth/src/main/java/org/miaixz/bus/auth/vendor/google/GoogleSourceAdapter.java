@@ -28,6 +28,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.guard.IssuerValidator;
@@ -55,6 +57,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -67,9 +70,6 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements the frozen Google OpenID Connect relying-party and Source authentication contract.
@@ -81,7 +81,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class GoogleSourceAdapter implements VendorAdapter {
+public class GoogleSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted Google OpenID Provider issuer.
@@ -225,7 +225,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
         final IdTokenCodec idTokenCodec = new IdTokenCodec(
                 new JwtVerifier(services.jsonProvider(), jwsService, dormantJweService));
         this.idTokenVerifier = new IdTokenVerifier(idTokenCodec, issuerValidator,
-                services.securityBaseline().timeGuard(Protocol.OIDC, services.fabricContext().clock()));
+                services.securityBaseline().timeGuard(Protocol.OIDC, FabricX.clock(services.fabric())));
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), targets.token(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(ISSUER),
@@ -258,6 +258,8 @@ public final class GoogleSourceAdapter implements VendorAdapter {
                                                     .rejected(rejected.failure());
                                             case Outcome.Failed<OpenIdProviderMetadata> failed -> Outcome
                                                     .failed(failed.failure());
+                                            default -> throw new IllegalStateException(
+                                                    "Unsupported Outcome implementation");
                                         })),
                         new StandardAdapter.Binding<>(OpenIdClientScheme.JWK_SET,
                                 (ignored, context, timeout) -> jwks(context, timeout)),
@@ -535,6 +537,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -633,7 +636,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific request or {@code null} for a resource retrieval operation
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed operation outcome without exposing private Vendor response models
@@ -643,10 +646,10 @@ public final class GoogleSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Google capability must not be null");
         Assert.notNull(context, "Google invocation context must not be null");
-        Assert.notNull(timeout, "Google invocation budget must not be null");
+        Assert.notNull(timeout, "Google invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return missing();
         }
@@ -671,20 +674,22 @@ public final class GoogleSourceAdapter implements VendorAdapter {
      *
      * @param request standard token request carrying one supported grant
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return standard token response after profile-specific success constraints are checked
      */
     private CompletionStage<Outcome<TokenEndpointResponse>> token(
             final TokenRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!valid(request)) {
             return completed(rejected("Google token request does not match the registered grant contract"));
         }
         return Outcome
                 .mapStage(
-                        () -> services.secretLoader()
-                                .load(services.registration(), options.credential(), context, timeout),
+                        () -> services.secretLoader().load(
+                                new SecretLoader.Request(services.registration(), options.credential()),
+                                context,
+                                timeout),
                         loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> CompletableFuture.supplyAsync(() -> {
@@ -696,6 +701,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
                     }, services.executor());
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -740,7 +746,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
      * @param response   correlated authorization response
      * @param completion consumed browser security material
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return fully verified Google identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> authenticate(
@@ -749,7 +755,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
             final AuthorizationCodeResponse response,
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CompletionStage<Outcome<ExternalIdentity>> stage = CompletableFuture
                 .supplyAsync(() -> sendToken(request, secret, timeout), services.executor())
                 .thenCompose(token -> switch (token) {
@@ -760,6 +766,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
                     case Outcome.Rejected<TokenEndpointResponse> rejected -> completed(
                             Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<TokenEndpointResponse> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
         return stage.whenComplete((ignored, failure) -> secret.close());
     }
@@ -769,24 +776,23 @@ public final class GoogleSourceAdapter implements VendorAdapter {
      *
      * @param request validated standard token request
      * @param secret  open Client Secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return standard token response or safely classified failure
      */
     private Outcome<TokenEndpointResponse> sendToken(
             final TokenRequest request,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Google token request has no remaining time budget");
+                return failed(ErrorCode._408, "Google token request has no remaining timeout");
             }
             body = formCodec.encode(tokenParameters(request, secret));
             final var endpoint = variant.targets().resolve(options).token().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                    .timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OIDC, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.POST)
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 return token(response, request.grant());
             }
@@ -831,7 +837,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
      * @param grant    exact submitted standard grant
      * @return standard token response or classified error
      */
-    private Outcome<TokenEndpointResponse> token(final HttpResponse response, final TokenRequest.Grant grant) {
+    private Outcome<TokenEndpointResponse> token(final Response response, final TokenRequest.Grant grant) {
         try {
             final JsonValue.ObjectValue object = object(response);
             if (response.code() == Http.Status.OK) {
@@ -921,13 +927,13 @@ public final class GoogleSourceAdapter implements VendorAdapter {
      *
      * @param request standard revocation request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return empty standard success or safely classified failure
      */
     private CompletionStage<Outcome<Void>> revoke(
             final RevocationRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "Google revocation context must not be null");
         if (request == null || !validHint(request)) {
             return completed(rejected("Google revocation token type hint is unsupported"));
@@ -939,14 +945,14 @@ public final class GoogleSourceAdapter implements VendorAdapter {
      * Sends one exact Google revocation request without resolving or transmitting a Client Secret.
      *
      * @param request validated standard revocation request
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return empty success or classified failure
      */
-    private Outcome<Void> sendRevocation(final RevocationRequest request, final Timeout.Budget timeout) {
+    private Outcome<Void> sendRevocation(final RevocationRequest request, final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Google revocation has no remaining time budget");
+                return failed(ErrorCode._408, "Google revocation has no remaining timeout");
             }
             final ArrayList<NameValue> parameters = new ArrayList<>();
             parameters.add(new NameValue("token", request.token()));
@@ -954,9 +960,8 @@ public final class GoogleSourceAdapter implements VendorAdapter {
                     .ifPresent(hint -> parameters.add(new NameValue(OAuth2.Parameters.TOKEN_TYPE_HINT, hint)));
             body = formCodec.encode(parameters);
             final var endpoint = variant.targets().resolve(options).revocation().getOrNull();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                    .method(Http.Method.POST).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OIDC, timeout)
+                    .url(endpoint.url().toString()).method(Http.Method.POST)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 if (response.code() == Http.Status.OK) {
                     return response.body().length() == 0L ? Outcome.succeeded(null)
@@ -988,7 +993,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
      * @param response owned non-success response
      * @return immutable non-sensitive failure details
      */
-    private Map<String, JsonValue> revocationDetails(final HttpResponse response) {
+    private Map<String, JsonValue> revocationDetails(final Response response) {
         final Map<String, JsonValue> details = new LinkedHashMap<>();
         details.put("status", number(response.code()));
         if (response.body().length() > 0L && MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
@@ -1008,13 +1013,13 @@ public final class GoogleSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated one-time browser security material
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return standard-client-produced authorization URL bound to the generated state
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         try {
             final List<String> requestedScopes = requestedScopes();
             final var challenge = initiation.codeChallenge().getOrNull();
@@ -1033,10 +1038,11 @@ public final class GoogleSourceAdapter implements VendorAdapter {
                     List.of(), Optional.empty(), Optional.empty(), emptyObject());
             return standardAdapter.invoke(OpenIdClientScheme.AUTHENTICATION, authentication, context, timeout)
                     .thenApply(outcome -> switch (outcome) {
-                        case Outcome.Succeeded<UnoUrl> success -> Outcome.succeeded(
+                        case Outcome.Succeeded<Url> success -> Outcome.succeeded(
                                 new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                        case Outcome.Rejected<UnoUrl> rejected -> Outcome.rejected(rejected.failure());
-                        case Outcome.Failed<UnoUrl> failed -> Outcome.failed(failed.failure());
+                        case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                        case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (RuntimeException cause) {
             return completed(rejected("Google Authentication Request is invalid"));
@@ -1059,13 +1065,13 @@ public final class GoogleSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback, nonce, and PKCE verifier
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return fully verified Google external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CallbackWire values;
         try {
             values = callback(completion.callback());
@@ -1094,8 +1100,10 @@ public final class GoogleSourceAdapter implements VendorAdapter {
                 options.redirectUri(), Optional.empty(), Optional.of(verifier)), emptyObject());
         return Outcome
                 .mapStage(
-                        () -> services.secretLoader()
-                                .load(services.registration(), options.credential(), context, timeout),
+                        () -> services.secretLoader().load(
+                                new SecretLoader.Request(services.registration(), options.credential()),
+                                context,
+                                timeout),
                         loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> authenticate(
@@ -1107,6 +1115,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
                             timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -1117,7 +1126,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
      * @param response   correlated authorization response
      * @param completion consumed browser correlation material
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified identity operation stage
      */
     private CompletionStage<Outcome<ExternalIdentity>> verifyToken(
@@ -1125,7 +1134,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
             final AuthorizationCodeResponse response,
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final String compact;
         try {
             requireToken(token);
@@ -1144,6 +1153,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
                     timeout);
             case Outcome.Rejected<JwkSet> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<JwkSet> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -1156,7 +1166,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
      * @param response   correlated authorization response
      * @param completion consumed nonce, state, and PKCE material
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return identity stage after ID Token and UserInfo verification
      */
     private CompletionStage<Outcome<ExternalIdentity>> verifyIdToken(
@@ -1166,7 +1176,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
             final AuthorizationCodeResponse response,
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final PublicKey key;
         final String tokenIssuer;
         try {
@@ -1199,6 +1209,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<IdTokenClaims> success -> userInfo(token, success.value(), context, timeout);
             case Outcome.Rejected<IdTokenClaims> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<IdTokenClaims> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -1208,20 +1219,21 @@ public final class GoogleSourceAdapter implements VendorAdapter {
      * @param token   standard token response containing the bearer access token
      * @param claims  verified typed ID Token claims
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> userInfo(
             final OpenIdTokenResponse token,
             final IdTokenClaims claims,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return standardAdapter
                 .invoke(OpenIdClientScheme.USERINFO, new UserInfoRequest(token.accessToken()), context, timeout)
                 .thenApply(outcome -> switch (outcome) {
                     case Outcome.Succeeded<UserInfoResponse> success -> identity(success.value(), claims, timeout);
                     case Outcome.Rejected<UserInfoResponse> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<UserInfoResponse> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -1236,7 +1248,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
     private Outcome<ExternalIdentity> identity(
             final UserInfoResponse userInfo,
             final IdTokenClaims claims,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!claims.subject().equals(userInfo.subject())) {
             return rejected("Google UserInfo subject does not match the verified ID Token");
         }
@@ -1298,17 +1310,16 @@ public final class GoogleSourceAdapter implements VendorAdapter {
      * frozen Google manifest.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return standard metadata only after all fixed-profile bindings succeed
      */
-    private CompletionStage<Outcome<OpenIdProviderMetadata>> discover(
-            final Context context,
-            final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<OpenIdProviderMetadata>> discover(final Context context, final Timeout timeout) {
         return standardAdapter.invoke(OpenIdClientScheme.DISCOVERY, null, context, timeout)
                 .thenApply(outcome -> switch (outcome) {
                     case Outcome.Succeeded<OpenIdProviderMetadata> success -> metadata(success.value());
                     case Outcome.Rejected<OpenIdProviderMetadata> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<OpenIdProviderMetadata> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -1377,28 +1388,25 @@ public final class GoogleSourceAdapter implements VendorAdapter {
      * Retrieves and strictly decodes the configured Google public JWK Set resource.
      *
      * @param context immutable invocation context retained for the uniform operation signature
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return current issuer public JWK Set or a closed framework failure
      */
-    private CompletionStage<Outcome<JwkSet>> jwks(final Context context, final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<JwkSet>> jwks(final Context context, final Timeout timeout) {
         Assert.notNull(context, "Google JWK Set context must not be null");
-        Assert.notNull(timeout, "Google JWK Set budget must not be null");
+        Assert.notNull(timeout, "Google JWK Set timeout must not be null");
         if (timeout.expired()) {
-            return completed(failed(ErrorCode._408, "Google JWK Set request has no remaining time budget"));
+            return completed(failed(ErrorCode._408, "Google JWK Set request has no remaining timeout"));
         }
         return CompletableFuture.supplyAsync(() -> {
             try {
                 if (timeout.expired()) {
-                    return failed(ErrorCode._408, "Google JWK Set request exhausted its time budget");
+                    return failed(ErrorCode._408, "Google JWK Set request exhausted its timeout");
                 }
                 final String endpoint = variant.targets().resolve(options).jwks().getOrNull().url().toString();
                 return Outcome.succeeded(
                         jwkSetCodec.decode(
-                                Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                                        .timeout(timeout.forFabric())
-                                        .addressPolicy(
-                                                services.securityBaseline().require(Protocol.OIDC).addressPolicy())
-                                        .execute()));
+                                FabricX.http(services.fabric(), Protocol.OIDC, timeout).url(endpoint)
+                                        .method(Http.Method.GET).execute()));
             } catch (RuntimeException cause) {
                 return failed(ErrorCode._502, "Google JWK Set endpoint request failed");
             }
@@ -1486,7 +1494,7 @@ public final class GoogleSourceAdapter implements VendorAdapter {
      * @return provider-neutral immutable JSON object
      * @throws ValidateException if media type, size, JSON syntax, duplicate names, or root shape is invalid
      */
-    private JsonValue.ObjectValue object(final HttpResponse response) {
+    private JsonValue.ObjectValue object(final Response response) {
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("Google response must use application/json");
         }

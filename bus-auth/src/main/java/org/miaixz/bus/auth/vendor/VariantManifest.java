@@ -23,11 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.extra.json.JsonValue;
 
 /**
  * Declares the framework-owned immutable authentication manifest for exactly one third-party platform and all variants
@@ -88,11 +90,15 @@ public interface VariantManifest<O extends VendorOptions<?>> {
 
     /**
      * Holds the immutable common Vendor options form.
+     *
+     * @author Kimi Liu
      */
-    final class Forms {
+    class Forms {
 
-        /** Prevents construction of the Vendor form utility. */
-        private Forms() {
+        /**
+         * Creates a Vendor form encoder namespace instance.
+         */
+        public Forms() {
             // No initialization required.
         }
 
@@ -102,14 +108,29 @@ public interface VariantManifest<O extends VendorOptions<?>> {
          * @param optionalPkce whether to expose the optional PKCE toggle
          * @return immutable form
          */
-        private static Scheme.Form common(final boolean optionalPkce) {
+        public static Scheme.Form common(final boolean optionalPkce) {
+            return extended(optionalPkce, List.of());
+        }
+
+        /**
+         * Builds the common Vendor client fields followed by declared platform parameter fields.
+         *
+         * @param optionalPkce whether to expose the optional PKCE toggle
+         * @param parameters   immutable platform-specific non-secret parameter fields
+         * @return immutable one-time client configuration form
+         */
+        public static Scheme.Form extended(final boolean optionalPkce, final List<Scheme.Form.Field> parameters) {
             final List<Scheme.Form.Field> fields = new ArrayList<>();
             fields.add(field("clientId", "Client identifier", Scheme.Form.Type.TEXT, true));
-            fields.add(field("credential", "Credential reference", Scheme.Form.Type.TEXT, true));
+            fields.add(field("credential", "Client secret/private key", Scheme.Form.Type.SECRET, true));
             fields.add(field("redirectUri", "Redirect URI", Scheme.Form.Type.URL, false));
             fields.add(field("scopes", "Scopes", Scheme.Form.Type.MULTI_SELECT, false));
             if (optionalPkce) {
                 fields.add(field("pkce", "Enable optional PKCE", Scheme.Form.Type.BOOLEAN, false));
+            }
+            Assert.notNull(parameters, "Vendor form parameter fields must not be null");
+            for (Scheme.Form.Field parameter : parameters) {
+                fields.add(Assert.notNull(parameter, "Vendor form parameter field must not be null"));
             }
             return new Scheme.Form(List.of(new Scheme.Form.Section("client", "Vendor client", fields)));
         }
@@ -123,12 +144,31 @@ public interface VariantManifest<O extends VendorOptions<?>> {
          * @param required whether required
          * @return immutable field
          */
-        private static Scheme.Form.Field field(
+        public static Scheme.Form.Field field(
                 final String key,
                 final String label,
                 final Scheme.Form.Type type,
                 final boolean required) {
             return new Scheme.Form.Field(key, label, type, required, Optional.empty(), List.of());
+        }
+
+        /**
+         * Creates one Vendor form field with a non-sensitive default and no external constraints.
+         *
+         * @param key          formal option key
+         * @param label        display label
+         * @param type         presentation type
+         * @param required     whether required
+         * @param defaultValue non-sensitive default value
+         * @return immutable field
+         */
+        public static Scheme.Form.Field field(
+                final String key,
+                final String label,
+                final Scheme.Form.Type type,
+                final boolean required,
+                final JsonValue defaultValue) {
+            return new Scheme.Form.Field(key, label, type, required, Optional.of(defaultValue), List.of());
         }
 
     }
@@ -140,35 +180,16 @@ public interface VariantManifest<O extends VendorOptions<?>> {
      * @param variant            stable platform variant identifier
      * @param protocol           actual industry-standard or proprietary wire protocol
      * @param pkce               immutable platform PKCE policy
+     * @param credentialType     exact credential material required by this variant
      * @param defaultScopes      ordered framework defaults for authorization requests
      * @param targets            official fixed or constrained-template platform targets
      * @param capabilityManifest fully implemented capability manifest
      * @param deviations         documented platform deviations from the selected protocol
      * @author Kimi Liu
      */
-    record Variant(Vendor.Id platform, Vendor.Variant variant, Protocol protocol, Pkce pkce, List<String> defaultScopes,
-            VendorTargets targets, Capability.Manifest capabilityManifest, List<VendorDeviation> deviations) {
-
-        /**
-         * Creates a variant that does not support PKCE.
-         * <p>
-         * This compatibility constructor deliberately defaults to {@link Pkce#DISABLED}; manifests must opt in to
-         * optional or required PKCE explicitly so deployment options cannot invent a platform capability.
-         * </p>
-         *
-         * @param platform           stable owning platform
-         * @param variant            stable platform variant
-         * @param protocol           actual wire protocol
-         * @param defaultScopes      ordered framework scope defaults
-         * @param targets            fixed or constrained platform targets
-         * @param capabilityManifest implemented capability manifest
-         * @param deviations         documented protocol deviations
-         */
-        public Variant(final Vendor.Id platform, final Vendor.Variant variant, final Protocol protocol,
-                final List<String> defaultScopes, final VendorTargets targets,
-                final Capability.Manifest capabilityManifest, final List<VendorDeviation> deviations) {
-            this(platform, variant, protocol, Pkce.DISABLED, defaultScopes, targets, capabilityManifest, deviations);
-        }
+    record Variant(Vendor.Id platform, Vendor.Variant variant, Protocol protocol, Pkce pkce,
+            Credential.Type credentialType, List<String> defaultScopes, VendorTargets targets,
+            Capability.Manifest capabilityManifest, List<VendorDeviation> deviations) {
 
         /**
          * Validates and freezes one platform variant.
@@ -180,6 +201,7 @@ public interface VariantManifest<O extends VendorOptions<?>> {
             variant = Assert.notNull(variant, "Variant manifest identifier must not be null");
             protocol = Assert.notNull(protocol, "Variant manifest protocol must not be null");
             pkce = Assert.notNull(pkce, "Variant manifest PKCE policy must not be null");
+            credentialType = Assert.notNull(credentialType, "Variant manifest credential type must not be null");
             Assert.notNull(defaultScopes, "Variant manifest default scopes must not be null");
             final List<String> scopes = new ArrayList<>(defaultScopes.size());
             for (String scope : defaultScopes) {
@@ -204,14 +226,22 @@ public interface VariantManifest<O extends VendorOptions<?>> {
      * This is a platform protocol fact. Project options participate only when the manifest explicitly declares
      * {@link #OPTIONAL}; they can never disable {@link #REQUIRED} or enable {@link #DISABLED}.
      * </p>
+     *
+     * @author Kimi Liu
      */
     enum Pkce {
 
-        /** Platform forbids PKCE. */
+        /**
+         * Platform forbids PKCE.
+         */
         DISABLED,
-        /** Deployment may enable PKCE. */
+        /**
+         * Deployment may enable PKCE.
+         */
         OPTIONAL,
-        /** Platform always requires PKCE. */
+        /**
+         * Platform always requires PKCE.
+         */
         REQUIRED;
 
         /**

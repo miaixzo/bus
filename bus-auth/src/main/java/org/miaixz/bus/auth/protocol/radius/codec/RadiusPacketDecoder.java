@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
  *
  * @author Kimi Liu
  */
-public final class RadiusPacketDecoder implements Decoder<byte[], RadiusPacket> {
+public class RadiusPacketDecoder implements Decoder<byte[], RadiusPacket> {
 
     /**
      * Explicit header semantics selected by the transport boundary.

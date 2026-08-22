@@ -48,7 +48,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class DpopValidator {
+public class DpopValidator {
 
     /**
      * Cryptographic and request-binding verifier.
@@ -104,7 +104,7 @@ public final class DpopValidator {
      * @param verification exact HTTP request and proof freshness policy
      * @param requirements replay isolation and optional access-token confirmation requirements
      * @param context      current immutable authentication context
-     * @param timeout      shared end-to-end operation budget
+     * @param timeout      shared end-to-end operation timeout
      * @return stage containing the accepted proof, expected rejection, or replay-cache failure
      */
     public CompletionStage<Outcome<DpopProof>> validate(
@@ -112,11 +112,11 @@ public final class DpopValidator {
             final DpopVerifier.Request verification,
             final Requirements requirements,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(verification, "DPoP verification request must not be null");
         Assert.notNull(requirements, "DPoP validation requirements must not be null");
         Assert.notNull(context, "DPoP validation context must not be null");
-        Assert.notNull(timeout, "DPoP validation budget must not be null");
+        Assert.notNull(timeout, "DPoP validation timeout must not be null");
         final DpopProof proof;
         try {
             proof = verifier.verify(compact, verification, timeout);
@@ -143,6 +143,7 @@ public final class DpopValidator {
                     case Outcome.Succeeded<Void> ignored -> Outcome.succeeded(proof);
                     case Outcome.Rejected<Void> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<Void> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 

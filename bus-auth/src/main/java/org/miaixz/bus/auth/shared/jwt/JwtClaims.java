@@ -41,7 +41,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class JwtClaims {
+public class JwtClaims {
 
     /**
      * Registered issuer claim name.

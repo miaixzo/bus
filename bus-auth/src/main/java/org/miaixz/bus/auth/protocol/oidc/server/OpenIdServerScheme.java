@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.Conformance;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -31,15 +33,13 @@ import org.miaixz.bus.auth.protocol.oidc.*;
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Describes the standards-based OpenID Connect server scheme.
  *
  * @author Kimi Liu
  */
-public final class OpenIdServerScheme implements Scheme<OpenIdServerOptions> {
+public class OpenIdServerScheme implements Scheme<OpenIdServerOptions> {
 
     /**
      * Stable registration type identifier.
@@ -48,66 +48,66 @@ public final class OpenIdServerScheme implements Scheme<OpenIdServerOptions> {
     /**
      * Processes an OIDC Authentication Request for an authenticated end user.
      */
-    public static final Capability<HttpRequest, HttpResponse> AUTHENTICATION = capability(
+    public static final Capability<Request, Response> AUTHENTICATION = capability(
             OpenIdConnect.AUTHENTICATION,
-            HttpRequest.class,
-            HttpResponse.class,
+            Request.class,
+            Response.class,
             Capability.Interaction.REDIRECT,
             Capability.Security.SUBJECT_AUTHENTICATED);
     /**
      * Executes the standard OAuth token operation used by Authorization Code Flow.
      */
-    public static final Capability<HttpRequest, HttpResponse> TOKEN = OAuth2ServerScheme.TOKEN;
+    public static final Capability<Request, Response> TOKEN = OAuth2ServerScheme.TOKEN;
     /**
      * Introspects OAuth access-token state when the composed endpoint is configured.
      */
-    public static final Capability<HttpRequest, HttpResponse> INTROSPECTION = OAuth2ServerScheme.INTROSPECTION;
+    public static final Capability<Request, Response> INTROSPECTION = OAuth2ServerScheme.INTROSPECTION;
     /**
      * Revokes OAuth access or refresh token state when the composed endpoint is configured.
      */
-    public static final Capability<HttpRequest, HttpResponse> REVOCATION = OAuth2ServerScheme.REVOCATION;
+    public static final Capability<Request, Response> REVOCATION = OAuth2ServerScheme.REVOCATION;
     /**
      * Issues OAuth device and user codes when the composed endpoint is configured.
      */
-    public static final Capability<HttpRequest, HttpResponse> DEVICE_AUTHORIZATION = OAuth2ServerScheme.DEVICE_AUTHORIZATION;
+    public static final Capability<Request, Response> DEVICE_AUTHORIZATION = OAuth2ServerScheme.DEVICE_AUTHORIZATION;
     /**
      * Publishes composed OAuth Authorization Server Metadata when configured.
      */
-    public static final Capability<HttpRequest, HttpResponse> AUTHORIZATION_SERVER_METADATA = OAuth2ServerScheme.AUTHORIZATION_SERVER_METADATA;
+    public static final Capability<Request, Response> AUTHORIZATION_SERVER_METADATA = OAuth2ServerScheme.AUTHORIZATION_SERVER_METADATA;
     /**
      * Publishes OpenID Provider Metadata.
      */
-    public static final Capability<HttpRequest, HttpResponse> DISCOVERY = capability(
+    public static final Capability<Request, Response> DISCOVERY = capability(
             OpenIdConnect.DISCOVERY,
-            HttpRequest.class,
-            HttpResponse.class,
+            Request.class,
+            Response.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
     /**
      * Publishes the Provider public JWK Set.
      */
-    public static final Capability<HttpRequest, HttpResponse> JWK_SET = capability(
+    public static final Capability<Request, Response> JWK_SET = capability(
             OpenIdConnect.JWK_SET,
-            HttpRequest.class,
-            HttpResponse.class,
+            Request.class,
+            Response.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
     /**
      * Returns claims authorized by a bearer access token.
      */
-    public static final Capability<HttpRequest, HttpResponse> USERINFO = capability(
+    public static final Capability<Request, Response> USERINFO = capability(
             OpenIdConnect.USERINFO,
-            HttpRequest.class,
-            HttpResponse.class,
+            Request.class,
+            Response.class,
             Capability.Interaction.DIRECT,
             Capability.Security.PUBLIC);
     /**
      * Ends an OpenID Provider session without creating a response entity.
      */
-    public static final Capability<HttpRequest, HttpResponse> END_SESSION = capability(
+    public static final Capability<Request, Response> END_SESSION = capability(
             OpenIdConnect.END_SESSION,
-            HttpRequest.class,
-            HttpResponse.class,
+            Request.class,
+            Response.class,
             Capability.Interaction.REDIRECT,
             Capability.Security.PUBLIC);
     /**

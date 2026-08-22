@@ -19,11 +19,15 @@
 */
 package org.miaixz.bus.auth.protocol.oidc.server;
 
+import static org.miaixz.bus.auth.Builder.ABSENT_VALUE;
+import static org.miaixz.bus.auth.Builder.CONFIGURED_VALUE;
+
 import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.Options;
 import org.miaixz.bus.auth.protocol.oauth2.GrantType;
@@ -44,21 +48,27 @@ import org.miaixz.bus.core.net.Http;
  * material and JWK Set data are resolved externally at runtime; this record stores only the standard key identifier.
  * </p>
  *
- * @param oauth2Options           validated OAuth authorization-server options
- * @param discoveryEndpoint       required OpenID Provider Metadata endpoint
- * @param userInfoEndpoint        optional UserInfo endpoint
- * @param jwkSetEndpoint          required public JWK Set endpoint
- * @param endSessionEndpoint      optional RP-Initiated Logout endpoint
- * @param subjectTypesSupported   subject identifier types implemented by this Provider
- * @param claimsSupported         claim names this Provider can supply
- * @param idTokenSigningAlgorithm exact ID Token JWS algorithm
- * @param idTokenSigningKeyId     exact public JWK {@code kid} used to resolve the signing key
- * @param idTokenLifetime         positive ID Token lifetime not exceeding one hour
+ * @param oauth2Options                        validated OAuth authorization-server options
+ * @param discoveryEndpoint                    required OpenID Provider Metadata endpoint
+ * @param userInfoEndpoint                     optional UserInfo endpoint
+ * @param jwkSetEndpoint                       required public JWK Set endpoint
+ * @param endSessionEndpoint                   optional RP-Initiated Logout endpoint
+ * @param subjectTypesSupported                subject identifier types implemented by this Provider
+ * @param scopeClaims                          exact scope-to-claim mapping used by ID Token, UserInfo, and discovery
+ *                                             generation
+ * @param pairwisePolicy                       optional pairwise subject derivation policy
+ * @param idTokenEncryptionAlgorithmsSupported allowed ID Token JWE key-management algorithms
+ * @param idTokenEncryptionMethodsSupported    allowed ID Token JWE content-encryption methods
+ * @param idTokenSigningAlgorithm              exact ID Token JWS algorithm
+ * @param idTokenSigningKeyId                  exact public JWK {@code kid} used to resolve the signing key
+ * @param idTokenLifetime                      positive ID Token lifetime not exceeding one hour
  * @author Kimi Liu
  */
 public record OpenIdServerOptions(OAuth2ServerOptions oauth2Options, Optional<Endpoint> discoveryEndpoint,
         Optional<Endpoint> userInfoEndpoint, Optional<Endpoint> jwkSetEndpoint, Optional<Endpoint> endSessionEndpoint,
-        Set<SubjectType> subjectTypesSupported, Set<String> claimsSupported, JwaAlgorithm idTokenSigningAlgorithm,
+        Set<SubjectType> subjectTypesSupported, Map<String, Set<String>> scopeClaims,
+        Optional<PairwisePolicy> pairwisePolicy, Set<JwaAlgorithm> idTokenEncryptionAlgorithmsSupported,
+        Set<JwaAlgorithm> idTokenEncryptionMethodsSupported, JwaAlgorithm idTokenSigningAlgorithm,
         String idTokenSigningKeyId, Duration idTokenLifetime) implements Options<OpenIdServerOptions> {
 
     /**
@@ -110,21 +120,29 @@ public record OpenIdServerOptions(OAuth2ServerOptions oauth2Options, Optional<En
             throw new ValidateException("OpenID Connect subject type set must not be empty");
         }
         for (SubjectType type : subjectTypesSupported) {
-            if (!SubjectType.PUBLIC.equals(Assert.notNull(type, "OpenID Connect subject type must not be null"))) {
-                throw new ValidateException("OpenID Connect Provider supports only public subject identifiers");
+            Assert.notNull(type, "OpenID Connect subject type must not be null");
+            if (!SubjectType.PUBLIC.equals(type) && !SubjectType.PAIRWISE.equals(type)) {
+                throw new ValidateException("OpenID Connect subject identifier type is unsupported");
             }
         }
         subjectTypesSupported = Set.copyOf(subjectTypesSupported);
-
-        Assert.notNull(claimsSupported, "OpenID Connect supported claim set must not be null");
-        final Set<String> claimNames = new LinkedHashSet<>();
-        for (String claim : claimsSupported) {
-            claimNames.add(Assert.notBlank(claim, "OpenID Connect supported claim name must not be blank"));
+        Assert.notNull(pairwisePolicy, "OpenID Connect pairwise policy container must not be null");
+        pairwisePolicy = Optional.ofNullable(pairwisePolicy.getOrNull());
+        if (subjectTypesSupported.contains(SubjectType.PAIRWISE) != pairwisePolicy.isPresent()) {
+            throw new ValidateException("Pairwise subject support requires exactly one pairwise policy");
         }
-        if (!claimNames.contains(JwtClaims.SUBJECT)) {
-            throw new ValidateException("OpenID Connect supported claims must contain sub");
+        scopeClaims = claims(oauth2Options, scopeClaims);
+        idTokenEncryptionAlgorithmsSupported = algorithms(
+                idTokenEncryptionAlgorithmsSupported,
+                JwaAlgorithm.Kind.KEY_MANAGEMENT,
+                "ID Token key management");
+        idTokenEncryptionMethodsSupported = algorithms(
+                idTokenEncryptionMethodsSupported,
+                JwaAlgorithm.Kind.CONTENT_ENCRYPTION,
+                "ID Token content encryption");
+        if (idTokenEncryptionAlgorithmsSupported.isEmpty() != idTokenEncryptionMethodsSupported.isEmpty()) {
+            throw new ValidateException("ID Token encryption algorithm and method sets must be configured together");
         }
-        claimsSupported = Set.copyOf(claimNames);
 
         Assert.notNull(idTokenSigningAlgorithm, "OpenID Connect ID Token signing algorithm must not be null")
                 .require(JwaAlgorithm.Kind.SIGNATURE);
@@ -135,6 +153,66 @@ public record OpenIdServerOptions(OAuth2ServerOptions oauth2Options, Optional<En
                 || idTokenLifetime.compareTo(MAXIMUM_ID_TOKEN_LIFETIME) > 0) {
             throw new ValidateException("OpenID Connect ID Token lifetime must be between one second and one hour");
         }
+    }
+
+    /**
+     * Creates a secure-default OpenID Provider builder over one frozen OAuth server.
+     */
+    public static Builder builder(final OAuth2ServerOptions oauth2) {
+        return new Builder(oauth2);
+    }
+
+    /**
+     * Derives the published claim set from the single scope-to-claim mapping.
+     */
+    public Set<String> claimsSupported() {
+        final Set<String> claims = new LinkedHashSet<>();
+        claims.add(JwtClaims.SUBJECT);
+        scopeClaims.values().forEach(claims::addAll);
+        return Set.copyOf(claims);
+    }
+
+    private static Map<String, Set<String>> claims(
+            final OAuth2ServerOptions oauth2,
+            final Map<String, Set<String>> values) {
+        Assert.notNull(values, "OpenID Connect scope claim map must not be null");
+        final Map<String, Set<String>> copy = new LinkedHashMap<>();
+        values.forEach((scope, claims) -> {
+            Assert.notBlank(scope, "OpenID Connect claim scope must not be blank");
+            if (!oauth2.scopesSupported().contains(scope)) {
+                throw new ValidateException("OpenID Connect claim scope is not supported by OAuth options");
+            }
+            final Set<String> names = new LinkedHashSet<>();
+            for (String claim : Assert.notNull(claims, "OpenID Connect scope claim set must not be null")) {
+                names.add(Assert.notBlank(claim, "OpenID Connect claim name must not be blank"));
+            }
+            copy.put(scope, Set.copyOf(names));
+        });
+        return Map.copyOf(copy);
+    }
+
+    private static Set<JwaAlgorithm> algorithms(
+            final Set<JwaAlgorithm> values,
+            final JwaAlgorithm.Kind kind,
+            final String label) {
+        Assert.notNull(values, label + " algorithm set must not be null");
+        for (JwaAlgorithm value : values) {
+            Assert.notNull(value, label + " algorithm must not be null").require(kind);
+        }
+        return Set.copyOf(values);
+    }
+
+    /**
+     * Stable key identifier for the pairwise subject namespace secret.
+     *
+     * @author Kimi Liu
+     */
+    public record PairwisePolicy(String keyId) {
+
+        public PairwisePolicy {
+            Assert.notBlank(keyId, "Pairwise subject key identifier must not be blank");
+        }
+
     }
 
     /**
@@ -181,7 +259,7 @@ public record OpenIdServerOptions(OAuth2ServerOptions oauth2Options, Optional<En
      * @return stable presence label
      */
     private static String present(final Optional<Endpoint> endpoint) {
-        return endpoint.isPresent() ? Builder.CONFIGURED_VALUE : Builder.ABSENT_VALUE;
+        return endpoint.isPresent() ? CONFIGURED_VALUE : ABSENT_VALUE;
     }
 
     /**
@@ -209,6 +287,93 @@ public record OpenIdServerOptions(OAuth2ServerOptions oauth2Options, Optional<En
     }
 
     /**
+     * Collects OpenID Provider configuration while retaining canonical-constructor validation.
+     *
+     * @author Kimi Liu
+     */
+    public static class Builder {
+
+        private final OAuth2ServerOptions oauth2;
+        private Endpoint discoveryEndpoint;
+        private Endpoint userInfoEndpoint;
+        private Endpoint endSessionEndpoint;
+        private Endpoint jwkSetEndpoint;
+        private String signingKeyId;
+        private JwaAlgorithm signingAlgorithm;
+        private Duration idTokenLifetime = Duration.ofMinutes(5);
+        private Set<SubjectType> subjectTypes = Set.of(SubjectType.PUBLIC);
+        private String pairwiseKeyId;
+        private Map<String, Set<String>> scopeClaims = Map.of("openid", Set.of(JwtClaims.SUBJECT));
+        private Set<JwaAlgorithm> encryptionAlgorithms = Set.of();
+        private Set<JwaAlgorithm> encryptionMethods = Set.of();
+
+        public Builder(final OAuth2ServerOptions oauth2) {
+            this.oauth2 = Assert.notNull(oauth2, "OpenID Connect OAuth options must not be null");
+        }
+
+        public Builder discoveryEndpoint(final Endpoint value) {
+            this.discoveryEndpoint = Assert.notNull(value, "Discovery endpoint must not be null");
+            return this;
+        }
+
+        public Builder userInfoEndpoint(final Endpoint value) {
+            this.userInfoEndpoint = Assert.notNull(value, "UserInfo endpoint must not be null");
+            return this;
+        }
+
+        public Builder endSessionEndpoint(final Endpoint value) {
+            this.endSessionEndpoint = Assert.notNull(value, "End-session endpoint must not be null");
+            return this;
+        }
+
+        public Builder jwkSetEndpoint(final Endpoint value) {
+            this.jwkSetEndpoint = Assert.notNull(value, "JWK Set endpoint must not be null");
+            return this;
+        }
+
+        public Builder signing(final String keyId, final JwaAlgorithm algorithm) {
+            this.signingKeyId = Assert.notBlank(keyId, "ID Token signing key id must not be blank");
+            this.signingAlgorithm = Assert.notNull(algorithm, "ID Token signing algorithm must not be null");
+            return this;
+        }
+
+        public Builder idTokenLifetime(final Duration value) {
+            this.idTokenLifetime = Assert.notNull(value, "ID Token lifetime must not be null");
+            return this;
+        }
+
+        public Builder subjectTypes(final Set<SubjectType> values) {
+            this.subjectTypes = Set.copyOf(Assert.notNull(values, "Subject types must not be null"));
+            return this;
+        }
+
+        public Builder pairwise(final String keyId) {
+            this.pairwiseKeyId = Assert.notBlank(keyId, "Pairwise key id must not be blank");
+            return this;
+        }
+
+        public Builder scopeClaims(final Map<String, Set<String>> values) {
+            this.scopeClaims = Map.copyOf(Assert.notNull(values, "Scope claims must not be null"));
+            return this;
+        }
+
+        public Builder idTokenEncryption(final Set<JwaAlgorithm> algorithms, final Set<JwaAlgorithm> methods) {
+            this.encryptionAlgorithms = Set.copyOf(Assert.notNull(algorithms, "JWE algorithms must not be null"));
+            this.encryptionMethods = Set.copyOf(Assert.notNull(methods, "JWE methods must not be null"));
+            return this;
+        }
+
+        public OpenIdServerOptions build() {
+            return new OpenIdServerOptions(oauth2, Optional.ofNullable(discoveryEndpoint),
+                    Optional.ofNullable(userInfoEndpoint), Optional.ofNullable(jwkSetEndpoint),
+                    Optional.ofNullable(endSessionEndpoint), subjectTypes, scopeClaims,
+                    Optional.ofNullable(pairwiseKeyId == null ? null : new PairwisePolicy(pairwiseKeyId)),
+                    encryptionAlgorithms, encryptionMethods, signingAlgorithm, signingKeyId, idTokenLifetime);
+        }
+
+    }
+
+    /**
      * Returns a diagnostic summary without key identifier, OAuth internals, or endpoint query values.
      *
      * @return redacted OpenID Provider options summary
@@ -218,7 +383,7 @@ public record OpenIdServerOptions(OAuth2ServerOptions oauth2Options, Optional<En
         return "OpenIdServerOptions[oauth2Options=[REDACTED], discoveryEndpoint=" + present(discoveryEndpoint)
                 + ", userInfoEndpoint=" + present(userInfoEndpoint) + ", jwkSetEndpoint=" + present(jwkSetEndpoint)
                 + ", endSessionEndpoint=" + present(endSessionEndpoint) + ", subjectTypesSupported="
-                + subjectTypesSupported + ", claimsSupported=" + claimsSupported + ", idTokenSigningAlgorithm="
+                + subjectTypesSupported + ", claimsSupported=" + claimsSupported() + ", idTokenSigningAlgorithm="
                 + idTokenSigningAlgorithm + ", idTokenSigningKeyId=[REDACTED], idTokenLifetime=" + idTokenLifetime
                 + Symbol.BRACKET_RIGHT;
     }

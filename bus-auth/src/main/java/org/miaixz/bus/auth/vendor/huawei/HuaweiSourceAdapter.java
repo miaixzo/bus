@@ -28,6 +28,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.guard.IssuerValidator;
@@ -57,6 +59,7 @@ import org.miaixz.bus.auth.vendor.RedirectManager;
 import org.miaixz.bus.auth.vendor.StandardAdapter;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.VendorAdapter;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -70,9 +73,6 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements Huawei Account Kit's frozen OpenID Connect web sign-in contract.
@@ -84,7 +84,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class HuaweiSourceAdapter implements VendorAdapter {
+public class HuaweiSourceAdapter implements VendorAdapter {
 
     /**
      * Exact issuer required from Discovery and every verified Huawei ID Token.
@@ -197,7 +197,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
                 Set.of(JwaAlgorithm.A256GCM.name()));
         this.idTokenVerifier = new IdTokenVerifier(
                 new IdTokenCodec(new JwtVerifier(services.jsonProvider(), jwsService, dormantJwe)), issuerValidator,
-                services.securityBaseline().timeGuard(Protocol.OIDC, services.fabricContext().clock()));
+                services.securityBaseline().timeGuard(Protocol.OIDC, FabricX.clock(services.fabric())));
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), targets.token(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(ISSUER),
@@ -225,6 +225,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
                             case Outcome.Rejected<OpenIdProviderMetadata> rejected -> Outcome
                                     .rejected(rejected.failure());
                             case Outcome.Failed<OpenIdProviderMetadata> failed -> Outcome.failed(failed.failure());
+                            default -> throw new IllegalStateException("Unsupported Outcome implementation");
                         })),
                 new StandardAdapter.Binding<>(OpenIdClientScheme.JWK_SET,
                         (ignored, context, timeout) -> jwks(timeout))));
@@ -621,6 +622,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -690,7 +692,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing Huawei-private response records
@@ -700,10 +702,10 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Huawei capability must not be null");
         Assert.notNull(context, "Huawei invocation context must not be null");
-        Assert.notNull(timeout, "Huawei invocation budget must not be null");
+        Assert.notNull(timeout, "Huawei invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("Huawei capability is not declared"));
         }
@@ -728,16 +730,16 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated state, nonce, and S256 challenge
      * @param context    immutable invocation context retained for the uniform callback
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return exact prepared redirect and state binding
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(context, "Huawei authorization context must not be null");
         if (timeout.expired()) {
-            return completed(failed(ErrorCode._408, "Huawei authorization has no remaining time budget"));
+            return completed(failed(ErrorCode._408, "Huawei authorization has no remaining timeout"));
         }
         try {
             final var challenge = initiation.codeChallenge().getOrNull();
@@ -754,10 +756,11 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
                     List.of(), Optional.empty(), Optional.of("form_post"), emptyObject());
             return standardAdapter.invoke(OpenIdClientScheme.AUTHENTICATION, authentication, context, timeout)
                     .thenApply(outcome -> switch (outcome) {
-                        case Outcome.Succeeded<UnoUrl> success -> Outcome.succeeded(
+                        case Outcome.Succeeded<Url> success -> Outcome.succeeded(
                                 new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                        case Outcome.Rejected<UnoUrl> rejected -> Outcome.rejected(rejected.failure());
-                        case Outcome.Failed<UnoUrl> failed -> Outcome.failed(failed.failure());
+                        case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                        case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (RuntimeException cause) {
             return completed(rejected("Huawei Authentication Request is invalid"));
@@ -817,13 +820,13 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback, nonce, state, and PKCE verifier
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified Huawei external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> complete(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CallbackWire values;
         try {
             values = callback(completion.callback());
@@ -848,8 +851,10 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
                 emptyObject());
         return Outcome
                 .mapStage(
-                        () -> services.secretLoader()
-                                .load(services.registration(), options.credential(), context, timeout),
+                        () -> services.secretLoader().load(
+                                new SecretLoader.Request(services.registration(), options.credential()),
+                                context,
+                                timeout),
                         loaded -> services.secretParser().parse(services.registration(), options.credential(), loaded))
                 .thenCompose(resolved -> switch (resolved) {
                     case Outcome.Succeeded<SecretLease> success -> authenticate(
@@ -861,6 +866,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
                             timeout);
                     case Outcome.Rejected<SecretLease> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<SecretLease> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -872,7 +878,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
      * @param callback   validated callback values
      * @param completion consumed browser security material
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> authenticate(
@@ -881,7 +887,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
             final CallbackWire callback,
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CompletionStage<Outcome<ExternalIdentity>> stage = CompletableFuture
                 .supplyAsync(() -> sendToken(request, secret, timeout), services.executor())
                 .thenCompose(token -> switch (token) {
@@ -893,6 +899,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
                             timeout);
                     case Outcome.Rejected<PrivateToken> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<PrivateToken> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
         return stage.whenComplete((ignored, failure) -> secret.close());
     }
@@ -902,17 +909,17 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
      *
      * @param request validated authorization-code token request
      * @param secret  open Client Secret lease
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return private token data required by the identity chain
      */
     private Outcome<PrivateToken> sendToken(
             final TokenRequest request,
             final SecretLease secret,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Huawei token request has no remaining time budget");
+                return failed(ErrorCode._408, "Huawei token request has no remaining timeout");
             }
             final AuthorizationCodeGrant grant = (AuthorizationCodeGrant) request.grant();
             body = formCodec.encode(
@@ -925,9 +932,8 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
                             new NameValue(OAuth2.Parameters.CODE_VERIFIER, grant.codeVerifier().getOrNull()),
                             new NameValue("supportAlg", JwaAlgorithm.RS256.name())));
             final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OIDC, timeout).url(endpoint)
+                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 return token(response);
             }
@@ -944,7 +950,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
      * @param response owned token endpoint response
      * @return private token or safely classified error
      */
-    private Outcome<PrivateToken> token(final HttpResponse response) {
+    private Outcome<PrivateToken> token(final Response response) {
         try {
             final JsonValue.ObjectValue object = object(response);
             if (response.code() == Http.Status.OK) {
@@ -980,7 +986,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
      * @param callback   validated authorization response values
      * @param completion consumed nonce, state, and verifier
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified identity after profile subject binding
      */
     private CompletionStage<Outcome<ExternalIdentity>> verifyToken(
@@ -988,7 +994,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
             final CallbackWire callback,
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return jwks(timeout).thenCompose(keys -> switch (keys) {
             case Outcome.Succeeded<JwkSet> success -> verifyIdToken(
                     token,
@@ -999,6 +1005,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
                     timeout);
             case Outcome.Rejected<JwkSet> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<JwkSet> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -1010,7 +1017,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
      * @param callback   validated callback values
      * @param completion consumed browser correlation
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end budget
+     * @param timeout    shared end-to-end timeout
      * @return verified identity after Huawei profile retrieval
      */
     private CompletionStage<Outcome<ExternalIdentity>> verifyIdToken(
@@ -1019,7 +1026,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
             final CallbackWire callback,
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final PublicKey key;
         try {
             final JwsService.Jws parsed = jwsService.parseCompact(token.idToken(), Set.of());
@@ -1052,6 +1059,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
                     : completed(failed(ErrorCode._502, "Huawei ID Token lacks required at_hash binding"));
             case Outcome.Rejected<IdTokenClaims> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<IdTokenClaims> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -1060,13 +1068,13 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
      *
      * @param token   verified token set
      * @param claims  cryptographically verified ID Token claims
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> profile(
             final PrivateToken token,
             final IdTokenClaims claims,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> sendProfile(token, claims, timeout), services.executor());
     }
 
@@ -1075,26 +1083,25 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
      *
      * @param token   verified token data
      * @param claims  verified ID Token claims
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return subject-bound external identity
      */
     private Outcome<ExternalIdentity> sendProfile(
             final PrivateToken token,
             final IdTokenClaims claims,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Huawei profile request has no remaining time budget");
+                return failed(ErrorCode._408, "Huawei profile request has no remaining timeout");
             }
             body = formCodec.encode(
                     List.of(
                             new NameValue(OAuth2.Parameters.ACCESS_TOKEN, token.accessToken()),
                             new NameValue("getNickName", Symbol.ONE)));
             final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OIDC, timeout).url(endpoint)
+                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 final List<String> statuses = response.headers().values("NSP_STATUS");
                 if (statuses.size() > 1) {
@@ -1185,19 +1192,18 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
     /**
      * Retrieves Huawei's JSON-media public JWK Set and applies the standard RFC 7517 model parser.
      *
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return current issuer public key set
      */
-    private CompletionStage<Outcome<JwkSet>> jwks(final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<JwkSet>> jwks(final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 if (timeout.expired()) {
-                    return failed(ErrorCode._408, "Huawei JWK Set request has no remaining time budget");
+                    return failed(ErrorCode._408, "Huawei JWK Set request has no remaining timeout");
                 }
                 final String endpoint = variant.targets().resolve(options).jwks().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy()).execute()) {
+                try (Response response = FabricX.http(services.fabric(), Protocol.OIDC, timeout).url(endpoint)
+                        .method(Http.Method.GET).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).execute()) {
                     if (response.code() != Http.Status.OK
                             || !MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
                         throw new ValidateException("Huawei JWK Set response must use HTTP 200 application/json");
@@ -1219,10 +1225,10 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
      * Executes Huawei's unauthenticated standard revocation entry using its exact private error representation.
      *
      * @param request standard revocation request
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return empty standard success or safely classified failure
      */
-    private CompletionStage<Outcome<Void>> revoke(final RevocationRequest request, final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<Void>> revoke(final RevocationRequest request, final Timeout timeout) {
         if (request == null) {
             return completed(rejected("Huawei revocation request must not be null"));
         }
@@ -1233,20 +1239,19 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
      * Sends only Huawei's registered {@code token} form field and omits client authentication and token hint.
      *
      * @param request standard revocation request
-     * @param timeout shared end-to-end budget
+     * @param timeout shared end-to-end timeout
      * @return empty standard success or classified numeric error
      */
-    private Outcome<Void> sendRevocation(final RevocationRequest request, final Timeout.Budget timeout) {
+    private Outcome<Void> sendRevocation(final RevocationRequest request, final Timeout timeout) {
         byte[] body = null;
         try {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Huawei revocation has no remaining time budget");
+                return failed(ErrorCode._408, "Huawei revocation has no remaining timeout");
             }
             body = formCodec.encode(List.of(new NameValue("token", request.token())));
             final String endpoint = variant.targets().resolve(options).revocation().getOrNull().url().toString();
-            try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.POST)
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).timeout(timeout.forFabric())
-                    .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy())
+            try (Response response = FabricX.http(services.fabric(), Protocol.OIDC, timeout).url(endpoint)
+                    .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 final JsonValue.ObjectValue object = object(response);
                 if (response.code() == Http.Status.OK) {
@@ -1268,7 +1273,7 @@ public final class HuaweiSourceAdapter implements VendorAdapter {
      * @param response response whose body remains owned by the caller
      * @return immutable provider-neutral JSON object
      */
-    private JsonValue.ObjectValue object(final HttpResponse response) {
+    private JsonValue.ObjectValue object(final Response response) {
         if (!MediaType.APPLICATION_JSON_TYPE.isCompatible(response.body().media())) {
             throw new ValidateException("Huawei response must use application/json");
         }

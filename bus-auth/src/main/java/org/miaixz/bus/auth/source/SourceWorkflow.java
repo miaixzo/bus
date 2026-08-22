@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @author Kimi Liu
  */
-public final class SourceWorkflow {
+public class SourceWorkflow {
 
     /**
      * Starts a browser, device, or direct Source authentication interaction.
@@ -55,9 +55,9 @@ public final class SourceWorkflow {
             Set.of(Capability.Interaction.REDIRECT, Capability.Interaction.DEVICE));
 
     /**
-     * Prevents construction of the capability declaration container.
+     * Creates a capability declaration container with no per-instance workflow state.
      */
-    private SourceWorkflow() {
+    public SourceWorkflow() {
         // No initialization required.
     }
 
@@ -104,16 +104,26 @@ public final class SourceWorkflow {
      * Connect, SAML, LDAP, and Vendor wire fields. The selected Source adapter translates the request into its actual
      * protocol operation after Registry routing.
      * </p>
+     *
+     * @author Kimi Liu
      */
-    public sealed interface Request permits Request.Start, Request.Completion {
+    public interface Request {
 
-        /** Marks requests that begin a Source authentication interaction. */
-        sealed interface Start extends Request permits BrowserStart, DeviceStart, Direct, OneTimeCode {
+        /**
+         * Marks requests that begin a Source authentication interaction.
+         *
+         * @author Kimi Liu
+         */
+        interface Start extends Request {
 
         }
 
-        /** Marks requests that resume and complete a previously initiated Source authentication interaction. */
-        sealed interface Completion extends Request permits BrowserCallback, DevicePoll {
+        /**
+         * Marks requests that resume and complete a previously initiated Source authentication interaction.
+         *
+         * @author Kimi Liu
+         */
+        interface Completion extends Request {
 
         }
 
@@ -122,10 +132,14 @@ public final class SourceWorkflow {
          *
          * @param sourceId       registered Source identifier
          * @param callbackTarget registered callback target bound to the same Source
+         *
+         * @author Kimi Liu
          */
         record BrowserStart(String sourceId, Callback.Target callbackTarget) implements Start {
 
-            /** Creates a browser interaction request and verifies its Source binding. */
+            /**
+             * Creates a browser interaction request and verifies its Source binding.
+             */
             public BrowserStart {
                 Assert.notBlank(sourceId, "Browser Source id must not be blank");
                 Assert.notNull(callbackTarget, "Browser callback target must not be null");
@@ -142,10 +156,14 @@ public final class SourceWorkflow {
          * Starts an OAuth device authorization interaction for a registered Source.
          *
          * @param sourceId registered Source identifier
+         *
+         * @author Kimi Liu
          */
         record DeviceStart(String sourceId) implements Start {
 
-            /** Creates a device interaction request. */
+            /**
+             * Creates a device interaction request.
+             */
             public DeviceStart {
                 Assert.notBlank(sourceId, "Device Source id must not be blank");
             }
@@ -158,10 +176,14 @@ public final class SourceWorkflow {
          * @param sourceId      registered Source identifier
          * @param principalHint non-secret principal identifier supplied to the Source
          * @param credential    reference to secret material managed by the external credential store
+         *
+         * @author Kimi Liu
          */
         record Direct(String sourceId, String principalHint, Credential.Reference credential) implements Start {
 
-            /** Creates a direct authentication request without resolving secret material. */
+            /**
+             * Creates a direct authentication request without resolving secret material.
+             */
             public Direct {
                 Assert.notBlank(sourceId, "Direct Source id must not be blank");
                 Assert.notBlank(principalHint, "Direct principal hint must not be blank");
@@ -179,10 +201,14 @@ public final class SourceWorkflow {
          *
          * @param sourceId registered Source identifier
          * @param code     opaque single-use code issued for the current Source interaction
+         *
+         * @author Kimi Liu
          */
         record OneTimeCode(String sourceId, String code) implements Start {
 
-            /** Creates a bounded single-use-code request. */
+            /**
+             * Creates a bounded single-use-code request.
+             */
             public OneTimeCode {
                 Assert.notBlank(sourceId, "One-time-code Source id must not be blank");
                 Assert.notBlank(code, "One-time authentication code must not be blank");
@@ -192,7 +218,9 @@ public final class SourceWorkflow {
                 Assert.isTrue(code.length() <= 4096, "One-time authentication code must not exceed 4096 characters");
             }
 
-            /** Returns a diagnostic representation that never reveals the single-use code. */
+            /**
+             * Returns a diagnostic representation that never reveals the single-use code.
+             */
             @Override
             public String toString() {
                 return "OneTimeCode[sourceId=" + sourceId + ", code=[REDACTED]]";
@@ -205,10 +233,14 @@ public final class SourceWorkflow {
          *
          * @param sourceId registered Source identifier selected by the route
          * @param callback raw callback transport bound to the same Source
+         *
+         * @author Kimi Liu
          */
         record BrowserCallback(String sourceId, Callback.Inbound callback) implements Completion {
 
-            /** Creates a browser completion request and verifies its Source binding. */
+            /**
+             * Creates a browser completion request and verifies its Source binding.
+             */
             public BrowserCallback {
                 Assert.notBlank(sourceId, "Browser callback Source id must not be blank");
                 Assert.notNull(callback, "Browser inbound callback must not be null");
@@ -222,10 +254,14 @@ public final class SourceWorkflow {
          *
          * @param sourceId   registered Source identifier
          * @param deviceCode opaque device code returned by the initiation stage
+         *
+         * @author Kimi Liu
          */
         record DevicePoll(String sourceId, String deviceCode) implements Completion {
 
-            /** Creates a device polling request without interpreting the opaque device code. */
+            /**
+             * Creates a device polling request without interpreting the opaque device code.
+             */
             public DevicePoll {
                 Assert.notBlank(sourceId, "Device polling Source id must not be blank");
                 Assert.notBlank(deviceCode, "Device code must not be blank");
@@ -242,18 +278,24 @@ public final class SourceWorkflow {
      * carries an identity already established by a direct interaction. These values are application orchestration
      * state, not protocol wire responses.
      * </p>
+     *
+     * @author Kimi Liu
      */
-    public sealed interface Stage permits Stage.Redirect, Stage.Device, Stage.Completed {
+    public interface Stage {
 
         /**
          * Instructs the application to redirect a user agent and retain callback correlation.
          *
          * @param location    absolute or application-approved redirect location
          * @param correlation one-time callback correlation
+         *
+         * @author Kimi Liu
          */
         record Redirect(String location, Callback.Correlation correlation) implements Stage {
 
-            /** Creates a browser redirect stage. */
+            /**
+             * Creates a browser redirect stage.
+             */
             public Redirect {
                 Assert.notBlank(location, "Source authentication redirect location must not be blank");
                 Assert.notNull(correlation, "Source authentication correlation must not be null");
@@ -270,11 +312,15 @@ public final class SourceWorkflow {
          * @param verificationUriComplete optional URI that already contains the user code
          * @param interval                minimum polling interval required by the authorization server
          * @param expiresAt               absolute expiration time of the device authorization
+         *
+         * @author Kimi Liu
          */
         record Device(String deviceCode, String userCode, String verificationUri,
                 Optional<String> verificationUriComplete, Duration interval, Instant expiresAt) implements Stage {
 
-            /** Creates an immutable device authorization stage. */
+            /**
+             * Creates an immutable device authorization stage.
+             */
             public Device {
                 Assert.notBlank(deviceCode, "Device authorization code must not be blank");
                 Assert.notBlank(userCode, "Device authorization user code must not be blank");
@@ -297,10 +343,14 @@ public final class SourceWorkflow {
          * Carries a verified identity immediately established by a direct Source interaction.
          *
          * @param identity verified external identity
+         *
+         * @author Kimi Liu
          */
         record Completed(ExternalIdentity identity) implements Stage {
 
-            /** Creates a completed direct-authentication stage. */
+            /**
+             * Creates a completed direct-authentication stage.
+             */
             public Completed {
                 Assert.notNull(identity, "Completed Source authentication identity must not be null");
             }

@@ -42,7 +42,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class OAuth2ClientDriver implements SourceDriver<OAuth2ClientOptions> {
+public class OAuth2ClientDriver implements SourceDriver<OAuth2ClientOptions> {
 
     /**
      * Immutable generic OAuth 2.x Source scheme shared by compiled registrations.
@@ -125,7 +125,7 @@ public final class OAuth2ClientDriver implements SourceDriver<OAuth2ClientOption
     @Override
     public Dependencies dependencies(final Source source, final OAuth2ClientOptions options) {
         return Dependencies.of(
-                Dependencies.Service.FABRIC_CONTEXT,
+                Dependencies.Service.FABRIC,
                 Dependencies.Service.JSON_PROVIDER,
                 Dependencies.Service.EXECUTOR,
                 Dependencies.Service.SECURITY_BASELINE);
@@ -144,7 +144,7 @@ public final class OAuth2ClientDriver implements SourceDriver<OAuth2ClientOption
     public SourceWorker compile(final Prepared<OAuth2ClientOptions> prepared, final DriverServices services) {
         Assert.notNull(prepared, "OAuth 2.x Source preparation must not be null");
         Assert.notNull(services, "OAuth 2.x Source execution services must not be null");
-        final Registration.SourceEntry record = prepared.registration();
+        final Blueprint.SourceEntry record = prepared.registration();
         final Provider provider = prepared.provider();
         final Library library = prepared.library();
         final Source source = record.resource();
@@ -253,6 +253,7 @@ public final class OAuth2ClientDriver implements SourceDriver<OAuth2ClientOption
                 case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
                 case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
                 case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+                default -> throw new IllegalStateException("Unsupported Outcome implementation");
             });
         }
 
@@ -286,7 +287,7 @@ public final class OAuth2ClientDriver implements SourceDriver<OAuth2ClientOption
          * @param capability exact declared capability
          * @param request    exact request or {@code null} for metadata
          * @param context    immutable invocation context
-         * @param timeout    shared end-to-end time budget
+         * @param timeout    shared end-to-end timeout
          * @param <Q>        request type
          * @param <S>        success type
          * @return delegated typed outcome or rejected unsupported capability
@@ -296,10 +297,10 @@ public final class OAuth2ClientDriver implements SourceDriver<OAuth2ClientOption
                 final Capability<Q, S> capability,
                 final Q request,
                 final Context context,
-                final Timeout.Budget timeout) {
+                final Timeout timeout) {
             Assert.notNull(capability, "OAuth 2.x Source capability must not be null");
             Assert.notNull(context, "OAuth 2.x Source context must not be null");
-            Assert.notNull(timeout, "OAuth 2.x Source time budget must not be null");
+            Assert.notNull(timeout, "OAuth 2.x Source timeout must not be null");
             if (!manifest.capabilities().contains(capability)) {
                 return rejected();
             }

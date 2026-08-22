@@ -19,6 +19,13 @@
 */
 package org.miaixz.bus.auth.worker;
 
+import org.miaixz.bus.auth.worker.loader.AttributeLoader;
+import org.miaixz.bus.auth.worker.loader.CertificateLoader;
+import org.miaixz.bus.auth.worker.loader.ConsumerLoader;
+import org.miaixz.bus.auth.worker.loader.FederationLoader;
+import org.miaixz.bus.auth.worker.loader.KeyLoader;
+import org.miaixz.bus.auth.worker.loader.ResourceLoader;
+import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
@@ -32,27 +39,55 @@ import org.miaixz.bus.core.lang.Assert;
  *
  * @author Kimi Liu
  */
-public final class WorkerSet {
+public class WorkerSet {
 
-    /** Optional project binding loader. */
-    private final BindingLoader bindingLoader;
-    /** Optional project consumer loader. */
+    /**
+     * Optional project binding resolver.
+     */
+    private final BindingResolver bindingResolver;
+    /**
+     * Optional project consumer loader.
+     */
     private final ConsumerLoader consumerLoader;
-    /** Optional project secret loader. */
+    /**
+     * Optional project consumer evidence verifier.
+     */
+    private final ConsumerVerifier consumerVerifier;
+    /**
+     * Optional project federation relation loader.
+     */
+    private final FederationLoader federationLoader;
+    /**
+     * Optional project secret loader.
+     */
     private final SecretLoader secretLoader;
-    /** Optional project credential store. */
+    /**
+     * Optional project credential store.
+     */
     private final CredentialStore credentialStore;
-    /** Optional project key loader. */
+    /**
+     * Optional project key loader.
+     */
     private final KeyLoader keyLoader;
-    /** Optional project certificate loader. */
+    /**
+     * Optional project certificate loader.
+     */
     private final CertificateLoader certificateLoader;
-    /** Optional project attribute loader. */
+    /**
+     * Optional project attribute loader.
+     */
     private final AttributeLoader attributeLoader;
-    /** Optional project resource loader. */
+    /**
+     * Optional project resource loader.
+     */
     private final ResourceLoader resourceLoader;
-    /** Optional project consent service. */
+    /**
+     * Optional project consent service.
+     */
     private final ConsentService consentService;
-    /** Optional project Session worker. */
+    /**
+     * Optional project Session worker.
+     */
     private final SessionWorker sessionWorker;
 
     /**
@@ -60,9 +95,11 @@ public final class WorkerSet {
      *
      * @param builder populated builder
      */
-    private WorkerSet(final Builder builder) {
-        this.bindingLoader = builder.bindingLoader;
+    public WorkerSet(final Builder builder) {
+        this.bindingResolver = builder.bindingResolver;
         this.consumerLoader = builder.consumerLoader;
+        this.consumerVerifier = builder.consumerVerifier;
+        this.federationLoader = builder.federationLoader;
         this.secretLoader = builder.secretLoader;
         this.credentialStore = builder.credentialStore;
         this.keyLoader = builder.keyLoader;
@@ -73,7 +110,9 @@ public final class WorkerSet {
         this.sessionWorker = builder.sessionWorker;
     }
 
-    /** {@return a new empty worker-set builder} */
+    /**
+     * {@return a new empty worker-set builder}
+     */
     public static Builder builder() {
         return new Builder();
     }
@@ -90,52 +129,86 @@ public final class WorkerSet {
         return Assert.notNull(value, message);
     }
 
-    /** {@return the required project binding loader} */
-    public BindingLoader bindingLoader() {
-        return required(bindingLoader, "Binding loader is required by the selected Source driver");
+    /**
+     * {@return the required project binding resolver}
+     */
+    public BindingResolver bindingResolver() {
+        return required(bindingResolver, "Binding resolver is required by the selected Source driver");
     }
 
-    /** {@return the required project consumer loader} */
+    /**
+     * {@return the required project consumer loader}
+     */
     public ConsumerLoader consumerLoader() {
         return required(consumerLoader, "Consumer loader is required by the selected Source driver");
     }
 
-    /** {@return the required project secret loader} */
+    /**
+     * {@return the required project consumer evidence verifier}
+     */
+    public ConsumerVerifier consumerVerifier() {
+        return required(consumerVerifier, "Consumer verifier is required by the selected Source driver");
+    }
+
+    /**
+     * {@return the required project federation relation loader}
+     */
+    public FederationLoader federationLoader() {
+        return required(federationLoader, "Federation loader is required by the selected Source driver");
+    }
+
+    /**
+     * {@return the required project secret loader}
+     */
     public SecretLoader secretLoader() {
         return required(secretLoader, "Secret loader is required by the selected Source driver");
     }
 
-    /** {@return the required project credential store} */
+    /**
+     * {@return the required project credential store}
+     */
     public CredentialStore credentialStore() {
         return required(credentialStore, "Credential store is required by the selected Source driver");
     }
 
-    /** {@return the required project key loader} */
+    /**
+     * {@return the required project key loader}
+     */
     public KeyLoader keyLoader() {
         return required(keyLoader, "Key loader is required by the selected Source driver");
     }
 
-    /** {@return the required project certificate loader} */
+    /**
+     * {@return the required project certificate loader}
+     */
     public CertificateLoader certificateLoader() {
         return required(certificateLoader, "Certificate loader is required by the selected Source driver");
     }
 
-    /** {@return the required project attribute loader} */
+    /**
+     * {@return the required project attribute loader}
+     */
     public AttributeLoader attributeLoader() {
         return required(attributeLoader, "Attribute loader is required by the selected Source driver");
     }
 
-    /** {@return the required project resource loader} */
+    /**
+     * {@return the required project resource loader}
+     */
     public ResourceLoader resourceLoader() {
         return required(resourceLoader, "Resource loader is required by the selected Source driver");
     }
 
-    /** {@return the required project consent service} */
+    /**
+     * {@return the required project consent service}
+     */
     public ConsentService consentService() {
         return required(consentService, "Consent service is required by the selected Source driver");
     }
 
-    /** {@return the required project Session worker} */
+    /**
+     * {@return the required project Session worker}
+     */
     public SessionWorker sessionWorker() {
         return required(sessionWorker, "Session worker is required by the selected Source driver");
     }
@@ -149,8 +222,10 @@ public final class WorkerSet {
         Assert.notNull(slots, "Source Worker slots must not be null");
         for (WorkerSlots.Slot slot : slots.slots()) {
             switch (slot) {
-                case BINDING -> bindingLoader();
+                case BINDING -> bindingResolver();
                 case CONSUMER -> consumerLoader();
+                case CONSUMER_VERIFIER -> consumerVerifier();
+                case FEDERATION -> federationLoader();
                 case SECRET -> secretLoader();
                 case CREDENTIAL -> credentialStore();
                 case KEY -> keyLoader();
@@ -165,44 +240,76 @@ public final class WorkerSet {
 
     /**
      * Collects explicit project ports without deciding which protocols are enabled.
+     *
+     * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
-        /** Selected binding loader. */
-        private BindingLoader bindingLoader;
-        /** Selected consumer loader. */
+        /**
+         * Selected binding resolver.
+         */
+        private BindingResolver bindingResolver;
+        /**
+         * Selected consumer loader.
+         */
         private ConsumerLoader consumerLoader;
-        /** Selected secret loader. */
+        /**
+         * Selected consumer evidence verifier.
+         */
+        private ConsumerVerifier consumerVerifier;
+        /**
+         * Selected federation relation loader.
+         */
+        private FederationLoader federationLoader;
+        /**
+         * Selected secret loader.
+         */
         private SecretLoader secretLoader;
-        /** Selected credential store. */
+        /**
+         * Selected credential store.
+         */
         private CredentialStore credentialStore;
-        /** Selected key loader. */
+        /**
+         * Selected key loader.
+         */
         private KeyLoader keyLoader;
-        /** Selected certificate loader. */
+        /**
+         * Selected certificate loader.
+         */
         private CertificateLoader certificateLoader;
-        /** Selected attribute loader. */
+        /**
+         * Selected attribute loader.
+         */
         private AttributeLoader attributeLoader;
-        /** Selected resource loader. */
+        /**
+         * Selected resource loader.
+         */
         private ResourceLoader resourceLoader;
-        /** Selected consent service. */
+        /**
+         * Selected consent service.
+         */
         private ConsentService consentService;
-        /** Selected Session worker. */
+        /**
+         * Selected Session worker.
+         */
         private SessionWorker sessionWorker;
 
-        /** Creates an empty worker-port builder. */
-        private Builder() {
+        /**
+         * Creates an empty worker-port builder.
+         */
+        public Builder() {
             // No initialization required.
             // Created through WorkerSet.builder().
         }
 
         /**
-         * Sets the project binding loader.
+         * Sets the project binding resolver.
          *
-         * @param value binding loader
+         * @param value binding resolver
          * @return this builder
          */
-        public Builder bindingLoader(final BindingLoader value) {
-            this.bindingLoader = Assert.notNull(value, "Binding loader must not be null");
+        public Builder bindingResolver(final BindingResolver value) {
+            this.bindingResolver = Assert.notNull(value, "Binding resolver must not be null");
             return this;
         }
 
@@ -214,6 +321,22 @@ public final class WorkerSet {
          */
         public Builder consumerLoader(final ConsumerLoader value) {
             this.consumerLoader = Assert.notNull(value, "Consumer loader must not be null");
+            return this;
+        }
+
+        /**
+         * Sets the project consumer evidence verifier.
+         */
+        public Builder consumerVerifier(final ConsumerVerifier value) {
+            this.consumerVerifier = Assert.notNull(value, "Consumer verifier must not be null");
+            return this;
+        }
+
+        /**
+         * Sets the project federation relation loader.
+         */
+        public Builder federationLoader(final FederationLoader value) {
+            this.federationLoader = Assert.notNull(value, "Federation loader must not be null");
             return this;
         }
 
@@ -305,7 +428,9 @@ public final class WorkerSet {
             return this;
         }
 
-        /** {@return an immutable worker-port selection} */
+        /**
+         * {@return an immutable worker-port selection}
+         */
         public WorkerSet build() {
             return new WorkerSet(this);
         }

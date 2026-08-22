@@ -23,23 +23,24 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX.Request;
+import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.guard.ClientAuthentication;
 import org.miaixz.bus.auth.guard.ClientAuthenticator;
 import org.miaixz.bus.auth.protocol.oauth2.TokenEndpointResponse;
 import org.miaixz.bus.auth.protocol.oauth2.TokenRequest;
 import org.miaixz.bus.auth.protocol.oauth2.codec.TokenRequestDecoder;
 import org.miaixz.bus.auth.protocol.oauth2.codec.TokenResponseEncoder;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.fabric.protocol.http.HttpRequest;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Adapts the single OAuth 2.x token endpoint to typed grant processing.
  *
  * @author Kimi Liu
  */
-public final class TokenEndpoint {
+public class TokenEndpoint {
 
     /**
      * Strict standard token request decoder.
@@ -49,7 +50,7 @@ public final class TokenEndpoint {
     /**
      * Standard HTTP client authentication strategy for this endpoint.
      */
-    private final ClientAuthenticator<HttpRequest> authenticator;
+    private final ClientAuthenticator<Request> authenticator;
 
     /**
      * Typed token service shared by every enabled grant.
@@ -76,7 +77,7 @@ public final class TokenEndpoint {
      * @param errorMapper   standard endpoint error mapper
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public TokenEndpoint(final TokenRequestDecoder decoder, final ClientAuthenticator<HttpRequest> authenticator,
+    public TokenEndpoint(final TokenRequestDecoder decoder, final ClientAuthenticator<Request> authenticator,
             final TokenService service, final TokenResponseEncoder encoder, final OAuth2ErrorMapper errorMapper) {
         this.decoder = Assert.notNull(decoder, "OAuth 2.x token decoder must not be null");
         this.authenticator = Assert.notNull(authenticator, "OAuth 2.x token client authenticator must not be null");
@@ -90,16 +91,13 @@ public final class TokenEndpoint {
      *
      * @param request immutable Fabric HTTP request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a complete standard HTTP response
      */
-    public CompletionStage<HttpResponse> handle(
-            final HttpRequest request,
-            final Context context,
-            final Timeout.Budget timeout) {
+    public CompletionStage<Response> handle(final Request request, final Context context, final Timeout timeout) {
         Assert.notNull(request, "OAuth 2.x token HTTP request must not be null");
         Assert.notNull(context, "OAuth 2.x token context must not be null");
-        Assert.notNull(timeout, "OAuth 2.x token time budget must not be null");
+        Assert.notNull(timeout, "OAuth 2.x token timeout must not be null");
         final TokenRequest decoded;
         try {
             decoded = decoder.decode(request);
@@ -108,20 +106,24 @@ public final class TokenEndpoint {
         }
         return authenticator.authenticate(request, context, timeout)
                 .thenCompose(authenticated -> switch (authenticated) {
-                    case Outcome.Succeeded<org.miaixz.bus.auth.resolver.ConsumerMetadata> success -> service
-                            .token(decoded, context.withClientId(success.value().id()), timeout)
-                            .thenApply(outcome -> switch (outcome) {
+                    case Outcome.Succeeded<ClientAuthentication> success -> service.token(
+                            decoded,
+                            success.value(),
+                            context.withClientId(success.value().consumer().id()),
+                            timeout).thenApply(outcome -> switch (outcome) {
                                 case Outcome.Succeeded<TokenEndpointResponse> value -> encoder
                                         .encode(request, value.value());
                                 case Outcome.Rejected<TokenEndpointResponse> rejected -> errorMapper
                                         .token(request, rejected.failure());
                                 case Outcome.Failed<TokenEndpointResponse> failed -> errorMapper
                                         .token(request, failed.failure());
+                                default -> throw new IllegalStateException("Unsupported Outcome implementation");
                             });
-                    case Outcome.Rejected<org.miaixz.bus.auth.resolver.ConsumerMetadata> rejected -> CompletableFuture
+                    case Outcome.Rejected<ClientAuthentication> rejected -> CompletableFuture
                             .completedFuture(errorMapper.token(request, rejected.failure()));
-                    case Outcome.Failed<org.miaixz.bus.auth.resolver.ConsumerMetadata> failed -> CompletableFuture
+                    case Outcome.Failed<ClientAuthentication> failed -> CompletableFuture
                             .completedFuture(errorMapper.token(request, failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 

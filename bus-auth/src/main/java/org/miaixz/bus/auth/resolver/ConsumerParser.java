@@ -19,20 +19,51 @@
 */
 package org.miaixz.bus.auth.resolver;
 
-import org.miaixz.bus.auth.Registration;
-import org.miaixz.bus.auth.worker.ConsumerLoader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.miaixz.bus.auth.Blueprint;
+import org.miaixz.bus.auth.protocol.oauth2.ClientAuthenticationMethod;
+import org.miaixz.bus.auth.protocol.oauth2.GrantType;
+import org.miaixz.bus.auth.protocol.oidc.SubjectType;
+import org.miaixz.bus.auth.worker.loader.ConsumerLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Pure parser for externally loaded consumer records.
+ *
+ * @author Kimi Liu
  */
-public final class ConsumerParser {
+public class ConsumerParser {
 
     /**
      * Creates a stateless consumer-metadata parser.
      */
     public ConsumerParser() {
+        // No initialization required.
+    }
+
+    /**
+     * Validates and freezes exact absolute redirect URI lexical values.
+     */
+    private static List<String> uris(final List<String> values, final String label) {
+        Assert.notNull(values, label + " list must not be null");
+        for (String value : values) {
+            try {
+                final URI uri = new URI(Assert.notBlank(value, label + " must not be blank"));
+                if (!uri.isAbsolute() || uri.getFragment() != null) {
+                    throw new ValidateException(label + " must be absolute and must not contain a fragment");
+                }
+            } catch (URISyntaxException cause) {
+                throw new ValidateException(label + " is invalid", cause);
+            }
+        }
+        return List.copyOf(values);
     }
 
     /**
@@ -44,7 +75,7 @@ public final class ConsumerParser {
      * @return validated immutable consumer metadata
      */
     public ConsumerMetadata parse(
-            final Registration.SourceEntry registration,
+            final Blueprint.SourceEntry registration,
             final String expectedId,
             final ConsumerLoader.Record record) {
         final String sourceId = Assert.notNull(registration, "Consumer Source registration must not be null").resource()
@@ -57,8 +88,30 @@ public final class ConsumerParser {
         if (!expected.equals(loaded.id())) {
             throw new ValidateException("Loaded consumer identifier does not match the requested identifier");
         }
-        return new ConsumerMetadata(loaded.id(), loaded.credential(), loaded.redirectUris(), loaded.grantTypes(),
-                loaded.responseTypes(), loaded.scopes(), loaded.metadata());
+        final ConsumerMetadata.ApplicationType applicationType;
+        try {
+            applicationType = ConsumerMetadata.ApplicationType.valueOf(
+                    Assert.notBlank(loaded.applicationType(), "Consumer application type must not be blank")
+                            .toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException cause) {
+            throw new ValidateException("Consumer application type is unsupported", cause);
+        }
+        final List<String> redirectUris = uris(loaded.redirectUris(), "Consumer redirect URI");
+        final List<String> postLogoutRedirectUris = uris(
+                loaded.postLogoutRedirectUris(),
+                "Consumer post logout redirect URI");
+        final Set<GrantType> grantTypes = loaded.grantTypes().stream().map(GrantType::new)
+                .collect(Collectors.toUnmodifiableSet());
+        final Set<ClientAuthenticationMethod> authenticationMethods = loaded.authenticationMethods().stream()
+                .map(ClientAuthenticationMethod::new).collect(Collectors.toUnmodifiableSet());
+        if (!Set.of("code").containsAll(loaded.responseTypes())) {
+            throw new ValidateException("Consumer response type is unsupported");
+        }
+        return new ConsumerMetadata(loaded.id(), loaded.name(), applicationType, redirectUris, postLogoutRedirectUris,
+                grantTypes, loaded.responseTypes(), loaded.scopes(), authenticationMethods,
+                loaded.clientAssertionKeyId(), new SubjectType(loaded.subjectType()), loaded.sectorIdentifier(),
+                loaded.idTokenEncryptionKeyId(), loaded.idTokenEncryptionAlgorithm().map(algorithm -> algorithm.name()),
+                loaded.idTokenEncryptionMethod().map(method -> method.name()), loaded.metadata());
     }
 
 }

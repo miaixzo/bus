@@ -24,7 +24,10 @@ import java.util.Set;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.FabricX.Url;
+import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -38,14 +41,13 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Declares the frozen Alipay RSA2 gateway authentication Vendor manifest.
  *
  * @author Kimi Liu
  */
-public final class AlipayManifest implements VariantManifest<AlipayOptions> {
+public class AlipayManifest implements VariantManifest<AlipayOptions> {
 
     /**
      * Stable routing identifier used to select the Alipay Vendor manifest.
@@ -117,7 +119,7 @@ public final class AlipayManifest implements VariantManifest<AlipayOptions> {
      * Complete immutable manifest for the frozen Alipay public-application flow.
      */
     private static final VariantManifest.Variant VARIANT = new VariantManifest.Variant(ID, DEFAULT,
-            Protocol.VENDOR_AUTH, List.of("auth_user"),
+            Protocol.VENDOR_AUTH, VariantManifest.Pkce.DISABLED, Credential.Type.PRIVATE_KEY, List.of("auth_user"),
             new VendorTargets(
                     Optional.of(fixed("https://openauth.alipay.com/oauth2/publicAppAuthorize.htm", Http.Method.GET)),
                     Optional.of(fixed("https://openapi.alipay.com/gateway.do", Http.Method.POST)),
@@ -141,7 +143,7 @@ public final class AlipayManifest implements VariantManifest<AlipayOptions> {
      * @return fixed endpoint target
      */
     private static VendorTargets.Fixed fixed(final String value, final Http.Method method) {
-        return new VendorTargets.Fixed(new Endpoint(UnoUrl.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
+        return new VendorTargets.Fixed(new Endpoint(Url.parse(value), Endpoint.Transport.HTTPS, Optional.of(method),
                 Set.of(Endpoint.Authentication.NONE), Optional.empty(), TlsClientAuth.NONE));
     }
 
@@ -167,6 +169,23 @@ public final class AlipayManifest implements VariantManifest<AlipayOptions> {
             final boolean enveloped) {
         return new VendorDeviation(operation, location, vendorName, Optional.ofNullable(standardName), mediaType,
                 method, enveloped);
+    }
+
+    /**
+     * Returns the one-time Alipay client form including its public verification-key identifier.
+     *
+     * @return immutable Alipay client configuration form
+     */
+    @Override
+    public Scheme.Form form() {
+        return VariantManifest.Forms.extended(
+                false,
+                List.of(
+                        VariantManifest.Forms.field(
+                                "verificationKeyId",
+                                "Alipay verification key identifier",
+                                Scheme.Form.Type.TEXT,
+                                true)));
     }
 
     /**

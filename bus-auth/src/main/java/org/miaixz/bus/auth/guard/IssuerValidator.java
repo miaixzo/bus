@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class IssuerValidator {
+public class IssuerValidator {
 
     /**
      * Creates a stateless issuer validator.

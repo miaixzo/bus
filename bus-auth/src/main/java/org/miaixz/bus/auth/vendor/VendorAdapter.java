@@ -47,25 +47,21 @@ public interface VendorAdapter extends AutoCloseable {
     Capability.Manifest manifest();
 
     /**
-     * Executes one declared strongly typed capability within the caller's existing time budget.
+     * Executes one declared strongly typed capability within the caller's existing timeout.
      *
      * @param capability capability declared by this adapter
      * @param request    exact request accepted by the capability
      * @param context    current non-secret invocation context
-     * @param timeout    shared end-to-end time budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        capability request type
      * @param <S>        capability success type
      * @return asynchronous framework outcome
      */
-    <Q, S> CompletionStage<Outcome<S>> invoke(
-            Capability<Q, S> capability,
-            Q request,
-            Context context,
-            Timeout.Budget timeout);
+    <Q, S> CompletionStage<Outcome<S>> invoke(Capability<Q, S> capability, Q request, Context context, Timeout timeout);
 
     /**
      * Releases resources owned exclusively by this compiled adapter retained in a runtime container.
-     *
+     * <p>
      * Stateless adapters use the default implementation. Project services and runtime infrastructure are never closed
      * by an adapter.
      */

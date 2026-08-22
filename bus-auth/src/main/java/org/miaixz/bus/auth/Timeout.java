@@ -22,102 +22,118 @@ package org.miaixz.bus.auth;
 import java.time.Duration;
 import java.time.Instant;
 
+import org.miaixz.bus.auth.FabricX.Clock;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Clock;
 
 /**
- * Defines the shared deadline budget propagated through one authentication operation.
+ * Carries the shared deadline propagated through one authentication operation.
  * <p>
- * This namespace does not introduce a second timeout policy. {@link Budget} combines an absolute deadline with the
- * existing Fabric timeout policy so Registry, worker, parser, codec, and transport layers consume one decreasing total
- * budget instead of resetting timeouts at every boundary.
+ * This value does not introduce a second timeout model. It combines an absolute deadline with the configured Fabric
+ * timeout so Registry, worker, parser, codec, and transport layers consume one decreasing total duration instead of
+ * resetting timeouts at every boundary.
  * </p>
  *
+ * @param clock    shared Fabric time source used by every remaining-duration calculation
+ * @param deadline absolute deadline for the complete authentication operation
+ * @param timeout  configured authentication transport timeout
  * @author Kimi Liu
  */
-public final class Timeout {
+public record Timeout(Clock clock, Instant deadline, Settings timeout) {
 
     /**
-     * Prevents instantiation of the timeout namespace.
+     * Creates a timeout without evaluating or resetting its deadline.
+     *
+     * @param clock    shared Fabric time source
+     * @param deadline absolute deadline for the complete authentication operation
+     * @param timeout  configured authentication transport timeout
+     * @throws IllegalArgumentException if any argument is {@code null}
      */
-    private Timeout() {
-        // No initialization required.
+    public Timeout {
+        Assert.notNull(clock, "Authentication timeout clock must not be null");
+        Assert.notNull(deadline, "Authentication timeout deadline must not be null");
+        Assert.notNull(timeout, "Authentication transport timeout must not be null");
     }
 
     /**
-     * Carries an absolute operation deadline and the maximum durations allowed by Fabric transport policy.
+     * Truncates one enabled Fabric duration while preserving a zero-valued disabled duration.
      *
-     * @param clock    shared Fabric time source used by every remaining-budget calculation
-     * @param deadline absolute deadline for the complete authentication operation
-     * @param policy   existing Fabric transport timeout policy to truncate
+     * @param configured configured Fabric duration
+     * @param available  remaining total operation duration
+     * @return zero when disabled, otherwise the lesser duration
+     */
+    private static Duration cap(final Duration configured, final Duration available) {
+        return configured.isZero() || configured.compareTo(available) <= 0 ? configured : available;
+    }
+
+    /**
+     * Returns the non-negative duration between the shared clock and the original absolute deadline.
+     *
+     * @return remaining total duration, or {@link Duration#ZERO} after expiration
+     */
+    public Duration remaining() {
+        final Duration duration = Duration.between(clock.now(), deadline);
+        return duration.isNegative() ? Duration.ZERO : duration;
+    }
+
+    /**
+     * Returns whether no total operation time remains.
+     *
+     * @return {@code true} when the absolute deadline has been reached or passed
+     */
+    public boolean expired() {
+        return remaining().isZero();
+    }
+
+    /**
+     * Produces a Fabric timeout whose six durations cannot exceed the current remaining total duration.
+     * <p>
+     * Fabric's zero-valued connect, read, write, call, or ping durations retain their documented disabled meaning. An
+     * expired timeout is rejected before transport construction because Fabric requires a positive close duration and
+     * no transport operation may start after the shared deadline.
+     * </p>
+     *
+     * @return authentication transport timeout truncated to the current remaining total duration
+     * @throws ValidateException if the shared operation timeout has expired
+     */
+    public Settings effective() {
+        final Duration available = remaining();
+        if (available.isZero()) {
+            throw new ValidateException("Authentication timeout has expired");
+        }
+        return new Settings(cap(timeout.connect(), available), cap(timeout.read(), available),
+                cap(timeout.write(), available), cap(timeout.call(), available), cap(timeout.ping(), available),
+                cap(timeout.close(), available));
+    }
+
+    /**
+     * Carries the six authentication transport timeout dimensions without exposing a Fabric type.
+     *
+     * @param connect connection-establishment timeout
+     * @param read    individual read timeout
+     * @param write   individual write timeout
+     * @param call    complete transport-call timeout
+     * @param ping    keepalive probe timeout
+     * @param close   graceful-close timeout
      * @author Kimi Liu
      */
-    public record Budget(Clock clock, Instant deadline, org.miaixz.bus.fabric.Timeout policy) {
+    public record Settings(Duration connect, Duration read, Duration write, Duration call, Duration ping,
+            Duration close) {
 
         /**
-         * Creates a budget without evaluating or resetting its deadline.
-         *
-         * @param clock    shared Fabric time source
-         * @param deadline absolute operation deadline
-         * @param policy   Fabric timeout policy
-         * @throws IllegalArgumentException if any component is {@code null}
+         * Validates every configured timeout duration.
          */
-        public Budget {
-            Assert.notNull(clock, "Authentication budget clock must not be null");
-            Assert.notNull(deadline, "Authentication budget deadline must not be null");
-            Assert.notNull(policy, "Authentication budget Fabric policy must not be null");
-        }
-
-        /**
-         * Truncates one enabled Fabric duration while preserving a zero-valued disabled duration.
-         *
-         * @param configured configured Fabric duration
-         * @param available  remaining total operation duration
-         * @return zero when disabled, otherwise the lesser duration
-         */
-        private static Duration cap(final Duration configured, final Duration available) {
-            return configured.isZero() || configured.compareTo(available) <= 0 ? configured : available;
-        }
-
-        /**
-         * Returns the non-negative duration between the shared clock and the original absolute deadline.
-         *
-         * @return remaining total duration, or {@link Duration#ZERO} after expiration
-         */
-        public Duration remaining() {
-            final Duration duration = Duration.between(clock.now(), deadline);
-            return duration.isNegative() ? Duration.ZERO : duration;
-        }
-
-        /**
-         * Returns whether no total operation time remains.
-         *
-         * @return {@code true} when the absolute deadline has been reached or passed
-         */
-        public boolean expired() {
-            return remaining().isZero();
-        }
-
-        /**
-         * Produces a Fabric policy whose six durations cannot exceed the current remaining total budget.
-         * <p>
-         * Fabric's zero-valued connect, read, write, call, or ping durations retain their documented disabled meaning.
-         * An expired budget is rejected before transport construction because Fabric requires a positive close duration
-         * and no transport operation may start after the shared deadline.
-         * </p>
-         *
-         * @return Fabric timeout policy truncated to the current remaining total budget
-         * @throws ValidateException if the shared operation budget has expired
-         */
-        public org.miaixz.bus.fabric.Timeout forFabric() {
-            final Duration available = remaining();
-            if (available.isZero()) {
-                throw new ValidateException("Authentication time budget has expired");
+        public Settings {
+            Assert.notNull(connect, "Authentication connect timeout must not be null");
+            Assert.notNull(read, "Authentication read timeout must not be null");
+            Assert.notNull(write, "Authentication write timeout must not be null");
+            Assert.notNull(call, "Authentication call timeout must not be null");
+            Assert.notNull(ping, "Authentication ping timeout must not be null");
+            Assert.notNull(close, "Authentication close timeout must not be null");
+            if (connect.isNegative() || read.isNegative() || write.isNegative() || call.isNegative()
+                    || ping.isNegative() || close.isNegative()) {
+                throw new ValidateException("Authentication transport timeout durations must not be negative");
             }
-            return new org.miaixz.bus.fabric.Timeout(cap(policy.connect(), available), cap(policy.read(), available),
-                    cap(policy.write(), available), cap(policy.call(), available), cap(policy.ping(), available),
-                    cap(policy.close(), available));
         }
 
     }

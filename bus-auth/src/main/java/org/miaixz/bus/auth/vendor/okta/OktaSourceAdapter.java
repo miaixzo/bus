@@ -30,6 +30,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.guard.IssuerValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.*;
@@ -57,9 +59,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements Okta Source authentication while preserving the standard OpenID Connect public surface.
@@ -72,7 +71,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class OktaSourceAdapter implements VendorAdapter {
+public class OktaSourceAdapter implements VendorAdapter {
 
     /**
      * Registered Source identifier copied into verified external identities.
@@ -207,7 +206,7 @@ public final class OktaSourceAdapter implements VendorAdapter {
         final IdTokenCodec idTokenCodec = new IdTokenCodec(
                 new JwtVerifier(services.jsonProvider(), jwsService, dormantJweService));
         this.idTokenVerifier = new IdTokenVerifier(idTokenCodec, new IssuerValidator(),
-                services.securityBaseline().timeGuard(Protocol.OIDC, services.fabricContext().clock()));
+                services.securityBaseline().timeGuard(Protocol.OIDC, FabricX.clock(services.fabric())));
     }
 
     /**
@@ -281,6 +280,7 @@ public final class OktaSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -343,7 +343,7 @@ public final class OktaSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific standard or Source authentication request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end time budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed operation outcome without a platform-specific public model
@@ -353,10 +353,10 @@ public final class OktaSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "Okta capability must not be null");
         Assert.notNull(context, "Okta invocation context must not be null");
-        Assert.notNull(timeout, "Okta invocation budget must not be null");
+        Assert.notNull(timeout, "Okta invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("Okta capability is not declared"));
         }
@@ -381,13 +381,13 @@ public final class OktaSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated one-time browser material
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end time budget
+     * @param timeout    shared end-to-end timeout
      * @return standard-client-produced authorization location bound to state
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final String nonce = initiation.nonce().getOrNull();
         if (nonce == null || initiation.codeChallenge().isPresent()) {
             return completed(failed(ErrorCode._500, "Okta browser flow generated invalid OIDC correlation material"));
@@ -401,10 +401,11 @@ public final class OktaSourceAdapter implements VendorAdapter {
                     List.of(), Optional.empty(), Optional.empty(), emptyObject());
             return standardAdapter.invoke(OpenIdClientScheme.AUTHENTICATION, authentication, context, timeout)
                     .thenApply(outcome -> switch (outcome) {
-                        case Outcome.Succeeded<UnoUrl> success -> Outcome.succeeded(
+                        case Outcome.Succeeded<Url> success -> Outcome.succeeded(
                                 new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                        case Outcome.Rejected<UnoUrl> rejected -> Outcome.rejected(rejected.failure());
-                        case Outcome.Failed<UnoUrl> failed -> Outcome.failed(failed.failure());
+                        case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                        case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                        default -> throw new IllegalStateException("Unsupported Outcome implementation");
                     });
         } catch (RuntimeException cause) {
             return completed(rejected("Okta Authentication Request is invalid"));
@@ -424,6 +425,7 @@ public final class OktaSourceAdapter implements VendorAdapter {
                     .orElseThrow(() -> new ValidateException("Okta authorization success requires state"));
             case AuthorizationResponseDecoder.Error error -> error.response().state()
                     .orElseThrow(() -> new ValidateException("Okta authorization error requires state"));
+            default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
 
@@ -432,13 +434,13 @@ public final class OktaSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed callback and one-time nonce material
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end time budget
+     * @param timeout    shared end-to-end timeout
      * @return verified Okta external identity or a closed standard failure
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final AuthorizationResponseDecoder.Decoded decoded;
         try {
             decoded = decode(completion.callback());
@@ -465,6 +467,7 @@ public final class OktaSourceAdapter implements VendorAdapter {
                     case Outcome.Rejected<TokenEndpointResponse> rejected -> completed(
                             Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<TokenEndpointResponse> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -475,7 +478,7 @@ public final class OktaSourceAdapter implements VendorAdapter {
      * @param response   correlated authorization response
      * @param completion consumed nonce and state material
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end time budget
+     * @param timeout    shared end-to-end timeout
      * @return verified external identity stage
      */
     private CompletionStage<Outcome<ExternalIdentity>> verify(
@@ -483,7 +486,7 @@ public final class OktaSourceAdapter implements VendorAdapter {
             final AuthorizationCodeResponse response,
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!TokenType.BEARER.equals(token.tokenType())) {
             return completed(rejected("Okta token response requires Bearer and id_token"));
         }
@@ -499,6 +502,7 @@ public final class OktaSourceAdapter implements VendorAdapter {
                             timeout);
                     case Outcome.Rejected<JwkSet> rejected -> completed(Outcome.rejected(rejected.failure()));
                     case Outcome.Failed<JwkSet> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -511,7 +515,7 @@ public final class OktaSourceAdapter implements VendorAdapter {
      * @param response   correlated authorization response
      * @param completion consumed nonce and state material
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end time budget
+     * @param timeout    shared end-to-end timeout
      * @return identity stage after ID Token and UserInfo subject verification
      */
     private CompletionStage<Outcome<ExternalIdentity>> verify(
@@ -521,7 +525,7 @@ public final class OktaSourceAdapter implements VendorAdapter {
             final AuthorizationCodeResponse response,
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final PublicKey key;
         try {
             final JwsService.Jws parsed = jwsService.parseCompact(compact, Set.of());
@@ -552,6 +556,7 @@ public final class OktaSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<IdTokenClaims> success -> userInfo(token, success.value(), context, timeout);
             case Outcome.Rejected<IdTokenClaims> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<IdTokenClaims> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -561,20 +566,21 @@ public final class OktaSourceAdapter implements VendorAdapter {
      * @param token   standard token response containing the bearer access token
      * @param claims  cryptographically verified ID Token claims
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return verified external identity stage
      */
     private CompletionStage<Outcome<ExternalIdentity>> userInfo(
             final OpenIdTokenResponse token,
             final IdTokenClaims claims,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return standardAdapter
                 .invoke(OpenIdClientScheme.USERINFO, new UserInfoRequest(token.accessToken()), context, timeout)
                 .thenApply(outcome -> switch (outcome) {
                     case Outcome.Succeeded<UserInfoResponse> success -> identity(success.value(), claims, timeout);
                     case Outcome.Rejected<UserInfoResponse> rejected -> Outcome.rejected(rejected.failure());
                     case Outcome.Failed<UserInfoResponse> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -589,7 +595,7 @@ public final class OktaSourceAdapter implements VendorAdapter {
     private Outcome<ExternalIdentity> identity(
             final UserInfoResponse userInfo,
             final IdTokenClaims claims,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!claims.subject().equals(userInfo.subject())) {
             return rejected("Okta UserInfo subject does not match the verified ID Token");
         }
@@ -619,19 +625,18 @@ public final class OktaSourceAdapter implements VendorAdapter {
     /**
      * Retrieves and decodes the issuer-bound standard Okta JWK Set.
      *
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return current standard JWK Set or a safe operational failure
      */
-    private CompletionStage<Outcome<JwkSet>> jwks(final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<JwkSet>> jwks(final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             if (timeout.expired()) {
-                return failed(ErrorCode._408, "Okta JWK Set request has no remaining time budget");
+                return failed(ErrorCode._408, "Okta JWK Set request has no remaining timeout");
             }
             try {
                 final String endpoint = variant.targets().resolve(options).jwks().getOrNull().url().toString();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint).method(Http.Method.GET)
-                        .timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OIDC).addressPolicy()).execute()) {
+                try (Response response = FabricX.http(services.fabric(), Protocol.OIDC, timeout).url(endpoint)
+                        .method(Http.Method.GET).execute()) {
                     return Outcome.succeeded(jwkSetCodec.decode(response));
                 }
             } catch (RuntimeException cause) {

@@ -31,6 +31,7 @@ import org.miaixz.bus.auth.protocol.ldap.*;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -38,7 +39,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class CompareService {
+public class CompareService {
 
     /**
      * Compiled server-role Source identifier.
@@ -89,6 +90,7 @@ public final class CompareService {
                     : Outcome.succeeded(new LdapMessage(messageId, succeeded.value(), List.of()));
             case Outcome.Rejected<CompareResponse> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<CompareResponse> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         };
     }
 
@@ -101,7 +103,7 @@ public final class CompareService {
      */
     private static Outcome<LdapMessage> local(final int messageId, final LdapResultCode code) {
         final LdapResult result = new LdapResult(code, new DistinguishedName(Normal.EMPTY),
-                "The LDAP Compare request was not accepted.", org.miaixz.bus.core.lang.Optional.empty());
+                "The LDAP Compare request was not accepted.", Optional.empty());
         return Outcome.succeeded(new LdapMessage(Math.max(0, messageId), new CompareResponse(result), List.of()));
     }
 
@@ -131,16 +133,16 @@ public final class CompareService {
      *
      * @param message complete Compare request message
      * @param context immutable invocation context with a trusted connection snapshot
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a correlated formal Compare response or closed failure
      */
     public CompletionStage<Outcome<LdapMessage>> compare(
             final LdapMessage message,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(message, "LDAP Compare message must not be null");
         Assert.notNull(context, "LDAP Compare context must not be null");
-        Assert.notNull(timeout, "LDAP Compare time budget must not be null");
+        Assert.notNull(timeout, "LDAP Compare timeout must not be null");
         if (!(message.protocolOp() instanceof CompareRequest request) || message.messageId() <= 0) {
             return completed(local(message.messageId(), LdapResultCode.PROTOCOL_ERROR));
         }
@@ -151,7 +153,7 @@ public final class CompareService {
                 context.network().connection().isPresent(),
                 "LDAP Compare requires a trusted connection snapshot");
         if (timeout.expired()) {
-            return completed(Outcome.failed(failure("LDAP Compare time budget expired")));
+            return completed(Outcome.failed(failure("LDAP Compare timeout expired")));
         }
         final CompletionStage<Outcome<CompareResponse>> stage;
         try {

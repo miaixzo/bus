@@ -132,7 +132,7 @@ public record BulkRequest(List<String> schemas, Optional<Integer> failOnErrors, 
      *
      * @author Kimi Liu
      */
-    public sealed interface Data extends AutoCloseable permits ResourceData, PatchData {
+    public interface Data extends AutoCloseable {
 
         /**
          * Releases sensitive data owned by this payload.

@@ -36,7 +36,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public sealed interface Resource permits User, Group, Schema, ResourceType, ServiceProviderConfig {
+public interface Resource {
 
     /**
      * Normalizes a required Bus Optional containing non-blank text.

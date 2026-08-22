@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @author Kimi Liu
  */
-public final class SourceValidator {
+public class SourceValidator {
 
     /**
      * Frozen directory of explicitly supplied Source drivers.
@@ -55,6 +55,24 @@ public final class SourceValidator {
      */
     public SourceValidator(final DriverDirectory drivers) {
         this.drivers = Assert.notNull(drivers, "Source driver directory must not be null");
+    }
+
+    /**
+     * Adds one missing-required-field violation when text is blank.
+     *
+     * @param violations  destination violations
+     * @param field       field name
+     * @param value       candidate value
+     * @param description safe violation description
+     */
+    private static void required(
+            final List<FieldViolation> violations,
+            final String field,
+            final String value,
+            final String description) {
+        if (StringKit.isBlank(value)) {
+            violations.add(new FieldViolation(field, ErrorCode._100100, description));
+        }
     }
 
     /**
@@ -106,24 +124,6 @@ public final class SourceValidator {
             }
         }
         return List.copyOf(violations);
-    }
-
-    /**
-     * Adds one missing-required-field violation when text is blank.
-     *
-     * @param violations  destination violations
-     * @param field       field name
-     * @param value       candidate value
-     * @param description safe violation description
-     */
-    private static void required(
-            final List<FieldViolation> violations,
-            final String field,
-            final String value,
-            final String description) {
-        if (StringKit.isBlank(value)) {
-            violations.add(new FieldViolation(field, ErrorCode._100100, description));
-        }
     }
 
     /**

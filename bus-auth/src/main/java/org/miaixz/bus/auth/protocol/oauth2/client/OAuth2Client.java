@@ -24,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -31,7 +32,6 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Aggregates the six supported OAuth 2.x client operations without duplicating operation implementation.
@@ -42,7 +42,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class OAuth2Client {
+public class OAuth2Client {
 
     /**
      * Single-operation authorization request client.
@@ -120,13 +120,13 @@ public final class OAuth2Client {
      *
      * @param request standard authorization request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing an absolute authorization URL or framework failure
      */
-    public CompletionStage<Outcome<UnoUrl>> authorize(
+    public CompletionStage<Outcome<Url>> authorize(
             final AuthorizationRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return authorizationClient.authorize(request, context, timeout);
     }
 
@@ -135,13 +135,13 @@ public final class OAuth2Client {
      *
      * @param request standard token request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a standard token response or framework failure
      */
     public CompletionStage<Outcome<TokenEndpointResponse>> token(
             final TokenRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return tokenClient.token(request, context, timeout);
     }
 
@@ -150,13 +150,13 @@ public final class OAuth2Client {
      *
      * @param request standard introspection request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a standard introspection response or framework failure
      */
     public CompletionStage<Outcome<IntrospectionResponse>> introspect(
             final IntrospectionRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final IntrospectionClient client = introspectionClient.getOrNull();
         return client == null ? unavailable("OAuth 2.x introspection capability is not configured")
                 : client.introspect(request, context, timeout);
@@ -167,13 +167,13 @@ public final class OAuth2Client {
      *
      * @param request standard revocation request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage whose successful value is {@code null} because RFC 7009 defines no response entity
      */
     public CompletionStage<Outcome<Void>> revoke(
             final RevocationRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final RevocationClient client = revocationClient.getOrNull();
         return client == null ? unavailable("OAuth 2.x revocation capability is not configured")
                 : client.revoke(request, context, timeout);
@@ -184,13 +184,13 @@ public final class OAuth2Client {
      *
      * @param request standard device authorization request
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing a standard device authorization response or framework failure
      */
     public CompletionStage<Outcome<DeviceAuthorizationResponse>> deviceAuthorization(
             final DeviceAuthorizationRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final DeviceAuthorizationClient client = deviceAuthorizationClient.getOrNull();
         return client == null ? unavailable("OAuth 2.x device authorization capability is not configured")
                 : client.deviceAuthorization(request, context, timeout);
@@ -200,12 +200,12 @@ public final class OAuth2Client {
      * Retrieves RFC 8414 authorization server metadata.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing standard authorization server metadata or framework failure
      */
     public CompletionStage<Outcome<AuthorizationServerMetadata>> discover(
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final AuthorizationServerMetadataClient client = metadataClient.getOrNull();
         return client == null ? unavailable("OAuth 2.x metadata capability is not configured")
                 : client.metadata(context, timeout);

@@ -26,6 +26,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -54,9 +56,6 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
 /**
  * Implements VK ID Source authentication and the registered OAuth 2.0 wire adaptations.
@@ -68,7 +67,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class VkSourceAdapter implements VendorAdapter {
+public class VkSourceAdapter implements VendorAdapter {
 
     /**
      * Trusted VK ID authority recorded in federated identity evidence.
@@ -346,6 +345,7 @@ public final class VkSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<?> success -> Outcome.succeeded(responseType.cast(success.value()));
             case Outcome.Rejected<?> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<?> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -441,7 +441,7 @@ public final class VkSourceAdapter implements VendorAdapter {
      * @param capability exact runtime-selected capability
      * @param request    capability-specific Source or OAuth request
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end time budget
+     * @param timeout    shared end-to-end timeout
      * @param <Q>        request type
      * @param <S>        successful response type
      * @return typed outcome without exposing private VK response models
@@ -451,10 +451,10 @@ public final class VkSourceAdapter implements VendorAdapter {
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(capability, "VK capability must not be null");
         Assert.notNull(context, "VK invocation context must not be null");
-        Assert.notNull(timeout, "VK invocation budget must not be null");
+        Assert.notNull(timeout, "VK invocation timeout must not be null");
         if (!manifest().capabilities().contains(capability)) {
             return completed(rejected("VK capability is not declared by the selected manifest"));
         }
@@ -486,13 +486,13 @@ public final class VkSourceAdapter implements VendorAdapter {
      *
      * @param initiation generated state and mandatory S256 challenge
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end time budget
+     * @param timeout    shared end-to-end timeout
      * @return exact redirect correlated by state
      */
     private CompletionStage<Outcome<RedirectManager.Prepared>> prepare(
             final RedirectManager.Initiation initiation,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final var challenge = initiation.codeChallenge().getOrNull();
         if (initiation.nonce().isPresent() || challenge == null || !PkceMethod.S256.equals(challenge.method())) {
             return completed(failed(ErrorCode._500, "VK browser flow lacks mandatory S256 PKCE material"));
@@ -502,10 +502,11 @@ public final class VkSourceAdapter implements VendorAdapter {
                 Optional.of(challenge.value()), Optional.of(PkceMethod.S256.value()), empty());
         return standardAdapter.invoke(OAuth2ClientScheme.AUTHORIZATION, request, context, timeout)
                 .thenApply(outcome -> switch (outcome) {
-                    case Outcome.Succeeded<UnoUrl> success -> Outcome
+                    case Outcome.Succeeded<Url> success -> Outcome
                             .succeeded(new RedirectManager.Prepared(success.value().toString(), initiation.state()));
-                    case Outcome.Rejected<UnoUrl> rejected -> Outcome.rejected(rejected.failure());
-                    case Outcome.Failed<UnoUrl> failed -> Outcome.failed(failed.failure());
+                    case Outcome.Rejected<Url> rejected -> Outcome.rejected(rejected.failure());
+                    case Outcome.Failed<Url> failed -> Outcome.failed(failed.failure());
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
                 });
     }
 
@@ -524,13 +525,13 @@ public final class VkSourceAdapter implements VendorAdapter {
      *
      * @param completion consumed state and mandatory PKCE verifier
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end time budget
+     * @param timeout    shared end-to-end timeout
      * @return verified VK identity
      */
     private CompletionStage<Outcome<ExternalIdentity>> identity(
             final RedirectManager.Completion completion,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final CallbackWire values;
         try {
             values = callback(completion.callback());
@@ -555,6 +556,7 @@ public final class VkSourceAdapter implements VendorAdapter {
             case Outcome.Succeeded<TokenResponse> success -> profile(success.value(), timeout);
             case Outcome.Rejected<TokenResponse> rejected -> completed(Outcome.rejected(rejected.failure()));
             case Outcome.Failed<TokenResponse> failed -> completed(Outcome.failed(failed.failure()));
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -562,10 +564,10 @@ public final class VkSourceAdapter implements VendorAdapter {
      * Executes one standard authorization-code or refresh-token grant using VK's registered form extensions.
      *
      * @param request standard OAuth token request
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return standard token response with VK user_id retained as an extension
      */
-    private CompletionStage<Outcome<TokenResponse>> token(final TokenRequest request, final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<TokenResponse>> token(final TokenRequest request, final Timeout timeout) {
         final List<NameValue> parameters;
         try {
             parameters = tokenParameters(request);
@@ -577,14 +579,13 @@ public final class VkSourceAdapter implements VendorAdapter {
             try {
                 if (timeout.expired()) {
                     return VkSourceAdapter
-                            .<TokenResponse>failed(ErrorCode._408, "VK token request has no remaining time budget");
+                            .<TokenResponse>failed(ErrorCode._408, "VK token request has no remaining timeout");
                 }
                 body = formCodec.encode(parameters);
                 final var endpoint = variant.targets().resolve(options).token().getOrNull();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                        .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                        .timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+                try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                        .url(endpoint.url().toString()).method(Http.Method.POST)
+                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                         .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                     return decodeToken(response);
                 }
@@ -627,7 +628,7 @@ public final class VkSourceAdapter implements VendorAdapter {
      * @param response open owned token response
      * @return standard token response or safely classified rejection/failure
      */
-    private Outcome<TokenResponse> decodeToken(final HttpResponse response) {
+    private Outcome<TokenResponse> decodeToken(final Response response) {
         final JsonValue.ObjectValue object;
         try {
             object = object(response);
@@ -705,12 +706,10 @@ public final class VkSourceAdapter implements VendorAdapter {
      * Retrieves VK's private current-user envelope with the issued access token.
      *
      * @param token   standard token response produced by the immediately preceding grant
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return verified VK external identity
      */
-    private CompletionStage<Outcome<ExternalIdentity>> profile(
-            final TokenResponse token,
-            final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<ExternalIdentity>> profile(final TokenResponse token, final Timeout timeout) {
         return CompletableFuture.supplyAsync(() -> {
             byte[] body = null;
             try {
@@ -719,10 +718,9 @@ public final class VkSourceAdapter implements VendorAdapter {
                                 new NameValue(OAuth2.Parameters.ACCESS_TOKEN, token.accessToken()),
                                 new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId())));
                 final var endpoint = variant.targets().resolve(options).userInfo().getOrNull();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                        .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                        .timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+                try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                        .url(endpoint.url().toString()).method(Http.Method.POST)
+                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                         .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                     return decodeProfile(response, token, timeout);
                 }
@@ -739,13 +737,13 @@ public final class VkSourceAdapter implements VendorAdapter {
      *
      * @param response open owned current-user response
      * @param token    immediately preceding standard token response
-     * @param timeout  shared clock and time budget
+     * @param timeout  shared clock and timeout
      * @return verified external identity or safely classified failure
      */
     private Outcome<ExternalIdentity> decodeProfile(
-            final HttpResponse response,
+            final Response response,
             final TokenResponse token,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         final JsonValue.ObjectValue envelope;
         try {
             envelope = object(response);
@@ -810,10 +808,10 @@ public final class VkSourceAdapter implements VendorAdapter {
      * Adapts the standard revocation request to VK's access_token/client_id form and response marker.
      *
      * @param request standard RFC 7009 revocation request
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return successful empty result only for VK response marker one
      */
-    private CompletionStage<Outcome<Void>> revoke(final RevocationRequest request, final Timeout.Budget timeout) {
+    private CompletionStage<Outcome<Void>> revoke(final RevocationRequest request, final Timeout timeout) {
         if (request.tokenTypeHint().isPresent()
                 && !OAuth2.Parameters.ACCESS_TOKEN.equals(request.tokenTypeHint().getOrNull())) {
             return completed(rejected("VK revocation accepts only an access_token hint"));
@@ -826,10 +824,9 @@ public final class VkSourceAdapter implements VendorAdapter {
                                 new NameValue(OAuth2.Parameters.ACCESS_TOKEN, request.token()),
                                 new NameValue(OAuth2.Parameters.CLIENT_ID, options.clientId())));
                 final var endpoint = variant.targets().resolve(options).revocation().getOrNull();
-                try (HttpResponse response = Fabric.http(services.fabricContext()).url(endpoint.url().toString())
-                        .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
-                        .timeout(timeout.forFabric())
-                        .addressPolicy(services.securityBaseline().require(Protocol.OAUTH2).addressPolicy())
+                try (Response response = FabricX.http(services.fabric(), Protocol.OAUTH2, timeout)
+                        .url(endpoint.url().toString()).method(Http.Method.POST)
+                        .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                         .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                     final JsonValue.ObjectValue object = object(response);
                     if (error(object)) {
@@ -935,7 +932,7 @@ public final class VkSourceAdapter implements VendorAdapter {
      * @return provider-neutral JSON object
      * @throws ValidateException if media type, JSON syntax, duplicate names, or root type is invalid
      */
-    private JsonValue.ObjectValue object(final HttpResponse response) {
+    private JsonValue.ObjectValue object(final Response response) {
         final MediaType media = response.body().media();
         if (media == null || !MediaType.APPLICATION_JSON_TYPE.isCompatible(media)) {
             throw new ValidateException("VK response must use application/json");

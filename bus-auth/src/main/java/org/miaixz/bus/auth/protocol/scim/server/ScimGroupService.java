@@ -38,7 +38,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  *
  * @author Kimi Liu
  */
-public final class ScimGroupService {
+public class ScimGroupService {
 
     /**
      * Generic resource operation delegate.
@@ -78,6 +78,7 @@ public final class ScimGroupService {
                     : Outcome.failed(failure(ErrorCode._500, "SCIM Group store returned another resource type"));
             case Outcome.Rejected<Resource> rejected -> Outcome.rejected(rejected.failure());
             case Outcome.Failed<Resource> failed -> Outcome.failed(failed.failure());
+            default -> throw new IllegalStateException("Unsupported Outcome implementation");
         });
     }
 
@@ -108,13 +109,10 @@ public final class ScimGroupService {
      *
      * @param request inbound Group resource
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the created Group or a closed framework failure
      */
-    public CompletionStage<Outcome<Group>> create(
-            final Group request,
-            final Context context,
-            final Timeout.Budget timeout) {
+    public CompletionStage<Outcome<Group>> create(final Group request, final Context context, final Timeout timeout) {
         Assert.notNull(request, "SCIM Group create request must not be null");
         return group(delegate.create(request, context, timeout));
     }
@@ -124,13 +122,13 @@ public final class ScimGroupService {
      *
      * @param request registered Group resource target
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the current Group or a closed framework failure
      */
     public CompletionStage<Outcome<Group>> retrieve(
             final ResourceTarget request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!target(request) || request.resourceId().isEmpty()) {
             return rejected();
         }
@@ -144,7 +142,7 @@ public final class ScimGroupService {
      * @param request complete replacement Group body
      * @param ifMatch optional If-Match entity-tag
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the replaced Group or a closed framework failure
      */
     public CompletionStage<Outcome<Group>> replace(
@@ -152,7 +150,7 @@ public final class ScimGroupService {
             final Group request,
             final Optional<String> ifMatch,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "SCIM Group replace request must not be null");
         if (!target(target) || target.resourceId().isEmpty()) {
             return rejected();
@@ -165,13 +163,13 @@ public final class ScimGroupService {
      *
      * @param request Group-targeted standard PatchOp
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the patched Group or a closed framework failure
      */
     public CompletionStage<Outcome<Group>> patch(
             final PatchRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "SCIM Group PatchOp must not be null");
         if (!target(request.target())) {
             return rejected();
@@ -185,14 +183,14 @@ public final class ScimGroupService {
      * @param target  registered individual Group target
      * @param ifMatch optional If-Match entity-tag
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing empty success or a closed framework failure
      */
     public CompletionStage<Outcome<Void>> delete(
             final ResourceTarget target,
             final Optional<String> ifMatch,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         if (!target(target) || target.resourceId().isEmpty()) {
             return rejected();
         }
@@ -204,13 +202,13 @@ public final class ScimGroupService {
      *
      * @param request GET search query targeting the Group collection
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the standard ListResponse or a closed framework failure
      */
     public CompletionStage<Outcome<ListResponse>> search(
             final SearchQuery request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "SCIM Group search request must not be null");
         if (!target(request.target())) {
             return rejected();
@@ -224,14 +222,14 @@ public final class ScimGroupService {
      * @param target  typed Group collection target
      * @param request standard POST SearchRequest body
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing the standard ListResponse or a closed framework failure
      */
     public CompletionStage<Outcome<ListResponse>> search(
             final ResourceTarget target,
             final SearchRequest request,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "SCIM Group SearchRequest must not be null");
         if (!target(target) || target.resourceId().isPresent()) {
             return rejected();

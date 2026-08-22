@@ -22,6 +22,8 @@ package org.miaixz.bus.auth.protocol.scim.codec;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.auth.FabricX.Body;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.scim.*;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
@@ -31,15 +33,13 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonRecordVerifier;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.UnoUrl;
-import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 
 /**
  * Decodes RFC 7644 GET query parameters and POST SearchRequest bodies into their distinct typed protocol models.
  *
  * @author Kimi Liu
  */
-public final class ScimSearchRequestCodec {
+public class ScimSearchRequestCodec {
 
     /**
      * Verifies the exact POST SearchRequest body vocabulary through a structural record.
@@ -202,8 +202,8 @@ public final class ScimSearchRequestCodec {
      * @param target route-resolved collection target
      * @return typed GET search query
      */
-    public SearchQuery decodeQuery(final UnoUrl url, final ResourceTarget target) {
-        final UnoUrl source = Assert.notNull(url, "SCIM search URL must not be null");
+    public SearchQuery decodeQuery(final Url url, final ResourceTarget target) {
+        final Url source = Assert.notNull(url, "SCIM search URL must not be null");
         if (source.fragment() != null) {
             throw new ValidateException("SCIM GET search target must not contain a fragment");
         }
@@ -229,8 +229,8 @@ public final class ScimSearchRequestCodec {
      * @param body owned SCIM JSON body closed by this method
      * @return typed POST SearchRequest
      */
-    public SearchRequest decodeBody(final PayloadBody body) {
-        final PayloadBody encoded = Assert.notNull(body, "SCIM SearchRequest body must not be null");
+    public SearchRequest decodeBody(final Body body) {
+        final Body encoded = Assert.notNull(body, "SCIM SearchRequest body must not be null");
         try (encoded) {
             final JsonValue.ObjectValue object = ScimResourceCodec
                     .object(encoded, jsonProvider, maximumBytes, maximumDepth);

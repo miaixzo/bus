@@ -22,7 +22,7 @@ package org.miaixz.bus.auth.registry;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.miaixz.bus.auth.Registration;
+import org.miaixz.bus.auth.Blueprint;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.core.lang.Assert;
 
@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Assert;
  *
  * @author Kimi Liu
  */
-public final class CurrentRegistry implements Registry {
+public class CurrentRegistry implements Registry {
 
     /**
      * Supplier of the fixed Registry retained by the current runtime container.
@@ -79,7 +79,7 @@ public final class CurrentRegistry implements Registry {
      * @return immutable configured Source entries
      */
     @Override
-    public List<Registration.SourceEntry> sources(final String providerId) {
+    public List<Blueprint.SourceEntry> sources(final String providerId) {
         return current.get().sources(providerId);
     }
 
@@ -90,7 +90,7 @@ public final class CurrentRegistry implements Registry {
      * @return immutable enabled Source entries
      */
     @Override
-    public List<Registration.SourceEntry> enabledSources(final String providerId) {
+    public List<Blueprint.SourceEntry> enabledSources(final String providerId) {
         return current.get().enabledSources(providerId);
     }
 

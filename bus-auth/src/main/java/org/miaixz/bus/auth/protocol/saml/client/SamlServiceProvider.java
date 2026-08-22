@@ -24,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.protocol.saml.AuthnRequest;
@@ -36,7 +37,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.extra.json.JsonValue;
-import org.miaixz.bus.fabric.UnoUrl;
 
 /**
  * Provides the standards-based SAML 2.0 service-provider facade for one compiled Source.
@@ -49,7 +49,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class SamlServiceProvider {
+public class SamlServiceProvider {
 
     /**
      * Client that retrieves and validates trusted identity-provider metadata.
@@ -96,16 +96,16 @@ public final class SamlServiceProvider {
      *
      * @param relayState optional opaque RelayState value
      * @param context    immutable invocation context
-     * @param timeout    shared operation budget
+     * @param timeout    shared operation timeout
      * @throws IllegalArgumentException if a container is {@code null} or RelayState exceeds 80 bytes
      */
     private static void validateInvocation(
             final Optional<String> relayState,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(relayState, "SAML RelayState container must not be null");
         Assert.notNull(context, "SAML invocation context must not be null");
-        Assert.notNull(timeout, "SAML invocation time budget must not be null");
+        Assert.notNull(timeout, "SAML invocation timeout must not be null");
         final String value = relayState.getOrNull();
         if (value != null) {
             Assert.isTrue(value.getBytes(Charset.UTF_8).length <= 80, "SAML RelayState must not exceed 80 bytes");
@@ -119,7 +119,7 @@ public final class SamlServiceProvider {
      * @return closed timeout failure
      */
     private static Outcome.Failure timeoutFailure(final String operation) {
-        return new Outcome.Failure(ErrorCode._408, operation + " has no remaining time budget",
+        return new Outcome.Failure(ErrorCode._408, operation + " has no remaining timeout",
                 new JsonValue.ObjectValue(Map.of()));
     }
 
@@ -138,10 +138,10 @@ public final class SamlServiceProvider {
      * Retrieves the trusted identity-provider metadata configured for this Source.
      *
      * @param context immutable invocation context
-     * @param timeout shared end-to-end time budget
+     * @param timeout shared end-to-end timeout
      * @return stage containing validated identity-provider metadata or a closed framework failure
      */
-    public CompletionStage<Outcome<EntityDescriptor>> metadata(final Context context, final Timeout.Budget timeout) {
+    public CompletionStage<Outcome<EntityDescriptor>> metadata(final Context context, final Timeout timeout) {
         return metadataClient.metadata(context, timeout);
     }
 
@@ -151,14 +151,14 @@ public final class SamlServiceProvider {
      * @param request    standard SAML Authentication Request
      * @param relayState optional opaque HTTP Binding RelayState value
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end time budget
+     * @param timeout    shared end-to-end timeout
      * @return stage containing the identity-provider redirect URL or a closed framework failure
      */
-    public CompletionStage<Outcome<UnoUrl>> singleSignOn(
+    public CompletionStage<Outcome<Url>> singleSignOn(
             final AuthnRequest request,
             final Optional<String> relayState,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "SAML Authentication Request must not be null");
         validateInvocation(relayState, context, timeout);
         if (timeout.expired()) {
@@ -181,14 +181,14 @@ public final class SamlServiceProvider {
      * @param response             decoded standard SAML Response
      * @param expectedInResponseTo exact Authentication Request ID retained by the one-time interaction
      * @param context              immutable invocation context carrying callback correlation facts
-     * @param timeout              shared end-to-end time budget
+     * @param timeout              shared end-to-end timeout
      * @return stage containing the validated response or a closed framework failure
      */
     public CompletionStage<Outcome<Response>> consume(
             final Response response,
             final String expectedInResponseTo,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         return assertionConsumerService.consume(response, expectedInResponseTo, context, timeout);
     }
 
@@ -198,14 +198,14 @@ public final class SamlServiceProvider {
      * @param request    standard SAML Logout Request
      * @param relayState optional opaque HTTP Binding RelayState value
      * @param context    immutable invocation context
-     * @param timeout    shared end-to-end time budget
+     * @param timeout    shared end-to-end timeout
      * @return stage containing the identity-provider redirect URL or a closed framework failure
      */
-    public CompletionStage<Outcome<UnoUrl>> singleLogout(
+    public CompletionStage<Outcome<Url>> singleLogout(
             final LogoutRequest request,
             final Optional<String> relayState,
             final Context context,
-            final Timeout.Budget timeout) {
+            final Timeout timeout) {
         Assert.notNull(request, "SAML Logout Request must not be null");
         validateInvocation(relayState, context, timeout);
         if (timeout.expired()) {
