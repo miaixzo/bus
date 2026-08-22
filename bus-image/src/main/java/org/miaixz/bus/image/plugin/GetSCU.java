@@ -24,10 +24,12 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.*;
+import org.miaixz.bus.image.galaxy.CancelListener;
 import org.miaixz.bus.image.galaxy.ImageProgress;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -136,6 +138,16 @@ public class GetSCU implements AutoCloseable {
      * The handler for DIMSE responses.
      */
     private DimseRSPHandler rspHandler;
+
+    /**
+     * Ensures that only one C-CANCEL request is sent.
+     */
+    private final AtomicBoolean cancelSent = new AtomicBoolean();
+
+    /**
+     * The cancel listener registered with the progress object.
+     */
+    private final CancelListener cancelListener = this::handleCancel;
 
     /**
      * The total size in bytes of all retrieved files.
@@ -405,6 +417,10 @@ public class GetSCU implements AutoCloseable {
      */
     @Override
     public void close() throws IOException, InterruptedException {
+        ImageProgress progress = state.getProgress();
+        if (progress != null) {
+            progress.removeCancelListener(cancelListener);
+        }
         if (as != null && as.isReadyForDataTransfer()) {
             as.waitForOutstandingRSP();
             as.release();
@@ -445,7 +461,17 @@ public class GetSCU implements AutoCloseable {
      * @throws InterruptedException if the operation is interrupted.
      */
     private void retrieve(Attributes keys) throws IOException, InterruptedException {
-        final DimseRSPHandler rspHandler = new DimseRSPHandler(as.nextMessageID()) {
+        retrieve(keys, createResponseHandler());
+        scheduleCancellationIfNeeded();
+    }
+
+    /**
+     * Creates the default DIMSE response handler.
+     *
+     * @return the DIMSE response handler.
+     */
+    private DimseRSPHandler createResponseHandler() {
+        return new DimseRSPHandler(as.nextMessageID()) {
 
             @Override
             public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
@@ -453,16 +479,52 @@ public class GetSCU implements AutoCloseable {
                 updateProgress(as, cmd);
             }
         };
+    }
 
-        retrieve(keys, rspHandler);
+    /**
+     * Schedules a timeout cancellation when configured.
+     */
+    private void scheduleCancellationIfNeeded() {
         if (cancelAfter > 0) {
-            device.schedule(() -> {
-                try {
-                    rspHandler.cancel(as);
-                } catch (IOException e) {
-                    Logger.error(false, "Image", "Cancel C-GET", e);
-                }
-            }, cancelAfter, TimeUnit.MILLISECONDS);
+            device.schedule(this::cancelRetrieve, cancelAfter, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    /**
+     * Cancels or aborts the retrieve operation according to the progress state.
+     */
+    private void handleCancel() {
+        ImageProgress progress = state.getProgress();
+        if (progress != null && progress.isAborted()) {
+            abortRetrieve();
+        } else {
+            cancelRetrieve();
+        }
+    }
+
+    /**
+     * Sends a C-CANCEL request for the current C-GET operation.
+     */
+    public void cancelRetrieve() {
+        if (rspHandler == null || as == null || !as.isReadyForDataTransfer()) {
+            return;
+        }
+        if (cancelSent.compareAndSet(false, true)) {
+            try {
+                rspHandler.cancel(as);
+            } catch (IOException e) {
+                Logger.error(false, "Image", "Cancel C-GET", e);
+            }
+        }
+    }
+
+    /**
+     * Aborts the active C-GET association immediately.
+     */
+    public void abortRetrieve() {
+        if (as != null && as.isReadyForDataTransfer()) {
+            Logger.info(false, "Image", "Aborting the C-GET association of {}", rq.getCalledAET());
+            as.abort();
         }
     }
 
@@ -487,6 +549,14 @@ public class GetSCU implements AutoCloseable {
      */
     private void retrieve(Attributes keys, DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         this.rspHandler = rspHandler;
+        cancelSent.set(false);
+        ImageProgress progress = state.getProgress();
+        if (progress != null) {
+            progress.addCancelListener(cancelListener);
+            if (progress.isCancelled()) {
+                return;
+            }
+        }
         as.cget(model.getCuid(), priority, keys, null, rspHandler);
     }
 
@@ -542,12 +612,8 @@ public class GetSCU implements AutoCloseable {
         ImageProgress p = state.getProgress();
         if (p != null) {
             p.setAttributes(cmd);
-            if (p.isCancel() && rspHandler != null) {
-                try {
-                    rspHandler.cancel(as);
-                } catch (IOException e) {
-                    Logger.error(false, "Image", "Cancel C-GET", e);
-                }
+            if (p.isCancel()) {
+                handleCancel();
             }
         }
     }

@@ -23,6 +23,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.image.Status;
@@ -43,14 +44,24 @@ public class ImageProgress implements CancelListener {
     private final List<ProgressListener> listenerList;
 
     /**
+     * A list of listeners to be notified of cancellation requests.
+     */
+    private final List<CancelListener> cancelListenerList;
+
+    /**
      * The attributes associated with the image operation.
      */
     private final AtomicReference<Attributes> attributes;
 
     /**
-     * A volatile flag indicating whether the operation has been cancelled.
+     * The cancellation flag.
      */
-    private volatile boolean cancel;
+    private final AtomicBoolean cancel;
+
+    /**
+     * The abort flag.
+     */
+    private final AtomicBoolean abort;
 
     /**
      * The file being processed.
@@ -67,8 +78,10 @@ public class ImageProgress implements CancelListener {
      * an empty list for progress listeners.
      */
     public ImageProgress() {
-        this.cancel = false;
+        this.cancel = new AtomicBoolean();
+        this.abort = new AtomicBoolean();
         this.listenerList = new CopyOnWriteArrayList<>();
+        this.cancelListenerList = new CopyOnWriteArrayList<>();
         this.attributes = new AtomicReference<>();
         this.processedFile = new AtomicReference<>();
     }
@@ -165,6 +178,31 @@ public class ImageProgress implements CancelListener {
     }
 
     /**
+     * Adds a cancel listener.
+     *
+     * @param listener the cancel listener.
+     */
+    public void addCancelListener(CancelListener listener) {
+        if (listener != null && !cancelListenerList.contains(listener)) {
+            cancelListenerList.add(listener);
+            if (cancel.get()) {
+                listener.cancel();
+            }
+        }
+    }
+
+    /**
+     * Removes a cancel listener.
+     *
+     * @param listener the cancel listener.
+     */
+    public void removeCancelListener(CancelListener listener) {
+        if (listener != null) {
+            cancelListenerList.remove(listener);
+        }
+    }
+
+    /**
      * Notifies all registered {@link ProgressListener}s about a progress update.
      */
     private void fireProgress() {
@@ -174,18 +212,31 @@ public class ImageProgress implements CancelListener {
     }
 
     /**
-     * Cancels the current image operation. Sets the cancellation flag to {@code true}.
+     * Cancels the current image operation and notifies cancel listeners.
      */
     @Override
     public void cancel() {
-        this.cancel = true;
+        if (cancel.compareAndSet(false, true)) {
+            cancelListenerList.forEach(CancelListener::cancel);
+        }
+    }
+
+    /**
+     * Aborts the current image operation and notifies cancel listeners.
+     */
+    public void abort() {
+        cancel.set(true);
+        if (abort.compareAndSet(false, true)) {
+            cancelListenerList.forEach(CancelListener::cancel);
+        }
     }
 
     /**
      * Resets the cancellation flag, allowing the same progress holder to be reused.
      */
     public void resetCancel() {
-        this.cancel = false;
+        cancel.set(false);
+        abort.set(false);
     }
 
     /**
@@ -194,7 +245,7 @@ public class ImageProgress implements CancelListener {
      * @return {@code true} if the operation is cancelled, {@code false} otherwise.
      */
     public boolean isCancel() {
-        return cancel;
+        return cancel.get();
     }
 
     /**
@@ -204,6 +255,15 @@ public class ImageProgress implements CancelListener {
      */
     public boolean isCancelled() {
         return isCancel();
+    }
+
+    /**
+     * Checks if the image operation has been aborted.
+     *
+     * @return {@code true} if the operation is aborted.
+     */
+    public boolean isAborted() {
+        return abort.get();
     }
 
     /**

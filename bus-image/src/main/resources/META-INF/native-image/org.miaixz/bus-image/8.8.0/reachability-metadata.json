@@ -1355,6 +1355,12 @@
           ]
         },
         {
+          "name": "categoryOf",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Code"
+          ]
+        },
+        {
           "name": "codeOf",
           "parameterTypes": [
             "java.lang.String"
@@ -1375,6 +1381,12 @@
         {
           "name": "getCategoryMap",
           "parameterTypes": []
+        },
+        {
+          "name": "getExtendedCategory",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         },
         {
           "name": "readModifiers",
@@ -1417,6 +1429,15 @@
           "name": "writeRegion",
           "parameterTypes": [
             "org.miaixz.bus.image.galaxy.data.Attributes",
+            "org.miaixz.bus.image.galaxy.data.Code",
+            "org.miaixz.bus.image.galaxy.data.Code[]"
+          ]
+        },
+        {
+          "name": "writeRegion",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "org.miaixz.bus.image.builtin.AnatomicRegion$CategoryBuilder",
             "org.miaixz.bus.image.galaxy.data.Code",
             "org.miaixz.bus.image.galaxy.data.Code[]"
           ]
@@ -1479,6 +1500,53 @@
         },
         {
           "name": "getTitle",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.builtin.AnatomicRegion$ExtendedCategory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.image.builtin.AnatomicRegion$Category",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getBaseCategory",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContextUID",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExtensionCreatorUID",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIdentifier",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTitle",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
           "parameterTypes": []
         }
       ]
@@ -10047,6 +10115,18 @@
           "name": "codeValue"
         },
         {
+          "name": "contextGroupExtensionCreatorUID"
+        },
+        {
+          "name": "contextGroupExtensionFlag"
+        },
+        {
+          "name": "contextIdentifier"
+        },
+        {
+          "name": "contextUID"
+        },
+        {
           "name": "codingSchemeDesignator"
         },
         {
@@ -10091,11 +10171,31 @@
           "parameterTypes": []
         },
         {
+          "name": "getContextGroupExtensionCreatorUID",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContextGroupExtensionFlag",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContextIdentifier",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContextUID",
+          "parameterTypes": []
+        },
+        {
           "name": "getCodingSchemeDesignator",
           "parameterTypes": []
         },
         {
           "name": "getCodingSchemeVersion",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExistingCodeValue",
           "parameterTypes": []
         },
         {
@@ -10116,6 +10216,30 @@
           "name": "nullifyDCM01",
           "parameterTypes": [
             "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setContextGroupExtensionCreatorUID",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setContextGroupExtensionFlag",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setContextIdentifier",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setContextUID",
+          "parameterTypes": [
             "java.lang.String"
           ]
         },
@@ -28760,10 +28884,16 @@
       "type": "org.miaixz.bus.image.galaxy.ImageProgress",
       "fields": [
         {
+          "name": "abort"
+        },
+        {
           "name": "attributes"
         },
         {
           "name": "cancel"
+        },
+        {
+          "name": "cancelListenerList"
         },
         {
           "name": "lastFailed"
@@ -28776,6 +28906,16 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "abort",
+          "parameterTypes": []
+        },
+        {
+          "name": "addCancelListener",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.CancelListener"
+          ]
         },
         {
           "name": "addProgressListener",
@@ -28842,6 +28982,10 @@
           "parameterTypes": []
         },
         {
+          "name": "isAborted",
+          "parameterTypes": []
+        },
+        {
           "name": "isCompleted",
           "parameterTypes": []
         },
@@ -28861,6 +29005,12 @@
           "name": "removeProgressListener",
           "parameterTypes": [
             "org.miaixz.bus.image.galaxy.ProgressListener"
+          ]
+        },
+        {
+          "name": "removeCancelListener",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.CancelListener"
           ]
         },
         {
@@ -60985,6 +61135,12 @@
           "name": "cancelAfter"
         },
         {
+          "name": "cancelListener"
+        },
+        {
+          "name": "cancelSent"
+        },
+        {
           "name": "device"
         },
         {
@@ -60992,6 +61148,9 @@
         },
         {
           "name": "priority"
+        },
+        {
+          "name": "rspHandler"
         },
         {
           "name": "state"
@@ -61032,7 +61191,19 @@
           ]
         },
         {
+          "name": "abortRetrieve",
+          "parameterTypes": []
+        },
+        {
+          "name": "cancelRetrieve",
+          "parameterTypes": []
+        },
+        {
           "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "createResponseHandler",
           "parameterTypes": []
         },
         {
@@ -61073,6 +61244,10 @@
         },
         {
           "name": "getTotalSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "handleCancel",
           "parameterTypes": []
         },
         {
@@ -61121,6 +61296,10 @@
           "parameterTypes": [
             "int"
           ]
+        },
+        {
+          "name": "scheduleCancellationIfNeeded",
+          "parameterTypes": []
         },
         {
           "name": "setInformationModel",
@@ -62107,6 +62286,12 @@
           "name": "cancelAfter"
         },
         {
+          "name": "cancelListener"
+        },
+        {
+          "name": "cancelSent"
+        },
+        {
           "name": "destination"
         },
         {
@@ -62117,6 +62302,9 @@
         },
         {
           "name": "releaseEager"
+        },
+        {
+          "name": "rspHandler"
         },
         {
           "name": "state"
@@ -62147,7 +62335,19 @@
           ]
         },
         {
+          "name": "abortRetrieve",
+          "parameterTypes": []
+        },
+        {
+          "name": "cancelRetrieve",
+          "parameterTypes": []
+        },
+        {
           "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "createResponseHandler",
           "parameterTypes": []
         },
         {
@@ -62179,6 +62379,10 @@
           "parameterTypes": []
         },
         {
+          "name": "handleCancel",
+          "parameterTypes": []
+        },
+        {
           "name": "open",
           "parameterTypes": []
         },
@@ -62203,6 +62407,10 @@
           "parameterTypes": [
             "int"
           ]
+        },
+        {
+          "name": "scheduleCancellationIfNeeded",
+          "parameterTypes": []
         },
         {
           "name": "setDestination",
@@ -62234,6 +62442,12 @@
           "name": "setReleaseEager",
           "parameterTypes": [
             "boolean"
+          ]
+        },
+        {
+          "name": "updateProgress",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes"
           ]
         }
       ]
@@ -62986,7 +63200,19 @@
       "type": "org.miaixz.bus.image.plugin.StoreSCU",
       "fields": [
         {
+          "name": "DEFAULT_TMP_PREFIX"
+        },
+        {
+          "name": "OWNER_ONLY"
+        },
+        {
           "name": "filesScanned"
+        },
+        {
+          "name": "ownedTmpDir"
+        },
+        {
+          "name": "ownsTmpFile"
         },
         {
           "name": "priority"
@@ -62999,6 +63225,9 @@
         },
         {
           "name": "tmpFile"
+        },
+        {
+          "name": "tmpDir"
         },
         {
           "name": "totalSize"
@@ -66410,6 +66639,4123 @@
         },
         {
           "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.Efforts",
+      "methods": [
+        {
+          "name": "supports",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "java.io.File",
+            "java.lang.Class"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.NodeSource",
+      "methods": [
+        {
+          "name": "getGroupName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNodes",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.builtin.FuzzyString",
+      "methods": [
+        {
+          "name": "toFuzzy",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.builtin.UIDMapper",
+      "methods": [
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.builtin.hp.HpComparator",
+      "methods": [
+        {
+          "name": "compare",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "int",
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.galaxy.CancelListener",
+      "methods": [
+        {
+          "name": "cancel",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.galaxy.ProgressListener",
+      "methods": [
+        {
+          "name": "handle",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.ImageProgress"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.galaxy.SupplierEx",
+      "methods": [
+        {
+          "name": "get",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.galaxy.data.AttributesCoercion",
+      "fields": [
+        {
+          "name": "NONE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "coerce",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        },
+        {
+          "name": "remapUID",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.galaxy.data.SequenceVisitor",
+      "methods": [
+        {
+          "name": "startItem",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "endItem",
+          "parameterTypes": []
+        },
+        {
+          "name": "startSequence",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "endSequence",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.galaxy.data.Value",
+      "fields": [
+        {
+          "name": "NULL"
+        }
+      ],
+      "methods": [
+        {
+          "name": "isEmpty",
+          "parameterTypes": []
+        },
+        {
+          "name": "toBytes",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.VR",
+            "boolean"
+          ]
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.io.ImageOutputStream",
+            "org.miaixz.bus.image.galaxy.data.VR"
+          ]
+        },
+        {
+          "name": "calcLength",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.io.ImageEncodingOptions",
+            "boolean",
+            "org.miaixz.bus.image.galaxy.data.VR"
+          ]
+        },
+        {
+          "name": "getEncodedLength",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.io.ImageEncodingOptions",
+            "boolean",
+            "org.miaixz.bus.image.galaxy.data.VR"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.galaxy.data.ValueType",
+      "methods": [
+        {
+          "name": "isStringValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "useSpecificCharacterSet",
+          "parameterTypes": []
+        },
+        {
+          "name": "isIntValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "isTemporalType",
+          "parameterTypes": []
+        },
+        {
+          "name": "numEndianBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "toggleEndian",
+          "parameterTypes": [
+            "byte[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "toBytes",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.image.galaxy.data.SpecificCharacterSet"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": [
+            "java.lang.Object",
+            "boolean",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toStrings",
+          "parameterTypes": [
+            "java.lang.Object",
+            "boolean",
+            "org.miaixz.bus.image.galaxy.data.SpecificCharacterSet"
+          ]
+        },
+        {
+          "name": "toInt",
+          "parameterTypes": [
+            "java.lang.Object",
+            "boolean",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "toInts",
+          "parameterTypes": [
+            "java.lang.Object",
+            "boolean"
+          ]
+        },
+        {
+          "name": "toLong",
+          "parameterTypes": [
+            "java.lang.Object",
+            "boolean",
+            "int",
+            "long"
+          ]
+        },
+        {
+          "name": "toLongs",
+          "parameterTypes": [
+            "java.lang.Object",
+            "boolean"
+          ]
+        },
+        {
+          "name": "toFloat",
+          "parameterTypes": [
+            "java.lang.Object",
+            "boolean",
+            "int",
+            "float"
+          ]
+        },
+        {
+          "name": "toFloats",
+          "parameterTypes": [
+            "java.lang.Object",
+            "boolean"
+          ]
+        },
+        {
+          "name": "toDouble",
+          "parameterTypes": [
+            "java.lang.Object",
+            "boolean",
+            "int",
+            "double"
+          ]
+        },
+        {
+          "name": "toDoubles",
+          "parameterTypes": [
+            "java.lang.Object",
+            "boolean"
+          ]
+        },
+        {
+          "name": "toTemporal",
+          "parameterTypes": [
+            "java.lang.Object",
+            "int",
+            "org.miaixz.bus.image.galaxy.data.DatePrecision"
+          ]
+        },
+        {
+          "name": "toDate",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.util.TimeZone",
+            "int",
+            "boolean",
+            "java.util.Date",
+            "org.miaixz.bus.image.galaxy.data.DatePrecision"
+          ]
+        },
+        {
+          "name": "toDate",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.util.TimeZone",
+            "boolean",
+            "org.miaixz.bus.image.galaxy.data.DatePrecision"
+          ]
+        },
+        {
+          "name": "toValue",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "toValue",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "toValue",
+          "parameterTypes": [
+            "java.lang.String[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "toValue",
+          "parameterTypes": [
+            "int[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "toValue",
+          "parameterTypes": [
+            "long[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "toValue",
+          "parameterTypes": [
+            "float[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "toValue",
+          "parameterTypes": [
+            "double[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "toValue",
+          "parameterTypes": [
+            "java.util.Date[]",
+            "java.util.TimeZone",
+            "org.miaixz.bus.image.galaxy.data.DatePrecision"
+          ]
+        },
+        {
+          "name": "prompt",
+          "parameterTypes": [
+            "java.lang.Object",
+            "boolean",
+            "org.miaixz.bus.image.galaxy.data.SpecificCharacterSet",
+            "int",
+            "java.lang.StringBuilder"
+          ]
+        },
+        {
+          "name": "vmOf",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.galaxy.data.Visitor",
+      "methods": [
+        {
+          "name": "visit",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "int",
+            "org.miaixz.bus.image.galaxy.data.VR",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.galaxy.io.BulkDataCreator",
+      "methods": [
+        {
+          "name": "createBulkData",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.io.ImageInputStream"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.galaxy.io.BulkDataDescriptor",
+      "fields": [
+        {
+          "name": "DEFAULT"
+        },
+        {
+          "name": "PIXELDATA"
+        }
+      ],
+      "methods": [
+        {
+          "name": "isBulkData",
+          "parameterTypes": [
+            "java.util.List",
+            "java.lang.String",
+            "int",
+            "org.miaixz.bus.image.galaxy.data.VR",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.galaxy.io.ImageInputHandler",
+      "methods": [
+        {
+          "name": "readValue",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.io.ImageInputStream",
+            "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        },
+        {
+          "name": "readValue",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.io.ImageInputStream",
+            "org.miaixz.bus.image.galaxy.data.Sequence"
+          ]
+        },
+        {
+          "name": "readValue",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.io.ImageInputStream",
+            "org.miaixz.bus.image.galaxy.data.Fragments"
+          ]
+        },
+        {
+          "name": "startDataset",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.io.ImageInputStream"
+          ]
+        },
+        {
+          "name": "endDataset",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.io.ImageInputStream"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.AssociationListener",
+      "methods": [
+        {
+          "name": "onClose",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Association"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.AssociationMonitor",
+      "methods": [
+        {
+          "name": "onAssociationEstablished",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Association"
+          ]
+        },
+        {
+          "name": "onAssociationFailed",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Association",
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "onAssociationRejected",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Association",
+            "org.miaixz.bus.image.metric.pdu.AAssociateRJ"
+          ]
+        },
+        {
+          "name": "onAssociationAccepted",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Association"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.CancelRQHandler",
+      "methods": [
+        {
+          "name": "onCancelRQ",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Association"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.DataWriter",
+      "methods": [
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.net.PDVOutputStream",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.DimseRQHandler",
+      "methods": [
+        {
+          "name": "onDimseRQ",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Association",
+            "org.miaixz.bus.image.metric.pdu.PresentationContext",
+            "org.miaixz.bus.image.Dimse",
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "org.miaixz.bus.image.metric.net.PDVInputStream"
+          ]
+        },
+        {
+          "name": "onClose",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Association"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.DimseRSP",
+      "methods": [
+        {
+          "name": "next",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCommand",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDataset",
+          "parameterTypes": []
+        },
+        {
+          "name": "cancel",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Association"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.Editable",
+      "methods": [
+        {
+          "name": "process",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.api.DicomConfiguration",
+      "methods": [
+        {
+          "name": "listWebApplicationInfos",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.WebApplication"
+          ]
+        },
+        {
+          "name": "configurationExists",
+          "parameterTypes": []
+        },
+        {
+          "name": "purgeConfiguration",
+          "parameterTypes": []
+        },
+        {
+          "name": "registerAETitle",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "registerWebAppName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "unregisterAETitle",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "unregisterWebAppName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findApplicationEntity",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findWebApplication",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findDevice",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "listDeviceInfos",
+          "parameterTypes": [
+            "org.miaixz.bus.image.Device"
+          ]
+        },
+        {
+          "name": "listAETInfos",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.net.ApplicationEntityInfo"
+          ]
+        },
+        {
+          "name": "listDeviceNames",
+          "parameterTypes": []
+        },
+        {
+          "name": "listRegisteredAETitles",
+          "parameterTypes": []
+        },
+        {
+          "name": "listRegisteredWebAppNames",
+          "parameterTypes": []
+        },
+        {
+          "name": "persist",
+          "parameterTypes": [
+            "org.miaixz.bus.image.Device",
+            "java.util.EnumSet"
+          ]
+        },
+        {
+          "name": "merge",
+          "parameterTypes": [
+            "org.miaixz.bus.image.Device",
+            "java.util.EnumSet"
+          ]
+        },
+        {
+          "name": "removeDevice",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.EnumSet"
+          ]
+        },
+        {
+          "name": "loadDeviceVendorData",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "updateDeviceVendorData",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[][]"
+          ]
+        },
+        {
+          "name": "deviceRef",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "persistCertificates",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.cert.X509Certificate[]"
+          ]
+        },
+        {
+          "name": "removeCertificates",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findCertificates",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "sync",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDicomConfigurationExtension",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.api.IApplicationEntityCache",
+      "methods": [
+        {
+          "name": "getStaleTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "setStaleTimeout",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findApplicationEntity",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.api.IDeviceCache",
+      "methods": [
+        {
+          "name": "getStaleTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "setStaleTimeout",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findDevice",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.api.IWebApplicationCache",
+      "methods": [
+        {
+          "name": "getStaleTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "setStaleTimeout",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findWebApplication",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.hl7.api.HL7Configuration",
+      "methods": [
+        {
+          "name": "registerHL7Application",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "unregisterHL7Application",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findHL7Application",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "listRegisteredHL7ApplicationNames",
+          "parameterTypes": []
+        },
+        {
+          "name": "listHL7AppInfos",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.hl7.net.HL7ApplicationInfo"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.hl7.api.IHL7ApplicationCache",
+      "methods": [
+        {
+          "name": "getStaleTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "setStaleTimeout",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findHL7Application",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.hl7.net.HL7ConnectionMonitor",
+      "methods": [
+        {
+          "name": "onMessageReceived",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Connection",
+            "java.net.Socket",
+            "org.miaixz.bus.image.metric.hl7.net.UnparsedHL7Message"
+          ]
+        },
+        {
+          "name": "onMessageProcessed",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Connection",
+            "java.net.Socket",
+            "org.miaixz.bus.image.metric.hl7.net.UnparsedHL7Message",
+            "org.miaixz.bus.image.metric.hl7.net.UnparsedHL7Message",
+            "org.miaixz.bus.image.metric.hl7.HL7Exception"
+          ]
+        },
+        {
+          "name": "onMessageSent",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.hl7.net.HL7Application",
+            "java.net.Socket",
+            "org.miaixz.bus.image.metric.hl7.net.UnparsedHL7Message",
+            "java.lang.Exception"
+          ]
+        },
+        {
+          "name": "onMessageResponse",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.hl7.net.HL7Application",
+            "java.net.Socket",
+            "org.miaixz.bus.image.metric.hl7.net.UnparsedHL7Message",
+            "org.miaixz.bus.image.metric.hl7.net.UnparsedHL7Message",
+            "java.lang.Exception"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.hl7.net.HL7MessageListener",
+      "methods": [
+        {
+          "name": "onMessage",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.hl7.net.HL7Application",
+            "org.miaixz.bus.image.metric.Connection",
+            "java.net.Socket",
+            "org.miaixz.bus.image.metric.hl7.net.UnparsedHL7Message"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.hl7.net.HL7Service",
+      "methods": [
+        {
+          "name": "getMessageTypes",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.json.ConfigurationDelegate",
+      "methods": [
+        {
+          "name": "findDevice",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.json.JSONReader",
+      "fields": [
+        {
+          "name": "EMPTY_CODES"
+        },
+        {
+          "name": "CONN_REF_INDEX_START"
+        },
+        {
+          "name": "parser"
+        },
+        {
+          "name": "bout"
+        },
+        {
+          "name": "pnGroups"
+        },
+        {
+          "name": "skipBulkDataURI"
+        },
+        {
+          "name": "bulkDataCreator"
+        },
+        {
+          "name": "fmi"
+        },
+        {
+          "name": "event"
+        },
+        {
+          "name": "text"
+        },
+        {
+          "name": "level"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "jakarta.json.stream.JsonParser"
+          ]
+        },
+        {
+          "name": "toConnectionIndex",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isSkipBulkDataURI",
+          "parameterTypes": []
+        },
+        {
+          "name": "setSkipBulkDataURI",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setBulkDataCreator",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.BulkData$Creator"
+          ]
+        },
+        {
+          "name": "getFileMetaInformation",
+          "parameterTypes": []
+        },
+        {
+          "name": "next",
+          "parameterTypes": []
+        },
+        {
+          "name": "getString",
+          "parameterTypes": []
+        },
+        {
+          "name": "expect",
+          "parameterTypes": [
+            "jakarta.json.stream.JsonParser$Event"
+          ]
+        },
+        {
+          "name": "valueString",
+          "parameterTypes": []
+        },
+        {
+          "name": "readDataset",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        },
+        {
+          "name": "readDatasets",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.json.JSONReader$Callback"
+          ]
+        },
+        {
+          "name": "doReadDataset",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        },
+        {
+          "name": "readAttribute",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        },
+        {
+          "name": "readValues",
+          "parameterTypes": []
+        },
+        {
+          "name": "readDataFragments",
+          "parameterTypes": []
+        },
+        {
+          "name": "readItemOrPersonName",
+          "parameterTypes": []
+        },
+        {
+          "name": "readPersonName",
+          "parameterTypes": []
+        },
+        {
+          "name": "readInlineBinary",
+          "parameterTypes": []
+        },
+        {
+          "name": "readDataFragment",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEvent",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLocation",
+          "parameterTypes": []
+        },
+        {
+          "name": "stringValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "stringArray",
+          "parameterTypes": []
+        },
+        {
+          "name": "enumArray",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "longValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "intValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "intArray",
+          "parameterTypes": []
+        },
+        {
+          "name": "booleanValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "issuerValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "codeArray",
+          "parameterTypes": []
+        },
+        {
+          "name": "timeZoneValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "dateTimeValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "skipUnknownProperty",
+          "parameterTypes": []
+        },
+        {
+          "name": "skipValue",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.json.JSONWriter",
+      "fields": [
+        {
+          "name": "DOUBLE_MAX_BITS"
+        },
+        {
+          "name": "gen"
+        },
+        {
+          "name": "hasItems"
+        },
+        {
+          "name": "jsonTypeByVR"
+        },
+        {
+          "name": "replaceBulkDataURI"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "jakarta.json.stream.JsonGenerator"
+          ]
+        },
+        {
+          "name": "requireIS_DS_SV_UV",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.VR"
+          ]
+        },
+        {
+          "name": "requireNumberOrString",
+          "parameterTypes": [
+            "jakarta.json.JsonValue$ValueType"
+          ]
+        },
+        {
+          "name": "toStrings",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object[]",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "setJsonType",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.VR",
+            "jakarta.json.JsonValue$ValueType"
+          ]
+        },
+        {
+          "name": "getReplaceBulkDataURI",
+          "parameterTypes": []
+        },
+        {
+          "name": "setReplaceBulkDataURI",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        },
+        {
+          "name": "writeAttributes",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        },
+        {
+          "name": "writeAttribute",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.image.galaxy.data.VR",
+            "java.lang.Object",
+            "org.miaixz.bus.image.galaxy.data.SpecificCharacterSet",
+            "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        },
+        {
+          "name": "writeValue",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Value",
+            "boolean"
+          ]
+        },
+        {
+          "name": "readValue",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.io.ImageInputStream",
+            "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        },
+        {
+          "name": "writeValue",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.VR",
+            "java.lang.Object",
+            "boolean",
+            "org.miaixz.bus.image.galaxy.data.SpecificCharacterSet",
+            "boolean"
+          ]
+        },
+        {
+          "name": "writeStringValues",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.VR",
+            "java.lang.Object",
+            "boolean",
+            "org.miaixz.bus.image.galaxy.data.SpecificCharacterSet"
+          ]
+        },
+        {
+          "name": "writeNumber",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "writeDoubleValues",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.VR",
+            "java.lang.Object",
+            "boolean"
+          ]
+        },
+        {
+          "name": "writeIntValues",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.VR",
+            "java.lang.Object",
+            "boolean"
+          ]
+        },
+        {
+          "name": "writeUIntValues",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.VR",
+            "java.lang.Object",
+            "boolean"
+          ]
+        },
+        {
+          "name": "writeLongValues",
+          "parameterTypes": [
+            "java.util.function.LongFunction",
+            "org.miaixz.bus.image.galaxy.data.VR",
+            "java.lang.Object",
+            "boolean"
+          ]
+        },
+        {
+          "name": "writePersonName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "writePNGroup",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.image.galaxy.data.PersonName",
+            "org.miaixz.bus.image.galaxy.data.PersonName$Group"
+          ]
+        },
+        {
+          "name": "writeInlineBinary",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.VR",
+            "byte[]",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "encodeBase64",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "writeBulkData",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.BulkData"
+          ]
+        },
+        {
+          "name": "readValue",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.io.ImageInputStream",
+            "org.miaixz.bus.image.galaxy.data.Sequence"
+          ]
+        },
+        {
+          "name": "readValue",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.io.ImageInputStream",
+            "org.miaixz.bus.image.galaxy.data.Fragments"
+          ]
+        },
+        {
+          "name": "startDataset",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.io.ImageInputStream"
+          ]
+        },
+        {
+          "name": "endDataset",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.io.ImageInputStream"
+          ]
+        },
+        {
+          "name": "writeStartObject",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeStartObject",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "writeStartArray",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeStartArray",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "writeEnd",
+          "parameterTypes": []
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "writeNotNullOrDef",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "writeNotNull",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Boolean"
+          ]
+        },
+        {
+          "name": "writeNotNull",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "writeNotNull",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "writeNotNullOrDef",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.TimeZone",
+            "java.util.TimeZone"
+          ]
+        },
+        {
+          "name": "writeNotNull",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "writeNotEmpty",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object[]",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "writeNotEmpty",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "writeNotEmpty",
+          "parameterTypes": [
+            "java.lang.String",
+            "int[]"
+          ]
+        },
+        {
+          "name": "writeNotDef",
+          "parameterTypes": [
+            "java.lang.String",
+            "long",
+            "long"
+          ]
+        },
+        {
+          "name": "writeNotDef",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "writeNotDef",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "writeConnRefs",
+          "parameterTypes": [
+            "java.util.List",
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.json.JsonConfiguration",
+      "fields": [
+        {
+          "name": "extensions"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "addJsonConfigurationExtension",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.json.JsonConfigurationExtension"
+          ]
+        },
+        {
+          "name": "removeJsonConfigurationExtension",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.json.JsonConfigurationExtension"
+          ]
+        },
+        {
+          "name": "getJsonConfigurationExtension",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.Device",
+            "jakarta.json.stream.JsonGenerator"
+          ]
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.net.ApplicationEntityInfo",
+            "jakarta.json.stream.JsonGenerator"
+          ]
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.WebApplication",
+            "jakarta.json.stream.JsonGenerator"
+          ]
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.WebApplication",
+            "jakarta.json.stream.JsonGenerator",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "writeNotExtendedConns",
+          "parameterTypes": [
+            "java.util.List",
+            "org.miaixz.bus.image.metric.json.JSONWriter"
+          ]
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.hl7.net.HL7ApplicationInfo",
+            "jakarta.json.stream.JsonGenerator"
+          ]
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.Device",
+            "jakarta.json.stream.JsonGenerator",
+            "boolean"
+          ]
+        },
+        {
+          "name": "loadDeviceFrom",
+          "parameterTypes": [
+            "jakarta.json.stream.JsonParser",
+            "org.miaixz.bus.image.metric.json.ConfigurationDelegate"
+          ]
+        },
+        {
+          "name": "loadDeviceExtension",
+          "parameterTypes": [
+            "org.miaixz.bus.image.Device",
+            "org.miaixz.bus.image.metric.json.JSONReader",
+            "org.miaixz.bus.image.metric.json.ConfigurationDelegate"
+          ]
+        },
+        {
+          "name": "writeConnectionsTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.Device",
+            "org.miaixz.bus.image.metric.json.JSONWriter",
+            "boolean"
+          ]
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Connection",
+            "org.miaixz.bus.image.metric.json.JSONWriter",
+            "boolean"
+          ]
+        },
+        {
+          "name": "loadConnections",
+          "parameterTypes": [
+            "org.miaixz.bus.image.Device",
+            "org.miaixz.bus.image.metric.json.JSONReader"
+          ]
+        },
+        {
+          "name": "loadFrom",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Connection",
+            "org.miaixz.bus.image.metric.json.JSONReader"
+          ]
+        },
+        {
+          "name": "writeApplicationAEsTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.Device",
+            "org.miaixz.bus.image.metric.json.JSONWriter",
+            "boolean"
+          ]
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.net.ApplicationEntity",
+            "java.util.List",
+            "org.miaixz.bus.image.metric.json.JSONWriter",
+            "boolean"
+          ]
+        },
+        {
+          "name": "loadApplicationEntities",
+          "parameterTypes": [
+            "org.miaixz.bus.image.Device",
+            "org.miaixz.bus.image.metric.json.JSONReader",
+            "org.miaixz.bus.image.metric.json.ConfigurationDelegate"
+          ]
+        },
+        {
+          "name": "loadFrom",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.net.ApplicationEntity",
+            "org.miaixz.bus.image.metric.json.JSONReader",
+            "org.miaixz.bus.image.Device",
+            "org.miaixz.bus.image.metric.json.ConfigurationDelegate"
+          ]
+        },
+        {
+          "name": "loadApplicationEntityExtension",
+          "parameterTypes": [
+            "org.miaixz.bus.image.Device",
+            "org.miaixz.bus.image.metric.net.ApplicationEntity",
+            "org.miaixz.bus.image.metric.json.JSONReader",
+            "org.miaixz.bus.image.metric.json.ConfigurationDelegate"
+          ]
+        },
+        {
+          "name": "writeTransferCapabilitiesTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.net.ApplicationEntity",
+            "org.miaixz.bus.image.metric.json.JSONWriter",
+            "boolean"
+          ]
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.TransferCapability",
+            "org.miaixz.bus.image.metric.json.JSONWriter",
+            "boolean"
+          ]
+        },
+        {
+          "name": "loadTransferCapabilities",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.net.ApplicationEntity",
+            "org.miaixz.bus.image.metric.json.JSONReader"
+          ]
+        },
+        {
+          "name": "loadFrom",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.TransferCapability",
+            "org.miaixz.bus.image.metric.json.JSONReader"
+          ]
+        },
+        {
+          "name": "writeWebApplicationsTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.Device",
+            "org.miaixz.bus.image.metric.json.JSONWriter"
+          ]
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.WebApplication",
+            "java.util.List",
+            "org.miaixz.bus.image.metric.json.JSONWriter"
+          ]
+        },
+        {
+          "name": "loadWebApplications",
+          "parameterTypes": [
+            "org.miaixz.bus.image.Device",
+            "org.miaixz.bus.image.metric.json.JSONReader"
+          ]
+        },
+        {
+          "name": "loadFrom",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.WebApplication",
+            "org.miaixz.bus.image.metric.json.JSONReader",
+            "org.miaixz.bus.image.Device"
+          ]
+        },
+        {
+          "name": "writeKeycloackClientsTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.Device",
+            "org.miaixz.bus.image.metric.json.JSONWriter"
+          ]
+        },
+        {
+          "name": "loadKeycloakClients",
+          "parameterTypes": [
+            "org.miaixz.bus.image.Device",
+            "org.miaixz.bus.image.metric.json.JSONReader"
+          ]
+        },
+        {
+          "name": "loadFrom",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.net.KeycloakClient",
+            "org.miaixz.bus.image.metric.json.JSONReader"
+          ]
+        },
+        {
+          "name": "writeBulkdataDescriptors",
+          "parameterTypes": [
+            "java.util.Map",
+            "org.miaixz.bus.image.metric.json.JSONWriter"
+          ]
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.io.BasicBulkDataDescriptor",
+            "org.miaixz.bus.image.metric.json.JSONWriter"
+          ]
+        },
+        {
+          "name": "loadBulkdataDescriptors",
+          "parameterTypes": [
+            "java.util.Map",
+            "org.miaixz.bus.image.metric.json.JSONReader"
+          ]
+        },
+        {
+          "name": "loadFrom",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.io.BasicBulkDataDescriptor",
+            "org.miaixz.bus.image.metric.json.JSONReader"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.json.hl7.JsonHL7ConfigurationExtension",
+      "methods": [
+        {
+          "name": "storeTo",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.hl7.net.HL7Application",
+            "org.miaixz.bus.image.Device",
+            "org.miaixz.bus.image.metric.json.JSONWriter"
+          ]
+        },
+        {
+          "name": "loadHL7ApplicationExtension",
+          "parameterTypes": [
+            "org.miaixz.bus.image.Device",
+            "org.miaixz.bus.image.metric.hl7.net.HL7Application",
+            "org.miaixz.bus.image.metric.json.JSONReader",
+            "org.miaixz.bus.image.metric.json.ConfigurationDelegate"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.net.ConnectionMonitor",
+      "methods": [
+        {
+          "name": "onConnectionEstablished",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Connection",
+            "org.miaixz.bus.image.metric.Connection",
+            "java.net.Socket"
+          ]
+        },
+        {
+          "name": "onConnectionFailed",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Connection",
+            "org.miaixz.bus.image.metric.Connection",
+            "java.net.Socket",
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "onConnectionRejectedBlacklisted",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Connection",
+            "java.net.Socket"
+          ]
+        },
+        {
+          "name": "onConnectionRejected",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Connection",
+            "java.net.Socket",
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "onConnectionAccepted",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Connection",
+            "java.net.Socket"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.net.DeviceServiceInterface",
+      "methods": [
+        {
+          "name": "getDevice",
+          "parameterTypes": []
+        },
+        {
+          "name": "isRunning",
+          "parameterTypes": []
+        },
+        {
+          "name": "start",
+          "parameterTypes": []
+        },
+        {
+          "name": "stop",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.net.IdentityNegotiator",
+      "methods": [
+        {
+          "name": "negotiate",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Association",
+            "org.miaixz.bus.image.metric.pdu.IdentityRQ"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.net.Listener",
+      "methods": [
+        {
+          "name": "getEndPoint",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.net.TCPProtocolHandler",
+      "methods": [
+        {
+          "name": "onAccept",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Connection",
+            "java.net.Socket"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.net.UDPProtocolHandler",
+      "methods": [
+        {
+          "name": "onReceive",
+          "parameterTypes": [
+            "org.miaixz.bus.image.metric.Connection",
+            "java.net.DatagramPacket"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.service.ImageService",
+      "methods": [
+        {
+          "name": "getSOPClasses",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.service.QueryTask"
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.service.RetrieveTask"
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.ImageContentHash",
+      "fields": [
+        {
+          "name": "AVERAGE"
+        },
+        {
+          "name": "PHASH"
+        },
+        {
+          "name": "MARR_HILDRETH"
+        },
+        {
+          "name": "RADIAL_VARIANCE"
+        },
+        {
+          "name": "BLOCK_MEAN_ZERO"
+        },
+        {
+          "name": "BLOCK_MEAN_ONE"
+        },
+        {
+          "name": "COLOR_MOMENT"
+        },
+        {
+          "name": "algorithmFactory"
+        }
+      ],
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "org.miaixz.bus.image.nimble.ImageContentHash$AlgorithmFactory"
+          ]
+        },
+        {
+          "name": "getAlgorithm",
+          "parameterTypes": []
+        },
+        {
+          "name": "compare",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.ImageRendering",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRawRenderedImage",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.stream.ImageDescriptor",
+            "org.miaixz.bus.image.nimble.ImageReadParam",
+            "int"
+          ]
+        },
+        {
+          "name": "getModalityLutImage",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.ImageAdapter",
+            "org.miaixz.bus.image.nimble.ImageReadParam"
+          ]
+        },
+        {
+          "name": "getDefaultRenderedImage",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.stream.ImageDescriptor",
+            "org.miaixz.bus.image.nimble.ImageReadParam",
+            "int"
+          ]
+        },
+        {
+          "name": "getVoiLutImage",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.stream.ImageDescriptor",
+            "org.miaixz.bus.image.nimble.ImageReadParam",
+            "int"
+          ]
+        },
+        {
+          "name": "getVoiLutImage",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.ImageAdapter",
+            "org.miaixz.bus.image.nimble.ImageReadParam"
+          ]
+        },
+        {
+          "name": "getImageForByteOrShortData",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.ImageAdapter",
+            "org.miaixz.bus.image.nimble.opencv.lut.WindLevelParameters"
+          ]
+        },
+        {
+          "name": "getImageWithFloatOrIntData",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.opencv.lut.WindLevelParameters",
+            "int"
+          ]
+        },
+        {
+          "name": "getImageWithoutEmbeddedOverlay",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.stream.ImageDescriptor",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.OverlayData",
+      "fields": [
+        {
+          "name": "groupOffset"
+        },
+        {
+          "name": "rows"
+        },
+        {
+          "name": "columns"
+        },
+        {
+          "name": "imageFrameOrigin"
+        },
+        {
+          "name": "framesInOverlay"
+        },
+        {
+          "name": "origin"
+        },
+        {
+          "name": "data"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int",
+            "int",
+            "int[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getOverlayData",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "int"
+          ]
+        },
+        {
+          "name": "getOverlayData",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "isLayerActivate",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "getPrOverlayData",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "int"
+          ]
+        },
+        {
+          "name": "getOverlayImage",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.stream.ImageDescriptor",
+            "org.miaixz.bus.image.nimble.ImageReadParam",
+            "int"
+          ]
+        },
+        {
+          "name": "getOverlayImage",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.ImageReadParam",
+            "int",
+            "int",
+            "int",
+            "java.util.List",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "applyOverlay",
+          "parameterTypes": [
+            "java.util.List",
+            "byte[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "setOverlayPixelData",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int",
+            "int",
+            "byte[]",
+            "byte[]",
+            "byte",
+            "int"
+          ]
+        },
+        {
+          "name": "getOverlayImage",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "java.util.List",
+            "int"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "groupOffset",
+          "parameterTypes": []
+        },
+        {
+          "name": "rows",
+          "parameterTypes": []
+        },
+        {
+          "name": "columns",
+          "parameterTypes": []
+        },
+        {
+          "name": "imageFrameOrigin",
+          "parameterTypes": []
+        },
+        {
+          "name": "framesInOverlay",
+          "parameterTypes": []
+        },
+        {
+          "name": "origin",
+          "parameterTypes": []
+        },
+        {
+          "name": "data",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.RGBImageVoiLut",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "bgr2rgb",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage"
+          ]
+        },
+        {
+          "name": "getModality",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        },
+        {
+          "name": "getMinMax",
+          "parameterTypes": [
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "getPaletteColorLookupTable",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        },
+        {
+          "name": "getRGBImageFromPaletteColorModel",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.opencv.LookupTableCV"
+          ]
+        },
+        {
+          "name": "createLut",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        },
+        {
+          "name": "createVoiLut",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.LutShape",
+            "double",
+            "double",
+            "int",
+            "int",
+            "int",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "createRescaleRampLut",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.lut.LutParameters"
+          ]
+        },
+        {
+          "name": "createRescaleRampLut",
+          "parameterTypes": [
+            "double",
+            "double",
+            "int",
+            "boolean",
+            "boolean",
+            "int"
+          ]
+        },
+        {
+          "name": "createRescaleRampLut",
+          "parameterTypes": [
+            "double",
+            "double",
+            "int",
+            "int",
+            "int",
+            "boolean",
+            "boolean",
+            "boolean",
+            "int"
+          ]
+        },
+        {
+          "name": "applyPixelPaddingToModalityLUT",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.LookupTableCV",
+            "org.miaixz.bus.image.nimble.opencv.lut.LutParameters"
+          ]
+        },
+        {
+          "name": "setWindowLevelLinearLutLegacy",
+          "parameterTypes": [
+            "double",
+            "double",
+            "int",
+            "java.lang.Object",
+            "int",
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "setLutValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "int",
+            "int",
+            "boolean",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "setWindowLevelLinearLut",
+          "parameterTypes": [
+            "double",
+            "double",
+            "int",
+            "java.lang.Object",
+            "int",
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "setWindowLevelSigmoidLut",
+          "parameterTypes": [
+            "double",
+            "double",
+            "int",
+            "java.lang.Object",
+            "int",
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "setWindowLevelSigmoidLut",
+          "parameterTypes": [
+            "double",
+            "double",
+            "int",
+            "java.lang.Object",
+            "int",
+            "int",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "setWindowLevelExponentialLut",
+          "parameterTypes": [
+            "double",
+            "double",
+            "int",
+            "java.lang.Object",
+            "int",
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "setWindowLevelExponentialLut",
+          "parameterTypes": [
+            "double",
+            "double",
+            "int",
+            "java.lang.Object",
+            "int",
+            "int",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "setWindowLevelLogarithmicLut",
+          "parameterTypes": [
+            "double",
+            "double",
+            "int",
+            "java.lang.Object",
+            "int",
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "setWindowLevelLogarithmicLut",
+          "parameterTypes": [
+            "double",
+            "double",
+            "int",
+            "java.lang.Object",
+            "int",
+            "int",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "setLutValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "int",
+            "int",
+            "boolean",
+            "boolean",
+            "double",
+            "double",
+            "int",
+            "double"
+          ]
+        },
+        {
+          "name": "getLutDataArray",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.LookupTableCV"
+          ]
+        },
+        {
+          "name": "setWindowLevelSequenceLut",
+          "parameterTypes": [
+            "double",
+            "double",
+            "org.miaixz.bus.image.nimble.opencv.LookupTableCV",
+            "int",
+            "int",
+            "java.lang.Object",
+            "int",
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "pixel2rescale",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.LookupTableCV",
+            "double"
+          ]
+        },
+        {
+          "name": "pixel2rescale",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "double"
+          ]
+        },
+        {
+          "name": "getByteData",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "int"
+          ]
+        },
+        {
+          "name": "getByteData",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "lutDescriptor",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "int"
+          ]
+        },
+        {
+          "name": "lutData",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "int[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "halfLength",
+          "parameterTypes": [
+            "byte[]",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.codec.BytesWithImageImageDescriptor",
+      "methods": [
+        {
+          "name": "getBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getImageDescriptor",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.codec.XPEGParser",
+      "methods": [
+        {
+          "name": "getCodeStreamPosition",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPositionAfterAPPSegments",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMP4FileType",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAttributes",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        },
+        {
+          "name": "getTransferSyntaxUID",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "getTransferSyntaxUID",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.geometry.Orientation",
+      "methods": [
+        {
+          "name": "name",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFullName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getColor",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.ImageAnalyzer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaskImage",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.awt.Shape",
+            "java.lang.Integer",
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "transformShapeToContour",
+          "parameterTypes": [
+            "java.awt.Shape",
+            "boolean"
+          ]
+        },
+        {
+          "name": "findRawMinMaxValues",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "boolean"
+          ]
+        },
+        {
+          "name": "findMinMaxValues",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "findMinMaxValues",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.lang.Integer",
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "minMaxLoc",
+          "parameterTypes": [
+            "java.awt.image.RenderedImage",
+            "java.awt.Rectangle"
+          ]
+        },
+        {
+          "name": "minMaxLoc",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "meanStdDev",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "meanStdDev",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.awt.Shape"
+          ]
+        },
+        {
+          "name": "meanStdDev",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.awt.Shape",
+            "java.lang.Integer",
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "meanStdDev",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat",
+            "java.lang.Integer",
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "createShapeMask",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.awt.Shape"
+          ]
+        },
+        {
+          "name": "finalizePreviousSegment",
+          "parameterTypes": [
+            "org.opencv.core.MatOfPoint",
+            "java.util.List",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "removeDuplicateLastPoint",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "is8BitImage",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage"
+          ]
+        },
+        {
+          "name": "create8BitDefaultResult",
+          "parameterTypes": []
+        },
+        {
+          "name": "adjustForEqualMinMax",
+          "parameterTypes": [
+            "org.opencv.core.Core$MinMaxLocResult"
+          ]
+        },
+        {
+          "name": "splitIntoChannels",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "updateMinMaxResult",
+          "parameterTypes": [
+            "org.opencv.core.Core$MinMaxLocResult",
+            "org.opencv.core.Core$MinMaxLocResult"
+          ]
+        },
+        {
+          "name": "buildMeanStdDev",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "computeBasicStatistics",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "populateMinMaxValues",
+          "parameterTypes": [
+            "double[][]",
+            "java.util.List",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "computePixelCount",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "getPixelPaddingMask",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat",
+            "java.lang.Integer",
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "normalizePaddingRange",
+          "parameterTypes": [
+            "java.lang.Integer",
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "createPaddingMask",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "combineMasks",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.ImageConversion",
+      "fields": [
+        {
+          "name": "RGB_OFFSETS"
+        },
+        {
+          "name": "BGR_OFFSETS"
+        },
+        {
+          "name": "BGR_RASTER_OFFSETS"
+        },
+        {
+          "name": "BANDED_RGB_OFFSETS"
+        },
+        {
+          "name": "CV_TO_DATABUFFER_TYPE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "toBufferedImage",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "toBufferedImage",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage"
+          ]
+        },
+        {
+          "name": "releaseMat",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "releasePlanarImage",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage"
+          ]
+        },
+        {
+          "name": "convertToDataType",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "toMat",
+          "parameterTypes": [
+            "java.awt.image.RenderedImage"
+          ]
+        },
+        {
+          "name": "toMat",
+          "parameterTypes": [
+            "java.awt.image.RenderedImage",
+            "java.awt.Rectangle"
+          ]
+        },
+        {
+          "name": "toMat",
+          "parameterTypes": [
+            "java.awt.image.RenderedImage",
+            "java.awt.Rectangle",
+            "boolean"
+          ]
+        },
+        {
+          "name": "toMat",
+          "parameterTypes": [
+            "java.awt.image.RenderedImage",
+            "java.awt.Rectangle",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "getBounds",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage"
+          ]
+        },
+        {
+          "name": "convertTo",
+          "parameterTypes": [
+            "java.awt.image.RenderedImage",
+            "int"
+          ]
+        },
+        {
+          "name": "isBinary",
+          "parameterTypes": [
+            "java.awt.image.SampleModel"
+          ]
+        },
+        {
+          "name": "convertRenderedImage",
+          "parameterTypes": [
+            "java.awt.image.RenderedImage"
+          ]
+        },
+        {
+          "name": "getUnpackedBinaryData",
+          "parameterTypes": [
+            "java.awt.image.Raster",
+            "java.awt.Rectangle"
+          ]
+        },
+        {
+          "name": "createColorModel",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "createRaster",
+          "parameterTypes": [
+            "java.awt.image.ColorModel",
+            "int",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "populateRasterFromMat",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.awt.image.WritableRaster"
+          ]
+        },
+        {
+          "name": "createBinaryMat",
+          "parameterTypes": [
+            "java.awt.image.Raster"
+          ]
+        },
+        {
+          "name": "getBandOffsets",
+          "parameterTypes": [
+            "java.awt.image.Raster"
+          ]
+        },
+        {
+          "name": "processByteBuffer",
+          "parameterTypes": [
+            "java.awt.image.DataBufferByte",
+            "java.awt.image.Raster",
+            "int[]",
+            "int[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "createBandedRGBMat",
+          "parameterTypes": [
+            "java.awt.image.DataBufferByte",
+            "java.awt.image.Raster",
+            "boolean"
+          ]
+        },
+        {
+          "name": "applyColorConversion",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.ImageCV",
+            "int[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "processUShortBuffer",
+          "parameterTypes": [
+            "java.awt.image.DataBufferUShort",
+            "java.awt.image.Raster",
+            "int[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "processShortBuffer",
+          "parameterTypes": [
+            "java.awt.image.DataBufferShort",
+            "java.awt.image.Raster",
+            "int[]"
+          ]
+        },
+        {
+          "name": "processIntBuffer",
+          "parameterTypes": [
+            "java.awt.image.DataBufferInt",
+            "java.awt.image.Raster",
+            "int[]"
+          ]
+        },
+        {
+          "name": "processFloatBuffer",
+          "parameterTypes": [
+            "java.awt.image.DataBufferFloat",
+            "java.awt.image.Raster",
+            "int[]"
+          ]
+        },
+        {
+          "name": "processDoubleBuffer",
+          "parameterTypes": [
+            "java.awt.image.DataBufferDouble",
+            "java.awt.image.Raster",
+            "int[]"
+          ]
+        },
+        {
+          "name": "createImageProperties",
+          "parameterTypes": [
+            "java.awt.image.RenderedImage"
+          ]
+        },
+        {
+          "name": "unpackBinaryData",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.awt.Rectangle",
+            "int",
+            "int",
+            "int",
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "extractBitValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "int",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.ImageIOHandler",
+      "fields": [
+        {
+          "name": "PNG_COMPRESSION_LEVEL"
+        },
+        {
+          "name": "THUMBNAIL_JPEG_QUALITY"
+        },
+        {
+          "name": "NULL_SOURCE_IMAGE_ERROR"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "readImage",
+          "parameterTypes": [
+            "java.nio.file.Path",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "readImageWithCvException",
+          "parameterTypes": [
+            "java.nio.file.Path",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "writeImage",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "writeImage",
+          "parameterTypes": [
+            "java.awt.image.RenderedImage",
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "writeImage",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.nio.file.Path",
+            "org.opencv.core.MatOfInt"
+          ]
+        },
+        {
+          "name": "writePNG",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "writeThumbnail",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.nio.file.Path",
+            "int"
+          ]
+        },
+        {
+          "name": "buildThumbnail",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "java.awt.Dimension",
+            "boolean"
+          ]
+        },
+        {
+          "name": "handleImageConversion",
+          "parameterTypes": [
+            "java.nio.file.Path",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "writeImageInternal",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.nio.file.Path",
+            "org.opencv.core.MatOfInt"
+          ]
+        },
+        {
+          "name": "prepareOutputPath",
+          "parameterTypes": [
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "ensurePngExtension",
+          "parameterTypes": [
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "convertForPngIfNeeded",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "createThumbnail",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "int"
+          ]
+        },
+        {
+          "name": "calculateTargetSize",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.awt.Dimension",
+            "boolean"
+          ]
+        },
+        {
+          "name": "createThumbnailFromSize",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.awt.Dimension"
+          ]
+        },
+        {
+          "name": "shouldScale",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.awt.Dimension"
+          ]
+        },
+        {
+          "name": "calculateThumbnailSize",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "validateReadablePath",
+          "parameterTypes": [
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "validateSource",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "validateWriteParameters",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.nio.file.Path"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.ImageSize",
+      "methods": [
+        {
+          "name": "physicalBytes",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.ImageTransformer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "crop",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.awt.Rectangle"
+          ]
+        },
+        {
+          "name": "scale",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.awt.Dimension"
+          ]
+        },
+        {
+          "name": "scale",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.awt.Dimension",
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "applyLUT",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "byte[][]"
+          ]
+        },
+        {
+          "name": "rescaleToByte",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "double",
+            "double"
+          ]
+        },
+        {
+          "name": "invertLUT",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.ImageCV"
+          ]
+        },
+        {
+          "name": "bitwiseAnd",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "int"
+          ]
+        },
+        {
+          "name": "getRotatedImage",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "int"
+          ]
+        },
+        {
+          "name": "flip",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "int"
+          ]
+        },
+        {
+          "name": "warpAffine",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat",
+            "org.opencv.core.Size",
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "mergeImages",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat",
+            "double",
+            "double"
+          ]
+        },
+        {
+          "name": "overlay",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat",
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "overlay",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.awt.image.RenderedImage",
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "drawShape",
+          "parameterTypes": [
+            "java.awt.image.RenderedImage",
+            "java.awt.Shape",
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "applyCropMask",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.awt.Rectangle",
+            "double"
+          ]
+        },
+        {
+          "name": "applyShutter",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.awt.Shape",
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "applyShutter",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.awt.image.RenderedImage",
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "validateOpacity",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "createLutMat",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "byte[][]"
+          ]
+        },
+        {
+          "name": "applyGrayscaleOverlay",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat",
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "applyColorOverlay",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat",
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "drawMaskRegions",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.ImageCV",
+            "java.awt.Rectangle"
+          ]
+        },
+        {
+          "name": "getMaxColor",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "getMaxColorForOverlay",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "isGray",
+          "parameterTypes": [
+            "java.awt.Color"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+      "methods": [
+        {
+          "name": "channels",
+          "parameterTypes": []
+        },
+        {
+          "name": "dims",
+          "parameterTypes": []
+        },
+        {
+          "name": "depth",
+          "parameterTypes": []
+        },
+        {
+          "name": "elemSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "elemSize1",
+          "parameterTypes": []
+        },
+        {
+          "name": "size",
+          "parameterTypes": []
+        },
+        {
+          "name": "type",
+          "parameterTypes": []
+        },
+        {
+          "name": "height",
+          "parameterTypes": []
+        },
+        {
+          "name": "width",
+          "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int",
+            "int",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int",
+            "int",
+            "short[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int",
+            "int",
+            "float[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int",
+            "int",
+            "double[]"
+          ]
+        },
+        {
+          "name": "assignTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "release",
+          "parameterTypes": []
+        },
+        {
+          "name": "isReleased",
+          "parameterTypes": []
+        },
+        {
+          "name": "isReleasedAfterProcessing",
+          "parameterTypes": []
+        },
+        {
+          "name": "setReleasedAfterProcessing",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "toMat",
+          "parameterTypes": []
+        },
+        {
+          "name": "toImageCV",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.PresentationStateLut",
+      "methods": [
+        {
+          "name": "getPrLut",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPrLutExplanation",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPrLutShapeMode",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.WlParams",
+      "methods": [
+        {
+          "name": "getWindow",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLevel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLevelMin",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLevelMax",
+          "parameterTypes": []
+        },
+        {
+          "name": "isInverseLut",
+          "parameterTypes": []
+        },
+        {
+          "name": "isFillOutsideLutRange",
+          "parameterTypes": []
+        },
+        {
+          "name": "isAllowWinLevelOnColorImage",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLutShape",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.lut.WlPresentation",
+      "methods": [
+        {
+          "name": "isPixelPadding",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPresentationState",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.op.MaskArea",
+      "fields": [
+        {
+          "name": "color"
+        },
+        {
+          "name": "shapeList"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List",
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "drawShape",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.miaixz.bus.image.nimble.opencv.op.MaskArea"
+          ]
+        },
+        {
+          "name": "getColor",
+          "parameterTypes": []
+        },
+        {
+          "name": "getShapeList",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.seg.ContourTopology",
+      "fields": [
+        {
+          "name": "segment"
+        },
+        {
+          "name": "parent"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.opencv.core.MatOfPoint",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.opencv.core.MatOfPoint2f",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.opencv.core.Point[]",
+            "int"
+          ]
+        },
+        {
+          "name": "getParent",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSegment",
+          "parameterTypes": []
+        },
+        {
+          "name": "createSegment",
+          "parameterTypes": [
+            "org.opencv.core.Point[]"
+          ]
+        },
+        {
+          "name": "convertToPoint2D",
+          "parameterTypes": [
+            "org.opencv.core.Point"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.stream.BytesWithImageDescriptor",
+      "methods": [
+        {
+          "name": "getBytes",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getTransferSyntax",
+          "parameterTypes": []
+        },
+        {
+          "name": "isBigEndian",
+          "parameterTypes": []
+        },
+        {
+          "name": "isFloatPixelData",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPixelDataVR",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPaletteColorLookupTable",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.stream.ImageReaderDescriptor",
+      "methods": [
+        {
+          "name": "getImageDescriptor",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.builtin.DicomFiles$Callback",
+      "methods": [
+        {
+          "name": "dicomFile",
+          "parameterTypes": [
+            "java.nio.file.Path",
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "long",
+            "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        },
+        {
+          "name": "dicomFile",
+          "parameterTypes": [
+            "java.io.File",
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "long",
+            "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.galaxy.data.BulkData$Creator",
+      "methods": [
+        {
+          "name": "create",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.galaxy.io.SAXTransformer$SetupTransformer",
+      "methods": [
+        {
+          "name": "setup",
+          "parameterTypes": [
+            "javax.xml.transform.Transformer"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.galaxy.media.MultipartParser$Handler",
+      "methods": [
+        {
+          "name": "bodyPart",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.image.galaxy.media.MultipartInputStream"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.metric.json.JSONReader$Callback",
+      "methods": [
+        {
+          "name": "onDataset",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.ICCProfile$ColorSpaceFactory",
+      "methods": [
+        {
+          "name": "getColorSpace",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.ImageContentHash$AlgorithmFactory",
+      "methods": [
+        {
+          "name": "create",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.codec.Transcoder$Handler",
+      "methods": [
+        {
+          "name": "newOutputStream",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.codec.Transcoder",
+            "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.codec.jpeg.JPEGParser$Params",
+      "methods": [
+        {
+          "name": "samplesPerPixel",
+          "parameterTypes": []
+        },
+        {
+          "name": "rows",
+          "parameterTypes": []
+        },
+        {
+          "name": "columns",
+          "parameterTypes": []
+        },
+        {
+          "name": "bitsStored",
+          "parameterTypes": []
+        },
+        {
+          "name": "pixelRepresentation",
+          "parameterTypes": []
+        },
+        {
+          "name": "lossyImageCompression",
+          "parameterTypes": []
+        },
+        {
+          "name": "colorPhotometricInterpretation",
+          "parameterTypes": []
+        },
+        {
+          "name": "transferSyntaxUID",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.ImageAnalyzer$MaskData",
+      "fields": [
+        {
+          "name": "srcImg"
+        },
+        {
+          "name": "mask"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "srcImg",
+          "parameterTypes": []
+        },
+        {
+          "name": "mask",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.ImageAnalyzer$Statistics",
+      "fields": [
+        {
+          "name": "mean"
+        },
+        {
+          "name": "stdDev"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.opencv.core.MatOfDouble",
+            "org.opencv.core.MatOfDouble"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "mean",
+          "parameterTypes": []
+        },
+        {
+          "name": "stdDev",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.plugin.Dcm2Jpg$ReadImage",
+      "methods": [
+        {
+          "name": "apply",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.plugin.MppsSCU$RSPHandlerFactory",
+      "methods": [
+        {
+          "name": "createDimseRSPHandlerForNCreate",
+          "parameterTypes": [
+            "org.miaixz.bus.image.plugin.MppsSCU$MppsWithIUID"
+          ]
+        },
+        {
+          "name": "createDimseRSPHandlerForNSet",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.plugin.StoreSCU$RSPHandlerFactory",
+      "methods": [
+        {
+          "name": "createDimseRSPHandler",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.plugin.StowRS$StowRSFileConsumer",
+      "methods": [
+        {
+          "name": "accept",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.plugin.StowRS$StowRSFileFunction",
+      "methods": [
+        {
+          "name": "apply",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.plugin.StreamSCU$RSPHandlerFactory",
+      "methods": [
+        {
+          "name": "createDimseRSPHandler",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.plugin.UpsSCU$RSPHandlerFactory",
+      "methods": [
+        {
+          "name": "createDimseRSPHandlerForCFind",
+          "parameterTypes": []
+        },
+        {
+          "name": "createDimseRSPHandlerForNCreate",
+          "parameterTypes": []
+        },
+        {
+          "name": "createDimseRSPHandlerForNSet",
+          "parameterTypes": []
+        },
+        {
+          "name": "createDimseRSPHandlerForNGet",
+          "parameterTypes": []
+        },
+        {
+          "name": "createDimseRSPHandlerForNAction",
           "parameterTypes": []
         }
       ]

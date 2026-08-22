@@ -72,6 +72,26 @@ public class Code implements Serializable {
     private String codeMeaning;
 
     /**
+     * The context group extension flag value.
+     */
+    private String contextGroupExtensionFlag;
+
+    /**
+     * The context group extension creator UID value.
+     */
+    private String contextGroupExtensionCreatorUID;
+
+    /**
+     * The context identifier value.
+     */
+    private String contextIdentifier;
+
+    /**
+     * The context UID value.
+     */
+    private String contextUID;
+
+    /**
      * Creates a new instance.
      *
      * @param codeValue              the code value.
@@ -136,6 +156,10 @@ public class Code implements Serializable {
     public Code(Attributes item) {
         this(codeValueOf(item), item.getString(Tag.CodingSchemeDesignator, null),
                 item.getString(Tag.CodingSchemeVersion, null), item.getString(Tag.CodeMeaning, NO_CODE_MEANING));
+        this.contextGroupExtensionFlag = item.getString(Tag.ContextGroupExtensionFlag, null);
+        this.contextGroupExtensionCreatorUID = item.getString(Tag.ContextGroupExtensionCreatorUID, null);
+        this.contextIdentifier = item.getString(Tag.ContextIdentifier, null);
+        this.contextUID = item.getString(Tag.ContextUID, null);
     }
 
     /**
@@ -215,6 +239,15 @@ public class Code implements Serializable {
     }
 
     /**
+     * Gets the existing code value.
+     *
+     * @return the existing code value.
+     */
+    public String getExistingCodeValue() {
+        return codeValue;
+    }
+
+    /**
      * Gets the coding scheme designator.
      *
      * @return the coding scheme designator.
@@ -239,6 +272,78 @@ public class Code implements Serializable {
      */
     public String getCodeMeaning() {
         return codeMeaning;
+    }
+
+    /**
+     * Gets the context group extension flag.
+     *
+     * @return the context group extension flag.
+     */
+    public String getContextGroupExtensionFlag() {
+        return contextGroupExtensionFlag;
+    }
+
+    /**
+     * Sets the context group extension flag.
+     *
+     * @param contextGroupExtensionFlag the context group extension flag.
+     */
+    public void setContextGroupExtensionFlag(String contextGroupExtensionFlag) {
+        this.contextGroupExtensionFlag = contextGroupExtensionFlag;
+    }
+
+    /**
+     * Gets the context group extension creator UID.
+     *
+     * @return the context group extension creator UID.
+     */
+    public String getContextGroupExtensionCreatorUID() {
+        return contextGroupExtensionCreatorUID;
+    }
+
+    /**
+     * Sets the context group extension creator UID.
+     *
+     * @param contextGroupExtensionCreatorUID the context group extension creator UID.
+     */
+    public void setContextGroupExtensionCreatorUID(String contextGroupExtensionCreatorUID) {
+        this.contextGroupExtensionCreatorUID = contextGroupExtensionCreatorUID;
+    }
+
+    /**
+     * Gets the context identifier.
+     *
+     * @return the context identifier.
+     */
+    public String getContextIdentifier() {
+        return contextIdentifier;
+    }
+
+    /**
+     * Sets the context identifier.
+     *
+     * @param contextIdentifier the context identifier.
+     */
+    public void setContextIdentifier(String contextIdentifier) {
+        this.contextIdentifier = contextIdentifier;
+    }
+
+    /**
+     * Gets the context UID.
+     *
+     * @return the context UID.
+     */
+    public String getContextUID() {
+        return contextUID;
+    }
+
+    /**
+     * Sets the context UID.
+     *
+     * @param contextUID the context UID.
+     */
+    public void setContextUID(String contextUID) {
+        this.contextUID = contextUID;
     }
 
     /**
@@ -319,6 +424,18 @@ public class Code implements Serializable {
             }
         }
         codeItem.setString(Tag.CodeMeaning, VR.LO, codeMeaning);
+        if (contextGroupExtensionFlag != null) {
+            codeItem.setString(Tag.ContextGroupExtensionFlag, VR.CS, contextGroupExtensionFlag);
+        }
+        if (contextGroupExtensionCreatorUID != null) {
+            codeItem.setString(Tag.ContextGroupExtensionCreatorUID, VR.UI, contextGroupExtensionCreatorUID);
+        }
+        if (contextIdentifier != null) {
+            codeItem.setString(Tag.ContextIdentifier, VR.CS, contextIdentifier);
+        }
+        if (contextUID != null) {
+            codeItem.setString(Tag.ContextUID, VR.UI, contextUID);
+        }
         return codeItem;
     }
 
