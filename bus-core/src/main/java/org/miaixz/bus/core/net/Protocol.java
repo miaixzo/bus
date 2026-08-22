@@ -263,11 +263,6 @@ public enum Protocol {
     UDP("udp"),
 
     /**
-     * Vendor-defined authentication exchange that is not an OAuth or OpenID Connect protocol.
-     */
-    VENDOR_AUTH("Vendor Authentication"),
-
-    /**
      * WebSocket protocol (cleartext), used for bidirectional real-time communication over TCP, compliant with RFC 6455.
      */
     WS("ws"),

@@ -541,7 +541,7 @@ public interface Payload {
      * @param sink    destination receiving payload bytes and a final flush
      * @return copied byte count
      */
-    static long copyTo(final Payload payload, final Sink sink) {
+    public static long copyTo(final Payload payload, final Sink sink) {
         if (payload == null) {
             throw new ValidateException("Payload must not be null");
         }
