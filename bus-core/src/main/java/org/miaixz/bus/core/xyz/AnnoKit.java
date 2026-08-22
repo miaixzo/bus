@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.LambdaX;
 import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.map.reference.SoftConcurrentMap;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
@@ -85,27 +86,21 @@ public class AnnoKit {
      * Sentinel object used in the two-level annotation cache to represent “annotation not found”, avoiding NPE from
      * caching {@code null}.
      */
-    private static final Annotation NULL_ANNOTATION_SENTINEL = new Annotation() {
-
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return null;
-        }
-    };
+    private static final Annotation NULL_ANNOTATION_SENTINEL = () -> null;
 
     /**
      * L1 raw annotation cache (high-frequency core scenario).<br>
      * Key: annotation lookup key (annotated element + target annotation type).<br>
      * Value: the raw annotation object, or {@code NULL_ANNOTATION_SENTINEL} if not present.
      */
-    private static final Map<AnnotationLookupKey, Annotation> L1_ANNOTATION_CACHE = new WeakConcurrentMap<>();
+    private static final Map<AnnotationLookupKey, Annotation> L1_ANNOTATION_CACHE = new SoftConcurrentMap<>();
 
     /**
      * L2 synthesized annotation cache (alias/aggregate scenario).<br>
      * Key: annotation lookup key (annotated element + target annotation type).<br>
      * Value: the synthesized annotation object, or {@code NULL_ANNOTATION_SENTINEL} if not present.
      */
-    private static final Map<AnnotationLookupKey, Annotation> L2_SYNTHESIZED_ANNOTATION_CACHE = new WeakConcurrentMap<>();
+    private static final Map<AnnotationLookupKey, Annotation> L2_SYNTHESIZED_ANNOTATION_CACHE = new SoftConcurrentMap<>();
 
     /**
      * Retrieves annotations directly declared on the given element. If a cached value exists, it is returned. This
