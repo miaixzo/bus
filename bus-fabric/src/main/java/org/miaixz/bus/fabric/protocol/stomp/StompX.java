@@ -50,7 +50,7 @@ import org.miaixz.bus.fabric.protocol.stomp.calls.StompCall;
  *
  * @author Kimi Liu
  */
-public final class StompX {
+public class StompX {
 
     /**
      * Immutable execution specification.
@@ -72,7 +72,7 @@ public final class StompX {
      *
      * @param builder configuration source used to create the immutable exchange specification
      */
-    private StompX(final Builder builder) {
+    public StompX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
         final Headers connectHeaders = connectHeaders(builder.headers.build(), builder.policy);
@@ -318,7 +318,7 @@ public final class StompX {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Shared context.
@@ -410,7 +410,7 @@ public final class StompX {
          *
          * @param context shared context
          */
-        private Builder(final Context context) {
+        public Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
             final Timeout configured = context.options().get(OPTION_TIMEOUT);

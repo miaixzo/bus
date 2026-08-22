@@ -40,7 +40,7 @@ import org.opencv.core.Mat;
  * @see DataBufferShort
  * @author Kimi Liu
  */
-public final class LookupTableCV {
+public class LookupTableCV {
 
     /**
      * The null data array message value.

@@ -37,7 +37,7 @@ import org.miaixz.bus.fabric.UnoUrl;
  *
  * @author Kimi Liu
  */
-public final class ProxySelectorAdapter {
+public class ProxySelectorAdapter {
 
     /**
      * Reuses the adapter for the process-wide selector without changing selector identity semantics.
@@ -59,7 +59,7 @@ public final class ProxySelectorAdapter {
      *
      * @param selector JDK proxy selector to delegate to
      */
-    private ProxySelectorAdapter(final ProxySelector selector) {
+    public ProxySelectorAdapter(final ProxySelector selector) {
         this.selector = Assert.notNull(selector, () -> new ValidateException("Proxy selector must not be null"));
     }
 

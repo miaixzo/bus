@@ -46,7 +46,7 @@ import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
  *
  * @author Kimi Liu
  */
-public final class DnsUdpEndpoint implements AutoCloseable, Lifecycle {
+public class DnsUdpEndpoint implements AutoCloseable, Lifecycle {
 
     /**
      * Maximum bound UDP channels per endpoint.

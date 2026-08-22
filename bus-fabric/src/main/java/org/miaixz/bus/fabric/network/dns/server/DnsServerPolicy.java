@@ -29,7 +29,7 @@ import org.miaixz.bus.fabric.Policy;
  *
  * @author Kimi Liu
  */
-public final class DnsServerPolicy implements Policy {
+public class DnsServerPolicy implements Policy {
 
     /**
      * Typed option containing DNS server startup options.

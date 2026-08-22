@@ -43,7 +43,7 @@ import org.miaixz.bus.fabric.Payload;
  *
  * @author Kimi Liu
  */
-public final class Http2Stream implements AutoCloseable {
+public class Http2Stream implements AutoCloseable {
 
     /**
      * Positive HTTP/2 stream identifier.
@@ -183,7 +183,7 @@ public final class Http2Stream implements AutoCloseable {
      * @param headers initial local header snapshot returned before final response headers arrive
      * @throws ValidateException if the id is not positive or {@code headers} is {@code null}
      */
-    Http2Stream(final int id, final Headers headers) {
+    public Http2Stream(final int id, final Headers headers) {
         this(id, headers, ignored -> {
         }, () -> {
         }, () -> {

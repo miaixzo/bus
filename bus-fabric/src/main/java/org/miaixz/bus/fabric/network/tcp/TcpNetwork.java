@@ -40,7 +40,7 @@ import org.miaixz.bus.fabric.network.aio.AioNetwork;
  *
  * @author Kimi Liu
  */
-public final class TcpNetwork implements Connector {
+public class TcpNetwork implements Connector {
 
     /**
      * Transport set accepted by this connector and listener facade.
@@ -68,7 +68,7 @@ public final class TcpNetwork implements Connector {
      * @param aio      AIO network
      * @param listener lifecycle listener, or {@code null} when notifications are disabled
      */
-    private TcpNetwork(final AioNetwork aio, final Listener<Object> listener) {
+    public TcpNetwork(final AioNetwork aio, final Listener<Object> listener) {
         this.aio = Assert.notNull(aio, () -> new ValidateException("AIO network must not be null"));
         this.closed = new AtomicBoolean();
         this.listener = listener;

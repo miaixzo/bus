@@ -38,7 +38,7 @@ public class CollectionConverter implements MatcherConverter, Serializable {
     /**
      * Creates a new {@code CollectionConverter} instance.
      */
-    CollectionConverter() {
+    public CollectionConverter() {
         // No initialization required.
     }
 

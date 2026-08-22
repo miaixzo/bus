@@ -45,7 +45,7 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
     /**
      * Creates the shared trust manager that accepts every certificate.
      */
-    private AnyTrustManager() {
+    public AnyTrustManager() {
         // No initialization required.
     }
 

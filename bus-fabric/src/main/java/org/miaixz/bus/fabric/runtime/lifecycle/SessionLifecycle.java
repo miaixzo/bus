@@ -40,7 +40,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  *
  * @author Kimi Liu
  */
-public final class SessionLifecycle {
+public class SessionLifecycle {
 
     /**
      * Shared lifecycle state and listener coordinator.
@@ -63,7 +63,7 @@ public final class SessionLifecycle {
      * @param scope        lifecycle scope
      * @param cancellation borrowed session cancellation
      */
-    private SessionLifecycle(final LifecycleScope scope, final Cancellation cancellation) {
+    public SessionLifecycle(final LifecycleScope scope, final Cancellation cancellation) {
         this.scope = require(scope, "Lifecycle scope");
         this.cancellation = require(cancellation, "Cancellation");
         this.unregister = cancellation.onCancel(() -> {

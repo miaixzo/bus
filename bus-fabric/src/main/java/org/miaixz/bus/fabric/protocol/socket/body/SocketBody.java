@@ -35,7 +35,7 @@ import org.miaixz.bus.fabric.codec.body.ProgressBody;
  *
  * @author Kimi Liu
  */
-public final class SocketBody implements MessageBody, ProgressBody {
+public class SocketBody implements MessageBody, ProgressBody {
 
     /**
      * Original socket message payload.
@@ -58,7 +58,7 @@ public final class SocketBody implements MessageBody, ProgressBody {
      * @param payload socket message content source
      * @param media   media type
      */
-    private SocketBody(final Payload payload, final MediaType media) {
+    public SocketBody(final Payload payload, final MediaType media) {
         this(payload, media, null);
     }
 

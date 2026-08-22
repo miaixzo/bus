@@ -526,7 +526,7 @@ public abstract class SegmentLock<L> {
          * @return The corresponding lock segment.
          */
         @Override
-        public final L get(final Object key) {
+        public L get(final Object key) {
             return getAt(indexFor(key));
         }
 

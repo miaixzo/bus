@@ -38,7 +38,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  *
  * @author Kimi Liu
  */
-public final class WebSocketCall extends MonoCall<WebSocketSession> {
+public class WebSocketCall extends MonoCall<WebSocketSession> {
 
     /**
      * Single WebSocket-open operation receiving the call lifecycle's cancellation scope.
@@ -65,7 +65,7 @@ public final class WebSocketCall extends MonoCall<WebSocketSession> {
      * @param operation  function that opens a session within the lifecycle cancellation scope
      * @param key        dispatch key used for asynchronous submission
      */
-    private WebSocketCall(final Dispatcher dispatcher, final Callback<? super WebSocketSession> callback,
+    public WebSocketCall(final Dispatcher dispatcher, final Callback<? super WebSocketSession> callback,
             final EventObserver observer, final Timeout timeout,
             final Function<Cancellation, WebSocketSession> operation, final String key) {
         super(Builder.WEBSOCKET_OPEN, dispatcher, observer, callback, timeout);

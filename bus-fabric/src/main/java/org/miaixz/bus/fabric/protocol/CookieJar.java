@@ -37,7 +37,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpCookie;
  *
  * @author Kimi Liu
  */
-public final class CookieJar {
+public class CookieJar {
 
     /**
      * Typed option for the HTTP cookie jar.
@@ -69,7 +69,7 @@ public final class CookieJar {
     /**
      * Creates an accepting empty jar using the system clock.
      */
-    private CookieJar() {
+    public CookieJar() {
         this(true, Clock.system());
     }
 

@@ -41,7 +41,7 @@ import org.miaixz.bus.fabric.network.dns.server.DnsTsigKey;
  *
  * @author Kimi Liu
  */
-public final class DnsTsig {
+public class DnsTsig {
 
     /**
      * DNS class value used by TSIG pseudo-records.
@@ -59,9 +59,9 @@ public final class DnsTsig {
     private static final int DEFAULT_FUDGE_SECONDS = 300;
 
     /**
-     * Restricts the class to static operations.
+     * Creates a stateless DNS TSIG processing entry point.
      */
-    private DnsTsig() {
+    public DnsTsig() {
         // No initialization required.
     }
 

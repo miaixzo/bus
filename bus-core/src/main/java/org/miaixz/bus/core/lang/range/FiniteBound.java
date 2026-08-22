@@ -49,7 +49,7 @@ public class FiniteBound<T extends Comparable<? super T>> implements Bound<T> {
      * @param value the boundary value
      * @param type  the {@link BoundType} of this boundary
      */
-    FiniteBound(final T value, final BoundType type) {
+    public FiniteBound(final T value, final BoundType type) {
         this.value = value;
         this.type = type;
     }

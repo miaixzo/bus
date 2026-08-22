@@ -27,7 +27,7 @@ package org.opencv.img_hash;
  */
 public class ColorMomentHash extends ImgHashBase {
 
-    protected ColorMomentHash(long addr) {
+    public ColorMomentHash(long addr) {
         super(addr);
     }
 

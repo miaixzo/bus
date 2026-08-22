@@ -39,7 +39,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class ImageDescriptor {
+public class ImageDescriptor {
 
     /**
      * The rows value.

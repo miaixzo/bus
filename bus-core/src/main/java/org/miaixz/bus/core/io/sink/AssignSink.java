@@ -56,7 +56,7 @@ public abstract class AssignSink implements Sink {
      *
      * @return The delegate sink.
      */
-    public final Sink delegate() {
+    public Sink delegate() {
         return delegate;
     }
 

@@ -38,7 +38,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  *
  * @author Kimi Liu
  */
-public final class StompReceipt {
+public class StompReceipt {
 
     /**
      * Receipt identifiers mapped to the single future currently awaiting each receipt.

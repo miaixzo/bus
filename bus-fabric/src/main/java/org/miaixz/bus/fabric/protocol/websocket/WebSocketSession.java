@@ -68,7 +68,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class WebSocketSession implements Session {
+public class WebSocketSession implements Session {
 
     /**
      * Milliseconds between non-blocking completion checks.
@@ -256,7 +256,7 @@ public final class WebSocketSession implements Session {
      *
      * @param address session address
      */
-    WebSocketSession(final Address address) {
+    public WebSocketSession(final Address address) {
         this(address, null, null, null, null, null, null, null, false, defaultDispatchKey(address), Clock.system(),
                 Timeout.defaults(), null, WebSocketRole.CLIENT, defaultAttributes(EventObserver.noop()), null,
                 EventObserver.noop(), null, Cancellation.create(), Normal.MEBI_64);

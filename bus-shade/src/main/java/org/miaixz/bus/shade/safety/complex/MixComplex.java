@@ -43,7 +43,7 @@ public abstract class MixComplex<E> implements Complex<E> {
     /**
      * Constructs an empty {@code MixComplex} with no initial sub-filters.
      */
-    protected MixComplex() {
+    public MixComplex() {
         this(null);
     }
 

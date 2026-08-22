@@ -31,7 +31,7 @@ public abstract class Filters {
     /**
      * Keeps classpath filter composition on the static API.
      */
-    private Filters() {
+    public Filters() {
         // No initialization required.
     }
 

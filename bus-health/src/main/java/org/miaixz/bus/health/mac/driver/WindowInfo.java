@@ -39,12 +39,12 @@ import org.miaixz.bus.health.mac.jna.CoreGraphics;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class WindowInfo {
+public class WindowInfo {
 
     /**
      * Keeps macOS desktop-window queries on the static API.
      */
-    private WindowInfo() {
+    public WindowInfo() {
         // No initialization required.
     }
 

@@ -31,7 +31,7 @@ import java.awt.image.BufferedImage;
  *
  * @author Kimi Liu
  */
-public final class LuminanceSource extends com.google.zxing.LuminanceSource {
+public class LuminanceSource extends com.google.zxing.LuminanceSource {
 
     /**
      * The source buffered image.

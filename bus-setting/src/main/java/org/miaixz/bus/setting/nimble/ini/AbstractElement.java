@@ -50,7 +50,7 @@ public abstract class AbstractElement implements IniElement {
      */
     private IniComment comment;
 
-    AbstractElement(String value, String originalValue, int lineNumber) {
+    public AbstractElement(String value, String originalValue, int lineNumber) {
         this.value = value;
         this.lineNumber = lineNumber;
         this.originalValue = originalValue;

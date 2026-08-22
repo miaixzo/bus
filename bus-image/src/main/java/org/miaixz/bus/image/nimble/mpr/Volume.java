@@ -29,8 +29,7 @@ import org.miaixz.bus.image.nimble.geometry.Vector3;
  * @param <T> numeric sample type
  * @author Kimi Liu
  */
-public abstract sealed class Volume<T extends Number>
-        permits VolumeByte, VolumeDouble, VolumeFloat, VolumeInt, VolumeShort {
+public abstract class Volume<T extends Number> {
 
     /**
      * The max array length value.
@@ -84,7 +83,7 @@ public abstract sealed class Volume<T extends Number>
      * @param signed   the signed.
      * @param channels the channels.
      */
-    protected Volume(VolumeSize size, boolean signed, int channels) {
+    public Volume(VolumeSize size, boolean signed, int channels) {
         this.size = Objects.requireNonNull(size, "size");
         this.signed = signed;
         if (channels <= 0) {
@@ -101,7 +100,7 @@ public abstract sealed class Volume<T extends Number>
      *
      * @return the size.
      */
-    public final VolumeSize getSize() {
+    public VolumeSize getSize() {
         return size;
     }
 
@@ -110,7 +109,7 @@ public abstract sealed class Volume<T extends Number>
      *
      * @return the channels.
      */
-    public final int getChannels() {
+    public int getChannels() {
         return channels;
     }
 
@@ -119,7 +118,7 @@ public abstract sealed class Volume<T extends Number>
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isSigned() {
+    public boolean isSigned() {
         return signed;
     }
 
@@ -128,7 +127,7 @@ public abstract sealed class Volume<T extends Number>
      *
      * @return the pixel ratio.
      */
-    public final Vector3 getPixelRatio() {
+    public Vector3 getPixelRatio() {
         return pixelRatio;
     }
 
@@ -137,7 +136,7 @@ public abstract sealed class Volume<T extends Number>
      *
      * @param pixelRatio the pixel ratio.
      */
-    public final void setPixelRatio(Vector3 pixelRatio) {
+    public void setPixelRatio(Vector3 pixelRatio) {
         this.pixelRatio = Objects.requireNonNull(pixelRatio, "pixelRatio");
     }
 
@@ -146,7 +145,7 @@ public abstract sealed class Volume<T extends Number>
      *
      * @return the origin.
      */
-    public final Vector3 getOrigin() {
+    public Vector3 getOrigin() {
         return origin;
     }
 
@@ -155,7 +154,7 @@ public abstract sealed class Volume<T extends Number>
      *
      * @return the axis x.
      */
-    public final Vector3 getAxisX() {
+    public Vector3 getAxisX() {
         return axisX;
     }
 
@@ -164,7 +163,7 @@ public abstract sealed class Volume<T extends Number>
      *
      * @return the axis y.
      */
-    public final Vector3 getAxisY() {
+    public Vector3 getAxisY() {
         return axisY;
     }
 
@@ -173,7 +172,7 @@ public abstract sealed class Volume<T extends Number>
      *
      * @return the axis z.
      */
-    public final Vector3 getAxisZ() {
+    public Vector3 getAxisZ() {
         return axisZ;
     }
 
@@ -182,7 +181,7 @@ public abstract sealed class Volume<T extends Number>
      *
      * @param bounds the bounds.
      */
-    public final void setGeometry(VolumeBounds bounds) {
+    public void setGeometry(VolumeBounds bounds) {
         Objects.requireNonNull(bounds, "bounds");
         if (!size.equals(bounds.size())) {
             throw new IllegalArgumentException("Volume bounds size does not match volume size");
@@ -199,7 +198,7 @@ public abstract sealed class Volume<T extends Number>
      *
      * @return the operation result.
      */
-    public final long elementCount() {
+    public long elementCount() {
         return size.elementCount(channels);
     }
 
@@ -212,7 +211,7 @@ public abstract sealed class Volume<T extends Number>
      * @param channel the channel.
      * @return the operation result.
      */
-    public final long linearIndex(int x, int y, int z, int channel) {
+    public long linearIndex(int x, int y, int z, int channel) {
         checkCoordinates(x, y, z, channel);
         return (((long) z * size.y() + y) * size.x() + x) * channels + channel;
     }
@@ -225,7 +224,7 @@ public abstract sealed class Volume<T extends Number>
      * @param z the z.
      * @return the voxel.
      */
-    public final Voxel<T> getVoxel(int x, int y, int z) {
+    public Voxel<T> getVoxel(int x, int y, int z) {
         Voxel<T> voxel = new Voxel<>(channels);
         for (int channel = 0; channel < channels; channel++) {
             voxel.setValue(channel, getValue(x, y, z, channel));
@@ -241,7 +240,7 @@ public abstract sealed class Volume<T extends Number>
      * @param z     the z.
      * @param voxel the voxel.
      */
-    public final void setVoxel(int x, int y, int z, Voxel<T> voxel) {
+    public void setVoxel(int x, int y, int z, Voxel<T> voxel) {
         Objects.requireNonNull(voxel, "voxel");
         if (voxel.getChannels() != channels) {
             throw new IllegalArgumentException("Voxel channel count does not match volume");
@@ -259,7 +258,7 @@ public abstract sealed class Volume<T extends Number>
      * @param z the z.
      * @return the value.
      */
-    public final T getValue(int x, int y, int z) {
+    public T getValue(int x, int y, int z) {
         return getValue(x, y, z, 0);
     }
 
@@ -272,7 +271,7 @@ public abstract sealed class Volume<T extends Number>
      * @param channel the channel.
      * @return the value.
      */
-    public final T getValue(int x, int y, int z, int channel) {
+    public T getValue(int x, int y, int z, int channel) {
         return getLinearValue(linearIndex(x, y, z, channel));
     }
 
@@ -284,7 +283,7 @@ public abstract sealed class Volume<T extends Number>
      * @param z     the z.
      * @param value the value.
      */
-    public final void setValue(int x, int y, int z, T value) {
+    public void setValue(int x, int y, int z, T value) {
         setValue(x, y, z, 0, value);
     }
 
@@ -297,7 +296,7 @@ public abstract sealed class Volume<T extends Number>
      * @param channel the channel.
      * @param value   the value.
      */
-    public final void setValue(int x, int y, int z, int channel, T value) {
+    public void setValue(int x, int y, int z, int channel, T value) {
         setLinearValue(linearIndex(x, y, z, channel), Objects.requireNonNull(value, "value"));
     }
 
@@ -510,7 +509,7 @@ public abstract sealed class Volume<T extends Number>
      * @param index the index.
      * @return the operation result.
      */
-    protected final int checkedArrayIndex(long index) {
+    protected int checkedArrayIndex(long index) {
         if (index < 0 || index >= elementCount()) {
             throw new IndexOutOfBoundsException("index " + index + " outside 0.." + (elementCount() - 1));
         }
@@ -520,7 +519,7 @@ public abstract sealed class Volume<T extends Number>
     /**
      * Executes the check single channel operation.
      */
-    protected final void checkSingleChannel() {
+    protected void checkSingleChannel() {
         if (channels != 1) {
             throw new IllegalArgumentException("This volume type supports only one channel");
         }

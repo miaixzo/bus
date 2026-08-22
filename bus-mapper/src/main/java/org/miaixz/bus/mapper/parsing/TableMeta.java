@@ -156,7 +156,7 @@ public class TableMeta extends PropertyMeta<TableMeta> {
      *
      * @param entityClass The entity class.
      */
-    protected TableMeta(Class<?> entityClass) {
+    public TableMeta(Class<?> entityClass) {
         this.entityClass = entityClass;
     }
 

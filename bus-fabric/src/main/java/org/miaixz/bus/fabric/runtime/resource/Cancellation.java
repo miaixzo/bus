@@ -33,7 +33,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class Cancellation {
+public class Cancellation {
 
     /**
      * VarHandle used for the single successful active-to-cancelled transition.
@@ -88,7 +88,7 @@ public final class Cancellation {
     /**
      * Creates an active cancellation scope without allocating callback storage.
      */
-    private Cancellation() {
+    public Cancellation() {
         this(true);
     }
 

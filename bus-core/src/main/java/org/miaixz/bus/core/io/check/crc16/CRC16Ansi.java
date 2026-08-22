@@ -31,7 +31,7 @@ public class CRC16Ansi extends CRC16Checksum {
     /**
      * Creates a CRC-16/ANSI checksum implementation.
      */
-    private CRC16Ansi() {
+    public CRC16Ansi() {
         // No initialization required.
     }
 

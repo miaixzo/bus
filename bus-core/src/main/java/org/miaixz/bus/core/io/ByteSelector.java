@@ -29,7 +29,7 @@ import org.miaixz.bus.core.io.source.BufferSource;
  *
  * @author Kimi Liu
  */
-public final class ByteSelector extends AbstractList<ByteString> implements RandomAccess {
+public class ByteSelector extends AbstractList<ByteString> implements RandomAccess {
 
     /**
      * The candidate byte strings used by this selector.
@@ -42,12 +42,12 @@ public final class ByteSelector extends AbstractList<ByteString> implements Rand
     public final int[] trie;
 
     /**
-     * Private constructor for {@code ByteSelector}.
+     * Creates a byte selector with an empty selection table.
      *
      * @param candidates The candidate {@link ByteString} values.
      * @param trie       The trie structure as an array of integers.
      */
-    private ByteSelector(ByteString[] candidates, int[] trie) {
+    public ByteSelector(ByteString[] candidates, int[] trie) {
         this.candidates = candidates;
         this.trie = trie;
     }

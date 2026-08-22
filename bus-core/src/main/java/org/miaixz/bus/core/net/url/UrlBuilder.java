@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.UrlKit;
  * @see <a href="https://en.wikipedia.org/wiki/Uniform_Resource_Identifier">Uniform Resource Identifier</a>
  * @author Kimi Liu
  */
-public final class UrlBuilder implements Builder<String> {
+public class UrlBuilder implements Builder<String> {
 
     @Serial
     private static final long serialVersionUID = 2852231355809L;

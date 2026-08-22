@@ -33,12 +33,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Win32Bios {
+public class Win32Bios {
 
     /**
      * Keeps Win32 BIOS queries on the static API.
      */
-    private Win32Bios() {
+    public Win32Bios() {
         // No initialization required.
     }
 

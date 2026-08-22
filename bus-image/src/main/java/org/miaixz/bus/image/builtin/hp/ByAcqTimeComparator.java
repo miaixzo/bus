@@ -30,7 +30,7 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  *
  * @author Kimi Liu
  */
-public final class ByAcqTimeComparator implements HpComparator {
+public class ByAcqTimeComparator implements HpComparator {
 
     /**
      * The sign value.

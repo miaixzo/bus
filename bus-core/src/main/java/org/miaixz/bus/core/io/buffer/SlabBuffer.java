@@ -32,7 +32,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author Kimi Liu
  */
-public final class SlabBuffer {
+public class SlabBuffer {
 
     /**
      * Lock that protects free-list mutations.
@@ -65,7 +65,7 @@ public final class SlabBuffer {
      * @param size   the slab size
      * @param direct whether to allocate direct memory
      */
-    SlabBuffer(int size, boolean direct) {
+    public SlabBuffer(int size, boolean direct) {
         availableSlices = new LinkedList<>();
         buffer = allocate(size, direct);
         availableSlices.add(new SliceBuffer(this, null, buffer.position(), buffer.limit()));

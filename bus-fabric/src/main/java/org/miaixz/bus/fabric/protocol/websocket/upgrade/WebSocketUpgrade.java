@@ -59,7 +59,7 @@ import org.miaixz.bus.fabric.network.Ingress;
  *
  * @author Kimi Liu
  */
-public final class WebSocketUpgrade {
+public class WebSocketUpgrade {
 
     /**
      * Cryptographically secure random source shared by handshake key generation.

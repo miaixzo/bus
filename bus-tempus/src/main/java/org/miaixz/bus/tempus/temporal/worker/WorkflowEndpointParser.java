@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @author Kimi Liu
  */
-public final class WorkflowEndpointParser {
+public class WorkflowEndpointParser {
 
     /**
      * Default Temporal frontend port.
@@ -65,7 +65,7 @@ public final class WorkflowEndpointParser {
     /**
      * Keeps Temporal endpoint parsing on the static API.
      */
-    private WorkflowEndpointParser() {
+    public WorkflowEndpointParser() {
         // No initialization required.
     }
 

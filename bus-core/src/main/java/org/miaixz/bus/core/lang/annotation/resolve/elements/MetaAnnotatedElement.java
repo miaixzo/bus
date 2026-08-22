@@ -278,7 +278,7 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
      *
      * @return An unmodifiable map of annotation types to {@link AnnotationMapping} instances.
      */
-    protected final Map<Class<? extends Annotation>, T> getAnnotationMappings() {
+    protected Map<Class<? extends Annotation>, T> getAnnotationMappings() {
         initAnnotationMappingsIfNecessary();
         return annotationMappings;
     }

@@ -35,7 +35,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Executor {
+public class Executor {
 
     /**
      * Constructs a new Executor instance.

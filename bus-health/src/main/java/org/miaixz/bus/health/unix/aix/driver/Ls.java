@@ -34,12 +34,12 @@ import org.miaixz.bus.health.Parsing;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Ls {
+public class Ls {
 
     /**
      * Creates a new Ls instance.
      */
-    private Ls() {
+    public Ls() {
         // No initialization required.
     }
 

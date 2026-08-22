@@ -41,7 +41,7 @@ import org.miaixz.bus.fabric.network.dns.message.DnsName;
  *
  * @author Kimi Liu
  */
-public sealed interface DnsRecordData permits DnsRecordData.Wire {
+public interface DnsRecordData {
 
     /**
      * Returns the known DNS record type.
@@ -395,7 +395,7 @@ public sealed interface DnsRecordData permits DnsRecordData.Wire {
      *
      * @author Kimi Liu
      */
-    final class Wire implements DnsRecordData {
+    class Wire implements DnsRecordData {
 
         /**
          * Numeric DNS record type.
@@ -413,7 +413,7 @@ public sealed interface DnsRecordData permits DnsRecordData.Wire {
          * @param typeCode unsigned 16-bit DNS record type code
          * @param wireData wire-format RDATA bytes
          */
-        private Wire(final int typeCode, final byte[] wireData) {
+        public Wire(final int typeCode, final byte[] wireData) {
             this.typeCode = DnsCodec.validateUnsignedShort(typeCode, "DNS record type");
             this.wireData = copyWireData(wireData);
         }

@@ -33,7 +33,7 @@ import org.miaixz.bus.core.net.MediaType;
  *
  * @author Kimi Liu
  */
-public final class DicomStowConfig {
+public class DicomStowConfig {
 
     /**
      * The default user agent value.
@@ -95,7 +95,7 @@ public final class DicomStowConfig {
      *
      * @param builder the builder.
      */
-    private DicomStowConfig(Builder builder) {
+    public DicomStowConfig(Builder builder) {
         this.requestUrl = normalizeUrl(builder.requestUrl);
         this.contentType = builder.contentType;
         this.userAgent = builder.userAgent;
@@ -200,7 +200,7 @@ public final class DicomStowConfig {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * The request url value.
@@ -240,7 +240,7 @@ public final class DicomStowConfig {
         /**
          * Creates a new instance.
          */
-        private Builder() {
+        public Builder() {
             // No initialization required.
         }
 

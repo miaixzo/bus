@@ -57,7 +57,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class Http2Connection implements AutoCloseable {
+public class Http2Connection implements AutoCloseable {
 
     /**
      * Advertised receive window that avoids closed-stream updates for supported payloads.
@@ -314,7 +314,7 @@ public final class Http2Connection implements AutoCloseable {
      *
      * @param connection network connection
      */
-    private Http2Connection(final Connection connection) {
+    public Http2Connection(final Connection connection) {
         this(connection, PushObserver.canceling(), Dispatcher.create(), true);
     }
 

@@ -921,7 +921,7 @@ public class PDUDecoder extends PDVInputStream {
      * @return the operation result.
      */
     @Override
-    public final int available() {
+    public int available() {
         return pdvend - pos;
     }
 

@@ -43,7 +43,7 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
     /**
      * Creates a new {@code AbstractTable} instance.
      */
-    protected AbstractTable() {
+    public AbstractTable() {
         // No initialization required.
     }
 

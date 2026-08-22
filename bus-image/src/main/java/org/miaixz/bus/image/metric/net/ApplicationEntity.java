@@ -197,7 +197,7 @@ public class ApplicationEntity implements Serializable {
      *
      * @return the result.
      */
-    public final Device getDevice() {
+    public Device getDevice() {
         return device;
     }
 
@@ -223,7 +223,7 @@ public class ApplicationEntity implements Serializable {
      *
      * @return the result.
      */
-    public final String getAETitle() {
+    public String getAETitle() {
         return aet;
     }
 
@@ -249,7 +249,7 @@ public class ApplicationEntity implements Serializable {
      *
      * @return the result.
      */
-    public final String getDescription() {
+    public String getDescription() {
         return description;
     }
 
@@ -258,7 +258,7 @@ public class ApplicationEntity implements Serializable {
      *
      * @param description the description.
      */
-    public final void setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -267,7 +267,7 @@ public class ApplicationEntity implements Serializable {
      *
      * @return the result.
      */
-    public final byte[][] getVendorData() {
+    public byte[][] getVendorData() {
         return vendorData;
     }
 
@@ -276,7 +276,7 @@ public class ApplicationEntity implements Serializable {
      *
      * @param vendorData the vendor data.
      */
-    public final void setVendorData(byte[]... vendorData) {
+    public void setVendorData(byte[]... vendorData) {
         this.vendorData = vendorData;
     }
 
@@ -560,7 +560,7 @@ public class ApplicationEntity implements Serializable {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isAssociationAcceptor() {
+    public boolean isAssociationAcceptor() {
         return acceptor;
     }
 
@@ -569,7 +569,7 @@ public class ApplicationEntity implements Serializable {
      *
      * @param acceptor the acceptor.
      */
-    public final void setAssociationAcceptor(boolean acceptor) {
+    public void setAssociationAcceptor(boolean acceptor) {
         this.acceptor = acceptor;
     }
 
@@ -578,7 +578,7 @@ public class ApplicationEntity implements Serializable {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isAssociationInitiator() {
+    public boolean isAssociationInitiator() {
         return initiator;
     }
 
@@ -587,7 +587,7 @@ public class ApplicationEntity implements Serializable {
      *
      * @param initiator the initiator.
      */
-    public final void setAssociationInitiator(boolean initiator) {
+    public void setAssociationInitiator(boolean initiator) {
         this.initiator = initiator;
     }
 
@@ -605,7 +605,7 @@ public class ApplicationEntity implements Serializable {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final Boolean getInstalled() {
+    public Boolean getInstalled() {
         return installed;
     }
 
@@ -633,7 +633,7 @@ public class ApplicationEntity implements Serializable {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final Boolean getRoleSelectionNegotiationLenient() {
+    public Boolean getRoleSelectionNegotiationLenient() {
         return roleSelectionNegotiationLenient;
     }
 
@@ -711,7 +711,7 @@ public class ApplicationEntity implements Serializable {
      *
      * @param dimseRQHandler the dimse rqhandler.
      */
-    public final void setDimseRQHandler(DimseRQHandler dimseRQHandler) {
+    public void setDimseRQHandler(DimseRQHandler dimseRQHandler) {
         this.dimseRQHandler = dimseRQHandler;
     }
 

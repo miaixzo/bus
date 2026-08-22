@@ -47,12 +47,10 @@ public class LambdaFactory {
     private static final Map<MutableEntry<Class<?>, Executable>, Object> CACHE = new WeakConcurrentMap<>();
 
     /**
-     * Private constructor to prevent instantiation.
-     *
-     * @throws IllegalAccessException if this constructor is called.
+     * Creates a lambda factory backed by the shared executable cache.
      */
-    private LambdaFactory() throws IllegalAccessException {
-        throw new IllegalAccessException();
+    public LambdaFactory() {
+        // No initialization required.
     }
 
     /**

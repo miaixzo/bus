@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class SseRetry {
+public class SseRetry {
 
     /**
      * Session-local retry state.
@@ -41,7 +41,7 @@ public final class SseRetry {
      *
      * @param policy complete immutable retry policy
      */
-    private SseRetry(final SseRetryPolicy policy) {
+    public SseRetry(final SseRetryPolicy policy) {
         this.state = new SseRetryState(
                 Assert.notNull(policy, () -> new ValidateException("SSE retry policy must not be null")));
     }

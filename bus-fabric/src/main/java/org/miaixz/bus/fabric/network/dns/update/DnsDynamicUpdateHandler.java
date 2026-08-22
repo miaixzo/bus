@@ -43,7 +43,7 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsZone;
  *
  * @author Kimi Liu
  */
-public final class DnsDynamicUpdateHandler {
+public class DnsDynamicUpdateHandler {
 
     /**
      * External Dynamic Update sink, or {@code null} when updates are disabled.

@@ -37,12 +37,12 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class OpenBsdSysctlKit {
+public class OpenBsdSysctlKit {
 
     /**
      * Keeps OpenBSD sysctl queries on the static API.
      */
-    private OpenBsdSysctlKit() {
+    public OpenBsdSysctlKit() {
         // No initialization required.
     }
 

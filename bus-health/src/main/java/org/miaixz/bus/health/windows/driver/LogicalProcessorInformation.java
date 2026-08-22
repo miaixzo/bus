@@ -41,7 +41,7 @@ import org.miaixz.bus.health.windows.driver.wmi.Win32Processor;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class LogicalProcessorInformation {
+public class LogicalProcessorInformation {
 
     /**
      * Constructs a new {@code LogicalProcessorInformation} instance.

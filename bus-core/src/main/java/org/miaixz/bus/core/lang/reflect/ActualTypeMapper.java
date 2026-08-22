@@ -42,7 +42,7 @@ public class ActualTypeMapper {
     /**
      * Keeps generic type-variable resolution on the static API.
      */
-    private ActualTypeMapper() {
+    public ActualTypeMapper() {
         // No initialization required.
     }
 

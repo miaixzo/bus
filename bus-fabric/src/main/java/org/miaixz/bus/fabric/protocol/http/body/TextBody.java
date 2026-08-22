@@ -35,7 +35,7 @@ import org.miaixz.bus.fabric.codec.body.RequestBody;
  *
  * @author Kimi Liu
  */
-public final class TextBody implements RequestBody {
+public class TextBody implements RequestBody {
 
     /**
      * Normalized source text used to create the payload.
@@ -59,7 +59,7 @@ public final class TextBody implements RequestBody {
      * @param media   media type reported by the body
      * @param payload eagerly encoded payload
      */
-    private TextBody(final String text, final MediaType media, final Payload payload) {
+    public TextBody(final String text, final MediaType media, final Payload payload) {
         this.text = text;
         this.media = media;
         this.payload = payload;

@@ -87,7 +87,7 @@ public class AnatomicRegion {
      *
      * @author Kimi Liu
      */
-    public static final class OtherCategory implements CategoryBuilder {
+    public static class OtherCategory implements CategoryBuilder {
 
         /**
          * The context UID value.

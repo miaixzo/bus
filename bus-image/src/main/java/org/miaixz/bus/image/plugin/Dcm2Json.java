@@ -94,7 +94,7 @@ public class Dcm2Json {
      *
      * @param indent {@code true} to enable indentation, {@code false} otherwise.
      */
-    public final void setIndent(boolean indent) {
+    public void setIndent(boolean indent) {
         this.indent = indent;
     }
 
@@ -104,7 +104,7 @@ public class Dcm2Json {
      *
      * @param encodeAsNumber {@code true} to encode as numbers, {@code false} to encode as strings.
      */
-    public final void setEncodeAsNumber(boolean encodeAsNumber) {
+    public void setEncodeAsNumber(boolean encodeAsNumber) {
         this.encodeAsNumber = encodeAsNumber;
     }
 
@@ -114,7 +114,7 @@ public class Dcm2Json {
      * @param includeBulkData The bulk data inclusion mode (e.g., URI, inline).
      * @see org.miaixz.bus.image.galaxy.io.ImageInputStream.IncludeBulkData
      */
-    public final void setIncludeBulkData(ImageInputStream.IncludeBulkData includeBulkData) {
+    public void setIncludeBulkData(ImageInputStream.IncludeBulkData includeBulkData) {
         this.includeBulkData = includeBulkData;
     }
 
@@ -123,7 +123,7 @@ public class Dcm2Json {
      *
      * @param catBlkFiles {@code true} to concatenate, {@code false} to create separate files.
      */
-    public final void setConcatenateBulkDataFiles(boolean catBlkFiles) {
+    public void setConcatenateBulkDataFiles(boolean catBlkFiles) {
         this.catBlkFiles = catBlkFiles;
     }
 
@@ -132,7 +132,7 @@ public class Dcm2Json {
      *
      * @param blkFilePrefix The file prefix.
      */
-    public final void setBulkDataFilePrefix(String blkFilePrefix) {
+    public void setBulkDataFilePrefix(String blkFilePrefix) {
         this.blkFilePrefix = blkFilePrefix;
     }
 
@@ -141,7 +141,7 @@ public class Dcm2Json {
      *
      * @param blkFileSuffix The file suffix.
      */
-    public final void setBulkDataFileSuffix(String blkFileSuffix) {
+    public void setBulkDataFileSuffix(String blkFileSuffix) {
         this.blkFileSuffix = blkFileSuffix;
     }
 
@@ -150,7 +150,7 @@ public class Dcm2Json {
      *
      * @param blkDirectory The directory for bulk data files.
      */
-    public final void setBulkDataDirectory(File blkDirectory) {
+    public void setBulkDataDirectory(File blkDirectory) {
         this.blkDirectory = blkDirectory;
     }
 

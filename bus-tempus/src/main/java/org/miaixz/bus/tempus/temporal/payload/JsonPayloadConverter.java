@@ -42,7 +42,7 @@ import io.temporal.common.converter.DataConverterException;
  *
  * @author Kimi Liu
  */
-public final class JsonPayloadConverter implements InvocationHandler {
+public class JsonPayloadConverter implements InvocationHandler {
 
     /**
      * Temporal payload encoding identifier for ordinary JSON documents.

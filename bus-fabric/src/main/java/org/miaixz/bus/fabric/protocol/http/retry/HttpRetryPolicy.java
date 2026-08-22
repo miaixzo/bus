@@ -37,7 +37,7 @@ import org.miaixz.bus.fabric.Policy;
  *
  * @author Kimi Liu
  */
-public final class HttpRetryPolicy implements Policy {
+public class HttpRetryPolicy implements Policy {
 
     /**
      * Typed option for the complete HTTP retry and redirect policy.
@@ -84,7 +84,7 @@ public final class HttpRetryPolicy implements Policy {
      * @param baseDelay                non-negative base delay for retry backoff
      * @param maxDelay                 maximum retry backoff
      */
-    private HttpRetryPolicy(final int maxAttempts, final int maxStaleRetries, final int maxRedirects,
+    public HttpRetryPolicy(final int maxAttempts, final int maxStaleRetries, final int maxRedirects,
             final boolean retryOnConnectionFailure, final Duration baseDelay, final Duration maxDelay) {
         this.maxAttempts = maxAttempts;
         this.maxStaleRetries = maxStaleRetries;
@@ -277,7 +277,7 @@ public final class HttpRetryPolicy implements Policy {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Total transport retry limit candidate.
@@ -312,7 +312,7 @@ public final class HttpRetryPolicy implements Policy {
         /**
          * Creates a builder.
          */
-        private Builder() {
+        public Builder() {
             // No initialization required.
         }
 

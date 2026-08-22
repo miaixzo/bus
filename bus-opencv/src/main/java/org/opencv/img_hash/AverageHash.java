@@ -28,7 +28,7 @@ package org.opencv.img_hash;
  */
 public class AverageHash extends ImgHashBase {
 
-    protected AverageHash(long addr) {
+    public AverageHash(long addr) {
         super(addr);
     }
 

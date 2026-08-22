@@ -32,7 +32,7 @@ public class Galaxy {
     /**
      * Keeps date-calendar creation on the static API.
      */
-    private Galaxy() {
+    public Galaxy() {
         // No initialization required.
     }
 

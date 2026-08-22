@@ -27,7 +27,7 @@ package org.opencv.img_hash;
  */
 public class MarrHildrethHash extends ImgHashBase {
 
-    protected MarrHildrethHash(long addr) {
+    public MarrHildrethHash(long addr) {
         super(addr);
     }
 

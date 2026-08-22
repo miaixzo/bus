@@ -2905,7 +2905,7 @@ public interface Constants {
          */
         private final Class<T> resultType;
 
-        private SearchScope(String jsonName, Class<T> resultType) {
+        public SearchScope(String jsonName, Class<T> resultType) {
             this.jsonName = jsonName;
             this.resultType = resultType;
         }

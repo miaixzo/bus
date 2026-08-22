@@ -38,7 +38,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  *
  * @author Kimi Liu
  */
-public final class SseCall extends MonoCall<SseSession> {
+public class SseCall extends MonoCall<SseSession> {
 
     /**
      * Single SSE-open operation receiving the call lifecycle's cancellation scope.
@@ -65,7 +65,7 @@ public final class SseCall extends MonoCall<SseSession> {
      * @param operation  function that opens a session within the lifecycle cancellation scope
      * @param key        dispatch key used for asynchronous submission
      */
-    private SseCall(final Dispatcher dispatcher, final Callback<? super SseSession> callback,
+    public SseCall(final Dispatcher dispatcher, final Callback<? super SseSession> callback,
             final EventObserver observer, final Timeout timeout, final Function<Cancellation, SseSession> operation,
             final String key) {
         super(Builder.SSE_TAG_OPEN, dispatcher, observer, callback, timeout);

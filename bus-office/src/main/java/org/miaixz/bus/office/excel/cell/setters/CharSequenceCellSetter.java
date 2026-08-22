@@ -38,7 +38,7 @@ public class CharSequenceCellSetter implements CellSetter {
      *
      * @param value The {@link CharSequence} value to set in the cell.
      */
-    CharSequenceCellSetter(final CharSequence value) {
+    public CharSequenceCellSetter(final CharSequence value) {
         this.value = value;
     }
 

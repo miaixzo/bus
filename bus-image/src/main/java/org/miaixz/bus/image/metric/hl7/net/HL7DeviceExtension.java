@@ -177,7 +177,7 @@ public class HL7DeviceExtension extends DeviceExtension {
      *
      * @return the hl7 message listener.
      */
-    public final HL7MessageListener getHL7MessageListener() {
+    public HL7MessageListener getHL7MessageListener() {
         return hl7MessageListener;
     }
 
@@ -186,7 +186,7 @@ public class HL7DeviceExtension extends DeviceExtension {
      *
      * @param listener the listener.
      */
-    public final void setHL7MessageListener(HL7MessageListener listener) {
+    public void setHL7MessageListener(HL7MessageListener listener) {
         this.hl7MessageListener = listener;
     }
 

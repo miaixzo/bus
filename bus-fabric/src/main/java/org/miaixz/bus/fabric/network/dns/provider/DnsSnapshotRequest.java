@@ -29,7 +29,7 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsSnapshot;
  *
  * @author Kimi Liu
  */
-public final class DnsSnapshotRequest {
+public class DnsSnapshotRequest {
 
     /**
      * Active snapshot visible before the load request, or {@code null} during startup.

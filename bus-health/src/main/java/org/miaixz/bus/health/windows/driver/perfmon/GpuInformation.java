@@ -33,7 +33,7 @@ import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class GpuInformation {
+public class GpuInformation {
 
     /**
      * The GPU_ENGINE constant.
@@ -145,7 +145,7 @@ public final class GpuInformation {
     /**
      * Creates a new GpuInformation instance.
      */
-    private GpuInformation() {
+    public GpuInformation() {
         // No initialization required.
     }
 

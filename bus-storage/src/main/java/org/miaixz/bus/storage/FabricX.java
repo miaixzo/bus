@@ -382,7 +382,7 @@ public abstract class FabricX {
      *
      * @author Kimi Liu
      */
-    protected static final class Response implements AutoCloseable {
+    protected static class Response implements AutoCloseable {
 
         /**
          * Current Fabric HTTP response.
@@ -394,7 +394,7 @@ public abstract class FabricX {
          *
          * @param response current Fabric HTTP response
          */
-        private Response(final HttpResponse response) {
+        public Response(final HttpResponse response) {
             this.response = response;
         }
 

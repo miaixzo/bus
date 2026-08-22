@@ -51,7 +51,7 @@ public class MapperBoundSql {
      *
      * @param boundSql The original BoundSql object.
      */
-    MapperBoundSql(BoundSql boundSql) {
+    public MapperBoundSql(BoundSql boundSql) {
         this.delegate = boundSql;
         this.boundSql = AbstractSqlHandler.getMetaObject(boundSql);
     }

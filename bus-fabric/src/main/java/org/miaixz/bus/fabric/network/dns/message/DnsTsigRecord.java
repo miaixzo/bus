@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class DnsTsigRecord {
+public class DnsTsigRecord {
 
     /**
      * TSIG owner name, which is also the key name.
@@ -106,7 +106,7 @@ public final class DnsTsigRecord {
      * @param unsignedMessage       original query without the trailing TSIG record
      * @param recordOffset          offset at which the TSIG record started
      */
-    DnsTsigRecord(final String keyName, final String algorithmName, final int recordClass, final long ttl,
+    public DnsTsigRecord(final String keyName, final String algorithmName, final int recordClass, final long ttl,
             final long timeSignedEpochSecond, final int fudgeSeconds, final byte[] mac, final int originalId,
             final int error, final byte[] otherData, final byte[] unsignedMessage, final int recordOffset) {
         this.keyName = DnsName.normalize(keyName);

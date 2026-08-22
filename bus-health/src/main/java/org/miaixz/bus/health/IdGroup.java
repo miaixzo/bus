@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class IdGroup {
+public class IdGroup {
 
     /**
      * Constructs a new IdGroup instance.

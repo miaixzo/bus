@@ -65,12 +65,12 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Parsing {
+public class Parsing {
 
     /**
      * Keeps health-data parsing on the static API.
      */
-    private Parsing() {
+    public Parsing() {
         // No initialization required.
     }
 

@@ -45,7 +45,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class DnsResolver {
+public class DnsResolver {
 
     /**
      * Backend that performs uncached host lookups.
@@ -78,7 +78,7 @@ public final class DnsResolver {
      * @param backend  backend performing uncached lookups
      * @param observer observer receiving DNS lifecycle events
      */
-    private DnsResolver(final Resolver backend, final EventObserver observer) {
+    public DnsResolver(final Resolver backend, final EventObserver observer) {
         this(backend, observer, new State(), null, null);
         if (Logger.isInfoEnabled()) {
             Logger.info(true, "Fabric", "DNS resolver initialized: backend={}", backend.getClass().getSimpleName());

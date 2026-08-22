@@ -69,7 +69,7 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsZoneMode;
  *
  * @author Kimi Liu
  */
-public final class DnsServer implements AutoCloseable, Lifecycle {
+public class DnsServer implements AutoCloseable, Lifecycle {
 
     /**
      * Startup options.
@@ -136,7 +136,7 @@ public final class DnsServer implements AutoCloseable, Lifecycle {
      *
      * @param options startup options
      */
-    private DnsServer(final DnsServerOptions options) {
+    public DnsServer(final DnsServerOptions options) {
         if (options == null) {
             throw new ValidateException("DNS server options must not be null");
         }

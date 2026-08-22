@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  *
  * @author Kimi Liu
  */
-public final class InflaterSource implements Source {
+public class InflaterSource implements Source {
 
     /**
      * The underlying {@link BufferSource} providing the compressed data.

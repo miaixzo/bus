@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class DnsName {
+public class DnsName {
 
     /**
      * Root domain in canonical textual form.
@@ -71,9 +71,9 @@ public final class DnsName {
     private static final int MAX_POINTER_HOPS = 32;
 
     /**
-     * Restricts the class to static operations.
+     * Creates a stateless DNS name-processing entry point.
      */
-    private DnsName() {
+    public DnsName() {
         // No initialization required.
     }
 
@@ -311,7 +311,7 @@ public final class DnsName {
      *
      * @author Kimi Liu
      */
-    public static final class ReadResult {
+    public static class ReadResult {
 
         /**
          * Decoded canonical DNS name.
@@ -329,7 +329,7 @@ public final class DnsName {
          * @param name       decoded canonical DNS name
          * @param nextOffset next linear parser offset
          */
-        private ReadResult(final String name, final int nextOffset) {
+        public ReadResult(final String name, final int nextOffset) {
             this.name = normalize(name);
             this.nextOffset = nextOffset;
         }

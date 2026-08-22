@@ -76,7 +76,7 @@ public class GenericSynthesizedAnnotation<R, T extends Annotation> implements Sy
      * @param verticalDistance   the vertical distance from the root object
      * @param horizontalDistance the horizontal distance from the root object
      */
-    protected GenericSynthesizedAnnotation(final R root, final T annotation, final int verticalDistance,
+    public GenericSynthesizedAnnotation(final R root, final T annotation, final int verticalDistance,
             final int horizontalDistance) {
         this.root = root;
         this.annotation = annotation;

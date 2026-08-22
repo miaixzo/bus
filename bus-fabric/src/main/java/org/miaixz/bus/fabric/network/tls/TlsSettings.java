@@ -40,7 +40,7 @@ import org.miaixz.bus.fabric.network.tls.cert.CertificatePolicy;
  *
  * @author Kimi Liu
  */
-public final class TlsSettings {
+public class TlsSettings {
 
     /**
      * Immutable, de-duplicated Java TLS protocol names in preference order.
@@ -98,7 +98,7 @@ public final class TlsSettings {
      * @param applicationProtocols ALPN identifiers in preference order
      * @param tlsExtensions        whether SNI and ALPN extensions are supported
      */
-    private TlsSettings(final List<String> versions, final List<String> ciphers, final TlsClientAuth clientAuth,
+    public TlsSettings(final List<String> versions, final List<String> ciphers, final TlsClientAuth clientAuth,
             final boolean verifyHostname, final CertificatePolicy certificate, final List<String> applicationProtocols,
             final boolean tlsExtensions) {
         this.versions = validateVersions(versions);
@@ -382,7 +382,7 @@ public final class TlsSettings {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Validated TLS protocol names in preference order.
@@ -422,7 +422,7 @@ public final class TlsSettings {
         /**
          * Creates a builder with safe defaults.
          */
-        private Builder() {
+        public Builder() {
             this.versions = org.miaixz.bus.fabric.Builder.TLS_SETTINGS_DEFAULT_VERSIONS;
             this.ciphers = List.of(TlsCipherSuite.TLS_AES_128_GCM_SHA256.javaName());
             this.clientAuth = TlsClientAuth.NONE;

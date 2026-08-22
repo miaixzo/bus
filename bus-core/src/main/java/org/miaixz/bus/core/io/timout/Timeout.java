@@ -194,7 +194,7 @@ public class Timeout {
      * @return This {@code Timeout} instance for method chaining.
      * @throws IllegalArgumentException If {@code duration} is less than or equal to 0, or {@code unit} is null.
      */
-    public final Timeout deadline(long duration, TimeUnit unit) {
+    public Timeout deadline(long duration, TimeUnit unit) {
         if (duration <= 0)
             throw new IllegalArgumentException("duration <= 0: " + duration);
         if (unit == null)
@@ -249,7 +249,7 @@ public class Timeout {
      * @throws InterruptedIOException       If the wait is interrupted or times out.
      * @throws IllegalMonitorStateException If the current thread is not the owner of the monitor's object.
      */
-    public final void waitUntilNotified(Object monitor) throws InterruptedIOException {
+    public void waitUntilNotified(Object monitor) throws InterruptedIOException {
         try {
             boolean hasDeadline = hasDeadline();
             long timeoutNanos = timeoutNanos();

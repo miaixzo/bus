@@ -36,7 +36,7 @@ public class CharKit {
     /**
      * Keeps character inspection and conversion on the static API.
      */
-    private CharKit() {
+    public CharKit() {
         // No initialization required.
     }
 

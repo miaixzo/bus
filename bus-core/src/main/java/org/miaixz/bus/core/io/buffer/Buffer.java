@@ -113,7 +113,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      *
      * @return the size of the buffer in bytes
      */
-    public final long size() {
+    public long size() {
         return size;
     }
 
@@ -334,7 +334,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @throws IOException              if an I/O error occurs while writing
      * @throws IllegalArgumentException if {@code out} is null
      */
-    public final Buffer copyTo(OutputStream out) throws IOException {
+    public Buffer copyTo(OutputStream out) throws IOException {
         return copyTo(out, 0, size);
     }
 
@@ -350,7 +350,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @throws IllegalArgumentException  if {@code out} is null
      * @throws IndexOutOfBoundsException if {@code offset} or {@code byteCount} are invalid
      */
-    public final Buffer copyTo(OutputStream out, long offset, long byteCount) throws IOException {
+    public Buffer copyTo(OutputStream out, long offset, long byteCount) throws IOException {
         if (null == out) {
             throw new IllegalArgumentException("out == null");
         }
@@ -385,7 +385,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @throws IllegalArgumentException  if {@code out} is null
      * @throws IndexOutOfBoundsException if {@code offset} or {@code byteCount} are invalid
      */
-    public final Buffer copyTo(Buffer out, long offset, long byteCount) {
+    public Buffer copyTo(Buffer out, long offset, long byteCount) {
         if (null == out) {
             throw new IllegalArgumentException("out == null");
         }
@@ -424,7 +424,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @throws IOException              if an I/O error occurs while writing
      * @throws IllegalArgumentException if {@code out} is null
      */
-    public final Buffer writeTo(OutputStream out) throws IOException {
+    public Buffer writeTo(OutputStream out) throws IOException {
         return writeTo(out, size);
     }
 
@@ -439,7 +439,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @throws IllegalArgumentException  if {@code out} is null
      * @throws IndexOutOfBoundsException if {@code byteCount} is invalid
      */
-    public final Buffer writeTo(OutputStream out, long byteCount) throws IOException {
+    public Buffer writeTo(OutputStream out, long byteCount) throws IOException {
         if (null == out) {
             throw new IllegalArgumentException("out == null");
         }
@@ -472,7 +472,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @throws IOException              if an I/O error occurs while writing
      * @throws IllegalArgumentException if {@code sink} is null
      */
-    public final Buffer writeTo(Sink sink) throws IOException {
+    public Buffer writeTo(Sink sink) throws IOException {
         return writeTo(sink, size);
     }
 
@@ -486,7 +486,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @throws IllegalArgumentException  if {@code sink} is null
      * @throws IndexOutOfBoundsException if {@code byteCount} is invalid
      */
-    public final Buffer writeTo(Sink sink, long byteCount) throws IOException {
+    public Buffer writeTo(Sink sink, long byteCount) throws IOException {
         if (sink == null) {
             throw new IllegalArgumentException("sink == null");
         }
@@ -504,7 +504,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @throws IOException              if an I/O error occurs while reading
      * @throws IllegalArgumentException if {@code in} is null
      */
-    public final Buffer readFrom(InputStream in) throws IOException {
+    public Buffer readFrom(InputStream in) throws IOException {
         readFrom(in, Long.MAX_VALUE, true);
         return this;
     }
@@ -520,7 +520,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @throws IllegalArgumentException if {@code in} is null or {@code byteCount} is negative
      * @throws EOFException             if the end of the stream is reached before reading {@code byteCount} bytes
      */
-    public final Buffer readFrom(InputStream in, long byteCount) throws IOException {
+    public Buffer readFrom(InputStream in, long byteCount) throws IOException {
         if (byteCount < 0)
             throw new IllegalArgumentException("byteCount < 0: " + byteCount);
         readFrom(in, byteCount, false);
@@ -536,7 +536,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @throws IOException              if an I/O error occurs while reading
      * @throws IllegalArgumentException if {@code source} is null or {@code maxBytes} is negative
      */
-    public final long readFrom(Source source, long maxBytes) throws IOException {
+    public long readFrom(Source source, long maxBytes) throws IOException {
         if (source == null) {
             throw new IllegalArgumentException("source == null");
         }
@@ -564,7 +564,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @throws IOException              if an I/O error occurs while reading
      * @throws IllegalArgumentException if {@code source} is null or {@code byteCount} is negative
      */
-    public final Buffer readFully(Source source, long byteCount) throws IOException {
+    public Buffer readFully(Source source, long byteCount) throws IOException {
         if (source == null) {
             throw new IllegalArgumentException("source == null");
         }
@@ -621,7 +621,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      *
      * @return the number of bytes in complete segments
      */
-    public final long completeSegmentByteCount() {
+    public long completeSegmentByteCount() {
         long result = size;
         if (result == 0)
             return 0;
@@ -643,7 +643,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      *
      * @return a NIO buffer view, or an empty buffer when this buffer has no readable bytes
      */
-    public final java.nio.ByteBuffer nioBuffer() {
+    public java.nio.ByteBuffer nioBuffer() {
         return nioBuffer(Integer.MAX_VALUE);
     }
 
@@ -658,7 +658,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @return a NIO buffer view, or an empty buffer when no bytes are available
      * @throws IllegalArgumentException if {@code maxBytes} is negative
      */
-    public final java.nio.ByteBuffer nioBuffer(int maxBytes) {
+    public java.nio.ByteBuffer nioBuffer(int maxBytes) {
         if (maxBytes < 0) {
             throw new IllegalArgumentException("maxBytes < 0: " + maxBytes);
         }
@@ -684,7 +684,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @throws IllegalArgumentException  if {@code targets} is null
      * @throws IndexOutOfBoundsException if {@code offset} or {@code length} is invalid
      */
-    public final int nioBuffers(java.nio.ByteBuffer[] targets, int offset, int length) {
+    public int nioBuffers(java.nio.ByteBuffer[] targets, int offset, int length) {
         return nioBuffers(targets, offset, length, size);
     }
 
@@ -703,7 +703,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @throws IllegalArgumentException  if {@code targets} is null or {@code maxBytes} is negative
      * @throws IndexOutOfBoundsException if {@code offset} or {@code length} is invalid
      */
-    public final int nioBuffers(java.nio.ByteBuffer[] targets, int offset, int length, long maxBytes) {
+    public int nioBuffers(java.nio.ByteBuffer[] targets, int offset, int length, long maxBytes) {
         if (targets == null) {
             throw new IllegalArgumentException("targets == null");
         }
@@ -766,7 +766,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @return the byte at the specified position
      * @throws IndexOutOfBoundsException if {@code pos} is out of bounds
      */
-    public final byte getByte(long pos) {
+    public byte getByte(long pos) {
         IoKit.checkOffsetAndCount(size, pos, 1);
         if (size - pos > pos) {
             for (Segment s = head; true; s = s.next) {
@@ -1663,7 +1663,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     /**
      * Discards all bytes in this buffer. After calling this method, the buffer will be empty.
      */
-    public final void clear() {
+    public void clear() {
         try {
             skip(size);
         } catch (EOFException e) {
@@ -2818,7 +2818,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @return the SHA-512 HMAC of this buffer as a byte string
      * @throws IllegalArgumentException if {@code key} is null
      */
-    public final ByteString hmacSha512(ByteString key) {
+    public ByteString hmacSha512(ByteString key) {
         return hmac(Algorithm.HMACSHA512.getValue(), key);
     }
 
@@ -3051,7 +3051,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      *
      * @author Kimi Liu
      */
-    public static final class UnsafeCursor implements Closeable {
+    public static class UnsafeCursor implements Closeable {
 
         /**
          * Constructs a new UnsafeCursor.

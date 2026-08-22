@@ -67,7 +67,7 @@ public class Optional<T> implements Serializable {
      *
      * @param value The value to be held by this {@code Optional}.
      */
-    private Optional(final T value) {
+    public Optional(final T value) {
         this.value = value;
     }
 
@@ -271,8 +271,7 @@ public class Optional<T> implements Serializable {
      * @return This {@code Optional} instance.
      * @throws NullPointerException if the action is {@code null}.
      */
-    @SafeVarargs
-    public final Optional<T> ifFail(final ConsumerX<? super Throwable> action, final Class<? extends Throwable>... exs)
+    public Optional<T> ifFail(final ConsumerX<? super Throwable> action, final Class<? extends Throwable>... exs)
             throws NullPointerException {
         Objects.requireNonNull(action, "action is null");
 
@@ -318,8 +317,7 @@ public class Optional<T> implements Serializable {
      * @return This {@code Optional} instance.
      * @throws NullPointerException if a value is present and any action in the array is {@code null}.
      */
-    @SafeVarargs
-    public final Optional<T> ifPresents(final ConsumerX<T>... actions) throws NullPointerException {
+    public Optional<T> ifPresents(final ConsumerX<T>... actions) throws NullPointerException {
         return ifPresent(Stream.of(actions).reduce(ConsumerX::andThen).orElseGet(() -> o -> {
         }));
     }

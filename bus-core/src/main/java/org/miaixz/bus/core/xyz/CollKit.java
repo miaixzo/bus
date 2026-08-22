@@ -62,7 +62,7 @@ public class CollKit extends CollectionStream {
     /**
      * Keeps collection creation and transformation on the static API.
      */
-    private CollKit() {
+    public CollKit() {
         // No initialization required.
     }
 

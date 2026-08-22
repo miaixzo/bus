@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  *
  * @author Kimi Liu
  */
-public final class RealSink implements BufferSink {
+public class RealSink implements BufferSink {
 
     /**
      * The internal buffer used for accumulating data before writing to the underlying sink.

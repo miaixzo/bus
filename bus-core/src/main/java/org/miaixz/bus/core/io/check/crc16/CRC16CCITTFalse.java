@@ -33,7 +33,7 @@ public class CRC16CCITTFalse extends CRC16Checksum {
     /**
      * Creates a CRC-16/CCITT-FALSE checksum implementation.
      */
-    private CRC16CCITTFalse() {
+    public CRC16CCITTFalse() {
         // No initialization required.
     }
 

@@ -38,7 +38,7 @@ import org.miaixz.bus.image.galaxy.data.Sequence;
  *
  * @author Kimi Liu
  */
-public final class ICCProfile {
+public class ICCProfile {
 
     /**
      * Constructs a new ICCProfile instance.

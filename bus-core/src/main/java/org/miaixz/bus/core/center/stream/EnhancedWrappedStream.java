@@ -45,7 +45,7 @@ public abstract class EnhancedWrappedStream<T, S extends EnhancedWrappedStream<T
      * @param stream the stream object to be wrapped
      * @throws NullPointerException if {@code stream} is {@code null}
      */
-    protected EnhancedWrappedStream(final Stream<T> stream) {
+    public EnhancedWrappedStream(final Stream<T> stream) {
         this.stream = Objects.requireNonNull(stream, "unwrap must not null");
     }
 

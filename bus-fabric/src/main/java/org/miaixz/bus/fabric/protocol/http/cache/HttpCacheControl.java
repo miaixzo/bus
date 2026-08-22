@@ -39,7 +39,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpHeaders;
  *
  * @author Kimi Liu
  */
-public final class HttpCacheControl {
+public class HttpCacheControl {
 
     /**
      * Shared empty snapshot returned when header parsing finds no directives.
@@ -57,7 +57,7 @@ public final class HttpCacheControl {
      *
      * @param directives directive entries to copy without normalization
      */
-    private HttpCacheControl(final Map<String, String> directives) {
+    public HttpCacheControl(final Map<String, String> directives) {
         this.directives = directives.isEmpty() ? Map.of()
                 : Collections.unmodifiableMap(new LinkedHashMap<>(directives));
     }

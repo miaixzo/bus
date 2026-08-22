@@ -28,7 +28,7 @@ import java.util.Objects;
  *
  * @author Kimi Liu
  */
-public final class PatientOrientation {
+public class PatientOrientation {
 
     /**
      * The blue value.
@@ -53,7 +53,7 @@ public final class PatientOrientation {
     /**
      * Creates a new instance.
      */
-    private PatientOrientation() {
+    public PatientOrientation() {
         // No initialization required.
     }
 

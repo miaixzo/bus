@@ -33,7 +33,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class ResourceScope implements AutoCloseable {
+public class ResourceScope implements AutoCloseable {
 
     /**
      * Resources retained in registration order for reverse-order closure.
@@ -65,7 +65,7 @@ public final class ResourceScope implements AutoCloseable {
      *
      * @param cancellation non-null cancellation whose cancellation closes this scope
      */
-    private ResourceScope(final Cancellation cancellation) {
+    public ResourceScope(final Cancellation cancellation) {
         this.resources = new ArrayDeque<>();
         this.identities = Collections.newSetFromMap(new IdentityHashMap<>());
         this.cancellation = Assert.notNull(cancellation, () -> new ValidateException("Cancellation must not be null"));

@@ -35,7 +35,7 @@ public class TempusMetrics {
     /**
      * Keeps Tempus metric bridging on the static API.
      */
-    private TempusMetrics() {
+    public TempusMetrics() {
         // No initialization required.
     }
 

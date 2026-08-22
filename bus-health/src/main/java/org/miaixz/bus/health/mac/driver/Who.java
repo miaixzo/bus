@@ -37,12 +37,12 @@ import org.miaixz.bus.health.unix.shared.jna.CLibrary;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Who {
+public class Who {
 
     /**
      * Keeps macOS logged-in-user queries on the static API.
      */
-    private Who() {
+    public Who() {
         // No initialization required.
     }
 

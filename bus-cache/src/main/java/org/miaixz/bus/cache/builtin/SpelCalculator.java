@@ -53,7 +53,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class SpelCalculator {
 
-    private SpelCalculator() {
+    public SpelCalculator() {
         // No initialization required.
     }
 

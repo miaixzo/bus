@@ -52,7 +52,7 @@ public class Compatible {
      *
      * @return the local connection.
      */
-    public final Connection getLocalConnection() {
+    public Connection getLocalConnection() {
         return localConn;
     }
 
@@ -61,7 +61,7 @@ public class Compatible {
      *
      * @return the remote connection.
      */
-    public final Connection getRemoteConnection() {
+    public Connection getRemoteConnection() {
         return remoteConn;
     }
 

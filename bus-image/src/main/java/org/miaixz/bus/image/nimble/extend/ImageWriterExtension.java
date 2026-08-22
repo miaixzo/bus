@@ -58,7 +58,7 @@ public class ImageWriterExtension extends DeviceExtension {
      *
      * @return the image writer factory.
      */
-    public final ImageWriterFactory getImageWriterFactory() {
+    public ImageWriterFactory getImageWriterFactory() {
         return factory;
     }
 

@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author Kimi Liu
  */
-public final class NioBufferAllocator implements AutoCloseable {
+public class NioBufferAllocator implements AutoCloseable {
 
     /**
      * Default reusable NIO buffer size.

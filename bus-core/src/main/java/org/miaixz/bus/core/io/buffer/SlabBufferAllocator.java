@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author Kimi Liu
  */
-public final class SlabBufferAllocator {
+public class SlabBufferAllocator {
 
     /**
      * Background compactor for slab allocators.

@@ -166,7 +166,7 @@ public class AAbort extends IOException {
      *
      * @return the reason.
      */
-    public final int getReason() {
+    public int getReason() {
         return reason;
     }
 
@@ -175,7 +175,7 @@ public class AAbort extends IOException {
      *
      * @return the source.
      */
-    public final int getSource() {
+    public int getSource() {
         return source;
     }
 

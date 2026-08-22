@@ -34,7 +34,7 @@ import org.miaixz.bus.health.linux.ProcPath;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Auxv {
+public class Auxv {
 
     /**
      * Constructs a new Auxv instance.

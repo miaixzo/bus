@@ -61,7 +61,7 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      *
      * @param stream the {@link Stream} of {@link Map.Entry} objects to wrap
      */
-    EntryStream(final Stream<Map.Entry<K, V>> stream) {
+    public EntryStream(final Stream<Map.Entry<K, V>> stream) {
         super(stream);
     }
 

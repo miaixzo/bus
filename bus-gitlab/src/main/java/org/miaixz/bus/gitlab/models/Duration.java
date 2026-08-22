@@ -138,7 +138,7 @@ public class Duration implements Serializable {
      * @param includeMonths   when true will include months "mo", in the string otherwise uses "4w" for each month
      * @return a human readable string representing the duration
      */
-    public static final String toString(int durationSeconds, boolean includeMonths) {
+    public static String toString(int durationSeconds, boolean includeMonths) {
 
         int seconds = durationSeconds;
         int months = (includeMonths ? seconds / TIME_UNIT_MULTIPLIERS[0] : 0);
@@ -225,7 +225,7 @@ public class Duration implements Serializable {
      * @param durationString the human readable duration
      * @return the total number of seconds in the duration
      */
-    public static final int parse(String durationString) {
+    public static int parse(String durationString) {
 
         durationString = durationString.toLowerCase();
         Matcher matcher = durationPattern.matcher(durationString);

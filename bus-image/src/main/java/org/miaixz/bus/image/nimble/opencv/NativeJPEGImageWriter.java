@@ -45,7 +45,7 @@ public class NativeJPEGImageWriter extends AbstractNativeImageWriter {
      *
      * @param originatingProvider the originating provider.
      */
-    NativeJPEGImageWriter(ImageWriterSpi originatingProvider) {
+    public NativeJPEGImageWriter(ImageWriterSpi originatingProvider) {
         super(originatingProvider);
     }
 

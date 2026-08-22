@@ -171,7 +171,7 @@ public class Vector extends Nature {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Backing vector instance.

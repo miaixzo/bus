@@ -42,9 +42,9 @@ import org.miaixz.bus.logger.Logger;
 public class Mapping {
 
     /**
-     * Private constructor to prevent instantiation.
+     * Creates a mapping registry instance with no retained state.
      */
-    private Mapping() {
+    public Mapping() {
         // No initialization required.
     }
 

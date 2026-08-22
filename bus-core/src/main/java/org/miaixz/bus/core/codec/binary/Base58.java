@@ -46,7 +46,7 @@ public class Base58 {
     /**
      * Keeps Base58 encoding and decoding on the static API.
      */
-    private Base58() {
+    public Base58() {
         // No initialization required.
     }
 

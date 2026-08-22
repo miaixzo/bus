@@ -77,7 +77,7 @@ public class SpecificCharacterSet {
      * @param codecs the codecs.
      * @param codes  the codes.
      */
-    protected SpecificCharacterSet(Codec[] codecs, String... codes) {
+    public SpecificCharacterSet(Codec[] codecs, String... codes) {
         this.codecs = codecs;
         this.dicomCodes = codes;
     }

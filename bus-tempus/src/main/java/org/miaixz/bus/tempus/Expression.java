@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.DateKit;
  *
  * @author Kimi Liu
  */
-public final class Expression implements Serializable, Cloneable {
+public class Expression implements Serializable, Cloneable {
 
     @Serial
     private static final long serialVersionUID = 2852287029125L;

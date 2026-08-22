@@ -66,13 +66,13 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
     private final Dest dest;
 
     /**
-     * Private constructor for the file visitor.
+     * Creates a file visitor for applying LO-to-UN corrections.
      *
      * @param srcPath  The source path (file or directory).
      * @param destPath The destination path (file or directory).
      * @param dest     The destination type logic.
      */
-    private FixLO2UN(Path srcPath, Path destPath, Dest dest) {
+    public FixLO2UN(Path srcPath, Path destPath, Dest dest) {
         this.srcPath = srcPath;
         this.destPath = destPath;
         this.dest = dest;

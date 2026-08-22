@@ -54,7 +54,7 @@ public class ErrorRegistry implements Errors {
     private final String value;
 
     /**
-     * Private constructor to be used by the {@link Builder}.
+     * Creates an error registry initialized by its {@link Builder}.
      *
      * @param builder The builder object containing the construction parameters.
      * @throws IllegalArgumentException if the key or value is null.

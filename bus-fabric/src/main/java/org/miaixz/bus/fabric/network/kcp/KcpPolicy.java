@@ -34,7 +34,7 @@ import org.miaixz.bus.fabric.Policy;
  *
  * @author Kimi Liu
  */
-public final class KcpPolicy implements Policy {
+public class KcpPolicy implements Policy {
 
     /**
      * Typed option for the complete KCP policy.
@@ -116,7 +116,7 @@ public final class KcpPolicy implements Policy {
      *
      * @param builder policy values to validate and snapshot
      */
-    private KcpPolicy(final Builder builder) {
+    public KcpPolicy(final Builder builder) {
         wireVersion = wireVersion(builder.wireVersion);
         sendWindowSize = window(builder.sendWindowSize, "KCP send window");
         receiveWindowSize = window(builder.receiveWindowSize, "KCP receive window");
@@ -385,7 +385,7 @@ public final class KcpPolicy implements Policy {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Wire format version candidate.
@@ -445,7 +445,7 @@ public final class KcpPolicy implements Policy {
         /**
          * Creates a builder initialized with default KCP values.
          */
-        private Builder() {
+        public Builder() {
             // No initialization required.
         }
 

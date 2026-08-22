@@ -32,13 +32,13 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class Fingerprint {
+public class Fingerprint {
 
     /**
      * Creates a new Fingerprint.
      */
 
-    private Fingerprint() {
+    public Fingerprint() {
         // No initialization required.
     }
 

@@ -65,7 +65,7 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsTrustAnchor;
  *
  * @author Kimi Liu
  */
-public final class DnsDnssecValidator {
+public class DnsDnssecValidator {
 
     /**
      * RRSIG RDATA byte offset of the signature expiration field.

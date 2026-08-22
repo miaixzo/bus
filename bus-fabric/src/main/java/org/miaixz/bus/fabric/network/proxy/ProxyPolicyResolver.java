@@ -32,7 +32,7 @@ import org.miaixz.bus.fabric.Options;
  *
  * @author Kimi Liu
  */
-public final class ProxyPolicyResolver {
+public class ProxyPolicyResolver {
 
     /**
      * Creates a stateless proxy-policy resolver.

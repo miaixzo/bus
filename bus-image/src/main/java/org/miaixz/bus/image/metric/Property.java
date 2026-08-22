@@ -131,7 +131,7 @@ public class Property implements Serializable {
      *
      * @return the result.
      */
-    public final String getName() {
+    public String getName() {
         return name;
     }
 
@@ -140,7 +140,7 @@ public class Property implements Serializable {
      *
      * @return the result.
      */
-    public final Object getValue() {
+    public Object getValue() {
         return value;
     }
 

@@ -34,7 +34,7 @@ public class DiscardingQueue extends AbstractQueue<Object> {
     /**
      * Creates the shared queue that discards submitted elements.
      */
-    private DiscardingQueue() {
+    public DiscardingQueue() {
         // No initialization required.
     }
 

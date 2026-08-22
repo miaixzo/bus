@@ -32,7 +32,7 @@ public abstract class AbstractProvider extends FabricX implements Provider {
     /**
      * Constructs a new AbstractProvider with default settings.
      */
-    protected AbstractProvider() {
+    public AbstractProvider() {
         // No initialization required.
     }
 

@@ -120,7 +120,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
      *
      * @return the result.
      */
-    public final String getCommonName() {
+    public String getCommonName() {
         return commonName;
     }
 
@@ -129,7 +129,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
      *
      * @return the result.
      */
-    public final String[] getSOPClasses() {
+    public String[] getSOPClasses() {
         return condition.sopClasses;
     }
 
@@ -138,7 +138,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
      *
      * @return the result.
      */
-    public final Dimse getDIMSE() {
+    public Dimse getDIMSE() {
         return condition.dimse;
     }
 
@@ -147,7 +147,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
      *
      * @return the result.
      */
-    public final TransferCapability.Role getRole() {
+    public TransferCapability.Role getRole() {
         return condition.role;
     }
 
@@ -156,7 +156,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
      *
      * @return the result.
      */
-    public final String[] getAETitles() {
+    public String[] getAETitles() {
         return condition.aeTitles;
     }
 
@@ -165,7 +165,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
      *
      * @return the result.
      */
-    public final String getURI() {
+    public String getURI() {
         return uri;
     }
 

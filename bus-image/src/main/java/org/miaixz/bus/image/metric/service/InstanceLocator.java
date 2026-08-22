@@ -83,7 +83,7 @@ public class InstanceLocator implements Serializable {
      *
      * @return the object.
      */
-    public final Object getObject() {
+    public Object getObject() {
         return object;
     }
 
@@ -93,7 +93,7 @@ public class InstanceLocator implements Serializable {
      * @param object the object.
      * @return the operation result.
      */
-    public final InstanceLocator setObject(Object object) {
+    public InstanceLocator setObject(Object object) {
         this.object = object;
         return this;
     }

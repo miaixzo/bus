@@ -51,7 +51,7 @@ import org.miaixz.bus.fabric.codec.body.RequestBody;
  *
  * @author Kimi Liu
  */
-public final class MultipartBody implements RequestBody {
+public class MultipartBody implements RequestBody {
 
     /**
      * CRLF bytes.
@@ -86,7 +86,7 @@ public final class MultipartBody implements RequestBody {
      * @param media    multipart/form-data media type with boundary parameter
      * @param payload  encoded multipart payload
      */
-    private MultipartBody(final String boundary, final List<Part> parts, final MediaType media, final Payload payload) {
+    public MultipartBody(final String boundary, final List<Part> parts, final MediaType media, final Payload payload) {
         this.boundary = validateBoundary(boundary);
         this.parts = List
                 .copyOf(Assert.notNull(parts, () -> new ValidateException("Multipart parts must not be null")));
@@ -274,7 +274,7 @@ public final class MultipartBody implements RequestBody {
      *
      * @author Kimi Liu
      */
-    public static final class Part {
+    public static class Part {
 
         /**
          * Part field name.
@@ -304,7 +304,7 @@ public final class MultipartBody implements RequestBody {
          * @param headers  immutable part headers
          * @param payload  part content payload
          */
-        private Part(final String name, final String filename, final Headers headers, final Payload payload) {
+        public Part(final String name, final String filename, final Headers headers, final Payload payload) {
             this.name = validatePartName(name, "Part name");
             this.filename = filename == null ? null : validatePartName(filename, "Part filename");
             final Headers validHeaders = Assert
@@ -432,7 +432,7 @@ public final class MultipartBody implements RequestBody {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Boundary token used for the body being assembled.
@@ -447,7 +447,7 @@ public final class MultipartBody implements RequestBody {
         /**
          * Creates builder.
          */
-        private Builder() {
+        public Builder() {
             this.boundary = ID.fastSimpleUUID();
             this.parts = new ArrayList<>();
         }

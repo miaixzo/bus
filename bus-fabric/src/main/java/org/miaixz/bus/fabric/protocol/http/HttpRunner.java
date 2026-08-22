@@ -65,7 +65,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class HttpRunner {
+public class HttpRunner {
 
     /**
      * Atomic single-execution guard updater.
@@ -171,7 +171,7 @@ public final class HttpRunner {
      * @param spec immutable request and exchange-hook specification
      * @throws ValidateException if {@code spec} is {@code null}
      */
-    HttpRunner(final HttpSpec spec) {
+    public HttpRunner(final HttpSpec spec) {
         this(spec, true);
     }
 

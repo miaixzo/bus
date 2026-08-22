@@ -42,12 +42,12 @@ import reactor.core.publisher.Flux;
  *
  * @author Kimi Liu
  */
-public final class StreamingRelay {
+public class StreamingRelay {
 
     /**
-     * Restricts the class to static relay operations.
+     * Creates a stateless streaming relay entry point.
      */
-    private StreamingRelay() {
+    public StreamingRelay() {
         // No initialization required.
     }
 

@@ -27,7 +27,7 @@ package org.opencv.imgproc;
  */
 public class GeneralizedHoughGuil extends GeneralizedHough {
 
-    protected GeneralizedHoughGuil(long addr) {
+    public GeneralizedHoughGuil(long addr) {
         super(addr);
     }
 

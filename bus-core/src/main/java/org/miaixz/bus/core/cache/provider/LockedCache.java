@@ -135,7 +135,7 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
      * Removes expired entries from the cache.
      */
     @Override
-    public final int prune() {
+    public int prune() {
         lock.lock();
         try {
             return pruneCache();

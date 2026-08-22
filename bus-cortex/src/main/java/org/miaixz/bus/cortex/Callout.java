@@ -51,7 +51,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class Callout {
+public class Callout {
 
     /**
      * Reusable HTTP clients keyed by normalized timeout.
@@ -83,7 +83,7 @@ public final class Callout {
     /**
      * Keeps Cortex callout construction on the static API.
      */
-    private Callout() {
+    public Callout() {
         // No initialization required.
     }
 

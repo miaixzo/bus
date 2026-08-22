@@ -33,7 +33,7 @@ public class InternKit {
     /**
      * Keeps object interning on the static API.
      */
-    private InternKit() {
+    public InternKit() {
         // No initialization required.
     }
 

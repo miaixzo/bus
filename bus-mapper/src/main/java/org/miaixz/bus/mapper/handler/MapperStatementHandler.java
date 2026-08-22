@@ -44,7 +44,7 @@ public class MapperStatementHandler {
      *
      * @param statementHandler The MetaObject for the StatementHandler.
      */
-    MapperStatementHandler(MetaObject statementHandler) {
+    public MapperStatementHandler(MetaObject statementHandler) {
         this.statementHandler = statementHandler;
     }
 

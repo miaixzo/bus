@@ -292,7 +292,7 @@ public interface InternetProtocolStats {
      * @author Kimi Liu
      */
     @Immutable
-    final class TcpStats {
+    class TcpStats {
 
         /**
          * The connectionsEstablished value.
@@ -496,7 +496,7 @@ public interface InternetProtocolStats {
      * @author Kimi Liu
      */
     @Immutable
-    final class UdpStats {
+    class UdpStats {
 
         /**
          * The datagramsSent value.
@@ -592,7 +592,7 @@ public interface InternetProtocolStats {
      * @author Kimi Liu
      */
     @Immutable
-    final class IPConnection {
+    class IPConnection {
 
         /**
          * The type value.

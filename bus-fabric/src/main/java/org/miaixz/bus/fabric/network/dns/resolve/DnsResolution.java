@@ -30,7 +30,7 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecord;
  *
  * @author Kimi Liu
  */
-public final class DnsResolution {
+public class DnsResolution {
 
     /**
      * Response code.

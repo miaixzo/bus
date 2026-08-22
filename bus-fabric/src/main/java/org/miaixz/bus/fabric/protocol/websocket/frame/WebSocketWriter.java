@@ -37,7 +37,7 @@ import org.miaixz.bus.fabric.Builder;
  *
  * @author Kimi Liu
  */
-public final class WebSocketWriter {
+public class WebSocketWriter {
 
     /**
      * Output sink borrowed from the owning WebSocket session.

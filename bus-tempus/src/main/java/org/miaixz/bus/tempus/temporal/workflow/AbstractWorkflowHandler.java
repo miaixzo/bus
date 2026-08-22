@@ -63,7 +63,7 @@ public abstract class AbstractWorkflowHandler<A, R> {
      * @param workflowOptionsFactory workflow options factory
      * @param bindingOptions         workflow binding options
      */
-    protected AbstractWorkflowHandler(Class<A> activityClass, WorkflowOptionsFactory workflowOptionsFactory,
+    public AbstractWorkflowHandler(Class<A> activityClass, WorkflowOptionsFactory workflowOptionsFactory,
             WorkflowBindingOptions bindingOptions) {
         Assert.notNull(activityClass, "activityClass must not be null");
         Assert.notNull(workflowOptionsFactory, "workflowOptionsFactory must not be null");

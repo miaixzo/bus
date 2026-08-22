@@ -43,7 +43,7 @@ import org.miaixz.bus.fabric.Builder;
  *
  * @author Kimi Liu
  */
-public final class PublicSuffix {
+public class PublicSuffix {
 
     /**
      * UTF-8 wildcard label substituted while searching wildcard rules.
@@ -83,7 +83,7 @@ public final class PublicSuffix {
     /**
      * Keeps public-suffix matching on the static API.
      */
-    private PublicSuffix() {
+    public PublicSuffix() {
         // No initialization required.
     }
 

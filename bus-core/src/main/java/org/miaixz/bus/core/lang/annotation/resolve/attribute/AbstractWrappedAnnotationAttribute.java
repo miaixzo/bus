@@ -52,7 +52,7 @@ public abstract class AbstractWrappedAnnotationAttribute implements WrappedAnnot
      * @param original the original annotation attribute; must not be {@code null}
      * @param linked   the linked annotation attribute; must not be {@code null}
      */
-    protected AbstractWrappedAnnotationAttribute(final AnnotationAttribute original, final AnnotationAttribute linked) {
+    public AbstractWrappedAnnotationAttribute(final AnnotationAttribute original, final AnnotationAttribute linked) {
         Assert.notNull(original, "target must not null");
         Assert.notNull(linked, "linked must not null");
         this.original = original;

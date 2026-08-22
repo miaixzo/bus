@@ -40,7 +40,7 @@ import reactor.core.publisher.Mono;
  * @author Kimi Liu
  */
 @org.springframework.core.annotation.Order(Ordered.HIGHEST_PRECEDENCE)
-public final class AdmissionFilter extends AbstractFilter {
+public class AdmissionFilter extends AbstractFilter {
 
     /**
      * Creates the stateless process-wide admission filter.

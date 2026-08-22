@@ -26,7 +26,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @author Kimi Liu
  */
-public final class UserAgent {
+public class UserAgent {
 
     /**
      * Non-blank User-Agent text from which this classification was derived.
@@ -86,7 +86,7 @@ public final class UserAgent {
      * @param osVersion      extracted operating-system version, or {@code null}
      * @param mobile         derived mobile classification
      */
-    private UserAgent(final String value, final Browser browser, final Device device, final OsFamily osFamily,
+    public UserAgent(final String value, final Browser browser, final Device device, final OsFamily osFamily,
             final EngineClassifier engine, final String browserVersion, final String engineVersion,
             final String osVersion, final boolean mobile) {
         this.value = value;

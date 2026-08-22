@@ -40,7 +40,7 @@ public class CalendarCellSetter implements CellSetter {
      *
      * @param value The {@link Calendar} value to set in the cell.
      */
-    CalendarCellSetter(final Calendar value) {
+    public CalendarCellSetter(final Calendar value) {
         this.value = value;
     }
 

@@ -45,12 +45,12 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class ProcessWtsData {
+public class ProcessWtsData {
 
     /**
      * Keeps Windows process WTS-data registry queries on the static API.
      */
-    private ProcessWtsData() {
+    public ProcessWtsData() {
         // No initialization required.
     }
 

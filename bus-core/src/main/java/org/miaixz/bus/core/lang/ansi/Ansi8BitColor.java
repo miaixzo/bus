@@ -63,7 +63,7 @@ public class Ansi8BitColor implements AnsiElement {
      * @param code   The 8-bit color code (0-255).
      * @throws IllegalArgumentException if the color code is not within the range 0-255.
      */
-    private Ansi8BitColor(String prefix, int code) {
+    public Ansi8BitColor(String prefix, int code) {
         Assert.isTrue(code >= 0 && code <= 255, "Code must be between 0 and 255");
         this.prefix = prefix;
         this.code = code;

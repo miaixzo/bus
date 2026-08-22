@@ -71,9 +71,9 @@ public class TenantContext {
     private static final ThreadLocal<Boolean> IGNORE = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
     /**
-     * Restricts the class to static thread-local tenant context operations.
+     * Creates a tenant context facade over the current thread state.
      */
-    private TenantContext() {
+    public TenantContext() {
         // No initialization required.
     }
 
@@ -302,7 +302,7 @@ public class TenantContext {
     /**
      * Lexical tenant context scope with idempotent parent restoration.
      */
-    public static final class Scope implements AutoCloseable {
+    public static class Scope implements AutoCloseable {
 
         /**
          * Tenant identifier installed before this scope was opened.
@@ -324,7 +324,7 @@ public class TenantContext {
          *
          * @param snapshot tenant snapshot to install
          */
-        private Scope(Snapshot snapshot) {
+        public Scope(Snapshot snapshot) {
             this.previousTenantId = getTenantId();
             this.previousIgnore = isIgnore();
             applyTenant(snapshot);

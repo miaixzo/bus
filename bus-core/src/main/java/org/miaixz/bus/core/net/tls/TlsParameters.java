@@ -47,7 +47,7 @@ public class TlsParameters {
     /**
      * Keeps TLS parameter construction on the static API.
      */
-    private TlsParameters() {
+    public TlsParameters() {
         // No initialization required.
     }
 

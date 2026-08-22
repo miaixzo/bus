@@ -147,7 +147,7 @@ public class MoveSCU extends Device implements AutoCloseable {
      *
      * @param priority The priority value (0=Medium, 1=High, 2=Low).
      */
-    public final void setPriority(int priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
@@ -176,7 +176,7 @@ public class MoveSCU extends Device implements AutoCloseable {
      * @param tss        An array of transfer syntax UIDs to propose.
      * @param relational A flag indicating if relational queries are requested.
      */
-    public final void setInformationModel(InformationModel model, String[] tss, boolean relational) {
+    public void setInformationModel(InformationModel model, String[] tss, boolean relational) {
         this.model = model;
         rq.addPresentationContext(new PresentationContext(1, model.cuid, tss));
         if (relational) {
@@ -201,7 +201,7 @@ public class MoveSCU extends Device implements AutoCloseable {
      *
      * @param destination The destination AE Title.
      */
-    public final void setDestination(String destination) {
+    public void setDestination(String destination) {
         this.destination = destination;
     }
 
@@ -221,7 +221,7 @@ public class MoveSCU extends Device implements AutoCloseable {
      *
      * @param inFilter An array of attribute tags to include.
      */
-    public final void setInputFilter(int[] inFilter) {
+    public void setInputFilter(int[] inFilter) {
         this.inFilter = inFilter;
     }
 

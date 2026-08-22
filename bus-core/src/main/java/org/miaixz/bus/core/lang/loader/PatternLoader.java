@@ -38,7 +38,7 @@ public abstract class PatternLoader extends DelegateLoader implements Loader {
      *
      * @param delegate The delegate loader to use for actual resource loading.
      */
-    protected PatternLoader(Loader delegate) {
+    public PatternLoader(Loader delegate) {
         super(delegate);
     }
 

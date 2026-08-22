@@ -39,7 +39,7 @@ import org.miaixz.bus.health.linux.ProcPath;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class ProcessStat {
+public class ProcessStat {
 
     /**
      * Constant defining the number of integer values in {@code /proc/pid/stat}. 2.6 Kernel has 44 elements, 3.3 has 47,
@@ -66,7 +66,7 @@ public final class ProcessStat {
     /**
      * Creates a new ProcessStat instance.
      */
-    private ProcessStat() {
+    public ProcessStat() {
         // No initialization required.
     }
 

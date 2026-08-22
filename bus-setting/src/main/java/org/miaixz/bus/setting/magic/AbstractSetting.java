@@ -59,7 +59,7 @@ public abstract class AbstractSetting
     /**
      * Default constructor.
      */
-    protected AbstractSetting() {
+    public AbstractSetting() {
         // No initialization required.
     }
 

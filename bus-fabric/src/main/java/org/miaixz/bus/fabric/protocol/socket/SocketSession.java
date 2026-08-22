@@ -71,7 +71,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class SocketSession implements Session {
+public class SocketSession implements Session {
 
     /**
      * Handler-thread marker used to route immediate replies through the active callback data plane.
@@ -345,8 +345,8 @@ public final class SocketSession implements Session {
      * @param attributes initial session attributes, or {@code null} for none
      * @param owner      resource closed when the session terminates, or {@code null}
      */
-    SocketSession(final Address address, final Connection connection, final SocketCodec codec, final Handler handler,
-            final Map<String, Object> attributes, final AutoCloseable owner) {
+    public SocketSession(final Address address, final Connection connection, final SocketCodec codec,
+            final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner) {
         this(address, connection, codec, handler, attributes, owner, null);
     }
 

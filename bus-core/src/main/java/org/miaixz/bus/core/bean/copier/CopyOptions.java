@@ -215,8 +215,7 @@ public class CopyOptions implements Serializable {
      * @param funcs The lambda method references (e.g., {@code User::getName}).
      * @return This {@code CopyOptions} instance for chaining.
      */
-    @SafeVarargs
-    public final <P, R> CopyOptions setIgnoreProperties(final FunctionX<P, R>... funcs) {
+    public <P, R> CopyOptions setIgnoreProperties(final FunctionX<P, R>... funcs) {
         final Set<String> ignoreProperties = ArrayKit.mapToSet(funcs, LambdaKit::getFieldName);
         return setPropertiesFilter((field, o) -> !ignoreProperties.contains(field.getName()));
     }

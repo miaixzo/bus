@@ -34,7 +34,7 @@ public abstract class MonthParts extends YearParts {
     /**
      * Constructs month-based date parts.
      */
-    protected MonthParts() {
+    public MonthParts() {
         // No initialization required.
     }
 

@@ -54,11 +54,11 @@ import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.socket.calls.SocketCall;
 
 /**
- * Immutable socket exchange.
+ * Socket exchange backed by an immutable execution specification.
  *
  * @author Kimi Liu
  */
-public final class SocketX {
+public class SocketX {
 
     /**
      * Immutable execution specification.
@@ -76,11 +76,11 @@ public final class SocketX {
     private final Callback<SocketSession> callback;
 
     /**
-     * Creates an exchange.
+     * Creates a socket exchange from a validated builder snapshot.
      *
      * @param builder configuration source used to create the immutable exchange specification
      */
-    private SocketX(final Builder builder) {
+    public SocketX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
         final TlsPolicy tlsPolicy = tlsPolicy(current);
@@ -328,7 +328,7 @@ public final class SocketX {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Shared context.
@@ -430,7 +430,7 @@ public final class SocketX {
          *
          * @param context shared context
          */
-        private Builder(final Context context) {
+        public Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
             final Timeout configured = context.options().get(OPTION_TIMEOUT);

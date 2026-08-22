@@ -138,7 +138,7 @@ public abstract class AbstractDialect implements Dialect {
      * @param databaseName  the database product name exposed by this dialect
      * @param jdbcUrlPrefix the JDBC URL prefix used to identify the dialect
      */
-    protected AbstractDialect(String databaseName, String jdbcUrlPrefix) {
+    public AbstractDialect(String databaseName, String jdbcUrlPrefix) {
         this.databaseName = databaseName;
         this.jdbcUrlPrefix = jdbcUrlPrefix;
     }

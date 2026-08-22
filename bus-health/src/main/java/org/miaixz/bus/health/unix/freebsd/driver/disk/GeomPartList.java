@@ -36,7 +36,7 @@ import org.miaixz.bus.health.builtin.hardware.HWPartition;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class GeomPartList {
+public class GeomPartList {
 
     /**
      * Constructs a new GeomPartList instance.

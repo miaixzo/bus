@@ -50,7 +50,7 @@ import org.miaixz.bus.fabric.protocol.websocket.calls.WebSocketCall;
  *
  * @author Kimi Liu
  */
-public final class WebSocketX {
+public class WebSocketX {
 
     /**
      * Immutable execution specification.
@@ -72,7 +72,7 @@ public final class WebSocketX {
      *
      * @param builder configuration source used to create the immutable exchange specification
      */
-    private WebSocketX(final Builder builder) {
+    public WebSocketX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
         this.spec = new WebSocketSpec(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
@@ -261,7 +261,7 @@ public final class WebSocketX {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Shared context.
@@ -338,7 +338,7 @@ public final class WebSocketX {
          *
          * @param context shared context
          */
-        private Builder(final Context context) {
+        public Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
             final Timeout configured = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT);

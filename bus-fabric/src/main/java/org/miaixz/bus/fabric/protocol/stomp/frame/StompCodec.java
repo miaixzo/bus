@@ -43,7 +43,7 @@ import org.miaixz.bus.fabric.Payload;
  *
  * @author Kimi Liu
  */
-public final class StompCodec {
+public class StompCodec {
 
     /**
      * Accumulated inbound bytes.

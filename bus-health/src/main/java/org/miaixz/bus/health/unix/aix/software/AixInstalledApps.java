@@ -37,7 +37,7 @@ import org.miaixz.bus.health.builtin.software.ApplicationInfo;
  *
  * @author Kimi Liu
  */
-public final class AixInstalledApps {
+public class AixInstalledApps {
 
     /**
      * Constructs a new AixInstalledApps instance.

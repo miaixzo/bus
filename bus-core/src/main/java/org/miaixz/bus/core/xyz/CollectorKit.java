@@ -45,7 +45,7 @@ public class CollectorKit {
     /**
      * Keeps stream collector construction on the static API.
      */
-    private CollectorKit() {
+    public CollectorKit() {
         // No initialization required.
     }
 

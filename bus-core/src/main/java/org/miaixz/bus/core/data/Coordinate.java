@@ -43,7 +43,7 @@ public class Coordinate {
     /**
      * Keeps coordinate conversion on the static API.
      */
-    private Coordinate() {
+    public Coordinate() {
         // No initialization required.
     }
 

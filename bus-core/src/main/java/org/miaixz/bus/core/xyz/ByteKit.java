@@ -55,7 +55,7 @@ public class ByteKit {
     /**
      * Keeps byte conversion and comparison on the static API.
      */
-    private ByteKit() {
+    public ByteKit() {
         // No initialization required.
     }
 

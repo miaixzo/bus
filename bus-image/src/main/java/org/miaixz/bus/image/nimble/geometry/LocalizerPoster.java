@@ -345,7 +345,7 @@ public abstract class LocalizerPoster {
      * @param geometry the geometry.
      * @return the outline on localizer for this geometry.
      */
-    public final List<Point2D> getOutlineOnLocalizerForThisGeometry(GeometryOfSlice geometry) {
+    public List<Point2D> getOutlineOnLocalizerForThisGeometry(GeometryOfSlice geometry) {
         return getOutlineOnLocalizerForThisGeometry(
                 geometry.getRow(),
                 geometry.getColumn(),

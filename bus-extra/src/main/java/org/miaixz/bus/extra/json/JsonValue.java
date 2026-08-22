@@ -37,8 +37,7 @@ import org.miaixz.bus.core.lang.Normal;
  *
  * @author Kimi Liu
  */
-public sealed interface JsonValue extends Serializable permits JsonValue.ObjectValue, JsonValue.ArrayValue,
-        JsonValue.StringValue, JsonValue.NumberValue, JsonValue.BooleanValue, JsonValue.NullValue {
+public interface JsonValue extends Serializable {
 
     /**
      * Represents a JSON object while preserving the insertion order of its members.
@@ -140,12 +139,12 @@ public sealed interface JsonValue extends Serializable permits JsonValue.ObjectV
     /**
      * Represents the single RFC 8259 JSON {@code null} value.
      * <p>
-     * The private constructor and serialization replacement preserve identity through {@link #instance()}.
+     * {@link #instance()} provides the shared value, and serialization replacement canonicalizes deserialized values.
      * </p>
      *
      * @author Kimi Liu
      */
-    final class NullValue implements JsonValue {
+    class NullValue implements JsonValue {
 
         /**
          * Serialization identifier for the singleton value.
@@ -161,7 +160,7 @@ public sealed interface JsonValue extends Serializable permits JsonValue.ObjectV
         /**
          * Prevents creation of additional JSON null values.
          */
-        private NullValue() {
+        public NullValue() {
             // No initialization required.
         }
 

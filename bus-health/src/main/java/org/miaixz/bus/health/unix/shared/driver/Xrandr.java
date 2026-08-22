@@ -33,7 +33,7 @@ import org.miaixz.bus.health.Executor;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Xrandr {
+public class Xrandr {
 
     /**
      * The command to execute for verbose xrandr output.
@@ -41,9 +41,9 @@ public final class Xrandr {
     private static final String[] XRANDR_VERBOSE = { "xrandr", "--verbose" };
 
     /**
-     * Private constructor to prevent instantiation.
+     * Creates an XRandR command reader with no retained process state.
      */
-    private Xrandr() {
+    public Xrandr() {
         // No initialization required.
     }
 

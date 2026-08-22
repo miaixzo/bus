@@ -39,12 +39,12 @@ import org.miaixz.bus.health.Parsing;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class WmiKit {
+public class WmiKit {
 
     /**
      * Keeps WMI queries on the static API.
      */
-    private WmiKit() {
+    public WmiKit() {
         // No initialization required.
     }
 

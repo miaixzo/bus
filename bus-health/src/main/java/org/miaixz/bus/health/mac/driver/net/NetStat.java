@@ -40,7 +40,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class NetStat {
+public class NetStat {
 
     /**
      * Constructs a new {@code NetStat} instance.
@@ -207,7 +207,7 @@ public final class NetStat {
          * @param speed      The interface speed.
          * @param timeStamp  The timestamp when this data was captured.
          */
-        IFdata(int ifType, // NOSONAR squid:S00107
+        public IFdata(int ifType, // NOSONAR squid:S00107
                 long oPackets, long iPackets, long oBytes, long iBytes, long oErrors, long iErrors, long collisions,
                 long iDrops, long speed, long timeStamp) {
             this.ifType = ifType;

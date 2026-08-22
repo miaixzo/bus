@@ -33,12 +33,12 @@ import org.miaixz.bus.health.linux.SysPath;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Sysfs {
+public class Sysfs {
 
     /**
      * Keeps Linux sysfs hardware queries on the static API.
      */
-    private Sysfs() {
+    public Sysfs() {
         // No initialization required.
     }
 

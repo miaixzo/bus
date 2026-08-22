@@ -38,7 +38,7 @@ public class EnumKit {
     /**
      * Keeps enum lookup and conversion on the static API.
      */
-    private EnumKit() {
+    public EnumKit() {
         // No initialization required.
     }
 

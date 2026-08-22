@@ -455,7 +455,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
          *
          * @return The identifier string.
          */
-        public final String id() {
+        public String id() {
             return id;
         }
 
@@ -464,7 +464,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
          *
          * @return This {@code Condition} instance for chaining.
          */
-        public final Condition not() {
+        public Condition not() {
             this.not = !not;
             return this;
         }

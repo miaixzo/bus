@@ -39,7 +39,7 @@ import org.miaixz.bus.core.net.tls.TlsVersion;
  *
  * @author Kimi Liu
  */
-public final class Builder {
+public class Builder {
 
     /**
      * Creates an empty constant-catalog instance.

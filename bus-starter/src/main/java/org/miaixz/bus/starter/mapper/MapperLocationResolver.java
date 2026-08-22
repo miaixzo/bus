@@ -46,7 +46,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @author Kimi Liu
  */
-public final class MapperLocationResolver {
+public class MapperLocationResolver {
 
     /**
      * Prefix for a single-classpath mapper resource.
@@ -59,9 +59,9 @@ public final class MapperLocationResolver {
     private static final String ALL_CLASSPATH_PREFIX = "classpath" + Symbol.STAR + Symbol.COLON;
 
     /**
-     * Prevents instantiation of this mapper resource resolver.
+     * Creates a stateless mapper resource-location resolver.
      */
-    private MapperLocationResolver() {
+    public MapperLocationResolver() {
         // No initialization required.
     }
 

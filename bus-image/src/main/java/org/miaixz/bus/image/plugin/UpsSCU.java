@@ -259,7 +259,7 @@ public class UpsSCU {
      *
      * @param upsiuid The UPS SOP Instance UID.
      */
-    public final void setUPSIUID(String upsiuid) {
+    public void setUPSIUID(String upsiuid) {
         this.upsiuid = upsiuid;
     }
 
@@ -268,7 +268,7 @@ public class UpsSCU {
      *
      * @param keys An array of key strings in "tag=value" format.
      */
-    public final void setKeys(String[] keys) {
+    public void setKeys(String[] keys) {
         this.keys = keys;
     }
 
@@ -278,7 +278,7 @@ public class UpsSCU {
      * @param operation The operation to perform.
      * @param tss       The transfer syntaxes to propose.
      */
-    public final void setType(Operation operation, String[] tss) {
+    public void setType(Operation operation, String[] tss) {
         this.operation = operation;
         rq.addPresentationContext(new PresentationContext(3, operation.negotiatingSOPClassUID, tss));
     }
@@ -288,7 +288,7 @@ public class UpsSCU {
      *
      * @param xmlFile The path to the XML file.
      */
-    public final void setXmlFile(String xmlFile) {
+    public void setXmlFile(String xmlFile) {
         this.xmlFile = xmlFile;
     }
 

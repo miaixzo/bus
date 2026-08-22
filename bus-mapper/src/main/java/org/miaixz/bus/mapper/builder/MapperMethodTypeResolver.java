@@ -37,12 +37,12 @@ import org.apache.ibatis.reflection.TypeParameterResolver;
  *
  * @author Kimi Liu
  */
-public final class MapperMethodTypeResolver {
+public class MapperMethodTypeResolver {
 
     /**
      * Keeps mapper method-type resolution on the static API.
      */
-    private MapperMethodTypeResolver() {
+    public MapperMethodTypeResolver() {
         // No initialization required.
     }
 

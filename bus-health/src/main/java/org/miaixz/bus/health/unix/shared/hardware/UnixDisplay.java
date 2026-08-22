@@ -33,7 +33,7 @@ import org.miaixz.bus.health.unix.shared.driver.Xrandr;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class UnixDisplay extends AbstractDisplay {
+public class UnixDisplay extends AbstractDisplay {
 
     /**
      * Constructor for UnixDisplay.

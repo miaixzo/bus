@@ -39,7 +39,7 @@ public class EscapeKit {
     /**
      * Keeps text escaping and unescaping on the static API.
      */
-    private EscapeKit() {
+    public EscapeKit() {
         // No initialization required.
     }
 

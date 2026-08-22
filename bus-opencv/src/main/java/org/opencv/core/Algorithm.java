@@ -35,7 +35,7 @@ public class Algorithm {
 
     protected final long nativeObj;
 
-    protected Algorithm(long addr) {
+    public Algorithm(long addr) {
         nativeObj = addr;
         long nativeObjCopy = nativeObj;
         org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));

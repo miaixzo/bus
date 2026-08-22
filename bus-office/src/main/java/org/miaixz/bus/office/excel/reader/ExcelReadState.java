@@ -26,9 +26,9 @@ import java.util.List;
  *
  * @author Kimi Liu
  */
-public final class ExcelReadState {
+public class ExcelReadState {
 
-    private ExcelReadState() {
+    public ExcelReadState() {
         // No initialization required.
     }
 

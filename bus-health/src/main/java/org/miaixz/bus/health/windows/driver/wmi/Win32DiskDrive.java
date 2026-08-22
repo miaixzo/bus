@@ -31,12 +31,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Win32DiskDrive {
+public class Win32DiskDrive {
 
     /**
      * Keeps Win32 disk drive queries on the static API.
      */
-    private Win32DiskDrive() {
+    public Win32DiskDrive() {
         // No initialization required.
     }
 

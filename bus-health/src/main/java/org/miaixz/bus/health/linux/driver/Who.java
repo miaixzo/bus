@@ -56,7 +56,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Who {
+public class Who {
 
     /**
      * Directory where systemd records one file per active session.
@@ -89,7 +89,7 @@ public final class Who {
     /**
      * Creates a new Who instance.
      */
-    private Who() {
+    public Who() {
         // No initialization required.
     }
 

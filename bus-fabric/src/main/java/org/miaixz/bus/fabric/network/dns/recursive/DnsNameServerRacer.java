@@ -54,7 +54,7 @@ import org.miaixz.bus.fabric.network.dns.message.DnsResponseCode;
  *
  * @author Kimi Liu
  */
-public final class DnsNameServerRacer {
+public class DnsNameServerRacer {
 
     /**
      * Delay before a failed name server re-enters the healthy racing group.
@@ -452,7 +452,7 @@ public final class DnsNameServerRacer {
      *
      * @author Kimi Liu
      */
-    public static final class DnsNameServerHealth {
+    public static class DnsNameServerHealth {
 
         /**
          * Whether the name server is currently in the healthy racing group.
@@ -476,7 +476,7 @@ public final class DnsNameServerRacer {
          * @param consecutiveFailures consecutive failed racing attempts
          * @param rttNanos            EWMA round-trip time in nanoseconds
          */
-        private DnsNameServerHealth(final boolean healthy, final int consecutiveFailures, final long rttNanos) {
+        public DnsNameServerHealth(final boolean healthy, final int consecutiveFailures, final long rttNanos) {
             this.healthy = healthy;
             this.consecutiveFailures = consecutiveFailures;
             this.rttNanos = rttNanos;
@@ -553,7 +553,7 @@ public final class DnsNameServerRacer {
      *
      * @author Kimi Liu
      */
-    public static final class DnsNameServerRace {
+    public static class DnsNameServerRace {
 
         /**
          * Response wire bytes.
@@ -571,7 +571,7 @@ public final class DnsNameServerRacer {
          * @param response response wire bytes
          * @param budget   remaining retry budget
          */
-        private DnsNameServerRace(final byte[] response, final DnsRetryBudget budget) {
+        public DnsNameServerRace(final byte[] response, final DnsRetryBudget budget) {
             if (response == null || response.length == 0 || response.length > DnsCodec.MAX_MESSAGE_BYTES) {
                 throw new ValidateException("DNS name-server race response length is invalid");
             }

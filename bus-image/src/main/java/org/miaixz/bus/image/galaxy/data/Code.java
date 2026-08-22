@@ -210,7 +210,7 @@ public class Code implements Serializable {
      *
      * @return the code value.
      */
-    public final String getCodeValue() {
+    public String getCodeValue() {
         return codeValue;
     }
 
@@ -219,7 +219,7 @@ public class Code implements Serializable {
      *
      * @return the coding scheme designator.
      */
-    public final String getCodingSchemeDesignator() {
+    public String getCodingSchemeDesignator() {
         return codingSchemeDesignator;
     }
 
@@ -228,7 +228,7 @@ public class Code implements Serializable {
      *
      * @return the coding scheme version.
      */
-    public final String getCodingSchemeVersion() {
+    public String getCodingSchemeVersion() {
         return codingSchemeVersion;
     }
 
@@ -237,7 +237,7 @@ public class Code implements Serializable {
      *
      * @return the code meaning.
      */
-    public final String getCodeMeaning() {
+    public String getCodeMeaning() {
         return codeMeaning;
     }
 
@@ -327,7 +327,7 @@ public class Code implements Serializable {
      *
      * @return the operation result.
      */
-    public final Key key() {
+    public Key key() {
         return key;
     }
 
@@ -336,12 +336,12 @@ public class Code implements Serializable {
      *
      * @author Kimi Liu
      */
-    public final class Key {
+    public class Key {
 
         /**
          * Creates a new instance.
          */
-        private Key() {
+        public Key() {
             // No initialization required.
         }
 

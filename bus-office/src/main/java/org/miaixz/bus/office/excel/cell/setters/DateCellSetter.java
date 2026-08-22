@@ -40,7 +40,7 @@ public class DateCellSetter implements CellSetter {
      *
      * @param value The {@link Date} value to set in the cell.
      */
-    DateCellSetter(final Date value) {
+    public DateCellSetter(final Date value) {
         this.value = value;
     }
 

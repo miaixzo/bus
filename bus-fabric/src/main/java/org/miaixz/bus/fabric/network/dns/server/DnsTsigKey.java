@@ -30,7 +30,7 @@ import org.miaixz.bus.fabric.network.dns.message.DnsName;
  *
  * @author Kimi Liu
  */
-public final class DnsTsigKey {
+public class DnsTsigKey {
 
     /**
      * DNS algorithm name for HMAC-MD5 TSIG.
@@ -111,7 +111,7 @@ public final class DnsTsigKey {
      * @param macLengthBytes maximum MAC bytes carried on the wire
      * @param secret         raw shared secret bytes
      */
-    private DnsTsigKey(final String name, final String algorithmName, final String macAlgorithm,
+    public DnsTsigKey(final String name, final String algorithmName, final String macAlgorithm,
             final int macLengthBytes, final byte[] secret) {
         this.name = DnsName.normalize(name);
         this.algorithmName = DnsName.normalize(algorithmName);

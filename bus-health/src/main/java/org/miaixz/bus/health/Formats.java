@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.ByteKit;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Formats {
+public class Formats {
 
     /**
      * Constructs a new Formats instance.

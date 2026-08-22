@@ -72,7 +72,7 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
      * @param type         Java type of the managed entries
      * @param registryType stable registry type
      */
-    protected AbstractRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, Class<T> type,
+    public AbstractRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, Class<T> type,
             Type registryType) {
         this(cacheX, watchManager, type, registryType, RegistryGenerator.INSTANCE);
     }

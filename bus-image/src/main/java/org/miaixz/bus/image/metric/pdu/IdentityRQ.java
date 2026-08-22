@@ -203,7 +203,7 @@ public class IdentityRQ {
      *
      * @return the type.
      */
-    public final int getType() {
+    public int getType() {
         return type;
     }
 
@@ -212,7 +212,7 @@ public class IdentityRQ {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isPositiveResponseRequested() {
+    public boolean isPositiveResponseRequested() {
         return rspReq;
     }
 
@@ -221,7 +221,7 @@ public class IdentityRQ {
      *
      * @return the primary field.
      */
-    public final byte[] getPrimaryField() {
+    public byte[] getPrimaryField() {
         return primaryField.clone();
     }
 
@@ -230,7 +230,7 @@ public class IdentityRQ {
      *
      * @return the secondary field.
      */
-    public final byte[] getSecondaryField() {
+    public byte[] getSecondaryField() {
         return secondaryField.clone();
     }
 
@@ -239,7 +239,7 @@ public class IdentityRQ {
      *
      * @return the username.
      */
-    public final String getUsername() {
+    public String getUsername() {
         return toString(primaryField);
     }
 
@@ -248,7 +248,7 @@ public class IdentityRQ {
      *
      * @return the passcode.
      */
-    public final char[] getPasscode() {
+    public char[] getPasscode() {
         return toString(secondaryField).toCharArray();
     }
 

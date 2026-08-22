@@ -26,12 +26,12 @@ import org.miaixz.bus.core.lang.Normal;
  *
  * @author Kimi Liu
  */
-public final class CortexIdentity {
+public class CortexIdentity {
 
     /**
      * Keeps Cortex identity handling on the static API.
      */
-    private CortexIdentity() {
+    public CortexIdentity() {
         // No initialization required.
     }
 

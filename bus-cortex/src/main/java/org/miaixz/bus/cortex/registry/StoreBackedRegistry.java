@@ -75,7 +75,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
      * @param registryType registry type
      * @param listeners    post-commit listeners
      */
-    protected StoreBackedRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, RegistryStore<T> store,
+    public StoreBackedRegistry(CacheX<String, Object> cacheX, WatchManager watchManager, RegistryStore<T> store,
             Class<T> type, Type registryType, List<Listener<RegistryChange<T>>> listeners) {
         this(cacheX, watchManager, store, type, registryType, listeners, null, RegistryGenerator.INSTANCE);
     }

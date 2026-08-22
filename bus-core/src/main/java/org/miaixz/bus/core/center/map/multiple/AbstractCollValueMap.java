@@ -59,7 +59,7 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
      *
      * @param mapFactory A supplier that provides a {@link Map} to store the key-collection pairs.
      */
-    protected AbstractCollValueMap(final SupplierX<Map<K, Collection<V>>> mapFactory) {
+    public AbstractCollValueMap(final SupplierX<Map<K, Collection<V>>> mapFactory) {
         super(mapFactory);
     }
 

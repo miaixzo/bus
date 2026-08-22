@@ -113,7 +113,7 @@ public class Fragments extends ArrayList<Object> implements Value {
      *
      * @return the operation result.
      */
-    public final VR vr() {
+    public VR vr() {
         return vr;
     }
 
@@ -122,7 +122,7 @@ public class Fragments extends ArrayList<Object> implements Value {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean bigEndian() {
+    public boolean bigEndian() {
         return bigEndian;
     }
 

@@ -195,7 +195,7 @@ public class Issuer implements Serializable {
      *
      * @return the local namespace entity id.
      */
-    public final String getLocalNamespaceEntityID() {
+    public String getLocalNamespaceEntityID() {
         return localNamespaceEntityID;
     }
 
@@ -204,7 +204,7 @@ public class Issuer implements Serializable {
      *
      * @return the universal entity id.
      */
-    public final String getUniversalEntityID() {
+    public String getUniversalEntityID() {
         return universalEntityID;
     }
 
@@ -213,7 +213,7 @@ public class Issuer implements Serializable {
      *
      * @return the universal entity id type.
      */
-    public final String getUniversalEntityIDType() {
+    public String getUniversalEntityIDType() {
         return universalEntityIDType;
     }
 

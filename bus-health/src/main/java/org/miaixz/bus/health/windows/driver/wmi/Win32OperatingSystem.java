@@ -33,12 +33,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Win32OperatingSystem {
+public class Win32OperatingSystem {
 
     /**
      * Keeps Win32 operating system queries on the static API.
      */
-    private Win32OperatingSystem() {
+    public Win32OperatingSystem() {
         // No initialization required.
     }
 

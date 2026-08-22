@@ -57,7 +57,7 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
  *
  * @author Kimi Liu
  */
-public final class UdpChannel implements Lifecycle, AutoCloseable {
+public class UdpChannel implements Lifecycle, AutoCloseable {
 
     /**
      * Local address.
@@ -96,7 +96,7 @@ public final class UdpChannel implements Lifecycle, AutoCloseable {
      * @param channel    datagram channel
      * @param dispatcher runtime dispatcher
      */
-    UdpChannel(final Address local, final DatagramChannel channel, final Dispatcher dispatcher) {
+    public UdpChannel(final Address local, final DatagramChannel channel, final Dispatcher dispatcher) {
         this.local = Assert.notNull(local, () -> new ValidateException("UDP local address must not be null"));
         this.channel = Assert.notNull(channel, () -> new ValidateException("UDP datagram channel must not be null"));
         this.dispatcher = Assert.notNull(dispatcher, () -> new ValidateException("UDP dispatcher must not be null"));

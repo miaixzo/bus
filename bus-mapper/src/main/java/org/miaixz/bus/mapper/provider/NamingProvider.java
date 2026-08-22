@@ -85,11 +85,11 @@ public class NamingProvider implements Provider<String> {
     private final EnumValue.Naming naming;
 
     /**
-     * Private constructor using specific naming convention.
+     * Creates a provider using the specified naming convention.
      *
      * @param naming the naming convention to use
      */
-    private NamingProvider(EnumValue.Naming naming) {
+    public NamingProvider(EnumValue.Naming naming) {
         this.naming = naming != null ? naming : EnumValue.Naming.getDefault();
     }
 

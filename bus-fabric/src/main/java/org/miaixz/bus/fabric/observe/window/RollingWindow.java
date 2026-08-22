@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class RollingWindow {
+public class RollingWindow {
 
     /**
      * Window duration in nanoseconds.
@@ -62,7 +62,7 @@ public final class RollingWindow {
      * @param windowNanos total window duration in nanoseconds
      * @param bucketNanos duration of each ring bucket in nanoseconds
      */
-    private RollingWindow(final long windowNanos, final long bucketNanos) {
+    public RollingWindow(final long windowNanos, final long bucketNanos) {
         this.windowNanos = windowNanos;
         this.bucketNanos = bucketNanos;
         this.buckets = new AtomicReferenceArray<>((int) (windowNanos / bucketNanos));

@@ -44,7 +44,7 @@ import org.miaixz.bus.fabric.network.dns.zone.CidrBlock;
  *
  * @author Kimi Liu
  */
-public final class AddressGuard {
+public class AddressGuard {
 
     /**
      * Special-purpose networks that are not globally routable by default.

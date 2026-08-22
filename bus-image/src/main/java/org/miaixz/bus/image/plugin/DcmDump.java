@@ -58,7 +58,7 @@ public class DcmDump implements ImageInputHandler {
      *
      * @return The line width.
      */
-    public final int getWidth() {
+    public int getWidth() {
         return width;
     }
 
@@ -68,7 +68,7 @@ public class DcmDump implements ImageInputHandler {
      * @param width The desired line width. Must be at least 40.
      * @throws IllegalArgumentException if the width is less than 40.
      */
-    public final void setWidth(int width) {
+    public void setWidth(int width) {
         if (width < 40)
             throw new IllegalArgumentException("width must be >= 40");
         this.width = width;

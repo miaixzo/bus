@@ -110,8 +110,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param fns An array of method references representing the columns.
      * @return This wrapper instance for chaining.
      */
-    @SafeVarargs
-    public final ConditionWrapper<T, I> select(Fn<T, Object>... fns) {
+    public ConditionWrapper<T, I> select(Fn<T, Object>... fns) {
         this.condition.selectColumns(fns);
         return this;
     }
@@ -122,8 +121,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param fns An array of method references representing the columns to exclude.
      * @return This wrapper instance for chaining.
      */
-    @SafeVarargs
-    public final ConditionWrapper<T, I> exclude(Fn<T, Object>... fns) {
+    public ConditionWrapper<T, I> exclude(Fn<T, Object>... fns) {
         this.condition.excludeColumns(fns);
         return this;
     }
@@ -201,8 +199,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param fns An array of method references to the columns.
      * @return This wrapper instance for chaining.
      */
-    @SafeVarargs
-    public final ConditionWrapper<T, I> orderByAsc(Fn<T, Object>... fns) {
+    public ConditionWrapper<T, I> orderByAsc(Fn<T, Object>... fns) {
         this.condition.orderByAsc(fns);
         return this;
     }
@@ -213,8 +210,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param fns An array of method references to the columns.
      * @return This wrapper instance for chaining.
      */
-    @SafeVarargs
-    public final ConditionWrapper<T, I> orderByDesc(Fn<T, Object>... fns) {
+    public ConditionWrapper<T, I> orderByDesc(Fn<T, Object>... fns) {
         this.condition.orderByDesc(fns);
         return this;
     }
@@ -950,8 +946,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param orParts An array of functions that define the OR condition blocks.
      * @return This wrapper instance for chaining.
      */
-    @SafeVarargs
-    public final ConditionWrapper<T, I> or(FunctionX<OrCriteria<T>, OrCriteria<T>>... orParts) {
+    public ConditionWrapper<T, I> or(FunctionX<OrCriteria<T>, OrCriteria<T>>... orParts) {
         if (orParts != null && orParts.length > 0) {
             this.current.andOr(
                     Arrays.stream(orParts).map(orPart -> orPart.apply(condition.orPart()))

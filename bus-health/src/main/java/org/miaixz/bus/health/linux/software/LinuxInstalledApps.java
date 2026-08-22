@@ -31,7 +31,7 @@ import org.miaixz.bus.health.builtin.software.ApplicationInfo;
  *
  * @author Kimi Liu
  */
-public final class LinuxInstalledApps {
+public class LinuxInstalledApps {
 
     /**
      * The PIPE_PATTERN constant.
@@ -46,7 +46,7 @@ public final class LinuxInstalledApps {
     /**
      * Creates a new LinuxInstalledApps instance.
      */
-    private LinuxInstalledApps() {
+    public LinuxInstalledApps() {
         // No initialization required.
     }
 

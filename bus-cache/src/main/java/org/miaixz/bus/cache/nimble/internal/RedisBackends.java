@@ -45,12 +45,12 @@ import redis.clients.jedis.JedisPoolConfig;
  *
  * @author Kimi Liu
  */
-public final class RedisBackends {
+public class RedisBackends {
 
     /**
      * Keeps Redis backend construction on the static factory API.
      */
-    private RedisBackends() {
+    public RedisBackends() {
         // No initialization required.
     }
 

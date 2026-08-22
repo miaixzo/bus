@@ -46,7 +46,7 @@ import org.miaixz.bus.core.xyz.MethodKit;
  * @see AnnotationMapping
  * @author Kimi Liu
  */
-public final class AnnotationMappingProxy<T extends Annotation> implements InvocationHandler {
+public class AnnotationMappingProxy<T extends Annotation> implements InvocationHandler {
 
     /**
      * The underlying annotation mapping that provides the actual attribute values.
@@ -69,7 +69,7 @@ public final class AnnotationMappingProxy<T extends Annotation> implements Invoc
      *
      * @param annotation The annotation mapping to be proxied.
      */
-    private AnnotationMappingProxy(final AnnotationMapping<T> annotation) {
+    public AnnotationMappingProxy(final AnnotationMapping<T> annotation) {
         final int methodCount = annotation.getAttributes().length;
         this.methods = new HashMap<>(methodCount + 5);
         this.valueCache = new ConcurrentHashMap<>(methodCount);

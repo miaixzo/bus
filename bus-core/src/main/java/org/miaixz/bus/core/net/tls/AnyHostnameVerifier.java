@@ -57,9 +57,9 @@ public class AnyHostnameVerifier implements HostnameVerifier {
     private static final int ALT_IPA_NAME = 7;
 
     /**
-     * Private constructor for singleton pattern.
+     * Creates a hostname verifier that accepts every host; the shared instance remains available.
      */
-    private AnyHostnameVerifier() {
+    public AnyHostnameVerifier() {
         // No initialization required.
     }
 

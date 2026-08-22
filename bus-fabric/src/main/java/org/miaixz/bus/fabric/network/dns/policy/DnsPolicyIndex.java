@@ -36,7 +36,7 @@ import org.miaixz.bus.fabric.network.dns.policy.DnsPolicyRule.Action;
  *
  * @author Kimi Liu
  */
-public final class DnsPolicyIndex {
+public class DnsPolicyIndex {
 
     /**
      * Empty policy index.
@@ -90,7 +90,7 @@ public final class DnsPolicyIndex {
      * @param cnameCloakingRules CNAME cloaking rules
      * @param rules              source rules
      */
-    private DnsPolicyIndex(final List<DnsPolicyRule> allowRules, final Map<String, List<DnsPolicyRule>> exactRules,
+    public DnsPolicyIndex(final List<DnsPolicyRule> allowRules, final Map<String, List<DnsPolicyRule>> exactRules,
             final List<DnsPolicyRule> wildcardRules, final SuffixTrie suffixRules, final List<DnsPolicyRule> regexRules,
             final List<DnsPolicyRule> cnameCloakingRules, final List<DnsPolicyRule> rules) {
         this.allowRules = List.copyOf(allowRules);

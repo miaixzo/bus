@@ -232,7 +232,7 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Candidate connection establishment timeout.
@@ -267,7 +267,7 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
         /**
          * Creates a builder initialized to the complete default policy.
          */
-        private Builder() {
+        public Builder() {
             // No initialization required.
         }
 

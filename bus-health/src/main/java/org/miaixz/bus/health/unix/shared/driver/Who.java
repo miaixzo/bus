@@ -45,7 +45,7 @@ import org.miaixz.bus.health.builtin.software.OSSession;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Who {
+public class Who {
 
     // sample format:
     // oshi pts/0 2020-05-14 21:23 (192.168.1.23)
@@ -76,7 +76,7 @@ public final class Who {
     /**
      * Creates a new Who instance.
      */
-    private Who() {
+    public Who() {
         // No initialization required.
     }
 

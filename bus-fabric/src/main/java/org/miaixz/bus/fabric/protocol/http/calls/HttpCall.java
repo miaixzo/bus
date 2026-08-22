@@ -39,7 +39,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  *
  * @author Kimi Liu
  */
-public final class HttpCall extends MonoCall<HttpResponse> {
+public class HttpCall extends MonoCall<HttpResponse> {
 
     /**
      * One-shot protocol operation, cleared immediately before invocation.
@@ -64,7 +64,7 @@ public final class HttpCall extends MonoCall<HttpResponse> {
      * @param callback   optional terminal callback managed by the call lifecycle
      * @param operation  non-null one-shot HTTP operation receiving the lifecycle cancellation handle
      */
-    private HttpCall(final HttpRequest request, final Dispatcher dispatcher,
+    public HttpCall(final HttpRequest request, final Dispatcher dispatcher,
             final Callback<? super HttpResponse> callback, final Function<Cancellation, HttpResponse> operation) {
         super("http-call", dispatcher, EventObserver.noop(), callback, timeout(request));
         final HttpRequest current = require(request, "HTTP request");

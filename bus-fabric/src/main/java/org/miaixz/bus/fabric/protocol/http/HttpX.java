@@ -63,11 +63,11 @@ import org.miaixz.bus.fabric.protocol.http.calls.HttpCall;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
- * Immutable HTTP exchange.
+ * HTTP exchange backed by an immutable execution specification.
  *
  * @author Kimi Liu
  */
-public final class HttpX {
+public class HttpX {
 
     /**
      * Most recent safe immutable synchronous request shape.
@@ -90,7 +90,7 @@ public final class HttpX {
     private final Callback<HttpResponse> callback;
 
     /**
-     * Creates an HTTP exchange.
+     * Creates an HTTP exchange from a context, request, callback, observer, filter, and optional guard.
      *
      * @param context  shared context
      * @param request  request snapshot
@@ -99,7 +99,7 @@ public final class HttpX {
      * @param filter   filter applied to protocol-neutral messages
      * @param guard    guard validating the exchange, or {@code null}
      */
-    private HttpX(final Context context, final HttpRequest request, final Callback<HttpResponse> callback,
+    public HttpX(final Context context, final HttpRequest request, final Callback<HttpResponse> callback,
             final EventObserver observer, final Filter filter, final GuardRule guard) {
         this.spec = new HttpSpec(context, request, observer, filter, guard);
         this.runner = new HttpRunner(spec, observer != EventObserver.noop());
@@ -276,7 +276,7 @@ public final class HttpX {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Shared context.
@@ -403,7 +403,7 @@ public final class HttpX {
          *
          * @param context shared context
          */
-        private Builder(final Context context) {
+        public Builder(final Context context) {
             this.context = context;
             final Timeout configured = context.options().get(OPTION_TIMEOUT);
             this.timeout = configured == null ? Timeout.defaults() : configured;

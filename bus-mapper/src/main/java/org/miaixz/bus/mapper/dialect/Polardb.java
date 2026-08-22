@@ -40,7 +40,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  *
  * @author Kimi Liu
  */
-public final class Polardb extends AbstractDialect {
+public class Polardb extends AbstractDialect {
 
     /**
      * Internal engine family resolved from the JDBC URL.

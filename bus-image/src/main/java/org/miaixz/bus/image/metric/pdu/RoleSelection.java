@@ -65,7 +65,7 @@ public class RoleSelection {
      *
      * @return the sop class uid.
      */
-    public final String getSOPClassUID() {
+    public String getSOPClassUID() {
         return cuid;
     }
 
@@ -74,7 +74,7 @@ public class RoleSelection {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isSCU() {
+    public boolean isSCU() {
         return scu;
     }
 
@@ -83,7 +83,7 @@ public class RoleSelection {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isSCP() {
+    public boolean isSCP() {
         return scp;
     }
 

@@ -59,7 +59,7 @@ public class ExtendedNegotiation {
      *
      * @return the sop class uid.
      */
-    public final String getSOPClassUID() {
+    public String getSOPClassUID() {
         return cuid;
     }
 
@@ -68,7 +68,7 @@ public class ExtendedNegotiation {
      *
      * @return the information.
      */
-    public final byte[] getInformation() {
+    public byte[] getInformation() {
         return info.clone();
     }
 
@@ -79,7 +79,7 @@ public class ExtendedNegotiation {
      * @param def   the def.
      * @return the field.
      */
-    public final byte getField(int index, byte def) {
+    public byte getField(int index, byte def) {
         return index < info.length ? info[index] : def;
     }
 

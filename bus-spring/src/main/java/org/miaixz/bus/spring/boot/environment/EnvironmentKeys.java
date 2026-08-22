@@ -26,7 +26,7 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @author Kimi Liu
  */
-public final class EnvironmentKeys {
+public class EnvironmentKeys {
 
     /**
      * Spring application-name property.
@@ -75,9 +75,9 @@ public final class EnvironmentKeys {
     public static final String STARTUP_METRICS_ENABLED = "bus.metrics.startup.enabled";
 
     /**
-     * Prevents instantiation of this constants holder.
+     * Creates an environment-key namespace instance with no retained state.
      */
-    private EnvironmentKeys() {
+    public EnvironmentKeys() {
         // No initialization required.
     }
 

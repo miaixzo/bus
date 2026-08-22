@@ -37,7 +37,7 @@ import reactor.core.publisher.Sinks;
  *
  * @author Kimi Liu
  */
-public final class AsyncByteBudget implements AutoCloseable {
+public class AsyncByteBudget implements AutoCloseable {
 
     /**
      * Maximum logical bytes that active leases may own together.
@@ -283,7 +283,7 @@ public final class AsyncByteBudget implements AutoCloseable {
     /**
      * Idempotent ownership token for an exact number of logical bytes.
      */
-    public static final class Lease implements AutoCloseable {
+    public static class Lease implements AutoCloseable {
 
         /**
          * Budget that owns and reclaims this lease's capacity.
@@ -306,7 +306,7 @@ public final class AsyncByteBudget implements AutoCloseable {
          * @param budget budget that granted the capacity
          * @param bytes  exact logical bytes charged
          */
-        private Lease(AsyncByteBudget budget, long bytes) {
+        public Lease(AsyncByteBudget budget, long bytes) {
             this.budget = budget;
             this.bytes = bytes;
         }

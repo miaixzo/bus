@@ -41,7 +41,7 @@ import org.miaixz.bus.fabric.network.dns.zone.CidrBlock;
  *
  * @author Kimi Liu
  */
-public final class AddressPolicy {
+public class AddressPolicy {
 
     /**
      * Immutable non-empty set of allowed network schemes.

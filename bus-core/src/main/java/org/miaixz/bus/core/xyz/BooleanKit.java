@@ -34,7 +34,7 @@ public class BooleanKit {
     /**
      * Keeps Boolean parsing and conversion on the static API.
      */
-    private BooleanKit() {
+    public BooleanKit() {
         // No initialization required.
     }
 

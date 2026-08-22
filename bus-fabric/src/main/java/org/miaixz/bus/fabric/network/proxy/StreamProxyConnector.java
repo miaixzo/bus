@@ -57,7 +57,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  *
  * @author Kimi Liu
  */
-public final class StreamProxyConnector {
+public class StreamProxyConnector {
 
     /**
      * SOCKS protocol version implemented by this connector.

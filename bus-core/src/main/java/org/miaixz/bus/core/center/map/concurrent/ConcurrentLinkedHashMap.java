@@ -76,8 +76,7 @@ import org.miaixz.bus.core.xyz.RuntimeKit;
  * @param <V> the type of mapped values
  * @author Kimi Liu
  */
-public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
-        implements ConcurrentMap<K, V>, Serializable {
+public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852268251008L;
@@ -223,7 +222,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      *
      * @param builder The builder to configure the map.
      */
-    private ConcurrentLinkedHashMap(final Builder<K, V> builder) {
+    public ConcurrentLinkedHashMap(final Builder<K, V> builder) {
         // The data store and its maximum capacity
         concurrencyLevel = builder.concurrencyLevel;
         capacity = new AtomicLong(Math.min(builder.capacity, MAXIMUM_CAPACITY));
@@ -1411,7 +1410,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * @param <V> the value type
      * @author Kimi Liu
      */
-    public static final class Builder<K, V> {
+    public static class Builder<K, V> {
 
         BiConsumerX<K, V> listener;
         EntryWeigher<? super K, ? super V> weigher;

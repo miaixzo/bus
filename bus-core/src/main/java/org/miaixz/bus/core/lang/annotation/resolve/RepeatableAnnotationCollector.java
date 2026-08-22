@@ -192,7 +192,7 @@ public interface RepeatableAnnotationCollector {
         /**
          * Constructs a no-op repeatable annotation collector.
          */
-        None() {
+        public None() {
             // No initialization required.
         }
 
@@ -268,7 +268,7 @@ public interface RepeatableAnnotationCollector {
          *         {@code annotation} is not a container, the list will contain only {@code annotation} itself.
          */
         @Override
-        public final List<Annotation> getFinalRepeatableAnnotations(final Annotation annotation) {
+        public List<Annotation> getFinalRepeatableAnnotations(final Annotation annotation) {
             return find(annotation, null, false);
         }
 
@@ -414,7 +414,7 @@ public interface RepeatableAnnotationCollector {
         /**
          * Constructs a new {@code Standard} collector.
          */
-        Standard() {
+        public Standard() {
             // No initialization required.
         }
 
@@ -489,7 +489,7 @@ public interface RepeatableAnnotationCollector {
          * @param predicate The predicate to use for identifying repeatable annotation methods. Must not be
          *                  {@code null}.
          */
-        Condition(final BiPredicateX<Annotation, Method> predicate) {
+        public Condition(final BiPredicateX<Annotation, Method> predicate) {
             this.predicate = Objects.requireNonNull(predicate);
         }
 
@@ -536,7 +536,7 @@ public interface RepeatableAnnotationCollector {
         /**
          * Constructs a new {@code Full} collector.
          */
-        Full() {
+        public Full() {
             // No initialization required.
         }
 

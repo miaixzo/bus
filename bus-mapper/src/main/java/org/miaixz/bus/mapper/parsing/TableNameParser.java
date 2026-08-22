@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @author Kimi Liu
  */
-public final class TableNameParser {
+public class TableNameParser {
 
     /**
      * Represents the "set" keyword in SQL.
@@ -503,7 +503,7 @@ public final class TableNameParser {
          * @param end   the ending position of the token
          * @param value the token value
          */
-        private SqlToken(int start, int end, String value) {
+        public SqlToken(int start, int end, String value) {
             this.start = start;
             this.end = end;
             this.value = value;

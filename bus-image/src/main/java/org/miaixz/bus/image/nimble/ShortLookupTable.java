@@ -42,7 +42,7 @@ public class ShortLookupTable extends LookupTable {
      * @param offset  An offset to apply to input values before lookup.
      * @param lut     The short array representing the lookup table.
      */
-    ShortLookupTable(StoredValue inBits, int outBits, int offset, short[] lut) {
+    public ShortLookupTable(StoredValue inBits, int outBits, int offset, short[] lut) {
         super(inBits, outBits, offset);
         this.lut = lut;
     }

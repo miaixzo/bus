@@ -41,7 +41,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class MacInstalledApps {
+public class MacInstalledApps {
 
     /**
      * The opening XML string tag.
@@ -66,7 +66,7 @@ public final class MacInstalledApps {
     /**
      * Creates a new MacInstalledApps instance.
      */
-    private MacInstalledApps() {
+    public MacInstalledApps() {
         // No initialization required.
     }
 

@@ -44,7 +44,7 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
  *
  * @author Kimi Liu
  */
-public final class AioServer implements AutoCloseable {
+public class AioServer implements AutoCloseable {
 
     /**
      * Logical bind address.
@@ -94,7 +94,7 @@ public final class AioServer implements AutoCloseable {
      * @param listener lifecycle listener
      * @param options  socket options
      */
-    AioServer(final Address address, final AioGroup group, final Listener<Object> listener,
+    public AioServer(final Address address, final AioGroup group, final Listener<Object> listener,
             final SocketOptions options) {
         this.address = Assert.notNull(address, () -> new ValidateException("AIO server address must not be null"));
         this.group = Assert.notNull(group, () -> new ValidateException("AIO group must not be null"));

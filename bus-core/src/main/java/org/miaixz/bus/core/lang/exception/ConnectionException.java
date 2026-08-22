@@ -32,7 +32,7 @@ import java.util.Objects;
  *
  * @author Kimi Liu
  */
-public final class ConnectionException extends SocketException {
+public class ConnectionException extends SocketException {
 
     /**
      * The serialization version identifier.

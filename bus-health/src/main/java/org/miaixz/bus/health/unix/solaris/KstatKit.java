@@ -53,7 +53,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class KstatKit {
+public class KstatKit {
 
     /**
      * The CHAIN constant.
@@ -70,7 +70,7 @@ public final class KstatKit {
     /**
      * Creates a new KstatKit instance.
      */
-    private KstatKit() {
+    public KstatKit() {
         // No initialization required.
     }
 
@@ -283,7 +283,7 @@ public final class KstatKit {
      *
      * @author Kimi Liu
      */
-    public static final class KstatChain implements AutoCloseable {
+    public static class KstatChain implements AutoCloseable {
 
         /**
          * The localCtlRef value.
@@ -295,7 +295,7 @@ public final class KstatKit {
          *
          * @param ctl the ctl
          */
-        private KstatChain(KstatCtl ctl) {
+        public KstatChain(KstatCtl ctl) {
             this.localCtlRef = ctl;
             update();
         }

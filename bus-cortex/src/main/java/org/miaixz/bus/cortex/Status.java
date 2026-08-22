@@ -76,7 +76,7 @@ public class Status {
     /**
      * Creates a new Status.
      */
-    private Status() {
+    public Status() {
         // No initialization required.
     }
 

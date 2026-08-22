@@ -26,7 +26,7 @@ import java.awt.Color;
  *
  * @author Kimi Liu
  */
-public sealed interface Orientation permits PatientOrientation.Biped, PatientOrientation.Quadruped {
+public interface Orientation {
 
     /**
      * Executes the code operation.

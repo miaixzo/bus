@@ -31,12 +31,12 @@ import org.miaixz.bus.health.windows.PerfCounterQuery;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class PagingFile {
+public class PagingFile {
 
     /**
      * Keeps Windows paging file performance-counter queries on the static API.
      */
-    private PagingFile() {
+    public PagingFile() {
         // No initialization required.
     }
 

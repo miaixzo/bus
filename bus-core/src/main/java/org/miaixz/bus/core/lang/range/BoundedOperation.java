@@ -34,7 +34,7 @@ public class BoundedOperation {
     /**
      * Keeps range-bound operations on the static API.
      */
-    private BoundedOperation() {
+    public BoundedOperation() {
         // No initialization required.
     }
 

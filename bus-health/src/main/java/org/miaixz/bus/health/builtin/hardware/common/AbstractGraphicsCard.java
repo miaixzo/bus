@@ -67,7 +67,7 @@ public abstract class AbstractGraphicsCard implements GraphicsCard {
      * @param versionInfo The version info
      * @param vram        The VRAM
      */
-    protected AbstractGraphicsCard(String name, String deviceId, String vendor, String versionInfo, long vram) {
+    public AbstractGraphicsCard(String name, String deviceId, String vendor, String versionInfo, long vram) {
         this.name = name;
         this.deviceId = deviceId;
         this.vendor = vendor;

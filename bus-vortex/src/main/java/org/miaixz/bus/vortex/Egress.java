@@ -55,12 +55,12 @@ import reactor.util.retry.Retry;
  *
  * @author Kimi Liu
  */
-public final class Egress {
+public class Egress {
 
     /**
      * Keeps outbound HTTP request creation on the static egress API.
      */
-    private Egress() {
+    public Egress() {
         throw new UnsupportedOperationException("Egress class cannot be instantiated");
     }
 

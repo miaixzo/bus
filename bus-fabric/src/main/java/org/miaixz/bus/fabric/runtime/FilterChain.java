@@ -33,7 +33,7 @@ import org.miaixz.bus.fabric.Message;
  *
  * @author Kimi Liu
  */
-public final class FilterChain implements Filter.Chain {
+public class FilterChain implements Filter.Chain {
 
     /**
      * Immutable ordered snapshot of active non-null filters.
@@ -52,7 +52,7 @@ public final class FilterChain implements Filter.Chain {
      * @param terminal downstream chain invoked after the final filter
      * @throws ValidateException if {@code terminal} is {@code null}
      */
-    private FilterChain(final List<Filter> filters, final Filter.Chain terminal) {
+    public FilterChain(final List<Filter> filters, final Filter.Chain terminal) {
         this.filters = List.copyOf(filters);
         this.terminal = Assert.notNull(terminal, () -> new ValidateException("Terminal filter chain must not be null"));
     }

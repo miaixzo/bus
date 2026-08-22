@@ -32,7 +32,7 @@ public class AnsiEncoder {
     /**
      * Keeps ANSI escape-sequence encoding on the static API.
      */
-    private AnsiEncoder() {
+    public AnsiEncoder() {
         // No initialization required.
     }
 

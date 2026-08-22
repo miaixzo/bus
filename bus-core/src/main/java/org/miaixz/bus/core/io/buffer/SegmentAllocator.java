@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.Normal;
  *
  * @author Kimi Liu
  */
-public final class SegmentAllocator {
+public class SegmentAllocator {
 
     /**
      * The maximum number of bytes retained by each bucket.
@@ -52,9 +52,9 @@ public final class SegmentAllocator {
     private static final Segment[] BUCKETS = new Segment[BUCKET_COUNT];
 
     /**
-     * Private constructor to prevent instantiation.
+     * Creates a segment allocator facade over the shared bucket pool.
      */
-    private SegmentAllocator() {
+    public SegmentAllocator() {
         // No initialization required.
     }
 

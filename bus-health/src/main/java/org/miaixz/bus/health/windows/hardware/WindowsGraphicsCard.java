@@ -51,7 +51,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @Immutable
-public final class WindowsGraphicsCard extends AbstractGraphicsCard {
+public class WindowsGraphicsCard extends AbstractGraphicsCard {
 
     /**
      * The IS_VISTA_OR_GREATER constant.
@@ -136,8 +136,8 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
      * @param pciBusNumber PCI bus number for ADL correlation, or -1 if unknown
      * @param pciBusId     PCI bus ID string for NVML correlation, or empty string if unknown
      */
-    WindowsGraphicsCard(String name, String deviceId, String vendor, String versionInfo, long vram, String luidPrefix,
-            String lhmParent, int pciBusNumber, String pciBusId) {
+    public WindowsGraphicsCard(String name, String deviceId, String vendor, String versionInfo, long vram,
+            String luidPrefix, String lhmParent, int pciBusNumber, String pciBusId) {
         super(name, deviceId, vendor, versionInfo, vram);
         this.luidPrefix = luidPrefix;
         this.lhmParent = lhmParent;

@@ -34,7 +34,7 @@ import org.miaixz.bus.fabric.observe.metrics.FabricMeter;
  *
  * @author Kimi Liu
  */
-public final class DnsMetrics {
+public class DnsMetrics {
 
     /**
      * DNS Server metric prefix.
@@ -112,7 +112,7 @@ public final class DnsMetrics {
      * @param enabled whether recording is enabled
      * @param meter   target fabric meter
      */
-    private DnsMetrics(final boolean enabled, final FabricMeter meter) {
+    public DnsMetrics(final boolean enabled, final FabricMeter meter) {
         if (meter == null) {
             throw new ValidateException("DNS metrics meter must not be null");
         }

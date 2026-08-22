@@ -28,7 +28,7 @@ import org.miaixz.bus.validate.magic.Matcher;
  *
  * @author Kimi Liu
  */
-public final class AlwaysMatcher implements Matcher<Object, Object> {
+public class AlwaysMatcher implements Matcher<Object, Object> {
 
     /**
      * Constructs a new AlwaysMatcher instance.

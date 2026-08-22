@@ -27,7 +27,7 @@ import org.miaixz.bus.core.net.Protocol;
  *
  * @author Kimi Liu
  */
-public final class Message {
+public class Message {
 
     /**
      * Application or wire protocol associated with this message.
@@ -63,7 +63,7 @@ public final class Message {
      * @param payload  non-null payload reference
      * @param tag      optional user or runtime tag
      */
-    private Message(final Protocol protocol, final Address address, final Headers headers, final Payload payload,
+    public Message(final Protocol protocol, final Address address, final Headers headers, final Payload payload,
             final Object tag) {
         this.protocol = require(protocol, "Protocol");
         this.address = require(address, "Address");

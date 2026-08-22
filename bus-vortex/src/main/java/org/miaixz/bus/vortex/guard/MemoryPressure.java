@@ -32,7 +32,7 @@ import java.util.function.LongSupplier;
  *
  * @author Kimi Liu
  */
-public final class MemoryPressure implements AutoCloseable {
+public class MemoryPressure implements AutoCloseable {
 
     /**
      * Supplies direct bytes currently allocated by the unified Netty allocator.

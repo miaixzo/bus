@@ -89,7 +89,7 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
      * @param mappingFactory      The factory function for creating {@link AnnotationMapping} instances. Must not be
      *                            {@code null}.
      */
-    RepeatableMetaAnnotatedElement(final RepeatableAnnotationCollector repeatableCollector,
+    public RepeatableMetaAnnotatedElement(final RepeatableAnnotationCollector repeatableCollector,
             final AnnotatedElement element, final BiFunctionX<T, Annotation, T> mappingFactory) {
         this.element = Objects.requireNonNull(element);
         this.mappingFactory = Objects.requireNonNull(mappingFactory);

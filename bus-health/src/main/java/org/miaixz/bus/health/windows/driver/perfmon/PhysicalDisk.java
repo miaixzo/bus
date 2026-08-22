@@ -34,12 +34,12 @@ import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class PhysicalDisk {
+public class PhysicalDisk {
 
     /**
      * Keeps Windows physical disk performance-counter queries on the static API.
      */
-    private PhysicalDisk() {
+    public PhysicalDisk() {
         // No initialization required.
     }
 

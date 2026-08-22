@@ -64,12 +64,12 @@ import org.opencv.imgproc.Imgproc;
  *
  * @author Kimi Liu
  */
-public final class ImageConversion {
+public class ImageConversion {
 
     /**
      * Creates a new instance.
      */
-    private ImageConversion() {
+    public ImageConversion() {
         // No initialization required.
     }
 

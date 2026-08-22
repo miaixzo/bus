@@ -34,7 +34,7 @@ import org.miaixz.bus.fabric.codec.body.RequestBody;
  *
  * @author Kimi Liu
  */
-public final class FileBody implements RequestBody {
+public class FileBody implements RequestBody {
 
     /**
      * File path.
@@ -64,7 +64,7 @@ public final class FileBody implements RequestBody {
      * @param length  file length
      * @param payload file payload
      */
-    private FileBody(final Path path, final MediaType media, final long length, final Payload payload) {
+    public FileBody(final Path path, final MediaType media, final long length, final Payload payload) {
         this.path = path;
         this.media = media;
         this.length = length;

@@ -40,7 +40,7 @@ import org.miaixz.bus.fabric.Builder;
  *
  * @author Kimi Liu
  */
-public final class LineCodec implements FrameCodec {
+public class LineCodec implements FrameCodec {
 
     /**
      * Immutable delimiter snapshot appended during encoding and searched during decoding.
@@ -57,7 +57,7 @@ public final class LineCodec implements FrameCodec {
      *
      * @param delimiter non-empty delimiter containing at most 1024 bytes
      */
-    private LineCodec(final ByteString delimiter) {
+    public LineCodec(final ByteString delimiter) {
         this.delimiter = validateDelimiter(delimiter);
     }
 

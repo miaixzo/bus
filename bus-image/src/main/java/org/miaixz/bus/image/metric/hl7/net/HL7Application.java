@@ -141,7 +141,7 @@ public class HL7Application implements Serializable {
      *
      * @return owning device
      */
-    public final Device getDevice() {
+    public Device getDevice() {
         return device;
     }
 
@@ -193,7 +193,7 @@ public class HL7Application implements Serializable {
      *
      * @return default HL7 character set
      */
-    public final String getHL7DefaultCharacterSet() {
+    public String getHL7DefaultCharacterSet() {
         return hl7DefaultCharacterSet;
     }
 
@@ -202,7 +202,7 @@ public class HL7Application implements Serializable {
      *
      * @param hl7DefaultCharacterSet default HL7 character set
      */
-    public final void setHL7DefaultCharacterSet(String hl7DefaultCharacterSet) {
+    public void setHL7DefaultCharacterSet(String hl7DefaultCharacterSet) {
         this.hl7DefaultCharacterSet = hl7DefaultCharacterSet;
     }
 
@@ -359,7 +359,7 @@ public class HL7Application implements Serializable {
      *
      * @return installation state, or {@code null} to inherit the device state
      */
-    public final Boolean getInstalled() {
+    public Boolean getInstalled() {
         return installed;
     }
 
@@ -393,7 +393,7 @@ public class HL7Application implements Serializable {
      *
      * @param listener HL7 message listener
      */
-    public final void setHL7MessageListener(HL7MessageListener listener) {
+    public void setHL7MessageListener(HL7MessageListener listener) {
         this.hl7MessageListener = listener;
     }
 

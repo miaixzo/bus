@@ -57,7 +57,7 @@ public abstract class AbstractStrategy implements Strategy {
     /**
      * Creates an abstract strategy.
      */
-    protected AbstractStrategy() {
+    public AbstractStrategy() {
         // No initialization required.
     }
 

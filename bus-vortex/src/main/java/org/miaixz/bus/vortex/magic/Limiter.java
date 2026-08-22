@@ -114,7 +114,7 @@ public class Limiter {
      *
      * @author Kimi Liu
      */
-    public static final class RateLimiter {
+    public static class RateLimiter {
 
         /**
          * Number of nanoseconds in one second.
@@ -146,7 +146,7 @@ public class Limiter {
          *
          * @param permitsPerMinute maximum number of permits per minute
          */
-        private RateLimiter(int permitsPerMinute) {
+        public RateLimiter(int permitsPerMinute) {
             if (permitsPerMinute <= 0) {
                 throw new IllegalArgumentException("permitsPerMinute must be greater than zero");
             }

@@ -41,7 +41,7 @@ import org.miaixz.bus.health.unix.freebsd.driver.disk.GeomPartList;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
+public class FreeBsdHWDiskStore extends AbstractHWDiskStore {
 
     /**
      * The reads value.
@@ -91,7 +91,7 @@ public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
      * @param serial the serial
      * @param size   the size
      */
-    private FreeBsdHWDiskStore(String name, String model, String serial, long size) {
+    public FreeBsdHWDiskStore(String name, String model, String serial, long size) {
         super(name, model, serial, size);
     }
 

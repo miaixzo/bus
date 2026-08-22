@@ -35,7 +35,7 @@ public class Assert {
     /**
      * Keeps argument and state assertions on the static API.
      */
-    private Assert() {
+    public Assert() {
         // No initialization required.
     }
 

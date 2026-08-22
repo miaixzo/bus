@@ -144,7 +144,7 @@ public class ApplicationSettingsApi extends AbstractApi {
      * @return the populated ApplicationSettings instance
      * @throws RelevantException if any error occurs
      */
-    public static final ApplicationSettings parseApplicationSettings(JsonNode root) throws RelevantException {
+    public static ApplicationSettings parseApplicationSettings(JsonNode root) throws RelevantException {
 
         ApplicationSettings appSettings = new ApplicationSettings();
 

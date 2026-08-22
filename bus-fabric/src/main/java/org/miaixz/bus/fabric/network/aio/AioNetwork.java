@@ -62,7 +62,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class AioNetwork implements AutoCloseable {
+public class AioNetwork implements AutoCloseable {
 
     /**
      * Worker group owned and shut down by this network.
@@ -107,7 +107,7 @@ public final class AioNetwork implements AutoCloseable {
      * @param resolver resolver used for client host names
      * @param listener optional network-wide lifecycle listener
      */
-    private AioNetwork(final AioGroup group, final AioProvider provider, final DnsResolver resolver,
+    public AioNetwork(final AioGroup group, final AioProvider provider, final DnsResolver resolver,
             final Listener<Object> listener) {
         this(group, provider, resolver, listener, SocketOptions.defaults());
     }

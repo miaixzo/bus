@@ -892,7 +892,7 @@ public interface CentralProcessor {
      * @author Kimi Liu
      */
     @Immutable
-    final class ProcessorIdentifier {
+    class ProcessorIdentifier {
 
         // Provided in constructor
         /**

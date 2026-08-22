@@ -39,7 +39,7 @@ public class RichTextCellSetter implements CellSetter {
      *
      * @param value The {@link RichTextString} value to set in the cell.
      */
-    RichTextCellSetter(final RichTextString value) {
+    public RichTextCellSetter(final RichTextString value) {
         this.value = value;
     }
 

@@ -42,7 +42,7 @@ import org.miaixz.bus.fabric.network.tls.context.TlsContext;
  *
  * @author Kimi Liu
  */
-public final class TlsEngine implements AutoCloseable {
+public class TlsEngine implements AutoCloseable {
 
     /**
      * Close-state CAS without a per-engine atomic wrapper.
@@ -130,7 +130,7 @@ public final class TlsEngine implements AutoCloseable {
      * @param settings non-null TLS configuration
      * @param client   true for a client engine, false for a server engine
      */
-    private TlsEngine(final TlsContext context, final Address address, final TlsSettings settings,
+    public TlsEngine(final TlsContext context, final Address address, final TlsSettings settings,
             final boolean client) {
         final TlsContext checkedContext = Assert
                 .notNull(context, () -> new ValidateException("TLS context must not be null"));

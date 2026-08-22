@@ -38,12 +38,12 @@ import org.miaixz.bus.fabric.network.tls.TlsSettings;
  *
  * @author Kimi Liu
  */
-public final class TlsGuard {
+public class TlsGuard {
 
     /**
      * Creates a TLS guard.
      */
-    private TlsGuard() {
+    public TlsGuard() {
         // No initialization required.
     }
 

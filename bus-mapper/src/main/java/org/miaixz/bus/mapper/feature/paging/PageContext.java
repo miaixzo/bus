@@ -53,7 +53,7 @@ import org.miaixz.bus.mapper.Order;
  *
  * @author Kimi Liu
  */
-public final class PageContext {
+public class PageContext {
 
     /**
      * ThreadLocal variable to hold the specific pagination parameters (page number, size, sort) for the current thread.
@@ -81,7 +81,7 @@ public final class PageContext {
     /**
      * Creates the fluent pagination context bound to the current thread.
      */
-    private PageContext() {
+    public PageContext() {
         // No initialization required.
     }
 

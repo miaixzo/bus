@@ -30,7 +30,7 @@ import org.miaixz.bus.image.nimble.geometry.Vector3;
  *
  * @author Kimi Liu
  */
-public final class AlongAxisComparator implements HpComparator {
+public class AlongAxisComparator implements HpComparator {
 
     /**
      * The sign value.

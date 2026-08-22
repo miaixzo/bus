@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Normal;
  *
  * @author Kimi Liu
  */
-public final class Executor {
+public class Executor {
 
     /**
      * Identity-based registration counts shared by the static logger facade.

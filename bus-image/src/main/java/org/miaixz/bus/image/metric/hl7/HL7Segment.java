@@ -292,7 +292,7 @@ public class HL7Segment implements Serializable {
      *
      * @return the field separator.
      */
-    public final char getFieldSeparator() {
+    public char getFieldSeparator() {
         return fieldSeparator;
     }
 
@@ -301,7 +301,7 @@ public class HL7Segment implements Serializable {
      *
      * @return the component separator.
      */
-    public final char getComponentSeparator() {
+    public char getComponentSeparator() {
         return encodingCharacters.charAt(0);
     }
 
@@ -310,7 +310,7 @@ public class HL7Segment implements Serializable {
      *
      * @return the repetition separator.
      */
-    public final char getRepetitionSeparator() {
+    public char getRepetitionSeparator() {
         return encodingCharacters.charAt(1);
     }
 
@@ -319,7 +319,7 @@ public class HL7Segment implements Serializable {
      *
      * @return the escape character.
      */
-    public final char getEscapeCharacter() {
+    public char getEscapeCharacter() {
         return encodingCharacters.charAt(2);
     }
 
@@ -328,7 +328,7 @@ public class HL7Segment implements Serializable {
      *
      * @return the subcomponent separator.
      */
-    public final char getSubcomponentSeparator() {
+    public char getSubcomponentSeparator() {
         return encodingCharacters.charAt(3);
     }
 
@@ -337,7 +337,7 @@ public class HL7Segment implements Serializable {
      *
      * @return the encoding characters.
      */
-    public final String getEncodingCharacters() {
+    public String getEncodingCharacters() {
         return encodingCharacters;
     }
 

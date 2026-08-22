@@ -40,7 +40,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class RegistryKit {
+public class RegistryKit {
 
     /**
      * Constant for 30 years in seconds. Used for validating timestamps.
@@ -50,7 +50,7 @@ public final class RegistryKit {
     /**
      * Creates a new RegistryKit instance.
      */
-    private RegistryKit() {
+    public RegistryKit() {
         // No initialization required.
     }
 

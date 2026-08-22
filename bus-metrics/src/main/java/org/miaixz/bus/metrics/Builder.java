@@ -27,7 +27,7 @@ package org.miaixz.bus.metrics;
  *
  * @author Kimi Liu
  */
-public final class Builder {
+public class Builder {
 
     // ── Scheduler ─────────────────────────────────────────────────────────
 
@@ -252,9 +252,9 @@ public final class Builder {
     public static final String OTEL_SCOPE = "bus-metrics";
 
     /**
-     * Private constructor; this is a static constants class.
+     * Creates a metrics constant namespace instance with no retained state.
      */
-    private Builder() {
+    public Builder() {
         // No initialization required.
     }
 

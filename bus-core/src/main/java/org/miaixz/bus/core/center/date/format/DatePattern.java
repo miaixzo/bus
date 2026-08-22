@@ -569,7 +569,7 @@ public class DatePattern {
          * @param value  the value to append
          */
         @Override
-        public final void appendTo(final Appendable buffer, final int value) throws IOException {
+        public void appendTo(final Appendable buffer, final int value) throws IOException {
             if (value < 10) {
                 buffer.append((char) (value + Symbol.C_ZERO));
             } else if (value < 100) {
@@ -628,7 +628,7 @@ public class DatePattern {
          * @param value  the month value (1-12)
          */
         @Override
-        public final void appendTo(final Appendable buffer, final int value) throws IOException {
+        public void appendTo(final Appendable buffer, final int value) throws IOException {
             if (value < 10) {
                 buffer.append((char) (value + Symbol.C_ZERO));
             } else {
@@ -690,7 +690,7 @@ public class DatePattern {
          * @param value  the value to append with padding
          */
         @Override
-        public final void appendTo(final Appendable buffer, final int value) throws IOException {
+        public void appendTo(final Appendable buffer, final int value) throws IOException {
             appendFullDigits(buffer, value, mSize);
         }
 
@@ -743,7 +743,7 @@ public class DatePattern {
          * @param value  the value to append (will be formatted to 2 digits)
          */
         @Override
-        public final void appendTo(final Appendable buffer, final int value) throws IOException {
+        public void appendTo(final Appendable buffer, final int value) throws IOException {
             if (value < 100) {
                 appendDigits(buffer, value);
             } else {
@@ -800,7 +800,7 @@ public class DatePattern {
          * @param value  the value to append as two digits
          */
         @Override
-        public final void appendTo(final Appendable buffer, final int value) throws IOException {
+        public void appendTo(final Appendable buffer, final int value) throws IOException {
             appendDigits(buffer, value);
         }
 
@@ -853,7 +853,7 @@ public class DatePattern {
          * @param value  the month value to append (1-12)
          */
         @Override
-        public final void appendTo(final Appendable buffer, final int value) throws IOException {
+        public void appendTo(final Appendable buffer, final int value) throws IOException {
             appendDigits(buffer, value);
         }
 

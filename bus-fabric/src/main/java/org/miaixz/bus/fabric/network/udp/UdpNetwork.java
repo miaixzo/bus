@@ -56,7 +56,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class UdpNetwork implements AutoCloseable {
+public class UdpNetwork implements AutoCloseable {
 
     /**
      * Transport set accepted by this network implementation.
@@ -105,7 +105,7 @@ public final class UdpNetwork implements AutoCloseable {
      * @param group    AIO group that supplies channel dispatchers
      * @param listener lifecycle listener, or {@code null} when notifications are not required
      */
-    private UdpNetwork(final AioGroup group, final Listener<Object> listener) {
+    public UdpNetwork(final AioGroup group, final Listener<Object> listener) {
         this.group = Assert.notNull(group, () -> new ValidateException("AIO group must not be null"));
         this.channels = new ConcurrentLinkedDeque<>();
         this.bindings = new ConcurrentLinkedDeque<>();
@@ -525,7 +525,7 @@ public final class UdpNetwork implements AutoCloseable {
      *
      * @author Kimi Liu
      */
-    public static final class ServerBinding {
+    public static class ServerBinding {
 
         /**
          * Numeric local address selected and bound by the network.
@@ -543,7 +543,7 @@ public final class UdpNetwork implements AutoCloseable {
          * @param local numeric local address
          * @param loop  owned receive loop
          */
-        private ServerBinding(final Address local, final ReceiveLoop loop) {
+        public ServerBinding(final Address local, final ReceiveLoop loop) {
             this.local = local;
             this.loop = loop;
         }

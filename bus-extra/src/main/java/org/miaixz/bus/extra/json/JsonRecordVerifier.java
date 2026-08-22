@@ -49,7 +49,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @param <T> record type that owns the JSON object vocabulary
  * @author Kimi Liu
  */
-public final class JsonRecordVerifier<T extends Record> {
+public class JsonRecordVerifier<T extends Record> {
 
     /**
      * Associates a record component with an exact JSON member that is not a legal or suitable Java identifier.
@@ -84,7 +84,7 @@ public final class JsonRecordVerifier<T extends Record> {
      *
      * @param type record class whose components use exact JSON member names
      */
-    private JsonRecordVerifier(final Class<T> type) {
+    public JsonRecordVerifier(final Class<T> type) {
         this.type = Assert.notNull(type, "JSON record verifier type must not be null");
         if (!type.isRecord()) {
             throw new ValidateException("JSON record verifier type must be a record: " + type.getName());

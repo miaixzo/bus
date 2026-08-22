@@ -36,7 +36,7 @@ import org.miaixz.bus.fabric.codec.body.ProgressBody;
  *
  * @author Kimi Liu
  */
-public final class StompBody implements MessageBody, ProgressBody {
+public class StompBody implements MessageBody, ProgressBody {
 
     /**
      * Original STOMP body payload.
@@ -59,7 +59,7 @@ public final class StompBody implements MessageBody, ProgressBody {
      * @param payload STOMP body content source
      * @param media   media type
      */
-    private StompBody(final Payload payload, final MediaType media) {
+    public StompBody(final Payload payload, final MediaType media) {
         this(payload, media, null);
     }
 

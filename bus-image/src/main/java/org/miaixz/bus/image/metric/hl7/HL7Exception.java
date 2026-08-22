@@ -134,7 +134,7 @@ public class HL7Exception extends Exception {
      *
      * @return the acknowledgment code.
      */
-    public final String getAcknowledgmentCode() {
+    public String getAcknowledgmentCode() {
         return ack;
     }
 

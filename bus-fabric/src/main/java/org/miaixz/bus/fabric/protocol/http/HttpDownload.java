@@ -55,7 +55,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class HttpDownload {
+public class HttpDownload {
 
     /**
      * HTTP executor.
@@ -107,7 +107,7 @@ public final class HttpDownload {
      * @param progress     progress callback
      * @param resume       whether partial files may be resumed
      */
-    private HttpDownload(final Exchange exchange, final HttpRequest request, final Path target,
+    public HttpDownload(final Exchange exchange, final HttpRequest request, final Path target,
             final Cancellation cancellation, final BiConsumer<Long, Long> progress, final boolean resume) {
         this.exchange = require(exchange, "HTTP download exchange");
         this.request = require(request, "HTTP request");
@@ -559,7 +559,7 @@ public final class HttpDownload {
     /**
      * Builder for download tasks.
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * HTTP exchange.
@@ -596,7 +596,7 @@ public final class HttpDownload {
          *
          * @param exchange HTTP exchange function
          */
-        private Builder(final Exchange exchange) {
+        public Builder(final Exchange exchange) {
             this.exchange = require(exchange, "HTTP download exchange");
         }
 

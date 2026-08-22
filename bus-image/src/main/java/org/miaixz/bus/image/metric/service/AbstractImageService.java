@@ -45,7 +45,7 @@ public abstract class AbstractImageService implements ImageService {
      *
      * @param sopClasses the sop classes.
      */
-    protected AbstractImageService(String... sopClasses) {
+    public AbstractImageService(String... sopClasses) {
         this.sopClasses = sopClasses.clone();
     }
 

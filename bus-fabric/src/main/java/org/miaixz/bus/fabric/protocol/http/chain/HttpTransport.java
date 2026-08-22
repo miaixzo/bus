@@ -48,7 +48,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  *
  * @author Kimi Liu
  */
-public final class HttpTransport implements HttpStage {
+public class HttpTransport implements HttpStage {
 
     /**
      * Shared unregister action for synchronous scopes without an external cancellation handle.
