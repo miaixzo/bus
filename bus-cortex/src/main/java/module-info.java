@@ -24,8 +24,8 @@
  * Provides a unified registry and configuration center for service governance metadata.
  *
  * <p>
- * Includes API, MCP, and prompt registries; application settings; namespaces and profiles; secret and revision
- * management; delivery and watch mechanisms; health information; and cache-backed storage bridges.
+ * Includes API, MCP, and prompt registries; application settings; spaces and profiles; secret and revision management;
+ * delivery and watch mechanisms; health information; and cache-backed storage bridges.
  *
  * @author Kimi Liu
  */
@@ -66,9 +66,9 @@ module bus.cortex {
     exports org.miaixz.bus.cortex.setting.delivery;
     exports org.miaixz.bus.cortex.setting.item;
     exports org.miaixz.bus.cortex.setting.item.revision;
-    exports org.miaixz.bus.cortex.setting.namespace;
     exports org.miaixz.bus.cortex.setting.profile;
     exports org.miaixz.bus.cortex.setting.secret;
+    exports org.miaixz.bus.cortex.setting.space;
     exports org.miaixz.bus.cortex.version;
 
 }

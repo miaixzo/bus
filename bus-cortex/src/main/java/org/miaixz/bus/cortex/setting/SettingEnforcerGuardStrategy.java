@@ -31,7 +31,7 @@ import org.miaixz.bus.cortex.guard.GuardStrategy;
 public class SettingEnforcerGuardStrategy implements GuardStrategy {
 
     /**
-     * Setting relation enforcer used to validate namespace, application, and profile scope.
+     * Setting relation enforcer used to validate space, application, and profile scope.
      */
     private final SettingEnforcer enforcer;
 
@@ -63,7 +63,7 @@ public class SettingEnforcerGuardStrategy implements GuardStrategy {
      */
     @Override
     public GuardDecision evaluate(GuardContext context) {
-        return enforcer.allows(context.getNamespace_id(), context.getApp_id(), context.getProfile_id())
+        return enforcer.allows(context.getSpace_id(), context.getApp_id(), context.getProfile_id())
                 ? GuardDecision.allow()
                 : GuardDecision.deny("SETTING_SCOPE_DENIED", "Setting scope is not allowed");
     }

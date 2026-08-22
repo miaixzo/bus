@@ -39,9 +39,9 @@ public class Builder {
     }
 
     /**
-     * Default namespace used when no explicit namespace is specified.
+     * Default space used when no explicit space is specified.
      */
-    public static final String DEFAULT_NAMESPACE = Normal.DEFAULT;
+    public static final String DEFAULT_SPACE = Normal.DEFAULT;
 
     /**
      * Default health probe interval in milliseconds (30 s). Recommended value for {@link HealthProbeScheduler}.

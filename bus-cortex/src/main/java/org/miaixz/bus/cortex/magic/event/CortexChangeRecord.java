@@ -69,9 +69,9 @@ public class CortexChangeRecord {
     private String resourceId;
 
     /**
-     * Namespace affected by the change.
+     * Space affected by the change.
      */
-    private String namespace_id;
+    private String space_id;
 
     /**
      * Serialized payload for downstream delivery.

@@ -41,7 +41,7 @@ import org.miaixz.bus.cortex.registry.RegistryIdentity;
  * <li>{@link RegistrySpec#ROUTE}: strongest runtime route key plus the ordered 8-level fallback chain</li>
  * </ul>
  * <p>
- * Route generation keeps {@code namespace}, {@code type}, and {@code appId} optional and never auto-fills them from
+ * Route generation keeps {@code space}, {@code type}, and {@code appId} optional and never auto-fills them from
  * persistence defaults.
  * </p>
  *
@@ -109,20 +109,20 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
             return List.of();
         }
         LinkedHashSet<String> keys = new LinkedHashSet<>();
-        String namespace = spec.namespacePart();
+        String space = spec.spacePart();
         String type = spec.typeKeyPart();
         String appId = spec.appIdPart();
         String method = spec.methodPart();
         String version = spec.versionPart();
         Integer verb = spec.verbPart();
-        this.appendKey(keys, namespace, type, appId, method, version, verb, true, true, true);
-        this.appendKey(keys, namespace, type, appId, method, version, verb, true, true, false);
-        this.appendKey(keys, namespace, type, appId, method, version, verb, true, false, true);
-        this.appendKey(keys, namespace, type, appId, method, version, verb, true, false, false);
-        this.appendKey(keys, namespace, type, appId, method, version, verb, false, true, true);
-        this.appendKey(keys, namespace, type, appId, method, version, verb, false, true, false);
-        this.appendKey(keys, namespace, type, appId, method, version, verb, false, false, true);
-        this.appendKey(keys, namespace, type, appId, method, version, verb, false, false, false);
+        this.appendKey(keys, space, type, appId, method, version, verb, true, true, true);
+        this.appendKey(keys, space, type, appId, method, version, verb, true, true, false);
+        this.appendKey(keys, space, type, appId, method, version, verb, true, false, true);
+        this.appendKey(keys, space, type, appId, method, version, verb, true, false, false);
+        this.appendKey(keys, space, type, appId, method, version, verb, false, true, true);
+        this.appendKey(keys, space, type, appId, method, version, verb, false, true, false);
+        this.appendKey(keys, space, type, appId, method, version, verb, false, false, true);
+        this.appendKey(keys, space, type, appId, method, version, verb, false, false, false);
         return ListKit.of(keys);
     }
 
@@ -139,15 +139,14 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
         }
         return switch (spec.mode()) {
             case RegistrySpec.ENTRY -> {
-                String namespace = RegistryIdentity.namespace(spec.namespace());
+                String space = RegistryIdentity.space(spec.space());
                 Type type = spec.typePart();
-                yield type == null ? null
-                        : Builder.REG_PREFIX + namespace + Symbol.COLON + type.segment() + Symbol.COLON;
+                yield type == null ? null : Builder.REG_PREFIX + space + Symbol.COLON + type.segment() + Symbol.COLON;
             }
             case RegistrySpec.INSTANCE -> {
                 StringBuilder builder = new StringBuilder();
-                builder.append(Builder.REG_PREFIX).append(RegistryIdentity.namespace(spec.namespace()))
-                        .append(Symbol.COLON).append("instance").append(Symbol.COLON);
+                builder.append(Builder.REG_PREFIX).append(RegistryIdentity.space(spec.space())).append(Symbol.COLON)
+                        .append("instance").append(Symbol.COLON);
                 String appId = spec.appIdPart();
                 if (appId != null) {
                     builder.append(appId).append(Symbol.COLON);
@@ -169,32 +168,32 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
     /**
      * Appends one route-key candidate for a specific inclusion level.
      *
-     * @param keys             route-key accumulator
-     * @param namespace        normalized namespace part
-     * @param type             normalized numeric type part
-     * @param appId            normalized application identifier part
-     * @param method           route method part
-     * @param version          route version part
-     * @param verb             numeric verb code
-     * @param includeNamespace whether the namespace segment should be emitted
-     * @param includeType      whether the type segment should be emitted
-     * @param includeAppId     whether the application segment should be emitted
+     * @param keys         route-key accumulator
+     * @param space        normalized space part
+     * @param type         normalized numeric type part
+     * @param appId        normalized application identifier part
+     * @param method       route method part
+     * @param version      route version part
+     * @param verb         numeric verb code
+     * @param includeSpace whether the space segment should be emitted
+     * @param includeType  whether the type segment should be emitted
+     * @param includeAppId whether the application segment should be emitted
      */
     private void appendKey(
             LinkedHashSet<String> keys,
-            String namespace,
+            String space,
             String type,
             String appId,
             String method,
             String version,
             Integer verb,
-            boolean includeNamespace,
+            boolean includeSpace,
             boolean includeType,
             boolean includeAppId) {
         if (method == null || version == null || verb == null) {
             return;
         }
-        if (includeNamespace && namespace == null) {
+        if (includeSpace && space == null) {
             return;
         }
         if (includeType && type == null) {
@@ -204,8 +203,8 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
             return;
         }
         StringBuilder builder = new StringBuilder();
-        if (includeNamespace) {
-            builder.append(namespace).append(Symbol.COLON);
+        if (includeSpace) {
+            builder.append(space).append(Symbol.COLON);
         }
         if (includeType) {
             builder.append(type).append(Symbol.COLON);

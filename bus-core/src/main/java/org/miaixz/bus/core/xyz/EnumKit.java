@@ -171,8 +171,7 @@ public class EnumKit {
         String fieldName;
         for (final Field field : fields) {
             fieldName = field.getName();
-            if (field.getType().isEnum()
-                    || fieldName.contains("$VALUES")
+            if (field.getType().isEnum() || fieldName.contains("$VALUES")
                     || (field.getDeclaringClass().equals(Enum.class)
                             && StringKit.equalsAny(fieldName, "name", "hash", "ordinal"))) {
                 continue;

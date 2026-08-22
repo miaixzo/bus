@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.setting.namespace;
+package org.miaixz.bus.cortex.setting.space;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,24 +27,24 @@ import org.miaixz.bus.cortex.Setting;
 import org.miaixz.bus.cortex.Type;
 
 /**
- * Namespace directory entry for the setting domain.
+ * Space directory entry for the setting domain.
  *
  * @author Kimi Liu
  */
 @Getter
 @Setter
 @SuperBuilder
-public class Namespace extends Setting {
+public class Space extends Setting {
 
     /**
-     * Creates an empty namespace directory entry.
+     * Creates an empty space directory entry.
      */
-    public Namespace() {
-        setType(Type.NAMESPACE.key());
+    public Space() {
+        setType(Type.SPACE.key());
     }
 
     /**
-     * Legacy namespace code kept only for compatibility and display. {@code id} remains the authoritative identifier.
+     * Legacy space code kept only for compatibility and display. {@code id} remains the authoritative identifier.
      */
     private String code;
 

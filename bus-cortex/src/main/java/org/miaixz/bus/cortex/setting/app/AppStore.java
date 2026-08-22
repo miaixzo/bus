@@ -62,28 +62,28 @@ public interface AppStore {
     /**
      * Deletes one application entry.
      *
-     * @param namespace_id namespace identifier
-     * @param app_id       application identifier
+     * @param space_id space identifier
+     * @param app_id   application identifier
      * @return deleted snapshot or {@code null} when absent
      */
-    App delete(String namespace_id, String app_id);
+    App delete(String space_id, String app_id);
 
     /**
      * Finds one application entry.
      *
-     * @param namespace_id namespace identifier
-     * @param app_id       application identifier
+     * @param space_id space identifier
+     * @param app_id   application identifier
      * @return stored entry or {@code null}
      */
-    App find(String namespace_id, String app_id);
+    App find(String space_id, String app_id);
 
     /**
-     * Queries application entries within one namespace.
+     * Queries application entries within one space.
      *
-     * @param namespace_id namespace identifier
+     * @param space_id space identifier
      * @return matching entries
      */
-    List<App> query(String namespace_id);
+    List<App> query(String space_id);
 
     /**
      * Returns strongly typed durable-store capability hints.

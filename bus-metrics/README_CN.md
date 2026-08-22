@@ -313,7 +313,7 @@ slo_compliance_ratio{slo="checkout.latency",target="0.999"} 0.9987
 
 ### 与 bus-cortex 联动（CortexExporter）
 
-定期将本实例指标快照推送到 bus-cortex（CacheX key：`metrics:{namespace}:{serviceId}:{metricName}`）。Cortex 汇聚所有实例数据，提供集群级
+定期将本实例指标快照推送到 bus-cortex（CacheX key：`metrics:{space}:{serviceId}:{metricName}`）。Cortex 汇聚所有实例数据，提供集群级
 `/metricz`。
 
 ```yaml
@@ -322,6 +322,7 @@ bus:
     cortex:
       enabled: true
       interval-seconds: 15
+      space: default
 ```
 
 ### 与 bus-vortex 联动（VortexMetricsFeed）
@@ -396,6 +397,7 @@ bus:
       enabled: false
       interval-seconds: 15
       server-addr: ""
+      space: default
 ```
 
 ### 配置属性说明
@@ -414,6 +416,7 @@ bus:
 | `bus.metrics.cardinality.deny-list`   | List    | —          | 永远禁止的 Tag key                 |
 | `bus.metrics.cortex.enabled`          | boolean | `false`    | 启用 CortexExporter                |
 | `bus.metrics.cortex.interval-seconds` | int     | `15`       | 推送间隔                           |
+| `bus.metrics.cortex.space`            | String  | `default`  | 用于限定导出指标范围的 Cortex 空间 |
 
 -----
 

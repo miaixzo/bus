@@ -65,7 +65,7 @@ public class SecretMasker {
         if (entry == null) {
             return null;
         }
-        Item copy = Item.builder().namespace_id(entry.getNamespace_id()).id(entry.getId()).type(entry.getType())
+        Item copy = Item.builder().space_id(entry.getSpace_id()).id(entry.getId()).type(entry.getType())
                 .status(entry.getStatus()).creator(entry.getCreator()).created(entry.getCreated())
                 .modifier(entry.getModifier()).modified(entry.getModified())
                 .profile_ids(ItemBindingProjection.normalizedProfileIds(entry))
@@ -93,8 +93,8 @@ public class SecretMasker {
         if (revision == null) {
             return null;
         }
-        ItemRevision copy = ItemRevision.builder().item_id(revision.getItem_id())
-                .namespace_id(revision.getNamespace_id()).group(revision.getGroup()).data_id(revision.getData_id())
+        ItemRevision copy = ItemRevision.builder().item_id(revision.getItem_id()).space_id(revision.getSpace_id())
+                .group(revision.getGroup()).data_id(revision.getData_id())
                 .profile_ids(ItemBindingProjection.normalizedProfileIds(revision))
                 .app_ids(ItemBindingProjection.normalizedAppIds(revision)).content(revision.getContent())
                 .source(revision.getSource()).spec(revision.getSpec()).extension(revision.getExtension())

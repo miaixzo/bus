@@ -69,7 +69,7 @@ public class RestQualifierStrategy extends QualifierStrategy {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
             Keying.RegistrySpec requestRoute = route(exchange, context);
-            String namespace = requestRoute.namespacePart();
+            String space = requestRoute.spacePart();
             String type = requestRoute.typeKeyPart();
             String appId = requestRoute.appIdPart();
             String method = requestRoute.methodPart();
@@ -80,9 +80,9 @@ public class RestQualifierStrategy extends QualifierStrategy {
                 Logger.warn(
                         false,
                         "Vortex",
-                        "REST asset not found: strategy=rest-qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}",
+                        "REST asset not found: strategy=rest-qualifier, clientIp={}, space={}, type={}, appId={}, method={}, version={}, verb={}",
                         context.getX_request_ip(),
-                        namespace,
+                        space,
                         type,
                         appId,
                         method,
@@ -95,9 +95,9 @@ public class RestQualifierStrategy extends QualifierStrategy {
                 Logger.info(
                         true,
                         "Vortex",
-                        "REST asset resolved: strategy=rest-qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, signing={}, mode={}, host={}, port={}, path={}, url={}",
+                        "REST asset resolved: strategy=rest-qualifier, clientIp={}, space={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, signing={}, mode={}, host={}, port={}, path={}, url={}",
                         context.getX_request_ip(),
-                        assets.getNamespace_id(),
+                        assets.getSpace_id(),
                         assets.getType(),
                         assets.getApp_id(),
                         assets.getMethod(),
@@ -119,9 +119,9 @@ public class RestQualifierStrategy extends QualifierStrategy {
                             () -> Logger.info(
                                     true,
                                     "Vortex",
-                                    "REST qualifier completed: strategy=rest-qualifier, clientIp={}, namespace={}, type={}, appId={}, method={}, version={}",
+                                    "REST qualifier completed: strategy=rest-qualifier, clientIp={}, space={}, type={}, appId={}, method={}, version={}",
                                     context.getX_request_ip(),
-                                    namespace,
+                                    space,
                                     type,
                                     appId,
                                     method,

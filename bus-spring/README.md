@@ -24,6 +24,7 @@ implementations provided here.
 ## Dependency
 
 ```xml
+
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-spring</artifactId>
@@ -99,8 +100,11 @@ redacted diagnostics. This makes the snapshot suitable for bounded asynchronous 
 ```java
 ContextState state = contextBuilder.capture();
 
-try (ContextScope ignored = contextBuilder.install(state)) {
-    operation.run();
+try(
+ContextScope ignored = contextBuilder.install(state)){
+        operation.
+
+run();
 }
 ```
 
@@ -110,7 +114,9 @@ Closing the scope restores the worker thread's previous state, including when th
 
 ```java
 Runnable decorated = contextDecorator.decorate(() -> service.process(command));
-executor.execute(decorated);
+executor.
+
+execute(decorated);
 ```
 
 `ContextDecorator` captures at decoration time, installs before execution, and restores afterward. With
@@ -162,16 +168,20 @@ String applicationName = springBuilder.getApplicationName();
 String profile = springBuilder.getActiveProfile();
 String endpoint = springBuilder.replacePlaceholders("${service.endpoint}");
 
-if (springBuilder.isProdMode()) {
-    // production-specific application behavior
-}
+if(springBuilder.
+
+isProdMode()){
+        // production-specific application behavior
+        }
 ```
 
 ### Registration
 
 ```java
-springBuilder.registerBeanDefinition("orderValidator", OrderValidator.class);
-springBuilder.registerSingleton("clock", Clock.class, Clock.systemUTC());
+springBuilder.registerBeanDefinition("orderValidator",OrderValidator .class);
+springBuilder.
+
+registerSingleton("clock",Clock .class, Clock.systemUTC());
 ```
 
 Mutation APIs are intended for infrastructure that owns the Bean lifecycle. Business code should prefer constructor

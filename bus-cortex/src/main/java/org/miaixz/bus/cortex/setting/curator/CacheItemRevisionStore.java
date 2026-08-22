@@ -94,7 +94,7 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
     /**
      * Finds one {@code setting.item.revision} snapshot by its logical revision key.
      *
-     * @param namespace  namespace
+     * @param space      space
      * @param group      setting group
      * @param data_id    setting data identifier
      * @param profile    optional profile
@@ -102,8 +102,8 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
      * @return matching revision or {@code null}
      */
     @Override
-    public ItemRevision find(String namespace, String group, String data_id, String profile, String revisionNo) {
-        Object raw = cacheX.read(revisionKey(namespace, group, data_id, profile, revisionNo));
+    public ItemRevision find(String space, String group, String data_id, String profile, String revisionNo) {
+        Object raw = cacheX.read(revisionKey(space, group, data_id, profile, revisionNo));
         if (raw instanceof String json) {
             return JsonKit.toPojo(json, ItemRevision.class);
         }
@@ -113,17 +113,17 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
     /**
      * Deletes one {@code setting.item.revision} snapshot from the backing cache.
      *
-     * @param namespace  namespace
+     * @param space      space
      * @param group      setting group
      * @param data_id    setting data identifier
      * @param profile    optional profile
      * @param revisionNo revision number
      */
     @Override
-    public ItemRevision delete(String namespace, String group, String data_id, String profile, String revisionNo) {
-        ItemRevision revision = find(namespace, group, data_id, profile, revisionNo);
+    public ItemRevision delete(String space, String group, String data_id, String profile, String revisionNo) {
+        ItemRevision revision = find(space, group, data_id, profile, revisionNo);
         if (revision == null) {
-            cacheX.remove(revisionKey(namespace, group, data_id, profile, revisionNo));
+            cacheX.remove(revisionKey(space, group, data_id, profile, revisionNo));
             return null;
         }
         cacheX.remove(revisionKeys(revision).toArray(String[]::new));
@@ -133,15 +133,15 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
     /**
      * Queries all {@code setting.item.revision} snapshots for one logical setting entry.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
      * @return revisions ordered from newest to oldest
      */
     @Override
-    public List<ItemRevision> query(String namespace, String group, String data_id, String profile) {
-        Map<String, Object> entries = cacheX.scan(revisionPrefix(namespace, group, data_id, profile));
+    public List<ItemRevision> query(String space, String group, String data_id, String profile) {
+        Map<String, Object> entries = cacheX.scan(revisionPrefix(space, group, data_id, profile));
         List<ItemRevision> result = new ArrayList<>();
         for (Object value : entries.values()) {
             if (value instanceof String json) {
@@ -160,18 +160,18 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
     /**
      * Retains only the most recent revision snapshots for one logical setting entry.
      *
-     * @param namespace    namespace
+     * @param space        space
      * @param group        setting group
      * @param data_id      setting data identifier
      * @param profile      optional profile
      * @param maxRevisions maximum revisions to retain
      */
     @Override
-    public void retainLatest(String namespace, String group, String data_id, String profile, int maxRevisions) {
+    public void retainLatest(String space, String group, String data_id, String profile, int maxRevisions) {
         if (maxRevisions <= 0) {
             return;
         }
-        List<ItemRevision> revisions = query(namespace, group, data_id, profile);
+        List<ItemRevision> revisions = query(space, group, data_id, profile);
         if (revisions.size() <= maxRevisions) {
             return;
         }
@@ -187,7 +187,7 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
     /**
      * Persists rollback metadata on an existing revision snapshot.
      *
-     * @param namespace  namespace
+     * @param space      space
      * @param group      setting group
      * @param data_id    setting data identifier
      * @param profile    optional profile
@@ -197,13 +197,13 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
      */
     @Override
     public ItemRevision markRollback(
-            String namespace,
+            String space,
             String group,
             String data_id,
             String profile,
             String revisionNo,
             String revert) {
-        ItemRevision revision = find(namespace, group, data_id, profile, revisionNo);
+        ItemRevision revision = find(space, group, data_id, profile, revisionNo);
         if (revision == null) {
             return null;
         }
@@ -242,7 +242,7 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
         if (profiles == null || profiles.isEmpty()) {
             return List.of(
                     revisionKey(
-                            revision.getNamespace_id(),
+                            revision.getSpace_id(),
                             revision.getGroup(),
                             revision.getData_id(),
                             null,
@@ -251,7 +251,7 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
         List<String> keys = new ArrayList<>(profiles.size());
         for (String profile : profiles) {
             String key = revisionKey(
-                    revision.getNamespace_id(),
+                    revision.getSpace_id(),
                     revision.getGroup(),
                     revision.getData_id(),
                     profile,
@@ -266,28 +266,28 @@ public class CacheItemRevisionStore implements ItemRevisionStore {
     /**
      * Builds one revision cache key.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param dataId    setting data identifier
-     * @param profile   optional profile
-     * @param revision  revision number
+     * @param space    space
+     * @param group    setting group
+     * @param dataId   setting data identifier
+     * @param profile  optional profile
+     * @param revision revision number
      * @return revision cache key
      */
-    private String revisionKey(String namespace, String group, String dataId, String profile, String revision) {
-        return keying.key(SettingSpec.revision(namespace, group, dataId, profile, revision));
+    private String revisionKey(String space, String group, String dataId, String profile, String revision) {
+        return keying.key(SettingSpec.revision(space, group, dataId, profile, revision));
     }
 
     /**
      * Builds the revision scan prefix.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param dataId    setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param dataId  setting data identifier
+     * @param profile optional profile
      * @return revision prefix
      */
-    private String revisionPrefix(String namespace, String group, String dataId, String profile) {
-        return keying.prefix(SettingSpec.revision(namespace, group, dataId, profile, null));
+    private String revisionPrefix(String space, String group, String dataId, String profile) {
+        return keying.prefix(SettingSpec.revision(space, group, dataId, profile, null));
     }
 
 }

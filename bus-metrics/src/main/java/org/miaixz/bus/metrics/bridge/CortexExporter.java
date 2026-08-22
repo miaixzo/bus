@@ -36,7 +36,7 @@ import org.miaixz.bus.metrics.nimble.indigenous.NativeProvider;
 /**
  * Periodically pushes local metric snapshots to bus-cortex via CacheX.
  * <p>
- * Key pattern: {@code metrics:{namespace}:{serviceId}:{metricName}} cortex can then aggregate across instances for
+ * Key pattern: {@code metrics:{space}:{serviceId}:{metricName}} cortex can then aggregate across instances for
  * cluster-level /metricz.
  *
  * @author Kimi Liu
@@ -49,9 +49,9 @@ public class CortexExporter {
     private final CacheX<String, String> store;
 
     /**
-     * Cortex namespace used as part of the cache key.
+     * Cortex space used as part of the cache key.
      */
-    private final String namespace;
+    private final String space;
 
     /**
      * Service identifier included in the cache key.
@@ -72,13 +72,13 @@ public class CortexExporter {
      * Creates a CortexExporter that pushes metric snapshots to the given CacheX store.
      *
      * @param store           CacheX store used to write metric snapshots
-     * @param namespace       cortex namespace for key scoping
+     * @param space           Cortex space used to scope cache keys
      * @param serviceId       service identifier included in the cache key
      * @param intervalSeconds push interval in seconds; also used as TTL multiplier base
      */
-    public CortexExporter(CacheX<String, String> store, String namespace, String serviceId, int intervalSeconds) {
+    public CortexExporter(CacheX<String, String> store, String space, String serviceId, int intervalSeconds) {
         this.store = store;
-        this.namespace = namespace;
+        this.space = space;
         this.serviceId = serviceId;
         this.intervalSeconds = intervalSeconds;
         this.scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
@@ -96,9 +96,9 @@ public class CortexExporter {
         Logger.info(
                 true,
                 "Metrics",
-                "CortexExporter started, interval={}s, ns={}, svc={}",
+                "CortexExporter started, interval={}s, space={}, svc={}",
                 intervalSeconds,
-                namespace,
+                space,
                 serviceId);
     }
 
@@ -130,8 +130,7 @@ public class CortexExporter {
             int timerCount = 0;
             for (Timer timer : provider.timers()) {
                 TimerSnapshot snap = timer.snapshot();
-                String key = Builder.CORTEX_KEY_PREFIX + namespace + Symbol.COLON + serviceId + Symbol.COLON
-                        + snap.name();
+                String key = Builder.CORTEX_KEY_PREFIX + space + Symbol.COLON + serviceId + Symbol.COLON + snap.name();
                 // Serialize as compact JSON-like string (no external lib)
                 String value = serializeSnapshot(snap);
                 store.write(key, value, intervalSeconds * Builder.CORTEX_TTL_MULTIPLIER * 1000L);

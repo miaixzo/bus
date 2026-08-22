@@ -69,9 +69,9 @@ public class InstanceStateHistory {
     private Long durationMs;
 
     /**
-     * Namespace of the affected instance.
+     * Space of the affected instance.
      */
-    private String namespace_id;
+    private String space_id;
 
     /**
      * Service method of the affected instance.

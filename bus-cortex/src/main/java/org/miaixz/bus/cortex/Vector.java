@@ -35,7 +35,7 @@ import org.miaixz.bus.cortex.builtin.Selector;
  * Shared cross-domain selector used by registry and setting scans.
  *
  * <p>
- * {@code Vector} is intentionally limited to common filtering concerns such as namespace, type, id, method/version,
+ * {@code Vector} is intentionally limited to common filtering concerns such as space, type, id, method/version,
  * labels/selectors, instance state, and pagination. Setting-only, admin-only, delivery-only, or debug semantics should
  * live in domain-specific scope types instead of expanding this model further.
  * </p>
@@ -186,13 +186,13 @@ public class Vector extends Nature {
         }
 
         /**
-         * Sets namespace.
+         * Sets space.
          *
-         * @param namespace_id query namespace
+         * @param space_id query space
          * @return current builder
          */
-        public Builder namespace_id(String namespace_id) {
-            vector.setNamespace_id(namespace_id);
+        public Builder space_id(String space_id) {
+            vector.setSpace_id(space_id);
             return this;
         }
 

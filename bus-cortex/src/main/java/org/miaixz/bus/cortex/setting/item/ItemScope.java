@@ -36,7 +36,7 @@ import org.miaixz.bus.cortex.builtin.Selector;
  * <p>
  * Scope flags that only make sense for setting export, rebuild, or admin scan flows should stay here instead of being
  * generalized back into {@link org.miaixz.bus.cortex.Vector}. The durable item identity remains
- * {@code namespace + group + data_id}; {@code profile_id} and {@code app_id} are delivery filters evaluated against
+ * {@code space + group + data_id}; {@code profile_id} and {@code app_id} are delivery filters evaluated against
  * aggregated binding sets loaded from {@code setting_item_binding}.
  * </p>
  *
@@ -55,9 +55,9 @@ public class ItemScope {
     }
 
     /**
-     * Namespace containing the target setting entries.
+     * Space containing the target setting entries.
      */
-    private String namespace_id;
+    private String space_id;
 
     /**
      * Setting group filter.

@@ -109,11 +109,11 @@ public class RegistryRefreshService {
         }
         if (criteria.getType() == null) {
             for (Type type : supportedTypes()) {
-                registry(type).evict(criteria.getNamespace_id(), criteria.getId());
+                registry(type).evict(criteria.getSpace_id(), criteria.getId());
             }
             return;
         }
-        registry(RegistryIdentity.type(criteria.getType())).evict(criteria.getNamespace_id(), criteria.getId());
+        registry(RegistryIdentity.type(criteria.getType())).evict(criteria.getSpace_id(), criteria.getId());
     }
 
     /**
@@ -138,11 +138,11 @@ public class RegistryRefreshService {
     private Assets refreshSingle(Vector criteria) {
         StoreBackedRegistry<? extends Assets> registry = registry(RegistryIdentity.type(criteria.getType()));
         if (StringKit.isNotEmpty(criteria.getId())) {
-            return registry.refresh(criteria.getNamespace_id(), criteria.getId());
+            return registry.refresh(criteria.getSpace_id(), criteria.getId());
         }
         if (StringKit.isNotEmpty(criteria.getMethod()) && StringKit.isNotEmpty(criteria.getVersion())) {
             return registry.refreshByMethodVersion(
-                    criteria.getNamespace_id(),
+                    criteria.getSpace_id(),
                     criteria.getApp_id(),
                     criteria.getMethod(),
                     criteria.getVersion());
@@ -171,7 +171,7 @@ public class RegistryRefreshService {
     private Vector vector(Vector scope) {
         Vector vector = new Vector();
         if (scope != null) {
-            vector.setNamespace_id(scope.getNamespace_id());
+            vector.setSpace_id(scope.getSpace_id());
             vector.setApp_id(scope.getApp_id());
             vector.setType(scope.getType());
             vector.setId(scope.getId());

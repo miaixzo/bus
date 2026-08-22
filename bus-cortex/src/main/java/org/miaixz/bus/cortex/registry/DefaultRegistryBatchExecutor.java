@@ -86,8 +86,7 @@ public class DefaultRegistryBatchExecutor implements RegistryBatchExecutor {
         for (Assets source : operation.getEntries()) {
             if (source == null) {
                 result.recordFailure(
-                        BatchResult.Failure
-                                .of(null, operation.getNamespace_id(), null, null, null, "Null batch entry"));
+                        BatchResult.Failure.of(null, operation.getSpace_id(), null, null, null, "Null batch entry"));
                 if (!operations.continueOnError(operation)) {
                     break;
                 }
@@ -105,7 +104,7 @@ public class DefaultRegistryBatchExecutor implements RegistryBatchExecutor {
                 result.recordFailure(
                         BatchResult.Failure.of(
                                 RegistryIdentity.type(entry),
-                                entry.getNamespace_id(),
+                                entry.getSpace_id(),
                                 entry.getId(),
                                 entry.getMethod(),
                                 entry.getVersion(),
@@ -197,11 +196,7 @@ public class DefaultRegistryBatchExecutor implements RegistryBatchExecutor {
                     result.recordSkip();
                     return;
                 }
-                operations.delete(
-                        RegistryIdentity.type(existing),
-                        existing.getNamespace_id(),
-                        existing.getId(),
-                        existing);
+                operations.delete(RegistryIdentity.type(existing), existing.getSpace_id(), existing.getId(), existing);
                 result.recordDelete();
             }
             case REGISTER, UPDATE, UPSERT -> {

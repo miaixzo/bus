@@ -42,43 +42,43 @@ public interface VersionStore {
     VersionRecord save(VersionRecord record);
 
     /**
-     * Finds a release record by namespace, version, and release track.
+     * Finds a release record by space, version, and release track.
      *
-     * @param namespace release namespace
-     * @param version   release version
-     * @param track     release track
+     * @param space   release space
+     * @param version release version
+     * @param track   release track
      * @return matching release record or {@code null}
      */
-    VersionRecord find(String namespace, String version, String track);
+    VersionRecord find(String space, String version, String track);
 
     /**
-     * Lists release records within a namespace and optional release track.
+     * Lists release records within a space and optional release track.
      *
-     * @param namespace release namespace
-     * @param track     release track, or {@code null} to list every track
+     * @param space release space
+     * @param track release track, or {@code null} to list every track
      * @return matching release records
      */
-    List<VersionRecord> list(String namespace, String track);
+    List<VersionRecord> list(String space, String track);
 
     /**
-     * Deletes a release record by namespace, version, and release track.
+     * Deletes a release record by space, version, and release track.
      *
-     * @param namespace release namespace
-     * @param version   release version
-     * @param track     release track
+     * @param space   release space
+     * @param version release version
+     * @param track   release track
      * @return deleted release record or {@code null}
      */
-    VersionRecord delete(String namespace, String version, String track);
+    VersionRecord delete(String space, String version, String track);
 
     /**
-     * Returns the current active release for a namespace and track.
+     * Returns the current active release for a space and track.
      *
-     * @param namespace release namespace
-     * @param track     release track
+     * @param space release space
+     * @param track release track
      * @return active release record or {@code null}
      */
-    default VersionRecord current(String namespace, String track) {
-        return list(namespace, ReleaseTrack.normalize(track)).stream()
+    default VersionRecord current(String space, String track) {
+        return list(space, ReleaseTrack.normalize(track)).stream()
                 .filter(record -> record.getVersionStatus() == VersionStatus.ACTIVE)
                 .max(VersionStore.currentComparator()).orElse(null);
     }
@@ -86,18 +86,18 @@ public interface VersionStore {
     /**
      * Marks one release version as current and deprecates the previous active version.
      *
-     * @param namespace release namespace
-     * @param track     release track
-     * @param version   release version
+     * @param space   release space
+     * @param track   release track
+     * @param version release version
      * @return persisted current release or {@code null}
      */
-    default VersionRecord setCurrent(String namespace, String track, String version) {
+    default VersionRecord setCurrent(String space, String track, String version) {
         String normalizedTrack = ReleaseTrack.normalize(track);
-        VersionRecord target = find(namespace, version, normalizedTrack);
+        VersionRecord target = find(space, version, normalizedTrack);
         if (target == null) {
             return null;
         }
-        for (VersionRecord candidate : list(namespace, normalizedTrack)) {
+        for (VersionRecord candidate : list(space, normalizedTrack)) {
             if (candidate != null && !sameRelease(candidate, target)
                     && candidate.getVersionStatus() == VersionStatus.ACTIVE) {
                 candidate.setVersionStatus(VersionStatus.DEPRECATED);
@@ -115,14 +115,14 @@ public interface VersionStore {
     /**
      * Promotes a release from one track to another and makes it current on the target track.
      *
-     * @param namespace   release namespace
+     * @param space       release space
      * @param version     release version
      * @param sourceTrack source release track
      * @param targetTrack target release track
      * @return promoted release record or {@code null}
      */
-    default VersionRecord promote(String namespace, String version, String sourceTrack, String targetTrack) {
-        VersionRecord record = find(namespace, version, sourceTrack);
+    default VersionRecord promote(String space, String version, String sourceTrack, String targetTrack) {
+        VersionRecord record = find(space, version, sourceTrack);
         if (record == null) {
             return null;
         }
@@ -130,19 +130,19 @@ public interface VersionStore {
         record.setVersionStatus(VersionStatus.ACTIVE);
         record.setPublished(System.currentTimeMillis());
         save(record);
-        return setCurrent(namespace, record.getTrack(), record.getVersion());
+        return setCurrent(space, record.getTrack(), record.getVersion());
     }
 
     /**
      * Marks one release as deprecated.
      *
-     * @param namespace release namespace
-     * @param version   release version
-     * @param track     release track
+     * @param space   release space
+     * @param version release version
+     * @param track   release track
      * @return persisted deprecated release or {@code null}
      */
-    default VersionRecord deprecate(String namespace, String version, String track) {
-        VersionRecord record = find(namespace, version, track);
+    default VersionRecord deprecate(String space, String version, String track) {
+        VersionRecord record = find(space, version, track);
         if (record == null) {
             return null;
         }

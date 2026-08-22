@@ -73,12 +73,12 @@ public class ItemNormalizer {
         if (prepared.getExtension() != null && !(prepared.getExtension() instanceof LinkedHashMap<?, ?>)) {
             ItemBindingProjection.copyExtensionInto(prepared, new LinkedHashMap<>(prepared.getExtension()));
         }
-        prepared.setNamespace_id(CortexIdentity.namespace(prepared.getNamespace_id()));
+        prepared.setSpace_id(CortexIdentity.space(prepared.getSpace_id()));
         prepared.setType(Type.ITEM.key());
         Keying<SettingSpec> resolvedKeying = keying == null ? SettingGenerator.INSTANCE : keying;
         prepared.setId(
-                resolvedKeying.key(
-                        SettingSpec.itemId(prepared.getNamespace_id(), prepared.getGroup(), prepared.getData_id())));
+                resolvedKeying
+                        .key(SettingSpec.itemId(prepared.getSpace_id(), prepared.getGroup(), prepared.getData_id())));
         if (prepared.getSource() == null) {
             prepared.setSource(INLINE_SOURCE);
         }
@@ -113,7 +113,7 @@ public class ItemNormalizer {
         Map<String, Object> extension = entry.getExtension();
         return Integer.toHexString(
                 Objects.hash(
-                        entry.getNamespace_id(),
+                        entry.getSpace_id(),
                         entry.getGroup(),
                         entry.getData_id(),
                         ItemBindingProjection.normalizedAppIds(entry),

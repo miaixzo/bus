@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.setting.namespace;
+package org.miaixz.bus.cortex.setting.space;
 
 import java.util.List;
 import java.util.Map;
@@ -26,32 +26,32 @@ import org.miaixz.bus.cortex.Suite;
 import org.miaixz.bus.cortex.Trait;
 
 /**
- * Directory contract for {@code setting.namespace}.
+ * Directory contract for {@code setting.space}.
  *
  * @author Kimi Liu
  */
-public interface NamespaceStore {
+public interface SpaceStore {
 
     /**
-     * Saves one namespace entry.
+     * Saves one space entry.
      *
-     * @param entry namespace entry
-     * @return stored namespace entry
+     * @param entry space entry
+     * @return stored space entry
      */
-    Namespace save(Namespace entry);
+    Space save(Space entry);
 
     /**
-     * Saves a batch of namespace entries.
+     * Saves a batch of space entries.
      *
-     * @param entries namespace entries
+     * @param entries space entries
      * @return stored snapshots
      */
-    default List<Namespace> saveAll(List<Namespace> entries) {
+    default List<Space> saveAll(List<Space> entries) {
         if (entries == null || entries.isEmpty()) {
             return List.of();
         }
-        java.util.ArrayList<Namespace> result = new java.util.ArrayList<>(entries.size());
-        for (Namespace entry : entries) {
+        java.util.ArrayList<Space> result = new java.util.ArrayList<>(entries.size());
+        for (Space entry : entries) {
             if (entry != null) {
                 result.add(save(entry));
             }
@@ -60,31 +60,31 @@ public interface NamespaceStore {
     }
 
     /**
-     * Finds one namespace entry.
+     * Finds one space entry.
      *
-     * @param id namespace identifier
-     * @return matching namespace entry or {@code null}
+     * @param id space identifier
+     * @return matching space entry or {@code null}
      */
-    default Namespace find(String id) {
+    default Space find(String id) {
         return null;
     }
 
     /**
-     * Lists all namespace entries.
+     * Lists all space entries.
      *
-     * @return namespace entries
+     * @return space entries
      */
-    default List<Namespace> query() {
+    default List<Space> query() {
         return List.of();
     }
 
     /**
-     * Deletes one namespace entry.
+     * Deletes one space entry.
      *
-     * @param id namespace identifier
+     * @param id space identifier
      * @return deleted snapshot or {@code null} when absent
      */
-    default Namespace delete(String id) {
+    default Space delete(String id) {
         return null;
     }
 

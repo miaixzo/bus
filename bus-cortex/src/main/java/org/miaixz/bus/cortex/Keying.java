@@ -83,12 +83,12 @@ public interface Keying<S> {
      * <li>{@link #ROUTE}: runtime route lookup keys and their ordered fallback chain</li>
      * </ul>
      * <p>
-     * Optional dimensions such as {@code namespace}, {@code type}, and {@code appId} are preserved as supplied.
-     * Route-side generation intentionally does not auto-fill these dimensions with persistence defaults.
+     * Optional dimensions such as {@code space}, {@code type}, and {@code appId} are preserved as supplied. Route-side
+     * generation intentionally does not auto-fill these dimensions with persistence defaults.
      * </p>
      *
      * @param mode        registry key mode
-     * @param namespace   namespace
+     * @param space       space
      * @param type        registry type
      * @param appId       application identifier
      * @param id          logical entry identifier
@@ -97,7 +97,7 @@ public interface Keying<S> {
      * @param verb        numeric verb code
      * @param fingerprint runtime instance fingerprint
      */
-    record RegistrySpec(int mode, String namespace, Type type, String appId, String id, String method, String version,
+    record RegistrySpec(int mode, String space, Type type, String appId, String id, String method, String version,
             Integer verb, String fingerprint) {
 
         /**
@@ -118,19 +118,19 @@ public interface Keying<S> {
         /**
          * Creates one registry-entry specification.
          *
-         * @param namespace namespace
-         * @param type      registry type
-         * @param id        logical entry identifier
+         * @param space space
+         * @param type  registry type
+         * @param id    logical entry identifier
          * @return registry-entry specification
          */
-        public static RegistrySpec entry(String namespace, Type type, String id) {
-            return new RegistrySpec(ENTRY, namespace, type, null, id, null, null, null, null);
+        public static RegistrySpec entry(String space, Type type, String id) {
+            return new RegistrySpec(ENTRY, space, type, null, id, null, null, null, null);
         }
 
         /**
          * Creates one runtime-instance specification.
          *
-         * @param namespace   namespace
+         * @param space       space
          * @param appId       application identifier
          * @param method      route method
          * @param version     route version
@@ -138,33 +138,33 @@ public interface Keying<S> {
          * @return runtime-instance specification
          */
         public static RegistrySpec instance(
-                String namespace,
+                String space,
                 String appId,
                 String method,
                 String version,
                 String fingerprint) {
-            return new RegistrySpec(INSTANCE, namespace, null, appId, null, method, version, null, fingerprint);
+            return new RegistrySpec(INSTANCE, space, null, appId, null, method, version, null, fingerprint);
         }
 
         /**
          * Creates one runtime-route specification.
          *
-         * @param namespace namespace, optional
-         * @param type      registry type, optional
-         * @param appId     application identifier, optional
-         * @param method    route method
-         * @param version   route version
-         * @param verb      numeric verb code
+         * @param space   space, optional
+         * @param type    registry type, optional
+         * @param appId   application identifier, optional
+         * @param method  route method
+         * @param version route version
+         * @param verb    numeric verb code
          * @return runtime-route specification
          */
         public static RegistrySpec route(
-                String namespace,
+                String space,
                 Type type,
                 String appId,
                 String method,
                 String version,
                 Integer verb) {
-            return new RegistrySpec(ROUTE, namespace, type, appId, null, method, version, verb, null);
+            return new RegistrySpec(ROUTE, space, type, appId, null, method, version, verb, null);
         }
 
         /**
@@ -180,7 +180,7 @@ public interface Keying<S> {
             Type resolvedType = asset.getType() == null ? null
                     : Type.tryFromKey(asset.getType()).filter(Type::isRegistry).orElse(null);
             return route(
-                    asset.getNamespace_id(),
+                    asset.getSpace_id(),
                     resolvedType,
                     asset.getApp_id(),
                     asset.getMethod(),
@@ -189,12 +189,12 @@ public interface Keying<S> {
         }
 
         /**
-         * Returns the optional namespace part without introducing route-side defaults.
+         * Returns the optional space part without introducing route-side defaults.
          *
-         * @return namespace part or {@code null}
+         * @return space part or {@code null}
          */
-        public String namespacePart() {
-            return namespace == null || namespace.isBlank() ? null : namespace.trim();
+        public String spacePart() {
+            return space == null || space.isBlank() ? null : space.trim();
         }
 
         /**
@@ -289,15 +289,15 @@ public interface Keying<S> {
      * history keys.
      * </p>
      *
-     * @param mode      setting key mode
-     * @param namespace namespace
-     * @param group     group name
-     * @param dataId    data identifier
-     * @param profile   runtime profile
-     * @param revision  revision number
+     * @param mode     setting key mode
+     * @param space    space
+     * @param group    group name
+     * @param dataId   data identifier
+     * @param profile  runtime profile
+     * @param revision revision number
      * @author Kimi Liu
      */
-    record SettingSpec(int mode, String namespace, String group, String dataId, String profile, String revision) {
+    record SettingSpec(int mode, String space, String group, String dataId, String profile, String revision) {
 
         /**
          * Mode flag for the logical item identifier.
@@ -342,109 +342,104 @@ public interface Keying<S> {
         /**
          * Creates one logical-item specification.
          *
-         * @param namespace namespace
-         * @param group     group
-         * @param dataId    data identifier
+         * @param space  space
+         * @param group  group
+         * @param dataId data identifier
          * @return item-id specification
          */
-        public static SettingSpec itemId(String namespace, String group, String dataId) {
-            return new SettingSpec(ITEM_ID, namespace, group, dataId, null, null);
+        public static SettingSpec itemId(String space, String group, String dataId) {
+            return new SettingSpec(ITEM_ID, space, group, dataId, null, null);
         }
 
         /**
          * Creates one profile-scope specification.
          *
-         * @param namespace namespace
-         * @param group     group
-         * @param dataId    data identifier
-         * @param profile   optional profile
+         * @param space   space
+         * @param group   group
+         * @param dataId  data identifier
+         * @param profile optional profile
          * @return profile-scope specification
          */
-        public static SettingSpec profileScope(String namespace, String group, String dataId, String profile) {
-            return new SettingSpec(PROFILE_SCOPE, namespace, group, dataId, profile, null);
+        public static SettingSpec profileScope(String space, String group, String dataId, String profile) {
+            return new SettingSpec(PROFILE_SCOPE, space, group, dataId, profile, null);
         }
 
         /**
          * Creates one watch-key specification.
          *
-         * @param namespace namespace
-         * @param group     group
-         * @param dataId    data identifier
-         * @param profile   optional profile
+         * @param space   space
+         * @param group   group
+         * @param dataId  data identifier
+         * @param profile optional profile
          * @return watch-key specification
          */
-        public static SettingSpec watch(String namespace, String group, String dataId, String profile) {
-            return new SettingSpec(WATCH, namespace, group, dataId, profile, null);
+        public static SettingSpec watch(String space, String group, String dataId, String profile) {
+            return new SettingSpec(WATCH, space, group, dataId, profile, null);
         }
 
         /**
          * Creates one overlay-key specification.
          *
-         * @param namespace namespace
-         * @param group     group
-         * @param dataId    data identifier
-         * @param profile   optional profile
+         * @param space   space
+         * @param group   group
+         * @param dataId  data identifier
+         * @param profile optional profile
          * @return overlay-key specification
          */
-        public static SettingSpec overlay(String namespace, String group, String dataId, String profile) {
-            return new SettingSpec(OVERLAY, namespace, group, dataId, profile, null);
+        public static SettingSpec overlay(String space, String group, String dataId, String profile) {
+            return new SettingSpec(OVERLAY, space, group, dataId, profile, null);
         }
 
         /**
          * Creates one export-key specification.
          *
-         * @param namespace namespace
-         * @param group     group
-         * @param dataId    data identifier
-         * @param profile   optional profile
+         * @param space   space
+         * @param group   group
+         * @param dataId  data identifier
+         * @param profile optional profile
          * @return export-key specification
          */
-        public static SettingSpec export(String namespace, String group, String dataId, String profile) {
-            return new SettingSpec(EXPORT, namespace, group, dataId, profile, null);
+        public static SettingSpec export(String space, String group, String dataId, String profile) {
+            return new SettingSpec(EXPORT, space, group, dataId, profile, null);
         }
 
         /**
          * Creates one current-state entry specification.
          *
-         * @param namespace namespace
-         * @param group     group
-         * @param dataId    data identifier
-         * @param profile   optional profile
+         * @param space   space
+         * @param group   group
+         * @param dataId  data identifier
+         * @param profile optional profile
          * @return current-state entry specification
          */
-        public static SettingSpec entry(String namespace, String group, String dataId, String profile) {
-            return new SettingSpec(ENTRY, namespace, group, dataId, profile, null);
+        public static SettingSpec entry(String space, String group, String dataId, String profile) {
+            return new SettingSpec(ENTRY, space, group, dataId, profile, null);
         }
 
         /**
          * Creates one revision specification.
          *
-         * @param namespace namespace
-         * @param group     group
-         * @param dataId    data identifier
-         * @param profile   optional profile
-         * @param revision  revision number
+         * @param space    space
+         * @param group    group
+         * @param dataId   data identifier
+         * @param profile  optional profile
+         * @param revision revision number
          * @return revision specification
          */
-        public static SettingSpec revision(
-                String namespace,
-                String group,
-                String dataId,
-                String profile,
-                String revision) {
-            return new SettingSpec(REVISION, namespace, group, dataId, profile, revision);
+        public static SettingSpec revision(String space, String group, String dataId, String profile, String revision) {
+            return new SettingSpec(REVISION, space, group, dataId, profile, revision);
         }
 
         /**
          * Creates one revision-sequence specification.
          *
-         * @param namespace namespace
-         * @param group     group
-         * @param dataId    data identifier
+         * @param space  space
+         * @param group  group
+         * @param dataId data identifier
          * @return revision-sequence specification
          */
-        public static SettingSpec sequence(String namespace, String group, String dataId) {
-            return new SettingSpec(SEQUENCE, namespace, group, dataId, null, null);
+        public static SettingSpec sequence(String space, String group, String dataId) {
+            return new SettingSpec(SEQUENCE, space, group, dataId, null, null);
         }
 
         /**

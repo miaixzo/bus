@@ -63,57 +63,51 @@ public interface ItemRevisionStore {
      * Deletes one concrete revision snapshot. Implementations should make this operation idempotent so callers can use
      * it as publish compensation after a partially failed current-state update.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
-     * @param revision  revision number
+     * @param space    space
+     * @param group    setting group
+     * @param data_id  setting data identifier
+     * @param profile  optional profile
+     * @param revision revision number
      * @return deleted revision snapshot, or {@code null} when absent
      */
-    ItemRevision delete(String namespace, String group, String data_id, String profile, String revision);
+    ItemRevision delete(String space, String group, String data_id, String profile, String revision);
 
     /**
      * Finds one concrete revision.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
-     * @param revision  revision number
+     * @param space    space
+     * @param group    setting group
+     * @param data_id  setting data identifier
+     * @param profile  optional profile
+     * @param revision revision number
      * @return matching revision or {@code null}
      */
-    ItemRevision find(String namespace, String group, String data_id, String profile, String revision);
+    ItemRevision find(String space, String group, String data_id, String profile, String revision);
 
     /**
      * Queries all known {@code setting.item.revision} snapshots for one entry.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
      * @return revisions ordered from newest to oldest
      */
-    List<ItemRevision> query(String namespace, String group, String data_id, String profile);
+    List<ItemRevision> query(String space, String group, String data_id, String profile);
 
     /**
      * Lists a page of revisions.
      *
-     * @param namespace namespace
-     * @param group     group
-     * @param data_id   data_id
-     * @param profile   profile
-     * @param offset    offset
-     * @param limit     page size
+     * @param space   space
+     * @param group   group
+     * @param data_id data_id
+     * @param profile profile
+     * @param offset  offset
+     * @param limit   page size
      * @return paged revisions
      */
-    default List<ItemRevision> list(
-            String namespace,
-            String group,
-            String data_id,
-            String profile,
-            int offset,
-            int limit) {
-        List<ItemRevision> revisions = query(namespace, group, data_id, profile);
+    default List<ItemRevision> list(String space, String group, String data_id, String profile, int offset, int limit) {
+        List<ItemRevision> revisions = query(space, group, data_id, profile);
         if (revisions == null || revisions.isEmpty()) {
             return List.of();
         }
@@ -128,13 +122,13 @@ public interface ItemRevisionStore {
     /**
      * Trims history so that only the latest revisions remain.
      *
-     * @param namespace    namespace
+     * @param space        space
      * @param group        setting group
      * @param data_id      setting data identifier
      * @param profile      optional profile
      * @param maxRevisions max revisions to keep
      */
-    void retainLatest(String namespace, String group, String data_id, String profile, int maxRevisions);
+    void retainLatest(String space, String group, String data_id, String profile, int maxRevisions);
 
     /**
      * Marks one revision as a rollback of another revision and persists the updated metadata.
@@ -144,22 +138,22 @@ public interface ItemRevisionStore {
      * publish succeeds. Implementations must therefore update the already-written revision snapshot atomically when
      * their backing storage supports it, or fail without mutating state when it does not.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
-     * @param revision  revision number to update
-     * @param revert    source revision number
+     * @param space    space
+     * @param group    setting group
+     * @param data_id  setting data identifier
+     * @param profile  optional profile
+     * @param revision revision number to update
+     * @param revert   source revision number
      * @return updated revision, or {@code null} when the revision does not exist
      */
     default ItemRevision markRollback(
-            String namespace,
+            String space,
             String group,
             String data_id,
             String profile,
             String revision,
             String revert) {
-        ItemRevision snapshot = find(namespace, group, data_id, profile, revision);
+        ItemRevision snapshot = find(space, group, data_id, profile, revision);
         if (snapshot == null) {
             return null;
         }
@@ -170,14 +164,14 @@ public interface ItemRevisionStore {
     /**
      * Returns the latest revision for one setting entry.
      *
-     * @param namespace namespace
-     * @param group     group
-     * @param data_id   data_id
-     * @param profile   profile
+     * @param space   space
+     * @param group   group
+     * @param data_id data_id
+     * @param profile profile
      * @return latest revision or {@code null}
      */
-    default ItemRevision latest(String namespace, String group, String data_id, String profile) {
-        List<ItemRevision> revisions = list(namespace, group, data_id, profile, 0, 1);
+    default ItemRevision latest(String space, String group, String data_id, String profile) {
+        List<ItemRevision> revisions = list(space, group, data_id, profile, 0, 1);
         return revisions.isEmpty() ? null : revisions.getFirst();
     }
 

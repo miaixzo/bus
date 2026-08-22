@@ -48,9 +48,9 @@ import reactor.core.publisher.Mono;
  * lookup.
  * </p>
  *
+ * @author Kimi Liu
  * @see AbstractRegistry
  * @see Assets
- * @author Kimi Liu
  */
 public class AssetsRegistry extends AbstractRegistry<Assets> {
 
@@ -253,65 +253,65 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
     /**
      * Resolves one route asset using all supported runtime dimensions.
      *
-     * @param type      route type, optional
-     * @param namespace route namespace, optional
-     * @param appId     application identifier, optional
-     * @param method    route method
-     * @param version   route version
-     * @param verb      numeric verb code
+     * @param type    route type, optional
+     * @param space   route space, optional
+     * @param appId   application identifier, optional
+     * @param method  route method
+     * @param version route version
+     * @param verb    numeric verb code
      * @return matching asset or {@code null}
      */
-    public Assets get(String namespace, Type type, String appId, String method, String version, Integer verb) {
-        RouteMatch match = get(Keying.RegistrySpec.route(namespace, type, appId, method, version, verb));
+    public Assets get(String space, Type type, String appId, String method, String version, Integer verb) {
+        RouteMatch match = get(Keying.RegistrySpec.route(space, type, appId, method, version, verb));
         return match == null ? null : match.assets();
     }
 
     /**
      * Resolves one route asset without application scope.
      *
-     * @param type      route type, optional
-     * @param namespace route namespace, optional
-     * @param method    route method
-     * @param version   route version
-     * @param verb      numeric verb code
+     * @param type    route type, optional
+     * @param space   route space, optional
+     * @param method  route method
+     * @param version route version
+     * @param verb    numeric verb code
      * @return matching asset or {@code null}
      */
-    public Assets get(String namespace, Type type, String method, String version, Integer verb) {
-        RouteMatch match = get(Keying.RegistrySpec.route(namespace, type, null, method, version, verb));
+    public Assets get(String space, Type type, String method, String version, Integer verb) {
+        RouteMatch match = get(Keying.RegistrySpec.route(space, type, null, method, version, verb));
         return match == null ? null : match.assets();
     }
 
     /**
-     * Resolves one route asset using namespace and application scope only.
+     * Resolves one route asset using space and application scope only.
      *
-     * @param namespace route namespace, optional
-     * @param appId     application identifier, optional
-     * @param method    route method
-     * @param version   route version
-     * @param verb      numeric verb code
+     * @param space   route space, optional
+     * @param appId   application identifier, optional
+     * @param method  route method
+     * @param version route version
+     * @param verb    numeric verb code
      * @return matching asset or {@code null}
      */
-    public Assets get(String namespace, String appId, String method, String version, Integer verb) {
-        RouteMatch match = get(Keying.RegistrySpec.route(namespace, null, appId, method, version, verb));
+    public Assets get(String space, String appId, String method, String version, Integer verb) {
+        RouteMatch match = get(Keying.RegistrySpec.route(space, null, appId, method, version, verb));
         return match == null ? null : match.assets();
     }
 
     /**
      * Resolves one route asset without application or type scope.
      *
-     * @param namespace route namespace, optional
-     * @param method    route method
-     * @param version   route version
-     * @param verb      numeric verb code
+     * @param space   route space, optional
+     * @param method  route method
+     * @param version route version
+     * @param verb    numeric verb code
      * @return matching asset or {@code null}
      */
-    public Assets get(String namespace, String method, String version, Integer verb) {
-        RouteMatch match = get(Keying.RegistrySpec.route(namespace, null, null, method, version, verb));
+    public Assets get(String space, String method, String version, Integer verb) {
+        RouteMatch match = get(Keying.RegistrySpec.route(space, null, null, method, version, verb));
         return match == null ? null : match.assets();
     }
 
     /**
-     * Resolves one route asset from method, version, and verb without requiring callers to know namespace or type.
+     * Resolves one route asset from method, version, and verb without requiring callers to know space or type.
      *
      * @param method  route method
      * @param version route version
@@ -421,9 +421,9 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
                 Logger.warn(
                         false,
                         "Vortex",
-                        "Route prefix '{}' is ambiguous for namespace={}, type={}, appId={}, method={}, version={}, verb={}",
+                        "Route prefix '{}' is ambiguous for space={}, type={}, appId={}, method={}, version={}, verb={}",
                         routePrefix,
-                        spec.namespacePart(),
+                        spec.spacePart(),
                         spec.typeKeyPart(),
                         spec.appIdPart(),
                         spec.methodPart(),
@@ -503,7 +503,7 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
      */
     private Integer routeMatchLevel(Keying.RegistrySpec request, Assets candidate) {
         Keying.RegistrySpec requested = Keying.RegistrySpec.route(
-                request.namespacePart(),
+                request.spacePart(),
                 request.typePart(),
                 request.appIdPart(),
                 candidate.getMethod(),

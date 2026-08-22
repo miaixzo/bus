@@ -96,9 +96,9 @@ public class BatchOperation {
     private Type type;
 
     /**
-     * Target namespace applied when entries do not specify one explicitly.
+     * Target space applied when entries do not specify one explicitly.
      */
-    private String namespace_id;
+    private String space_id;
 
     /**
      * Optional operator or caller label attached to the batch request.

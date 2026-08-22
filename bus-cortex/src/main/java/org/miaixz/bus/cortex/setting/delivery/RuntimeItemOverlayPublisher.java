@@ -29,34 +29,34 @@ public interface RuntimeItemOverlayPublisher {
     /**
      * Publishes a runtime-only setting overlay.
      *
-     * @param namespace namespace identifier
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   profile identifier
-     * @param content   overlay content
-     * @param ttlMs     time-to-live in milliseconds
+     * @param space   space identifier
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile profile identifier
+     * @param content overlay content
+     * @param ttlMs   time-to-live in milliseconds
      */
-    void publish(String namespace, String group, String data_id, String profile, String content, long ttlMs);
+    void publish(String space, String group, String data_id, String profile, String content, long ttlMs);
 
     /**
      * Reads a runtime-only setting overlay.
      *
-     * @param namespace namespace identifier
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   profile identifier
+     * @param space   space identifier
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile profile identifier
      * @return overlay content or {@code null}
      */
-    String get(String namespace, String group, String data_id, String profile);
+    String get(String space, String group, String data_id, String profile);
 
     /**
      * Deletes a runtime-only setting overlay.
      *
-     * @param namespace namespace identifier
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   profile identifier
+     * @param space   space identifier
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile profile identifier
      */
-    void delete(String namespace, String group, String data_id, String profile);
+    void delete(String space, String group, String data_id, String profile);
 
 }

@@ -97,7 +97,7 @@ public class SettingGenerator implements Keying<SettingSpec> {
         }
         return switch (spec.mode()) {
             case SettingSpec.ENTRY -> spec.groupPart() == null && spec.dataIdPart() == null
-                    ? Builder.SETTING_PREFIX + "entry:" + CortexIdentity.namespace(spec.namespace()) + Symbol.COLON
+                    ? Builder.SETTING_PREFIX + "entry:" + CortexIdentity.space(spec.space()) + Symbol.COLON
                     : Builder.SETTING_PREFIX + "entry:" + itemId(spec);
             case SettingSpec.REVISION -> Builder.SETTING_PREFIX + "revision:" + buildScope(spec) + Symbol.COLON;
             default -> null;
@@ -111,7 +111,7 @@ public class SettingGenerator implements Keying<SettingSpec> {
      * @return item identifier
      */
     private String itemId(SettingSpec spec) {
-        return CortexIdentity.namespace(spec.namespace()) + Symbol.COLON + StringKit.emptyIfNull(spec.groupPart())
+        return CortexIdentity.space(spec.space()) + Symbol.COLON + StringKit.emptyIfNull(spec.groupPart())
                 + Symbol.COLON + StringKit.emptyIfNull(spec.dataIdPart());
     }
 

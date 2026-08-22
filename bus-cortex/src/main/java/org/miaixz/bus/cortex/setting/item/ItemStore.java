@@ -66,24 +66,24 @@ public interface ItemStore {
     /**
      * Deletes one current-state setting entry from durable storage.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
      * @return deleted entry snapshot, or {@code null} when absent
      */
-    Item delete(String namespace, String group, String data_id, String profile);
+    Item delete(String space, String group, String data_id, String profile);
 
     /**
      * Finds one current-state setting entry in durable storage.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
      * @return matching entry or {@code null}
      */
-    Item find(String namespace, String group, String data_id, String profile);
+    Item find(String space, String group, String data_id, String profile);
 
     /**
      * Queries current-state setting entries from durable storage.
