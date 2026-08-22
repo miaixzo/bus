@@ -45,28 +45,35 @@ module bus.auth {
     requires bus.fabric;
 
     requires static lombok;
-    requires static jakarta.persistence;
 
     exports org.miaixz.bus.auth;
     exports org.miaixz.bus.auth.cache;
     exports org.miaixz.bus.auth.codec;
+    exports org.miaixz.bus.auth.guard;
     exports org.miaixz.bus.auth.protocol;
     exports org.miaixz.bus.auth.protocol.ldap;
     exports org.miaixz.bus.auth.protocol.ldap.client;
+    exports org.miaixz.bus.auth.protocol.ldap.codec;
     exports org.miaixz.bus.auth.protocol.ldap.server;
     exports org.miaixz.bus.auth.protocol.oauth2;
     exports org.miaixz.bus.auth.protocol.oauth2.client;
+    exports org.miaixz.bus.auth.protocol.oauth2.codec;
     exports org.miaixz.bus.auth.protocol.oauth2.grant;
     exports org.miaixz.bus.auth.protocol.oauth2.server;
     exports org.miaixz.bus.auth.protocol.oidc;
     exports org.miaixz.bus.auth.protocol.oidc.client;
+    exports org.miaixz.bus.auth.protocol.oidc.codec;
     exports org.miaixz.bus.auth.protocol.oidc.server;
     exports org.miaixz.bus.auth.protocol.radius;
+    exports org.miaixz.bus.auth.protocol.radius.codec;
     exports org.miaixz.bus.auth.protocol.radius.server;
     exports org.miaixz.bus.auth.protocol.saml;
     exports org.miaixz.bus.auth.protocol.saml.client;
+    exports org.miaixz.bus.auth.protocol.saml.codec;
+    exports org.miaixz.bus.auth.protocol.saml.security;
     exports org.miaixz.bus.auth.protocol.saml.server;
     exports org.miaixz.bus.auth.protocol.scim;
+    exports org.miaixz.bus.auth.protocol.scim.codec;
     exports org.miaixz.bus.auth.protocol.scim.server;
     exports org.miaixz.bus.auth.registry;
     exports org.miaixz.bus.auth.resolver;
@@ -79,8 +86,6 @@ module bus.auth {
     exports org.miaixz.bus.auth.shared.pkce;
     exports org.miaixz.bus.auth.source;
     exports org.miaixz.bus.auth.vendor;
-    exports org.miaixz.bus.auth.worker;
-    exports org.miaixz.bus.auth.worker.identity;
     exports org.miaixz.bus.auth.vendor.afdian;
     exports org.miaixz.bus.auth.vendor.alipay;
     exports org.miaixz.bus.auth.vendor.aliyun;
@@ -122,5 +127,8 @@ module bus.auth {
     exports org.miaixz.bus.auth.vendor.wechat;
     exports org.miaixz.bus.auth.vendor.weibo;
     exports org.miaixz.bus.auth.vendor.ximalaya;
+    exports org.miaixz.bus.auth.worker;
+    exports org.miaixz.bus.auth.worker.identity;
+    exports org.miaixz.bus.auth.worker.loader;
 
 }

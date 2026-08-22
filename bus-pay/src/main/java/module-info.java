@@ -31,8 +31,6 @@
  */
 module bus.pay {
 
-    requires java.xml;
-
     requires bus.cache;
     requires bus.core;
     requires bus.crypto;

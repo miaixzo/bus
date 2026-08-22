@@ -32,7 +32,6 @@
 module bus.sensitive {
 
     requires bus.core;
-    requires bus.crypto;
     requires bus.extra;
     requires bus.logger;
 

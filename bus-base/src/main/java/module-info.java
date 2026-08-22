@@ -37,8 +37,6 @@ module bus.base {
     requires bus.validate;
 
     requires static lombok;
-    requires static jakarta.persistence;
-    requires static jakarta.servlet;
     requires static spring.beans;
     requires static spring.boot.autoconfigure;
     requires static spring.context;

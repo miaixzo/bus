@@ -31,7 +31,6 @@
  */
 module bus.crypto {
 
-    requires java.security.sasl;
     requires java.xml;
 
     requires bus.core;

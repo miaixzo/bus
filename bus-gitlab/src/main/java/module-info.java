@@ -36,10 +36,11 @@ module bus.gitlab {
     requires bus.core;
     requires bus.logger;
 
-    requires static lombok;
+    requires static com.fasterxml.jackson.annotation;
     requires static jakarta.annotation;
     requires static jakarta.servlet;
     requires static jakarta.ws.rs;
+    requires static lombok;
     requires static org.glassfish.jersey.core.client;
     requires static org.glassfish.jersey.core.common;
     requires static org.glassfish.jersey.media.multipart;

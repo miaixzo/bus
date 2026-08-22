@@ -32,7 +32,7 @@
 module bus.office {
 
     requires java.desktop;
-    requires java.sql;
+    requires java.xml;
 
     requires bus.core;
     requires bus.logger;

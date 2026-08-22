@@ -38,11 +38,11 @@ module bus.metrics {
     requires bus.health;
     requires bus.logger;
 
-    requires static lombok;
-    requires static jakarta.servlet;
     requires static io.opentelemetry.api;
     requires static io.prometheus.metrics.core;
     requires static io.prometheus.metrics.model;
+    requires static jakarta.servlet;
+    requires static lombok;
     requires static micrometer.core;
 
     exports org.miaixz.bus.metrics;

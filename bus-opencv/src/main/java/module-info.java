@@ -31,8 +31,6 @@
  */
 module bus.opencv {
 
-    requires java.desktop;
-
     exports org.opencv.core;
     exports org.opencv.img_hash;
     exports org.opencv.imgcodecs;
