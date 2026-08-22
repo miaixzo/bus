@@ -31,8 +31,8 @@ import org.miaixz.bus.cortex.guard.GuardStrategy;
  * Lightweight token-guard strategy that performs presence and transport pre-validation.
  * <p>
  * This strategy intentionally does not verify token signatures or consult persistence. Those responsibilities stay in
- * the runtime authorization provider. Its job is to keep namespace and asset-level token policy definitions in one
- * reusable Cortex model.
+ * the runtime authorization provider. Its job is to keep space and asset-level token policy definitions in one reusable
+ * Cortex model.
  *
  * @author Kimi Liu
  */

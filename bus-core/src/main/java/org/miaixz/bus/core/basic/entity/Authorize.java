@@ -60,16 +60,16 @@ public class Authorize extends Query {
     protected String x_tenant_name;
 
     /**
-     * The identifier for the current namespace.
+     * The identifier for the current space.
      */
     @Transient
-    protected String x_namespace_id;
+    protected String x_space_id;
 
     /**
-     * The name of the current namespace.
+     * The name of the current space.
      */
     @Transient
-    protected String x_namespace_name;
+    protected String x_space_name;
 
     /**
      * The identifier for the current user.

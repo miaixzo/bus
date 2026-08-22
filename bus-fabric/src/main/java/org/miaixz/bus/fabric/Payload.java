@@ -560,6 +560,9 @@ public interface Payload {
                 }
                 sink.write(buffer, read);
             }
+            if (length >= 0 && total < length) {
+                throw new InternalException("Streaming payload ended before declared length at Payload.copyTo");
+            }
             sink.flush();
             return total;
         } catch (final IOException e) {

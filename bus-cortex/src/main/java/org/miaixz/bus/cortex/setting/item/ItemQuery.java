@@ -63,7 +63,7 @@ public class ItemQuery extends ItemScope {
     private boolean preferOverlay = true;
 
     /**
-     * Request context used for gray-release evaluation after namespace, profile, and application matching.
+     * Request context used for gray-release evaluation after space, profile, and application matching.
      */
     private GrayRequestContext requestContext;
 

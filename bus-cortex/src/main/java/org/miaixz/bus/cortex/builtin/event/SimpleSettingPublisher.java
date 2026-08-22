@@ -68,82 +68,82 @@ public class SimpleSettingPublisher implements RuntimeItemOverlayPublisher {
     /**
      * Publishes setting content to the given key.
      *
-     * @param namespace {@code setting.namespace}
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param content   setting content
+     * @param space   {@code setting.space}
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param content setting content
      */
-    public void publish(String namespace, String group, String data_id, String content) {
-        publish(namespace, group, data_id, null, content);
+    public void publish(String space, String group, String data_id, String content) {
+        publish(space, group, data_id, null, content);
     }
 
     /**
      * Publishes setting content to the given key with an optional profile segment.
      *
-     * @param namespace {@code setting.namespace}
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional setting profile
-     * @param content   setting content
+     * @param space   {@code setting.space}
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional setting profile
+     * @param content setting content
      */
-    public void publish(String namespace, String group, String data_id, String profile, String content) {
-        publish(namespace, group, data_id, profile, content, 0L);
+    public void publish(String space, String group, String data_id, String profile, String content) {
+        publish(space, group, data_id, profile, content, 0L);
     }
 
     /**
      * Publishes setting content with an explicit TTL.
      *
-     * @param namespace {@code setting.namespace}
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
-     * @param content   setting content
-     * @param ttlMs     explicit ttl in milliseconds
+     * @param space   {@code setting.space}
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
+     * @param content setting content
+     * @param ttlMs   explicit ttl in milliseconds
      */
     @Override
-    public void publish(String namespace, String group, String data_id, String profile, String content, long ttlMs) {
-        cacheX.write(overlayKey(namespace, group, data_id, profile), content, ttlMs);
+    public void publish(String space, String group, String data_id, String profile, String content, long ttlMs) {
+        cacheX.write(overlayKey(space, group, data_id, profile), content, ttlMs);
     }
 
     /**
      * Resolves one lightweight setting value from the shared cache.
      *
-     * @param namespace {@code setting.namespace}
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional setting profile
+     * @param space   {@code setting.space}
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional setting profile
      * @return cached setting content, or {@code null} when absent
      */
     @Override
-    public String get(String namespace, String group, String data_id, String profile) {
-        Object value = cacheX.read(overlayKey(namespace, group, data_id, profile));
+    public String get(String space, String group, String data_id, String profile) {
+        Object value = cacheX.read(overlayKey(space, group, data_id, profile));
         return value == null ? null : value.toString();
     }
 
     /**
      * Deletes one lightweight setting value.
      *
-     * @param namespace {@code setting.namespace}
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
+     * @param space   {@code setting.space}
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
      */
     @Override
-    public void delete(String namespace, String group, String data_id, String profile) {
-        cacheX.remove(overlayKey(namespace, group, data_id, profile));
+    public void delete(String space, String group, String data_id, String profile) {
+        cacheX.remove(overlayKey(space, group, data_id, profile));
     }
 
     /**
      * Builds one overlay key.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param dataId    setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param dataId  setting data identifier
+     * @param profile optional profile
      * @return overlay key
      */
-    private String overlayKey(String namespace, String group, String dataId, String profile) {
-        return keying.key(SettingSpec.overlay(namespace, group, dataId, profile));
+    private String overlayKey(String space, String group, String dataId, String profile) {
+        return keying.key(SettingSpec.overlay(space, group, dataId, profile));
     }
 
 }

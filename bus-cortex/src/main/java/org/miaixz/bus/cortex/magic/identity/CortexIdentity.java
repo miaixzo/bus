@@ -36,13 +36,13 @@ public class CortexIdentity {
     }
 
     /**
-     * Returns the canonical namespace, defaulting blank values to the shared default namespace.
+     * Returns the canonical space, defaulting blank values to the shared default space.
      *
-     * @param namespace raw namespace value
-     * @return canonical namespace value
+     * @param space raw space value
+     * @return canonical space value
      */
-    public static String namespace(String namespace) {
-        return namespace == null || namespace.isBlank() ? Normal.DEFAULT : namespace;
+    public static String space(String space) {
+        return space == null || space.isBlank() ? Normal.DEFAULT : space;
     }
 
     /**

@@ -57,7 +57,7 @@ enterprise-grade API routing and management capabilities.
 public class Assets {
 
     private String id;             // Unique route asset ID
-    private String namespace_id;   // Owning namespace
+    private String space_id;       // Owning space
     private Integer type;          // Optional asset type filter, uses Type.key()
     private String app_id;         // Application identifier
     private String method;         // Logical API method name
@@ -79,7 +79,7 @@ public class Assets {
 |:----------|:---------------------------------------------------------------------------------|
 | method    | API method name (e.g., xxx.xxx.xxx)                                              |
 | v         | API version number, used with method (e.g., 1.1, 1.2)                            |
-| namespace | Optional namespace route scope                                                   |
+| space     | Optional space route scope                                                       |
 | app_id    | Optional application-specific route scope                                        |
 | type      | Optional registry type scope. Accepts numeric `Type.key()` and legacy type names |
 | format    | Return format (supports json, xml)                                               |
@@ -88,16 +88,16 @@ public class Assets {
 ### Public Route Resolution
 
 - Runtime candidate chain:
-    - `namespace:type:app_id:method:version:verb`
-    - `namespace:type:method:version:verb`
-    - `namespace:app_id:method:version:verb`
-    - `namespace:method:version:verb`
+    - `space:type:app_id:method:version:verb`
+    - `space:type:method:version:verb`
+    - `space:app_id:method:version:verb`
+    - `space:method:version:verb`
     - `type:app_id:method:version:verb`
     - `type:method:version:verb`
     - `app_id:method:version:verb`
     - `method:version:verb`
 - `method`, `version`, and `verb` are required runtime dimensions
-- `namespace`, `type`, and `app_id` are optional route scopes; when absent the corresponding levels are skipped
+- `space`, `type`, and `app_id` are optional route scopes; when absent the corresponding levels are skipped
 - `type` always uses numeric `Type.key()` inside route keys
 - `verb` always uses the numeric verb code rather than `GET` / `POST` text
 - `ApiAssets.key` remains the lightweight public alias `method:version:verbCode`
@@ -143,6 +143,7 @@ bus:
 #### 1. Add `@EnableVortex` Annotation to Spring Boot Main Class
 
 ```java
+
 @EnableVortex
 @SpringBootApplication
 public class TunnelApplication {
@@ -164,6 +165,7 @@ public class TunnelApplication {
 #### 3. Optionally Override the Route-Key Strategy
 
 ```java
+
 @Bean
 public Keying<Keying.RegistrySpec> registryKeying() {
     return RegistryGenerator.INSTANCE;
@@ -173,6 +175,7 @@ public Keying<Keying.RegistrySpec> registryKeying() {
 #### 4. Implement an `AuthorizeProvider` Bean for Authentication
 
 ```java
+
 @Component
 public class AuthProviderImpl implements AuthorizeProvider {
     // Override token/apiKey/license as needed
@@ -187,6 +190,7 @@ Implement `WebFilter` to extend gateway functionality, such as rate limiting, lo
 (not yet implemented), etc.
 
 ```java
+
 @Component
 @Order("123")
 public class CustomFilter implements WebFilter {
@@ -286,6 +290,7 @@ public class TController {
 ### Maven Dependency
 
 ```xml
+
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-starter</artifactId>
@@ -296,6 +301,7 @@ public class TController {
 ### Enable Gateway
 
 ```java
+
 @EnableVortex
 @SpringBootApplication
 public class Application {
@@ -329,9 +335,17 @@ instance, so `put` / `putAll` / `remove` still pass through the shared sanitizat
 read-only.
 
 ```java
-context.getParameters().put("status", status);
-context.getParameters().putAll(payload);
-context.putQueryParameter("lang", "en");
+context.getParameters().
+
+put("status",status);
+context.
+
+getParameters().
+
+putAll(payload);
+context.
+
+putQueryParameter("lang","en");
 ```
 
 -----
@@ -388,6 +402,7 @@ context.putQueryParameter("lang", "en");
 Implement `WebFilter` for custom request/response processing:
 
 ```java
+
 @Component
 @Order(1)
 public class LoggingFilter implements WebFilter {

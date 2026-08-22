@@ -206,15 +206,15 @@ public class VortexBridge
         Logger.debug(
                 true,
                 "Cortex",
-                "Bridge event received: action={}, namespace={}, id={}, method={}, version={}",
+                "Bridge event received: action={}, space={}, id={}, method={}, version={}",
                 event.getAction(),
-                event.getNamespace_id(),
+                event.getSpace_id(),
                 event.getId(),
                 event.getMethod(),
                 event.getVersion());
         RegistryChange<Assets> transportEvent = new RegistryChange<>();
         transportEvent.setAction(event.getAction());
-        transportEvent.setNamespace_id(event.getNamespace_id());
+        transportEvent.setSpace_id(event.getSpace_id());
         transportEvent.setType(event.getType());
         transportEvent.setId(event.getId());
         transportEvent.setMethod(event.getMethod());
@@ -231,9 +231,9 @@ public class VortexBridge
                 Logger.debug(
                         false,
                         "Cortex",
-                        "Bridge event appended to outbox: action={}, namespace={}, id={}",
+                        "Bridge event appended to outbox: action={}, space={}, id={}",
                         event.getAction(),
-                        event.getNamespace_id(),
+                        event.getSpace_id(),
                         event.getId());
                 return;
             } catch (Exception e) {
@@ -260,9 +260,9 @@ public class VortexBridge
             Logger.debug(
                     false,
                     "Cortex",
-                    "Bridge event queued: action={}, namespace={}, id={}, queueSize={}",
+                    "Bridge event queued: action={}, space={}, id={}, queueSize={}",
                     event.getAction(),
-                    event.getNamespace_id(),
+                    event.getSpace_id(),
                     event.getId(),
                     queue.size());
         }
@@ -384,9 +384,9 @@ public class VortexBridge
                 Logger.debug(
                         false,
                         "Cortex",
-                        "Bridge queued delivery completed: action={}, namespace={}, id={}",
+                        "Bridge queued delivery completed: action={}, space={}, id={}",
                         event.getAction(),
-                        event.getNamespace_id(),
+                        event.getSpace_id(),
                         event.getId());
                 return;
             }
@@ -409,9 +409,9 @@ public class VortexBridge
                 Logger.debug(
                         true,
                         "Cortex",
-                        "Bridge queued delivery retry scheduled: action={}, namespace={}, id={}, attempt={}, error={}",
+                        "Bridge queued delivery retry scheduled: action={}, space={}, id={}, attempt={}, error={}",
                         event.getAction(),
-                        event.getNamespace_id(),
+                        event.getSpace_id(),
                         event.getId(),
                         attempt,
                         result.error());
@@ -661,11 +661,11 @@ public class VortexBridge
         record.setAction(event.getAction() == null ? "sync" : event.getAction().name().toLowerCase());
         record.setResourceType(OUTBOX_RESOURCE_TYPE);
         record.setResourceId(resourceId(event));
-        record.setNamespace_id(event.getNamespace_id());
+        record.setSpace_id(event.getSpace_id());
         record.setPayload(JsonKit.toJsonString(event));
         record.setSequence(event.getSequence());
         record.setIdempotencyKey(
-                "vortex:" + event.getNamespace_id() + Symbol.COLON + record.getAction() + Symbol.COLON
+                "vortex:" + event.getSpace_id() + Symbol.COLON + record.getAction() + Symbol.COLON
                         + record.getResourceId());
         return record;
     }
@@ -702,8 +702,8 @@ public class VortexBridge
             Logger.trace(
                     true,
                     "Cortex",
-                    "Bridge worker signaled: namespace={}, id={}, queueSize={}",
-                    event.getNamespace_id(),
+                    "Bridge worker signaled: space={}, id={}, queueSize={}",
+                    event.getSpace_id(),
                     event.getId(),
                     queue.size());
         }

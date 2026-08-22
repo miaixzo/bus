@@ -20,7 +20,7 @@
 /**
  * Distributed identity generation and normalization utilities for Cortex-managed resources.
  * <p>
- * {@code CortexIdentity} owns namespace and application identifier defaults that are shared by registry assets, setting
+ * {@code CortexIdentity} owns space and application identifier defaults that are shared by registry assets, setting
  * resources, watch subscriptions, guard policies, and adapter code. {@code IdGenerator} is a pluggable string ID
  * generator: the no-arg constructor uses {@code ID.objectId()} (MongoDB ObjectId format) as the default strategy, and a
  * second constructor accepts any {@code Supplier<String>} to substitute an alternative strategy such as Snowflake, UUID

@@ -327,8 +327,8 @@ public class Pattern {
             .compile("[\\\\/:*?\"<>|\r\n]");
 
     /**
-     * A cache pool for compiled {@link java.util.regex.Pattern} objects. Uses soft references so cached patterns can
-     * be reclaimed under memory pressure while remaining stable during normal lookup.
+     * A cache pool for compiled {@link java.util.regex.Pattern} objects. Uses soft references so cached patterns can be
+     * reclaimed under memory pressure while remaining stable during normal lookup.
      */
     private static final ReferenceConcurrentMap<RegexWithFlag, java.util.regex.Pattern> POOL = new SoftConcurrentMap<>();
 

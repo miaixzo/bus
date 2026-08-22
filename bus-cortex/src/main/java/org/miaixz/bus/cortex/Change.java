@@ -23,7 +23,7 @@ package org.miaixz.bus.cortex;
  * Common metadata contract shared by Cortex change notifications.
  * <p>
  * Implementations such as {@link Watch} and {@link org.miaixz.bus.cortex.registry.RegistryChange} expose their concrete
- * payload shape separately while sharing the same namespace, type, ordering and timestamp metadata.
+ * payload shape separately while sharing the same space, type, ordering and timestamp metadata.
  *
  * @param <T> domain value type described by the concrete change implementation
  * @author Kimi Liu
@@ -31,11 +31,11 @@ package org.miaixz.bus.cortex;
 public interface Change<T> {
 
     /**
-     * Returns the namespace affected by this change notification.
+     * Returns the space affected by this change notification.
      *
-     * @return affected namespace
+     * @return affected space
      */
-    String getNamespace_id();
+    String getSpace_id();
 
     /**
      * Returns the asset type affected by this change notification when known.

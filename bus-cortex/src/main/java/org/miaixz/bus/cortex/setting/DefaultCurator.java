@@ -57,9 +57,9 @@ public class DefaultCurator implements Curator {
     private final WatchManager watchManager;
 
     /**
-     * Namespace identifier served by this curator instance.
+     * Space identifier served by this curator instance.
      */
-    private final String namespace_id;
+    private final String space_id;
 
     /**
      * Optional runtime overlay service consulted before durable setting resolution.
@@ -67,39 +67,39 @@ public class DefaultCurator implements Curator {
     private final RuntimeItemOverlayService runtimeSettingOverlayService;
 
     /**
-     * Creates a DefaultCurator using the default namespace.
+     * Creates a DefaultCurator using the default space.
      *
      * @param settingCuratorService curator application service
      * @param watchManager          watch manager for subscription support
      */
     public DefaultCurator(ItemCuratorService settingCuratorService, WatchManager watchManager) {
-        this(settingCuratorService, watchManager, Builder.DEFAULT_NAMESPACE, null);
+        this(settingCuratorService, watchManager, Builder.DEFAULT_SPACE, null);
     }
 
     /**
-     * Creates a DefaultCurator for a specific namespace.
+     * Creates a DefaultCurator for a specific space.
      *
      * @param settingCuratorService curator application service
      * @param watchManager          watch manager for subscription support
-     * @param namespace_id          setting namespace identifier
+     * @param space_id              setting space identifier
      */
-    public DefaultCurator(ItemCuratorService settingCuratorService, WatchManager watchManager, String namespace_id) {
-        this(settingCuratorService, watchManager, namespace_id, null);
+    public DefaultCurator(ItemCuratorService settingCuratorService, WatchManager watchManager, String space_id) {
+        this(settingCuratorService, watchManager, space_id, null);
     }
 
     /**
-     * Creates a DefaultCurator for a specific namespace with runtime overlay support.
+     * Creates a DefaultCurator for a specific space with runtime overlay support.
      *
      * @param settingCuratorService        curator application service
      * @param watchManager                 watch manager for subscription support
-     * @param namespace_id                 setting namespace identifier
+     * @param space_id                     setting space identifier
      * @param runtimeSettingOverlayService runtime overlay service
      */
-    public DefaultCurator(ItemCuratorService settingCuratorService, WatchManager watchManager, String namespace_id,
+    public DefaultCurator(ItemCuratorService settingCuratorService, WatchManager watchManager, String space_id,
             RuntimeItemOverlayService runtimeSettingOverlayService) {
         this.settingCuratorService = settingCuratorService;
         this.watchManager = watchManager;
-        this.namespace_id = CortexIdentity.namespace(namespace_id);
+        this.space_id = CortexIdentity.space(space_id);
         this.runtimeSettingOverlayService = runtimeSettingOverlayService;
     }
 
@@ -117,7 +117,7 @@ public class DefaultCurator implements Curator {
             return overlay;
         }
         ItemQuery query = new ItemQuery();
-        query.setNamespace_id(namespace_id);
+        query.setSpace_id(space_id);
         query.setGroup(group);
         query.setData_id(data_id);
         return settingCuratorService.resolve(query);
@@ -151,7 +151,7 @@ public class DefaultCurator implements Curator {
             return overlay;
         }
         ItemQuery query = new ItemQuery();
-        query.setNamespace_id(namespace_id);
+        query.setSpace_id(space_id);
         query.setGroup(group);
         query.setData_id(data_id);
         query.setProfile_id(profile);
@@ -174,7 +174,7 @@ public class DefaultCurator implements Curator {
             return overlay;
         }
         ItemQuery query = new ItemQuery();
-        query.setNamespace_id(namespace_id);
+        query.setSpace_id(space_id);
         query.setGroup(group);
         query.setData_id(data_id);
         query.setProfile_id(profile);
@@ -207,7 +207,7 @@ public class DefaultCurator implements Curator {
     @Override
     public void publish(String group, String data_id, String profile, String content) {
         Item entry = new Item();
-        entry.setNamespace_id(namespace_id);
+        entry.setSpace_id(space_id);
         entry.setGroup(group);
         entry.setData_id(data_id);
         ItemBindingProjection.normalizeProfileIdsInto(entry, profile);
@@ -263,7 +263,7 @@ public class DefaultCurator implements Curator {
      */
     @Override
     public void rollback(String group, String data_id, String profile, String revision) {
-        settingCuratorService.rollback(namespace_id, group, data_id, profile, revision);
+        settingCuratorService.rollback(space_id, group, data_id, profile, revision);
     }
 
     /**
@@ -277,8 +277,8 @@ public class DefaultCurator implements Curator {
     @Override
     public String watch(String group, String data_id, ConsumerX<String> listener) {
         Vector vector = new Vector();
-        vector.setNamespace_id(namespace_id);
-        vector.setId(settingCuratorService.watchKey(namespace_id, group, data_id, null));
+        vector.setSpace_id(space_id);
+        vector.setId(settingCuratorService.watchKey(space_id, group, data_id, null));
         Listener<Watch<String>> wl = event -> {
             for (String item : event.getAdded()) {
                 listener.accept(item);
@@ -315,7 +315,7 @@ public class DefaultCurator implements Curator {
         if (runtimeSettingOverlayService == null) {
             return null;
         }
-        return runtimeSettingOverlayService.resolveRuntimeOverlay(namespace_id, group, data_id, profile);
+        return runtimeSettingOverlayService.resolveRuntimeOverlay(space_id, group, data_id, profile);
     }
 
 }

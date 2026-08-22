@@ -83,9 +83,9 @@ public class RegistryChange<T extends Assets> implements Change<T> {
     private Type type;
 
     /**
-     * Namespace containing the affected asset.
+     * Space containing the affected asset.
      */
-    private String namespace_id;
+    private String space_id;
 
     /**
      * Application identifier containing the affected asset.

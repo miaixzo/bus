@@ -201,9 +201,9 @@ public class RegistryControlService {
         Logger.debug(
                 true,
                 "Cortex",
-                "Registry control list requested: type={}, namespace={}, id={}",
+                "Registry control list requested: type={}, space={}, id={}",
                 criteria.getType(),
-                criteria.getNamespace_id(),
+                criteria.getSpace_id(),
                 criteria.getId());
         List<Assets> result;
         if (criteria.getType() == null) {
@@ -214,9 +214,9 @@ public class RegistryControlService {
         Logger.debug(
                 false,
                 "Cortex",
-                "Registry control list completed: type={}, namespace={}, resultSize={}",
+                "Registry control list completed: type={}, space={}, resultSize={}",
                 criteria.getType(),
-                criteria.getNamespace_id(),
+                criteria.getSpace_id(),
                 result.size());
         return result;
     }
@@ -232,9 +232,9 @@ public class RegistryControlService {
         Logger.debug(
                 true,
                 "Cortex",
-                "Registry control get requested: type={}, namespace={}, id={}, method={}, version={}",
+                "Registry control get requested: type={}, space={}, id={}, method={}, version={}",
                 criteria.getType(),
-                criteria.getNamespace_id(),
+                criteria.getSpace_id(),
                 criteria.getId(),
                 criteria.getMethod(),
                 criteria.getVersion());
@@ -247,9 +247,9 @@ public class RegistryControlService {
         Logger.debug(
                 false,
                 "Cortex",
-                "Registry control get completed: type={}, namespace={}, id={}, found={}",
+                "Registry control get completed: type={}, space={}, id={}, found={}",
                 criteria.getType(),
-                criteria.getNamespace_id(),
+                criteria.getSpace_id(),
                 criteria.getId(),
                 result != null);
         return result;
@@ -282,9 +282,9 @@ public class RegistryControlService {
         Logger.info(
                 true,
                 "Cortex",
-                "Registry control upsert requested: type={}, namespace={}, id={}, method={}, version={}",
+                "Registry control upsert requested: type={}, space={}, id={}, method={}, version={}",
                 type,
-                prepared.getNamespace_id(),
+                prepared.getSpace_id(),
                 prepared.getId(),
                 prepared.getMethod(),
                 prepared.getVersion());
@@ -292,7 +292,7 @@ public class RegistryControlService {
         if (!preResolved && prepared.getId() == null && prepared.getMethod() != null && prepared.getVersion() != null) {
             Assets routeExisting = getByRoute(
                     type,
-                    prepared.getNamespace_id(),
+                    prepared.getSpace_id(),
                     prepared.getApp_id(),
                     prepared.getMethod(),
                     prepared.getVersion());
@@ -310,9 +310,9 @@ public class RegistryControlService {
         Logger.info(
                 false,
                 "Cortex",
-                "Registry control upsert completed: type={}, namespace={}, id={}",
+                "Registry control upsert completed: type={}, space={}, id={}",
                 type,
-                stored == null ? prepared.getNamespace_id() : stored.getNamespace_id(),
+                stored == null ? prepared.getSpace_id() : stored.getSpace_id(),
                 stored == null ? prepared.getId() : stored.getId());
         return stored;
     }
@@ -320,49 +320,37 @@ public class RegistryControlService {
     /**
      * Deletes one registry entry by type and ID.
      *
-     * @param type      target type
-     * @param namespace target namespace
-     * @param id        entry identifier
+     * @param type  target type
+     * @param space target space
+     * @param id    entry identifier
      */
-    public void delete(Type type, String namespace, String id) {
-        delete(type, namespace, id, null, false);
+    public void delete(Type type, String space, String id) {
+        delete(type, space, id, null, false);
     }
 
     /**
      * Deletes one registry entry using an optional pre-resolved snapshot.
      *
      * @param type        target type
-     * @param namespace   target namespace
+     * @param space       target space
      * @param id          entry identifier
      * @param existing    existing snapshot or {@code null}
      * @param preResolved whether the snapshot was resolved by the batch resolver
      */
-    private void delete(Type type, String namespace, String id, Assets existing, boolean preResolved) {
-        Logger.info(
-                true,
-                "Cortex",
-                "Registry control delete requested: type={}, namespace={}, id={}",
-                type,
-                namespace,
-                id);
-        enforceRegistry("delete", type, namespace, id, null, null, null);
+    private void delete(Type type, String space, String id, Assets existing, boolean preResolved) {
+        Logger.info(true, "Cortex", "Registry control delete requested: type={}, space={}, id={}", type, space, id);
+        enforceRegistry("delete", type, space, id, null, null, null);
         if (!preResolved) {
-            registry(type).deregister(namespace, id);
+            registry(type).deregister(space, id);
         } else {
             switch (Type.requireRegistry(type)) {
-                case API -> apiRegistry.deregisterResolved(namespace, id, (ApiAssets) existing);
-                case MCP -> mcpRegistry.deregisterResolved(namespace, id, (McpAssets) existing);
-                case PROMPT -> promptRegistry.deregisterResolved(namespace, id, (PromptAssets) existing);
+                case API -> apiRegistry.deregisterResolved(space, id, (ApiAssets) existing);
+                case MCP -> mcpRegistry.deregisterResolved(space, id, (McpAssets) existing);
+                case PROMPT -> promptRegistry.deregisterResolved(space, id, (PromptAssets) existing);
                 default -> throw new IllegalArgumentException("Unsupported admin registry type: " + type);
             }
         }
-        Logger.info(
-                false,
-                "Cortex",
-                "Registry control delete completed: type={}, namespace={}, id={}",
-                type,
-                namespace,
-                id);
+        Logger.info(false, "Cortex", "Registry control delete completed: type={}, space={}, id={}", type, space, id);
     }
 
     /**
@@ -381,9 +369,9 @@ public class RegistryControlService {
         Logger.info(
                 true,
                 "Cortex",
-                "Registry batch requested: operation={}, namespace={}, entries={}",
+                "Registry batch requested: operation={}, space={}, entries={}",
                 operation.getOperationType(),
-                operation.getNamespace_id(),
+                operation.getSpace_id(),
                 operation.getEntries().size());
         result = executeBatch(operation, new ControlRegistryBatchOperations());
         if (result == null) {
@@ -442,9 +430,9 @@ public class RegistryControlService {
         Logger.debug(
                 true,
                 "Cortex",
-                "Registry impact requested: type={}, namespace={}, id={}, method={}, version={}",
+                "Registry impact requested: type={}, space={}, id={}, method={}, version={}",
                 criteria.getType(),
-                criteria.getNamespace_id(),
+                criteria.getSpace_id(),
                 criteria.getId(),
                 criteria.getMethod(),
                 criteria.getVersion());
@@ -518,17 +506,17 @@ public class RegistryControlService {
     /**
      * Loads an existing registry entry by route identity so admin upserts can preserve deterministic IDs.
      *
-     * @param type      registry type
-     * @param namespace namespace
-     * @param app_id    application identifier
-     * @param method    route method
-     * @param version   route version
+     * @param type    registry type
+     * @param space   space
+     * @param app_id  application identifier
+     * @param method  route method
+     * @param version route version
      * @return existing entry or {@code null}
      */
-    private Assets getByRoute(Type type, String namespace, String app_id, String method, String version) {
+    private Assets getByRoute(Type type, String space, String app_id, String method, String version) {
         Vector query = new Vector();
         query.setType(type == null ? null : type.key());
-        query.setNamespace_id(namespace);
+        query.setSpace_id(space);
         query.setApp_id(app_id);
         query.setMethod(method);
         query.setVersion(version);
@@ -546,7 +534,7 @@ public class RegistryControlService {
         enforceRegistry(
                 action,
                 type,
-                asset == null ? null : asset.getNamespace_id(),
+                asset == null ? null : asset.getSpace_id(),
                 asset == null ? null : asset.getId(),
                 asset == null ? null : asset.getApp_id(),
                 asset == null ? null : asset.getMethod(),
@@ -556,7 +544,7 @@ public class RegistryControlService {
     private void enforceRegistry(
             String action,
             Type type,
-            String namespace,
+            String space,
             String id,
             String app_id,
             String method,
@@ -571,7 +559,7 @@ public class RegistryControlService {
         context.setResourceType(effective.name());
         context.setResourceId(id);
         context.setAssetId(id);
-        context.namespace_id(namespace);
+        context.space_id(space);
         context.setApp_id(app_id);
         context.putAttribute("type", effective.name());
         context.putAttribute("typeKey", effective.key());
@@ -592,7 +580,7 @@ public class RegistryControlService {
         } else {
             apiRegistry.register(asset);
         }
-        return apiRegistry.find(asset.getNamespace_id(), asset.getId());
+        return apiRegistry.find(asset.getSpace_id(), asset.getId());
     }
 
     /**
@@ -607,7 +595,7 @@ public class RegistryControlService {
         } else {
             mcpRegistry.register(asset);
         }
-        return mcpRegistry.find(asset.getNamespace_id(), asset.getId());
+        return mcpRegistry.find(asset.getSpace_id(), asset.getId());
     }
 
     /**
@@ -622,7 +610,7 @@ public class RegistryControlService {
         } else {
             promptRegistry.register(asset);
         }
-        return promptRegistry.find(asset.getNamespace_id(), asset.getId());
+        return promptRegistry.find(asset.getSpace_id(), asset.getId());
     }
 
     /**
@@ -634,7 +622,7 @@ public class RegistryControlService {
     private Vector vector(Vector query) {
         Vector vector = new Vector();
         if (query != null) {
-            vector.setNamespace_id(query.getNamespace_id());
+            vector.setSpace_id(query.getSpace_id());
             vector.setApp_id(query.getApp_id());
             vector.setType(query.getType());
             vector.setId(query.getId());
@@ -657,11 +645,11 @@ public class RegistryControlService {
     private Assets getSingle(Vector criteria) {
         StoreBackedRegistry<? extends Assets> registry = registry(RegistryIdentity.type(criteria.getType()));
         if (criteria.getId() != null) {
-            return registry.refresh(criteria.getNamespace_id(), criteria.getId());
+            return registry.refresh(criteria.getSpace_id(), criteria.getId());
         }
         if (criteria.getMethod() != null && criteria.getVersion() != null) {
             return registry.refreshByMethodVersion(
-                    criteria.getNamespace_id(),
+                    criteria.getSpace_id(),
                     criteria.getApp_id(),
                     criteria.getMethod(),
                     criteria.getVersion());
@@ -679,9 +667,8 @@ public class RegistryControlService {
      */
     private Assets prepareBatchEntry(BatchOperation operation, Assets source) {
         Assets entry = RegistryAssets.copy(source);
-        if (operation.getNamespace_id() != null
-                && (entry.getNamespace_id() == null || entry.getNamespace_id().isBlank())) {
-            entry.setNamespace_id(operation.getNamespace_id());
+        if (operation.getSpace_id() != null && (entry.getSpace_id() == null || entry.getSpace_id().isBlank())) {
+            entry.setSpace_id(operation.getSpace_id());
         }
         if (operation.getType() != null) {
             entry.setType(operation.getType().key());
@@ -713,7 +700,7 @@ public class RegistryControlService {
                     result.recordSkip();
                     return;
                 }
-                delete(RegistryIdentity.type(existing), existing.getNamespace_id(), existing.getId());
+                delete(RegistryIdentity.type(existing), existing.getSpace_id(), existing.getId());
                 result.recordDelete();
             }
             case REGISTER, UPDATE, UPSERT -> {
@@ -745,13 +732,13 @@ public class RegistryControlService {
     private Assets resolveExisting(Assets entry) {
         Type type = RegistryIdentity.type(entry);
         if (entry.getId() != null) {
-            Assets byId = registry(type).refresh(entry.getNamespace_id(), entry.getId());
+            Assets byId = registry(type).refresh(entry.getSpace_id(), entry.getId());
             if (byId != null) {
                 return byId;
             }
         }
         if (entry.getMethod() != null && entry.getVersion() != null) {
-            return getByRoute(type, entry.getNamespace_id(), entry.getApp_id(), entry.getMethod(), entry.getVersion());
+            return getByRoute(type, entry.getSpace_id(), entry.getApp_id(), entry.getMethod(), entry.getVersion());
         }
         return null;
     }
@@ -1230,13 +1217,13 @@ public class RegistryControlService {
         }
 
         @Override
-        public void delete(Type type, String namespace, String id) {
-            RegistryControlService.this.delete(type, namespace, id);
+        public void delete(Type type, String space, String id) {
+            RegistryControlService.this.delete(type, space, id);
         }
 
         @Override
-        public void delete(Type type, String namespace, String id, Assets existing) {
-            RegistryControlService.this.delete(type, namespace, id, existing, true);
+        public void delete(Type type, String space, String id, Assets existing) {
+            RegistryControlService.this.delete(type, space, id, existing, true);
         }
 
         @Override

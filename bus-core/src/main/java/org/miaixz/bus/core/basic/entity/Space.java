@@ -24,35 +24,35 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Represents namespace information used to isolate resources, configuration, or data within the current context.
+ * Represents the persistent logical space used to isolate resources, configuration, and data.
  *
  * @author Kimi Liu
  */
 @Getter
 @Setter
 @SuperBuilder
-public class Namespace extends Tracer {
+public class Space extends Tracer {
 
     /**
-     * Constructs a new {@code Namespace} instance.
+     * Constructs a new {@code Space} instance.
      */
-    public Namespace() {
+    public Space() {
         // No initialization required.
     }
 
     /**
-     * The unique identifier of the namespace to which the current entity belongs.
+     * Unique identifier of the logical space that owns the current entity.
      */
-    private String namespace_id;
+    private String space_id;
 
     /**
-     * Returns whether the current entry belongs to the supplied namespace.
+     * Returns whether the current entry belongs to the supplied space.
      *
-     * @param namespace candidate namespace
-     * @return {@code true} when the namespace matches
+     * @param space candidate logical space identifier
+     * @return {@code true} when the candidate identifies the owning space
      */
-    public boolean inNamespace(String namespace) {
-        return namespace != null && namespace.equals(getNamespace_id());
+    public boolean inSpace(String space) {
+        return space != null && space.equals(getSpace_id());
     }
 
 }

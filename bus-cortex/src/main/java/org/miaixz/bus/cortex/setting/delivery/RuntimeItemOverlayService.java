@@ -95,37 +95,37 @@ public class RuntimeItemOverlayService {
     /**
      * Publishes one runtime overlay without creating {@code setting.item.revision} snapshots.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional {@code setting.profile}
-     * @param content   overlay content
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional {@code setting.profile}
+     * @param content overlay content
      */
-    public void publishRuntimeOverlay(String namespace, String group, String data_id, String profile, String content) {
-        publishRuntimeOverlay(namespace, group, data_id, profile, content, 0L);
+    public void publishRuntimeOverlay(String space, String group, String data_id, String profile, String content) {
+        publishRuntimeOverlay(space, group, data_id, profile, content, 0L);
     }
 
     /**
      * Publishes one runtime overlay with an optional explicit TTL.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional profile
-     * @param content   overlay content
-     * @param ttlMs     explicit ttl in milliseconds, {@code 0} keeps the publisher default
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional profile
+     * @param content overlay content
+     * @param ttlMs   explicit ttl in milliseconds, {@code 0} keeps the publisher default
      */
     public void publishRuntimeOverlay(
-            String namespace,
+            String space,
             String group,
             String data_id,
             String profile,
             String content,
             long ttlMs) {
-        String resolvedNamespace = CortexIdentity.namespace(namespace);
-        publisher.publish(resolvedNamespace, group, data_id, profile, content, ttlMs);
+        String resolvedSpace = CortexIdentity.space(space);
+        publisher.publish(resolvedSpace, group, data_id, profile, content, ttlMs);
         watchManager.notifySetting(
-                watchKey(resolvedNamespace, group, data_id, profile),
+                watchKey(resolvedSpace, group, data_id, profile),
                 content,
                 OVERLAY_SOURCE,
                 OVERLAY_PUBLISH_EVENT,
@@ -148,7 +148,7 @@ public class RuntimeItemOverlayService {
             List<String> profiles = ItemBindingProjection.normalizedProfileIds(entry);
             if (profiles == null || profiles.isEmpty()) {
                 publishRuntimeOverlay(
-                        entry.getNamespace_id(),
+                        entry.getSpace_id(),
                         entry.getGroup(),
                         entry.getData_id(),
                         null,
@@ -157,7 +157,7 @@ public class RuntimeItemOverlayService {
             }
             for (String profile : profiles) {
                 publishRuntimeOverlay(
-                        entry.getNamespace_id(),
+                        entry.getSpace_id(),
                         entry.getGroup(),
                         entry.getData_id(),
                         profile,
@@ -169,29 +169,29 @@ public class RuntimeItemOverlayService {
     /**
      * Resolves one runtime overlay when present.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param data_id   setting data identifier
-     * @param profile   optional {@code setting.profile}
+     * @param space   space
+     * @param group   setting group
+     * @param data_id setting data identifier
+     * @param profile optional {@code setting.profile}
      * @return runtime overlay, or {@code null} when absent
      */
-    public String resolveRuntimeOverlay(String namespace, String group, String data_id, String profile) {
-        return publisher.get(CortexIdentity.namespace(namespace), group, data_id, profile);
+    public String resolveRuntimeOverlay(String space, String group, String data_id, String profile) {
+        return publisher.get(CortexIdentity.space(space), group, data_id, profile);
     }
 
     /**
      * Returns overlay presence for one scope.
      *
-     * @param namespace namespace
-     * @param group     group
-     * @param data_id   data identifier
-     * @param profile   profile
+     * @param space   space
+     * @param group   group
+     * @param data_id data identifier
+     * @param profile profile
      * @return overlay view
      */
-    public Map<String, Object> describe(String namespace, String group, String data_id, String profile) {
+    public Map<String, Object> describe(String space, String group, String data_id, String profile) {
         Map<String, Object> result = new LinkedHashMap<>();
-        String content = resolveRuntimeOverlay(namespace, group, data_id, profile);
-        result.put("key", overlayKey(namespace, group, data_id, profile));
+        String content = resolveRuntimeOverlay(space, group, data_id, profile);
+        result.put("key", overlayKey(space, group, data_id, profile));
         result.put("present", content != null);
         result.put("content", content);
         return result;
@@ -200,16 +200,16 @@ public class RuntimeItemOverlayService {
     /**
      * Deletes one runtime overlay and notifies watchers.
      *
-     * @param namespace namespace
-     * @param group     group
-     * @param data_id   data identifier
-     * @param profile   profile
+     * @param space   space
+     * @param group   group
+     * @param data_id data identifier
+     * @param profile profile
      */
-    public void clearRuntimeOverlay(String namespace, String group, String data_id, String profile) {
-        String resolvedNamespace = CortexIdentity.namespace(namespace);
-        publisher.delete(resolvedNamespace, group, data_id, profile);
+    public void clearRuntimeOverlay(String space, String group, String data_id, String profile) {
+        String resolvedSpace = CortexIdentity.space(space);
+        publisher.delete(resolvedSpace, group, data_id, profile);
         watchManager.notifySetting(
-                watchKey(resolvedNamespace, group, data_id, profile),
+                watchKey(resolvedSpace, group, data_id, profile),
                 null,
                 OVERLAY_SOURCE,
                 OVERLAY_CLEAR_EVENT,
@@ -219,27 +219,27 @@ public class RuntimeItemOverlayService {
     /**
      * Builds one watch key.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param dataId    setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param dataId  setting data identifier
+     * @param profile optional profile
      * @return watch key
      */
-    private String watchKey(String namespace, String group, String dataId, String profile) {
-        return keying.key(SettingSpec.watch(namespace, group, dataId, profile));
+    private String watchKey(String space, String group, String dataId, String profile) {
+        return keying.key(SettingSpec.watch(space, group, dataId, profile));
     }
 
     /**
      * Builds one overlay key.
      *
-     * @param namespace namespace
-     * @param group     setting group
-     * @param dataId    setting data identifier
-     * @param profile   optional profile
+     * @param space   space
+     * @param group   setting group
+     * @param dataId  setting data identifier
+     * @param profile optional profile
      * @return overlay key
      */
-    private String overlayKey(String namespace, String group, String dataId, String profile) {
-        return keying.key(SettingSpec.overlay(namespace, group, dataId, profile));
+    private String overlayKey(String space, String group, String dataId, String profile) {
+        return keying.key(SettingSpec.overlay(space, group, dataId, profile));
     }
 
 }

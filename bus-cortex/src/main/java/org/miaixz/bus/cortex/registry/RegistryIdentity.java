@@ -26,9 +26,8 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 /**
  * Canonical identity rules shared by cortex persistence, cache, and runtime sync.
  * <p>
- * The primary asset identity is {@code namespace + app_id + type + method + version}. Overloads that omit
- * {@code app_id} only describe partial route fragments for broad scans or compatibility paths and are not the preferred
- * identity path.
+ * The primary asset identity is {@code space + app_id + type + method + version}. Overloads that omit {@code app_id}
+ * only describe partial route fragments for broad scans or compatibility paths and are not the preferred identity path.
  * </p>
  *
  * @author Kimi Liu
@@ -43,13 +42,13 @@ public class RegistryIdentity {
     }
 
     /**
-     * Returns the canonical namespace, defaulting blank values to the shared default namespace.
+     * Returns the canonical space, defaulting blank values to the shared default space.
      *
-     * @param namespace raw namespace value
-     * @return canonical namespace value
+     * @param space raw space value
+     * @return canonical space value
      */
-    public static String namespace(String namespace) {
-        return CortexIdentity.namespace(namespace);
+    public static String space(String space) {
+        return CortexIdentity.space(space);
     }
 
     /**
@@ -83,7 +82,7 @@ public class RegistryIdentity {
     }
 
     /**
-     * Normalizes namespace and type in place before the asset enters cache, persistence, or runtime state.
+     * Normalizes space and type in place before the asset enters cache, persistence, or runtime state.
      *
      * @param asset        asset to normalize
      * @param fallbackType type used when the asset does not define one
@@ -94,7 +93,7 @@ public class RegistryIdentity {
         if (asset == null) {
             return null;
         }
-        asset.setNamespace_id(namespace(asset.getNamespace_id()));
+        asset.setSpace_id(space(asset.getSpace_id()));
         asset.setApp_id(applicationId(asset.getApp_id()));
         Integer rawType = asset.getType() == null ? fallbackType == null ? null : fallbackType.key() : asset.getType();
         asset.setType(type(rawType).key());

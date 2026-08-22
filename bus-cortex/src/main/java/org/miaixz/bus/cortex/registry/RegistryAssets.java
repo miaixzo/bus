@@ -194,7 +194,7 @@ public class RegistryAssets {
      */
     private static void copyBase(Assets target, Assets source) {
         target.setId(source.getId());
-        target.setNamespace_id(source.getNamespace_id());
+        target.setSpace_id(source.getSpace_id());
         target.setApp_id(source.getApp_id());
         target.setType(source.getType());
         target.setStatus(source.getStatus());

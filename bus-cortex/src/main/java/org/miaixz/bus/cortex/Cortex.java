@@ -401,56 +401,46 @@ public class Cortex {
         Logger.info(
                 true,
                 "Cortex",
-                "Facade register requested: type={}, namespace={}, id={}",
+                "Facade register requested: type={}, space={}, id={}",
                 assets == null ? null : assets.getClass().getSimpleName(),
-                assets == null ? null : assets.getNamespace_id(),
+                assets == null ? null : assets.getSpace_id(),
                 assets == null ? null : assets.getId());
         Registry<Assets> registry = (Registry<Assets>) registry((Class<? extends Assets>) assets.getClass());
         registry.register(assets);
         Logger.info(
                 false,
                 "Cortex",
-                "Facade register completed: type={}, namespace={}, id={}",
+                "Facade register completed: type={}, space={}, id={}",
                 assets.getClass().getSimpleName(),
-                assets.getNamespace_id(),
+                assets.getSpace_id(),
                 assets.getId());
     }
 
     /**
      * Deregisters the same entry identifier from all built-in registries.
      *
-     * @param namespace namespace containing the entry
-     * @param id        entry identifier
+     * @param space space containing the entry
+     * @param id    entry identifier
      */
-    public static void deregister(String namespace, String id) {
-        Logger.info(
-                true,
-                "Cortex",
-                "Facade deregister requested across registries: namespace={}, id={}",
-                namespace,
-                id);
-        api().deregister(namespace, id);
-        mcp().deregister(namespace, id);
-        prompt().deregister(namespace, id);
-        Logger.info(
-                false,
-                "Cortex",
-                "Facade deregister completed across registries: namespace={}, id={}",
-                namespace,
-                id);
+    public static void deregister(String space, String id) {
+        Logger.info(true, "Cortex", "Facade deregister requested across registries: space={}, id={}", space, id);
+        api().deregister(space, id);
+        mcp().deregister(space, id);
+        prompt().deregister(space, id);
+        Logger.info(false, "Cortex", "Facade deregister completed across registries: space={}, id={}", space, id);
     }
 
     /**
      * Deregisters one entry from the registry matching the requested asset type.
      *
-     * @param type      registry type
-     * @param namespace namespace containing the entry
-     * @param id        entry identifier
+     * @param type  registry type
+     * @param space space containing the entry
+     * @param id    entry identifier
      */
-    public static void deregister(Type type, String namespace, String id) {
-        Logger.info(true, "Cortex", "Facade deregister requested: type={}, namespace={}, id={}", type, namespace, id);
-        registry(type).deregister(namespace, id);
-        Logger.info(false, "Cortex", "Facade deregister completed: type={}, namespace={}, id={}", type, namespace, id);
+    public static void deregister(Type type, String space, String id) {
+        Logger.info(true, "Cortex", "Facade deregister requested: type={}, space={}, id={}", type, space, id);
+        registry(type).deregister(space, id);
+        Logger.info(false, "Cortex", "Facade deregister completed: type={}, space={}, id={}", type, space, id);
     }
 
     /**
@@ -465,17 +455,17 @@ public class Cortex {
         Logger.debug(
                 true,
                 "Cortex",
-                "Facade query requested: type={}, namespace={}, id={}",
+                "Facade query requested: type={}, space={}, id={}",
                 type == null ? null : type.getSimpleName(),
-                vector == null ? null : vector.getNamespace_id(),
+                vector == null ? null : vector.getSpace_id(),
                 vector == null ? null : vector.getId());
         List<T> result = registry(type).query(vector);
         Logger.debug(
                 false,
                 "Cortex",
-                "Facade query completed: type={}, namespace={}, id={}, resultSize={}",
+                "Facade query completed: type={}, space={}, id={}, resultSize={}",
                 type == null ? null : type.getSimpleName(),
-                vector == null ? null : vector.getNamespace_id(),
+                vector == null ? null : vector.getSpace_id(),
                 vector == null ? null : vector.getId(),
                 result.size());
         return result;
@@ -666,11 +656,12 @@ public class Cortex {
         /**
          * Creates one immutable runtime snapshot for static facade binding.
          *
-         * @param api     API registry
-         * @param mcp     MCP registry
-         * @param prompt  prompt registry
-         * @param version version registry
-         * @param curator curator facade
+         * @param api        API registry
+         * @param mcp        MCP registry
+         * @param prompt     prompt registry
+         * @param version    version registry
+         * @param curator    curator facade
+         * @param components additional runtime-managed lifecycle components
          */
         public Runtime(Registry<ApiAssets> api, Registry<McpAssets> mcp, Registry<PromptAssets> prompt,
                 Registry<VersionAssets> version, Curator curator, List<Object> components) {

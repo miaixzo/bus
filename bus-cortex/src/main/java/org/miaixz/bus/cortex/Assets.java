@@ -84,12 +84,12 @@ public class Assets extends Nature {
     private String url;
 
     /**
-     * Application identifier bound to the asset within the current namespace.
+     * Application identifier bound to the asset within the current space.
      */
     private String app_id;
 
     /**
-     * Logical asset method identifier used for lookup within one namespace and application.
+     * Logical asset method identifier used for lookup within one space and application.
      */
     private String method;
 

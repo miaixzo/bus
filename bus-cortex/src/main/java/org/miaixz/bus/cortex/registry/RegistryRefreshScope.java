@@ -41,9 +41,9 @@ public class RegistryRefreshScope {
     }
 
     /**
-     * Registry namespace identifier.
+     * Registry space identifier.
      */
-    private String namespace_id;
+    private String space_id;
 
     /**
      * Registry asset type.

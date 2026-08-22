@@ -62,28 +62,28 @@ public interface ProfileStore {
     /**
      * Deletes one profile entry.
      *
-     * @param namespace_id namespace identifier
-     * @param profile_id   profile identifier
+     * @param space_id   space identifier
+     * @param profile_id profile identifier
      * @return deleted snapshot or {@code null} when absent
      */
-    Profile delete(String namespace_id, String profile_id);
+    Profile delete(String space_id, String profile_id);
 
     /**
      * Finds one profile entry.
      *
-     * @param namespace_id namespace identifier
-     * @param profile_id   profile identifier
+     * @param space_id   space identifier
+     * @param profile_id profile identifier
      * @return stored entry or {@code null}
      */
-    Profile find(String namespace_id, String profile_id);
+    Profile find(String space_id, String profile_id);
 
     /**
-     * Queries profile entries within one namespace.
+     * Queries profile entries within one space.
      *
-     * @param namespace_id namespace identifier
+     * @param space_id space identifier
      * @return matching entries
      */
-    List<Profile> query(String namespace_id);
+    List<Profile> query(String space_id);
 
     /**
      * Returns strongly typed durable-store capability hints.

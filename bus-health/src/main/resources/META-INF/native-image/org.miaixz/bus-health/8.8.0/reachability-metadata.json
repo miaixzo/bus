@@ -2293,6 +2293,67 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.health.builtin.hardware.DisplayInfo",
+      "methods": [
+        {
+          "name": "getEdid",
+          "parameterTypes": []
+        },
+        {
+          "name": "isEdidSynthetic",
+          "parameterTypes": []
+        },
+        {
+          "name": "getManufacturerID",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProductID",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSerialNo",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWeek",
+          "parameterTypes": []
+        },
+        {
+          "name": "getYear",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVersion",
+          "parameterTypes": []
+        },
+        {
+          "name": "isDigital",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHcm",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVcm",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPreferredResolution",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProductSerialNumber",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.health.builtin.hardware.DisplayInfoImpl",
       "fields": [
         {
@@ -16931,11 +16992,6 @@
     },
     {
       "type": "org.miaixz.bus.health.mac.driver.CpuFrequencyResidency",
-      "fields": [
-        {
-          "name": "UNKNOWN_RANK"
-        }
-      ],
       "methods": [
         {
           "name": "activeWeightedFrequency",
@@ -16981,6 +17037,47 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.health.mac.driver.IOReportClient",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.health.mac.jna.IOReport",
+            "org.miaixz.bus.health.mac.jna.IOReport$IOReportSubscriptionRef",
+            "com.sun.jna.platform.mac.CoreFoundation$CFDictionaryRef"
+          ]
+        },
+        {
+          "name": "create",
+          "parameterTypes": []
+        },
+        {
+          "name": "createForCpu",
+          "parameterTypes": []
+        },
+        {
+          "name": "sampleGpuTicks",
+          "parameterTypes": []
+        },
+        {
+          "name": "sampleGpuUsage",
+          "parameterTypes": []
+        },
+        {
+          "name": "samplePowerWatts",
+          "parameterTypes": []
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "sampleResidencyDelta",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.health.mac.driver.IOReportClient$ChannelStates",
       "fields": [
         {
@@ -16997,6 +17094,21 @@
         {
           "name": "getStates",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.mac.driver.net.NetStat",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "queryIFdata",
+          "parameterTypes": [
+            "int"
+          ]
         }
       ]
     },
@@ -28694,9 +28806,9 @@
           "name": "queryRoutes",
           "parameterTypes": [
             "java.lang.String",
-            "boolean",
-            "java.util.Map",
-            "int"
+            "java.lang.String",
+            "int",
+            "java.util.Map"
           ]
         },
         {
@@ -28704,7 +28816,6 @@
           "parameterTypes": [
             "java.lang.String",
             "boolean",
-            "java.util.Map",
             "int",
             "java.util.Map"
           ]
@@ -28712,7 +28823,8 @@
         {
           "name": "querySolarisRoutes",
           "parameterTypes": [
-            "boolean",
+            "java.lang.String",
+            "java.lang.String",
             "java.util.Map"
           ]
         },
@@ -28742,9 +28854,6 @@
     {
       "type": "org.miaixz.bus.health.unix.shared.driver.RouteTableDump$Layout",
       "fields": [
-        {
-          "name": "AIX"
-        },
         {
           "name": "DRAGONFLY"
         },
@@ -36759,53 +36868,6 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.DisplayConnector",
-      "fields": [
-        {
-          "name": "QDC_ONLY_ACTIVE_PATHS"
-        },
-        {
-          "name": "PATH_INFO_SIZE"
-        },
-        {
-          "name": "MODE_INFO_SIZE"
-        },
-        {
-          "name": "PATH_TARGET_ADAPTER_ID_OFFSET"
-        },
-        {
-          "name": "PATH_TARGET_ID_OFFSET"
-        },
-        {
-          "name": "PATH_FLAGS_OFFSET"
-        },
-        {
-          "name": "PATH_ACTIVE"
-        },
-        {
-          "name": "TARGET_DEVICE_NAME_SIZE"
-        },
-        {
-          "name": "DEVICE_INFO_GET_TARGET_NAME"
-        },
-        {
-          "name": "TDN_HEADER_SIZE_OFFSET"
-        },
-        {
-          "name": "TDN_HEADER_ADAPTER_ID_OFFSET"
-        },
-        {
-          "name": "TDN_HEADER_ID_OFFSET"
-        },
-        {
-          "name": "TDN_OUTPUT_TECHNOLOGY_OFFSET"
-        },
-        {
-          "name": "TDN_CONNECTOR_INSTANCE_OFFSET"
-        },
-        {
-          "name": "TDN_MONITOR_DEVICE_PATH_OFFSET"
-        }
-      ],
       "methods": [
         {
           "name": "connectorName",
@@ -61883,6 +61945,69 @@
           "parameterTypes": [
             "java.lang.String"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.software.WindowsNetworkParams",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHostName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIpv4DefaultGateway",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIpv6DefaultGateway",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRoutes",
+          "parameterTypes": []
+        },
+        {
+          "name": "queryRouteRows",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDomainName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDnsServers",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.software.WindowsNetworkParams$RouteRow",
+      "fields": [
+        {
+          "name": "destination"
+        },
+        {
+          "name": "prefixLength"
+        },
+        {
+          "name": "nextHop"
+        },
+        {
+          "name": "interfaceIndex"
+        },
+        {
+          "name": "metric"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
         }
       ]
     },
