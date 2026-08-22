@@ -80,7 +80,8 @@ public class ServerRuntime<S> {
      * @param name     lifecycle name
      * @param listener server listener
      * @param observer observer
-     * @param <T>      source type
+     * @param <S>      accepted session type
+     * @param <T>      server callback source type
      * @return server runtime
      */
     public static <S, T> ServerRuntime<S> create(
