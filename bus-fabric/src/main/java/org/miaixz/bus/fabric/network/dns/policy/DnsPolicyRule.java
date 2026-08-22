@@ -40,7 +40,7 @@ import org.miaixz.bus.fabric.network.dns.zone.CidrBlock;
  *
  * @author Kimi Liu
  */
-public final class DnsPolicyRule {
+public class DnsPolicyRule {
 
     /**
      * Rule match mode.

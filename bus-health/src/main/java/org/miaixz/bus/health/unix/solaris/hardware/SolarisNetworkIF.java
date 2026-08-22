@@ -37,7 +37,7 @@ import org.miaixz.bus.health.unix.solaris.software.SolarisOperatingSystem;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class SolarisNetworkIF extends AbstractNetworkIF {
+public class SolarisNetworkIF extends AbstractNetworkIF {
 
     /**
      * The bytesRecv value.

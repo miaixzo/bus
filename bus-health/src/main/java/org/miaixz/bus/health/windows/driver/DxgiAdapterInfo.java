@@ -35,7 +35,7 @@ import org.miaixz.bus.health.windows.jna.WindowsDxgi;
  *
  * @author Kimi Liu
  */
-public final class DxgiAdapterInfo {
+public class DxgiAdapterInfo {
 
     /**
      * The description value.

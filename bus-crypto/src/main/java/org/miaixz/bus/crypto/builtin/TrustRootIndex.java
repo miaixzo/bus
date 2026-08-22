@@ -38,7 +38,7 @@ import org.miaixz.bus.crypto.Keeper;
  *
  * @author Kimi Liu
  */
-public final class TrustRootIndex {
+public class TrustRootIndex {
 
     /**
      * CA certificates by subject.
@@ -50,7 +50,7 @@ public final class TrustRootIndex {
      *
      * @param caCerts CA certificates
      */
-    private TrustRootIndex(final Collection<X509Certificate> caCerts) {
+    public TrustRootIndex(final Collection<X509Certificate> caCerts) {
         if (caCerts == null || caCerts.stream().anyMatch(certificate -> certificate == null)) {
             throw new ValidateException("CA certificates must be non-null and contain no null elements");
         }

@@ -297,7 +297,7 @@ public class WadoParameters extends ArchiveParameters {
          * @param wadoURL the wado url.
          * @param wadoRS  the wado rs.
          */
-        private Builder(String wadoURL, boolean wadoRS) {
+        public Builder(String wadoURL, boolean wadoRS) {
             this.wadoURL = wadoURL;
             this.wadoRS = wadoRS;
         }

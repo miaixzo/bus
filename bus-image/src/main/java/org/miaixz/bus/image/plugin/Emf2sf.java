@@ -71,7 +71,7 @@ public class Emf2sf {
      *
      * @param outDir The destination directory.
      */
-    public final void setOutputDirectory(File outDir) {
+    public void setOutputDirectory(File outDir) {
         outDir.mkdirs();
         this.outDir = outDir;
     }
@@ -81,7 +81,7 @@ public class Emf2sf {
      *
      * @param outFileFormat The pattern for formatting the frame number in the filename.
      */
-    public final void setOutputFileFormat(String outFileFormat) {
+    public void setOutputFileFormat(String outFileFormat) {
         this.outFileFormat = new DecimalFormat(outFileFormat);
     }
 
@@ -90,7 +90,7 @@ public class Emf2sf {
      *
      * @param frames An array of frame numbers to extract.
      */
-    public final void setFrames(int[] frames) {
+    public void setFrames(int[] frames) {
         this.frames = frames;
     }
 

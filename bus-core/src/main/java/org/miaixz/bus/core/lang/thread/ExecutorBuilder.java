@@ -54,7 +54,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     /**
      * Creates an executor builder returned by the static factory method.
      */
-    private ExecutorBuilder() {
+    public ExecutorBuilder() {
         // No initialization required.
     }
 

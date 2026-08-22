@@ -39,7 +39,7 @@ import org.miaixz.bus.health.Parsing;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Who {
+public class Who {
 
     // sample format:
     // system boot 2020-06-16 09:12
@@ -68,7 +68,7 @@ public final class Who {
     /**
      * Creates a new Who instance.
      */
-    private Who() {
+    public Who() {
         // No initialization required.
     }
 

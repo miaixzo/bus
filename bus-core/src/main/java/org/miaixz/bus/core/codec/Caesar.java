@@ -34,7 +34,7 @@ public class Caesar {
     /**
      * Keeps Caesar-cipher encoding and decoding on the static API.
      */
-    private Caesar() {
+    public Caesar() {
         // No initialization required.
     }
 

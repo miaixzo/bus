@@ -50,7 +50,7 @@ public class DigesterFactory {
      *
      * @param messageDigest The prototype {@link MessageDigest} instance.
      */
-    private DigesterFactory(final MessageDigest messageDigest) {
+    public DigesterFactory(final MessageDigest messageDigest) {
         this.prototype = messageDigest;
         this.cloneSupport = checkCloneSupport(messageDigest);
     }

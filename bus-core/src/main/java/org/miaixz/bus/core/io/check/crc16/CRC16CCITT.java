@@ -33,7 +33,7 @@ public class CRC16CCITT extends CRC16Checksum {
     /**
      * Creates a CRC-16/CCITT checksum implementation.
      */
-    private CRC16CCITT() {
+    public CRC16CCITT() {
         // No initialization required.
     }
 

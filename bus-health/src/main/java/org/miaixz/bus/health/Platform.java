@@ -83,7 +83,7 @@ public class Platform {
     private final SupplierX<HardwareAbstractionLayer> hardware = Memoizer.memoize(this::createHardware);
 
     /**
-     * Private constructor to prevent external instantiation.
+     * Creates a platform detector using the current runtime environment.
      */
     public Platform() {
         // No initialization required.

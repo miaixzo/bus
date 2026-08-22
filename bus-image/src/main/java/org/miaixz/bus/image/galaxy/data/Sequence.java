@@ -74,7 +74,7 @@ public class Sequence extends ArrayList<Attributes> implements Value {
      * @param tag             the tag.
      * @param initialCapacity the initial capacity.
      */
-    Sequence(Attributes parent, String privateCreator, int tag, int initialCapacity) {
+    public Sequence(Attributes parent, String privateCreator, int tag, int initialCapacity) {
         super(initialCapacity);
         this.parent = parent;
         this.privateCreator = privateCreator;
@@ -114,7 +114,7 @@ public class Sequence extends ArrayList<Attributes> implements Value {
      *
      * @return the parent.
      */
-    public final Attributes getParent() {
+    public Attributes getParent() {
         return parent;
     }
 

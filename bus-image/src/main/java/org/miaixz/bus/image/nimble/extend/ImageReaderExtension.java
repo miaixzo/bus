@@ -58,7 +58,7 @@ public class ImageReaderExtension extends DeviceExtension {
      *
      * @return the image reader factory.
      */
-    public final ImageReaderFactory getImageReaderFactory() {
+    public ImageReaderFactory getImageReaderFactory() {
         return factory;
     }
 

@@ -27,12 +27,12 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class ItemRevisionNumbers {
+public class ItemRevisionNumbers {
 
     /**
      * Keeps configuration revision-number handling on the static API.
      */
-    private ItemRevisionNumbers() {
+    public ItemRevisionNumbers() {
         // No initialization required.
     }
 

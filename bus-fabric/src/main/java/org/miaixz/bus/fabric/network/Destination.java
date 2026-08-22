@@ -35,7 +35,7 @@ import org.miaixz.bus.fabric.network.tls.TlsPolicy;
  *
  * @author Kimi Liu
  */
-public final class Destination {
+public class Destination {
 
     /**
      * Application protocol used for pooling.

@@ -203,7 +203,7 @@ public class StgCmtSCU {
      *
      * @param uidSuffix The UID suffix.
      */
-    public final void setUIDSuffix(String uidSuffix) {
+    public void setUIDSuffix(String uidSuffix) {
         this.uidSuffix = uidSuffix;
     }
 

@@ -386,7 +386,7 @@ public class Attributes implements Serializable {
      *
      * @return Whether this is the root attribute set
      */
-    public final boolean isRoot() {
+    public boolean isRoot() {
         return parent == null;
     }
 
@@ -395,7 +395,7 @@ public class Attributes implements Serializable {
      *
      * @return result
      */
-    public final Attributes getRoot() {
+    public Attributes getRoot() {
         return isRoot() ? this : parent.getRoot();
     }
 
@@ -404,7 +404,7 @@ public class Attributes implements Serializable {
      *
      * @return level
      */
-    public final int getLevel() {
+    public int getLevel() {
         return isRoot() ? 0 : 1 + parent.getLevel();
     }
 
@@ -413,7 +413,7 @@ public class Attributes implements Serializable {
      *
      * @return Whether big endian
      */
-    public final boolean bigEndian() {
+    public boolean bigEndian() {
         return bigEndian;
     }
 
@@ -422,7 +422,7 @@ public class Attributes implements Serializable {
      *
      * @return Parent attribute set
      */
-    public final Attributes getParent() {
+    public Attributes getParent() {
         return parent;
     }
 
@@ -449,7 +449,7 @@ public class Attributes implements Serializable {
      *
      * @return length
      */
-    public final int getLength() {
+    public int getLength() {
         return length;
     }
 
@@ -500,7 +500,7 @@ public class Attributes implements Serializable {
      *
      * @return Item position
      */
-    public final long getItemPosition() {
+    public long getItemPosition() {
         return itemPosition;
     }
 
@@ -509,7 +509,7 @@ public class Attributes implements Serializable {
      *
      * @param itemPosition Item position
      */
-    public final void setItemPosition(long itemPosition) {
+    public void setItemPosition(long itemPosition) {
         this.itemPosition = itemPosition;
     }
 
@@ -518,7 +518,7 @@ public class Attributes implements Serializable {
      *
      * @return Whether empty
      */
-    public final boolean isEmpty() {
+    public boolean isEmpty() {
         return size == 0;
     }
 
@@ -527,7 +527,7 @@ public class Attributes implements Serializable {
      *
      * @return size
      */
-    public final int size() {
+    public int size() {
         return size;
     }
 

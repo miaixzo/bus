@@ -125,7 +125,7 @@ public class Segment {
      *
      * @return A new shared {@link Segment} instance.
      */
-    public final Segment sharedCopy() {
+    public Segment sharedCopy() {
         shared = true;
         return new Segment(data, pos, limit, true, false);
     }
@@ -135,7 +135,7 @@ public class Segment {
      *
      * @return A new unshared {@link Segment} instance with a copy of the data.
      */
-    public final Segment unsharedCopy() {
+    public Segment unsharedCopy() {
         return new Segment(data.clone(), pos, limit, false, true);
     }
 
@@ -145,7 +145,7 @@ public class Segment {
      *
      * @return The successor segment, or null if the list becomes empty.
      */
-    public final Segment pop() {
+    public Segment pop() {
         Segment result = next != this ? next : null;
         prev.next = next;
         next.prev = prev;
@@ -160,7 +160,7 @@ public class Segment {
      * @param segment The segment to push.
      * @return The pushed segment.
      */
-    public final Segment push(Segment segment) {
+    public Segment push(Segment segment) {
         segment.prev = this;
         segment.next = next;
         next.prev = segment;
@@ -180,7 +180,7 @@ public class Segment {
      * @return The new head of the circularly-linked list.
      * @throws IllegalArgumentException if {@code byteCount} is negative or exceeds the available data.
      */
-    public final Segment split(int byteCount) {
+    public Segment split(int byteCount) {
         if (byteCount <= 0 || byteCount > limit - pos)
             throw new IllegalArgumentException();
         Segment prefix;
@@ -233,7 +233,7 @@ public class Segment {
      * @param byteCount The number of bytes to move.
      * @throws IllegalArgumentException if the sink is not an owner, or if the data cannot fit.
      */
-    public final void writeTo(Segment sink, int byteCount) {
+    public void writeTo(Segment sink, int byteCount) {
         if (!sink.owner)
             throw new IllegalArgumentException();
         if (sink.limit + byteCount > SIZE) {

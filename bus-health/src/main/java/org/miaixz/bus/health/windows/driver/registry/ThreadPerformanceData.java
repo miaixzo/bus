@@ -37,12 +37,12 @@ import org.miaixz.bus.health.windows.driver.perfmon.ThreadInformation.ThreadPerf
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class ThreadPerformanceData {
+public class ThreadPerformanceData {
 
     /**
      * Keeps Windows thread performance data registry queries on the static API.
      */
-    private ThreadPerformanceData() {
+    public ThreadPerformanceData() {
         // No initialization required.
     }
 

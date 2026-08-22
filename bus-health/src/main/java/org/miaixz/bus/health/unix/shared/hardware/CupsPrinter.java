@@ -44,7 +44,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @Immutable
-public final class CupsPrinter extends AbstractPrinter {
+public class CupsPrinter extends AbstractPrinter {
 
     /**
      * The HAS_CUPS constant.
@@ -89,7 +89,7 @@ public final class CupsPrinter extends AbstractPrinter {
      * @param isLocal      the is local
      * @param portName     the port name
      */
-    private CupsPrinter(String name, String driverName, String description, PrinterStatus status, String statusReason,
+    public CupsPrinter(String name, String driverName, String description, PrinterStatus status, String statusReason,
             boolean isDefault, boolean isLocal, String portName) {
         super(name, driverName, description, status, statusReason, isDefault, isLocal, portName);
     }

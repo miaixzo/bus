@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Normal;
  *
  * @author Kimi Liu
  */
-public final class ThreadLocalMap {
+public class ThreadLocalMap {
 
     /**
      * A placeholder value indicating an unset or invalid value. This is used instead of {@code null} because
@@ -74,7 +74,7 @@ public final class ThreadLocalMap {
      * Constructs a new {@code ThreadLocalMap}. Initializes the {@code indexedVariables} array with a default capacity
      * and fills it with the {@link #UNSET} placeholder.
      */
-    private ThreadLocalMap() {
+    public ThreadLocalMap() {
         indexedVariables = newIndexedVariableTable();
     }
 

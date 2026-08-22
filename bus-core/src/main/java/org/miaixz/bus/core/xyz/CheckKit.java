@@ -41,7 +41,7 @@ public class CheckKit {
     /**
      * Keeps validation checks on the static API.
      */
-    private CheckKit() {
+    public CheckKit() {
         // No initialization required.
     }
 

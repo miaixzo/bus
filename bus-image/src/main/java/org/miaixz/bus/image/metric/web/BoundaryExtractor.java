@@ -26,12 +26,12 @@ import org.miaixz.bus.core.lang.Charset;
  *
  * @author Kimi Liu
  */
-public final class BoundaryExtractor {
+public class BoundaryExtractor {
 
     /**
      * Creates a new instance.
      */
-    private BoundaryExtractor() {
+    public BoundaryExtractor() {
         // No initialization required.
     }
 

@@ -39,7 +39,7 @@ public class DefaultNodeBeanFactory implements NodeBeanFactory<Object> {
     /**
      * Creates the default factory used to materialize bean-path nodes.
      */
-    private DefaultNodeBeanFactory() {
+    public DefaultNodeBeanFactory() {
         // No initialization required.
     }
 

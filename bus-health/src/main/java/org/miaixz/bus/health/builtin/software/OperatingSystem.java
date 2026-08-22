@@ -51,12 +51,12 @@ public interface OperatingSystem {
      *
      * @author Kimi Liu
      */
-    final class ProcessFiltering {
+    class ProcessFiltering {
 
         /**
-         * Private constructor to prevent instantiation.
+         * Creates a process-filter definition container.
          */
-        private ProcessFiltering() {
+        public ProcessFiltering() {
             // No initialization required.
         }
 
@@ -94,12 +94,12 @@ public interface OperatingSystem {
      *
      * @author Kimi Liu
      */
-    final class ProcessSorting {
+    class ProcessSorting {
 
         /**
-         * Private constructor to prevent instantiation.
+         * Creates a process-order definition container.
          */
-        private ProcessSorting() {
+        public ProcessSorting() {
             // No initialization required.
         }
 

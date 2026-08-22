@@ -40,12 +40,12 @@ import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class NetStat {
+public class NetStat {
 
     /**
      * Creates a new NetStat instance.
      */
-    private NetStat() {
+    public NetStat() {
         // No initialization required.
     }
 

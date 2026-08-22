@@ -59,12 +59,12 @@ import org.opencv.imgproc.Imgproc;
  *
  * @author Kimi Liu
  */
-public final class ImageAnalyzer {
+public class ImageAnalyzer {
 
     /**
      * Creates a new instance.
      */
-    private ImageAnalyzer() {
+    public ImageAnalyzer() {
         // No initialization required.
     }
 

@@ -149,7 +149,7 @@ public abstract class AAssociateRQAC {
      *
      * @return the protocol version.
      */
-    public final int getProtocolVersion() {
+    public int getProtocolVersion() {
         return protocolVersion;
     }
 
@@ -158,7 +158,7 @@ public abstract class AAssociateRQAC {
      *
      * @param protocolVersion the protocol version.
      */
-    public final void setProtocolVersion(int protocolVersion) {
+    public void setProtocolVersion(int protocolVersion) {
         this.protocolVersion = protocolVersion;
     }
 
@@ -167,7 +167,7 @@ public abstract class AAssociateRQAC {
      *
      * @return the reserved bytes.
      */
-    public final byte[] getReservedBytes() {
+    public byte[] getReservedBytes() {
         return reservedBytes.clone();
     }
 
@@ -176,7 +176,7 @@ public abstract class AAssociateRQAC {
      *
      * @param reservedBytes the reserved bytes.
      */
-    public final void setReservedBytes(byte[] reservedBytes) {
+    public void setReservedBytes(byte[] reservedBytes) {
         if (reservedBytes.length != 32)
             throw new IllegalArgumentException("reservedBytes.length: " + reservedBytes.length);
         System.arraycopy(reservedBytes, 0, this.reservedBytes, 0, 32);
@@ -187,7 +187,7 @@ public abstract class AAssociateRQAC {
      *
      * @return the called aet.
      */
-    public final String getCalledAET() {
+    public String getCalledAET() {
         return calledAET;
     }
 
@@ -196,7 +196,7 @@ public abstract class AAssociateRQAC {
      *
      * @param calledAET the called aet.
      */
-    public final void setCalledAET(String calledAET) {
+    public void setCalledAET(String calledAET) {
         if (calledAET.length() > 16)
             throw new IllegalArgumentException("calledAET: " + calledAET);
         this.calledAET = calledAET;
@@ -207,7 +207,7 @@ public abstract class AAssociateRQAC {
      *
      * @return the calling aet.
      */
-    public final String getCallingAET() {
+    public String getCallingAET() {
         return callingAET;
     }
 
@@ -216,7 +216,7 @@ public abstract class AAssociateRQAC {
      *
      * @param callingAET the calling aet.
      */
-    public final void setCallingAET(String callingAET) {
+    public void setCallingAET(String callingAET) {
         if (callingAET.length() > Normal._16)
             throw new IllegalArgumentException("callingAET: " + callingAET);
         this.callingAET = callingAET;
@@ -227,7 +227,7 @@ public abstract class AAssociateRQAC {
      *
      * @return the application context.
      */
-    public final String getApplicationContext() {
+    public String getApplicationContext() {
         return applicationContext;
     }
 
@@ -236,7 +236,7 @@ public abstract class AAssociateRQAC {
      *
      * @param applicationContext the application context.
      */
-    public final void setApplicationContext(String applicationContext) {
+    public void setApplicationContext(String applicationContext) {
         if (applicationContext == null)
             throw new NullPointerException();
 
@@ -248,7 +248,7 @@ public abstract class AAssociateRQAC {
      *
      * @return the max pdu length.
      */
-    public final int getMaxPDULength() {
+    public int getMaxPDULength() {
         return maxPDULength;
     }
 
@@ -257,7 +257,7 @@ public abstract class AAssociateRQAC {
      *
      * @param maxPDULength the max pdu length.
      */
-    public final void setMaxPDULength(int maxPDULength) {
+    public void setMaxPDULength(int maxPDULength) {
         this.maxPDULength = maxPDULength;
     }
 
@@ -266,7 +266,7 @@ public abstract class AAssociateRQAC {
      *
      * @return the max ops invoked.
      */
-    public final int getMaxOpsInvoked() {
+    public int getMaxOpsInvoked() {
         return maxOpsInvoked;
     }
 
@@ -275,7 +275,7 @@ public abstract class AAssociateRQAC {
      *
      * @param maxOpsInvoked the max ops invoked.
      */
-    public final void setMaxOpsInvoked(int maxOpsInvoked) {
+    public void setMaxOpsInvoked(int maxOpsInvoked) {
         this.maxOpsInvoked = maxOpsInvoked;
     }
 
@@ -284,7 +284,7 @@ public abstract class AAssociateRQAC {
      *
      * @return the max ops performed.
      */
-    public final int getMaxOpsPerformed() {
+    public int getMaxOpsPerformed() {
         return maxOpsPerformed;
     }
 
@@ -293,7 +293,7 @@ public abstract class AAssociateRQAC {
      *
      * @param maxOpsPerformed the max ops performed.
      */
-    public final void setMaxOpsPerformed(int maxOpsPerformed) {
+    public void setMaxOpsPerformed(int maxOpsPerformed) {
         this.maxOpsPerformed = maxOpsPerformed;
     }
 
@@ -302,7 +302,7 @@ public abstract class AAssociateRQAC {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isAsyncOps() {
+    public boolean isAsyncOps() {
         return maxOpsInvoked != 1 || maxOpsPerformed != 1;
     }
 
@@ -311,7 +311,7 @@ public abstract class AAssociateRQAC {
      *
      * @return the impl class uid.
      */
-    public final String getImplClassUID() {
+    public String getImplClassUID() {
         return implClassUID;
     }
 
@@ -320,7 +320,7 @@ public abstract class AAssociateRQAC {
      *
      * @param implClassUID the impl class uid.
      */
-    public final void setImplClassUID(String implClassUID) {
+    public void setImplClassUID(String implClassUID) {
         if (implClassUID == null)
             throw new NullPointerException();
 
@@ -332,7 +332,7 @@ public abstract class AAssociateRQAC {
      *
      * @return the impl version name.
      */
-    public final String getImplVersionName() {
+    public String getImplVersionName() {
         return implVersionName;
     }
 
@@ -341,7 +341,7 @@ public abstract class AAssociateRQAC {
      *
      * @param implVersionName the impl version name.
      */
-    public final void setImplVersionName(String implVersionName) {
+    public void setImplVersionName(String implVersionName) {
         this.implVersionName = implVersionName;
     }
 
@@ -350,7 +350,7 @@ public abstract class AAssociateRQAC {
      *
      * @return the user identity rq.
      */
-    public final IdentityRQ getUserIdentityRQ() {
+    public IdentityRQ getUserIdentityRQ() {
         return identityRQ;
     }
 
@@ -368,7 +368,7 @@ public abstract class AAssociateRQAC {
      *
      * @return the user identity ac.
      */
-    public final IdentityAC getUserIdentityAC() {
+    public IdentityAC getUserIdentityAC() {
         return identityAC;
     }
 

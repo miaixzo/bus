@@ -25,7 +25,7 @@ package org.miaixz.bus.shade.safety.algorithm;
  *
  * @author Kimi Liu
  */
-public final class AsymmetricSecureKey extends SecureKey implements AsymmetricKey {
+public class AsymmetricSecureKey extends SecureKey implements AsymmetricKey {
 
     /**
      * Encoded public key bytes.

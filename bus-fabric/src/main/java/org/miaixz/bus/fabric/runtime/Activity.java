@@ -37,7 +37,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  *
  * @author Kimi Liu
  */
-public final class Activity implements Runnable, Lifecycle {
+public class Activity implements Runnable, Lifecycle {
 
     /**
      * Activity has been accepted but has not started running.
@@ -98,7 +98,7 @@ public final class Activity implements Runnable, Lifecycle {
      * @param name     diagnostic activity name
      * @param runnable work executed at most once
      */
-    private Activity(final String name, final Runnable runnable) {
+    public Activity(final String name, final Runnable runnable) {
         this(name, runnable, Cancellation.create());
     }
 

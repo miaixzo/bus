@@ -29,7 +29,7 @@ import java.util.Objects;
  *
  * @author Kimi Liu
  */
-public final class LimitedInputStream extends FilterInputStream {
+public class LimitedInputStream extends FilterInputStream {
 
     /**
      * The close source value.

@@ -33,7 +33,7 @@ public class CRC16Modbus extends CRC16Checksum {
     /**
      * Creates a CRC-16/MODBUS checksum implementation.
      */
-    private CRC16Modbus() {
+    public CRC16Modbus() {
         // No initialization required.
     }
 

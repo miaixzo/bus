@@ -220,7 +220,7 @@ public class FindSCU implements AutoCloseable {
      *
      * @param priority The priority value (0=Medium, 1=High, 2=Low).
      */
-    public final void setPriority(int priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
@@ -231,7 +231,7 @@ public class FindSCU implements AutoCloseable {
      * @param tss          An array of transfer syntax UIDs to propose.
      * @param queryOptions A set of query options for extended negotiation.
      */
-    public final void setInformationModel(InformationModel model, String[] tss, EnumSet<QueryOption> queryOptions) {
+    public void setInformationModel(InformationModel model, String[] tss, EnumSet<QueryOption> queryOptions) {
         this.model = model;
         rq.addPresentationContext(new PresentationContext(1, model.cuid, tss));
         if (!queryOptions.isEmpty()) {
@@ -258,7 +258,7 @@ public class FindSCU implements AutoCloseable {
      *
      * @param cancelAfter The number of matches.
      */
-    public final void setCancelAfter(int cancelAfter) {
+    public void setCancelAfter(int cancelAfter) {
         this.cancelAfter = cancelAfter;
     }
 
@@ -267,7 +267,7 @@ public class FindSCU implements AutoCloseable {
      *
      * @param outDir The output directory.
      */
-    public final void setOutputDirectory(File outDir) {
+    public void setOutputDirectory(File outDir) {
         outDir.mkdirs();
         this.outDir = outDir;
     }
@@ -277,7 +277,7 @@ public class FindSCU implements AutoCloseable {
      *
      * @param outFileFormat A {@link DecimalFormat} pattern.
      */
-    public final void setOutputFileFormat(String outFileFormat) {
+    public void setOutputFileFormat(String outFileFormat) {
         this.outFileFormat = new DecimalFormat(outFileFormat);
     }
 
@@ -286,7 +286,7 @@ public class FindSCU implements AutoCloseable {
      *
      * @param xsltFile The XSLT file.
      */
-    public final void setXSLT(File xsltFile) {
+    public void setXSLT(File xsltFile) {
         this.xsltFile = xsltFile;
     }
 
@@ -295,7 +295,7 @@ public class FindSCU implements AutoCloseable {
      *
      * @param xml {@code true} for XML output, {@code false} for DICOM.
      */
-    public final void setXML(boolean xml) {
+    public void setXML(boolean xml) {
         this.xml = xml;
     }
 
@@ -304,7 +304,7 @@ public class FindSCU implements AutoCloseable {
      *
      * @param indent {@code true} to indent the XML.
      */
-    public final void setXMLIndent(boolean indent) {
+    public void setXMLIndent(boolean indent) {
         this.xmlIndent = indent;
     }
 
@@ -313,7 +313,7 @@ public class FindSCU implements AutoCloseable {
      *
      * @param includeKeyword {@code true} to include keywords.
      */
-    public final void setXMLIncludeKeyword(boolean includeKeyword) {
+    public void setXMLIncludeKeyword(boolean includeKeyword) {
         this.xmlIncludeKeyword = includeKeyword;
     }
 
@@ -322,7 +322,7 @@ public class FindSCU implements AutoCloseable {
      *
      * @param includeNamespaceDeclaration {@code true} to include the namespace.
      */
-    public final void setXMLIncludeNamespaceDeclaration(boolean includeNamespaceDeclaration) {
+    public void setXMLIncludeNamespaceDeclaration(boolean includeNamespaceDeclaration) {
         this.xmlIncludeNamespaceDeclaration = includeNamespaceDeclaration;
     }
 
@@ -331,7 +331,7 @@ public class FindSCU implements AutoCloseable {
      *
      * @param catOut {@code true} to concatenate the output.
      */
-    public final void setConcatenateOutputFiles(boolean catOut) {
+    public void setConcatenateOutputFiles(boolean catOut) {
         this.catOut = catOut;
     }
 
@@ -340,7 +340,7 @@ public class FindSCU implements AutoCloseable {
      *
      * @param inFilter An array of attribute tags to include.
      */
-    public final void setInputFilter(int[] inFilter) {
+    public void setInputFilter(int[] inFilter) {
         this.inFilter = inFilter;
     }
 

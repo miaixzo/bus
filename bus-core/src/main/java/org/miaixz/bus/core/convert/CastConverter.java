@@ -36,7 +36,7 @@ public class CastConverter implements MatcherConverter, Serializable {
     /**
      * Creates the shared type-casting converter.
      */
-    private CastConverter() {
+    public CastConverter() {
         // No initialization required.
     }
 

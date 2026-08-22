@@ -44,7 +44,7 @@ public class CharsetDetector {
     /**
      * Keeps byte-stream charset detection on the static API.
      */
-    private CharsetDetector() {
+    public CharsetDetector() {
         // No initialization required.
     }
 

@@ -470,7 +470,7 @@ public class StopWatch {
      *
      * @author Kimi Liu
      */
-    public static final class TaskInfo {
+    public static class TaskInfo {
 
         /**
          * The name assigned to the recorded task.
@@ -488,7 +488,7 @@ public class StopWatch {
          * @param taskName  The name of the task.
          * @param timeNanos The elapsed time of the task in nanoseconds.
          */
-        TaskInfo(final String taskName, final long timeNanos) {
+        public TaskInfo(final String taskName, final long timeNanos) {
             this.taskName = taskName;
             this.timeNanos = timeNanos;
         }

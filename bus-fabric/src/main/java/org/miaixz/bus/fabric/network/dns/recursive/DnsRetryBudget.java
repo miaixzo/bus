@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class DnsRetryBudget {
+public class DnsRetryBudget {
 
     /**
      * Fixed recursive total timeout.
@@ -90,7 +90,7 @@ public final class DnsRetryBudget {
      * @param deadlineNanos   monotonic deadline
      * @param attempts        already reserved attempts
      */
-    private DnsRetryBudget(final Duration totalTimeout, final Duration perQueryTimeout, final int maxRetries,
+    public DnsRetryBudget(final Duration totalTimeout, final Duration perQueryTimeout, final int maxRetries,
             final long deadlineNanos, final int attempts) {
         this.totalTimeout = validateDuration(totalTimeout, "DNS retry total timeout");
         this.perQueryTimeout = validateDuration(perQueryTimeout, "DNS retry per-query timeout");
@@ -294,7 +294,7 @@ public final class DnsRetryBudget {
      *
      * @author Kimi Liu
      */
-    public static final class Attempt {
+    public static class Attempt {
 
         /**
          * Effective timeout for the reserved request.
@@ -312,7 +312,7 @@ public final class DnsRetryBudget {
          * @param timeout effective request timeout
          * @param budget  remaining budget
          */
-        private Attempt(final Duration timeout, final DnsRetryBudget budget) {
+        public Attempt(final Duration timeout, final DnsRetryBudget budget) {
             this.timeout = validateDuration(timeout, "DNS retry attempt timeout");
             if (budget == null) {
                 throw new ValidateException("DNS retry remaining budget must not be null");

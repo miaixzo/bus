@@ -44,7 +44,7 @@ public class FileName {
     /**
      * Keeps file-name parsing and normalization on the static API.
      */
-    private FileName() {
+    public FileName() {
         // No initialization required.
     }
 

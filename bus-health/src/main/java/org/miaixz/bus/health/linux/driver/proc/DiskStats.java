@@ -36,7 +36,7 @@ import org.miaixz.bus.health.linux.ProcPath;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class DiskStats {
+public class DiskStats {
 
     /**
      * Constructs a new DiskStats instance.

@@ -34,7 +34,7 @@ import org.miaixz.bus.health.linux.ProcPath;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class CpuStat {
+public class CpuStat {
 
     /**
      * Constructs a new CpuStat instance.

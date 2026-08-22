@@ -269,7 +269,7 @@ public class WebApplication {
      *
      * @return the installed.
      */
-    public final Boolean getInstalled() {
+    public Boolean getInstalled() {
         return installed;
     }
 

@@ -40,12 +40,12 @@ import org.miaixz.bus.fabric.platform.UserAgent;
  *
  * @author Kimi Liu
  */
-public final class HttpHeaders {
+public class HttpHeaders {
 
     /**
      * Keeps HTTP header normalization on the static API.
      */
-    private HttpHeaders() {
+    public HttpHeaders() {
         // No initialization required.
     }
 

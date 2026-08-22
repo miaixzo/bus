@@ -37,12 +37,12 @@ import org.miaixz.bus.fabric.protocol.Cookie;
  *
  * @author Kimi Liu
  */
-public final class HttpCookie {
+public class HttpCookie {
 
     /**
      * Keeps HTTP cookie parsing and formatting on the static API.
      */
-    private HttpCookie() {
+    public HttpCookie() {
         // No initialization required.
     }
 

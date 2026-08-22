@@ -30,7 +30,7 @@ import org.miaixz.bus.fabric.network.dns.policy.DnsPolicyRule;
  *
  * @author Kimi Liu
  */
-public final class DnsView {
+public class DnsView {
 
     /**
      * Default view name.

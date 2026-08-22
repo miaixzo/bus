@@ -70,12 +70,12 @@ import org.miaixz.bus.starter.GeniusBuilder;
  *
  * @author Kimi Liu
  */
-public final class MapperAotProcessors {
+public class MapperAotProcessors {
 
     /**
      * Keeps mapper AOT processor discovery on the static API.
      */
-    private MapperAotProcessors() {
+    public MapperAotProcessors() {
         // No initialization required.
     }
 
@@ -342,7 +342,7 @@ public final class MapperAotProcessors {
         /**
          * Initializes the post-processor that resolves mapper interface class names before Bean creation.
          */
-        MapperInterfaceStringToClassConverter() {
+        public MapperInterfaceStringToClassConverter() {
             // No initialization required.
         }
 

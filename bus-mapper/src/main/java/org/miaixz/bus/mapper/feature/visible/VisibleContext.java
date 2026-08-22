@@ -67,9 +67,9 @@ public class VisibleContext {
     private static final ThreadLocal<Boolean> IGNORE_PERMISSION = ThreadLocal.withInitial(() -> false);
 
     /**
-     * Private constructor to prevent instantiation.
+     * Creates a visibility context facade over the current thread state.
      */
-    private VisibleContext() {
+    public VisibleContext() {
         // No initialization required.
     }
 

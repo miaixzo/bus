@@ -33,7 +33,7 @@ public class CRC16Maxim extends CRC16Checksum {
     /**
      * Creates a CRC-16/MAXIM checksum implementation.
      */
-    private CRC16Maxim() {
+    public CRC16Maxim() {
         // No initialization required.
     }
 

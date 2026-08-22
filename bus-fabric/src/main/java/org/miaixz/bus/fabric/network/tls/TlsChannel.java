@@ -58,7 +58,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class TlsChannel implements Conduit, Lifecycle {
+public class TlsChannel implements Conduit, Lifecycle {
 
     /**
      * Empty plaintext used for handshake and close records.
@@ -231,7 +231,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
      * @param timeout    operation timeouts
      * @param meter      borrowed TLS metrics registry, or {@code null}
      */
-    private TlsChannel(final Conduit conduit, final TlsEngine engine, final Listener<Object> listener,
+    public TlsChannel(final Conduit conduit, final TlsEngine engine, final Listener<Object> listener,
             final Dispatcher dispatcher, final Timeout timeout, final FabricMeter meter) {
         if (conduit == null) {
             throw new ValidateException("Network conduit must not be null");

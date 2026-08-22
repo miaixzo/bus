@@ -411,7 +411,7 @@ public class StreamSCU {
      *
      * @param enable {@code true} to enable.
      */
-    public final void enableSOPClassRelationshipExtNeg(boolean enable) {
+    public void enableSOPClassRelationshipExtNeg(boolean enable) {
         relExtNeg = enable;
     }
 

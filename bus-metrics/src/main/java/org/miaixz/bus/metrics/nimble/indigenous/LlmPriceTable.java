@@ -28,7 +28,7 @@ import java.util.Map;
  *
  * @author Kimi Liu
  */
-public final class LlmPriceTable {
+public class LlmPriceTable {
 
     /**
      * Per-million-token prices in USD keyed by model ID; value is {inputUsdPerM, outputUsdPerM}.
@@ -49,7 +49,7 @@ public final class LlmPriceTable {
     /**
      * Keeps built-in LLM price lookup on the static registry API.
      */
-    private LlmPriceTable() {
+    public LlmPriceTable() {
         // No initialization required.
     }
 

@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  *
  * @author Kimi Liu
  */
-public final class InputStreamSource implements Source {
+public class InputStreamSource implements Source {
 
     /**
      * Source input stream.

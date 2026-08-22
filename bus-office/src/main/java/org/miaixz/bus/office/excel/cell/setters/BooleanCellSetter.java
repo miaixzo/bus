@@ -38,7 +38,7 @@ public class BooleanCellSetter implements CellSetter {
      *
      * @param value The {@link Boolean} value to set in the cell.
      */
-    BooleanCellSetter(final Boolean value) {
+    public BooleanCellSetter(final Boolean value) {
         this.value = value;
     }
 

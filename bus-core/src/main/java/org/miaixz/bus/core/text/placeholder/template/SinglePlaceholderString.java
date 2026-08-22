@@ -64,7 +64,7 @@ public class SinglePlaceholderString extends StringTemplate {
      * @param defaultValue        The default value to use when a placeholder cannot be resolved.
      * @param defaultValueHandler The handler for default values.
      */
-    protected SinglePlaceholderString(final String template, final int features, final String placeholder,
+    public SinglePlaceholderString(final String template, final int features, final String placeholder,
             final char escape, final String defaultValue, final UnaryOperatorX<String> defaultValueHandler) {
         super(template, escape, defaultValue, defaultValueHandler, features);
 
@@ -238,7 +238,7 @@ public class SinglePlaceholderString extends StringTemplate {
          *
          * @param template The template string.
          */
-        protected Builder(final String template) {
+        public Builder(final String template) {
             super(template);
         }
 

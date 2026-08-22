@@ -40,7 +40,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class WindowsNetworkIF extends AbstractNetworkIF {
+public class WindowsNetworkIF extends AbstractNetworkIF {
 
     /**
      * The IS_VISTA_OR_GREATER constant.

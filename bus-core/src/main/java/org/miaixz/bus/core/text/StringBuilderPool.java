@@ -72,7 +72,7 @@ import org.miaixz.bus.core.lang.Normal;
  *
  * @author Kimi Liu
  */
-public final class StringBuilderPool {
+public class StringBuilderPool {
 
     /**
      * ThreadLocal pool for small {@link StringBuilder} instances (default initial capacity: 64 characters). Suitable
@@ -156,7 +156,7 @@ public final class StringBuilderPool {
      *
      * @throws UnsupportedOperationException always
      */
-    private StringBuilderPool() {
+    public StringBuilderPool() {
         throw new UnsupportedOperationException("This class exposes static operations and cannot be instantiated");
     }
 
@@ -575,7 +575,7 @@ public final class StringBuilderPool {
              *
              * @param base the base configuration to copy
              */
-            Builder(PoolConfig base) {
+            public Builder(PoolConfig base) {
                 this.config = base.copy();
             }
 

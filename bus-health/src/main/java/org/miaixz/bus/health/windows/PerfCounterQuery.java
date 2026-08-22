@@ -40,12 +40,12 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class PerfCounterQuery {
+public class PerfCounterQuery {
 
     /**
      * Keeps Windows performance-counter queries on the static API.
      */
-    private PerfCounterQuery() {
+    public PerfCounterQuery() {
         // No initialization required.
     }
 

@@ -36,12 +36,12 @@ import org.miaixz.bus.health.linux.SysPath;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class DrmEdid {
+public class DrmEdid {
 
     /**
      * Creates a new DrmEdid instance.
      */
-    private DrmEdid() {
+    public DrmEdid() {
         // No initialization required.
     }
 

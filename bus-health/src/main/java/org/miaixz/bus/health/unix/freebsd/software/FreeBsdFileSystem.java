@@ -44,7 +44,7 @@ import org.miaixz.bus.health.unix.freebsd.BsdSysctlKit;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class FreeBsdFileSystem extends AbstractFileSystem {
+public class FreeBsdFileSystem extends AbstractFileSystem {
 
     /**
      * Constructs a new FreeBsdFileSystem instance.

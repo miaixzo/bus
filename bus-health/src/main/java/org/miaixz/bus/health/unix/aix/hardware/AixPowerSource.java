@@ -33,7 +33,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class AixPowerSource extends AbstractPowerSource {
+public class AixPowerSource extends AbstractPowerSource {
 
     /**
      * Creates a new AixPowerSource instance.

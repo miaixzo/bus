@@ -49,7 +49,7 @@ import org.miaixz.bus.setting.nimble.props.Props;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Builder {
+public class Builder {
 
     /**
      * Constructs a new Builder instance.

@@ -46,7 +46,7 @@ import org.miaixz.bus.fabric.codec.body.RequestBody;
  *
  * @author Kimi Liu
  */
-public final class FormBody implements RequestBody {
+public class FormBody implements RequestBody {
 
     /**
      * Canonical application/x-www-form-urlencoded media type.
@@ -65,7 +65,7 @@ public final class FormBody implements RequestBody {
      * @param payload non-null repeatable encoded form payload
      * @throws ValidateException if either component is {@code null}
      */
-    private FormBody(final MediaType media, final Payload payload) {
+    public FormBody(final MediaType media, final Payload payload) {
         this.media = Assert.notNull(media, () -> new ValidateException("Form media must not be null"));
         this.payload = Assert.notNull(payload, () -> new ValidateException("Form payload must not be null"));
     }
@@ -298,7 +298,7 @@ public final class FormBody implements RequestBody {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Mutable ordered entries copied when {@link #build()} is called.
@@ -308,7 +308,7 @@ public final class FormBody implements RequestBody {
         /**
          * Creates a form body builder.
          */
-        private Builder() {
+        public Builder() {
             // No initialization required.
         }
 

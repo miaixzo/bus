@@ -40,7 +40,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class CachePolicy implements Policy {
+public class CachePolicy implements Policy {
 
     /**
      * Typed option for the HTTP cache decision policy.
@@ -50,7 +50,7 @@ public final class CachePolicy implements Policy {
     /**
      * Creates a policy.
      */
-    private CachePolicy() {
+    public CachePolicy() {
         // No initialization required.
     }
 

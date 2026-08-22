@@ -40,7 +40,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class PsInfo {
+public class PsInfo {
 
     /**
      * The LIBC constant.
@@ -57,7 +57,7 @@ public final class PsInfo {
     /**
      * Creates a new PsInfo instance.
      */
-    private PsInfo() {
+    public PsInfo() {
         // No initialization required.
     }
 

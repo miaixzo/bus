@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  *
  * @author Kimi Liu
  */
-public final class OutputStreamSink implements Sink {
+public class OutputStreamSink implements Sink {
 
     /**
      * Target output stream.

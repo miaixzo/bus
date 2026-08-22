@@ -33,7 +33,7 @@ public class SingleSegment extends AbstractSegment {
      *
      * @param placeholder The placeholder string.
      */
-    private SingleSegment(final String placeholder) {
+    public SingleSegment(final String placeholder) {
         super(placeholder);
     }
 

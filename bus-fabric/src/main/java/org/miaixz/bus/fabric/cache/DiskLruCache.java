@@ -211,7 +211,8 @@ public class DiskLruCache implements Closeable, Flushable {
      * @param maxSize    maximum retained bytes
      * @param executor   cleanup executor
      */
-    DiskLruCache(DiskFile diskFile, File directory, int appVersion, int valueCount, long maxSize, Executor executor) {
+    public DiskLruCache(DiskFile diskFile, File directory, int appVersion, int valueCount, long maxSize,
+            Executor executor) {
         this(diskFile, directory, appVersion, valueCount, maxSize, executor, null);
     }
 
@@ -1194,7 +1195,7 @@ public class DiskLruCache implements Closeable, Flushable {
      *
      * @author Kimi Liu
      */
-    public final class Snapshot implements Closeable {
+    public class Snapshot implements Closeable {
 
         /**
          * Entry key captured when this snapshot was opened.
@@ -1224,7 +1225,7 @@ public class DiskLruCache implements Closeable, Flushable {
          * @param sources        value sources
          * @param lengths        value lengths
          */
-        Snapshot(String key, long sequenceNumber, Source[] sources, long[] lengths) {
+        public Snapshot(String key, long sequenceNumber, Source[] sources, long[] lengths) {
             this.key = key;
             this.sequenceNumber = sequenceNumber;
             this.sources = sources;
@@ -1287,7 +1288,7 @@ public class DiskLruCache implements Closeable, Flushable {
      *
      * @author Kimi Liu
      */
-    public final class Editor {
+    public class Editor {
 
         /**
          * Entry currently locked by this editor.
@@ -1309,7 +1310,7 @@ public class DiskLruCache implements Closeable, Flushable {
          *
          * @param entry locked cache entry
          */
-        Editor(Entry entry) {
+        public Editor(Entry entry) {
             this.entry = entry;
             this.written = (entry.readable) ? null : new boolean[valueCount];
         }

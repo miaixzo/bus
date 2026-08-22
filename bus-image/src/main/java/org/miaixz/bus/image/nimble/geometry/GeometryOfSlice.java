@@ -102,7 +102,7 @@ public class GeometryOfSlice {
      *
      * @return the row.
      */
-    public final Vector3 getRow() {
+    public Vector3 getRow() {
         return row;
     }
 
@@ -111,7 +111,7 @@ public class GeometryOfSlice {
      *
      * @return the column.
      */
-    public final Vector3 getColumn() {
+    public Vector3 getColumn() {
         return column;
     }
 
@@ -120,7 +120,7 @@ public class GeometryOfSlice {
      *
      * @return the normal.
      */
-    public final Vector3 getNormal() {
+    public Vector3 getNormal() {
         return Vector3.computeNormalOfSurface(row, column);
     }
 
@@ -129,7 +129,7 @@ public class GeometryOfSlice {
      *
      * @return the tlhc.
      */
-    public final Vector3 getTLHC() {
+    public Vector3 getTLHC() {
         return tlhc;
     }
 
@@ -148,7 +148,7 @@ public class GeometryOfSlice {
      * @param point the point.
      * @return the position.
      */
-    public final Vector3 getPosition(Point2D point) {
+    public Vector3 getPosition(Point2D point) {
         return new Vector3(
                 row.x() * voxelSpacing.x() * point.getX() + column.x() * voxelSpacing.y() * point.getY() + tlhc.x(),
                 row.y() * voxelSpacing.x() * point.getX() + column.y() * voxelSpacing.y() * point.getY() + tlhc.y(),
@@ -161,7 +161,7 @@ public class GeometryOfSlice {
      * @param position the position.
      * @return the image position.
      */
-    public final Point2D getImagePosition(Vector3 position) {
+    public Point2D getImagePosition(Vector3 position) {
         if (voxelSpacing.x() < MIN_SPACING || voxelSpacing.y() < MIN_SPACING) {
             return null;
         }
@@ -177,7 +177,7 @@ public class GeometryOfSlice {
      *
      * @return the voxel spacing.
      */
-    public final Vector3 getVoxelSpacing() {
+    public Vector3 getVoxelSpacing() {
         return voxelSpacing;
     }
 
@@ -186,7 +186,7 @@ public class GeometryOfSlice {
      *
      * @return the slice thickness.
      */
-    public final double getSliceThickness() {
+    public double getSliceThickness() {
         return sliceThickness;
     }
 
@@ -195,7 +195,7 @@ public class GeometryOfSlice {
      *
      * @return the dimensions.
      */
-    public final Vector3 getDimensions() {
+    public Vector3 getDimensions() {
         return dimensions;
     }
 
@@ -238,7 +238,7 @@ public class GeometryOfSlice {
      * @param quadruped the quadruped.
      * @return the row orientation.
      */
-    public final String getRowOrientation(boolean quadruped) {
+    public String getRowOrientation(boolean quadruped) {
         return getOrientation(row, quadruped);
     }
 
@@ -248,7 +248,7 @@ public class GeometryOfSlice {
      * @param quadruped the quadruped.
      * @return the column orientation.
      */
-    public final String getColumnOrientation(boolean quadruped) {
+    public String getColumnOrientation(boolean quadruped) {
         return getOrientation(column, quadruped);
     }
 
@@ -257,7 +257,7 @@ public class GeometryOfSlice {
      *
      * @return the row orientation.
      */
-    public final String getRowOrientation() {
+    public String getRowOrientation() {
         return getRowOrientation(false);
     }
 
@@ -266,7 +266,7 @@ public class GeometryOfSlice {
      *
      * @return the column orientation.
      */
-    public final String getColumnOrientation() {
+    public String getColumnOrientation() {
         return getColumnOrientation(false);
     }
 
@@ -276,7 +276,7 @@ public class GeometryOfSlice {
      * @param sourceGeometry the source geometry.
      * @return the slice outline on localizer.
      */
-    public final List<Point2D> getSliceOutlineOnLocalizer(GeometryOfSlice sourceGeometry) {
+    public List<Point2D> getSliceOutlineOnLocalizer(GeometryOfSlice sourceGeometry) {
         return new IntersectSlice(this).getOutlineOnLocalizerForThisGeometry(sourceGeometry);
     }
 
@@ -286,7 +286,7 @@ public class GeometryOfSlice {
      * @param sourceGeometry the source geometry.
      * @return the volume outline on localizer.
      */
-    public final List<Point2D> getVolumeOutlineOnLocalizer(GeometryOfSlice sourceGeometry) {
+    public List<Point2D> getVolumeOutlineOnLocalizer(GeometryOfSlice sourceGeometry) {
         return new IntersectVolume(this).getOutlineOnLocalizerForThisGeometry(sourceGeometry);
     }
 

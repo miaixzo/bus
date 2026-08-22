@@ -38,7 +38,7 @@ import org.miaixz.bus.metrics.observe.tag.Tag;
  *
  * @author Kimi Liu
  */
-public final class CardinalityGuard {
+public class CardinalityGuard {
 
     /**
      * Per-tag-key cardinality policies; auto-populated with firstN(defaultMax) on first access.
@@ -63,7 +63,7 @@ public final class CardinalityGuard {
     /**
      * Keeps metric-cardinality policy enforcement on the static API.
      */
-    private CardinalityGuard() {
+    public CardinalityGuard() {
         // No initialization required.
     }
 

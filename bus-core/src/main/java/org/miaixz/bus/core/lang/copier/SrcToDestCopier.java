@@ -41,7 +41,7 @@ public abstract class SrcToDestCopier<T, C extends SrcToDestCopier<T, C>> implem
     /**
      * Constructs a source-to-destination copier.
      */
-    protected SrcToDestCopier() {
+    public SrcToDestCopier() {
         // No initialization required.
     }
 

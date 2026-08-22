@@ -44,7 +44,7 @@ public class TemporalAccessorCellSetter implements CellSetter {
      *
      * @param value The {@link TemporalAccessor} value to set in the cell.
      */
-    TemporalAccessorCellSetter(final TemporalAccessor value) {
+    public TemporalAccessorCellSetter(final TemporalAccessor value) {
         this.value = value;
     }
 

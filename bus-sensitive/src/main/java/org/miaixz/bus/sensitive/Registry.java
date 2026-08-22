@@ -36,7 +36,7 @@ import org.miaixz.bus.sensitive.nimble.*;
  *
  * @author Kimi Liu
  */
-public final class Registry {
+public class Registry {
 
     /**
      * Constructs a new Registry instance.

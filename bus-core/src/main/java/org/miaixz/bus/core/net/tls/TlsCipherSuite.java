@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @author Kimi Liu
  */
-public final class TlsCipherSuite {
+public class TlsCipherSuite {
 
     /**
      * TLS cipher suite Java-name prefix.
@@ -169,7 +169,7 @@ public final class TlsCipherSuite {
      *
      * @param javaName Java name
      */
-    private TlsCipherSuite(final String javaName) {
+    public TlsCipherSuite(final String javaName) {
         this.javaName = validateName(javaName);
     }
 

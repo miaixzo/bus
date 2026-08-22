@@ -35,7 +35,7 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
  *
  * @author Kimi Liu
  */
-public final class ItemNormalizer {
+public class ItemNormalizer {
 
     /**
      * Built-in source used for inline setting content.
@@ -45,7 +45,7 @@ public final class ItemNormalizer {
     /**
      * Keeps configuration-item normalization on the static API.
      */
-    private ItemNormalizer() {
+    public ItemNormalizer() {
         // No initialization required.
     }
 

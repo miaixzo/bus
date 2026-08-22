@@ -40,7 +40,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class SmcKeyIndex {
+public class SmcKeyIndex {
 
     /**
      * Apple Silicon GPU cluster temperature key pattern.
@@ -75,7 +75,7 @@ public final class SmcKeyIndex {
     /**
      * Creates a new SmcKeyIndex instance.
      */
-    private SmcKeyIndex() {
+    public SmcKeyIndex() {
         // No initialization required.
     }
 

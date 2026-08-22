@@ -41,7 +41,7 @@ public class CitizenIdKit {
     /**
      * Keeps citizen identification-number validation on the static API.
      */
-    private CitizenIdKit() {
+    public CitizenIdKit() {
         // No initialization required.
     }
 

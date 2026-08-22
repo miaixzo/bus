@@ -61,7 +61,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class TcpServer implements AutoCloseable {
+public class TcpServer implements AutoCloseable {
 
     /**
      * Local logical address bound when the server starts.

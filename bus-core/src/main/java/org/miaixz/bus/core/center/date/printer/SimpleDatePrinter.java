@@ -56,7 +56,7 @@ public class SimpleDatePrinter implements DatePrinter, Serializable {
      * @param timeZone The non-null time zone object.
      * @param locale   The non-null locale object.
      */
-    protected SimpleDatePrinter(final String pattern, final TimeZone timeZone, final Locale locale) {
+    public SimpleDatePrinter(final String pattern, final TimeZone timeZone, final Locale locale) {
         this.pattern = pattern;
         this.timeZone = timeZone;
         this.locale = locale;

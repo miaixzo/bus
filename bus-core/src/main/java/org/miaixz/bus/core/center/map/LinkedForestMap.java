@@ -698,7 +698,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
          */
         private final N entryNode;
 
-        EntryNodeWrapper(final N entryNode) {
+        public EntryNodeWrapper(final N entryNode) {
             this.entryNode = entryNode;
         }
 

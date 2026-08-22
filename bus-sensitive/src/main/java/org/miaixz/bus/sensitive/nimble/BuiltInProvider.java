@@ -35,7 +35,7 @@ public abstract class BuiltInProvider extends AbstractProvider {
     /**
      * Constructor available only to marker subclasses.
      */
-    protected BuiltInProvider() {
+    public BuiltInProvider() {
         // No initialization required.
     }
 

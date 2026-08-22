@@ -44,7 +44,7 @@ import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class LinuxNetworkIF extends AbstractNetworkIF {
+public class LinuxNetworkIF extends AbstractNetworkIF {
 
     /**
      * The ifType value.

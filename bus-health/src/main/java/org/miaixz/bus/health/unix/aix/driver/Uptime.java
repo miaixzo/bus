@@ -32,7 +32,7 @@ import org.miaixz.bus.health.Parsing;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Uptime {
+public class Uptime {
 
     /**
      * The MINUTE_MS constant.
@@ -80,7 +80,7 @@ public final class Uptime {
     /**
      * Creates a new Uptime instance.
      */
-    private Uptime() {
+    public Uptime() {
         // No initialization required.
     }
 

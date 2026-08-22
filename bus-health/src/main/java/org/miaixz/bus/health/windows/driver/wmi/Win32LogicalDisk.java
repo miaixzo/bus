@@ -34,12 +34,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Win32LogicalDisk {
+public class Win32LogicalDisk {
 
     /**
      * Keeps Win32 logical disk queries on the static API.
      */
-    private Win32LogicalDisk() {
+    public Win32LogicalDisk() {
         // No initialization required.
     }
 

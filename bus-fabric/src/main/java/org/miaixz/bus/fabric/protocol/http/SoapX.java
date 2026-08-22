@@ -49,7 +49,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
  *
  * @author Kimi Liu
  */
-public final class SoapX {
+public class SoapX {
 
     /**
      * Runtime context used to build the backing HTTP exchange.
@@ -107,7 +107,7 @@ public final class SoapX {
      * @param context runtime context used by the backing HTTP exchange
      * @param url     initial HTTP target URL
      */
-    private SoapX(final Context context, final UnoUrl url) {
+    public SoapX(final Context context, final UnoUrl url) {
         this.context = require(context, "Context");
         this.url = require(url, "URL");
         this.protocol = Protocol.SOAP_1_2;

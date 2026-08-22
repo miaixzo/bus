@@ -35,7 +35,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class BsdNetworkIF extends AbstractNetworkIF {
+public class BsdNetworkIF extends AbstractNetworkIF {
 
     /**
      * The bytesRecv value.

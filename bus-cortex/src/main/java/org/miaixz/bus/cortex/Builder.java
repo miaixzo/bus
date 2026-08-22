@@ -29,12 +29,12 @@ import org.miaixz.bus.cortex.registry.HealthProbeScheduler;
  *
  * @author Kimi Liu
  */
-public final class Builder {
+public class Builder {
 
     /**
      * Creates a new Builder.
      */
-    private Builder() {
+    public Builder() {
         // No initialization required.
     }
 

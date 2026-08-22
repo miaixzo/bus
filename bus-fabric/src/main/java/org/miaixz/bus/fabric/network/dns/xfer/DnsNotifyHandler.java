@@ -40,7 +40,7 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsZone;
  *
  * @author Kimi Liu
  */
-public final class DnsNotifyHandler {
+public class DnsNotifyHandler {
 
     /**
      * Client CIDR blocks allowed to submit DNS NOTIFY messages.

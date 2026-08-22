@@ -74,7 +74,7 @@ public abstract class StompListener implements Listener<StompSession> {
      * @param source STOMP session forwarded unchanged to {@link #connected(StompSession)}
      */
     @Override
-    public final void open(final StompSession source) {
+    public void open(final StompSession source) {
         connected(source);
     }
 
@@ -84,7 +84,7 @@ public abstract class StompListener implements Listener<StompSession> {
      * @param source STOMP session forwarded unchanged to {@link #disconnected(StompSession)}
      */
     @Override
-    public final void close(final StompSession source) {
+    public void close(final StompSession source) {
         disconnected(source);
     }
 
@@ -95,7 +95,7 @@ public abstract class StompListener implements Listener<StompSession> {
      * @param cause  failure forwarded unchanged to {@link #error(StompSession, Throwable)}
      */
     @Override
-    public final void failure(final StompSession source, final Throwable cause) {
+    public void failure(final StompSession source, final Throwable cause) {
         error(source, cause);
     }
 

@@ -74,7 +74,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
  *
  * @author Kimi Liu
  */
-public final class MapperPluginBuilder {
+public class MapperPluginBuilder {
 
     /**
      * MapperFactoryBean property that stores the mapper interface class.
@@ -87,9 +87,9 @@ public final class MapperPluginBuilder {
     private static final String PACKAGE_SPLIT_PATTERN = "[,;\\s]+";
 
     /**
-     * Restricts the class to static mapper plugin assembly operations.
+     * Creates a stateless mapper plugin assembly entry point.
      */
-    private MapperPluginBuilder() {
+    public MapperPluginBuilder() {
         // No initialization required.
     }
 

@@ -59,7 +59,7 @@ public class Timeout implements Runnable {
      * @param cancelMsg  the cancel msg.
      * @param timeout    the timeout.
      */
-    private Timeout(Association as, String expiredMsg, String cancelMsg, int timeout) {
+    public Timeout(Association as, String expiredMsg, String cancelMsg, int timeout) {
         this.as = as;
         this.expiredMsg = expiredMsg;
         this.cancelMsg = cancelMsg;

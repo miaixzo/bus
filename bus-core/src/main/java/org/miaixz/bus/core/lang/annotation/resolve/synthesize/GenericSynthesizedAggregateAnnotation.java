@@ -331,7 +331,7 @@ public class GenericSynthesizedAggregateAnnotation extends AbstractAnnotationSyn
          * @param verticalDistance   the vertical distance from the root annotation
          * @param horizontalDistance the horizontal distance from the root annotation
          */
-        protected MetaAnnotation(final Annotation root, final Annotation annotation, final int verticalDistance,
+        public MetaAnnotation(final Annotation root, final Annotation annotation, final int verticalDistance,
                 final int horizontalDistance) {
             super(root, annotation, verticalDistance, horizontalDistance);
         }

@@ -138,7 +138,7 @@ public class Dcm2Xml {
      *
      * @param xsltURL The URL of the XSLT stylesheet.
      */
-    public final void setXSLTURL(String xsltURL) {
+    public void setXSLTURL(String xsltURL) {
         this.xsltURL = xsltURL;
     }
 
@@ -147,7 +147,7 @@ public class Dcm2Xml {
      *
      * @param indent {@code true} to enable indentation, {@code false} otherwise.
      */
-    public final void setIndent(boolean indent) {
+    public void setIndent(boolean indent) {
         this.indent = indent;
     }
 
@@ -156,7 +156,7 @@ public class Dcm2Xml {
      *
      * @param includeKeyword {@code true} to include keywords, {@code false} otherwise.
      */
-    public final void setIncludeKeyword(boolean includeKeyword) {
+    public void setIncludeKeyword(boolean includeKeyword) {
         this.includeKeyword = includeKeyword;
     }
 
@@ -165,7 +165,7 @@ public class Dcm2Xml {
      *
      * @param includeNamespaceDeclaration {@code true} to include the namespace, {@code false} otherwise.
      */
-    public final void setIncludeNamespaceDeclaration(boolean includeNamespaceDeclaration) {
+    public void setIncludeNamespaceDeclaration(boolean includeNamespaceDeclaration) {
         this.includeNamespaceDeclaration = includeNamespaceDeclaration;
     }
 
@@ -175,7 +175,7 @@ public class Dcm2Xml {
      * @param includeBulkData The bulk data inclusion mode (e.g., URI, inline).
      * @see org.miaixz.bus.image.galaxy.io.ImageInputStream.IncludeBulkData
      */
-    public final void setIncludeBulkData(ImageInputStream.IncludeBulkData includeBulkData) {
+    public void setIncludeBulkData(ImageInputStream.IncludeBulkData includeBulkData) {
         this.includeBulkData = includeBulkData;
     }
 
@@ -184,7 +184,7 @@ public class Dcm2Xml {
      *
      * @param catBlkFiles {@code true} to concatenate, {@code false} to create separate files.
      */
-    public final void setConcatenateBulkDataFiles(boolean catBlkFiles) {
+    public void setConcatenateBulkDataFiles(boolean catBlkFiles) {
         this.catBlkFiles = catBlkFiles;
     }
 
@@ -193,7 +193,7 @@ public class Dcm2Xml {
      *
      * @param blkFilePrefix The file prefix.
      */
-    public final void setBulkDataFilePrefix(String blkFilePrefix) {
+    public void setBulkDataFilePrefix(String blkFilePrefix) {
         this.blkFilePrefix = blkFilePrefix;
     }
 
@@ -202,7 +202,7 @@ public class Dcm2Xml {
      *
      * @param blkFileSuffix The file suffix.
      */
-    public final void setBulkDataFileSuffix(String blkFileSuffix) {
+    public void setBulkDataFileSuffix(String blkFileSuffix) {
         this.blkFileSuffix = blkFileSuffix;
     }
 
@@ -211,7 +211,7 @@ public class Dcm2Xml {
      *
      * @param blkDirectory The directory for bulk data files.
      */
-    public final void setBulkDataDirectory(File blkDirectory) {
+    public void setBulkDataDirectory(File blkDirectory) {
         this.blkDirectory = blkDirectory;
     }
 
@@ -238,7 +238,7 @@ public class Dcm2Xml {
      *
      * @param xmlVersion The XML version string (e.g., "1.0" or "1.1").
      */
-    public final void setXMLVersion(String xmlVersion) {
+    public void setXMLVersion(String xmlVersion) {
         this.xmlVersion = xmlVersion;
     }
 

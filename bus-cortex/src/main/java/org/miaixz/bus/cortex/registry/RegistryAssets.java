@@ -37,12 +37,12 @@ import org.miaixz.bus.cortex.registry.prompt.PromptAssets;
  *
  * @author Kimi Liu
  */
-public final class RegistryAssets {
+public class RegistryAssets {
 
     /**
      * Keeps registry asset lookup on the static API.
      */
-    private RegistryAssets() {
+    public RegistryAssets() {
         // No initialization required.
     }
 

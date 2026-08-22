@@ -44,7 +44,7 @@ public class CacheValuesIterator<V> implements Iterator<V>, Serializable {
      *
      * @param iterator The original {@link CacheObjectIterator}.
      */
-    CacheValuesIterator(final CacheObjectIterator<?, V> iterator) {
+    public CacheValuesIterator(final CacheObjectIterator<?, V> iterator) {
         this.cacheObjIter = iterator;
     }
 

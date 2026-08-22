@@ -31,12 +31,12 @@ import org.miaixz.bus.health.linux.ProcPath;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class UpTime {
+public class UpTime {
 
     /**
      * Keeps Linux uptime queries on the static API.
      */
-    private UpTime() {
+    public UpTime() {
         // No initialization required.
     }
 

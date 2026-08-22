@@ -39,12 +39,12 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
  *
  * @author Kimi Liu
  */
-public final class HttpLine {
+public class HttpLine {
 
     /**
      * Keeps HTTP start-line parsing on the static API.
      */
-    private HttpLine() {
+    public HttpLine() {
         // No initialization required.
     }
 
@@ -274,7 +274,7 @@ public final class HttpLine {
     /**
      * Bounded incremental CRLF line parser. A parser instance is reusable and retains only the unfinished line.
      */
-    public static final class Parser {
+    public static class Parser {
 
         /**
          * Fixed-capacity storage for the current line, excluding its CRLF terminator.

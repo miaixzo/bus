@@ -225,7 +225,7 @@ public class IDWithIssuer {
      *
      * @return The ID string.
      */
-    public final String getID() {
+    public String getID() {
         return id;
     }
 
@@ -252,7 +252,7 @@ public class IDWithIssuer {
      *
      * @return The Identifier Type Code string, or {@code null}.
      */
-    public final String getIdentifierTypeCode() {
+    public String getIdentifierTypeCode() {
         return identifierTypeCode;
     }
 
@@ -261,7 +261,7 @@ public class IDWithIssuer {
      *
      * @param identifierTypeCode The Identifier Type Code string to set.
      */
-    public final void setIdentifierTypeCode(String identifierTypeCode) {
+    public void setIdentifierTypeCode(String identifierTypeCode) {
         this.identifierTypeCode = identifierTypeCode;
     }
 
@@ -270,7 +270,7 @@ public class IDWithIssuer {
      *
      * @return The {@link Issuer} object, or {@code null}.
      */
-    public final Issuer getIssuer() {
+    public Issuer getIssuer() {
         return issuer;
     }
 
@@ -279,7 +279,7 @@ public class IDWithIssuer {
      *
      * @param issuer The {@link Issuer} object to set.
      */
-    public final void setIssuer(Issuer issuer) {
+    public void setIssuer(Issuer issuer) {
         this.issuer = issuer;
     }
 

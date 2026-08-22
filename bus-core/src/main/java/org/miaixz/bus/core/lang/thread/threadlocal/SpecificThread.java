@@ -126,7 +126,7 @@ public class SpecificThread extends Thread {
      *
      * @return The {@link ThreadLocalMap} associated with this thread.
      */
-    public final ThreadLocalMap getThreadLocalMap() {
+    public ThreadLocalMap getThreadLocalMap() {
         return threadLocalMap;
     }
 
@@ -136,7 +136,7 @@ public class SpecificThread extends Thread {
      *
      * @param threadLocalMap The {@link ThreadLocalMap} to associate with this thread.
      */
-    public final void setThreadLocalMap(ThreadLocalMap threadLocalMap) {
+    public void setThreadLocalMap(ThreadLocalMap threadLocalMap) {
         this.threadLocalMap = threadLocalMap;
     }
 

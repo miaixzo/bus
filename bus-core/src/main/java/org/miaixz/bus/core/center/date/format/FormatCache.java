@@ -41,7 +41,7 @@ public abstract class FormatCache<F extends Format> {
     /**
      * Creates a new {@code FormatCache} instance.
      */
-    protected FormatCache() {
+    public FormatCache() {
         // No initialization required.
     }
 

@@ -46,7 +46,7 @@ import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
  *
  * @author Kimi Liu
  */
-public final class Directory implements AutoCloseable {
+public class Directory implements AutoCloseable {
 
     /**
      * Ledgers indexed by normalized stable registry name.
@@ -89,7 +89,7 @@ public final class Directory implements AutoCloseable {
      * @param connectionPool clock-bound connection pool
      * @param connections    shared connection registry
      */
-    private Directory(final ConnectionPool connectionPool, final ConnectionRegistry connections) {
+    public Directory(final ConnectionPool connectionPool, final ConnectionRegistry connections) {
         this.ledgers = new ConcurrentHashMap<>();
         this.services = new ConcurrentHashMap<>();
         this.serviceLock = new Object();

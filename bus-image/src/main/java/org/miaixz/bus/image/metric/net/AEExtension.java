@@ -52,7 +52,7 @@ public class AEExtension implements Serializable {
      *
      * @return the application entity.
      */
-    public final ApplicationEntity getApplicationEntity() {
+    public ApplicationEntity getApplicationEntity() {
         return ae;
     }
 

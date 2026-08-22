@@ -56,7 +56,7 @@ import reactor.core.publisher.Mono;
  *
  * @author Kimi Liu
  */
-public final class Octets {
+public class Octets {
 
     /**
      * Maximum heap-backed chunk exposed to one downstream write operation.
@@ -69,9 +69,9 @@ public final class Octets {
     private static final NettyDataBufferFactory WRITE_BUFFER_FACTORY = new NettyDataBufferFactory(Holder.allocator());
 
     /**
-     * Restricts the class to static lifecycle operations.
+     * Creates a stateless byte-budget lifecycle entry point.
      */
-    private Octets() {
+    public Octets() {
         throw new UnsupportedOperationException("Octets class cannot be instantiated");
     }
 
@@ -591,7 +591,7 @@ public final class Octets {
     /**
      * Owns buffered bytes and their process-wide logical-byte lease until {@link #close()}.
      */
-    public static final class BufferedBody implements AutoCloseable {
+    public static class BufferedBody implements AutoCloseable {
 
         /**
          * Current segmented representation; cleared after discard or close.

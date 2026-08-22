@@ -219,7 +219,7 @@ public interface LinuxLibc extends LibC, CLibrary {
         /**
          * Constructs a new {@code LinuxUtmpx} instance.
          */
-        LinuxUtmpx() {
+        public LinuxUtmpx() {
             // No initialization required.
         }
 
@@ -284,7 +284,7 @@ public interface LinuxLibc extends LibC, CLibrary {
         /**
          * Constructs a new {@code Exit_status} instance.
          */
-        Exit_status() {
+        public Exit_status() {
             // No initialization required.
         }
 
@@ -313,7 +313,7 @@ public interface LinuxLibc extends LibC, CLibrary {
         /**
          * Constructs a new {@code Ut_Tv} instance.
          */
-        Ut_Tv() {
+        public Ut_Tv() {
             // No initialization required.
         }
 

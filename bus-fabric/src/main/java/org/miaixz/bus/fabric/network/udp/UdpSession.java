@@ -48,7 +48,7 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
  *
  * @author Kimi Liu
  */
-public final class UdpSession implements Session {
+public class UdpSession implements Session {
 
     /**
      * Logical remote endpoint to which the owned UDP channel is bound.
@@ -106,7 +106,7 @@ public final class UdpSession implements Session {
      * @param remote  logical remote endpoint
      * @param channel exclusively owned connected UDP channel
      */
-    UdpSession(final Address remote, final UdpChannel channel) {
+    public UdpSession(final Address remote, final UdpChannel channel) {
         this(remote, channel, null, null, () -> {
         });
     }

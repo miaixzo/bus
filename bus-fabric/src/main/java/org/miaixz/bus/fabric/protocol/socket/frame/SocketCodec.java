@@ -35,7 +35,7 @@ import org.miaixz.bus.fabric.codec.frame.FrameCodec;
  *
  * @author Kimi Liu
  */
-public final class SocketCodec {
+public class SocketCodec {
 
     /**
      * Stateful fabric codec that performs the underlying framing operations.
@@ -47,7 +47,7 @@ public final class SocketCodec {
      *
      * @param codec non-null stateful frame codec to adapt
      */
-    private SocketCodec(final FrameCodec codec) {
+    public SocketCodec(final FrameCodec codec) {
         this.codec = Assert.notNull(codec, () -> new ValidateException("Frame codec must not be null"));
     }
 

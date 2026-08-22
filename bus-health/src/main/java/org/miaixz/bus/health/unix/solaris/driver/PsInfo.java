@@ -40,12 +40,12 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class PsInfo {
+public class PsInfo {
 
     /**
      * Keeps Solaris process-information queries on the static API.
      */
-    private PsInfo() {
+    public PsInfo() {
         // No initialization required.
     }
 

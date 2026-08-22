@@ -137,7 +137,7 @@ public class PresentationContext {
      *
      * @return the pcid.
      */
-    public final int getPCID() {
+    public int getPCID() {
         return pcid;
     }
 
@@ -146,7 +146,7 @@ public class PresentationContext {
      *
      * @return the result.
      */
-    public final int getResult() {
+    public int getResult() {
         return result;
     }
 
@@ -164,7 +164,7 @@ public class PresentationContext {
      *
      * @return the abstract syntax.
      */
-    public final String getAbstractSyntax() {
+    public String getAbstractSyntax() {
         return as;
     }
 
@@ -173,7 +173,7 @@ public class PresentationContext {
      *
      * @return the transfer syntaxes.
      */
-    public final String[] getTransferSyntaxes() {
+    public String[] getTransferSyntaxes() {
         return tss;
     }
 

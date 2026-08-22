@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Normal;
  *
  * @author Kimi Liu
  */
-public final class EngineClassifier {
+public class EngineClassifier {
 
     /**
      * Shared unknown browser-engine classifier.

@@ -29,7 +29,7 @@ package org.opencv.img_hash;
  */
 public class PHash extends ImgHashBase {
 
-    protected PHash(long addr) {
+    public PHash(long addr) {
         super(addr);
     }
 

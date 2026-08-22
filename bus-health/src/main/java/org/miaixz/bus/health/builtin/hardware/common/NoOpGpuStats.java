@@ -36,7 +36,7 @@ import org.miaixz.bus.health.builtin.hardware.GpuTicks;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class NoOpGpuStats implements GpuStats {
+public class NoOpGpuStats implements GpuStats {
 
     /**
      * Constructs a new {@code NoOpGpuStats} instance.

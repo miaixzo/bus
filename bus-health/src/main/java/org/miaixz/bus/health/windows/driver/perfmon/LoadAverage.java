@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.tuple.Pair;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class LoadAverage {
+public class LoadAverage {
 
     /**
      * Constructs a new {@code LoadAverage} instance.

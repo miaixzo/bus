@@ -244,7 +244,7 @@ public class StoreSCU implements AutoCloseable {
      *
      * @param priority The priority value (0=Medium, 1=High, 2=Low).
      */
-    public final void setPriority(int priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
@@ -253,7 +253,7 @@ public class StoreSCU implements AutoCloseable {
      *
      * @param uidSuffix The UID suffix.
      */
-    public final void setUIDSuffix(String uidSuffix) {
+    public void setUIDSuffix(String uidSuffix) {
         this.uidSuffix = uidSuffix;
     }
 
@@ -262,7 +262,7 @@ public class StoreSCU implements AutoCloseable {
      *
      * @param prefix The file prefix.
      */
-    public final void setTmpFilePrefix(String prefix) {
+    public void setTmpFilePrefix(String prefix) {
         this.tmpPrefix = prefix;
     }
 
@@ -271,7 +271,7 @@ public class StoreSCU implements AutoCloseable {
      *
      * @param suffix The file suffix.
      */
-    public final void setTmpFileSuffix(String suffix) {
+    public void setTmpFileSuffix(String suffix) {
         this.tmpSuffix = suffix;
     }
 
@@ -280,7 +280,7 @@ public class StoreSCU implements AutoCloseable {
      *
      * @param tmpDir The temporary directory.
      */
-    public final void setTmpFileDirectory(File tmpDir) {
+    public void setTmpFileDirectory(File tmpDir) {
         this.tmpDir = tmpDir;
     }
 
@@ -289,7 +289,7 @@ public class StoreSCU implements AutoCloseable {
      *
      * @param enable {@code true} to enable, {@code false} to disable.
      */
-    public final void enableSOPClassRelationshipExtNeg(boolean enable) {
+    public void enableSOPClassRelationshipExtNeg(boolean enable) {
         relExtNeg = enable;
     }
 

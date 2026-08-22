@@ -569,7 +569,7 @@ public class StowRS {
      *
      * @param requestProperties A map of header names to values.
      */
-    public final void setRequestProperties(Map<String, String> requestProperties) {
+    public void setRequestProperties(Map<String, String> requestProperties) {
         this.requestProperties = requestProperties;
     }
 
@@ -578,7 +578,7 @@ public class StowRS {
      *
      * @param prefix The file prefix.
      */
-    public final void setTmpFilePrefix(String prefix) {
+    public void setTmpFilePrefix(String prefix) {
         this.tmpPrefix = prefix;
     }
 
@@ -587,7 +587,7 @@ public class StowRS {
      *
      * @param suffix The file suffix.
      */
-    public final void setTmpFileSuffix(String suffix) {
+    public void setTmpFileSuffix(String suffix) {
         this.tmpSuffix = suffix;
     }
 
@@ -596,7 +596,7 @@ public class StowRS {
      *
      * @param tmpDir The temporary directory.
      */
-    public final void setTmpFileDirectory(File tmpDir) {
+    public void setTmpFileDirectory(File tmpDir) {
         this.tmpDir = tmpDir;
     }
 

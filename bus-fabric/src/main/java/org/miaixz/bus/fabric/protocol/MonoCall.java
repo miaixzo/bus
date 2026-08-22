@@ -141,7 +141,7 @@ public abstract class MonoCall<T> implements Call<T> {
      * @param dispatcher dispatcher used by enqueue()
      * @param observer   event observer
      */
-    protected MonoCall(final String name, final Dispatcher dispatcher, final EventObserver observer) {
+    public MonoCall(final String name, final Dispatcher dispatcher, final EventObserver observer) {
         this(name, dispatcher, observer, null, Timeout.defaults());
     }
 
@@ -344,7 +344,7 @@ public abstract class MonoCall<T> implements Call<T> {
      *
      * @return cancellation scope
      */
-    protected final Cancellation cancellation() {
+    protected Cancellation cancellation() {
         return scope.cancellation();
     }
 
@@ -353,7 +353,7 @@ public abstract class MonoCall<T> implements Call<T> {
      *
      * @return result future
      */
-    protected final CompletableFuture<T> future() {
+    protected CompletableFuture<T> future() {
         return completionFuture();
     }
 
@@ -1018,7 +1018,7 @@ public abstract class MonoCall<T> implements Call<T> {
      * @param <I> per-call input type
      * @param <T> call result type
      */
-    public static final class DirectTemplate<I, T> {
+    public static class DirectTemplate<I, T> {
 
         /**
          * Human-readable call name.
@@ -1054,7 +1054,7 @@ public abstract class MonoCall<T> implements Call<T> {
          * @param operation    reusable call operation
          * @param cancelAction optional cancellation action
          */
-        private DirectTemplate(final String name, final String dispatchKey, final Dispatcher dispatcher,
+        public DirectTemplate(final String name, final String dispatchKey, final Dispatcher dispatcher,
                 final FunctionX<? super I, T> operation, final Runnable cancelAction) {
             this.name = Assert.notBlank(name, () -> new ValidateException("Call name must not be blank"));
             this.dispatchKey = Assert

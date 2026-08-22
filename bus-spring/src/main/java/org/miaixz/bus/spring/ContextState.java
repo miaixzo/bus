@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @author Kimi Liu
  */
-public final class ContextState {
+public class ContextState {
 
     /**
      * Shared empty immutable state.
@@ -68,7 +68,7 @@ public final class ContextState {
      * @param tokenCredential  token credential
      * @param apiKeyCredential API-key credential
      */
-    private ContextState(String requestId, Authorize authorize, Http.Auth.Credential tokenCredential,
+    public ContextState(String requestId, Authorize authorize, Http.Auth.Credential tokenCredential,
             Http.Auth.Credential apiKeyCredential) {
         this.requestId = requestId;
         this.authorize = copy(authorize);

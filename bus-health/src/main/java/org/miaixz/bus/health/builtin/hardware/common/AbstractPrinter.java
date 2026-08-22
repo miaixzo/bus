@@ -84,7 +84,7 @@ public abstract class AbstractPrinter implements Printer {
      * @param isLocal      the is local
      * @param portName     the port name
      */
-    protected AbstractPrinter(String name, String driverName, String description, PrinterStatus status,
+    public AbstractPrinter(String name, String driverName, String description, PrinterStatus status,
             String statusReason, boolean isDefault, boolean isLocal, String portName) {
         this.name = name;
         this.driverName = driverName;

@@ -33,12 +33,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class OhmSensor {
+public class OhmSensor {
 
     /**
      * Keeps Open Hardware Monitor sensor queries on the static API.
      */
-    private OhmSensor() {
+    public OhmSensor() {
         // No initialization required.
     }
 

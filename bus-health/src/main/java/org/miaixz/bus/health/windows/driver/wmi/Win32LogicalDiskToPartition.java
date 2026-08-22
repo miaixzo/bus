@@ -31,12 +31,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Win32LogicalDiskToPartition {
+public class Win32LogicalDiskToPartition {
 
     /**
      * Keeps Win32 logical disk to partition queries on the static API.
      */
-    private Win32LogicalDiskToPartition() {
+    public Win32LogicalDiskToPartition() {
         // No initialization required.
     }
 

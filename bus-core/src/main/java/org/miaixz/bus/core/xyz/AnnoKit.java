@@ -52,7 +52,7 @@ public class AnnoKit {
     /**
      * Keeps annotation lookup and synthesis on the static API.
      */
-    private AnnoKit() {
+    public AnnoKit() {
         // No initialization required.
     }
 

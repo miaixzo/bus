@@ -35,12 +35,12 @@ import org.miaixz.bus.health.Builder;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class SysPath {
+public class SysPath {
 
     /**
      * Keeps Linux sysfs path resolution on the static API.
      */
-    private SysPath() {
+    public SysPath() {
         // No initialization required.
     }
 

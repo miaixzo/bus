@@ -26,7 +26,7 @@ import java.util.Arrays;
  *
  * @author Kimi Liu
  */
-public final class VolumeFloat extends Volume<Float> {
+public class VolumeFloat extends Volume<Float> {
 
     /**
      * The data value.

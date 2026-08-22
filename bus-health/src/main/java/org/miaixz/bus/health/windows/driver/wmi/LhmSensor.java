@@ -39,7 +39,7 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class LhmSensor {
+public class LhmSensor {
 
     /**
      * The WMI namespace for LibreHardwareMonitor.
@@ -97,7 +97,7 @@ public final class LhmSensor {
     /**
      * Creates a new LhmSensor instance.
      */
-    private LhmSensor() {
+    public LhmSensor() {
         // No initialization required.
     }
 

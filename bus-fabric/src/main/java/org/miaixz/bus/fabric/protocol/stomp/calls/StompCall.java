@@ -38,7 +38,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  *
  * @author Kimi Liu
  */
-public final class StompCall extends MonoCall<StompSession> {
+public class StompCall extends MonoCall<StompSession> {
 
     /**
      * Single STOMP-open operation receiving the call lifecycle's cancellation scope.
@@ -65,7 +65,7 @@ public final class StompCall extends MonoCall<StompSession> {
      * @param operation  function that opens a session within the lifecycle cancellation scope
      * @param key        dispatch key used for asynchronous submission
      */
-    private StompCall(final Dispatcher dispatcher, final Callback<? super StompSession> callback,
+    public StompCall(final Dispatcher dispatcher, final Callback<? super StompSession> callback,
             final EventObserver observer, final Timeout timeout, final Function<Cancellation, StompSession> operation,
             final String key) {
         super(Builder.STOMP_TAG_OPEN, dispatcher, observer, callback, timeout);

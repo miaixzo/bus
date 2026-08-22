@@ -166,7 +166,7 @@ public abstract class AbstractPowerSource implements PowerSource {
      * @param serialNumber             the serial number
      * @param temperature              the temperature
      */
-    protected AbstractPowerSource(String name, String deviceName, double remainingCapacityPercent,
+    public AbstractPowerSource(String name, String deviceName, double remainingCapacityPercent,
             double timeRemainingEstimated, double timeRemainingInstant, double powerUsageRate, double voltage,
             double amperage, boolean powerOnLine, boolean charging, boolean discharging, CapacityUnits capacityUnits,
             int currentCapacity, int maxCapacity, int designCapacity, int cycleCount, String chemistry,

@@ -127,7 +127,7 @@ public class ImageDirReader implements Closeable {
      *
      * @return the file.
      */
-    public final File getFile() {
+    public File getFile() {
         return file;
     }
 
@@ -136,7 +136,7 @@ public class ImageDirReader implements Closeable {
      *
      * @return the file meta information.
      */
-    public final Attributes getFileMetaInformation() {
+    public Attributes getFileMetaInformation() {
         return fmi;
     }
 
@@ -145,7 +145,7 @@ public class ImageDirReader implements Closeable {
      *
      * @return the file set information.
      */
-    public final Attributes getFileSetInformation() {
+    public Attributes getFileSetInformation() {
         return fsInfo;
     }
 

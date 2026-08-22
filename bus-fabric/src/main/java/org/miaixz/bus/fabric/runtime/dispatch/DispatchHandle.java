@@ -36,7 +36,7 @@ import org.miaixz.bus.fabric.runtime.Activity;
  *
  * @author Kimi Liu
  */
-public final class DispatchHandle implements Lifecycle {
+public class DispatchHandle implements Lifecycle {
 
     /**
      * Handle is queued and may still be cancelled before execution.
@@ -95,7 +95,7 @@ public final class DispatchHandle implements Lifecycle {
      * @param tag      optional cancellation tag
      * @param activity activity controlled by the handle
      */
-    private DispatchHandle(final String key, final Object tag, final Activity activity) {
+    public DispatchHandle(final String key, final Object tag, final Activity activity) {
         this.key = validateKey(key);
         this.tag = tag;
         this.activity = require(activity, "Activity");

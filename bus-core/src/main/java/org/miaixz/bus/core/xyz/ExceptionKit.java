@@ -45,7 +45,7 @@ public class ExceptionKit {
     /**
      * Keeps exception traversal and conversion on the static API.
      */
-    private ExceptionKit() {
+    public ExceptionKit() {
         // No initialization required.
     }
 

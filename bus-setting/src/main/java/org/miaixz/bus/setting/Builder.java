@@ -46,7 +46,7 @@ public class Builder {
     /**
      * Keeps setting construction and loading on the static API.
      */
-    private Builder() {
+    public Builder() {
         // No initialization required.
     }
 

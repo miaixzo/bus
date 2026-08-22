@@ -36,7 +36,7 @@ public abstract class AbstractHandler implements Handler {
     /**
      * Creates an abstract handler.
      */
-    protected AbstractHandler() {
+    public AbstractHandler() {
         // No initialization required.
     }
 

@@ -39,7 +39,7 @@ public class HyperlinkCellSetter implements CellSetter {
      *
      * @param value The {@link Hyperlink} value to set in the cell.
      */
-    HyperlinkCellSetter(final Hyperlink value) {
+    public HyperlinkCellSetter(final Hyperlink value) {
         this.value = value;
     }
 

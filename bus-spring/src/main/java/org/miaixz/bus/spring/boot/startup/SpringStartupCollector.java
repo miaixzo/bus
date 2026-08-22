@@ -31,7 +31,7 @@ import org.miaixz.bus.spring.boot.startup.SpringStartupSummary.Stage;
  *
  * @author Kimi Liu
  */
-public final class SpringStartupCollector {
+public class SpringStartupCollector {
 
     /**
      * Application name associated with the current startup.

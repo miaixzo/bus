@@ -60,7 +60,7 @@ import reactor.netty.resources.LoopResources;
  *
  * @author Kimi Liu
  */
-public final class Holder {
+public class Holder {
 
     /**
      * The key used to store the Performance configuration in {@link Instances}.
@@ -115,7 +115,7 @@ public final class Holder {
     /**
      * Keeps Vortex shared-resource access on the static holder API.
      */
-    private Holder() {
+    public Holder() {
         throw new UnsupportedOperationException("Holder class cannot be instantiated");
     }
 

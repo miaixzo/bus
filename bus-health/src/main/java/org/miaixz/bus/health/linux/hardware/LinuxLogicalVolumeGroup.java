@@ -68,7 +68,7 @@ public class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
      * @param lvMap the lv map
      * @param pvSet the pv set
      */
-    LinuxLogicalVolumeGroup(String name, Map<String, Set<String>> lvMap, Set<String> pvSet) {
+    public LinuxLogicalVolumeGroup(String name, Map<String, Set<String>> lvMap, Set<String> pvSet) {
         super(name, lvMap, pvSet);
     }
 

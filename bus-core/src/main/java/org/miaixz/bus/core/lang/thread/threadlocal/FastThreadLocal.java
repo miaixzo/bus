@@ -148,7 +148,7 @@ public class FastThreadLocal<V> {
      *
      * @return The current thread's value for this thread-local variable.
      */
-    public final V get() {
+    public V get() {
         // 1. Get the ThreadLocalMap for the current thread.
         ThreadLocalMap threadLocalMap = ThreadLocalMap.get();
         // 2. Retrieve the value from the ThreadLocalMap at this FastThreadLocal's unique index.
@@ -167,7 +167,7 @@ public class FastThreadLocal<V> {
      *
      * @param value The value to be stored in the current thread's copy of this thread-local.
      */
-    public final void set(V value) {
+    public void set(V value) {
         // If the value is null or UNSET, it signifies a removal operation.
         if (value == null || value == ThreadLocalMap.UNSET) {
             remove();
@@ -185,7 +185,7 @@ public class FastThreadLocal<V> {
      * Removes the current thread's value for this thread-local variable. The variable will be reinitialized by the next
      * {@link #get()} operation.
      */
-    public final void remove() {
+    public void remove() {
         remove(ThreadLocalMap.getIfSet());
     }
 
@@ -196,7 +196,7 @@ public class FastThreadLocal<V> {
      *
      * @param threadLocalMap The {@link ThreadLocalMap} from which to remove the variable.
      */
-    public final void remove(ThreadLocalMap threadLocalMap) {
+    public void remove(ThreadLocalMap threadLocalMap) {
         if (threadLocalMap == null) {
             return;
         }

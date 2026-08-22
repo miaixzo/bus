@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class CFKit {
+public class CFKit {
 
     /**
      * Constructs a new CFKit instance.

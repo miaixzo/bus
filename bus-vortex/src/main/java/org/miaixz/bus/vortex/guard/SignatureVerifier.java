@@ -73,7 +73,7 @@ import reactor.core.scheduler.Schedulers;
  *
  * @author Kimi Liu
  */
-public final class SignatureVerifier {
+public class SignatureVerifier {
 
     /**
      * Exchange attribute that owns an MCP signed POST body's replay buffer until request termination.
@@ -83,7 +83,7 @@ public final class SignatureVerifier {
     /**
      * Prevents additional verifier instances.
      */
-    private SignatureVerifier() {
+    public SignatureVerifier() {
         // No initialization required.
     }
 

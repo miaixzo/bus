@@ -452,7 +452,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
          */
         private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-        LoggingStream(StringBuilder sb, OutputStream out) {
+        public LoggingStream(StringBuilder sb, OutputStream out) {
             super(out);
             this.sb = sb;
         }

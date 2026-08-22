@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @author Kimi Liu
  */
-public final class ChannelSource implements Source {
+public class ChannelSource implements Source {
 
     /**
      * Source readable channel.

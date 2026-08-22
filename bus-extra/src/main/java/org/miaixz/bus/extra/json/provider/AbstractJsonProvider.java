@@ -47,15 +47,15 @@ public abstract class AbstractJsonProvider implements JsonProvider {
     /**
      * Creates the provider-independent JSON boundary for a concrete engine implementation.
      */
-    protected AbstractJsonProvider() {
+    public AbstractJsonProvider() {
         // No initialization required.
     }
 
     /**
      * Converts one provider-neutral JSON object through the single strict record-binding contract.
      * <p>
-     * The final method prevents a concrete JSON engine from weakening component-derived schema validation or adding a
-     * provider-specific property list.
+     * The inherited implementation applies record-derived schema validation and provider-neutral property selection.
+     * Overrides must preserve both requirements.
      * </p>
      *
      * @param value JSON object whose members must match the target record
@@ -64,15 +64,15 @@ public abstract class AbstractJsonProvider implements JsonProvider {
      * @return non-null decoded record
      */
     @Override
-    public final <T extends Record> T toRecord(final JsonValue.ObjectValue value, final Class<T> type) {
+    public <T extends Record> T toRecord(final JsonValue.ObjectValue value, final Class<T> type) {
         return JsonProvider.super.toRecord(value, type);
     }
 
     /**
      * Converts one public record through the single strict provider-neutral object-binding contract.
      * <p>
-     * The final method prevents a concrete JSON engine from bypassing the schema associated with the record's actual
-     * runtime class.
+     * The inherited implementation applies the schema associated with the record's actual runtime class. Overrides must
+     * preserve that schema contract.
      * </p>
      *
      * @param record public record to encode
@@ -80,7 +80,7 @@ public abstract class AbstractJsonProvider implements JsonProvider {
      * @return immutable provider-neutral JSON object
      */
     @Override
-    public final <T extends Record> JsonValue.ObjectValue toObject(final T record) {
+    public <T extends Record> JsonValue.ObjectValue toObject(final T record) {
         return JsonProvider.super.toObject(record);
     }
 
@@ -93,7 +93,7 @@ public abstract class AbstractJsonProvider implements JsonProvider {
      * @throws InternalException        if the concrete engine returns no document
      */
     @Override
-    public final byte[] writeValue(final JsonValue value) {
+    public byte[] writeValue(final JsonValue value) {
         Assert.notNull(value, "JSON value must not be null");
         final String document = encodeValue(value);
         if (document == null) {
@@ -112,7 +112,7 @@ public abstract class AbstractJsonProvider implements JsonProvider {
      *                                  no value
      */
     @Override
-    public final JsonValue readValue(final byte[] json) {
+    public JsonValue readValue(final byte[] json) {
         return readValue(json, Integer.MAX_VALUE, false);
     }
 
@@ -127,7 +127,7 @@ public abstract class AbstractJsonProvider implements JsonProvider {
      * @throws InternalException        if UTF-8, structural guard, engine parsing, or result validation fails
      */
     @Override
-    public final JsonValue readValue(final byte[] json, final int maximumDepth, final boolean rejectDuplicateNames) {
+    public JsonValue readValue(final byte[] json, final int maximumDepth, final boolean rejectDuplicateNames) {
         if (maximumDepth <= 0) {
             throw new IllegalArgumentException("JSON maximum depth must be positive");
         }
@@ -157,7 +157,7 @@ public abstract class AbstractJsonProvider implements JsonProvider {
      * @throws InternalException        if UTF-8, structure, syntax, root type, or member selection is invalid
      */
     @Override
-    public final byte[] extractValue(
+    public byte[] extractValue(
             final byte[] json,
             final String member,
             final int maximumDepth,

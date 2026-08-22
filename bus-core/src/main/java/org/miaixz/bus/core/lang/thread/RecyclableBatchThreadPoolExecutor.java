@@ -402,7 +402,7 @@ public class RecyclableBatchThreadPoolExecutor {
          * @param supplier The execution logic to be wrapped. Must not be {@code null}.
          * @throws NullPointerException If {@code supplier} is {@code null}.
          */
-        private Warp(final SupplierX<R> supplier) {
+        public Warp(final SupplierX<R> supplier) {
             Objects.requireNonNull(supplier);
             this.supplier = supplier;
         }

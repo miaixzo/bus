@@ -36,7 +36,7 @@ import org.miaixz.bus.image.nimble.opencv.lut.ByteLut;
  *
  * @author Kimi Liu
  */
-public final class ByteLutCollection {
+public class ByteLutCollection {
 
     /**
      * The BGR bands value.
@@ -76,7 +76,7 @@ public final class ByteLutCollection {
     /**
      * Creates a new instance.
      */
-    private ByteLutCollection() {
+    public ByteLutCollection() {
         // No initialization required.
     }
 

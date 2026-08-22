@@ -48,7 +48,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class MacHWDiskStore extends AbstractHWDiskStore {
+public class MacHWDiskStore extends AbstractHWDiskStore {
 
     /**
      * The CF constant.
@@ -112,7 +112,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
      * @param mountPointMap A map of partition BSD names to their mount points.
      * @param cfKeyMap      A map of {@link CFKey} enum values to their corresponding {@link CFStringRef}.
      */
-    private MacHWDiskStore(String name, String model, String serial, long size, String diskType, DASessionRef session,
+    public MacHWDiskStore(String name, String model, String serial, long size, String diskType, DASessionRef session,
             Map<String, String> mountPointMap, Map<CFKey, CFStringRef> cfKeyMap) {
         super(name, model, serial, size, diskType);
         updateDiskStats(session, mountPointMap, cfKeyMap);

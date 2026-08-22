@@ -74,7 +74,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
      * @param originatingProvider the originating provider.
      * @param canEncodeSigned     the can encode signed.
      */
-    protected NativeImageReader(ImageReaderSpi originatingProvider, boolean canEncodeSigned) {
+    public NativeImageReader(ImageReaderSpi originatingProvider, boolean canEncodeSigned) {
         super(originatingProvider);
         this.canEncodeSigned = canEncodeSigned;
     }
@@ -92,7 +92,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
      * @return the result
      * @throws IOException if the operation fails
      */
-    protected static final ImageTypeSpecifier createImageType(
+    protected static ImageTypeSpecifier createImageType(
             ImageParameters params,
             ColorSpace colorSpace,
             byte[] redPalette,
@@ -183,7 +183,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
      * @param colorModel the color model.
      * @return the operation result.
      */
-    protected static final ImageTypeSpecifier createImageType(ImageParameters params, ColorModel colorModel) {
+    protected static ImageTypeSpecifier createImageType(ImageParameters params, ColorModel colorModel) {
 
         int nType = params.getDataType();
         int nWidth = params.getWidth();

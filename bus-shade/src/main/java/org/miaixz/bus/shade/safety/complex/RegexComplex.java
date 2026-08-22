@@ -42,7 +42,7 @@ public abstract class RegexComplex<E> implements Complex<E> {
      *
      * @param regex The regular expression string to use for filtering.
      */
-    protected RegexComplex(String regex) {
+    public RegexComplex(String regex) {
         this(Pattern.compile(regex));
     }
 

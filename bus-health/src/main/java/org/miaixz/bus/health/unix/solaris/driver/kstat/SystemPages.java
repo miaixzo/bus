@@ -33,12 +33,12 @@ import org.miaixz.bus.health.unix.solaris.software.SolarisOperatingSystem;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class SystemPages {
+public class SystemPages {
 
     /**
      * Keeps Solaris kernel page-statistic queries on the static API.
      */
-    private SystemPages() {
+    public SystemPages() {
         // No initialization required.
     }
 

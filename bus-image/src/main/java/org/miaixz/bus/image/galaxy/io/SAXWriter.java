@@ -91,7 +91,7 @@ public class SAXWriter implements ImageInputHandler {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isIncludeKeyword() {
+    public boolean isIncludeKeyword() {
         return includeKeyword;
     }
 
@@ -100,7 +100,7 @@ public class SAXWriter implements ImageInputHandler {
      *
      * @param includeKeyword the include keyword.
      */
-    public final void setIncludeKeyword(boolean includeKeyword) {
+    public void setIncludeKeyword(boolean includeKeyword) {
         this.includeKeyword = includeKeyword;
     }
 
@@ -109,7 +109,7 @@ public class SAXWriter implements ImageInputHandler {
      *
      * @return true if the condition is met; otherwise false.
      */
-    public final boolean isIncludeNamespaceDeclaration() {
+    public boolean isIncludeNamespaceDeclaration() {
         return namespace == NAMESPACE;
     }
 
@@ -118,7 +118,7 @@ public class SAXWriter implements ImageInputHandler {
      *
      * @param includeNameSpaceDeclaration the include name space declaration.
      */
-    public final void setIncludeNamespaceDeclaration(boolean includeNameSpaceDeclaration) {
+    public void setIncludeNamespaceDeclaration(boolean includeNameSpaceDeclaration) {
         this.namespace = includeNameSpaceDeclaration ? NAMESPACE : Normal.EMPTY;
     }
 

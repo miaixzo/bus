@@ -39,12 +39,12 @@ import org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation.ProcessPe
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class ProcessPerformanceData {
+public class ProcessPerformanceData {
 
     /**
      * Keeps Windows process performance data registry queries on the static API.
      */
-    private ProcessPerformanceData() {
+    public ProcessPerformanceData() {
         // No initialization required.
     }
 

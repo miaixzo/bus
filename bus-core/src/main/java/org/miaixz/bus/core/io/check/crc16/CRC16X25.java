@@ -33,7 +33,7 @@ public class CRC16X25 extends CRC16Checksum {
     /**
      * Creates a CRC-16/X-25 checksum implementation.
      */
-    private CRC16X25() {
+    public CRC16X25() {
         // No initialization required.
     }
 

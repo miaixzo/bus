@@ -30,12 +30,12 @@ import org.miaixz.bus.cortex.Vector;
  *
  * @author Kimi Liu
  */
-public final class RegistryScopeMapping {
+public class RegistryScopeMapping {
 
     /**
      * Keeps registry scope mapping on the static API.
      */
-    private RegistryScopeMapping() {
+    public RegistryScopeMapping() {
         // No initialization required.
     }
 

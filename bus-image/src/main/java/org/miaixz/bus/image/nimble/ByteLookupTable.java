@@ -42,7 +42,7 @@ public class ByteLookupTable extends LookupTable {
      * @param offset  the offset.
      * @param lut     the lut.
      */
-    ByteLookupTable(StoredValue inBits, int outBits, int offset, byte[] lut) {
+    public ByteLookupTable(StoredValue inBits, int outBits, int offset, byte[] lut) {
         super(inBits, outBits, offset);
         this.lut = lut;
     }

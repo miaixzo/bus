@@ -95,7 +95,7 @@ public class HierarchicalAnnotatedElements implements AnnotatedElement, Iterable
      * @param elementFactory A factory method for creating {@link AnnotatedElement}s. If it returns {@code null}, the
      *                       element will be ignored.
      */
-    HierarchicalAnnotatedElements(final AnnotatedElement element,
+    public HierarchicalAnnotatedElements(final AnnotatedElement element,
             final BiFunctionX<Set<AnnotatedElement>, AnnotatedElement, AnnotatedElement> elementFactory) {
         this.source = Objects.requireNonNull(element);
         // Lazy initialization
@@ -277,7 +277,7 @@ public class HierarchicalAnnotatedElements implements AnnotatedElement, Iterable
      *
      * @return An unmodifiable set of {@link AnnotatedElement} mappings.
      */
-    public final Set<AnnotatedElement> getElementMappings() {
+    public Set<AnnotatedElement> getElementMappings() {
         initElementMappingsIfNecessary();
         return this.elementMappings;
     }

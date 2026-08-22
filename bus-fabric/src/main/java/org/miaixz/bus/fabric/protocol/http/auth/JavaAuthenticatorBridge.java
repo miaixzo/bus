@@ -36,7 +36,7 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  *
  * @author Kimi Liu
  */
-public final class JavaAuthenticatorBridge implements HttpAuthenticator {
+public class JavaAuthenticatorBridge implements HttpAuthenticator {
 
     /**
      * JDK authenticator used only to obtain credentials for the current challenge.
@@ -48,7 +48,7 @@ public final class JavaAuthenticatorBridge implements HttpAuthenticator {
      *
      * @param authenticator non-null JDK credential provider borrowed by the bridge
      */
-    private JavaAuthenticatorBridge(final Authenticator authenticator) {
+    public JavaAuthenticatorBridge(final Authenticator authenticator) {
         this.authenticator = require(authenticator, "Java authenticator");
     }
 

@@ -33,12 +33,12 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  *
  * @author Kimi Liu
  */
-public final class Mediator {
+public class Mediator {
 
     /**
      * Restricts construction because protocol routing is exposed through static operations.
      */
-    private Mediator() {
+    public Mediator() {
         // No initialization required.
     }
 

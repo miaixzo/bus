@@ -40,7 +40,7 @@ public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], 
     /**
      * Creates the shared Base62 codec provider.
      */
-    private Base62Provider() {
+    public Base62Provider() {
         // No initialization required.
     }
 

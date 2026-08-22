@@ -136,7 +136,7 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
      * @param lowerBound the lower bound of the range
      * @param upperBound the upper bound of the range
      */
-    BoundedRange(final Bound<T> lowerBound, final Bound<T> upperBound) {
+    public BoundedRange(final Bound<T> lowerBound, final Bound<T> upperBound) {
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
     }

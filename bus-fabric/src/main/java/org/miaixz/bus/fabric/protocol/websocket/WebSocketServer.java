@@ -72,7 +72,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  *
  * @author Kimi Liu
  */
-public final class WebSocketServer implements Lifecycle {
+public class WebSocketServer implements Lifecycle {
 
     /**
      * Shared context.
@@ -195,7 +195,7 @@ public final class WebSocketServer implements Lifecycle {
      *
      * @param builder validated configuration source for the immutable server snapshot
      */
-    private WebSocketServer(final Builder builder) {
+    public WebSocketServer(final Builder builder) {
         this.context = require(builder.context, "Context");
         this.address = require(builder.address, "WebSocket bind address");
         this.path = require(builder.path, "WebSocket path");
@@ -1039,7 +1039,7 @@ public final class WebSocketServer implements Lifecycle {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Shared context.
@@ -1133,7 +1133,7 @@ public final class WebSocketServer implements Lifecycle {
          *
          * @param context shared context
          */
-        private Builder(final Context context) {
+        public Builder(final Context context) {
             this.context = context;
         }
 

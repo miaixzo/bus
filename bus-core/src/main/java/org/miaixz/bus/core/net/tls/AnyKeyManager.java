@@ -38,7 +38,7 @@ public class AnyKeyManager {
     /**
      * Keeps key-manager factory and certificate loading on the static API.
      */
-    private AnyKeyManager() {
+    public AnyKeyManager() {
         // No initialization required.
     }
 

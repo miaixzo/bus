@@ -53,7 +53,7 @@ public class JdbcDescriptor {
      * @param prefixes    datasource prefixes in descending priority order
      * @param defaultType default datasource implementation class name
      */
-    JdbcDescriptor(List<String> prefixes, String defaultType) {
+    public JdbcDescriptor(List<String> prefixes, String defaultType) {
         if (prefixes == null || prefixes.isEmpty() || defaultType == null || defaultType.isBlank()) {
             throw new IllegalArgumentException("JDBC prefixes and default type are required");
         }

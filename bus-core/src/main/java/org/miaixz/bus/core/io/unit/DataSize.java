@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  *
  * @author Kimi Liu
  */
-public final class DataSize implements Comparable<DataSize> {
+public class DataSize implements Comparable<DataSize> {
 
     /**
      * The pattern used for parsing data size strings. It captures the numeric value and the optional unit suffix.
@@ -81,7 +81,7 @@ public final class DataSize implements Comparable<DataSize> {
      *
      * @param bytes The size in bytes. Can be positive or negative.
      */
-    private DataSize(final long bytes) {
+    public DataSize(final long bytes) {
         this.bytes = bytes;
     }
 

@@ -40,7 +40,7 @@ public class Charset {
     /**
      * Keeps common charset lookup on the static API.
      */
-    private Charset() {
+    public Charset() {
         // No initialization required.
     }
 

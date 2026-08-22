@@ -43,12 +43,12 @@ public class CachePair<L, R> {
     private final R right;
 
     /**
-     * Private constructor to enforce instantiation via the factory method.
+     * Creates a cache entry from its key and stored value.
      *
      * @param left  The left value.
      * @param right The right value.
      */
-    private CachePair(L left, R right) {
+    public CachePair(L left, R right) {
         this.left = left;
         this.right = right;
     }

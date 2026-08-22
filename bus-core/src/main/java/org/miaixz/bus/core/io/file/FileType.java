@@ -914,7 +914,7 @@ public class FileType {
     /**
      * Keeps file-type detection on the static API.
      */
-    private FileType() {
+    public FileType() {
         // No initialization required.
     }
 

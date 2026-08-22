@@ -63,7 +63,7 @@ public class DynamicWorkflowHandler<R> implements DynamicWorkflow, DynamicSignal
      * @param invocation   workflow invocation function
      * @throws NullPointerException if {@code invocation} is {@code null}
      */
-    DynamicWorkflowHandler(String workflowType, Class<R> requestType, FunctionX<R, ?> invocation) {
+    public DynamicWorkflowHandler(String workflowType, Class<R> requestType, FunctionX<R, ?> invocation) {
         this.workflowType = workflowType;
         this.requestType = requestType;
         this.invocation = Objects.requireNonNull(invocation, "invocation must not be null");

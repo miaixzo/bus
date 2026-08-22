@@ -33,12 +33,12 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
  *
  * @author Kimi Liu
  */
-public final class RegistryIdentity {
+public class RegistryIdentity {
 
     /**
      * Keeps registry identity handling on the static API.
      */
-    private RegistryIdentity() {
+    public RegistryIdentity() {
         // No initialization required.
     }
 

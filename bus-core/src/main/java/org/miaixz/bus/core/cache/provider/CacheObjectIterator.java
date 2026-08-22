@@ -51,7 +51,7 @@ public class CacheObjectIterator<K, V> implements Iterator<CacheObject<K, V>>, S
      *
      * @param iterator The original {@link Iterator}.
      */
-    CacheObjectIterator(final Iterator<CacheObject<K, V>> iterator) {
+    public CacheObjectIterator(final Iterator<CacheObject<K, V>> iterator) {
         this.iterator = iterator;
         // Prime the first non-expired value.
         nextValue();

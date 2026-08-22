@@ -40,7 +40,7 @@ import org.miaixz.bus.fabric.protocol.sse.event.SseReader;
  *
  * @author Kimi Liu
  */
-public final class SseBody implements ResponseBody, ProgressBody {
+public class SseBody implements ResponseBody, ProgressBody {
 
     /**
      * Original SSE stream payload without progress wrapping.
@@ -57,7 +57,7 @@ public final class SseBody implements ResponseBody, ProgressBody {
      *
      * @param payload non-null SSE stream payload
      */
-    private SseBody(final Payload payload) {
+    public SseBody(final Payload payload) {
         this(payload, null);
     }
 

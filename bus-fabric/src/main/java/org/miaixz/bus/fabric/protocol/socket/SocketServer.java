@@ -88,7 +88,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  *
  * @author Kimi Liu
  */
-public final class SocketServer implements Lifecycle {
+public class SocketServer implements Lifecycle {
 
     /**
      * Shared context.
@@ -225,7 +225,7 @@ public final class SocketServer implements Lifecycle {
      *
      * @param builder validated configuration source for the server
      */
-    private SocketServer(final Builder builder) {
+    public SocketServer(final Builder builder) {
         this.context = require(builder.context, "Context");
         this.address = require(builder.address, "Socket bind address");
         this.addressPolicy = builder.addressPolicy;
@@ -1619,7 +1619,7 @@ public final class SocketServer implements Lifecycle {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Shared context.
@@ -1716,7 +1716,7 @@ public final class SocketServer implements Lifecycle {
          *
          * @param context shared context
          */
-        private Builder(final Context context) {
+        public Builder(final Context context) {
             this.context = context;
             this.socketOptions = SocketOptions.defaults();
             this.timeout = Timeout.defaults();

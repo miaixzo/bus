@@ -119,7 +119,7 @@ public class MLLPConnection implements Closeable {
      *
      * @return the socket.
      */
-    public final Socket getSocket() {
+    public Socket getSocket() {
         return sock;
     }
 

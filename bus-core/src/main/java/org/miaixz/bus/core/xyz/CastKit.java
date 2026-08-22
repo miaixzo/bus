@@ -37,7 +37,7 @@ public class CastKit {
     /**
      * Keeps runtime type casting on the static API.
      */
-    private CastKit() {
+    public CastKit() {
         // No initialization required.
     }
 

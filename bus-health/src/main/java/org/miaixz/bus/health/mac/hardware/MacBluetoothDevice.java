@@ -38,7 +38,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractBluetoothDevice;
  * @author Kimi Liu
  */
 @Immutable
-public final class MacBluetoothDevice extends AbstractBluetoothDevice {
+public class MacBluetoothDevice extends AbstractBluetoothDevice {
 
     /**
      * Creates a new MacBluetoothDevice instance.
@@ -51,7 +51,7 @@ public final class MacBluetoothDevice extends AbstractBluetoothDevice {
      * @param batteryLevel     the battery level
      * @param adapterName      the adapter name
      */
-    private MacBluetoothDevice(String name, String address, String majorDeviceClass, boolean connected, boolean paired,
+    public MacBluetoothDevice(String name, String address, String majorDeviceClass, boolean connected, boolean paired,
             int batteryLevel, String adapterName) {
         super(name, address, majorDeviceClass, connected, paired, batteryLevel, adapterName);
     }

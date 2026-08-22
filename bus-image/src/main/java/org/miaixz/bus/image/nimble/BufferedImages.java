@@ -47,7 +47,7 @@ public class BufferedImages {
     /**
      * Creates a new instance.
      */
-    private BufferedImages() {
+    public BufferedImages() {
         // No initialization required.
     }
 

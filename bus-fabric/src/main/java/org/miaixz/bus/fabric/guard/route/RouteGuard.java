@@ -40,7 +40,7 @@ import org.miaixz.bus.fabric.registry.route.Route;
  *
  * @author Kimi Liu
  */
-public final class RouteGuard {
+public class RouteGuard {
 
     /**
      * Immutable lower-case schemes accepted for logical route addresses.
@@ -52,7 +52,7 @@ public final class RouteGuard {
      *
      * @param schemes immutable normalized scheme set
      */
-    private RouteGuard(final Set<String> schemes) {
+    public RouteGuard(final Set<String> schemes) {
         this.schemes = schemes;
     }
 

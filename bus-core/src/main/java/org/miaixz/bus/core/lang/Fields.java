@@ -57,7 +57,7 @@ public class Fields {
     /**
      * Keeps shared date and time format patterns on the static API.
      */
-    private Fields() {
+    public Fields() {
         // No initialization required.
     }
 

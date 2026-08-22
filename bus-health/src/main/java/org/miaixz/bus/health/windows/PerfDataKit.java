@@ -47,12 +47,12 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class PerfDataKit {
+public class PerfDataKit {
 
     /**
      * Keeps Windows performance-data parsing on the static API.
      */
-    private PerfDataKit() {
+    public PerfDataKit() {
         // No initialization required.
     }
 
@@ -241,7 +241,7 @@ public final class PerfDataKit {
      * @author Kimi Liu
      */
     @Immutable
-    public static final class PerfCounter {
+    public static class PerfCounter {
 
         /**
          * The object value.

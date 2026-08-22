@@ -46,7 +46,7 @@ import org.miaixz.bus.fabric.Policy;
  *
  * @author Kimi Liu
  */
-public final class CertificatePolicy implements Policy {
+public class CertificatePolicy implements Policy {
 
     /**
      * Typed option for the TLS certificate policy.
@@ -94,7 +94,7 @@ public final class CertificatePolicy implements Policy {
      * @param chainCleaner   chain cleaner
      * @param reuseIdentity  explicit TLS session reuse identity, or {@code null}
      */
-    private CertificatePolicy(final X509TrustManager trustManager, final boolean hostnameVerify,
+    public CertificatePolicy(final X509TrustManager trustManager, final boolean hostnameVerify,
             final Map<String, Set<String>> pins, final boolean trustAll, final CertificateChainCleaner chainCleaner,
             final ReuseIdentity reuseIdentity) {
         this.trustManager = Assert.notNull(trustManager, () -> new ValidateException("Trust manager must not be null"));
@@ -541,7 +541,7 @@ public final class CertificatePolicy implements Policy {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Trust manager.
@@ -576,7 +576,7 @@ public final class CertificatePolicy implements Policy {
         /**
          * Creates a builder with defaults.
          */
-        private Builder() {
+        public Builder() {
             this.trustManager = defaultTrustManager();
             this.hostnameVerify = true;
             this.pins = new LinkedHashMap<>();
@@ -774,12 +774,12 @@ public final class CertificatePolicy implements Policy {
      * pin, trust-manager text, or other sensitive material.
      * </p>
      */
-    public static final class ReuseIdentity {
+    public static class ReuseIdentity {
 
         /**
          * Creates an opaque identity token.
          */
-        private ReuseIdentity() {
+        public ReuseIdentity() {
             // No initialization required.
         }
 

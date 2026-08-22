@@ -38,7 +38,7 @@ public class BlobStringer implements FunctionX<Object, String> {
     /**
      * Creates the shared BLOB-to-string converter.
      */
-    private BlobStringer() {
+    public BlobStringer() {
         // No initialization required.
     }
 

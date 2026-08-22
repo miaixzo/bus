@@ -81,7 +81,7 @@ public class AnnoHolder {
      * @param multiIndex  The index of the parameter for multi-key caching.
      * @param id          The identifier for the cache.
      */
-    private AnnoHolder(Method method, String cache, String prefix, int expire, Map<Integer, CacheKey> cacheKeyMap,
+    public AnnoHolder(Method method, String cache, String prefix, int expire, Map<Integer, CacheKey> cacheKeyMap,
             int multiIndex, String id) {
         this.method = method;
         this.cache = cache;
@@ -207,11 +207,11 @@ public class AnnoHolder {
         private String id;
 
         /**
-         * Private constructor for the builder.
+         * Creates an annotation metadata builder.
          *
          * @param method The method for which the holder is being built.
          */
-        private Builder(Method method) {
+        public Builder(Method method) {
             this.method = method;
         }
 

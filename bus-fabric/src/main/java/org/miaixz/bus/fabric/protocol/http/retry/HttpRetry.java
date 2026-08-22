@@ -44,7 +44,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class HttpRetry implements HttpStage {
+public class HttpRetry implements HttpStage {
 
     /**
      * Cached debug flag that avoids logger capability lookups on every HTTP exchange.

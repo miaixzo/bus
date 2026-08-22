@@ -321,7 +321,7 @@ public class MppsSCU {
      *
      * @param uidSuffix The UID suffix.
      */
-    public final void setUIDSuffix(String uidSuffix) {
+    public void setUIDSuffix(String uidSuffix) {
         this.uidSuffix = uidSuffix;
     }
 
@@ -330,7 +330,7 @@ public class MppsSCU {
      *
      * @param ppsuid The Performed Procedure Step SOP Instance UID.
      */
-    public final void setPPSUID(String ppsuid) {
+    public void setPPSUID(String ppsuid) {
         this.ppsuid = ppsuid;
     }
 
@@ -339,7 +339,7 @@ public class MppsSCU {
      *
      * @param ppsid The Performed Procedure Step ID.
      */
-    public final void setPPSID(String ppsid) {
+    public void setPPSID(String ppsid) {
         this.ppsid = ppsid;
     }
 
@@ -348,7 +348,7 @@ public class MppsSCU {
      *
      * @param ppsidStart The starting serial number.
      */
-    public final void setPPSIDStart(int ppsidStart) {
+    public void setPPSIDStart(int ppsidStart) {
         this.serialNo = ppsidStart;
     }
 
@@ -357,7 +357,7 @@ public class MppsSCU {
      *
      * @param ppsidFormat A {@link DecimalFormat} pattern.
      */
-    public final void setPPSIDFormat(String ppsidFormat) {
+    public void setPPSIDFormat(String ppsidFormat) {
         this.ppsidFormat = new DecimalFormat(ppsidFormat);
     }
 
@@ -366,7 +366,7 @@ public class MppsSCU {
      *
      * @param newPPSID {@code true} to force new ID generation.
      */
-    public final void setNewPPSID(boolean newPPSID) {
+    public void setNewPPSID(boolean newPPSID) {
         this.newPPSID = newPPSID;
     }
 
@@ -375,7 +375,7 @@ public class MppsSCU {
      *
      * @param protocolName The protocol name.
      */
-    public final void setProtocolName(String protocolName) {
+    public void setProtocolName(String protocolName) {
         this.protocolName = protocolName;
     }
 
@@ -384,7 +384,7 @@ public class MppsSCU {
      *
      * @param archiveRequested The archive requested value (e.g., "YES", "NO").
      */
-    public final void setArchiveRequested(String archiveRequested) {
+    public void setArchiveRequested(String archiveRequested) {
         this.archiveRequested = archiveRequested;
     }
 
@@ -393,7 +393,7 @@ public class MppsSCU {
      *
      * @param finalStatus The final status.
      */
-    public final void setFinalStatus(String finalStatus) {
+    public void setFinalStatus(String finalStatus) {
         this.finalStatus = finalStatus;
     }
 
@@ -402,7 +402,7 @@ public class MppsSCU {
      *
      * @param codes The properties containing code-meaning pairs.
      */
-    public final void setCodes(Properties codes) {
+    public void setCodes(Properties codes) {
         this.codes = codes;
     }
 
@@ -422,7 +422,7 @@ public class MppsSCU {
      * @throws IllegalStateException    if the code properties have not been set.
      * @throws IllegalArgumentException if the code value is undefined.
      */
-    public final void setDiscontinuationReason(String codeValue) {
+    public void setDiscontinuationReason(String codeValue) {
         if (codes == null)
             throw new IllegalStateException("codes not initialized");
         String codeMeaning = codes.getProperty(codeValue);
@@ -751,7 +751,7 @@ public class MppsSCU {
      *
      * @author Kimi Liu
      */
-    public static final class MppsWithIUID {
+    public static class MppsWithIUID {
 
         /**
          * The SOP Instance UID of the MPPS object.
@@ -769,7 +769,7 @@ public class MppsSCU {
          * @param iuid The SOP Instance UID.
          * @param mpps The MPPS attributes.
          */
-        MppsWithIUID(String iuid, Attributes mpps) {
+        public MppsWithIUID(String iuid, Attributes mpps) {
             this.iuid = iuid;
             this.mpps = mpps;
         }

@@ -33,7 +33,7 @@ public class CRC16XModem extends CRC16Checksum {
     /**
      * Creates a CRC-16/XMODEM checksum implementation.
      */
-    private CRC16XModem() {
+    public CRC16XModem() {
         // No initialization required.
     }
 

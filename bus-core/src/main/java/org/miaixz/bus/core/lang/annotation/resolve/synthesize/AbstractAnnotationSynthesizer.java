@@ -74,7 +74,7 @@ public abstract class AbstractAnnotationSynthesizer<T> implements AnnotationSynt
      * @param annotationPostProcessors the post-processors to apply to synthesized annotations
      * @param annotationScanner        the annotation scanner; must support scanning annotation types
      */
-    protected AbstractAnnotationSynthesizer(final T source, final SynthesizedAnnotationSelector annotationSelector,
+    public AbstractAnnotationSynthesizer(final T source, final SynthesizedAnnotationSelector annotationSelector,
             final Collection<SynthesizedAnnotationPostProcessor> annotationPostProcessors,
             final AnnotationScanner annotationScanner) {
         Assert.notNull(source, "source must not null");

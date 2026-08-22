@@ -208,7 +208,7 @@ public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, in
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Maximum idle candidate, validated against the total limit at build time.
@@ -243,7 +243,7 @@ public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, in
         /**
          * Creates a builder.
          */
-        private Builder() {
+        public Builder() {
             // No initialization required.
         }
 

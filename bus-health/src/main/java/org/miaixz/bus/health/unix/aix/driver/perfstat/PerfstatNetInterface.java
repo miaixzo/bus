@@ -31,12 +31,12 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class PerfstatNetInterface {
+public class PerfstatNetInterface {
 
     /**
      * Keeps AIX perfstat net interface queries on the static API.
      */
-    private PerfstatNetInterface() {
+    public PerfstatNetInterface() {
         // No initialization required.
     }
 

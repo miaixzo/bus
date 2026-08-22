@@ -49,7 +49,7 @@ public class CreditCode {
     /**
      * Keeps unified social credit-code validation on the static API.
      */
-    private CreditCode() {
+    public CreditCode() {
         // No initialization required.
     }
 

@@ -64,7 +64,7 @@ public abstract class AbstractHWDiskStore implements HWDiskStore {
      * @param serial the serial
      * @param size   the size
      */
-    protected AbstractHWDiskStore(String name, String model, String serial, long size) {
+    public AbstractHWDiskStore(String name, String model, String serial, long size) {
         this(name, model, serial, size, "Unknown");
     }
 

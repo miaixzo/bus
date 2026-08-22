@@ -48,7 +48,7 @@ import org.miaixz.bus.health.mac.jna.IOReport;
  *
  * @author Kimi Liu
  */
-public final class IOReportClient {
+public class IOReportClient {
 
     /**
      * The GROUP_GPU_STATS constant.
@@ -124,7 +124,7 @@ public final class IOReportClient {
      * @param subscription       the subscription
      * @param subscribedChannels the subscribed channels
      */
-    private IOReportClient(IOReport ioReport, IOReport.IOReportSubscriptionRef subscription,
+    public IOReportClient(IOReport ioReport, IOReport.IOReportSubscriptionRef subscription,
             CFDictionaryRef subscribedChannels) {
         this.ioReport = ioReport;
         this.subscription = subscription;

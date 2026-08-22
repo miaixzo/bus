@@ -41,7 +41,7 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsZoneMode;
  *
  * @author Kimi Liu
  */
-public final class DnsAuthoritativeResolver {
+public class DnsAuthoritativeResolver {
 
     /**
      * Maximum CNAME or synthesized DNAME chain depth.

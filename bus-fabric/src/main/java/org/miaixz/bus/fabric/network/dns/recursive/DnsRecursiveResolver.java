@@ -59,7 +59,7 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsTrustAnchor;
  *
  * @author Kimi Liu
  */
-public final class DnsRecursiveResolver {
+public class DnsRecursiveResolver {
 
     /**
      * Maximum referral depth followed for one query.

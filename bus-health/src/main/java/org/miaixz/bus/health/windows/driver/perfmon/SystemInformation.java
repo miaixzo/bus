@@ -31,12 +31,12 @@ import org.miaixz.bus.health.windows.PerfCounterQuery;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class SystemInformation {
+public class SystemInformation {
 
     /**
      * Creates a new SystemInformation instance.
      */
-    private SystemInformation() {
+    public SystemInformation() {
         // No initialization required.
     }
 

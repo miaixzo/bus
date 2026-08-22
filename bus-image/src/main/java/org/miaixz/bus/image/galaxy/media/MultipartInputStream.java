@@ -79,7 +79,7 @@ public class MultipartInputStream extends FilterInputStream {
      * @param in       the in.
      * @param boundary the boundary.
      */
-    protected MultipartInputStream(InputStream in, String boundary) {
+    public MultipartInputStream(InputStream in, String boundary) {
         super(in);
         this.boundary = boundary.getBytes();
         this.buffer = new byte[this.boundary.length];

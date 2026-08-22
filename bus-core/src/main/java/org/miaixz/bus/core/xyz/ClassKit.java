@@ -52,7 +52,7 @@ public class ClassKit {
     /**
      * Keeps class loading and introspection on the static API.
      */
-    private ClassKit() {
+    public ClassKit() {
         // No initialization required.
     }
 

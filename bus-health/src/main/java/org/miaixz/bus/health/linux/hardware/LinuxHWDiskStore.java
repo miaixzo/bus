@@ -50,7 +50,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class LinuxHWDiskStore extends AbstractHWDiskStore {
+public class LinuxHWDiskStore extends AbstractHWDiskStore {
 
     /**
      * The BLOCK constant.
@@ -227,7 +227,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
      * @param serial the serial
      * @param size   the size
      */
-    private LinuxHWDiskStore(String name, String model, String serial, long size) {
+    public LinuxHWDiskStore(String name, String model, String serial, long size) {
         super(name, model, serial, size);
     }
 

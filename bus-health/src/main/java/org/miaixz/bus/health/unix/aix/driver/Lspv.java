@@ -38,7 +38,7 @@ import org.miaixz.bus.health.builtin.hardware.HWPartition;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Lspv {
+public class Lspv {
 
     /**
      * The lspv command incurs a lot of disk reads. Since partitions shouldn't change during operation, cache the result
@@ -49,7 +49,7 @@ public final class Lspv {
     /**
      * Creates a new Lspv instance.
      */
-    private Lspv() {
+    public Lspv() {
         // No initialization required.
     }
 

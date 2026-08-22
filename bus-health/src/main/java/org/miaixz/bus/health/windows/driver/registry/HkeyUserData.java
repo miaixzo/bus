@@ -41,7 +41,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class HkeyUserData {
+public class HkeyUserData {
 
     /**
      * Constructs a new HkeyUserData instance.

@@ -35,7 +35,7 @@ import org.miaixz.bus.fabric.Headers;
  *
  * @author Kimi Liu
  */
-public final class HpackCodec {
+public class HpackCodec {
 
     /**
      * Writer-direction encoder with compression state independent from the decoder.

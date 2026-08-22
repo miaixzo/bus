@@ -118,7 +118,7 @@ public class SynthesizedAnnotationProxy implements InvocationHandler {
      * @param annotationAttributeValueProvider the attribute value provider; must not be {@code null}
      * @param annotation                       the synthesized annotation to proxy; must not be {@code null}
      */
-    SynthesizedAnnotationProxy(final AnnotationAttributeValueProvider annotationAttributeValueProvider,
+    public SynthesizedAnnotationProxy(final AnnotationAttributeValueProvider annotationAttributeValueProvider,
             final SynthesizedAnnotation annotation) {
         Assert.notNull(annotationAttributeValueProvider, "annotationAttributeValueProvider must not null");
         Assert.notNull(annotation, "annotation must not null");

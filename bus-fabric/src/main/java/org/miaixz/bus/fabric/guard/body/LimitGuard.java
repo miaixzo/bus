@@ -33,7 +33,7 @@ import org.miaixz.bus.fabric.guard.GuardRule;
  *
  * @author Kimi Liu
  */
-public final class LimitGuard implements GuardRule {
+public class LimitGuard implements GuardRule {
 
     /**
      * Inclusive upper bound for declared and known payload lengths.
@@ -45,7 +45,7 @@ public final class LimitGuard implements GuardRule {
      *
      * @param maxBytes validated inclusive body limit from 1 byte through 16 MiB
      */
-    private LimitGuard(final long maxBytes) {
+    public LimitGuard(final long maxBytes) {
         this.maxBytes = validateMaxBytes(maxBytes);
     }
 

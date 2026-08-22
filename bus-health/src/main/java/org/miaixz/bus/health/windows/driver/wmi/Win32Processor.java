@@ -33,12 +33,12 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Win32Processor {
+public class Win32Processor {
 
     /**
      * Keeps Win32 processor queries on the static API.
      */
-    private Win32Processor() {
+    public Win32Processor() {
         // No initialization required.
     }
 

@@ -116,7 +116,7 @@ public class BeanTree<T, R extends Comparable<R>> {
      * @param childrenGetter  The getter for the children list.
      * @param childrenSetter  The setter for the children list.
      */
-    private BeanTree(final FunctionX<T, R> idGetter, final FunctionX<T, R> pidGetter, final R pidValue,
+    public BeanTree(final FunctionX<T, R> idGetter, final FunctionX<T, R> pidGetter, final R pidValue,
             final PredicateX<T> parentPredicate, final FunctionX<T, List<T>> childrenGetter,
             final BiConsumerX<T, List<T>> childrenSetter) {
         this.idGetter = Objects.requireNonNull(idGetter, "idGetter must not be null");

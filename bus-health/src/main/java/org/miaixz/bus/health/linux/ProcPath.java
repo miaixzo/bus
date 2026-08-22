@@ -35,12 +35,12 @@ import org.miaixz.bus.health.Builder;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class ProcPath {
+public class ProcPath {
 
     /**
      * Keeps Linux procfs path resolution on the static API.
      */
-    private ProcPath() {
+    public ProcPath() {
         // No initialization required.
     }
 

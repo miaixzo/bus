@@ -650,7 +650,7 @@ public class GenericTypeResolver {
          * @param lowerBounds lower type bounds
          * @param upperBounds upper type bounds
          */
-        WildcardTypes(Type[] lowerBounds, Type[] upperBounds) {
+        public WildcardTypes(Type[] lowerBounds, Type[] upperBounds) {
             this.lowerBounds = lowerBounds;
             this.upperBounds = upperBounds;
         }
@@ -678,7 +678,7 @@ public class GenericTypeResolver {
          *
          * @param genericComponentType the generic component type
          */
-        GenericArrayTypes(Type genericComponentType) {
+        public GenericArrayTypes(Type genericComponentType) {
             this.genericComponentType = genericComponentType;
         }
 

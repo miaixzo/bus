@@ -61,7 +61,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class StompSession implements Session {
+public class StompSession implements Session {
 
     /**
      * Frame sender.
@@ -196,7 +196,7 @@ public final class StompSession implements Session {
      * @param cancelHook cancel hook
      * @param handler    default message handler
      */
-    StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
+    public StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
             final Consumer<StompMessage> handler) {
         this(sender, closeHook, cancelHook, handler, null, null, EventObserver.noop(), null, null, Normal.MEBI_64);
     }

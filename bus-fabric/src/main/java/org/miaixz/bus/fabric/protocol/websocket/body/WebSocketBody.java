@@ -41,7 +41,7 @@ import org.miaixz.bus.fabric.codec.body.ProgressBody;
  *
  * @author Kimi Liu
  */
-public final class WebSocketBody implements MessageBody, ProgressBody {
+public class WebSocketBody implements MessageBody, ProgressBody {
 
     /**
      * Message kind.
@@ -76,7 +76,7 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
      * @param payload encoded message payload
      * @param media   payload media metadata
      */
-    private WebSocketBody(final Kind kind, final String text, final Payload payload, final MediaType media) {
+    public WebSocketBody(final Kind kind, final String text, final Payload payload, final MediaType media) {
         this(kind, text, payload, media, null);
     }
 

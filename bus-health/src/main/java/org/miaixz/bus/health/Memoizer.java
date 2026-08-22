@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Memoizer {
+public class Memoizer {
 
     /**
      * Constructs a new {@code Memoizer} instance.

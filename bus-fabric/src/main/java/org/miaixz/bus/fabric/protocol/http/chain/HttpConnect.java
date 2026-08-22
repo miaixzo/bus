@@ -86,7 +86,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class HttpConnect implements HttpStage, AutoCloseable {
+public class HttpConnect implements HttpStage, AutoCloseable {
 
     /**
      * Debug state captured once; Logger level discovery performs caller inspection and is not a hot-path probe.

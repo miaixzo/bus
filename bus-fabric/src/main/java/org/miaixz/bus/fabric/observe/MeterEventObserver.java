@@ -32,7 +32,7 @@ import org.miaixz.bus.fabric.observe.window.RollingWindow;
  *
  * @author Kimi Liu
  */
-public final class MeterEventObserver implements EventObserver {
+public class MeterEventObserver implements EventObserver {
 
     /**
      * Counter and timing registry updated by emitted events.
@@ -50,7 +50,7 @@ public final class MeterEventObserver implements EventObserver {
      * @param clock  clock used by operation timers in the meter
      * @param window rolling window receiving event-count samples
      */
-    private MeterEventObserver(final Clock clock, final RollingWindow window) {
+    public MeterEventObserver(final Clock clock, final RollingWindow window) {
         final Clock checkedClock = Assert.notNull(clock, "Clock must not be null");
         this.window = Assert.notNull(window, "Rolling window must not be null");
         this.meter = FabricMeter.create(checkedClock);

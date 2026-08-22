@@ -27,7 +27,7 @@ import org.miaixz.bus.fabric.network.dns.zone.DnsSnapshot;
  *
  * @author Kimi Liu
  */
-public final class DnsUpdateResult {
+public class DnsUpdateResult {
 
     /**
      * DNS RCODE for a successful update.

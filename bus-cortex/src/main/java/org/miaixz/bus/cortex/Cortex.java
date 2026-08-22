@@ -44,7 +44,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class Cortex {
+public class Cortex {
 
     /**
      * Guard object protecting one-time facade binding.
@@ -59,7 +59,7 @@ public final class Cortex {
     /**
      * Creates the static facade holder.
      */
-    private Cortex() {
+    public Cortex() {
         // No initialization required.
     }
 
@@ -596,7 +596,7 @@ public final class Cortex {
          *
          * @param runtime runtime bundle installed into the facade
          */
-        protected RuntimeHandle(Runtime runtime) {
+        public RuntimeHandle(Runtime runtime) {
             this.runtime = runtime;
         }
 
@@ -626,7 +626,7 @@ public final class Cortex {
      *
      * @author Kimi Liu
      */
-    public static final class Runtime {
+    public static class Runtime {
 
         /**
          * API registry bound into the facade.
@@ -672,7 +672,7 @@ public final class Cortex {
          * @param version version registry
          * @param curator curator facade
          */
-        private Runtime(Registry<ApiAssets> api, Registry<McpAssets> mcp, Registry<PromptAssets> prompt,
+        public Runtime(Registry<ApiAssets> api, Registry<McpAssets> mcp, Registry<PromptAssets> prompt,
                 Registry<VersionAssets> version, Curator curator, List<Object> components) {
             this.api = api;
             this.mcp = mcp;

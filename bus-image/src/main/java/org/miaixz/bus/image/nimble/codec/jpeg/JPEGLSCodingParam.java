@@ -142,7 +142,7 @@ public class JPEGLSCodingParam {
      *
      * @return the max val.
      */
-    public final int getMaxVal() {
+    public int getMaxVal() {
         return maxVal;
     }
 
@@ -151,7 +151,7 @@ public class JPEGLSCodingParam {
      *
      * @return the t1.
      */
-    public final int getT1() {
+    public int getT1() {
         return t1;
     }
 
@@ -160,7 +160,7 @@ public class JPEGLSCodingParam {
      *
      * @return the t2.
      */
-    public final int getT2() {
+    public int getT2() {
         return t2;
     }
 
@@ -169,7 +169,7 @@ public class JPEGLSCodingParam {
      *
      * @return the t3.
      */
-    public final int getT3() {
+    public int getT3() {
         return t3;
     }
 
@@ -178,7 +178,7 @@ public class JPEGLSCodingParam {
      *
      * @return the reset.
      */
-    public final int getReset() {
+    public int getReset() {
         return reset;
     }
 

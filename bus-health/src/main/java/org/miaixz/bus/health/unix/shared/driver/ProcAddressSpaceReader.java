@@ -38,7 +38,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 @NotThreadSafe
-public final class ProcAddressSpaceReader implements AutoCloseable {
+public class ProcAddressSpaceReader implements AutoCloseable {
 
     /**
      * The libc binding used for address-space reads.
@@ -82,7 +82,7 @@ public final class ProcAddressSpaceReader implements AutoCloseable {
      * @param fd       the open address-space file descriptor
      * @param pageSize the memory page size in bytes
      */
-    private ProcAddressSpaceReader(CLibrary libc, int fd, long pageSize) {
+    public ProcAddressSpaceReader(CLibrary libc, int fd, long pageSize) {
         this.libc = libc;
         this.fd = fd;
         this.pageSize = pageSize;

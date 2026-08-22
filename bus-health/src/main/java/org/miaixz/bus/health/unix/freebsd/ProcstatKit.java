@@ -35,12 +35,12 @@ import org.miaixz.bus.health.Parsing;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class ProcstatKit {
+public class ProcstatKit {
 
     /**
      * Keeps FreeBSD procstat queries on the static API.
      */
-    private ProcstatKit() {
+    public ProcstatKit() {
         // No initialization required.
     }
 

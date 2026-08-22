@@ -34,7 +34,7 @@ public class EnglishNumberFormatter {
     /**
      * Keeps English-number formatting on the static API.
      */
-    private EnglishNumberFormatter() {
+    public EnglishNumberFormatter() {
         // No initialization required.
     }
 

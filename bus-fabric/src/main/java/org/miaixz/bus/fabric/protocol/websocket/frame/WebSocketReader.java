@@ -39,7 +39,7 @@ import org.miaixz.bus.fabric.Builder;
  *
  * @author Kimi Liu
  */
-public final class WebSocketReader {
+public class WebSocketReader {
 
     /**
      * Source borrowed from the owning WebSocket session.

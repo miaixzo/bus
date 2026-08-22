@@ -55,7 +55,7 @@ public class DeviceExtension implements Serializable {
      *
      * @return the device.
      */
-    public final Device getDevice() {
+    public Device getDevice() {
         return device;
     }
 

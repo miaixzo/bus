@@ -33,7 +33,7 @@ import org.miaixz.bus.fabric.Builder;
  *
  * @author Kimi Liu
  */
-public final class Browser {
+public class Browser {
 
     /**
      * Shared unknown browser classifier.

@@ -47,7 +47,7 @@ public abstract class EntryEncryptorProvider<E> extends WrappedEncryptorProvider
      *
      * @param encryptorProvider The delegate encryptor provider.
      */
-    protected EntryEncryptorProvider(EncryptorProvider encryptorProvider) {
+    public EntryEncryptorProvider(EncryptorProvider encryptorProvider) {
         this(encryptorProvider, null);
     }
 

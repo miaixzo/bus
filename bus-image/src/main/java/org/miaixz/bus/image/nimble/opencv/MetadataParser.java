@@ -33,12 +33,12 @@ import org.miaixz.bus.core.lang.Normal;
  *
  * @author Kimi Liu
  */
-public final class MetadataParser {
+public class MetadataParser {
 
     /**
      * Creates a new instance.
      */
-    private MetadataParser() {
+    public MetadataParser() {
         // No initialization required.
     }
 

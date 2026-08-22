@@ -35,7 +35,7 @@ import org.miaixz.bus.health.unix.shared.hardware.CupsPrinter;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
+public class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
 
     /**
      * Constructs a new {@code MacHardwareAbstractionLayer} instance.

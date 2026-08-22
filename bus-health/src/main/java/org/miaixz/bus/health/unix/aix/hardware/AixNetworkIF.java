@@ -38,7 +38,7 @@ import org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatNetInterface;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class AixNetworkIF extends AbstractNetworkIF {
+public class AixNetworkIF extends AbstractNetworkIF {
 
     /**
      * The netstats value.

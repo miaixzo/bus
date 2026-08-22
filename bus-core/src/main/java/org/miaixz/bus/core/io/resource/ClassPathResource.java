@@ -111,7 +111,7 @@ public class ClassPathResource extends UrlResource {
      *
      * @return The path of the resource.
      */
-    public final String getPath() {
+    public String getPath() {
         return this.path;
     }
 
@@ -121,7 +121,7 @@ public class ClassPathResource extends UrlResource {
      *
      * @return The absolute path of the resource.
      */
-    public final String getAbsolutePath() {
+    public String getAbsolutePath() {
         if (FileKit.isAbsolutePath(this.path)) {
             return this.path;
         }
@@ -134,7 +134,7 @@ public class ClassPathResource extends UrlResource {
      *
      * @return The {@link ClassLoader}.
      */
-    public final ClassLoader getClassLoader() {
+    public ClassLoader getClassLoader() {
         return this.classLoader;
     }
 

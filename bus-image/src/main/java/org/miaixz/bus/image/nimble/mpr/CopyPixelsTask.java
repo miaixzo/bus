@@ -28,7 +28,7 @@ import java.util.function.IntBinaryOperator;
  *
  * @author Kimi Liu
  */
-public final class CopyPixelsTask extends RecursiveAction {
+public class CopyPixelsTask extends RecursiveAction {
 
     /**
      * The threshold value.

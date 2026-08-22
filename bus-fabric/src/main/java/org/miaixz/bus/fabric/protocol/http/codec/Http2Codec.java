@@ -53,7 +53,7 @@ import org.miaixz.bus.fabric.protocol.http.http2.Http2Stream;
  *
  * @author Kimi Liu
  */
-public final class Http2Codec implements HttpCodec {
+public class Http2Codec implements HttpCodec {
 
     /**
      * Per-call codec activity independent from the HTTP/2 connection lifecycle.

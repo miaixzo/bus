@@ -42,7 +42,7 @@ import org.miaixz.bus.fabric.codec.body.ResponseBody;
  *
  * @author Kimi Liu
  */
-public final class PayloadBody implements RequestBody, ResponseBody, ProgressBody {
+public class PayloadBody implements RequestBody, ResponseBody, ProgressBody {
 
     /**
      * Closed-state updater without allocating an AtomicBoolean per body.
@@ -93,7 +93,7 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
      * @param payload body content source
      * @param media   HTTP media metadata
      */
-    private PayloadBody(final Payload payload, final MediaType media) {
+    public PayloadBody(final Payload payload, final MediaType media) {
         this(payload, media, null, Normal.MEBI_64);
     }
 

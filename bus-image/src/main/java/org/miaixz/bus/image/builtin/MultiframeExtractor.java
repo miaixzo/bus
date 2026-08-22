@@ -143,7 +143,7 @@ public class MultiframeExtractor {
      *
      * @return true if the preserve series instance UID condition is true; otherwise false.
      */
-    public final boolean isPreserveSeriesInstanceUID() {
+    public boolean isPreserveSeriesInstanceUID() {
         return preserveSeriesInstanceUID;
     }
 
@@ -152,7 +152,7 @@ public class MultiframeExtractor {
      *
      * @param preserveSeriesInstanceUID the preserve series instance UID.
      */
-    public final void setPreserveSeriesInstanceUID(boolean preserveSeriesInstanceUID) {
+    public void setPreserveSeriesInstanceUID(boolean preserveSeriesInstanceUID) {
         this.preserveSeriesInstanceUID = preserveSeriesInstanceUID;
     }
 
@@ -161,7 +161,7 @@ public class MultiframeExtractor {
      *
      * @return the instance number format.
      */
-    public final String getInstanceNumberFormat() {
+    public String getInstanceNumberFormat() {
         return instanceNumberFormat;
     }
 
@@ -170,7 +170,7 @@ public class MultiframeExtractor {
      *
      * @param instanceNumberFormat the instance number format.
      */
-    public final void setInstanceNumberFormat(String instanceNumberFormat) {
+    public void setInstanceNumberFormat(String instanceNumberFormat) {
         String.format(instanceNumberFormat, Symbol.ONE, 1);
         this.instanceNumberFormat = instanceNumberFormat;
     }
@@ -180,7 +180,7 @@ public class MultiframeExtractor {
      *
      * @return the UID mapper.
      */
-    public final UIDMapper getUIDMapper() {
+    public UIDMapper getUIDMapper() {
         return uidMapper;
     }
 
@@ -189,7 +189,7 @@ public class MultiframeExtractor {
      *
      * @param uidMapper the UID mapper.
      */
-    public final void setUIDMapper(UIDMapper uidMapper) {
+    public void setUIDMapper(UIDMapper uidMapper) {
         if (uidMapper == null)
             throw new NullPointerException();
         this.uidMapper = uidMapper;
@@ -200,7 +200,7 @@ public class MultiframeExtractor {
      *
      * @return the number of frames accessorr.
      */
-    public final NumberOfFramesAccessor getNumberOfFramesAccessorr() {
+    public NumberOfFramesAccessor getNumberOfFramesAccessorr() {
         return nofAccessor;
     }
 
@@ -209,7 +209,7 @@ public class MultiframeExtractor {
      *
      * @param accessor the accessor.
      */
-    public final void setNumberOfFramesAccessor(NumberOfFramesAccessor accessor) {
+    public void setNumberOfFramesAccessor(NumberOfFramesAccessor accessor) {
         if (accessor == null)
             throw new NullPointerException();
         this.nofAccessor = accessor;

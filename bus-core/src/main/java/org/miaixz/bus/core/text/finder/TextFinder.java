@@ -34,7 +34,7 @@ public abstract class TextFinder implements Finder, Serializable {
     /**
      * Constructs a text finder.
      */
-    protected TextFinder() {
+    public TextFinder() {
         // No initialization required.
     }
 

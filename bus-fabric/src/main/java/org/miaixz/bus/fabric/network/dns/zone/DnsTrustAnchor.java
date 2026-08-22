@@ -37,7 +37,7 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
  *
  * @author Kimi Liu
  */
-public final class DnsTrustAnchor {
+public class DnsTrustAnchor {
 
     /**
      * DNSKEY RDATA byte length before the public key.

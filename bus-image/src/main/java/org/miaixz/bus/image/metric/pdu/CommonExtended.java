@@ -68,7 +68,7 @@ public class CommonExtended {
      *
      * @return the sop class uid.
      */
-    public final String getSOPClassUID() {
+    public String getSOPClassUID() {
         return sopCUID;
     }
 
@@ -77,7 +77,7 @@ public class CommonExtended {
      *
      * @return the service class uid.
      */
-    public final String getServiceClassUID() {
+    public String getServiceClassUID() {
         return serviceCUID;
     }
 

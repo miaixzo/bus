@@ -39,7 +39,7 @@ import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
  *
  * @author Kimi Liu
  */
-public final class DnsCodec {
+public class DnsCodec {
 
     /**
      * Maximum unsigned 16-bit DNS wire value.
@@ -132,9 +132,9 @@ public final class DnsCodec {
     private static final int EDNS_OPTION_EXTENDED_DNS_ERROR = 15;
 
     /**
-     * Restricts the class to static operations.
+     * Creates a stateless DNS message codec entry point.
      */
-    private DnsCodec() {
+    public DnsCodec() {
         // No initialization required.
     }
 

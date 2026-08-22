@@ -51,7 +51,7 @@ public abstract class AbstractOSProcess implements OSProcess {
      *
      * @param pid the pid
      */
-    protected AbstractOSProcess(int pid) {
+    public AbstractOSProcess(int pid) {
         this.processID = pid;
     }
 

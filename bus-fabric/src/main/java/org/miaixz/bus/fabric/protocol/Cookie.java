@@ -43,7 +43,7 @@ import org.miaixz.bus.fabric.observe.tags.Tags;
  *
  * @author Kimi Liu
  */
-public final class Cookie {
+public class Cookie {
 
     /**
      * Cookie name.
@@ -97,7 +97,7 @@ public final class Cookie {
      * @param secure   secure flag
      * @param httpOnly HTTP-only flag
      */
-    private Cookie(final String name, final String value, final String domain, final String host, final String path,
+    public Cookie(final String name, final String value, final String domain, final String host, final String path,
             final Instant expires, final boolean secure, final boolean httpOnly) {
         this.name = validateToken(name, "Cookie name");
         this.value = validateToken(value, "Cookie value");
@@ -527,7 +527,7 @@ public final class Cookie {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Cookie name.
@@ -570,7 +570,7 @@ public final class Cookie {
          * @param name  validated cookie name
          * @param value validated cookie value
          */
-        private Builder(final String name, final String value) {
+        public Builder(final String name, final String value) {
             this.name = name;
             this.value = value;
             this.path = Symbol.SLASH;

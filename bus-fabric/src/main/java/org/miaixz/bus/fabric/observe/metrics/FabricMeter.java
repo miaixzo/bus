@@ -39,7 +39,7 @@ import org.miaixz.bus.fabric.observe.ObservationMarker;
  *
  * @author Kimi Liu
  */
-public final class FabricMeter {
+public class FabricMeter {
 
     /**
      * Fixed counter descriptors in ordinal order.

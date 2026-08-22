@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-public final class SseReader implements AutoCloseable {
+public class SseReader implements AutoCloseable {
 
     /**
      * Reader-local parsing state independent from the owning session lifecycle.

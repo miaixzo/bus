@@ -33,7 +33,7 @@ import org.miaixz.bus.health.Executor;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Mount {
+public class Mount {
 
     /**
      * The MOUNT_CMD constant.
@@ -48,7 +48,7 @@ public final class Mount {
     /**
      * Creates a new Mount instance.
      */
-    private Mount() {
+    public Mount() {
         // No initialization required.
     }
 

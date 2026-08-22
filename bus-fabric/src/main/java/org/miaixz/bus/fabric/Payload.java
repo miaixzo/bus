@@ -51,14 +51,14 @@ public interface Payload {
     /**
      * Lazily initialized holder for the shared empty payload.
      */
-    final class EmptyHolder {
+    class EmptyHolder {
 
         /**
          * Shared immutable empty payload.
          */
         private static final Payload EMPTY = Payload.owned(ByteString.EMPTY);
 
-        private EmptyHolder() {
+        public EmptyHolder() {
             // No initialization required.
         }
     }

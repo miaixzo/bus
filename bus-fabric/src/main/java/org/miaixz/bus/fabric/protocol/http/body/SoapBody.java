@@ -41,7 +41,7 @@ import org.miaixz.bus.fabric.codec.body.RequestBody;
  *
  * @author Kimi Liu
  */
-public final class SoapBody implements RequestBody {
+public class SoapBody implements RequestBody {
 
     /**
      * Optional namespace URI for the SOAP operation element.
@@ -83,7 +83,7 @@ public final class SoapBody implements RequestBody {
      * @param charset   XML character encoding, or {@code null} for UTF-8
      * @param action    optional explicit SOAPAction value
      */
-    private SoapBody(final String namespace, final String method, final Map<String, Object> headers,
+    public SoapBody(final String namespace, final String method, final Map<String, Object> headers,
             final Map<String, Object> params, final Charset charset, final String action) {
         this.namespace = optionalLine(namespace, "SOAP namespace");
         this.method = name(method, "SOAP method");
@@ -304,7 +304,7 @@ public final class SoapBody implements RequestBody {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Candidate operation namespace URI.
@@ -339,7 +339,7 @@ public final class SoapBody implements RequestBody {
         /**
          * Creates a builder.
          */
-        private Builder() {
+        public Builder() {
             // No initialization required.
         }
 

@@ -53,7 +53,7 @@ public class TiledAlgorithm {
      * @param padding    the padding.
      * @param borderType the border type.
      */
-    TiledAlgorithm(int tileSize, int padding, int borderType) {
+    public TiledAlgorithm(int tileSize, int padding, int borderType) {
         this.mTileSize = tileSize;
         this.mPadding = padding;
         this.mBorderType = borderType;

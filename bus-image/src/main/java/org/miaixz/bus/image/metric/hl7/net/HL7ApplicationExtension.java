@@ -52,7 +52,7 @@ public class HL7ApplicationExtension implements Serializable {
      *
      * @return the hl7 application.
      */
-    public final HL7Application getHL7Application() {
+    public HL7Application getHL7Application() {
         return hl7App;
     }
 

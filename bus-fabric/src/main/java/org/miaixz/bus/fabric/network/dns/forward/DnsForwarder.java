@@ -58,7 +58,7 @@ import org.miaixz.bus.fabric.network.tls.TlsSettings;
  *
  * @author Kimi Liu
  */
-public final class DnsForwarder {
+public class DnsForwarder {
 
     /**
      * Shared upstream health index.

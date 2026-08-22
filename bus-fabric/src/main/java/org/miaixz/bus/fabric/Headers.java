@@ -32,7 +32,7 @@ import org.miaixz.bus.core.net.Http;
  *
  * @author Kimi Liu
  */
-public final class Headers {
+public class Headers {
 
     /**
      * Shared immutable empty headers.
@@ -59,7 +59,7 @@ public final class Headers {
      *
      * @param namesAndValues source name/value pairs
      */
-    private Headers(final String[] namesAndValues) {
+    public Headers(final String[] namesAndValues) {
         this(namesAndValues, true);
     }
 
@@ -519,7 +519,7 @@ public final class Headers {
      *
      * @author Kimi Liu
      */
-    public static final class Builder {
+    public static class Builder {
 
         /**
          * Mutable name/value pairs.
@@ -534,7 +534,7 @@ public final class Headers {
         /**
          * Creates an empty builder.
          */
-        private Builder() {
+        public Builder() {
             this.namesAndValues = new String[8];
         }
 

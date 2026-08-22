@@ -68,7 +68,7 @@ import org.miaixz.bus.fabric.protocol.http.http2.Http2Header;
  *
  * @author Kimi Liu
  */
-public final class DnsDohServer implements AutoCloseable, Lifecycle {
+public class DnsDohServer implements AutoCloseable, Lifecycle {
 
     /**
      * DNS-over-HTTPS request path.

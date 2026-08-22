@@ -46,7 +46,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public final class KcpNetwork implements AutoCloseable {
+public class KcpNetwork implements AutoCloseable {
 
     /**
      * Cached debug flag that keeps packet hot paths free from repeated logger capability lookups.
@@ -168,7 +168,7 @@ public final class KcpNetwork implements AutoCloseable {
      *
      * @param udp UDP network owned by the endpoint
      */
-    private KcpNetwork(final UdpNetwork udp) {
+    public KcpNetwork(final UdpNetwork udp) {
         this(udp, Clock.system(), KcpPolicy.defaults());
     }
 

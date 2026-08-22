@@ -38,7 +38,7 @@ import org.miaixz.bus.health.Parsing;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Iostat {
+public class Iostat {
 
     /**
      * Constructs a new Iostat instance.

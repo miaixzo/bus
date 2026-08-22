@@ -181,7 +181,7 @@ public class PrimaryFilter extends AbstractFilter {
          * @param list  The complete, ordered list of strategies to execute for the current request.
          * @param chain The original WebFlux filter chain.
          */
-        Chain(List<Strategy> list, WebFilterChain chain) {
+        public Chain(List<Strategy> list, WebFilterChain chain) {
             this.list = list;
             this.chain = chain;
             this.index = 0;

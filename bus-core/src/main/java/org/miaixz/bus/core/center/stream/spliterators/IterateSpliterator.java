@@ -72,7 +72,7 @@ public class IterateSpliterator<T> extends Spliterators.AbstractSpliterator<T> {
      * @param hasNext a predicate to determine if there are more elements
      * @param next    a unary operator to produce the next element from the previous one
      */
-    IterateSpliterator(final T seed, final Predicate<? super T> hasNext, final UnaryOperator<T> next) {
+    public IterateSpliterator(final T seed, final Predicate<? super T> hasNext, final UnaryOperator<T> next) {
         super(Long.MAX_VALUE, Spliterator.ORDERED | Spliterator.IMMUTABLE);
         this.seed = seed;
         this.hasNext = hasNext;

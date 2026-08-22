@@ -36,7 +36,7 @@ import org.miaixz.bus.health.builtin.software.OSSession;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class NetSessionData {
+public class NetSessionData {
 
     /**
      * Constructs a new {@code NetSessionData} instance.

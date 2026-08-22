@@ -33,7 +33,7 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
  * @author Kimi Liu
  */
 @ThreadSafe
-public final class Win32Printer {
+public class Win32Printer {
 
     /**
      * The WMI class name.
@@ -84,7 +84,7 @@ public final class Win32Printer {
     /**
      * Creates a new Win32Printer instance.
      */
-    private Win32Printer() {
+    public Win32Printer() {
         // No initialization required.
     }
 

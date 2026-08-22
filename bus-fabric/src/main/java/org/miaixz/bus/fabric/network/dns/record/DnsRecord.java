@@ -38,7 +38,7 @@ import org.miaixz.bus.fabric.network.dns.message.DnsName;
  *
  * @author Kimi Liu
  */
-public final class DnsRecord {
+public class DnsRecord {
 
     /**
      * Internet DNS class code.
@@ -79,7 +79,7 @@ public final class DnsRecord {
      * @param ttl         unsigned 32-bit TTL
      * @param wireData    RDATA wire bytes
      */
-    private DnsRecord(final String name, final int typeCode, final int recordClass, final long ttl,
+    public DnsRecord(final String name, final int typeCode, final int recordClass, final long ttl,
             final byte[] wireData) {
         this.name = DnsName.normalize(name);
         this.typeCode = DnsCodec.validateUnsignedShort(typeCode, "DNS type");
