@@ -103,20 +103,20 @@ public interface CredentialStore {
     /**
      * Identifies dynamic credential material without containing its raw protocol binding.
      *
-     * @param namespaceId   namespace isolation identifier
+     * @param spaceId       space isolation identifier
      * @param ownerId       Provider or Source registration identifier
      * @param purpose       stable protocol-specific use label
      * @param bindingDigest lowercase SHA-256 hexadecimal digest of the opaque protocol binding
      * @param type          exact stored credential material type
      * @author Kimi Liu
      */
-    record Key(String namespaceId, String ownerId, String purpose, String bindingDigest, Credential.Type type) {
+    record Key(String spaceId, String ownerId, String purpose, String bindingDigest, Credential.Type type) {
 
         /**
          * Validates isolation fields and the irreversible binding digest.
          */
         public Key {
-            Assert.notBlank(namespaceId, "Dynamic credential namespace id must not be blank");
+            Assert.notBlank(spaceId, "Dynamic credential space id must not be blank");
             Assert.notBlank(ownerId, "Dynamic credential owner id must not be blank");
             Assert.notBlank(purpose, "Dynamic credential purpose must not be blank");
             Assert.notBlank(bindingDigest, "Dynamic credential binding digest must not be blank");
@@ -139,7 +139,7 @@ public interface CredentialStore {
          */
         @Override
         public String toString() {
-            return "CredentialStore.Key[namespaceId=" + namespaceId + ", ownerId=" + ownerId + ", purpose=" + purpose
+            return "CredentialStore.Key[spaceId=" + spaceId + ", ownerId=" + ownerId + ", purpose=" + purpose
                     + ", bindingDigest=[REDACTED], type=" + type.name() + Symbol.C_BRACKET_RIGHT;
         }
 

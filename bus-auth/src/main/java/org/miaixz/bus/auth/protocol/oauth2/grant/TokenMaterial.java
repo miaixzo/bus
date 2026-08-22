@@ -42,11 +42,6 @@ import org.miaixz.bus.crypto.Builder;
 public class TokenMaterial {
 
     /**
-     * Non-relaxable minimum entropy for generated opaque tokens.
-     */
-    private static final int MINIMUM_TOKEN_BITS = Normal._256;
-
-    /**
      * Exact Provider identifier included in derived storage keys.
      */
     private final String providerId;
@@ -65,7 +60,7 @@ public class TokenMaterial {
     public TokenMaterial(final String providerId, final DriverServices services) {
         this.providerId = Assert.notBlank(providerId, "OAuth 2.x Provider id must not be blank");
         final int entropyBits = Math.max(
-                MINIMUM_TOKEN_BITS,
+                Normal._256,
                 Assert.notNull(services, "OAuth 2.x execution services must not be null").securityBaseline()
                         .require(Protocol.OAUTH2).minimumEntropyBits());
         this.tokenBytes = (entropyBits + Byte.SIZE - 1) / Byte.SIZE;

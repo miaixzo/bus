@@ -60,11 +60,6 @@ public class DeviceAuthorizationCodec {
     private static final long MAXIMUM_FORM_BYTES = 64 * Normal.KIBI;
 
     /**
-     * Maximum accepted device authorization JSON size in bytes.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
      * Shared strict UTF-8 form codec.
      */
     private final FormCodec formCodec;
@@ -123,7 +118,7 @@ public class DeviceAuthorizationCodec {
      * @throws ValidateException if media, charset, or size is invalid
      */
     private static void validateResponse(final Response response) {
-        if (response.body().length() > MAXIMUM_JSON_BYTES) {
+        if (response.body().length() > Builder.MAXIMUM_DOCUMENT_BYTES) {
             throw new ValidateException("OAuth 2.x device authorization response exceeds the maximum JSON size");
         }
         final MediaType media = response.body().media();
@@ -389,7 +384,7 @@ public class DeviceAuthorizationCodec {
                 .notNull(response, "OAuth 2.x device authorization HTTP response must not be null");
         try (encoded) {
             validateResponse(encoded);
-            final JsonValue value = jsonProvider.readValue(encoded.bytes(MAXIMUM_JSON_BYTES));
+            final JsonValue value = jsonProvider.readValue(encoded.bytes(Builder.MAXIMUM_DOCUMENT_BYTES));
             if (!(value instanceof JsonValue.ObjectValue object)) {
                 throw new ValidateException("OAuth 2.x device authorization response JSON root must be an object");
             }

@@ -53,7 +53,6 @@ import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.worker.loader.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
@@ -74,24 +73,9 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class SamlDecryptionService {
 
     /**
-     * XML Encryption 1.0 namespace used by EncryptedData and CipherData.
-     */
-    private static final String XENC = Saml.Namespaces.ENCRYPTION;
-
-    /**
-     * XML Encryption 1.1 namespace used by modern algorithms and MGF.
-     */
-    private static final String XENC11 = Saml.Namespaces.ENCRYPTION_11;
-
-    /**
-     * XML Signature namespace used by KeyInfo, KeyName, and DigestMethod.
-     */
-    private static final String DS = Saml.Namespaces.SIGNATURE;
-
-    /**
      * Required modern RSA-OAEP key transport algorithm.
      */
-    private static final String RSA_OAEP = XENC11 + "rsa-oaep";
+    private static final String RSA_OAEP = Saml.Namespaces.ENCRYPTION_11 + "rsa-oaep";
 
     /**
      * Required SHA-256 digest algorithm URI.
@@ -101,37 +85,27 @@ public class SamlDecryptionService {
     /**
      * Required SHA-256 MGF algorithm URI.
      */
-    private static final String MGF1_SHA256 = XENC11 + "mgf1sha256";
+    private static final String MGF1_SHA256 = Saml.Namespaces.ENCRYPTION_11 + "mgf1sha256";
 
     /**
      * AES-128-GCM content-encryption algorithm URI.
      */
-    private static final String AES128_GCM = XENC11 + "aes128-gcm";
+    private static final String AES128_GCM = Saml.Namespaces.ENCRYPTION_11 + "aes128-gcm";
 
     /**
      * AES-192-GCM content-encryption algorithm URI.
      */
-    private static final String AES192_GCM = XENC11 + "aes192-gcm";
+    private static final String AES192_GCM = Saml.Namespaces.ENCRYPTION_11 + "aes192-gcm";
 
     /**
      * AES-256-GCM content-encryption algorithm URI.
      */
-    private static final String AES256_GCM = XENC11 + "aes256-gcm";
+    private static final String AES256_GCM = Saml.Namespaces.ENCRYPTION_11 + "aes256-gcm";
 
     /**
      * XML Encryption Type URI identifying a complete encrypted element.
      */
-    private static final String ELEMENT_TYPE = XENC + "Element";
-
-    /**
-     * AES-GCM initialization vector length defined by XML Encryption 1.1.
-     */
-    private static final int GCM_IV_BYTES = Normal._12;
-
-    /**
-     * AES-GCM authentication tag length defined by XML Encryption 1.1.
-     */
-    private static final int GCM_TAG_BITS = Normal._128;
+    private static final String ELEMENT_TYPE = Saml.Namespaces.ENCRYPTION + "Element";
 
     /**
      * External private-key loader and framework-owned key parser.
@@ -179,30 +153,44 @@ public class SamlDecryptionService {
     private static EncryptedPayload payload(final byte[] xml) {
         final Element wrapper = parse(xml).getDocumentElement();
         require(wrapper, Saml.Namespaces.ASSERTION, "EncryptedAssertion");
-        final Element data = exactly(wrapper, XENC, "EncryptedData");
+        final Element data = exactly(wrapper, Saml.Namespaces.ENCRYPTION, "EncryptedData");
         final String type = optional(data, "Type");
         if (type != null && !ELEMENT_TYPE.equals(type)) {
             throw new ValidateException("SAML EncryptedData Type must identify an element");
         }
-        final Element contentMethod = exactly(data, XENC, "EncryptionMethod");
+        final Element contentMethod = exactly(data, Saml.Namespaces.ENCRYPTION, "EncryptionMethod");
         final String contentAlgorithm = required(contentMethod, "Algorithm");
         if (!elements(contentMethod).isEmpty()) {
             throw new ValidateException("SAML AES-GCM EncryptionMethod must not contain parameters");
         }
-        final Element outerKeyInfo = exactly(data, DS, "KeyInfo");
-        final Element encryptedKey = exactly(outerKeyInfo, XENC, "EncryptedKey");
-        final Element keyMethod = exactly(encryptedKey, XENC, "EncryptionMethod");
+        final Element outerKeyInfo = exactly(data, Saml.Namespaces.SIGNATURE, "KeyInfo");
+        final Element encryptedKey = exactly(outerKeyInfo, Saml.Namespaces.ENCRYPTION, "EncryptedKey");
+        final Element keyMethod = exactly(encryptedKey, Saml.Namespaces.ENCRYPTION, "EncryptionMethod");
         final String keyAlgorithm = required(keyMethod, "Algorithm");
         validateOaep(keyMethod);
-        final Element innerKeyInfo = exactly(encryptedKey, DS, "KeyInfo");
-        final String keyName = content(exactly(innerKeyInfo, DS, "KeyName"), "SAML EncryptedKey KeyName");
-        final byte[] wrappedKey = cipher(exactly(encryptedKey, XENC, "CipherData"), "SAML EncryptedKey");
-        final byte[] ciphertext = cipher(exactly(data, XENC, "CipherData"), "SAML EncryptedData");
-        allowedChildren(wrapper, Set.of(q(XENC, "EncryptedData")));
-        allowedChildren(data, Set.of(q(XENC, "EncryptionMethod"), q(DS, "KeyInfo"), q(XENC, "CipherData")));
-        allowedChildren(outerKeyInfo, Set.of(q(XENC, "EncryptedKey")));
-        allowedChildren(encryptedKey, Set.of(q(XENC, "EncryptionMethod"), q(DS, "KeyInfo"), q(XENC, "CipherData")));
-        allowedChildren(innerKeyInfo, Set.of(q(DS, "KeyName")));
+        final Element innerKeyInfo = exactly(encryptedKey, Saml.Namespaces.SIGNATURE, "KeyInfo");
+        final String keyName = content(
+                exactly(innerKeyInfo, Saml.Namespaces.SIGNATURE, "KeyName"),
+                "SAML EncryptedKey KeyName");
+        final byte[] wrappedKey = cipher(
+                exactly(encryptedKey, Saml.Namespaces.ENCRYPTION, "CipherData"),
+                "SAML EncryptedKey");
+        final byte[] ciphertext = cipher(exactly(data, Saml.Namespaces.ENCRYPTION, "CipherData"), "SAML EncryptedData");
+        allowedChildren(wrapper, Set.of(q(Saml.Namespaces.ENCRYPTION, "EncryptedData")));
+        allowedChildren(
+                data,
+                Set.of(
+                        q(Saml.Namespaces.ENCRYPTION, "EncryptionMethod"),
+                        q(Saml.Namespaces.SIGNATURE, "KeyInfo"),
+                        q(Saml.Namespaces.ENCRYPTION, "CipherData")));
+        allowedChildren(outerKeyInfo, Set.of(q(Saml.Namespaces.ENCRYPTION, "EncryptedKey")));
+        allowedChildren(
+                encryptedKey,
+                Set.of(
+                        q(Saml.Namespaces.ENCRYPTION, "EncryptionMethod"),
+                        q(Saml.Namespaces.SIGNATURE, "KeyInfo"),
+                        q(Saml.Namespaces.ENCRYPTION, "CipherData")));
+        allowedChildren(innerKeyInfo, Set.of(q(Saml.Namespaces.SIGNATURE, "KeyName")));
         return new EncryptedPayload(keyName, keyAlgorithm, contentAlgorithm, wrappedKey, ciphertext);
     }
 
@@ -216,9 +204,9 @@ public class SamlDecryptionService {
         String digest = null;
         String mgf = null;
         for (Element child : children) {
-            if (is(child, DS, "DigestMethod") && digest == null)
+            if (is(child, Saml.Namespaces.SIGNATURE, "DigestMethod") && digest == null)
                 digest = required(child, "Algorithm");
-            else if (is(child, XENC11, "MGF") && mgf == null)
+            else if (is(child, Saml.Namespaces.ENCRYPTION_11, "MGF") && mgf == null)
                 mgf = required(child, "Algorithm");
             else
                 throw new ValidateException("SAML RSA-OAEP contains unsupported or duplicate parameters");
@@ -237,8 +225,10 @@ public class SamlDecryptionService {
      * @return decoded ciphertext bytes
      */
     private static byte[] cipher(final Element cipherData, final String label) {
-        allowedChildren(cipherData, Set.of(q(XENC, "CipherValue")));
-        final String lexical = content(exactly(cipherData, XENC, "CipherValue"), label + " CipherValue");
+        allowedChildren(cipherData, Set.of(q(Saml.Namespaces.ENCRYPTION, "CipherValue")));
+        final String lexical = content(
+                exactly(cipherData, Saml.Namespaces.ENCRYPTION, "CipherValue"),
+                label + " CipherValue");
         final String encoded = lexical.replaceAll("[\\x20\\x09\\x0D\\x0A]", Normal.EMPTY);
         try {
             final byte[] result = Base64.getDecoder().decode(encoded);
@@ -618,18 +608,17 @@ public class SamlDecryptionService {
             final int keyBytes = keyBytes(payload.contentAlgorithm());
             if (contentKey.length != keyBytes)
                 return completed(rejected("SAML encrypted content key length is invalid"));
-            if (payload.ciphertext().length <= GCM_IV_BYTES + GCM_TAG_BITS / Byte.SIZE) {
+            if (payload.ciphertext().length <= Normal._12 + Normal._128 / Byte.SIZE) {
                 return completed(rejected("SAML AES-GCM ciphertext is too short"));
             }
-            final byte[] iv = Arrays.copyOfRange(payload.ciphertext(), 0, GCM_IV_BYTES);
-            final byte[] ciphertext = Arrays
-                    .copyOfRange(payload.ciphertext(), GCM_IV_BYTES, payload.ciphertext().length);
+            final byte[] iv = Arrays.copyOfRange(payload.ciphertext(), 0, Normal._12);
+            final byte[] ciphertext = Arrays.copyOfRange(payload.ciphertext(), Normal._12, payload.ciphertext().length);
             try {
                 final Cipher decrypt = Cipher.getInstance("AES/GCM/NoPadding");
                 decrypt.init(
                         Cipher.DECRYPT_MODE,
                         new SecretKeySpec(contentKey, "AES"),
-                        new GCMParameterSpec(GCM_TAG_BITS, iv));
+                        new GCMParameterSpec(Normal._128, iv));
                 plaintext = decrypt.doFinal(ciphertext);
             } finally {
                 Arrays.fill(iv, (byte) 0);

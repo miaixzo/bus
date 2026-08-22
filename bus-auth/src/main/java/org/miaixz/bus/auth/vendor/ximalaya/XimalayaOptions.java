@@ -62,10 +62,6 @@ public record XimalayaOptions(Vendor.Id vendor, Vendor.Variant variant, String c
      * Closed official client operating-system vocabulary.
      */
     private static final Set<String> CLIENT_OS_TYPES = Set.of(Symbol.ONE, Symbol.TWO, Symbol.THREE);
-    /**
-     * Maximum accepted length of a device or package wire value.
-     */
-    private static final int MAXIMUM_SELECTOR_LENGTH = Normal._256 - Normal._1;
 
     /**
      * Validates and freezes one Ximalaya registration without resolving its secret.
@@ -135,7 +131,7 @@ public record XimalayaOptions(Vendor.Id vendor, Vendor.Variant variant, String c
      */
     private static String selector(final String value, final String label) {
         final String checked = Assert.notBlank(value, "Ximalaya " + label + " must not be blank");
-        if (checked.length() > MAXIMUM_SELECTOR_LENGTH) {
+        if (checked.length() > Normal._256 - Normal._1) {
             throw new ValidateException("Ximalaya " + label + " is too long");
         }
         for (int index = 0; index < checked.length(); index++) {

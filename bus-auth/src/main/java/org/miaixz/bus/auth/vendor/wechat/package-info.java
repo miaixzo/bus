@@ -18,13 +18,13 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares six public WeChat and WeCom identity Source variants and their externally loaded options.
+ * Declares the WeChat and WeCom login family plus the optional WeCom enterprise directory Variant.
  * <p>
  * WeChatManifest separates {@code open}, {@code mp}, {@code mini}, {@code ee}, {@code ee-qrcode}, and {@code ee-web}.
  * Open and Official Account are OAuth clients exposing redirect Source authentication and standard authorization only;
  * their token responses omit mandatory {@code token_type}, so token, refresh, and profile calls remain private. Mini
- * Program and the three WeCom flows are VENDOR_AUTH with Source authentication only. Every endpoint, HTTP method,
- * official field, envelope, and subject rule is variant-owned.
+ * Program and the three WeCom flows use their real HTTPS transport with Source authentication only. Every endpoint,
+ * HTTP method, official field, envelope, and subject rule is variant-owned.
  * </p>
  * <p>
  * WeChatOptions contains the common routing, App ID or Corp ID, Client Secret reference, variant callback and scope,
@@ -38,6 +38,18 @@
  * WeCom uses the variant's verified user identifier. Third-party QR always uses {@code user_info.userid};
  * {@code corp_info.corpid} is an attribute. Secrets, codes, tokens, session keys, agent IDs, bodies, and diagnostics
  * must not enter Context, tracing, logs, or public failures.
+ * </p>
+ * <p>
+ * {@code wechat/ee-enterprise} remains a seventh Variant under the same Vendor because it connects to the same WeCom
+ * product and credential authority. It uses a Corp ID and CLIENT_SECRET reference to expose describe, snapshot, and
+ * retrieve for application-visible users, departments, parent/member/manager relations, and tags normalized as GROUP.
+ * Tags are access groupings rather than organizational units, coverage is PARTIAL, and no changes operation exists.
+ * </p>
+ * <p>
+ * Official department, department-user, tag, and tag-member endpoints are unpaged. The adapter rereads each complete
+ * response without a local byte or record limit, then applies stable ordering, projection fingerprints, and bounded
+ * output cursors. External projects call Dispatcher and own scheduling, reconciliation, and persistence; this package
+ * neither creates another Vendor nor adds a synchronization subsystem.
  * </p>
  *
  * @author Kimi Liu

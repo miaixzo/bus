@@ -57,7 +57,7 @@ public class AuthorizationCodeCache extends AuthCache<AuthorizationCodeCache.Ent
      * Creates an authorization-code cache view backed entirely by bus-cache.
      *
      * @param cache      shared bus-cache backend
-     * @param deployment deployment-unique cache namespace
+     * @param deployment deployment-unique cache scope
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
     public AuthorizationCodeCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
@@ -68,7 +68,7 @@ public class AuthorizationCodeCache extends AuthCache<AuthorizationCodeCache.Ent
      * Creates a Source-generation-scoped authorization-code cache view for compiled runtime use.
      *
      * @param cache      shared bus-cache backend
-     * @param deployment deployment-unique cache namespace
+     * @param deployment deployment-unique cache scope
      * @param sourceId   exact Source registration identifier
      * @param generation non-negative Source configuration generation
      * @param clock      shared runtime clock used to derive entry lifetimes
@@ -187,6 +187,7 @@ public class AuthorizationCodeCache extends AuthCache<AuthorizationCodeCache.Ent
      * @param authenticationMethods      ordered Authentication Methods References
      * @param sessionKey                 stable root Session key represented by the eventual {@code sid} claim
      * @param requestedClaims            optional OIDC claims request object
+     * @param subject                    optional final public or pairwise wire subject
      * @author Kimi Liu
      */
     public record OpenIdBinding(Optional<String> nonce, Instant authenticatedAt,
@@ -202,6 +203,7 @@ public class AuthorizationCodeCache extends AuthCache<AuthorizationCodeCache.Ent
          * @param authenticationMethods      ordered, unique StringOrURI AMR values
          * @param sessionKey                 stable active-session key
          * @param requestedClaims            optional detached OIDC claims request
+         * @param subject                    optional final public or pairwise wire subject
          * @throws IllegalArgumentException if a component is missing or a registered value is invalid
          */
         public OpenIdBinding {
@@ -239,14 +241,6 @@ public class AuthorizationCodeCache extends AuthCache<AuthorizationCodeCache.Ent
         }
 
         /**
-         * Returns a binding completed with its final public or pairwise wire subject.
-         */
-        public OpenIdBinding withSubject(final String value) {
-            return new OpenIdBinding(nonce, authenticatedAt, authenticationContextClass, authenticationMethods,
-                    sessionKey, requestedClaims, Optional.of(Assert.notBlank(value, "Wire subject must not be blank")));
-        }
-
-        /**
          * Validates a non-blank JWT StringOrURI without rewriting its lexical value.
          *
          * @param value candidate value
@@ -263,6 +257,17 @@ public class AuthorizationCodeCache extends AuthCache<AuthorizationCodeCache.Ent
             } catch (URISyntaxException exception) {
                 throw new IllegalArgumentException(label + " must satisfy JWT StringOrURI syntax", exception);
             }
+        }
+
+        /**
+         * Returns a binding completed with its final public or pairwise wire subject.
+         *
+         * @param value validated final wire subject
+         * @return immutable binding containing the final subject
+         */
+        public OpenIdBinding withSubject(final String value) {
+            return new OpenIdBinding(nonce, authenticatedAt, authenticationContextClass, authenticationMethods,
+                    sessionKey, requestedClaims, Optional.of(Assert.notBlank(value, "Wire subject must not be blank")));
         }
 
     }

@@ -49,41 +49,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public interface Outcome<T> {
 
     /**
-     * Maps a successful value while preserving rejection and operational failure outcomes.
-     *
-     * @param mapper successful-value mapper
-     * @param <R>    mapped success type
-     * @return mapped outcome
-     */
-    default <R> Outcome<R> map(final Function<? super T, ? extends R> mapper) {
-        Assert.notNull(mapper, "Outcome mapper must not be null");
-        return switch (this) {
-            case Succeeded<T> success -> Outcome.succeeded(mapper.apply(success.value()));
-            case Rejected<T> rejected -> Outcome.rejected(rejected.failure());
-            case Failed<T> failed -> Outcome.failed(failed.failure());
-            default -> operationFailed("Unsupported outcome implementation");
-        };
-    }
-
-    /**
-     * Maps a successful value to another Outcome while preserving rejection and operational failure outcomes.
-     *
-     * @param mapper successful-value outcome mapper
-     * @param <R>    mapped success type
-     * @return mapped outcome
-     */
-    default <R> Outcome<R> flatMap(final Function<? super T, ? extends Outcome<R>> mapper) {
-        Assert.notNull(mapper, "Outcome mapper must not be null");
-        return switch (this) {
-            case Succeeded<T> success -> Assert
-                    .notNull(mapper.apply(success.value()), "Outcome mapper returned no outcome");
-            case Rejected<T> rejected -> Outcome.rejected(rejected.failure());
-            case Failed<T> failed -> Outcome.failed(failed.failure());
-            default -> operationFailed("Unsupported outcome implementation");
-        };
-    }
-
-    /**
      * Invokes one asynchronous Outcome operation and maps its successful value while closing ordinary invocation,
      * stage, null-value, and mapper failures into a failed Outcome.
      *
@@ -169,6 +134,41 @@ public interface Outcome<T> {
      */
     static <T> Outcome<T> failed(final Failure failure) {
         return new Failed<>(failure);
+    }
+
+    /**
+     * Maps a successful value while preserving rejection and operational failure outcomes.
+     *
+     * @param mapper successful-value mapper
+     * @param <R>    mapped success type
+     * @return mapped outcome
+     */
+    default <R> Outcome<R> map(final Function<? super T, ? extends R> mapper) {
+        Assert.notNull(mapper, "Outcome mapper must not be null");
+        return switch (this) {
+            case Succeeded<T> success -> Outcome.succeeded(mapper.apply(success.value()));
+            case Rejected<T> rejected -> Outcome.rejected(rejected.failure());
+            case Failed<T> failed -> Outcome.failed(failed.failure());
+            default -> operationFailed("Unsupported outcome implementation");
+        };
+    }
+
+    /**
+     * Maps a successful value to another Outcome while preserving rejection and operational failure outcomes.
+     *
+     * @param mapper successful-value outcome mapper
+     * @param <R>    mapped success type
+     * @return mapped outcome
+     */
+    default <R> Outcome<R> flatMap(final Function<? super T, ? extends Outcome<R>> mapper) {
+        Assert.notNull(mapper, "Outcome mapper must not be null");
+        return switch (this) {
+            case Succeeded<T> success -> Assert
+                    .notNull(mapper.apply(success.value()), "Outcome mapper returned no outcome");
+            case Rejected<T> rejected -> Outcome.rejected(rejected.failure());
+            case Failed<T> failed -> Outcome.failed(failed.failure());
+            default -> operationFailed("Unsupported outcome implementation");
+        };
     }
 
     /**

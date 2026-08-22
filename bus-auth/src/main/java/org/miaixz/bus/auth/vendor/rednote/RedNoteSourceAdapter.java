@@ -25,14 +25,9 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.FabricX;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
@@ -68,16 +63,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class RedNoteSourceAdapter implements VendorAdapter {
 
     /**
-     * Maximum bounded JSON response size accepted from the marketing API.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum JSON nesting accepted from the marketing API.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._16;
-
-    /**
      * Selected immutable RedNote marketing manifest.
      */
     private final VariantManifest.Variant variant;
@@ -100,18 +85,18 @@ public class RedNoteSourceAdapter implements VendorAdapter {
     /**
      * Creates one authorization-only RedNote adapter.
      *
-     * @param namespaceId registration namespace retained by the uniform adapter construction contract
-     * @param sourceId    registered Source identifier retained for Registry routing only
-     * @param manifest    selected RedNote manifest
-     * @param variant     exact marketing manifest
-     * @param options     decoded externally loaded marketing options
-     * @param services    caller-owned runtime dependencies
+     * @param spaceId  registration space retained by the uniform adapter construction contract
+     * @param sourceId registered Source identifier retained for Registry routing only
+     * @param manifest selected RedNote manifest
+     * @param variant  exact marketing manifest
+     * @param options  decoded externally loaded marketing options
+     * @param services caller-owned runtime dependencies
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, or options differ from marketing
      */
-    public RedNoteSourceAdapter(final String namespaceId, final String sourceId, final RedNoteManifest manifest,
+    public RedNoteSourceAdapter(final String spaceId, final String sourceId, final RedNoteManifest manifest,
             final VariantManifest.Variant variant, final RedNoteOptions options, final DriverServices services) {
-        Assert.notBlank(namespaceId, "RedNote namespace id must not be blank");
+        Assert.notBlank(spaceId, "RedNote space id must not be blank");
         Assert.notBlank(sourceId, "RedNote Source id must not be blank");
         final RedNoteManifest selected = Assert.notNull(manifest, "RedNote manifest must not be null");
         this.variant = Assert.notNull(variant, "RedNote manifest must not be null");
@@ -119,7 +104,7 @@ public class RedNoteSourceAdapter implements VendorAdapter {
         this.services = Assert.notNull(services, "RedNote execution services must not be null");
         if (!RedNoteManifest.ID.equals(selected.vendor())
                 || !selected.variant(RedNoteManifest.MARKETING).equals(variant)
-                || !RedNoteManifest.MARKETING.equals(variant.variant()) || variant.protocol() != Protocol.VENDOR_AUTH
+                || !RedNoteManifest.MARKETING.equals(variant.variant()) || variant.protocol() != Protocol.HTTPS
                 || !RedNoteManifest.ID.equals(options.vendor())
                 || !RedNoteManifest.MARKETING.equals(options.variant())) {
             throw new ValidateException("RedNote adapter requires the rednote/marketing Vendor manifest");
@@ -435,7 +420,7 @@ public class RedNoteSourceAdapter implements VendorAdapter {
             final var resolvedTargets = variant.targets().resolve(options);
             final String endpoint = (initial ? resolvedTargets.token() : resolvedTargets.refresh()).getOrNull().url()
                     .toString();
-            try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
+            try (Response response = FabricX.http(services.fabric(), Protocol.HTTPS, timeout).url(endpoint)
                     .method(Http.Method.POST).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                     .body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 return decode(response, initial);
@@ -497,7 +482,7 @@ public class RedNoteSourceAdapter implements VendorAdapter {
             throw new ValidateException("RedNote response must use application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._16, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("RedNote response root must be a JSON object");
         }

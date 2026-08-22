@@ -26,7 +26,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.*;
@@ -70,16 +69,6 @@ public class ProginnSourceAdapter implements VendorAdapter {
     private static final String AUTHORITY = "https://www.proginn.com";
 
     /**
-     * Maximum bounded JSON response size accepted from Proginn.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum JSON nesting accepted from Proginn.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._16;
-
-    /**
      * Registered Source identifier copied into verified identities.
      */
     private final String sourceId;
@@ -117,16 +106,16 @@ public class ProginnSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Proginn adapter from the frozen default manifest.
      *
-     * @param namespaceId registration namespace isolating state and credentials
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Proginn manifest
-     * @param variant     selected default variant manifest
-     * @param options     decoded externally loaded Proginn options
-     * @param services    caller-owned runtime dependencies
+     * @param spaceId  registration space isolating state and credentials
+     * @param sourceId registered Source identifier
+     * @param manifest selected Proginn manifest
+     * @param variant  selected default variant manifest
+     * @param options  decoded externally loaded Proginn options
+     * @param services caller-owned runtime dependencies
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
-    public ProginnSourceAdapter(final String namespaceId, final String sourceId, final ProginnManifest manifest,
+    public ProginnSourceAdapter(final String spaceId, final String sourceId, final ProginnManifest manifest,
             final VariantManifest.Variant variant, final ProginnOptions options, final DriverServices services) {
         final ProginnManifest selected = Assert.notNull(manifest, "Proginn manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Proginn Source id must not be blank");
@@ -138,7 +127,7 @@ public class ProginnSourceAdapter implements VendorAdapter {
                 || !ProginnManifest.ID.equals(options.vendor()) || !ProginnManifest.DEFAULT.equals(options.variant())) {
             throw new ValidateException("Proginn adapter requires the proginn/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         this.standardAdapter = standardAdapter(variant, options, services, redirectManager);
         this.callbackDecoder = new AuthorizationResponseDecoder();
     }
@@ -573,7 +562,7 @@ public class ProginnSourceAdapter implements VendorAdapter {
             throw new ValidateException("Proginn response must use application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._16, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("Proginn response root must be a JSON object");
         }

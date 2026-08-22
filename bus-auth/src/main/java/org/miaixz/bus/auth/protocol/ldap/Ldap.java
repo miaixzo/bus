@@ -393,7 +393,7 @@ public class Ldap {
     public static final Capability.Key EXTENDED = Capability.Key.standard(Protocol.LDAP, "extended");
 
     /**
-     * Creates an LDAP protocol operation namespace instance with no retained state.
+     * Creates an LDAP protocol operation constant holder with no retained state.
      */
     public Ldap() {
         // No initialization required.

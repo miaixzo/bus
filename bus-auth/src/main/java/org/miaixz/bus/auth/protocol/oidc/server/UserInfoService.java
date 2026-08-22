@@ -63,11 +63,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class UserInfoService {
 
     /**
-     * Safe failure-detail member consumed by the RFC 6750 endpoint error mapper.
-     */
-    private static final String OAUTH_ERROR = org.miaixz.bus.auth.Builder.OAUTH_ERROR;
-
-    /**
      * Provider identifier used to isolate opaque access-token digests.
      */
     private final String providerId;
@@ -100,20 +95,6 @@ public class UserInfoService {
         this.options = Assert.notNull(options, "OpenID Connect UserInfo Provider options must not be null");
         this.services = Assert.notNull(services, "OpenID Connect UserInfo execution services must not be null");
         this.codec = new UserInfoCodec(services.jsonProvider());
-    }
-
-    /**
-     * Expands standard OIDC scope values into their registered UserInfo claim sets.
-     *
-     * @param entry validated access-token state
-     * @return mutable ordered claim-name set
-     */
-    private LinkedHashSet<String> claimsForScopes(final AccessTokenCache.Entry entry) {
-        final LinkedHashSet<String> claims = new LinkedHashSet<>();
-        for (String scope : entry.scope()) {
-            claims.addAll(options.scopeClaims().getOrDefault(scope, Set.of()));
-        }
-        return claims;
     }
 
     /**
@@ -158,8 +139,8 @@ public class UserInfoService {
             final Errors error,
             final OAuth2ErrorCode oauthError,
             final String description) {
-        return new Outcome.Failure(error, description,
-                new JsonValue.ObjectValue(Map.of(OAUTH_ERROR, new JsonValue.StringValue(oauthError.value()))));
+        return new Outcome.Failure(error, description, new JsonValue.ObjectValue(
+                Map.of(org.miaixz.bus.auth.Builder.OAUTH_ERROR, new JsonValue.StringValue(oauthError.value()))));
     }
 
     /**
@@ -184,6 +165,20 @@ public class UserInfoService {
             case JwtClaims.SUBJECT, JwtClaims.ISSUER, JwtClaims.AUDIENCE, JwtClaims.EXPIRATION, JwtClaims.ISSUED_AT, JwtClaims.NOT_BEFORE, JwtClaims.JWT_ID, OpenIdConnect.Claims.NONCE, OpenIdConnect.Claims.AUTH_TIME, OpenIdConnect.Claims.ACR, OpenIdConnect.Claims.AMR, OpenIdConnect.Claims.AUTHORIZED_PARTY, OpenIdConnect.Claims.ACCESS_TOKEN_HASH, OpenIdConnect.Claims.CODE_HASH, OpenIdConnect.Claims.STATE_HASH, OpenIdConnect.Claims.SESSION_ID -> true;
             default -> false;
         };
+    }
+
+    /**
+     * Expands standard OIDC scope values into their registered UserInfo claim sets.
+     *
+     * @param entry validated access-token state
+     * @return mutable ordered claim-name set
+     */
+    private LinkedHashSet<String> claimsForScopes(final AccessTokenCache.Entry entry) {
+        final LinkedHashSet<String> claims = new LinkedHashSet<>();
+        for (String scope : entry.scope()) {
+            claims.addAll(options.scopeClaims().getOrDefault(scope, Set.of()));
+        }
+        return claims;
     }
 
     /**
@@ -457,7 +452,6 @@ public class UserInfoService {
      *
      * @param value   stored authorization state or {@code null}
      * @param failure asynchronous failure or {@code null}
-     *
      * @author Kimi Liu
      */
     private record AuthorizationResult(ExpiringValue<AuthorizationCache.Entry> value, Throwable failure) {

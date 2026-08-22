@@ -25,7 +25,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.protocol.oauth2.client.AuthorizationClient;
@@ -45,7 +44,6 @@ import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -69,16 +67,6 @@ public class FeishuSourceAdapter implements VendorAdapter {
      * Trusted Feishu authority recorded in federated identity evidence.
      */
     private static final String AUTHORITY = "https://open.feishu.cn";
-
-    /**
-     * Maximum accepted Feishu JSON response size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum accepted Feishu JSON nesting depth.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
 
     /**
      * Registered Source identifier copied into verified identities.
@@ -113,16 +101,16 @@ public class FeishuSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Feishu v3 adapter.
      *
-     * @param namespaceId registration namespace used to isolate state and credential resolution
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Feishu manifest
-     * @param variant     exact selected default manifest
-     * @param options     decoded externally loaded Feishu options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate state and credential resolution
+     * @param sourceId registered Source identifier
+     * @param manifest selected Feishu manifest
+     * @param variant  exact selected default manifest
+     * @param options  decoded externally loaded Feishu options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, callback, or authorization is inconsistent
      */
-    public FeishuSourceAdapter(final String namespaceId, final String sourceId, final FeishuManifest manifest,
+    public FeishuSourceAdapter(final String spaceId, final String sourceId, final FeishuManifest manifest,
             final VariantManifest.Variant variant, final FeishuOptions options, final DriverServices services) {
         final FeishuManifest selectedProfile = Assert.notNull(manifest, "Feishu manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Feishu Source id must not be blank");
@@ -136,7 +124,7 @@ public class FeishuSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("Feishu adapter requires the feishu/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
@@ -922,7 +910,7 @@ public class FeishuSourceAdapter implements VendorAdapter {
             throw new ValidateException("Feishu " + operation + " response must use application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("Feishu " + operation + " response root must be a JSON object");
         }

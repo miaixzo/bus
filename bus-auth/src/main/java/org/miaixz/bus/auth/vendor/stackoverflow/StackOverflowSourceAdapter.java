@@ -27,7 +27,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
@@ -74,16 +73,6 @@ public class StackOverflowSourceAdapter implements VendorAdapter {
     private static final String AUTHORITY = "https://stackoverflow.com";
 
     /**
-     * Maximum bounded JSON response size accepted from Stack Overflow and Stack Exchange.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum JSON nesting accepted from Stack Overflow and Stack Exchange.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
-
-    /**
      * Registered Source identifier copied into verified identities.
      */
     private final String sourceId;
@@ -126,18 +115,17 @@ public class StackOverflowSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Stack Overflow adapter from the frozen default manifest.
      *
-     * @param namespaceId registration namespace isolating browser state and credentials
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Stack Overflow manifest
-     * @param variant     exact selected default manifest
-     * @param options     decoded externally loaded Stack Overflow options
-     * @param services    caller-owned runtime dependencies
+     * @param spaceId  registration space isolating browser state and credentials
+     * @param sourceId registered Source identifier
+     * @param manifest selected Stack Overflow manifest
+     * @param variant  exact selected default manifest
+     * @param options  decoded externally loaded Stack Overflow options
+     * @param services caller-owned runtime dependencies
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
-    public StackOverflowSourceAdapter(final String namespaceId, final String sourceId,
-            final StackOverflowManifest manifest, final VariantManifest.Variant variant,
-            final StackOverflowOptions options, final DriverServices services) {
+    public StackOverflowSourceAdapter(final String spaceId, final String sourceId, final StackOverflowManifest manifest,
+            final VariantManifest.Variant variant, final StackOverflowOptions options, final DriverServices services) {
         final StackOverflowManifest selected = Assert.notNull(manifest, "Stack Overflow manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Stack Overflow Source id must not be blank");
         this.variant = Assert.notNull(variant, "Stack Overflow manifest must not be null");
@@ -150,7 +138,7 @@ public class StackOverflowSourceAdapter implements VendorAdapter {
                 || !StackOverflowManifest.DEFAULT.equals(options.variant())) {
             throw new ValidateException("Stack Overflow adapter requires the stackoverflow/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         this.callbackDecoder = new AuthorizationResponseDecoder();
         this.formCodec = new FormCodec();
         this.standardAdapter = new StandardAdapter(variant, options, Optional.of(redirectManager),
@@ -765,7 +753,7 @@ public class StackOverflowSourceAdapter implements VendorAdapter {
             throw new ValidateException("Stack Overflow " + operation + " response must use application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("Stack Overflow " + operation + " response root must be an object");
         }

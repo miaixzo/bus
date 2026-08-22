@@ -30,15 +30,15 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
- * Holds the immutable creation-time directory of all explicitly contributed Vendor manifests and variants.
+ * Locates explicitly contributed Vendor manifests and variants in an immutable creation-time index.
  * <p>
- * The directory performs no reflection, service loading, endpoint execution, Registry access, or post-construction
+ * The locator performs no reflection, service loading, endpoint execution, Registry access, or post-construction
  * registration.
  * </p>
  *
  * @author Kimi Liu
  */
-public class VendorDirectory {
+public class VendorLocator {
 
     /**
      * Vendor manifests retained in deterministic construction order.
@@ -56,13 +56,13 @@ public class VendorDirectory {
     private final Map<Vendor.Id, Map<Vendor.Variant, VariantManifest.Variant>> variantsById;
 
     /**
-     * Creates and freezes a directory whose platform and per-platform variant identifiers are unique.
+     * Creates and freezes a locator whose platform and per-platform variant identifiers are unique.
      *
      * @param manifests complete explicitly assembled Vendor manifest list
      * @throws IllegalArgumentException if a list member or required manifest value is null
      * @throws ValidateException        if a platform is duplicated or a manifest has no variant or duplicate variants
      */
-    public VendorDirectory(final List<VariantManifest<?>> manifests) {
+    public VendorLocator(final List<VariantManifest<?>> manifests) {
         Assert.notNull(manifests, "Vendor manifests must not be null");
         final List<VariantManifest<?>> orderedManifests = new ArrayList<>(manifests.size());
         final Map<Vendor.Id, VariantManifest<?>> manifestsById = new LinkedHashMap<>(manifests.size());

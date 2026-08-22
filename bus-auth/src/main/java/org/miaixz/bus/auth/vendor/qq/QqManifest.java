@@ -22,12 +22,8 @@ package org.miaixz.bus.auth.vendor.qq;
 import java.util.List;
 import java.util.Set;
 
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Credential;
-import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
@@ -202,7 +198,7 @@ public class QqManifest implements VariantManifest<QqOptions> {
      * Complete immutable QQ Mini Program manifest.
      */
     private static final VariantManifest.Variant MINI_VARIANT = new VariantManifest.Variant(ID, MINI_PROGRAM,
-            Protocol.VENDOR_AUTH, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of(),
+            Protocol.HTTPS, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of(),
             new VendorTargets(Optional.empty(),
                     Optional.of(fixed("https://api.q.qq.com/sns/jscode2session", Http.Method.GET, CLIENT_SECRET_QUERY)),
                     Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),

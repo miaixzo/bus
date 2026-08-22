@@ -24,7 +24,7 @@
  * fixed authorization, token, refresh, OpenID, and profile endpoints, but publishes only redirect Source authentication
  * and standard OAuth authorization because its historical text token response omits mandatory {@code token_type}. Comma
  * scope, query Client Secret, empty form, text token, JSONP OpenID, and query profile behavior remain private
- * deviations. The Mini Program variant is proprietary VENDOR_AUTH and publishes only direct Source authentication
+ * deviations. The Mini Program variant uses its real HTTPS transport and publishes only direct Source authentication
  * through its fixed {@code jscode2session} endpoint.
  * </p>
  * <p>

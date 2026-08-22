@@ -36,14 +36,14 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * Typed authentication-state view over one bus-cache backend.
  * <p>
  * This class owns no cache implementation, connection, serialization, expiration scheduler, or atomic algorithm. It
- * only isolates one authentication purpose with a fixed key namespace and delegates every operation to {@link CacheX}.
+ * only isolates one authentication purpose with a fixed key prefix and delegates every operation to {@link CacheX}.
  * Purpose-specific public caches expose this view with their exact immutable value type. Every value is stored inside a
  * versioned {@link Envelope}; the complete envelope graph must be serializable by the configured bus-cache serializer
  * and must produce a stable representation when the same immutable value is encoded again, because distributed
  * {@link CacheX#replace(Object, Object, Object, long)} implementations compare the encoded expected value atomically. A
  * runtime-scoped view includes an irreversible Source identifier and the complete Registry snapshot revision in its
  * prefix. A successful explicit runtime reload therefore invalidates state for every Source in that runtime by
- * switching namespaces instead of requiring backend key scans or non-atomic bulk deletion. The ordinary and scoped
+ * switching key prefixes instead of requiring backend key scans or non-atomic bulk deletion. The ordinary and scoped
  * prefixes intentionally contain no Redis hash tag: every operation is single-key atomic, so forcing a complete
  * deployment into one cluster slot would create a hotspot without providing a stronger transaction boundary.
  * </p>
@@ -61,7 +61,7 @@ public abstract class AuthCache<V> {
     /**
      * Fixed authentication-purpose key prefix.
      */
-    private final String namespace;
+    private final String keyPrefix;
 
     /**
      * Runtime value class expected after backend decoding.
@@ -74,10 +74,10 @@ public abstract class AuthCache<V> {
     private final Clock clock;
 
     /**
-     * Creates one namespaced typed view over a bus-cache backend.
+     * Creates one prefix-isolated typed view over a bus-cache backend.
      *
      * @param cache      shared bus-cache backend
-     * @param deployment deployment-unique cache namespace
+     * @param deployment deployment-unique cache scope
      * @param purpose    authentication-state purpose within the deployment
      * @param valueType  exact outer value class stored for this purpose
      * @param clock      shared runtime clock used to derive backend TTL
@@ -85,7 +85,7 @@ public abstract class AuthCache<V> {
     public AuthCache(final CacheX<String, Object> cache, final String deployment, final String purpose,
             final Class<V> valueType, final Clock clock) {
         this.cache = Assert.notNull(cache, "Authentication cache must not be null");
-        this.namespace = namespace(deployment, purpose, null, 0L);
+        this.keyPrefix = keyPrefix(deployment, purpose, null, 0L);
         this.valueType = Assert.notNull(valueType, "Authentication cache value type must not be null");
         this.clock = Assert.notNull(clock, "Authentication cache clock must not be null");
     }
@@ -98,7 +98,7 @@ public abstract class AuthCache<V> {
      * </p>
      *
      * @param cache      shared bus-cache backend
-     * @param deployment deployment-unique cache namespace
+     * @param deployment deployment-unique cache scope
      * @param purpose    authentication-state purpose within the deployment
      * @param valueType  exact outer value class stored for this purpose
      * @param sourceId   exact Source registration identifier
@@ -108,30 +108,30 @@ public abstract class AuthCache<V> {
     protected AuthCache(final CacheX<String, Object> cache, final String deployment, final String purpose,
             final Class<V> valueType, final String sourceId, final long generation, final Clock clock) {
         this.cache = Assert.notNull(cache, "Authentication cache must not be null");
-        this.namespace = namespace(deployment, purpose, sourceId, generation);
+        this.keyPrefix = keyPrefix(deployment, purpose, sourceId, generation);
         this.valueType = Assert.notNull(valueType, "Authentication cache value type must not be null");
         this.clock = Assert.notNull(clock, "Authentication cache clock must not be null");
     }
 
     /**
-     * Builds either the public purpose namespace or a Source-generation-isolated runtime namespace.
+     * Builds either the public purpose prefix or a Source-generation-isolated runtime prefix.
      *
-     * @param deployment deployment-unique cache namespace
+     * @param deployment deployment-unique cache scope
      * @param purpose    authentication-state purpose
      * @param sourceId   optional Source identifier for a runtime-scoped view
      * @param generation Source configuration generation
      * @return validated authentication cache prefix
      */
-    private static String namespace(
+    private static String keyPrefix(
             final String deployment,
             final String purpose,
             final String sourceId,
             final long generation) {
         final String deploymentName = Assert
-                .notBlank(deployment, "Authentication cache deployment namespace must not be blank");
+                .notBlank(deployment, "Authentication cache deployment scope must not be blank");
         Assert.isFalse(
                 deploymentName.indexOf(Symbol.C_BRACE_LEFT) >= 0 || deploymentName.indexOf(Symbol.C_BRACE_RIGHT) >= 0,
-                "Authentication cache deployment namespace must not contain Redis hash-tag braces");
+                "Authentication cache deployment scope must not contain Redis hash-tag braces");
         final String purposeName = Assert.notBlank(purpose, "Authentication cache purpose must not be blank");
         Assert.isFalse(
                 purposeName.indexOf(Symbol.C_BRACE_LEFT) >= 0 || purposeName.indexOf(Symbol.C_BRACE_RIGHT) >= 0,
@@ -202,7 +202,7 @@ public abstract class AuthCache<V> {
     }
 
     /**
-     * Adds the immutable authentication-purpose namespace to a caller key.
+     * Adds the immutable authentication-purpose prefix to a caller key.
      *
      * @param key purpose-local key
      * @return isolated bus-cache key
@@ -212,7 +212,7 @@ public abstract class AuthCache<V> {
         Assert.isFalse(
                 localKey.indexOf(Symbol.C_BRACE_LEFT) >= 0 || localKey.indexOf(Symbol.C_BRACE_RIGHT) >= 0,
                 "Authentication cache key must not contain Redis hash-tag braces");
-        return namespace + localKey;
+        return keyPrefix + localKey;
     }
 
     /**
@@ -224,7 +224,7 @@ public abstract class AuthCache<V> {
     private Envelope envelope(final ExpiringValue<V> value) {
         Assert.notNull(value, "Authentication cache value must not be null");
         Assert.isTrue(valueType.isInstance(value.value()), "Authentication cache entry has an incompatible type");
-        return new Envelope(Envelope.VERSION, namespace, valueType.getName(),
+        return new Envelope(Normal._1, keyPrefix, valueType.getName(),
                 Assert.notNull(value, "Authentication cache value must not be null"));
     }
 
@@ -254,8 +254,8 @@ public abstract class AuthCache<V> {
         if (stored == null) {
             return null;
         }
-        if (!(stored instanceof Envelope envelope) || envelope.version() != Envelope.VERSION
-                || !namespace.equals(envelope.purpose()) || !valueType.getName().equals(envelope.valueType())
+        if (!(stored instanceof Envelope envelope) || envelope.version() != Normal._1
+                || !keyPrefix.equals(envelope.purpose()) || !valueType.getName().equals(envelope.valueType())
                 || !(envelope.value() instanceof ExpiringValue<?> expiring)
                 || !valueType.isInstance(expiring.value())) {
             throw new ValidateException("Authentication cache value has an incompatible type or version");
@@ -267,7 +267,7 @@ public abstract class AuthCache<V> {
      * Stable versioned boundary stored through the bus-cache serializer.
      *
      * @param version   envelope schema version
-     * @param purpose   complete purpose namespace that owns the entry
+     * @param purpose   complete purpose prefix that owns the entry
      * @param valueType fully qualified immutable value type name
      * @param value     expiring authentication value serialized by bus-cache
      */
@@ -275,8 +275,6 @@ public abstract class AuthCache<V> {
 
         @Serial
         private static final long serialVersionUID = 2898166305821L;
-
-        private static final int VERSION = Normal._1;
 
     }
 

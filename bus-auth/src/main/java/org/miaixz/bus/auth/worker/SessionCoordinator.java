@@ -49,11 +49,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class SessionCoordinator {
 
     /**
-     * Maximum compare-and-replace attempts for one Session transition.
-     */
-    private static final int MAXIMUM_REPLACE_ATTEMPTS = Normal._3;
-
-    /**
      * Exact compiled Source identifier.
      */
     private final String sourceId;
@@ -351,7 +346,7 @@ public class SessionCoordinator {
                 return completed(Outcome.failed(failure("Authentication Session cache replacement failed")));
             }
             if (!replaced) {
-                return attempt >= MAXIMUM_REPLACE_ATTEMPTS
+                return attempt >= Normal._3
                         ? completed(Outcome.failed(failure("Authentication Session changed concurrently")))
                         : end(requestedKey, context, timeout, attempt + 1);
             }
@@ -466,7 +461,7 @@ public class SessionCoordinator {
                     && stored.value().state() == Session.State.ENDED) {
                 return completed(Outcome.succeeded(End.ENDED));
             }
-            if (attempt >= MAXIMUM_REPLACE_ATTEMPTS) {
+            if (attempt >= Normal._3) {
                 return completed(Outcome.failed(failure("Authentication Session finalization changed concurrently")));
             }
             return end(sessionKey, context, timeout, attempt + 1);

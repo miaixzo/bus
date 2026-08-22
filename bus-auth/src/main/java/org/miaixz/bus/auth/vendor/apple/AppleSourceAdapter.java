@@ -30,7 +30,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
@@ -85,11 +84,6 @@ public class AppleSourceAdapter implements VendorAdapter {
      * Exact Sign in with Apple issuer and client-secret audience.
      */
     private static final String ISSUER = "https://appleid.apple.com";
-
-    /**
-     * Exact key-use value supplied to the external key loader.
-     */
-    private static final String SIGNATURE_USE = Builder.SIGNATURE;
 
     /**
      * Apple client-secret JWT lifetime measured from the shared invocation clock.
@@ -184,17 +178,17 @@ public class AppleSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Sign in with Apple adapter.
      *
-     * @param namespaceId registration namespace used to isolate browser correlation and key resolution
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Sign in with Apple manifest
-     * @param variant     selected default variant manifest
-     * @param options     decoded externally loaded Sign in with Apple options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate browser correlation and key resolution
+     * @param sourceId registered Source identifier
+     * @param manifest selected Sign in with Apple manifest
+     * @param variant  selected default variant manifest
+     * @param options  decoded externally loaded Sign in with Apple options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, callback, or algorithm policy differs from the frozen
      *                                  profile
      */
-    public AppleSourceAdapter(final String namespaceId, final String sourceId, final AppleManifest manifest,
+    public AppleSourceAdapter(final String spaceId, final String sourceId, final AppleManifest manifest,
             final VariantManifest.Variant variant, final AppleOptions options, final DriverServices services) {
         Assert.notNull(manifest, "Sign in with Apple manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Sign in with Apple Source id must not be blank");
@@ -212,7 +206,7 @@ public class AppleSourceAdapter implements VendorAdapter {
         if (!algorithms.contains(JwaAlgorithm.ES256.name()) || !algorithms.contains(JwaAlgorithm.RS256.name())) {
             throw new ValidateException("Sign in with Apple requires ES256 client signing and RS256 ID Tokens");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         this.authorizationRequestEncoder = new AuthorizationRequestEncoder(
                 variant.targets().resolve(options).authorization().getOrNull());
         this.clientSecretJws = new JwsService(services.jsonProvider(), services.securityBaseline().algorithmGuard(),
@@ -782,7 +776,7 @@ public class AppleSourceAdapter implements VendorAdapter {
     private CompletionStage<Outcome<String>> clientSecret(final Context context, final Timeout timeout) {
         final Instant now = timeout.clock().now();
         final KeyLoader.Request query = new KeyLoader.Request(services.registration(), ISSUER,
-                Optional.of(options.credential().id()), SIGNATURE_USE, JwaAlgorithm.ES256.name(), now);
+                Optional.of(options.credential().id()), Builder.SIGNATURE, JwaAlgorithm.ES256.name(), now);
         final CompletionStage<Outcome<KeyMaterial>> resolution;
         try {
             resolution = Outcome.mapStage(

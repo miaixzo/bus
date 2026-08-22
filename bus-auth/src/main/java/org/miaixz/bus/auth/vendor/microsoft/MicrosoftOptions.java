@@ -39,19 +39,20 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
- * Carries externally managed Microsoft web application and tenant values.
+ * Carries externally managed Microsoft login or enterprise application and tenant values.
  * <p>
- * Official cloud hosts and endpoint paths remain manifest-owned. This record retains only the Application ID, an
- * external Client Secret reference, the exact registered callback, delegated scopes, and the tenant path selector.
+ * Official cloud hosts and endpoint paths remain manifest-owned. Login variants retain an exact registered callback and
+ * delegated scopes. Enterprise variants retain no callback and accept only their cloud-specific {@code .default}
+ * application-permission scope. Every variant keeps the Client Secret outside this value as a reference.
  * </p>
  *
  * @param vendor      exact Microsoft platform identifier
- * @param variant     selected global or China cloud variant
+ * @param variant     selected login or enterprise cloud variant
  * @param clientId    registered Application (client) ID
  * @param credential  external Client Secret reference
- * @param redirectUri exact registered authorization callback URI
- * @param scopes      ordered delegated scopes, or empty to use manifest defaults
- * @param tenant      Microsoft tenant GUID, verified domain, or registered audience alias
+ * @param redirectUri exact registered login callback, empty for enterprise
+ * @param scopes      delegated login scopes or the sole enterprise application scope
+ * @param tenant      Microsoft tenant GUID, verified domain, or login-only audience alias
  * @author Kimi Liu
  */
 public record MicrosoftOptions(Vendor.Id vendor, Vendor.Variant variant, String clientId,
@@ -71,10 +72,13 @@ public record MicrosoftOptions(Vendor.Id vendor, Vendor.Variant variant, String 
      *                                  invalid
      */
     public MicrosoftOptions {
-        if (!MicrosoftManifest.ID.equals(vendor)
-                || !MicrosoftManifest.GLOBAL.equals(variant) && !MicrosoftManifest.CHINA.equals(variant)) {
-            throw new ValidateException("Microsoft options must select microsoft/global or microsoft/china");
+        if (!MicrosoftManifest.ID.equals(vendor) || !MicrosoftManifest.GLOBAL.equals(variant)
+                && !MicrosoftManifest.CHINA.equals(variant) && !MicrosoftManifest.ENTERPRISE_GLOBAL.equals(variant)
+                && !MicrosoftManifest.ENTERPRISE_CHINA.equals(variant)) {
+            throw new ValidateException("Microsoft options must select one frozen Microsoft cloud variant");
         }
+        final boolean enterprise = MicrosoftManifest.ENTERPRISE_GLOBAL.equals(variant)
+                || MicrosoftManifest.ENTERPRISE_CHINA.equals(variant);
         clientId = applicationId(clientId);
         Assert.notNull(credential, "Microsoft credential reference must not be null");
         if (credential.type() != Credential.Type.CLIENT_SECRET) {
@@ -82,11 +86,6 @@ public record MicrosoftOptions(Vendor.Id vendor, Vendor.Variant variant, String 
         }
         Assert.notNull(redirectUri, "Microsoft redirect URI container must not be null");
         redirectUri = Optional.ofNullable(redirectUri.getOrNull());
-        if (redirectUri.isEmpty()) {
-            throw new ValidateException("Microsoft options require a registered redirect URI");
-        }
-        redirect(redirectUri.getOrNull());
-
         Assert.notNull(scopes, "Microsoft scopes must not be null");
         final List<String> copy = new ArrayList<>(scopes.size());
         for (String scope : scopes) {
@@ -97,13 +96,33 @@ public record MicrosoftOptions(Vendor.Id vendor, Vendor.Variant variant, String 
             }
             copy.add(checked);
         }
-        if (!copy.isEmpty() && !copy.contains(USER_READ)) {
-            throw new ValidateException("Explicit Microsoft scopes must include User.Read for Graph identity lookup");
-        }
         scopes = List.copyOf(copy);
         tenant = tenant(tenant);
-        if (MicrosoftManifest.CHINA.equals(variant) && "consumers".equals(tenant)) {
-            throw new ValidateException("Microsoft China does not support the consumers tenant audience");
+        if (enterprise) {
+            if (redirectUri.isPresent()) {
+                throw new ValidateException("Microsoft enterprise options prohibit a redirect URI");
+            }
+            final String expected = MicrosoftManifest.ENTERPRISE_GLOBAL.equals(variant)
+                    ? MicrosoftManifest.GLOBAL_APPLICATION_SCOPE
+                    : MicrosoftManifest.CHINA_APPLICATION_SCOPE;
+            if (!scopes.equals(List.of(expected))) {
+                throw new ValidateException("Microsoft enterprise options require the exact cloud application scope");
+            }
+            if (tenantAlias(tenant)) {
+                throw new ValidateException("Microsoft enterprise options require a concrete tenant");
+            }
+        } else {
+            if (redirectUri.isEmpty()) {
+                throw new ValidateException("Microsoft login options require a registered redirect URI");
+            }
+            redirect(redirectUri.getOrNull());
+            if (!scopes.isEmpty() && !scopes.contains(USER_READ)) {
+                throw new ValidateException(
+                        "Explicit Microsoft scopes must include User.Read for Graph identity lookup");
+            }
+            if (MicrosoftManifest.CHINA.equals(variant) && "consumers".equals(tenant)) {
+                throw new ValidateException("Microsoft China does not support the consumers tenant audience");
+            }
         }
     }
 
@@ -259,7 +278,7 @@ public record MicrosoftOptions(Vendor.Id vendor, Vendor.Variant variant, String 
     @Override
     public String toString() {
         return "MicrosoftOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS
-                + scopes + ", tenant=" + tenant + Symbol.C_BRACKET_RIGHT;
+                + Symbol.C_BRACKET_RIGHT;
     }
 
 }

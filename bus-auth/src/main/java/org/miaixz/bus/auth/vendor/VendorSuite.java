@@ -33,6 +33,7 @@ import org.miaixz.bus.auth.vendor.alipay.AlipayOptions;
 import org.miaixz.bus.auth.vendor.alipay.AlipaySourceAdapter;
 import org.miaixz.bus.auth.vendor.aliyun.AliyunManifest;
 import org.miaixz.bus.auth.vendor.aliyun.AliyunOptions;
+import org.miaixz.bus.auth.vendor.aliyun.AliyunRealmAdapter;
 import org.miaixz.bus.auth.vendor.aliyun.AliyunSourceAdapter;
 import org.miaixz.bus.auth.vendor.amazon.AmazonManifest;
 import org.miaixz.bus.auth.vendor.amazon.AmazonOptions;
@@ -48,6 +49,7 @@ import org.miaixz.bus.auth.vendor.coding.CodingOptions;
 import org.miaixz.bus.auth.vendor.coding.CodingSourceAdapter;
 import org.miaixz.bus.auth.vendor.dingtalk.DingTalkManifest;
 import org.miaixz.bus.auth.vendor.dingtalk.DingTalkOptions;
+import org.miaixz.bus.auth.vendor.dingtalk.DingTalkRealmAdapter;
 import org.miaixz.bus.auth.vendor.dingtalk.DingTalkSourceAdapter;
 import org.miaixz.bus.auth.vendor.douyin.DouyinManifest;
 import org.miaixz.bus.auth.vendor.douyin.DouyinOptions;
@@ -60,21 +62,26 @@ import org.miaixz.bus.auth.vendor.facebook.FacebookOptions;
 import org.miaixz.bus.auth.vendor.facebook.FacebookSourceAdapter;
 import org.miaixz.bus.auth.vendor.feishu.FeishuManifest;
 import org.miaixz.bus.auth.vendor.feishu.FeishuOptions;
+import org.miaixz.bus.auth.vendor.feishu.FeishuRealmAdapter;
 import org.miaixz.bus.auth.vendor.feishu.FeishuSourceAdapter;
 import org.miaixz.bus.auth.vendor.figma.FigmaManifest;
 import org.miaixz.bus.auth.vendor.figma.FigmaOptions;
+import org.miaixz.bus.auth.vendor.figma.FigmaRealmAdapter;
 import org.miaixz.bus.auth.vendor.figma.FigmaSourceAdapter;
 import org.miaixz.bus.auth.vendor.gitee.GiteeManifest;
 import org.miaixz.bus.auth.vendor.gitee.GiteeOptions;
 import org.miaixz.bus.auth.vendor.gitee.GiteeSourceAdapter;
 import org.miaixz.bus.auth.vendor.github.GitHubManifest;
 import org.miaixz.bus.auth.vendor.github.GitHubOptions;
+import org.miaixz.bus.auth.vendor.github.GitHubRealmAdapter;
 import org.miaixz.bus.auth.vendor.github.GitHubSourceAdapter;
 import org.miaixz.bus.auth.vendor.gitlab.GitLabManifest;
 import org.miaixz.bus.auth.vendor.gitlab.GitLabOptions;
+import org.miaixz.bus.auth.vendor.gitlab.GitLabRealmAdapter;
 import org.miaixz.bus.auth.vendor.gitlab.GitLabSourceAdapter;
 import org.miaixz.bus.auth.vendor.google.GoogleManifest;
 import org.miaixz.bus.auth.vendor.google.GoogleOptions;
+import org.miaixz.bus.auth.vendor.google.GoogleRealmAdapter;
 import org.miaixz.bus.auth.vendor.google.GoogleSourceAdapter;
 import org.miaixz.bus.auth.vendor.huawei.HuaweiManifest;
 import org.miaixz.bus.auth.vendor.huawei.HuaweiOptions;
@@ -99,9 +106,11 @@ import org.miaixz.bus.auth.vendor.mi.MiOptions;
 import org.miaixz.bus.auth.vendor.mi.MiSourceAdapter;
 import org.miaixz.bus.auth.vendor.microsoft.MicrosoftManifest;
 import org.miaixz.bus.auth.vendor.microsoft.MicrosoftOptions;
+import org.miaixz.bus.auth.vendor.microsoft.MicrosoftRealmAdapter;
 import org.miaixz.bus.auth.vendor.microsoft.MicrosoftSourceAdapter;
 import org.miaixz.bus.auth.vendor.okta.OktaManifest;
 import org.miaixz.bus.auth.vendor.okta.OktaOptions;
+import org.miaixz.bus.auth.vendor.okta.OktaRealmAdapter;
 import org.miaixz.bus.auth.vendor.okta.OktaSourceAdapter;
 import org.miaixz.bus.auth.vendor.oschina.OsChinaManifest;
 import org.miaixz.bus.auth.vendor.oschina.OsChinaOptions;
@@ -120,6 +129,7 @@ import org.miaixz.bus.auth.vendor.rednote.RedNoteOptions;
 import org.miaixz.bus.auth.vendor.rednote.RedNoteSourceAdapter;
 import org.miaixz.bus.auth.vendor.slack.SlackManifest;
 import org.miaixz.bus.auth.vendor.slack.SlackOptions;
+import org.miaixz.bus.auth.vendor.slack.SlackRealmAdapter;
 import org.miaixz.bus.auth.vendor.slack.SlackSourceAdapter;
 import org.miaixz.bus.auth.vendor.stackoverflow.StackOverflowManifest;
 import org.miaixz.bus.auth.vendor.stackoverflow.StackOverflowOptions;
@@ -147,6 +157,7 @@ import org.miaixz.bus.auth.vendor.ximalaya.XimalayaManifest;
 import org.miaixz.bus.auth.vendor.ximalaya.XimalayaOptions;
 import org.miaixz.bus.auth.vendor.ximalaya.XimalayaSourceAdapter;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -155,9 +166,9 @@ import org.miaixz.bus.extra.json.JsonValue;
 /**
  * Builds the framework-owned baseline inventories consumed by the public Vendor module builder.
  * <p>
- * Assembly is explicit and deterministic: forty-one Vendor manifests and fifty exact platform-variant adapter bindings
- * are frozen before contribution. The module performs no reflection, service loading, Registry access, network
- * operation, or runtime registration mutation.
+ * Assembly is explicit and deterministic: forty-one Vendor manifests and sixty-two exact platform-variant bindings are
+ * frozen before contribution. The module performs no reflection, service loading, Registry access, network operation,
+ * or runtime registration mutation.
  * </p>
  *
  * @author Kimi Liu
@@ -165,47 +176,56 @@ import org.miaixz.bus.extra.json.JsonValue;
 final class VendorSuite {
 
     /**
+     * Exact built-in Vendor manifest count retained by the framework inventory.
+     */
+    private static final int BUILT_IN_VENDOR_COUNT = 41;
+
+    /**
+     * Exact built-in login and enterprise Variant binding count.
+     */
+    private static final int BUILT_IN_BINDING_COUNT = 62;
+
+    /**
      * Prevents instantiation of the framework-owned baseline inventory holder.
      */
     private VendorSuite() {
-        // No initialization required.
     }
 
     /**
-     * Creates a fresh immutable directory for external management interfaces.
+     * Creates a fresh immutable locator for external management interfaces.
      *
-     * @return complete forty-one-platform Vendor directory
+     * @return complete forty-one-platform Vendor locator
      */
-    static VendorDirectory directory() {
-        return buildVendorDirectory();
+    static VendorLocator locator() {
+        return buildVendorLocator();
     }
 
     /**
      * Creates fresh immutable adapter factory bindings for the built-in platform variants.
      *
-     * @return complete fifty-variant adapter factory bindings
+     * @return complete sixty-two-variant adapter factory bindings
      */
     static AdapterBindings bindings() {
         return buildAdapterBindings();
     }
 
     /**
-     * Creates fresh immutable Options factory bindings for the supplied built-in directory instances.
+     * Creates fresh immutable Options factory bindings for the supplied built-in locator instances.
      *
-     * @param directory exact built-in manifest directory retained by the module builder
-     * @return complete fifty-variant Options factory bindings
+     * @param locator exact built-in manifest locator retained by the module builder
+     * @return complete sixty-two-variant Options factory bindings
      */
-    static OptionsBindings options(final VendorDirectory directory) {
-        return buildOptionsBindings(Assert.notNull(directory, "Vendor Options directory must not be null"));
+    static OptionsBindings options(final VendorLocator locator) {
+        return buildOptionsBindings(Assert.notNull(locator, "Vendor Options locator must not be null"));
     }
 
     /**
-     * Builds the complete Vendor manifest directory in stable inventory order.
+     * Builds the complete Vendor manifest locator in stable inventory order.
      *
-     * @return immutable forty-one-platform directory
+     * @return immutable forty-one-platform locator
      */
-    private static VendorDirectory buildVendorDirectory() {
-        return new VendorDirectory(List.of(
+    private static VendorLocator buildVendorLocator() {
+        final VendorLocator locator = new VendorLocator(List.of(
                 new AfdianManifest(),
                 new AlipayManifest(),
                 new AliyunManifest(),
@@ -247,15 +267,19 @@ final class VendorSuite {
                 new WeChatManifest(),
                 new WeiboManifest(),
                 new XimalayaManifest()));
+        if (locator.manifests().size() != BUILT_IN_VENDOR_COUNT) {
+            throw new ValidateException("Vendor manifest inventory must contain exactly forty-one platforms");
+        }
+        return locator;
     }
 
     /**
-     * Builds the complete exact adapter factory directory in stable inventory order.
+     * Builds the complete exact adapter factory bindings in stable inventory order.
      *
-     * @return immutable fifty-variant adapter factory directory
+     * @return immutable sixty-two-variant adapter factory bindings
      */
     private static AdapterBindings buildAdapterBindings() {
-        final Map<AdapterBindings.Key, AdapterBindings.Binding> bindings = new LinkedHashMap<>(50);
+        final Map<AdapterBindings.Key, AdapterBindings.Binding> bindings = new LinkedHashMap<>(BUILT_IN_BINDING_COUNT);
         register(
                 bindings,
                 AfdianManifest.ID,
@@ -470,147 +494,224 @@ final class VendorSuite {
                 XimalayaManifest.ID,
                 XimalayaManifest.DEFAULT,
                 factory(XimalayaManifest.class, XimalayaSourceAdapter::new));
-        if (bindings.size() != 50) {
-            throw new ValidateException("Vendor adapter inventory must contain exactly fifty variants");
+        register(
+                bindings,
+                FeishuManifest.ID,
+                FeishuManifest.ENTERPRISE,
+                factory(FeishuManifest.class, FeishuRealmAdapter::new));
+        register(
+                bindings,
+                DingTalkManifest.ID,
+                DingTalkManifest.ENTERPRISE,
+                factory(DingTalkManifest.class, DingTalkRealmAdapter::new));
+        register(
+                bindings,
+                WeChatManifest.ID,
+                WeChatManifest.EE_ENTERPRISE,
+                factory(WeChatManifest.class, WeChatEeRealmAdapter::new));
+        register(
+                bindings,
+                MicrosoftManifest.ID,
+                MicrosoftManifest.ENTERPRISE_GLOBAL,
+                factory(MicrosoftManifest.class, MicrosoftRealmAdapter::new));
+        register(
+                bindings,
+                MicrosoftManifest.ID,
+                MicrosoftManifest.ENTERPRISE_CHINA,
+                factory(MicrosoftManifest.class, MicrosoftRealmAdapter::new));
+        register(
+                bindings,
+                GoogleManifest.ID,
+                GoogleManifest.WORKSPACE,
+                factory(GoogleManifest.class, GoogleRealmAdapter::new));
+        register(
+                bindings,
+                OktaManifest.ID,
+                OktaManifest.MANAGEMENT,
+                factory(OktaManifest.class, OktaRealmAdapter::new));
+        register(bindings, SlackManifest.ID, SlackManifest.SCIM, factory(SlackManifest.class, SlackRealmAdapter::new));
+        register(bindings, FigmaManifest.ID, FigmaManifest.SCIM, factory(FigmaManifest.class, FigmaRealmAdapter::new));
+        register(
+                bindings,
+                GitHubManifest.ID,
+                GitHubManifest.ENTERPRISE,
+                factory(GitHubManifest.class, GitHubRealmAdapter::new));
+        register(
+                bindings,
+                GitLabManifest.ID,
+                GitLabManifest.ENTERPRISE,
+                factory(GitLabManifest.class, GitLabRealmAdapter::new));
+        register(
+                bindings,
+                AliyunManifest.ID,
+                AliyunManifest.RAM,
+                factory(AliyunManifest.class, AliyunRealmAdapter::new));
+        if (bindings.size() != BUILT_IN_BINDING_COUNT) {
+            throw new ValidateException("Vendor adapter inventory must contain exactly sixty-two variants");
         }
         return new AdapterBindings(bindings);
     }
 
     /**
-     * Builds the complete exact Options factory directory for the retained manifest instances.
+     * Builds the complete exact Options factory bindings for the retained manifest instances.
      *
-     * @param directory exact built-in manifest directory
-     * @return immutable fifty-variant Options factory directory
+     * @param locator exact built-in manifest locator
+     * @return immutable sixty-two-variant Options factory bindings
      */
-    private static OptionsBindings buildOptionsBindings(final VendorDirectory directory) {
-        final Map<OptionsBindings.Key, OptionsBindings.Binding> bindings = new LinkedHashMap<>(50);
-        registerOptions(bindings, directory, AfdianManifest.ID, simple(AfdianOptions::new));
+    private static OptionsBindings buildOptionsBindings(final VendorLocator locator) {
+        final Map<OptionsBindings.Key, OptionsBindings.Binding> bindings = new LinkedHashMap<>(BUILT_IN_BINDING_COUNT);
+        registerOptions(bindings, locator, AfdianManifest.ID, simple(AfdianOptions::new));
         registerOptions(
                 bindings,
-                directory,
+                locator,
                 AlipayManifest.ID,
                 (variant, clientId, credential, callback, scopes, parameters) -> new AlipayOptions(variant.platform(),
                         variant.variant(), clientId, credential, callback, scopes,
                         requiredString(parameters, "verificationKeyId")));
-        registerOptions(bindings, directory, AliyunManifest.ID, simple(AliyunOptions::new));
+        registerOptions(bindings, locator, AliyunManifest.ID, simple(AliyunOptions::new));
         registerOptions(
                 bindings,
-                directory,
+                locator,
                 AmazonManifest.ID,
                 (variant, clientId, credential, callback, scopes, parameters) -> new AmazonOptions(variant.platform(),
                         variant.variant(), clientId, credential, callback, scopes, bool(parameters, "pkce", false)));
         registerOptions(
                 bindings,
-                directory,
+                locator,
                 AppleManifest.ID,
                 (variant, clientId, credential, callback, scopes, parameters) -> new AppleOptions(variant.platform(),
                         variant.variant(), clientId, credential, callback, scopes, requiredString(parameters, "teamId"),
                         requiredString(parameters, "keyId")));
-        registerOptions(bindings, directory, BaiduManifest.ID, simple(BaiduOptions::new));
+        registerOptions(bindings, locator, BaiduManifest.ID, simple(BaiduOptions::new));
         registerOptions(
                 bindings,
-                directory,
+                locator,
                 CodingManifest.ID,
                 (variant, clientId, credential, callback, scopes, parameters) -> new CodingOptions(variant.platform(),
                         variant.variant(), clientId, credential, callback, scopes, requiredString(parameters, "team")));
         registerOptions(
                 bindings,
-                directory,
+                locator,
                 DingTalkManifest.ID,
                 (variant, clientId, credential, callback, scopes, parameters) -> new DingTalkOptions(variant.platform(),
                         variant.variant(), clientId, credential, callback, scopes,
                         optionalString(parameters, "orgType"), optionalString(parameters, "corpId"),
                         bool(parameters, "exclusiveLogin", false), optionalString(parameters, "exclusiveCorpId")));
-        registerOptions(bindings, directory, DouyinManifest.ID, simple(DouyinOptions::new));
-        registerOptions(bindings, directory, ElemeManifest.ID, simple(ElemeOptions::new));
-        registerOptions(bindings, directory, FacebookManifest.ID, simple(FacebookOptions::new));
-        registerOptions(bindings, directory, FeishuManifest.ID, simple(FeishuOptions::new));
-        registerOptions(bindings, directory, FigmaManifest.ID, simple(FigmaOptions::new));
-        registerOptions(bindings, directory, GiteeManifest.ID, simple(GiteeOptions::new));
-        registerOptions(bindings, directory, GitHubManifest.ID, simple(GitHubOptions::new));
-        registerOptions(bindings, directory, GitLabManifest.ID, simple(GitLabOptions::new));
-        registerOptions(bindings, directory, GoogleManifest.ID, simple(GoogleOptions::new));
-        registerOptions(bindings, directory, HuaweiManifest.ID, simple(HuaweiOptions::new));
-        registerOptions(bindings, directory, JdManifest.ID, simple(JdOptions::new));
-        registerOptions(bindings, directory, KujialeManifest.ID, simple(KujialeOptions::new));
-        registerOptions(bindings, directory, LineManifest.ID, simple(LineOptions::new));
-        registerOptions(bindings, directory, LinkedInManifest.ID, simple(LinkedInOptions::new));
-        registerOptions(bindings, directory, MeituanManifest.ID, simple(MeituanOptions::new));
-        registerOptions(bindings, directory, MiManifest.ID, simple(MiOptions::new));
+        registerOptions(bindings, locator, DouyinManifest.ID, simple(DouyinOptions::new));
+        registerOptions(bindings, locator, ElemeManifest.ID, simple(ElemeOptions::new));
+        registerOptions(bindings, locator, FacebookManifest.ID, simple(FacebookOptions::new));
+        registerOptions(bindings, locator, FeishuManifest.ID, simple(FeishuOptions::new));
+        registerOptions(bindings, locator, FigmaManifest.ID, simple(FigmaOptions::new));
+        registerOptions(bindings, locator, GiteeManifest.ID, simple(GiteeOptions::new));
+        registerOptions(bindings, locator, GitHubManifest.ID, simple(GitHubOptions::new));
         registerOptions(
                 bindings,
-                directory,
+                locator,
+                GitLabManifest.ID,
+                (variant, clientId, credential, callback, scopes, parameters) -> new GitLabOptions(variant.platform(),
+                        variant.variant(), clientId, credential, callback, scopes,
+                        string(parameters, "instance", Normal.EMPTY),
+                        string(parameters, "topLevelGroup", Normal.EMPTY)));
+        registerOptions(
+                bindings,
+                locator,
+                GoogleManifest.ID,
+                (variant, clientId, credential, callback, scopes, parameters) -> new GoogleOptions(variant.platform(),
+                        variant.variant(), clientId, credential, callback, scopes,
+                        string(parameters, "customer", Normal.EMPTY),
+                        string(parameters, "delegatedAdmin", Normal.EMPTY)));
+        registerOptions(bindings, locator, HuaweiManifest.ID, simple(HuaweiOptions::new));
+        registerOptions(bindings, locator, JdManifest.ID, simple(JdOptions::new));
+        registerOptions(bindings, locator, KujialeManifest.ID, simple(KujialeOptions::new));
+        registerOptions(bindings, locator, LineManifest.ID, simple(LineOptions::new));
+        registerOptions(bindings, locator, LinkedInManifest.ID, simple(LinkedInOptions::new));
+        registerOptions(bindings, locator, MeituanManifest.ID, simple(MeituanOptions::new));
+        registerOptions(bindings, locator, MiManifest.ID, simple(MiOptions::new));
+        registerOptions(
+                bindings,
+                locator,
                 MicrosoftManifest.ID,
                 (variant, clientId, credential, callback, scopes, parameters) -> new MicrosoftOptions(
                         variant.platform(), variant.variant(), clientId, credential, callback, scopes,
-                        string(
-                                parameters,
-                                "tenant",
-                                MicrosoftManifest.CHINA.equals(variant.variant()) ? "organizations" : "common")));
+                        MicrosoftManifest.ENTERPRISE_GLOBAL.equals(variant.variant())
+                                || MicrosoftManifest.ENTERPRISE_CHINA.equals(variant.variant())
+                                        ? requiredString(parameters, "tenant")
+                                        : string(
+                                                parameters,
+                                                "tenant",
+                                                MicrosoftManifest.CHINA.equals(variant.variant()) ? "organizations"
+                                                        : "common")));
         registerOptions(
                 bindings,
-                directory,
+                locator,
                 OktaManifest.ID,
                 (variant, clientId, credential, callback, scopes, parameters) -> new OktaOptions(variant.platform(),
                         variant.variant(), clientId, credential, callback, scopes,
                         requiredString(parameters, "instance"),
-                        string(parameters, "authorizationServerId", "default")));
-        registerOptions(bindings, directory, OsChinaManifest.ID, simple(OsChinaOptions::new));
-        registerOptions(bindings, directory, PinterestManifest.ID, simple(PinterestOptions::new));
-        registerOptions(bindings, directory, ProginnManifest.ID, simple(ProginnOptions::new));
+                        OktaManifest.MANAGEMENT.equals(variant.variant()) ? Normal.EMPTY
+                                : string(parameters, "authorizationServerId", "default")));
+        registerOptions(bindings, locator, OsChinaManifest.ID, simple(OsChinaOptions::new));
+        registerOptions(bindings, locator, PinterestManifest.ID, simple(PinterestOptions::new));
+        registerOptions(bindings, locator, ProginnManifest.ID, simple(ProginnOptions::new));
         registerOptions(
                 bindings,
-                directory,
+                locator,
                 QqManifest.ID,
                 (variant, clientId, credential, callback, scopes, parameters) -> new QqOptions(variant.platform(),
                         variant.variant(), clientId, credential, callback, scopes,
                         bool(parameters, "preferUnionId", false)));
-        registerOptions(bindings, directory, RedNoteManifest.ID, simple(RedNoteOptions::new));
-        registerOptions(bindings, directory, SlackManifest.ID, simple(SlackOptions::new));
+        registerOptions(bindings, locator, RedNoteManifest.ID, simple(RedNoteOptions::new));
+        registerOptions(bindings, locator, SlackManifest.ID, simple(SlackOptions::new));
         registerOptions(
                 bindings,
-                directory,
+                locator,
                 StackOverflowManifest.ID,
                 (variant, clientId, credential, callback, scopes, parameters) -> new StackOverflowOptions(
                         variant.platform(), variant.variant(), clientId, credential, callback, scopes,
                         requiredString(parameters, "key"), requiredString(parameters, "siteId")));
-        registerOptions(bindings, directory, TaobaoManifest.ID, simple(TaobaoOptions::new));
-        registerOptions(bindings, directory, TeambitionManifest.ID, simple(TeambitionOptions::new));
-        registerOptions(bindings, directory, ToutiaoManifest.ID, simple(ToutiaoOptions::new));
-        registerOptions(bindings, directory, TwitterManifest.ID, simple(TwitterOptions::new));
-        registerOptions(bindings, directory, VkManifest.ID, simple(VkOptions::new));
+        registerOptions(bindings, locator, TaobaoManifest.ID, simple(TaobaoOptions::new));
+        registerOptions(bindings, locator, TeambitionManifest.ID, simple(TeambitionOptions::new));
+        registerOptions(bindings, locator, ToutiaoManifest.ID, simple(ToutiaoOptions::new));
+        registerOptions(bindings, locator, TwitterManifest.ID, simple(TwitterOptions::new));
+        registerOptions(bindings, locator, VkManifest.ID, simple(VkOptions::new));
         registerOptions(
                 bindings,
-                directory,
+                locator,
                 WeChatManifest.ID,
                 (variant, clientId, credential, callback, scopes, parameters) -> new WeChatOptions(variant.platform(),
-                        variant.variant(), clientId, credential, callback, scopes, string(parameters, "loginType", ""),
-                        string(parameters, "agentId", ""), string(parameters, "language", ""),
-                        string(parameters, "userType", "")));
-        registerOptions(bindings, directory, WeiboManifest.ID, simple(WeiboOptions::new));
+                        variant.variant(), clientId, credential, callback, scopes,
+                        string(parameters, "loginType", Normal.EMPTY), string(parameters, "agentId", Normal.EMPTY),
+                        string(parameters, "language", Normal.EMPTY), string(parameters, "userType", Normal.EMPTY)));
+        registerOptions(bindings, locator, WeiboManifest.ID, simple(WeiboOptions::new));
         registerOptions(
                 bindings,
-                directory,
+                locator,
                 XimalayaManifest.ID,
                 (variant, clientId, credential, callback, scopes, parameters) -> new XimalayaOptions(variant.platform(),
                         variant.variant(), clientId, credential, callback, scopes,
                         requiredString(parameters, "deviceId"), requiredString(parameters, "clientOsType"),
                         requiredString(parameters, "packageId")));
-        if (bindings.size() != 50) {
-            throw new ValidateException("Vendor Options factory inventory must contain exactly fifty variants");
+        if (bindings.size() != BUILT_IN_BINDING_COUNT) {
+            throw new ValidateException("Vendor Options factory inventory must contain exactly sixty-two variants");
         }
         return new OptionsBindings(bindings);
     }
 
     /**
      * Registers one factory for every variant declared by an exact built-in platform manifest.
+     *
+     * @param bindings mutable build-scoped Options bindings
+     * @param locator  exact retained built-in manifest locator
+     * @param vendor   exact platform identifier
+     * @param factory  concrete platform Options factory
+     * @throws ValidateException if the platform is absent or a platform-Variant key is duplicated
      */
     private static void registerOptions(
             final Map<OptionsBindings.Key, OptionsBindings.Binding> bindings,
-            final VendorDirectory directory,
+            final VendorLocator locator,
             final Vendor.Id vendor,
             final VendorOptions.Factory<?> factory) {
-        final VariantManifest<?> manifest = directory.require(vendor);
+        final VariantManifest<?> manifest = locator.require(vendor);
         for (VariantManifest.Variant variant : manifest.variants()) {
             final OptionsBindings.Key key = new OptionsBindings.Key(vendor, variant.variant());
             if (bindings.putIfAbsent(key, new OptionsBindings.Binding(manifest, variant, factory)) != null) {
@@ -622,6 +723,10 @@ final class VendorSuite {
 
     /**
      * Adapts one six-component immutable Options constructor to the common factory contract.
+     *
+     * @param constructor exact six-component Options constructor
+     * @param <S>         concrete Options type
+     * @return validated common Options factory
      */
     private static <S extends VendorOptions<?>> VendorOptions.Factory<S> simple(
             final OptionsConstructor<S> constructor) {
@@ -637,6 +742,11 @@ final class VendorSuite {
 
     /**
      * Reads one required string parameter without coercion.
+     *
+     * @param parameters exact external parameter object
+     * @param name       required parameter name
+     * @return non-blank parameter value
+     * @throws ValidateException if the parameter is absent, non-string, or blank
      */
     private static String requiredString(final JsonValue.ObjectValue parameters, final String name) {
         final JsonValue value = parameters.values().get(name);
@@ -648,6 +758,11 @@ final class VendorSuite {
 
     /**
      * Reads one optional string parameter without coercion.
+     *
+     * @param parameters exact external parameter object
+     * @param name       optional parameter name
+     * @return optional non-blank parameter value
+     * @throws ValidateException if a present parameter is non-string or blank
      */
     private static Optional<String> optionalString(final JsonValue.ObjectValue parameters, final String name) {
         final JsonValue value = parameters.values().get(name);
@@ -656,6 +771,12 @@ final class VendorSuite {
 
     /**
      * Reads one string parameter or applies a non-sensitive framework default.
+     *
+     * @param parameters   exact external parameter object
+     * @param name         optional parameter name
+     * @param defaultValue non-sensitive fallback value
+     * @return present non-blank value or the supplied fallback
+     * @throws ValidateException if a present parameter is non-string or blank
      */
     private static String string(final JsonValue.ObjectValue parameters, final String name, final String defaultValue) {
         return parameters.values().containsKey(name) ? requiredString(parameters, name) : defaultValue;
@@ -663,6 +784,12 @@ final class VendorSuite {
 
     /**
      * Reads one boolean parameter or applies a non-sensitive framework default.
+     *
+     * @param parameters   exact external parameter object
+     * @param name         optional parameter name
+     * @param defaultValue fallback boolean value
+     * @return present boolean value or the supplied fallback
+     * @throws ValidateException if a present parameter is not boolean
      */
     private static boolean bool(final JsonValue.ObjectValue parameters, final String name, final boolean defaultValue) {
         final JsonValue value = parameters.values().get(name);
@@ -673,28 +800,6 @@ final class VendorSuite {
             throw new ValidateException("Vendor Options parameter must be a boolean: " + name);
         }
         return bool.value();
-    }
-
-    /**
-     * Represents one concrete immutable Options record constructor with the common six components.
-     *
-     * @param <S> concrete Vendor Options type
-     * @author Kimi Liu
-     */
-    @FunctionalInterface
-    private interface OptionsConstructor<S extends VendorOptions<?>> {
-
-        /**
-         * Creates one immutable concrete Options value.
-         */
-        S create(
-                Vendor.Id vendor,
-                Vendor.Variant variant,
-                String clientId,
-                Credential.Reference credential,
-                Optional<String> callback,
-                List<String> scopes);
-
     }
 
     /**
@@ -734,8 +839,38 @@ final class VendorSuite {
         Assert.notNull(constructor, "Vendor adapter constructor must not be null");
         return AdapterBindings.binding(
                 manifestType,
-                (namespaceId, sourceId, manifest, variant, options, services) -> constructor
-                        .create(namespaceId, sourceId, manifestType.cast(manifest), variant, options, services));
+                (spaceId, sourceId, manifest, variant, options, services) -> constructor
+                        .create(spaceId, sourceId, manifestType.cast(manifest), variant, options, services));
+    }
+
+    /**
+     * Represents one concrete immutable Options record constructor with the common six components.
+     *
+     * @param <S> concrete Vendor Options type
+     * @author Kimi Liu
+     */
+    @FunctionalInterface
+    private interface OptionsConstructor<S extends VendorOptions<?>> {
+
+        /**
+         * Creates one immutable concrete Options value.
+         *
+         * @param vendor     exact platform identifier
+         * @param variant    exact platform Variant identifier
+         * @param clientId   externally supplied public client identifier
+         * @param credential external credential reference
+         * @param callback   optional registered callback
+         * @param scopes     ordered requested scopes
+         * @return validated concrete Options value
+         */
+        S create(
+                Vendor.Id vendor,
+                Vendor.Variant variant,
+                String clientId,
+                Credential.Reference credential,
+                Optional<String> callback,
+                List<String> scopes);
+
     }
 
     /**
@@ -751,16 +886,16 @@ final class VendorSuite {
         /**
          * Creates one Source-bound concrete platform adapter.
          *
-         * @param namespaceId registration namespace identifier
-         * @param sourceId    registration Source identifier
-         * @param manifest    exact concrete platform manifest
-         * @param variant     exact selected variant
-         * @param options     decoded concrete platform options
-         * @param services    complete caller-owned runtime dependencies
+         * @param spaceId  registration space identifier
+         * @param sourceId registration Source identifier
+         * @param manifest exact concrete platform manifest
+         * @param variant  exact selected variant
+         * @param options  decoded concrete platform options
+         * @param services complete caller-owned runtime dependencies
          * @return non-null concrete adapter
          */
         VendorAdapter create(
-                String namespaceId,
+                String spaceId,
                 String sourceId,
                 D manifest,
                 VariantManifest.Variant variant,

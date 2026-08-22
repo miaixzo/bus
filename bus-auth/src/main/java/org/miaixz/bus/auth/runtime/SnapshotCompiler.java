@@ -22,12 +22,7 @@ package org.miaixz.bus.auth.runtime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.miaixz.bus.auth.Blueprint;
-import org.miaixz.bus.auth.Library;
-import org.miaixz.bus.auth.Options;
-import org.miaixz.bus.auth.Provider;
-import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.Source;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.registry.SnapshotFault;
 import org.miaixz.bus.auth.registry.SnapshotRegistry;
 import org.miaixz.bus.auth.source.DriverDirectory;
@@ -37,6 +32,8 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Compiles a validated registration snapshot into one complete executable runtime container.
@@ -52,6 +49,19 @@ import org.miaixz.bus.core.lang.exception.NotFoundException;
  * @author Kimi Liu
  */
 final class SnapshotCompiler {
+
+    /**
+     * Retains an explicitly safe validation description while hiding operational exception details.
+     *
+     * @param cause Source compilation failure
+     * @return non-sensitive structured fault description
+     */
+    private static String compilationDescription(final RuntimeException cause) {
+        if (cause instanceof ValidateException && StringKit.isNotBlank(cause.getMessage())) {
+            return "Enabled Source worker could not be compiled: " + cause.getMessage();
+        }
+        return "Enabled Source worker could not be compiled";
+    }
 
     /**
      * Frozen Source driver index keyed by stable Source scheme identifier.
@@ -117,6 +127,21 @@ final class SnapshotCompiler {
     }
 
     /**
+     * Best-effort closes workers already created before compilation failed.
+     *
+     * @param workers partially compiled worker index
+     */
+    private static void close(final Map<Registry.Reference, SourceWorker> workers) {
+        for (SourceWorker worker : workers.values()) {
+            try {
+                worker.close();
+            } catch (RuntimeException ignored) {
+                // Compilation failure remains primary while every already-created worker is given a close attempt.
+            }
+        }
+    }
+
+    /**
      * Compiles every enabled record in a previously validated snapshot.
      *
      * @param snapshot complete snapshot that has passed {@code SnapshotValidator}
@@ -137,21 +162,6 @@ final class SnapshotCompiler {
         } catch (RuntimeException failure) {
             close(workers);
             throw failure;
-        }
-    }
-
-    /**
-     * Best-effort closes workers already created before compilation failed.
-     *
-     * @param workers partially compiled worker index
-     */
-    private static void close(final Map<Registry.Reference, SourceWorker> workers) {
-        for (SourceWorker worker : workers.values()) {
-            try {
-                worker.close();
-            } catch (RuntimeException ignored) {
-                // Compilation failure remains primary while every already-created worker is given a close attempt.
-            }
         }
     }
 
@@ -192,7 +202,7 @@ final class SnapshotCompiler {
                 throw failure;
             } catch (RuntimeException cause) {
                 throw new CompilationFailure(Blueprint.Kind.SOURCE, source.getId(), "worker",
-                        "Enabled Source worker could not be compiled", cause);
+                        compilationDescription(cause), cause);
             }
         }
     }

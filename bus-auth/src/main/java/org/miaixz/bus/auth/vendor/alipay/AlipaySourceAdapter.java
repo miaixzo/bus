@@ -30,7 +30,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
@@ -48,7 +47,6 @@ import org.miaixz.bus.auth.worker.loader.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -67,10 +65,6 @@ public class AlipaySourceAdapter implements VendorAdapter {
      * Trusted Alipay gateway authority.
      */
     private static final String AUTHORITY = "https://openapi.alipay.com";
-    /**
-     * Maximum nesting accepted for one Alipay gateway JSON document.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
     /**
      * Alipay gateway timestamp formatter.
      */
@@ -109,21 +103,21 @@ public class AlipaySourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Alipay adapter.
      *
-     * @param namespaceId registration namespace
-     * @param sourceId    registration Source identifier
-     * @param manifest    selected Alipay manifest
-     * @param variant     selected manifest
-     * @param options     decoded options
-     * @param services    external runtime dependencies
+     * @param spaceId  registration space
+     * @param sourceId registration Source identifier
+     * @param manifest selected Alipay manifest
+     * @param variant  selected manifest
+     * @param options  decoded options
+     * @param services external runtime dependencies
      */
-    public AlipaySourceAdapter(final String namespaceId, final String sourceId, final AlipayManifest manifest,
+    public AlipaySourceAdapter(final String spaceId, final String sourceId, final AlipayManifest manifest,
             final VariantManifest.Variant variant, final AlipayOptions options, final DriverServices services) {
         Assert.notNull(manifest, "Alipay manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Alipay Source id must not be blank");
         this.variant = Assert.notNull(variant, "Alipay manifest must not be null");
         this.options = Assert.notNull(options, "Alipay options must not be null");
         this.services = Assert.notNull(services, "Alipay execution services must not be null");
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
     }
 
     /**
@@ -498,7 +492,7 @@ public class AlipaySourceAdapter implements VendorAdapter {
             fields.forEach((name, value) -> parameters.add(new NameValue(name, value)));
             body = formCodec.encode(parameters);
             final String endpoint = variant.targets().resolve(options).token().getOrNull().url().toString();
-            try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
+            try (Response response = FabricX.http(services.fabric(), Protocol.HTTPS, timeout).url(endpoint)
                     .method(Http.Method.POST).body(body, MediaType.APPLICATION_FORM_URLENCODED_TYPE).execute()) {
                 if (response.code() == Http.Status.TOO_MANY_REQUESTS
                         || response.code() >= Http.Status.INTERNAL_SERVER_ERROR)
@@ -590,7 +584,7 @@ public class AlipaySourceAdapter implements VendorAdapter {
         byte[] raw = null;
         byte[] signatureBytes = null;
         try {
-            final JsonValue parsed = services.jsonProvider().readValue(body, MAXIMUM_JSON_DEPTH, true);
+            final JsonValue parsed = services.jsonProvider().readValue(body, Normal._64, true);
             if (!(parsed instanceof JsonValue.ObjectValue root))
                 return failed("Alipay gateway JSON root is invalid");
             if (root.values().containsKey("error_response"))
@@ -601,7 +595,7 @@ public class AlipaySourceAdapter implements VendorAdapter {
             if (!(response instanceof JsonValue.ObjectValue object) || signature == null) {
                 return failed("Alipay gateway response branch is incomplete");
             }
-            raw = services.jsonProvider().extractValue(body, member, MAXIMUM_JSON_DEPTH, true);
+            raw = services.jsonProvider().extractValue(body, member, Normal._64, true);
             signatureBytes = Base64.decode(signature);
             final Sign verifier = new Sign(Algorithm.SHA256WITHRSA, new KeyPair(publicKey, null));
             if (!verifier.verify(raw, signatureBytes)) {

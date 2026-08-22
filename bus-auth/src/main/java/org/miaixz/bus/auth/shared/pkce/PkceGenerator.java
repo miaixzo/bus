@@ -36,15 +36,6 @@ import org.miaixz.bus.crypto.Builder;
 public class PkceGenerator {
 
     /**
-     * Minimum entropy required by RFC 7636 for a generated verifier.
-     */
-    private static final int RFC_MINIMUM_BITS = Normal._256;
-    /**
-     * Maximum random bytes whose Base64URL encoding remains within 128 characters.
-     */
-    private static final int MAXIMUM_BYTES = Normal._96;
-
-    /**
      * Number of secure random bytes generated per verifier.
      */
     private final int bytes;
@@ -58,8 +49,8 @@ public class PkceGenerator {
      */
     public PkceGenerator(final SecurityBaseline.Policy policy) {
         Assert.notNull(policy, "PKCE security policy must not be null");
-        this.bytes = (Math.max(RFC_MINIMUM_BITS, policy.minimumEntropyBits()) + Byte.SIZE - 1) / Byte.SIZE;
-        if (bytes > MAXIMUM_BYTES) {
+        this.bytes = (Math.max(Normal._256, policy.minimumEntropyBits()) + Byte.SIZE - 1) / Byte.SIZE;
+        if (bytes > Normal._96) {
             throw new ValidateException("PKCE baseline entropy exceeds code_verifier capacity");
         }
     }

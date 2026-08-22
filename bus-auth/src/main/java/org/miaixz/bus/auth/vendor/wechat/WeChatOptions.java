@@ -36,19 +36,21 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
- * Carries externally managed client values for the six frozen WeChat identity-source variants.
+ * Carries externally managed client values for the frozen WeChat login and WeCom enterprise variants.
  * <p>
  * The common components retain only public registration data and an external client-secret reference. The four platform
  * selectors are a closed union: each variant must leave selectors owned by another variant empty. Direct Mini Program
- * authentication prohibits a redirect URI, while every browser variant requires exact callback text.
+ * authentication and enterprise directory access prohibit a redirect URI, while every browser Variant requires exact
+ * callback text. The enterprise Variant interprets the common client identifier as Corp ID and retains only an external
+ * application Corp Secret reference.
  * </p>
  *
  * @param vendor      exact WeChat platform identifier
  * @param variant     selected WeChat product or login flow
  * @param clientId    App ID or Corp ID registered for the selected flow
  * @param credential  external App Secret, Corp Secret, or provider-secret reference
- * @param redirectUri exact registered browser callback, empty only for Mini Program
- * @param scopes      ordered platform scopes, normalized to the selected variant default when empty
+ * @param redirectUri exact registered browser callback, empty for Mini Program and enterprise
+ * @param scopes      ordered login scopes, empty for Mini Program and enterprise
  * @param loginType   WeCom QR {@code login_type}, empty for every other variant
  * @param agentId     WeCom {@code agentid}, empty when the selected flow does not use it
  * @param language    WeCom QR {@code lang}, empty for every other variant
@@ -129,10 +131,12 @@ public record WeChatOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
             browser(redirectUri);
             requireNoScopes(scopes, "WeCom service-provider QR");
             thirdParty(loginType, agentId, language, userType);
-        } else {
+        } else if (WeChatManifest.EE_WEB.equals(variant)) {
             browser(redirectUri);
             scopes = singleScope(scopes, BASE_SCOPE, "WeCom web");
             workWeb(loginType, agentId, language, userType);
+        } else {
+            enterprise(redirectUri, scopes, loginType, agentId, language, userType);
         }
     }
 
@@ -140,12 +144,13 @@ public record WeChatOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
      * Reports whether a variant belongs to the closed WeChat profile set.
      *
      * @param variant candidate variant
-     * @return {@code true} only for one of the six frozen variants
+     * @return {@code true} only for one of the seven frozen variants
      */
     private static boolean supported(final Vendor.Variant variant) {
         return WeChatManifest.OPEN.equals(variant) || WeChatManifest.MP.equals(variant)
                 || WeChatManifest.MINI.equals(variant) || WeChatManifest.EE.equals(variant)
-                || WeChatManifest.EE_QRCODE.equals(variant) || WeChatManifest.EE_WEB.equals(variant);
+                || WeChatManifest.EE_QRCODE.equals(variant) || WeChatManifest.EE_WEB.equals(variant)
+                || WeChatManifest.EE_ENTERPRISE.equals(variant);
     }
 
     /**
@@ -202,6 +207,30 @@ public record WeChatOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
     private static void direct(final Optional<String> redirectUri, final List<String> scopes) {
         if (redirectUri.isPresent() || !scopes.isEmpty()) {
             throw new ValidateException("WeChat Mini Program options prohibit callback and scope values");
+        }
+    }
+
+    /**
+     * Enforces the exact empty browser and login-selector surface of enterprise directory access.
+     *
+     * @param redirectUri forbidden browser callback
+     * @param scopes      forbidden login scopes
+     * @param loginType   forbidden QR login type
+     * @param agentId     forbidden login agent identifier
+     * @param language    forbidden login language
+     * @param userType    forbidden service-provider user type
+     * @throws ValidateException if any browser or login-only value is supplied
+     */
+    private static void enterprise(
+            final Optional<String> redirectUri,
+            final List<String> scopes,
+            final String loginType,
+            final String agentId,
+            final String language,
+            final String userType) {
+        if (redirectUri.isPresent() || !scopes.isEmpty() || !loginType.isEmpty() || !agentId.isEmpty()
+                || !language.isEmpty() || !userType.isEmpty()) {
+            throw new ValidateException("WeCom enterprise options prohibit browser login selectors");
         }
     }
 
@@ -360,11 +389,8 @@ public record WeChatOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
      */
     @Override
     public String toString() {
-        return "WeChatOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS + scopes
-                + ", loginType=" + (loginType.isEmpty() ? Builder.EMPTY_VALUE : loginType) + ", agentId="
-                + (agentId.isEmpty() ? Builder.EMPTY_VALUE : Builder.REDACTED_VALUE) + ", language="
-                + (language.isEmpty() ? Builder.EMPTY_VALUE : language) + ", userType="
-                + (userType.isEmpty() ? Builder.EMPTY_VALUE : userType) + Symbol.C_BRACKET_RIGHT;
+        return "WeChatOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS
+                + Builder.REDACTED_VALUE + Symbol.C_BRACKET_RIGHT;
     }
 
 }

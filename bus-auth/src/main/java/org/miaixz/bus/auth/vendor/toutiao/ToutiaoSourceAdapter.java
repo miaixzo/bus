@@ -81,16 +81,6 @@ public class ToutiaoSourceAdapter implements VendorAdapter {
     private static final String ANONYMOUS_DISPLAY_NAME = "Anonymous User";
 
     /**
-     * Maximum bounded Toutiao JSON response size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum Toutiao JSON response nesting.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
-
-    /**
      * Registered Source identifier copied into verified identities.
      */
     private final String sourceId;
@@ -128,16 +118,16 @@ public class ToutiaoSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Toutiao adapter from the frozen default manifest.
      *
-     * @param namespaceId registration namespace isolating browser state and credentials
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Toutiao manifest
-     * @param variant     exact selected default manifest
-     * @param options     decoded externally loaded Toutiao options
-     * @param services    caller-owned runtime dependencies
+     * @param spaceId  registration space isolating browser state and credentials
+     * @param sourceId registered Source identifier
+     * @param manifest selected Toutiao manifest
+     * @param variant  exact selected default manifest
+     * @param options  decoded externally loaded Toutiao options
+     * @param services caller-owned runtime dependencies
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
-    public ToutiaoSourceAdapter(final String namespaceId, final String sourceId, final ToutiaoManifest manifest,
+    public ToutiaoSourceAdapter(final String spaceId, final String sourceId, final ToutiaoManifest manifest,
             final VariantManifest.Variant variant, final ToutiaoOptions options, final DriverServices services) {
         final ToutiaoManifest selected = Assert.notNull(manifest, "Toutiao manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Toutiao Source id must not be blank");
@@ -149,7 +139,7 @@ public class ToutiaoSourceAdapter implements VendorAdapter {
                 || !ToutiaoManifest.ID.equals(options.vendor()) || !ToutiaoManifest.DEFAULT.equals(options.variant())) {
             throw new ValidateException("Toutiao adapter requires the toutiao/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         this.callbackDecoder = new AuthorizationResponseDecoder();
         this.standardAdapter = new StandardAdapter(variant, options, Optional.of(redirectManager),
                 List.of(
@@ -781,7 +771,7 @@ public class ToutiaoSourceAdapter implements VendorAdapter {
             throw new ValidateException("Toutiao " + operation + " response must use application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("Toutiao " + operation + " response root must be an object");
         }
@@ -821,7 +811,6 @@ public class ToutiaoSourceAdapter implements VendorAdapter {
      * @param avatarUrl   optional avatar URL
      * @param description optional profile description
      * @param gender      optional gender text
-     *
      * @author Kimi Liu
      */
     private record ProfileWire(String uid, String uidType, String screenName, String avatarUrl, String description,

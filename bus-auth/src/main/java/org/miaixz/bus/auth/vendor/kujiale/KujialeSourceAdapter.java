@@ -69,16 +69,6 @@ public class KujialeSourceAdapter implements VendorAdapter {
     private static final String AUTHORITY = "https://oauth.kujiale.com";
 
     /**
-     * Maximum accepted Kujiale JSON response size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum accepted Kujiale JSON response nesting depth.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
-
-    /**
      * Registered Source identifier copied into verified external identities.
      */
     private final String sourceId;
@@ -111,16 +101,16 @@ public class KujialeSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Kujiale adapter from the frozen default manifest.
      *
-     * @param namespaceId registration namespace used to isolate browser state and credentials
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Kujiale manifest
-     * @param variant     exact selected default manifest
-     * @param options     decoded externally loaded Kujiale options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate browser state and credentials
+     * @param sourceId registered Source identifier
+     * @param manifest selected Kujiale manifest
+     * @param variant  exact selected default manifest
+     * @param options  decoded externally loaded Kujiale options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, or callback options differ from the manifest
      */
-    public KujialeSourceAdapter(final String namespaceId, final String sourceId, final KujialeManifest manifest,
+    public KujialeSourceAdapter(final String spaceId, final String sourceId, final KujialeManifest manifest,
             final VariantManifest.Variant variant, final KujialeOptions options, final DriverServices services) {
         final KujialeManifest selectedProfile = Assert.notNull(manifest, "Kujiale manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Kujiale Source id must not be blank");
@@ -134,7 +124,7 @@ public class KujialeSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("Kujiale adapter requires the kujiale/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         this.standardAdapter = new StandardAdapter(variant, options, Optional.of(redirectManager),
                 List.of(
                         new StandardAdapter.Binding<>(OAuth2ClientScheme.AUTHORIZATION,
@@ -962,7 +952,7 @@ public class KujialeSourceAdapter implements VendorAdapter {
             throw new ValidateException("Kujiale " + operation + " response must use HTTP 200 application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("Kujiale " + operation + " response root must be a JSON object");
         }

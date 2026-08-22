@@ -23,36 +23,11 @@ import java.util.concurrent.Executor;
 
 import org.miaixz.bus.auth.Blueprint;
 import org.miaixz.bus.auth.FabricX;
-import org.miaixz.bus.auth.cache.AccessTokenCache;
-import org.miaixz.bus.auth.cache.AuthorizationCache;
-import org.miaixz.bus.auth.cache.AuthorizationCodeCache;
-import org.miaixz.bus.auth.cache.DeviceCodeCache;
-import org.miaixz.bus.auth.cache.IdTokenCache;
-import org.miaixz.bus.auth.cache.NonceCache;
-import org.miaixz.bus.auth.cache.RefreshTokenCache;
-import org.miaixz.bus.auth.cache.ReplayCache;
-import org.miaixz.bus.auth.cache.SessionCache;
-import org.miaixz.bus.auth.cache.StateCache;
-import org.miaixz.bus.auth.resolver.AttributeParser;
-import org.miaixz.bus.auth.resolver.CertificateParser;
-import org.miaixz.bus.auth.resolver.ConsumerParser;
-import org.miaixz.bus.auth.resolver.FederationParser;
-import org.miaixz.bus.auth.resolver.KeyParser;
-import org.miaixz.bus.auth.resolver.ResourceParser;
-import org.miaixz.bus.auth.resolver.SecretParser;
+import org.miaixz.bus.auth.cache.*;
+import org.miaixz.bus.auth.resolver.*;
 import org.miaixz.bus.auth.shared.SecurityBaseline;
-import org.miaixz.bus.auth.worker.BindingResolver;
-import org.miaixz.bus.auth.worker.ConsentService;
-import org.miaixz.bus.auth.worker.ConsumerVerifier;
-import org.miaixz.bus.auth.worker.CredentialStore;
-import org.miaixz.bus.auth.worker.SessionWorker;
-import org.miaixz.bus.auth.worker.loader.AttributeLoader;
-import org.miaixz.bus.auth.worker.loader.CertificateLoader;
-import org.miaixz.bus.auth.worker.loader.ConsumerLoader;
-import org.miaixz.bus.auth.worker.loader.FederationLoader;
-import org.miaixz.bus.auth.worker.loader.KeyLoader;
-import org.miaixz.bus.auth.worker.loader.ResourceLoader;
-import org.miaixz.bus.auth.worker.loader.SecretLoader;
+import org.miaixz.bus.auth.worker.*;
+import org.miaixz.bus.auth.worker.loader.*;
 import org.miaixz.bus.extra.json.JsonProvider;
 
 /**
@@ -117,16 +92,22 @@ public interface DriverServices {
 
     /**
      * Returns the project server-side consumer evidence verifier.
+     *
+     * @return consumer evidence verifier
      */
     ConsumerVerifier consumerVerifier();
 
     /**
      * Returns the project federation relation loader.
+     *
+     * @return federation relation loader
      */
     FederationLoader federationLoader();
 
     /**
      * Returns the framework federation relation parser.
+     *
+     * @return federation relation parser
      */
     FederationParser federationParser();
 
@@ -265,6 +246,8 @@ public interface DriverServices {
 
     /**
      * Returns the issued ID Token logout-binding cache.
+     *
+     * @return issued ID Token binding cache
      */
     IdTokenCache idTokenCache();
 

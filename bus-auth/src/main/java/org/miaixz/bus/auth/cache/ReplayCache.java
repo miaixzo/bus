@@ -27,11 +27,10 @@ import org.miaixz.bus.cache.CacheX;
 /**
  * Records isolated authentication artifact digests for atomic replay detection.
  * <p>
- * Separate key namespaces cover OAuth refresh-family reuse, JWT {@code jti}, DPoP {@code jti}, SAML assertion
- * identifiers, and RADIUS authenticators. The key is an irreversible digest over namespace, purpose, issuer, and
- * artifact value; the stored string is only a non-sensitive purpose label. Callers use create-if-absent and treat
- * {@code false} as replay. Raw nonce, family identifier, assertion, token, and authenticator values must never be
- * stored.
+ * Separate key scopes cover OAuth refresh-family reuse, JWT {@code jti}, DPoP {@code jti}, SAML assertion identifiers,
+ * and RADIUS authenticators. The key is an irreversible digest over space, purpose, issuer, and artifact value; the
+ * stored string is only a non-sensitive purpose label. Callers use create-if-absent and treat {@code false} as replay.
+ * Raw nonce, family identifier, assertion, token, and authenticator values must never be stored.
  * </p>
  *
  * @author Kimi Liu
@@ -47,7 +46,7 @@ public class ReplayCache extends AuthCache<String> {
      * Creates a replay-marker cache view backed entirely by bus-cache.
      *
      * @param cache      shared bus-cache backend
-     * @param deployment deployment-unique cache namespace
+     * @param deployment deployment-unique cache scope
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
     public ReplayCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {

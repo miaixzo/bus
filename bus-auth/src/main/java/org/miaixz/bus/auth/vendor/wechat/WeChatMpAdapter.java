@@ -33,17 +33,17 @@ public class WeChatMpAdapter extends WeChatAdapterSupport {
     /**
      * Creates one Official Account adapter for an exact compiled Source.
      *
-     * @param namespaceId registration namespace identifier
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected WeChat manifest
-     * @param variant     selected MP variant manifest
-     * @param options     validated MP options
-     * @param services    externally supplied execution services
+     * @param spaceId  registration space identifier
+     * @param sourceId registered Source identifier
+     * @param manifest selected WeChat manifest
+     * @param variant  selected MP variant manifest
+     * @param options  validated MP options
+     * @param services externally supplied execution services
      * @throws ValidateException if the selected variant is not {@code mp}
      */
-    public WeChatMpAdapter(final String namespaceId, final String sourceId, final WeChatManifest manifest,
+    public WeChatMpAdapter(final String spaceId, final String sourceId, final WeChatManifest manifest,
             final VariantManifest.Variant variant, final WeChatOptions options, final DriverServices services) {
-        super(namespaceId, sourceId, manifest, variant, options, services);
+        super(spaceId, sourceId, manifest, variant, options, services);
         if (!WeChatManifest.MP.equals(options.variant())) {
             throw new ValidateException("WeChat MP adapter requires the mp variant");
         }

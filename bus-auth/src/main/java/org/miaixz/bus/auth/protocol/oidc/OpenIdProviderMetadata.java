@@ -24,11 +24,7 @@ import java.net.URISyntaxException;
 import java.util.*;
 
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.protocol.oauth2.AuthorizationServerMetadata;
-import org.miaixz.bus.auth.protocol.oauth2.ClientAuthenticationMethod;
-import org.miaixz.bus.auth.protocol.oauth2.GrantType;
-import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
-import org.miaixz.bus.auth.protocol.oauth2.ResponseType;
+import org.miaixz.bus.auth.protocol.oauth2.*;
 import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;

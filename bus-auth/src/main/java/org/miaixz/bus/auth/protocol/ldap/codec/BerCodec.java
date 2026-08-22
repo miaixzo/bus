@@ -63,11 +63,6 @@ public class BerCodec implements FabricX.Framer {
     private static final int INDEFINITE_LENGTH = 0x80;
 
     /**
-     * Maximum length-octet count representable by a signed Java long.
-     */
-    private static final int MAXIMUM_LENGTH_OCTETS = Long.BYTES;
-
-    /**
      * Configured maximum complete LDAPMessage size in octets.
      */
     private final long maximumMessageBytes;
@@ -234,7 +229,7 @@ public class BerCodec implements FabricX.Framer {
             if (lengthOctets == 0) {
                 throw new ProtocolException("LDAP BER indefinite length is forbidden");
             }
-            if (lengthOctets > MAXIMUM_LENGTH_OCTETS) {
+            if (lengthOctets > Long.BYTES) {
                 throw new ProtocolException("LDAP BER length field exceeds the supported range");
             }
             if (input.size() < 2L + lengthOctets) {
@@ -347,7 +342,7 @@ public class BerCodec implements FabricX.Framer {
                 if (count == 0) {
                     throw new ProtocolException("LDAP BER indefinite length is forbidden");
                 }
-                if (count > MAXIMUM_LENGTH_OCTETS) {
+                if (count > Long.BYTES) {
                     throw new ProtocolException("LDAP BER element length exceeds the supported range");
                 }
                 requireAvailable(count, "LDAP BER long-form length is truncated");

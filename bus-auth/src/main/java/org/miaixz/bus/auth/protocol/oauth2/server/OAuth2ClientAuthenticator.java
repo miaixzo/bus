@@ -22,11 +22,7 @@ package org.miaixz.bus.auth.protocol.oauth2.server;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CodingErrorAction;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -113,19 +109,33 @@ public class OAuth2ClientAuthenticator implements ClientAuthenticator<Request> {
                 jwt(options, services));
     }
 
-    private static JwtClientAuthenticator jwt(final OAuth2ServerOptions options, final DriverServices services) {
-        return options.federatedJwtEnabled()
-                || options.tokenEndpointAuthMethodsSupported().contains(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
-                        ? new JwtClientAuthenticator(options, services)
-                        : null;
-    }
-
+    /**
+     * Creates an authenticator with an optional JWT assertion verifier.
+     *
+     * @param endpoint         configured OAuth endpoint and its accepted methods
+     * @param services         selected Source execution services
+     * @param jwtAuthenticator optional token-endpoint JWT verifier
+     */
     private OAuth2ClientAuthenticator(final Endpoint endpoint, final DriverServices services,
             final JwtClientAuthenticator jwtAuthenticator) {
         this.endpoint = Assert.notNull(endpoint, "OAuth 2.x authenticated endpoint must not be null");
         this.services = Assert.notNull(services, "OAuth 2.x client authentication services must not be null");
         this.formCodec = new FormCodec();
         this.jwtAuthenticator = jwtAuthenticator;
+    }
+
+    /**
+     * Creates a JWT verifier only when one configured authentication profile requires it.
+     *
+     * @param options  frozen OAuth Provider options
+     * @param services selected Source execution services
+     * @return configured verifier or {@code null} when JWT authentication is disabled
+     */
+    private static JwtClientAuthenticator jwt(final OAuth2ServerOptions options, final DriverServices services) {
+        return options.federatedJwtEnabled()
+                || options.tokenEndpointAuthMethodsSupported().contains(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
+                        ? new JwtClientAuthenticator(options, services)
+                        : null;
     }
 
     /**
@@ -170,6 +180,7 @@ public class OAuth2ClientAuthenticator implements ClientAuthenticator<Request> {
      * Decodes and validates one client_secret_basic Authorization value.
      *
      * @param authorization complete Authorization header value
+     * @param grantType     requested OAuth grant type
      * @return caller-owned client evidence
      */
     private static Evidence basic(final String authorization, final GrantType grantType) {

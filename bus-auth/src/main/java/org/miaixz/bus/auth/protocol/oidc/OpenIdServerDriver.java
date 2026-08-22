@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.auth.protocol.oidc;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -327,6 +323,26 @@ public class OpenIdServerDriver implements SourceDriver<OpenIdServerOptions> {
     }
 
     /**
+     * Adapts one compiled HTTP endpoint to the common Source-worker invocation shape.
+     *
+     * @author Kimi Liu
+     */
+    @FunctionalInterface
+    private interface EndpointHandler {
+
+        /**
+         * Handles one validated endpoint request.
+         *
+         * @param request incoming HTTP request
+         * @param context immutable invocation context
+         * @param timeout shared operation timeout
+         * @return asynchronous HTTP response
+         */
+        CompletionStage<Response> handle(Request request, Context context, Timeout timeout);
+
+    }
+
+    /**
      * Routes the exact enabled OpenID Provider capabilities to their compiled HTTP endpoints.
      *
      * @author Kimi Liu
@@ -409,26 +425,6 @@ public class OpenIdServerDriver implements SourceDriver<OpenIdServerOptions> {
             return endpoint.handle(httpRequest, context, timeout)
                     .thenApply(response -> Outcome.succeeded(capability.responseType().cast(response)));
         }
-
-    }
-
-    /**
-     * Adapts one compiled HTTP endpoint to the common Source-worker invocation shape.
-     *
-     * @author Kimi Liu
-     */
-    @FunctionalInterface
-    private interface EndpointHandler {
-
-        /**
-         * Handles one validated endpoint request.
-         *
-         * @param request incoming HTTP request
-         * @param context immutable invocation context
-         * @param timeout shared operation timeout
-         * @return asynchronous HTTP response
-         */
-        CompletionStage<Response> handle(Request request, Context context, Timeout timeout);
 
     }
 

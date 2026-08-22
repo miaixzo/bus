@@ -46,11 +46,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class OpenIdErrorMapper {
 
     /**
-     * Failure detail member carrying one registered OAuth bearer error.
-     */
-    private static final String OAUTH_ERROR = Builder.OAUTH_ERROR;
-
-    /**
      * Bearer errors allowed at the UserInfo protected-resource boundary.
      */
     private static final Set<OAuth2ErrorCode> USERINFO_ERRORS = Set
@@ -71,7 +66,7 @@ public class OpenIdErrorMapper {
      * @return allowed registered bearer error
      */
     private static OAuth2ErrorCode bearerError(final Outcome.Failure failure, final OAuth2ErrorCode fallback) {
-        final JsonValue value = failure.details().values().get(OAUTH_ERROR);
+        final JsonValue value = failure.details().values().get(Builder.OAUTH_ERROR);
         if (value instanceof JsonValue.StringValue string) {
             try {
                 final OAuth2ErrorCode candidate = new OAuth2ErrorCode(string.value());

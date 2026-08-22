@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.Enumers;
 public class Blueprint {
 
     /**
-     * Creates a blueprint namespace instance with no retained state.
+     * Creates a blueprint constant holder with no retained state.
      */
     public Blueprint() {
         // No initialization required.
@@ -67,7 +67,7 @@ public class Blueprint {
     private static Library copy(final Library source) {
         final Library target = new Library();
         copyAudit(source, target);
-        target.setNamespace_id(source.getNamespace_id());
+        target.setSpace_id(source.getSpace_id());
         target.setCode(source.getCode());
         target.setName(source.getName());
         target.setIcon(source.getIcon());
@@ -213,7 +213,6 @@ public class Blueprint {
      *
      * @param enabled  whether the Library participates in the compiled view
      * @param resource project-supplied Library or subclass
-     *
      * @author Kimi Liu
      */
     public record LibraryEntry(boolean enabled, Library resource) implements Entry {
@@ -242,7 +241,6 @@ public class Blueprint {
      *
      * @param enabled  whether the Provider participates in the compiled view
      * @param resource project-supplied Provider or subclass
-     *
      * @author Kimi Liu
      */
     public record ProviderEntry(boolean enabled, Provider resource) implements Entry {
@@ -271,7 +269,6 @@ public class Blueprint {
      *
      * @param enabled  whether the Source participates in the compiled view
      * @param resource project-supplied Source or subclass
-     *
      * @author Kimi Liu
      */
     public record SourceEntry(boolean enabled, Source resource) implements Entry {

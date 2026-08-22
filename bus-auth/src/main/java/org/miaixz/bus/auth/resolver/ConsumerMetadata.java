@@ -61,16 +61,6 @@ public record ConsumerMetadata(String id, String name, ApplicationType applicati
         JsonValue.ObjectValue metadata) {
 
     /**
-     * Consumer application categories relevant to redirect and PKCE policy.
-     *
-     * @author Kimi Liu
-     */
-    public enum ApplicationType {
-        WEB, NATIVE
-
-    }
-
-    /**
      * Creates and freezes validated consumer metadata.
      */
     public ConsumerMetadata {
@@ -109,26 +99,12 @@ public record ConsumerMetadata(String id, String name, ApplicationType applicati
     }
 
     /**
-     * {@return whether this consumer is an unauthenticated public client}
+     * Normalizes an optional non-blank Consumer metadata value.
+     *
+     * @param value optional external value
+     * @param label safe semantic label used in validation messages
+     * @return normalized optional value
      */
-    public boolean publicClient() {
-        return authenticationMethods.equals(Set.of(ClientAuthenticationMethod.NONE));
-    }
-
-    /**
-     * {@return whether this consumer has one or more confidential authentication methods}
-     */
-    public boolean confidentialClient() {
-        return !authenticationMethods.isEmpty() && !authenticationMethods.contains(ClientAuthenticationMethod.NONE);
-    }
-
-    /**
-     * {@return whether issued ID Tokens must be encrypted for this consumer}
-     */
-    public boolean encryptsIdToken() {
-        return idTokenEncryptionKeyId.isPresent();
-    }
-
     private static Optional<String> normalized(final Optional<String> value, final String label) {
         Assert.notNull(value, label + " container must not be null");
         final String present = value.getOrNull();
@@ -161,6 +137,7 @@ public record ConsumerMetadata(String id, String name, ApplicationType applicati
      *
      * @param values values to validate and copy
      * @param label  safe semantic label used in validation messages
+     * @param <T>    immutable set member type
      * @return immutable set
      */
     private static <T> Set<T> immutableSet(final Set<T> values, final String label) {
@@ -172,6 +149,46 @@ public record ConsumerMetadata(String id, String name, ApplicationType applicati
             }
         }
         return Set.copyOf(values);
+    }
+
+    /**
+     * {@return whether this consumer is an unauthenticated public client}
+     */
+    public boolean publicClient() {
+        return authenticationMethods.equals(Set.of(ClientAuthenticationMethod.NONE));
+    }
+
+    /**
+     * {@return whether this consumer has one or more confidential authentication methods}
+     */
+    public boolean confidentialClient() {
+        return !authenticationMethods.isEmpty() && !authenticationMethods.contains(ClientAuthenticationMethod.NONE);
+    }
+
+    /**
+     * {@return whether issued ID Tokens must be encrypted for this consumer}
+     */
+    public boolean encryptsIdToken() {
+        return idTokenEncryptionKeyId.isPresent();
+    }
+
+    /**
+     * Consumer application categories relevant to redirect and PKCE policy.
+     *
+     * @author Kimi Liu
+     */
+    public enum ApplicationType {
+
+        /**
+         * Browser-hosted web application with a confidential backend when configured accordingly.
+         */
+        WEB,
+
+        /**
+         * Installed native application treated as a public client.
+         */
+        NATIVE
+
     }
 
 }

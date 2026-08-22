@@ -49,7 +49,7 @@ public class AuthorizationCache extends AuthCache<AuthorizationCache.Entry> {
      * Creates an authorization lifecycle cache view backed entirely by bus-cache.
      *
      * @param cache      shared bus-cache backend
-     * @param deployment deployment-unique cache namespace
+     * @param deployment deployment-unique cache scope
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
     public AuthorizationCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
@@ -60,7 +60,7 @@ public class AuthorizationCache extends AuthCache<AuthorizationCache.Entry> {
      * Creates a Source-generation-scoped authorization lifecycle cache view for compiled runtime use.
      *
      * @param cache      shared bus-cache backend
-     * @param deployment deployment-unique cache namespace
+     * @param deployment deployment-unique cache scope
      * @param sourceId   exact Source registration identifier
      * @param generation non-negative Source configuration generation
      * @param clock      shared runtime clock used to derive entry lifetimes
@@ -68,6 +68,20 @@ public class AuthorizationCache extends AuthCache<AuthorizationCache.Entry> {
     public AuthorizationCache(final CacheX<String, Object> cache, final String deployment, final String sourceId,
             final long generation, final Clock clock) {
         super(cache, deployment, PURPOSE, Entry.class, sourceId, generation, clock);
+    }
+
+    /**
+     * Produces the irreversible Provider-isolated key shared by token issuance and validation paths.
+     *
+     * @param providerId      authorization-server Source identifier
+     * @param authorizationId random internal authorization identifier
+     * @return hexadecimal SHA-256 cache key
+     */
+    public static String key(final String providerId, final String authorizationId) {
+        return Builder.sha256Hex(
+                Assert.notBlank(providerId, "Authorization Provider id must not be blank") + Symbol.C_NUL
+                        + "authorization" + Symbol.C_NUL
+                        + Assert.notBlank(authorizationId, "Authorization id must not be blank"));
     }
 
     /**
@@ -117,20 +131,6 @@ public class AuthorizationCache extends AuthCache<AuthorizationCache.Entry> {
     }
 
     /**
-     * Produces the irreversible Provider-isolated key shared by token issuance and validation paths.
-     *
-     * @param providerId      authorization-server Source identifier
-     * @param authorizationId random internal authorization identifier
-     * @return hexadecimal SHA-256 cache key
-     */
-    public static String key(final String providerId, final String authorizationId) {
-        return Builder.sha256Hex(
-                Assert.notBlank(providerId, "Authorization Provider id must not be blank") + Symbol.C_NUL
-                        + "authorization" + Symbol.C_NUL
-                        + Assert.notBlank(authorizationId, "Authorization id must not be blank"));
-    }
-
-    /**
      * Represents the security state shared by all credentials derived from one authorization.
      *
      * @author Kimi Liu
@@ -160,7 +160,6 @@ public class AuthorizationCache extends AuthCache<AuthorizationCache.Entry> {
      * @param providerId owning authorization-server Source
      * @param clientId   authorized OAuth client
      * @param status     current authorization lifecycle state
-     *
      * @author Kimi Liu
      */
     public record Entry(String providerId, String clientId, Status status) implements Serializable {

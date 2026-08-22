@@ -38,11 +38,6 @@ import org.miaixz.bus.core.lang.Symbol;
 public record EapMessage(byte[] value) {
 
     /**
-     * Minimum common EAP packet header size.
-     */
-    private static final int HEADER_BYTES = Normal._4;
-
-    /**
      * Validates the common EAP Length and detaches the packet.
      *
      * @param value complete EAP packet containing at least Code, Identifier, and Length
@@ -50,9 +45,9 @@ public record EapMessage(byte[] value) {
      */
     public EapMessage {
         Assert.notNull(value, "EAP packet must not be null");
-        Assert.isTrue(value.length >= HEADER_BYTES, "EAP packet must contain at least four octets");
+        Assert.isTrue(value.length >= Normal._4, "EAP packet must contain at least four octets");
         final int declaredLength = (Byte.toUnsignedInt(value[2]) << 8) | Byte.toUnsignedInt(value[3]);
-        Assert.isTrue(declaredLength >= HEADER_BYTES, "EAP packet Length must be at least four octets");
+        Assert.isTrue(declaredLength >= Normal._4, "EAP packet Length must be at least four octets");
         Assert.isTrue(declaredLength == value.length, "EAP packet Length must equal the complete packet size");
         value = value.clone();
     }

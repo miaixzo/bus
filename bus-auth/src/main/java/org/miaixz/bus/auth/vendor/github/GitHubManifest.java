@@ -19,21 +19,17 @@
 */
 package org.miaixz.bus.auth.vendor.github;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Credential;
-import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
-import org.miaixz.bus.auth.vendor.VariantManifest;
-import org.miaixz.bus.auth.vendor.Vendor;
-import org.miaixz.bus.auth.vendor.VendorDeviation;
-import org.miaixz.bus.auth.vendor.VendorTargets;
+import org.miaixz.bus.auth.vendor.*;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -43,11 +39,12 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
 
 /**
- * Declares the frozen GitHub.com OAuth App browser Vendor manifest.
+ * Declares the frozen GitHub.com OAuth App and Enterprise management Vendor manifests.
  * <p>
  * Standard OAuth authorization remains public with mandatory S256 PKCE. GitHub's authorization-code token request,
  * comma-delimited scope response, optional expiring-token refresh pair, and REST user representation remain private
- * Source-authentication behavior.
+ * Source-authentication behavior. The independent Enterprise Variant exposes the official enterprise-team surfaces
+ * through provider-neutral directory capabilities and a separately managed read-only administrator token.
  * </p>
  *
  * @author Kimi Liu
@@ -65,12 +62,36 @@ public class GitHubManifest implements VariantManifest<GitHubOptions> {
     public static final Vendor.Variant DEFAULT = new Vendor.Variant(Normal.DEFAULT);
 
     /**
+     * Stable identifier of the GitHub Enterprise management Variant.
+     */
+    public static final Vendor.Variant ENTERPRISE = new Vendor.Variant("enterprise");
+
+    /**
      * Exact Source and standard OAuth capabilities of the default variant.
      */
     private static final Capability.Manifest CAPABILITIES = new Capability.Manifest(List.of(
             SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
             SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT)),
             OAuth2ClientScheme.AUTHORIZATION));
+
+    /**
+     * Exact provider-neutral capabilities exposed by the Enterprise management Variant.
+     */
+    private static final Capability.Manifest ENTERPRISE_CAPABILITIES = new Capability.Manifest(
+            List.of(Realm.describe(ID), Realm.snapshot(ID), Realm.retrieve(ID)));
+
+    /**
+     * Frozen provider-neutral coverage description for GitHub Enterprise Teams.
+     */
+    private static final Realm.Description ENTERPRISE_DESCRIPTION = new Realm.Description(
+            Set.of(Realm.Kind.USER, Realm.Kind.ORGANIZATION, Realm.Kind.GROUP), Set.of(Realm.RelationKind.MEMBER),
+            Set.of(Realm.Operation.DESCRIBE, Realm.Operation.SNAPSHOT, Realm.Operation.RETRIEVE),
+            Realm.Coverage.PARTIAL, Builder.MAXIMUM_ENTERPRISE_PAGE_SIZE,
+            List.of(
+                    "enterprise-team-visible-members-and-assignments-only",
+                    "classic-pat-read-enterprise-required",
+                    Builder.ENTERPRISE_LIMITATION_REPEATED_RESOURCES,
+                    Builder.ENTERPRISE_LIMITATION_SNAPSHOT_ONLY));
 
     /**
      * Exact GitHub wire differences retained only inside Source authentication.
@@ -116,11 +137,62 @@ public class GitHubManifest implements VariantManifest<GitHubOptions> {
             CAPABILITIES, DEVIATIONS);
 
     /**
+     * Complete immutable GitHub Enterprise management manifest.
+     */
+    private static final VariantManifest.Variant ENTERPRISE_VARIANT = new VariantManifest.Variant(ID, ENTERPRISE,
+            Protocol.HTTPS, VariantManifest.Pkce.DISABLED, Credential.Type.SHARED_SECRET, List.of(),
+            new VendorTargets(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                    Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                    managementTargets()),
+            ENTERPRISE_CAPABILITIES, List.of());
+
+    /**
      * Creates the stateless GitHub manifest used by Vendor directory assembly.
      */
     public GitHubManifest() {
-        // No initialization required.
-        // All manifest state is held by immutable class constants.
+    }
+
+    /**
+     * Returns the frozen GitHub Enterprise management description.
+     *
+     * @return immutable coverage description
+     */
+    static Realm.Description enterpriseDescription() {
+        return ENTERPRISE_DESCRIPTION;
+    }
+
+    /**
+     * Creates the exact ordered GitHub Enterprise management targets.
+     *
+     * @return immutable-by-construction management target map
+     */
+    private static Map<String, VendorTargets.Target> managementTargets() {
+        final Map<String, VendorTargets.Target> targets = new LinkedHashMap<>();
+        final VendorTargets.Target teams = template("https://api.github.com/enterprises/{tenant}/teams");
+        targets.put(Builder.ENTERPRISE_USERS, teams);
+        targets.put(
+                Builder.ENTERPRISE_USER,
+                fixed("https://api.github.com/user", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(Builder.ENTERPRISE_ORGANIZATIONS, teams);
+        targets.put(
+                Builder.ENTERPRISE_ORGANIZATION,
+                fixed("https://api.github.com/organizations", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(Builder.ENTERPRISE_GROUPS, teams);
+        targets.put(Builder.ENTERPRISE_GROUP, teams);
+        targets.put(Builder.ENTERPRISE_GROUP_MEMBERS, teams);
+        targets.put(Builder.ENTERPRISE_ORGANIZATION_ASSIGNMENTS, teams);
+        return targets;
+    }
+
+    /**
+     * Creates one constrained Enterprise-slug HTTPS target template.
+     *
+     * @param value manifest-owned endpoint template
+     * @return immutable constrained target
+     */
+    private static VendorTargets.Template template(final String value) {
+        return new VendorTargets.Template(value, Http.Method.GET, Set.of(Endpoint.Authentication.BEARER),
+                Optional.empty(), TlsClientAuth.NONE);
     }
 
     /**
@@ -184,17 +256,17 @@ public class GitHubManifest implements VariantManifest<GitHubOptions> {
     }
 
     /**
-     * Returns the sole supported GitHub variant.
+     * Returns the login Variant followed by the Enterprise management Variant.
      *
-     * @return immutable single-element manifest list
+     * @return immutable two-Variant list
      */
     @Override
     public List<VariantManifest.Variant> variants() {
-        return List.of(VARIANT);
+        return List.of(VARIANT, ENTERPRISE_VARIANT);
     }
 
     /**
-     * Returns the exact default GitHub manifest.
+     * Returns one exact supported GitHub manifest.
      *
      * @param variant requested variant
      * @return exact immutable manifest
@@ -202,10 +274,13 @@ public class GitHubManifest implements VariantManifest<GitHubOptions> {
      */
     @Override
     public VariantManifest.Variant variant(final Vendor.Variant variant) {
-        if (!DEFAULT.equals(variant)) {
-            throw new ValidateException("GitHub Vendor variant is not supported");
+        if (DEFAULT.equals(variant)) {
+            return VARIANT;
         }
-        return VARIANT;
+        if (ENTERPRISE.equals(variant)) {
+            return ENTERPRISE_VARIANT;
+        }
+        throw new ValidateException("GitHub Vendor variant is not supported");
     }
 
 }

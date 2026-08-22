@@ -45,7 +45,6 @@ import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -75,16 +74,6 @@ public class FacebookSourceAdapter implements VendorAdapter {
      * Exact Graph fields requested by the frozen identity projection.
      */
     private static final String PROFILE_FIELDS = "id,name,first_name,last_name,middle_name,name_format,picture,short_name,email";
-
-    /**
-     * Maximum accepted Graph JSON response size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = org.miaixz.bus.auth.Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum accepted Graph JSON nesting depth.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
 
     /**
      * Registered Source identifier copied into verified identities.
@@ -119,17 +108,17 @@ public class FacebookSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Facebook Login adapter from the frozen v26.0 manifest.
      *
-     * @param namespaceId registration namespace used to isolate state and credential resolution
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Facebook manifest
-     * @param variant     exact selected default manifest
-     * @param options     decoded externally loaded Facebook options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate state and credential resolution
+     * @param sourceId registered Source identifier
+     * @param manifest selected Facebook manifest
+     * @param variant  exact selected default manifest
+     * @param options  decoded externally loaded Facebook options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, callback, or standard authorization is
      *                                  inconsistent
      */
-    public FacebookSourceAdapter(final String namespaceId, final String sourceId, final FacebookManifest manifest,
+    public FacebookSourceAdapter(final String spaceId, final String sourceId, final FacebookManifest manifest,
             final VariantManifest.Variant variant, final FacebookOptions options, final DriverServices services) {
         final FacebookManifest selectedProfile = Assert.notNull(manifest, "Facebook manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Facebook Source id must not be blank");
@@ -143,7 +132,7 @@ public class FacebookSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("Facebook adapter requires the facebook/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
@@ -858,7 +847,7 @@ public class FacebookSourceAdapter implements VendorAdapter {
             throw new ValidateException("Facebook Graph response must use application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(org.miaixz.bus.auth.Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("Facebook Graph response root must be a JSON object");
         }

@@ -194,7 +194,6 @@ public interface SourceDriver<O extends Options<?>> {
      * Declares the exact framework-owned services visible to one compiled Source.
      *
      * @param values required framework services
-     *
      * @author Kimi Liu
      */
     record Dependencies(Set<Service> values) {

@@ -28,7 +28,7 @@ import org.miaixz.bus.core.net.Protocol;
 /**
  * Exposes the standard RADIUS Access and Accounting operation keys and the explicit Server-driver factory.
  * <p>
- * The namespace deliberately excludes Dynamic Authorization because the runtime implements RFC 2865 Access, RFC 2866
+ * The constant set deliberately excludes Dynamic Authorization because the runtime implements RFC 2865 Access, RFC 2866
  * Accounting, and RFC 3579 EAP pass-through operations only.
  * </p>
  *
@@ -92,7 +92,7 @@ public class Radius {
     public static final Capability.Key ACCOUNTING = Capability.Key.standard(Protocol.RADIUS, "accounting");
 
     /**
-     * Creates a RADIUS protocol-operation namespace instance with no retained state.
+     * Creates a RADIUS protocol-operation constant holder with no retained state.
      */
     public Radius() {
         // No initialization required.
@@ -138,7 +138,7 @@ public class Radius {
         public static final int ACCESS_CHALLENGE = Normal._11;
 
         /**
-         * Creates a packet Code namespace instance.
+         * Creates a packet Code constant holder.
          */
         public Codes() {
             // No initialization required.
@@ -209,7 +209,7 @@ public class Radius {
         public static final int ERROR_CAUSE = 101;
 
         /**
-         * Creates an Attribute Type namespace instance.
+         * Creates an Attribute Type constant holder.
          */
         public Attributes() {
             // No initialization required.

@@ -74,16 +74,6 @@ public class GitLabSourceAdapter implements VendorAdapter {
     private static final String AUTHORITY = "https://gitlab.com";
 
     /**
-     * Maximum accepted private GitLab JSON response size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum accepted private GitLab JSON nesting depth.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
-
-    /**
      * Registered Source identifier copied into verified identities.
      */
     private final String sourceId;
@@ -126,16 +116,16 @@ public class GitLabSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound GitLab.com adapter.
      *
-     * @param namespaceId registration namespace used to isolate state and credential resolution
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected GitLab manifest
-     * @param variant     exact selected default manifest
-     * @param options     decoded externally loaded GitLab options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate state and credential resolution
+     * @param sourceId registered Source identifier
+     * @param manifest selected GitLab manifest
+     * @param variant  exact selected default manifest
+     * @param options  decoded externally loaded GitLab options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, callback, or capabilities are inconsistent
      */
-    public GitLabSourceAdapter(final String namespaceId, final String sourceId, final GitLabManifest manifest,
+    public GitLabSourceAdapter(final String spaceId, final String sourceId, final GitLabManifest manifest,
             final VariantManifest.Variant variant, final GitLabOptions options, final DriverServices services) {
         final GitLabManifest selected = Assert.notNull(manifest, "GitLab manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "GitLab Source id must not be blank");
@@ -148,7 +138,7 @@ public class GitLabSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("GitLab adapter requires the gitlab/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         this.formCodec = new FormCodec();
         this.tokenResponseDecoder = new TokenResponseDecoder(services.jsonProvider());
         final var targets = variant.targets().resolve(options);
@@ -1070,7 +1060,7 @@ public class GitLabSourceAdapter implements VendorAdapter {
             throw new ValidateException("GitLab response must use application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("GitLab response root must be a JSON object");
         }

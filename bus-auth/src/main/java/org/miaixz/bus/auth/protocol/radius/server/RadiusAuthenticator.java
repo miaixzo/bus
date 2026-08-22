@@ -49,11 +49,6 @@ import org.miaixz.bus.crypto.center.HMac;
 public class RadiusAuthenticator {
 
     /**
-     * Exact Authenticator and Message-Authenticator size.
-     */
-    private static final int AUTHENTICATOR_BYTES = Normal._16;
-
-    /**
      * Complete-packet encoder used for standard digest input construction.
      */
     private final RadiusPacketEncoder packetEncoder;
@@ -124,12 +119,11 @@ public class RadiusAuthenticator {
      * @return immutable zeroed sequence
      */
     private static List<RadiusAttribute> zeroMessageAuthenticator(final List<RadiusAttribute> attributes) {
-        return attributes.stream()
-                .map(
-                        attribute -> attribute.type().value() == Radius.Attributes.MESSAGE_AUTHENTICATOR
-                                ? new RadiusAttribute(new RadiusAttribute.Type(Radius.Attributes.MESSAGE_AUTHENTICATOR),
-                                        new byte[AUTHENTICATOR_BYTES])
-                                : attribute)
+        return attributes.stream().map(
+                attribute -> attribute.type().value() == Radius.Attributes.MESSAGE_AUTHENTICATOR
+                        ? new RadiusAttribute(new RadiusAttribute.Type(Radius.Attributes.MESSAGE_AUTHENTICATOR),
+                                new byte[Normal._16])
+                        : attribute)
                 .toList();
     }
 
@@ -218,7 +212,7 @@ public class RadiusAuthenticator {
         if (message.count() == 0) {
             return !required;
         }
-        if (message.count() != 1 || message.value().length != AUTHENTICATOR_BYTES) {
+        if (message.count() != 1 || message.value().length != Normal._16) {
             return false;
         }
         final RadiusPacket zeroed = replaceAttributes(request, zeroMessageAuthenticator(request.attributes()));
@@ -245,8 +239,7 @@ public class RadiusAuthenticator {
             return false;
         }
         final RadiusPacket zeroed = new AccountingRequest(
-                new RadiusPacket.LegacyHeader(legacy.identifier(), new byte[AUTHENTICATOR_BYTES]),
-                request.attributes());
+                new RadiusPacket.LegacyHeader(legacy.identifier(), new byte[Normal._16]), request.attributes());
         final byte[] secret = secret(lease);
         final byte[] digestInput = append(packetEncoder.encode(zeroed), secret);
         try {
@@ -280,14 +273,14 @@ public class RadiusAuthenticator {
         List<RadiusAttribute> attributes = response.attributes();
         final boolean eap = attributes.stream().anyMatch(a -> a.type().value() == Radius.Attributes.EAP_MESSAGE);
         final MessageAttribute message = messageAttribute(attributes);
-        if (message.count() > 1 || message.count() == 1 && message.value().length != AUTHENTICATOR_BYTES) {
+        if (message.count() > 1 || message.count() == 1 && message.value().length != Normal._16) {
             throw new ProtocolException("RADIUS response contains an invalid Message-Authenticator");
         }
         if (eap && message.count() == 0) {
             final ArrayList<RadiusAttribute> copy = new ArrayList<>(attributes);
             copy.add(
                     new RadiusAttribute(new RadiusAttribute.Type(Radius.Attributes.MESSAGE_AUTHENTICATOR),
-                            new byte[AUTHENTICATOR_BYTES]));
+                            new byte[Normal._16]));
             attributes = List.copyOf(copy);
         }
         final byte[] secret = secret(lease);

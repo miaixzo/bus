@@ -33,17 +33,17 @@ public class WeChatMiniAdapter extends WeChatAdapterSupport {
     /**
      * Creates one Mini Program adapter for an exact compiled Source.
      *
-     * @param namespaceId registration namespace identifier
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected WeChat manifest
-     * @param variant     selected Mini Program variant manifest
-     * @param options     validated Mini Program options
-     * @param services    externally supplied execution services
+     * @param spaceId  registration space identifier
+     * @param sourceId registered Source identifier
+     * @param manifest selected WeChat manifest
+     * @param variant  selected Mini Program variant manifest
+     * @param options  validated Mini Program options
+     * @param services externally supplied execution services
      * @throws ValidateException if the selected variant is not {@code mini}
      */
-    public WeChatMiniAdapter(final String namespaceId, final String sourceId, final WeChatManifest manifest,
+    public WeChatMiniAdapter(final String spaceId, final String sourceId, final WeChatManifest manifest,
             final VariantManifest.Variant variant, final WeChatOptions options, final DriverServices services) {
-        super(namespaceId, sourceId, manifest, variant, options, services);
+        super(spaceId, sourceId, manifest, variant, options, services);
         if (!WeChatManifest.MINI.equals(options.variant())) {
             throw new ValidateException("WeChat Mini adapter requires the mini variant");
         }

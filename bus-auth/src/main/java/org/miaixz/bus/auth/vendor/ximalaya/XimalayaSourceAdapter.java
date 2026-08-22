@@ -42,9 +42,7 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -64,16 +62,6 @@ import org.miaixz.bus.extra.json.JsonValue;
  * @author Kimi Liu
  */
 public class XimalayaSourceAdapter implements VendorAdapter {
-
-    /**
-     * Maximum bounded Ximalaya response size.
-     */
-    private static final long MAXIMUM_RESPONSE_BYTES = org.miaixz.bus.auth.Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum accepted Ximalaya JSON nesting.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._32;
 
     /**
      * Registered Source identifier used in the resulting external identity.
@@ -128,16 +116,16 @@ public class XimalayaSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Ximalaya adapter from the frozen default manifest.
      *
-     * @param namespaceId registration namespace isolating browser state and credentials
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Ximalaya manifest
-     * @param variant     exact selected default manifest
-     * @param options     decoded externally loaded Ximalaya options
-     * @param services    caller-owned runtime dependencies
+     * @param spaceId  registration space isolating browser state and credentials
+     * @param sourceId registered Source identifier
+     * @param manifest selected Ximalaya manifest
+     * @param variant  exact selected default manifest
+     * @param options  decoded externally loaded Ximalaya options
+     * @param services caller-owned runtime dependencies
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
-    public XimalayaSourceAdapter(final String namespaceId, final String sourceId, final XimalayaManifest manifest,
+    public XimalayaSourceAdapter(final String spaceId, final String sourceId, final XimalayaManifest manifest,
             final VariantManifest.Variant variant, final XimalayaOptions options, final DriverServices services) {
         final XimalayaManifest selected = Assert.notNull(manifest, "Ximalaya manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Ximalaya Source id must not be blank");
@@ -151,7 +139,7 @@ public class XimalayaSourceAdapter implements VendorAdapter {
                 || !XimalayaManifest.DEFAULT.equals(options.variant())) {
             throw new ValidateException("Ximalaya adapter requires the ximalaya/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         final VendorTargets.Resolved resolvedTargets = variant.targets().resolve(options);
         this.authorizationEncoder = new AuthorizationRequestEncoder(resolvedTargets.authorization().getOrNull());
         this.authority = Protocol.HTTPS_PREFIX + resolvedTargets.userInfo().getOrNull().url().host();
@@ -926,7 +914,7 @@ public class XimalayaSourceAdapter implements VendorAdapter {
             throw new ValidateException("Ximalaya " + operation + " response must use application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_RESPONSE_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(org.miaixz.bus.auth.Builder.MAXIMUM_DOCUMENT_BYTES), Normal._32, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("Ximalaya " + operation + " response root must be an object");
         }

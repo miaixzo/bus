@@ -36,26 +36,6 @@ import org.miaixz.bus.core.lang.Symbol;
 public class ScimFilterEncoder {
 
     /**
-     * Lowest precedence assigned to logical OR.
-     */
-    private static final int OR_PRECEDENCE = Normal._1;
-
-    /**
-     * Middle precedence assigned to logical AND.
-     */
-    private static final int AND_PRECEDENCE = Normal._2;
-
-    /**
-     * Unary precedence assigned to logical NOT.
-     */
-    private static final int NOT_PRECEDENCE = Normal._3;
-
-    /**
-     * Highest precedence assigned to attribute and valuePath expressions.
-     */
-    private static final int PRIMARY_PRECEDENCE = Normal._4;
-
-    /**
      * Creates a stateless SCIM filter encoder.
      */
     public ScimFilterEncoder() {
@@ -87,9 +67,8 @@ public class ScimFilterEncoder {
             case Filter.Compare compare -> compare.attributePath().value() + Symbol.SPACE + compare.operator().value()
                     + Symbol.SPACE + comparisonValue(compare.comparisonValue());
             case Filter.Not not -> "not (" + expression(not.operand(), 0) + Symbol.PARENTHESE_RIGHT;
-            case Filter.And and -> expression(and.left(), AND_PRECEDENCE) + " and "
-                    + expression(and.right(), AND_PRECEDENCE);
-            case Filter.Or or -> expression(or.left(), OR_PRECEDENCE) + " or " + expression(or.right(), OR_PRECEDENCE);
+            case Filter.And and -> expression(and.left(), Normal._2) + " and " + expression(and.right(), Normal._2);
+            case Filter.Or or -> expression(or.left(), Normal._1) + " or " + expression(or.right(), Normal._1);
             case Filter.ValuePath valuePath -> valuePath.attributePath().value() + Symbol.BRACKET_LEFT
                     + expression(valuePath.valueFilter(), 0) + Symbol.BRACKET_RIGHT;
             default -> throw new IllegalStateException("Unsupported protocol model implementation");
@@ -105,12 +84,12 @@ public class ScimFilterEncoder {
      */
     private static int precedence(final Filter filter) {
         return switch (filter) {
-            case Filter.Or ignored -> OR_PRECEDENCE;
-            case Filter.And ignored -> AND_PRECEDENCE;
-            case Filter.Not ignored -> NOT_PRECEDENCE;
-            case Filter.Present ignored -> PRIMARY_PRECEDENCE;
-            case Filter.Compare ignored -> PRIMARY_PRECEDENCE;
-            case Filter.ValuePath ignored -> PRIMARY_PRECEDENCE;
+            case Filter.Or ignored -> Normal._1;
+            case Filter.And ignored -> Normal._2;
+            case Filter.Not ignored -> Normal._3;
+            case Filter.Present ignored -> Normal._4;
+            case Filter.Compare ignored -> Normal._4;
+            case Filter.ValuePath ignored -> Normal._4;
             default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }

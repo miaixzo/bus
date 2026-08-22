@@ -22,12 +22,8 @@ package org.miaixz.bus.auth.vendor.ximalaya;
 import java.util.List;
 import java.util.Set;
 
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Credential;
-import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.vendor.VariantManifest;
@@ -301,7 +297,7 @@ public class XimalayaManifest implements VariantManifest<XimalayaOptions> {
         public static final String PACKAGE_ID = "package_id";
 
         /**
-         * Creates a Ximalaya request-parameter namespace instance.
+         * Creates a Ximalaya request-parameter constant holder.
          */
         public Parameters() {
             // No initialization required.

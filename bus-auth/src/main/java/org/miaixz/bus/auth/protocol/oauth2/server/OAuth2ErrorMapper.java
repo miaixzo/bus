@@ -24,11 +24,7 @@ import java.net.URISyntaxException;
 import java.util.*;
 
 import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.FabricX.Body;
-import org.miaixz.bus.auth.FabricX.Headers;
-import org.miaixz.bus.auth.FabricX.HeadersBuilder;
-import org.miaixz.bus.auth.FabricX.Request;
-import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.*;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
@@ -57,16 +53,6 @@ import org.miaixz.bus.extra.json.JsonValue;
  * @author Kimi Liu
  */
 public class OAuth2ErrorMapper {
-
-    /**
-     * Failure detail containing a registered OAuth error string.
-     */
-    private static final String OAUTH_ERROR = Builder.OAUTH_ERROR;
-
-    /**
-     * Failure detail confirming that the redirect URI passed exact client registration validation.
-     */
-    private static final String REDIRECT_VALIDATED = Builder.REDIRECT_VALIDATED;
 
     /**
      * Authorization endpoint error values defined by RFC 6749.
@@ -199,7 +185,7 @@ public class OAuth2ErrorMapper {
         if (serverFailure(failure)) {
             return OAuth2ErrorCode.SERVER_ERROR;
         }
-        final JsonValue value = failure.details().values().get(OAUTH_ERROR);
+        final JsonValue value = failure.details().values().get(Builder.OAUTH_ERROR);
         if (value instanceof JsonValue.StringValue text) {
             try {
                 final OAuth2ErrorCode candidate = new OAuth2ErrorCode(text.value());
@@ -220,7 +206,7 @@ public class OAuth2ErrorMapper {
      * @return validated redirect URI or {@code null}
      */
     private static String validatedRedirect(final Outcome.Failure failure) {
-        final JsonValue validated = failure.details().values().get(REDIRECT_VALIDATED);
+        final JsonValue validated = failure.details().values().get(Builder.REDIRECT_VALIDATED);
         final JsonValue redirect = failure.details().values().get(OAuth2.Parameters.REDIRECT_URI);
         return validated instanceof JsonValue.BooleanValue flag && flag.value()
                 && redirect instanceof JsonValue.StringValue text ? text.value() : null;

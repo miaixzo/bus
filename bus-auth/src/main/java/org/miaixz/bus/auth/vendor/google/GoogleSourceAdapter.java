@@ -27,14 +27,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.guard.IssuerValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
-import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.AuthorizationClient;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2Client;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientOptions;
@@ -94,16 +92,6 @@ public class GoogleSourceAdapter implements VendorAdapter {
     private static final String LEGACY_ISSUER = "accounts.google.com";
 
     /**
-     * OIDC Discovery extension carrying the RFC 7009 revocation endpoint.
-     */
-    private static final String REVOCATION_ENDPOINT = OAuth2.Metadata.REVOCATION_ENDPOINT;
-
-    /**
-     * OIDC Discovery extension carrying the supported PKCE transformation methods.
-     */
-    private static final String CODE_CHALLENGE_METHODS = OAuth2.Metadata.CODE_CHALLENGE_METHODS_SUPPORTED;
-
-    /**
      * Discovery extension requiring the RFC 9207 issuer parameter in authorization responses.
      */
     private static final String AUTHORIZATION_RESPONSE_ISSUER = "authorization_response_iss_parameter_supported";
@@ -112,16 +100,6 @@ public class GoogleSourceAdapter implements VendorAdapter {
      * Sole Google token success extension admitted by the frozen web-server manifest.
      */
     private static final String REFRESH_TOKEN_EXPIRES_IN = "refresh_token_expires_in";
-
-    /**
-     * Maximum bounded JSON document accepted from Google endpoints.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum object and array nesting accepted from Google endpoint JSON.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._16;
 
     /**
      * Registered Source identifier used for every produced external identity.
@@ -186,17 +164,17 @@ public class GoogleSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Google adapter from an immutable Vendor manifest.
      *
-     * @param namespaceId registration namespace used to isolate browser state and credentials
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Google manifest
-     * @param variant     selected default variant manifest
-     * @param options     decoded externally loaded Google options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate browser state and credentials
+     * @param sourceId registered Source identifier
+     * @param manifest selected Google manifest
+     * @param variant  selected default variant manifest
+     * @param options  decoded externally loaded Google options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a required collaborator is {@code null}
      * @throws ValidateException        if the supplied profile, manifest, options, or security baseline does not
      *                                  represent the frozen Google OIDC variant
      */
-    public GoogleSourceAdapter(final String namespaceId, final String sourceId, final GoogleManifest manifest,
+    public GoogleSourceAdapter(final String spaceId, final String sourceId, final GoogleManifest manifest,
             final VariantManifest.Variant variant, final GoogleOptions options, final DriverServices services) {
         Assert.notNull(manifest, "Google manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Google Source id must not be blank");
@@ -212,7 +190,7 @@ public class GoogleSourceAdapter implements VendorAdapter {
         if (!baselineAlgorithms.contains(JwaAlgorithm.RS256.name())) {
             throw new ValidateException("Google RS256 is not enabled by the OIDC security baseline");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         this.formCodec = new FormCodec();
         this.jwkSetCodec = new JwkSetCodec(services.jsonProvider());
         this.jwkSelector = new JwkSelector();
@@ -1345,10 +1323,11 @@ public class GoogleSourceAdapter implements VendorAdapter {
                     || !metadata.idTokenSigningAlgValuesSupported().contains(JwaAlgorithm.RS256)
                     || !metadata.tokenEndpointAuthMethodsSupported()
                             .contains(ClientAuthenticationMethod.CLIENT_SECRET_POST)
-                    || !extension(metadata, REVOCATION_ENDPOINT)
+                    || !extension(metadata, OAuth2.Metadata.REVOCATION_ENDPOINT)
                             .equals(resolvedTargets.revocation().getOrNull().url().toString())
                     || !extensionBoolean(metadata, AUTHORIZATION_RESPONSE_ISSUER)
-                    || !extensionArray(metadata, CODE_CHALLENGE_METHODS).contains(PkceMethod.S256.value())) {
+                    || !extensionArray(metadata, OAuth2.Metadata.CODE_CHALLENGE_METHODS_SUPPORTED)
+                            .contains(PkceMethod.S256.value())) {
                 throw new ValidateException("Google discovery metadata differs from the frozen manifest");
             }
             return Outcome.succeeded(metadata);
@@ -1428,7 +1407,7 @@ public class GoogleSourceAdapter implements VendorAdapter {
         byte[] payload = null;
         try {
             payload = parsed.payload();
-            final JsonValue value = services.jsonProvider().readValue(payload, MAXIMUM_JSON_DEPTH, true);
+            final JsonValue value = services.jsonProvider().readValue(payload, Normal._16, true);
             if (!(value instanceof JsonValue.ObjectValue object)) {
                 throw new ValidateException("Google ID Token payload must be a JSON object");
             }
@@ -1499,7 +1478,7 @@ public class GoogleSourceAdapter implements VendorAdapter {
             throw new ValidateException("Google response must use application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._16, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("Google response root must be a JSON object");
         }

@@ -329,22 +329,63 @@ public record OAuth2ClientOptions(Optional<Endpoint> authorizationEndpoint, Opti
      */
     public static class Builder {
 
+        /**
+         * Public OAuth client identifier.
+         */
         private final String clientId;
-        private Optional<Endpoint> authorizationEndpoint = Optional.empty();
-        private Optional<Endpoint> tokenEndpoint = Optional.empty();
-        private Optional<Endpoint> introspectionEndpoint = Optional.empty();
-        private Optional<Endpoint> revocationEndpoint = Optional.empty();
-        private Optional<Endpoint> deviceAuthorizationEndpoint = Optional.empty();
-        private Optional<Endpoint> metadataEndpoint = Optional.empty();
-        private Optional<String> expectedIssuer = Optional.empty();
+        /**
+         * Registered redirect URI values in caller order.
+         */
         private final Set<String> redirectUris = new LinkedHashSet<>();
+        /**
+         * Optional authorization endpoint.
+         */
+        private Optional<Endpoint> authorizationEndpoint = Optional.empty();
+        /**
+         * Optional token endpoint.
+         */
+        private Optional<Endpoint> tokenEndpoint = Optional.empty();
+        /**
+         * Optional token introspection endpoint.
+         */
+        private Optional<Endpoint> introspectionEndpoint = Optional.empty();
+        /**
+         * Optional token revocation endpoint.
+         */
+        private Optional<Endpoint> revocationEndpoint = Optional.empty();
+        /**
+         * Optional device authorization endpoint.
+         */
+        private Optional<Endpoint> deviceAuthorizationEndpoint = Optional.empty();
+        /**
+         * Optional authorization-server metadata endpoint.
+         */
+        private Optional<Endpoint> metadataEndpoint = Optional.empty();
+        /**
+         * Optional exact authorization-server issuer.
+         */
+        private Optional<String> expectedIssuer = Optional.empty();
+        /**
+         * Selected client authentication method.
+         */
         private Endpoint.Authentication authentication = Endpoint.Authentication.NONE;
+        /**
+         * Optional external client credential reference.
+         */
         private Optional<Credential.Reference> credential = Optional.empty();
+        /**
+         * Whether authorization requests require PKCE.
+         */
         private boolean pkceRequired;
+        /**
+         * Whether protected-resource calls require DPoP.
+         */
         private boolean dpopRequired;
 
         /**
          * Creates a build-scoped collector for one public client identifier.
+         *
+         * @param clientId public OAuth client identifier
          */
         public Builder(final String clientId) {
             this.clientId = Assert.notBlank(clientId, "OAuth 2.x client identifier must not be blank");

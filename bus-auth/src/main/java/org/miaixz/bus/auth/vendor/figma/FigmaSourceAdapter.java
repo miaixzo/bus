@@ -25,7 +25,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
@@ -48,7 +47,6 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -72,16 +70,6 @@ public class FigmaSourceAdapter implements VendorAdapter {
      * Trusted Figma API authority recorded in federated identity evidence.
      */
     private static final String AUTHORITY = "https://api.figma.com";
-
-    /**
-     * Maximum accepted Figma JSON response size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum accepted Figma JSON nesting depth.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
 
     /**
      * Registered Source identifier copied into verified identities.
@@ -121,16 +109,16 @@ public class FigmaSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Figma.com adapter.
      *
-     * @param namespaceId registration namespace used to isolate state and credential resolution
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Figma manifest
-     * @param variant     exact selected default manifest
-     * @param options     decoded externally loaded Figma options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate state and credential resolution
+     * @param sourceId registered Source identifier
+     * @param manifest selected Figma manifest
+     * @param variant  exact selected default manifest
+     * @param options  decoded externally loaded Figma options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, callback, or authorization is inconsistent
      */
-    public FigmaSourceAdapter(final String namespaceId, final String sourceId, final FigmaManifest manifest,
+    public FigmaSourceAdapter(final String spaceId, final String sourceId, final FigmaManifest manifest,
             final VariantManifest.Variant variant, final FigmaOptions options, final DriverServices services) {
         final FigmaManifest selectedProfile = Assert.notNull(manifest, "Figma manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Figma Source id must not be blank");
@@ -144,7 +132,7 @@ public class FigmaSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("Figma adapter requires the figma/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
@@ -746,7 +734,7 @@ public class FigmaSourceAdapter implements VendorAdapter {
             throw new ValidateException("Figma " + operation + " response must use application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("Figma " + operation + " response root must be a JSON object");
         }

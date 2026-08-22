@@ -68,16 +68,6 @@ public class CodingSourceAdapter implements VendorAdapter {
     private static final String AUTHORITY = "https://coding.net";
 
     /**
-     * Maximum accepted CODING JSON document size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum accepted CODING JSON nesting depth.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
-
-    /**
      * Registered Source identifier copied into the verified identity.
      */
     private final String sourceId;
@@ -115,16 +105,16 @@ public class CodingSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound CODING adapter from the frozen default manifest.
      *
-     * @param namespaceId registration namespace used to isolate browser state and credentials
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected CODING manifest
-     * @param variant     selected default variant manifest
-     * @param options     decoded externally loaded CODING options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate browser state and credentials
+     * @param sourceId registered Source identifier
+     * @param manifest selected CODING manifest
+     * @param variant  selected default variant manifest
+     * @param options  decoded externally loaded CODING options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, or options differ from the frozen manifest
      */
-    public CodingSourceAdapter(final String namespaceId, final String sourceId, final CodingManifest manifest,
+    public CodingSourceAdapter(final String spaceId, final String sourceId, final CodingManifest manifest,
             final VariantManifest.Variant variant, final CodingOptions options, final DriverServices services) {
         Assert.notNull(manifest, "CODING manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "CODING Source id must not be blank");
@@ -137,7 +127,7 @@ public class CodingSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("CODING adapter requires the coding/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
     }
 
     /**
@@ -681,7 +671,7 @@ public class CodingSourceAdapter implements VendorAdapter {
             throw new ValidateException("CODING " + operation + " response must use HTTP 200 application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("CODING JSON response root must be an object");
         }

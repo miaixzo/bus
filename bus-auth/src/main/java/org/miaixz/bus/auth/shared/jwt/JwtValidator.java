@@ -122,7 +122,7 @@ public class JwtValidator {
         }
         final Replay replay = requirements.replay().getOrThrow();
         return replayGuard.register(
-                replay.namespace(),
+                replay.space(),
                 replay.protocol(),
                 replay.authority(),
                 "jwt-jti",
@@ -256,18 +256,18 @@ public class JwtValidator {
     /**
      * Supplies formal protocol isolation fields required by ReplayGuard for a JWT jti.
      *
-     * @param namespace external registration namespace
+     * @param space     external registration space
      * @param protocol  formal protocol that owns the JWT
      * @param authority stable Provider or Source authority
      * @author Kimi Liu
      */
-    public record Replay(String namespace, Protocol protocol, String authority) {
+    public record Replay(String space, Protocol protocol, String authority) {
 
         /**
          * Validates replay isolation fields.
          */
         public Replay {
-            Assert.notBlank(namespace, "JWT replay namespace must not be blank");
+            Assert.notBlank(space, "JWT replay space must not be blank");
             Assert.notNull(protocol, "JWT replay protocol must not be null");
             Assert.notBlank(authority, "JWT replay authority must not be blank");
         }

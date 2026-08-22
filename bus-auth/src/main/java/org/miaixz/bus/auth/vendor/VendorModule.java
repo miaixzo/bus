@@ -19,12 +19,7 @@
 */
 package org.miaixz.bus.auth.vendor;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.auth.worker.CredentialWriter;
@@ -35,7 +30,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 /**
  * Freezes one exact set of built-in and externally contributed third-party platforms for runtime and management use.
  * <p>
- * The same immutable manifest and adapter-binding inventories produce both the management directory and the Source
+ * The same immutable manifest and adapter-binding inventories produce both the management locator and the Source
  * driver. A built module cannot accept later mutation, perform data loading, or execute authentication during startup.
  * </p>
  *
@@ -44,9 +39,9 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public class VendorModule {
 
     /**
-     * Immutable management and compilation manifest directory.
+     * Immutable management and compilation manifest locator.
      */
-    private final VendorDirectory vendorDirectory;
+    private final VendorLocator vendorLocator;
 
     /**
      * Immutable exact platform-variant adapter factory bindings.
@@ -59,20 +54,20 @@ public class VendorModule {
     private final OptionsBindings optionsBindings;
 
     /**
-     * Creates an immutable Vendor module from a validated manifest directory and adapter bindings.
+     * Creates an immutable Vendor module from a validated manifest locator and adapter bindings.
      *
-     * @param vendorDirectory complete Vendor manifest directory
+     * @param vendorLocator   complete Vendor manifest locator
      * @param adapterBindings complete adapter factory bindings
      * @param optionsBindings complete Options factory bindings
      */
-    public VendorModule(final VendorDirectory vendorDirectory, final AdapterBindings adapterBindings,
+    public VendorModule(final VendorLocator vendorLocator, final AdapterBindings adapterBindings,
             final OptionsBindings optionsBindings) {
-        this.vendorDirectory = Assert.notNull(vendorDirectory, "Vendor module directory must not be null");
+        this.vendorLocator = Assert.notNull(vendorLocator, "Vendor module locator must not be null");
         this.adapterBindings = Assert.notNull(adapterBindings, "Vendor module adapter bindings must not be null");
         this.optionsBindings = Assert.notNull(optionsBindings, "Vendor module Options bindings must not be null");
         final Set<AdapterBindings.Key> expected = new HashSet<>();
         final Set<OptionsBindings.Key> expectedOptions = new HashSet<>();
-        for (VariantManifest<?> manifest : vendorDirectory.manifests()) {
+        for (VariantManifest<?> manifest : vendorLocator.manifests()) {
             for (VariantManifest.Variant variant : manifest.variants()) {
                 expected.add(new AdapterBindings.Key(manifest.vendor(), variant.variant()));
                 expectedOptions.add(new OptionsBindings.Key(manifest.vendor(), variant.variant()));
@@ -96,21 +91,21 @@ public class VendorModule {
     }
 
     /**
-     * Returns the exact immutable directory represented by this Vendor module.
+     * Returns the exact immutable locator represented by this Vendor module.
      *
-     * @return immutable Vendor manifest directory
+     * @return immutable Vendor manifest locator
      */
-    public VendorDirectory directory() {
-        return vendorDirectory;
+    public VendorLocator locator() {
+        return vendorLocator;
     }
 
     /**
-     * Creates the single Vendor compiler backed by the same frozen directory and adapter bindings.
+     * Creates the single Vendor compiler backed by the same frozen locator and adapter bindings.
      *
      * @return immutable Vendor Source compiler
      */
     public SourceDriver<VendorOptions<?>> source() {
-        return new VendorCompiler(vendorDirectory, adapterBindings);
+        return new VendorCompiler(vendorLocator, adapterBindings);
     }
 
     /**
@@ -184,10 +179,10 @@ public class VendorModule {
                 throw new ValidateException("Built-in Vendor platforms have already been added");
             }
             builtins = true;
-            final VendorDirectory directory = VendorSuite.directory();
+            final VendorLocator locator = VendorSuite.locator();
             final Set<Vendor.Id> selected = vendors == null ? null : Set.copyOf(vendors);
             final Set<Vendor.Id> unresolved = selected == null ? Set.of() : new HashSet<>(selected);
-            for (VariantManifest<?> manifest : directory.manifests()) {
+            for (VariantManifest<?> manifest : locator.manifests()) {
                 if (selected == null || selected.contains(manifest.vendor())) {
                     manifests.add(manifest);
                     if (selected != null) {
@@ -206,7 +201,7 @@ public class VendorModule {
             });
             mergeBindings(selectedBindings);
             final Map<OptionsBindings.Key, OptionsBindings.Binding> selectedOptions = new LinkedHashMap<>();
-            VendorSuite.options(directory).values().forEach((key, binding) -> {
+            VendorSuite.options(locator).values().forEach((key, binding) -> {
                 if (selected == null || selected.contains(key.vendor())) {
                     selectedOptions.put(key, binding);
                 }
@@ -266,7 +261,7 @@ public class VendorModule {
             if (manifests.isEmpty()) {
                 throw new ValidateException("Vendor module must contain at least one platform driver");
             }
-            return new VendorModule(new VendorDirectory(manifests), new AdapterBindings(adapterBindings),
+            return new VendorModule(new VendorLocator(manifests), new AdapterBindings(adapterBindings),
                     new OptionsBindings(optionsBindings));
         }
 

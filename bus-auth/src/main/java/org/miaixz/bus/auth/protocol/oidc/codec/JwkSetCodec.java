@@ -50,11 +50,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class JwkSetCodec {
 
     /**
-     * Maximum accepted public JWK Set document size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
      * Externally selected provider-neutral JSON implementation.
      */
     private final JsonProvider jsonProvider;
@@ -125,7 +120,7 @@ public class JwkSetCodec {
             if (encoded.code() != Http.Status.OK) {
                 throw new ValidateException("OpenID Connect JWK Set endpoint must return HTTP 200");
             }
-            if (encoded.body().length() > MAXIMUM_JSON_BYTES) {
+            if (encoded.body().length() > Builder.MAXIMUM_DOCUMENT_BYTES) {
                 throw new ValidateException("OpenID Connect JWK Set response exceeds one MiB");
             }
             final MediaType media = encoded.body().media();
@@ -136,7 +131,7 @@ public class JwkSetCodec {
             if (charset != null && !Charset.UTF_8.equals(media.charset())) {
                 throw new ValidateException("OpenID Connect JWK Set response charset must be UTF-8");
             }
-            final JsonValue value = jsonProvider.readValue(encoded.bytes(MAXIMUM_JSON_BYTES));
+            final JsonValue value = jsonProvider.readValue(encoded.bytes(Builder.MAXIMUM_DOCUMENT_BYTES));
             if (!(value instanceof JsonValue.ObjectValue object)) {
                 throw new ValidateException("OpenID Connect JWK Set JSON root must be an object");
             }

@@ -50,6 +50,10 @@ public class ConsumerParser {
 
     /**
      * Validates and freezes exact absolute redirect URI lexical values.
+     *
+     * @param values external redirect URI values
+     * @param label  safe semantic label used in validation messages
+     * @return immutable validated URI list
      */
     private static List<String> uris(final List<String> values, final String label) {
         Assert.notNull(values, label + " list must not be null");

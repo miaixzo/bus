@@ -133,7 +133,7 @@ public class DpopValidator {
         }
         final String artifact = proof.confirmationThumbprint() + Symbol.C_COLON + proof.jwtId();
         return replayGuard.register(
-                requirements.namespace(),
+                requirements.space(),
                 requirements.protocol(),
                 requirements.authority(),
                 "dpop-proof",
@@ -169,13 +169,13 @@ public class DpopValidator {
     /**
      * Defines replay isolation and optional access-token proof-of-possession binding for one validation.
      *
-     * @param namespace              external registration namespace
+     * @param space                  external registration space
      * @param protocol               formal protocol owning the DPoP operation
      * @param authority              stable Provider or Source authority
      * @param confirmationThumbprint optional access-token {@code cnf.jkt} value
      * @author Kimi Liu
      */
-    public record Requirements(String namespace, Protocol protocol, String authority,
+    public record Requirements(String space, Protocol protocol, String authority,
             Optional<String> confirmationThumbprint) {
 
         /**
@@ -184,7 +184,7 @@ public class DpopValidator {
          * @throws IllegalArgumentException if a component is {@code null} or a required string is blank
          */
         public Requirements {
-            Assert.notBlank(namespace, "DPoP replay namespace must not be blank");
+            Assert.notBlank(space, "DPoP replay space must not be blank");
             Assert.notNull(protocol, "DPoP replay protocol must not be null");
             Assert.notBlank(authority, "DPoP replay authority must not be blank");
             Assert.notNull(confirmationThumbprint, "DPoP confirmation container must not be null");

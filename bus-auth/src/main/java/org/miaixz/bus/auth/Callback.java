@@ -42,7 +42,7 @@ import org.miaixz.bus.core.net.Http;
 public class Callback {
 
     /**
-     * Creates a callback contract namespace instance with no retained state.
+     * Creates a callback contract constant holder with no retained state.
      */
     public Callback() {
         // No initialization required.

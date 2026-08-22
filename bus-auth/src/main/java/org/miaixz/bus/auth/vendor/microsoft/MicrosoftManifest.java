@@ -19,21 +19,16 @@
 */
 package org.miaixz.bus.auth.vendor.microsoft;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Credential;
-import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
-import org.miaixz.bus.auth.vendor.VariantManifest;
-import org.miaixz.bus.auth.vendor.Vendor;
-import org.miaixz.bus.auth.vendor.VendorDeviation;
-import org.miaixz.bus.auth.vendor.VendorTargets;
+import org.miaixz.bus.auth.vendor.*;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -42,11 +37,12 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
 
 /**
- * Declares Microsoft global-cloud and China-cloud OAuth 2.0 browser Source variants.
+ * Declares Microsoft global-cloud and China-cloud login and enterprise Graph variants.
  * <p>
  * Both variants use tenant-scoped Microsoft identity platform endpoints for standard authorization and token
- * operations. Microsoft Graph current-user retrieval remains private Source-authentication behavior and contributes
- * only a verified external identity keyed by the Graph {@code id} member.
+ * operations. Microsoft Graph current-user retrieval remains private Source-authentication behavior for the two login
+ * variants. The independent enterprise variants use application permissions over fixed cloud-specific Graph hosts and
+ * expose the provider-neutral enterprise snapshot, change, and retrieval contracts.
  * </p>
  *
  * @author Kimi Liu
@@ -69,6 +65,23 @@ public class MicrosoftManifest implements VariantManifest<MicrosoftOptions> {
     public static final Vendor.Variant CHINA = new Vendor.Variant("china");
 
     /**
+     * Global Microsoft Graph application-permission enterprise variant.
+     */
+    public static final Vendor.Variant ENTERPRISE_GLOBAL = new Vendor.Variant("enterprise-global");
+
+    /**
+     * Microsoft China Graph application-permission enterprise variant.
+     */
+    public static final Vendor.Variant ENTERPRISE_CHINA = new Vendor.Variant("enterprise-china");
+    /**
+     * Sole global Graph application-permission scope accepted by the enterprise Variant.
+     */
+    static final String GLOBAL_APPLICATION_SCOPE = "https://graph.microsoft.com/.default";
+    /**
+     * Sole China Graph application-permission scope accepted by the enterprise Variant.
+     */
+    static final String CHINA_APPLICATION_SCOPE = "https://microsoftgraph.chinacloudapi.cn/.default";
+    /**
      * Exact Source authentication and public OAuth operations shared by both clouds.
      */
     private static final Capability.Manifest CAPABILITIES = new Capability.Manifest(List.of(
@@ -76,12 +89,41 @@ public class MicrosoftManifest implements VariantManifest<MicrosoftOptions> {
             SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT)),
             OAuth2ClientScheme.AUTHORIZATION,
             OAuth2ClientScheme.TOKEN));
-
+    /**
+     * Exact provider-neutral capabilities exposed only by Microsoft enterprise variants.
+     */
+    private static final Capability.Manifest ENTERPRISE_CAPABILITIES = new Capability.Manifest(
+            List.of(Realm.describe(ID), Realm.snapshot(ID), Realm.changes(ID), Realm.retrieve(ID)));
     /**
      * Ordered compatibility scopes plus the least-privileged Graph permission required by {@code /me}.
      */
     private static final List<String> DEFAULT_SCOPES = List
             .of("profile", "email", "openid", "offline_access", "User.Read");
+    /**
+     * Exact enterprise coverage description shared by both isolated Graph clouds.
+     */
+    private static final Realm.Description ENTERPRISE_DESCRIPTION = new Realm.Description(
+            Set.of(
+                    Realm.Kind.USER,
+                    Realm.Kind.ORGANIZATION,
+                    Realm.Kind.GROUP,
+                    Realm.Kind.ROLE,
+                    Realm.Kind.SERVICE_ACCOUNT),
+            Set.of(
+                    Realm.RelationKind.MEMBER,
+                    Realm.RelationKind.MANAGER,
+                    Realm.RelationKind.ROLE_MEMBER,
+                    Realm.RelationKind.APPLICATION_ASSIGNMENT),
+            Set.of(
+                    Realm.Operation.DESCRIBE,
+                    Realm.Operation.SNAPSHOT,
+                    Realm.Operation.CHANGES,
+                    Realm.Operation.RETRIEVE),
+            Realm.Coverage.UNKNOWN, Builder.MAXIMUM_ENTERPRISE_PAGE_SIZE,
+            List.of(
+                    "graph-application-permissions-control-visibility",
+                    "changes-support-user-group-and-service-principal-kinds",
+                    "expired-delta-token-requires-new-baseline"));
 
     /**
      * Private Microsoft Graph identity mapping retained from the historical providers.
@@ -109,11 +151,36 @@ public class MicrosoftManifest implements VariantManifest<MicrosoftOptions> {
             "https://microsoftgraph.chinacloudapi.cn/v1.0/me");
 
     /**
+     * Complete immutable global-cloud enterprise Graph manifest.
+     */
+    private static final VariantManifest.Variant ENTERPRISE_GLOBAL_VARIANT = enterprise(
+            ENTERPRISE_GLOBAL,
+            "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token",
+            "https://graph.microsoft.com",
+            GLOBAL_APPLICATION_SCOPE);
+
+    /**
+     * Complete immutable China-cloud enterprise Graph manifest.
+     */
+    private static final VariantManifest.Variant ENTERPRISE_CHINA_VARIANT = enterprise(
+            ENTERPRISE_CHINA,
+            "https://login.partner.microsoftonline.cn/{tenant}/oauth2/v2.0/token",
+            "https://microsoftgraph.chinacloudapi.cn",
+            CHINA_APPLICATION_SCOPE);
+
+    /**
      * Creates the stateless Microsoft manifest used by Vendor directory assembly.
      */
     public MicrosoftManifest() {
-        // No initialization required.
-        // All manifest state is held by immutable class constants.
+    }
+
+    /**
+     * Returns the frozen Microsoft enterprise coverage description.
+     *
+     * @return immutable enterprise description shared by both clouds
+     */
+    static Realm.Description enterpriseDescription() {
+        return ENTERPRISE_DESCRIPTION;
     }
 
     /**
@@ -139,6 +206,73 @@ public class MicrosoftManifest implements VariantManifest<MicrosoftOptions> {
                         Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
                         Optional.empty()),
                 CAPABILITIES, GRAPH_IDENTITY);
+    }
+
+    /**
+     * Creates one immutable Microsoft enterprise Variant from its fixed authority and Graph host.
+     *
+     * @param variant selected enterprise cloud variant
+     * @param token   tenant-scoped client-credentials token endpoint template
+     * @param graph   fixed cloud-specific Microsoft Graph origin
+     * @param scope   sole cloud-specific application-permission scope
+     * @return complete immutable enterprise manifest
+     */
+    private static VariantManifest.Variant enterprise(
+            final Vendor.Variant variant,
+            final String token,
+            final String graph,
+            final String scope) {
+        return new VariantManifest.Variant(ID, variant, Protocol.HTTPS, VariantManifest.Pkce.DISABLED,
+                Credential.Type.CLIENT_SECRET, List.of(scope),
+                new VendorTargets(Optional.empty(),
+                        Optional.of(template(token, Http.Method.POST, Endpoint.Authentication.CLIENT_SECRET_POST)),
+                        Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                        Optional.empty(), Optional.empty(), Optional.empty(), managementTargets(graph)),
+                ENTERPRISE_CAPABILITIES, List.of());
+    }
+
+    /**
+     * Creates the exact ordered Microsoft Graph management target map for one sovereign cloud.
+     *
+     * @param graph fixed cloud-specific Graph origin
+     * @return immutable-by-construction management target declarations
+     */
+    private static Map<String, VendorTargets.Target> managementTargets(final String graph) {
+        final Map<String, VendorTargets.Target> targets = new LinkedHashMap<>();
+        targets.put(
+                Builder.ENTERPRISE_USERS,
+                fixed(graph + "/v1.0/users", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_USER,
+                fixed(graph + "/v1.0/users", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_ORGANIZATION,
+                fixed(graph + "/v1.0/organization", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_GROUPS,
+                fixed(graph + "/v1.0/groups", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_GROUP,
+                fixed(graph + "/v1.0/groups", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_GROUP_MEMBERS,
+                fixed(graph + "/v1.0/groups", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_ROLES,
+                fixed(graph + "/v1.0/directoryRoles", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_ROLE_MEMBERS,
+                fixed(graph + "/v1.0/directoryRoles", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_ROLE_ASSIGNMENTS,
+                fixed(graph + "/v1.0/servicePrincipals", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_SERVICE_ACCOUNTS,
+                fixed(graph + "/v1.0/servicePrincipals", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_CHANGES,
+                fixed(graph + "/v1.0", Http.Method.GET, Endpoint.Authentication.BEARER));
+        return targets;
     }
 
     /**
@@ -205,13 +339,13 @@ public class MicrosoftManifest implements VariantManifest<MicrosoftOptions> {
     }
 
     /**
-     * Returns both independently routable Microsoft cloud variants.
+     * Returns the two login variants followed by the two enterprise cloud variants.
      *
-     * @return immutable global and China manifest list
+     * @return immutable four-Variant manifest list
      */
     @Override
     public List<VariantManifest.Variant> variants() {
-        return List.of(GLOBAL_VARIANT, CHINA_VARIANT);
+        return List.of(GLOBAL_VARIANT, CHINA_VARIANT, ENTERPRISE_GLOBAL_VARIANT, ENTERPRISE_CHINA_VARIANT);
     }
 
     /**
@@ -219,7 +353,7 @@ public class MicrosoftManifest implements VariantManifest<MicrosoftOptions> {
      *
      * @param variant requested Microsoft cloud variant
      * @return immutable matching manifest
-     * @throws ValidateException if the variant is neither global nor China
+     * @throws ValidateException if the variant is outside the four frozen Microsoft variants
      */
     @Override
     public VariantManifest.Variant variant(final Vendor.Variant variant) {
@@ -228,6 +362,12 @@ public class MicrosoftManifest implements VariantManifest<MicrosoftOptions> {
         }
         if (CHINA.equals(variant)) {
             return CHINA_VARIANT;
+        }
+        if (ENTERPRISE_GLOBAL.equals(variant)) {
+            return ENTERPRISE_GLOBAL_VARIANT;
+        }
+        if (ENTERPRISE_CHINA.equals(variant)) {
+            return ENTERPRISE_CHINA_VARIANT;
         }
         throw new ValidateException("Microsoft Vendor variant is not supported");
     }

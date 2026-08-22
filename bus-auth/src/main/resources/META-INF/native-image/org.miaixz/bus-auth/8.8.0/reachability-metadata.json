@@ -26775,7 +26775,7 @@
       "type": "org.miaixz.bus.auth.protocol.saml.SamlClientDriver$SourceAdapter",
       "fields": [
         {
-          "name": "namespace"
+          "name": "space"
         },
         {
           "name": "postBindingCodec"
@@ -27235,7 +27235,7 @@
       "type": "org.miaixz.bus.auth.protocol.saml.security.SamlReplayValidator",
       "fields": [
         {
-          "name": "namespace"
+          "name": "space"
         },
         {
           "name": "replayGuard"
@@ -34409,14 +34409,6 @@
           ]
         },
         {
-          "name": "requireNamespace",
-          "parameterTypes": [
-            "org.miaixz.bus.auth.Blueprint$Record",
-            "java.lang.String",
-            "java.util.List"
-          ]
-        },
-        {
           "name": "validate",
           "parameterTypes": [
             "org.miaixz.bus.auth.Registry$Snapshot"
@@ -34951,7 +34943,7 @@
           "name": "bindingDigest"
         },
         {
-          "name": "namespaceId"
+          "name": "spaceId"
         },
         {
           "name": "ownerId"
@@ -34979,7 +34971,7 @@
           "parameterTypes": []
         },
         {
-          "name": "namespaceId",
+          "name": "spaceId",
           "parameterTypes": []
         },
         {
@@ -35194,7 +35186,7 @@
           "name": "audience"
         },
         {
-          "name": "namespaceId"
+          "name": "spaceId"
         },
         {
           "name": "resource"
@@ -35216,7 +35208,7 @@
           "parameterTypes": []
         },
         {
-          "name": "namespaceId",
+          "name": "spaceId",
           "parameterTypes": []
         },
         {
@@ -37453,7 +37445,7 @@
           "name": "confirmationThumbprint"
         },
         {
-          "name": "namespace"
+          "name": "space"
         },
         {
           "name": "protocol"
@@ -37479,7 +37471,7 @@
           "parameterTypes": []
         },
         {
-          "name": "namespace",
+          "name": "space",
           "parameterTypes": []
         },
         {
@@ -40510,7 +40502,7 @@
           "name": "authority"
         },
         {
-          "name": "namespace"
+          "name": "space"
         },
         {
           "name": "protocol"
@@ -40532,7 +40524,7 @@
           "parameterTypes": []
         },
         {
-          "name": "namespace",
+          "name": "space",
           "parameterTypes": []
         },
         {
@@ -41563,7 +41555,7 @@
           "name": "STATE_PURPOSE"
         },
         {
-          "name": "namespaceId"
+          "name": "spaceId"
         },
         {
           "name": "nonceEnabled"
@@ -42492,7 +42484,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.vendor.VendorDirectory",
+      "type": "org.miaixz.bus.auth.vendor.VendorLocator",
       "fields": [
         {
           "name": "manifests"
@@ -42565,7 +42557,7 @@
           "name": "adapterBindings"
         },
         {
-          "name": "vendorDirectory"
+          "name": "vendorLocator"
         }
       ],
       "methods": [
@@ -46910,7 +46902,7 @@
           "name": "formCodec"
         },
         {
-          "name": "namespaceId"
+          "name": "spaceId"
         },
         {
           "name": "queryCodec"
@@ -57508,7 +57500,7 @@
           "name": "formCodec"
         },
         {
-          "name": "namespaceId"
+          "name": "spaceId"
         },
         {
           "name": "redirectManager"
@@ -61860,7 +61852,7 @@
           "name": "callbackDecoder"
         },
         {
-          "name": "namespaceId"
+          "name": "spaceId"
         },
         {
           "name": "redirectManager"

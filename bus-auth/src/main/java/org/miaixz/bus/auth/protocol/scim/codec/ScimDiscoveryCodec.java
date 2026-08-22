@@ -25,11 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.auth.FabricX.Body;
-import org.miaixz.bus.auth.FabricX.Headers;
-import org.miaixz.bus.auth.FabricX.HeadersBuilder;
-import org.miaixz.bus.auth.FabricX.Request;
-import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.*;
 import org.miaixz.bus.auth.protocol.scim.*;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;

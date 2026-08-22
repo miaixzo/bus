@@ -47,11 +47,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class TokenResponseDecoder implements Decoder<Response, TokenResponseDecoder.Decoded> {
 
     /**
-     * Maximum accepted token endpoint JSON document size in bytes.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
      * Provider-neutral JSON service used for strict RFC 8259 parsing.
      */
     private final JsonProvider jsonProvider;
@@ -73,7 +68,7 @@ public class TokenResponseDecoder implements Decoder<Response, TokenResponseDeco
      * @throws ValidateException if the body is oversized or is not UTF-8 JSON
      */
     private static void validateMedia(final Response response) {
-        if (response.body().length() > MAXIMUM_JSON_BYTES) {
+        if (response.body().length() > Builder.MAXIMUM_DOCUMENT_BYTES) {
             throw new ValidateException("OAuth 2.x token response exceeds the maximum JSON size");
         }
         final MediaType media = response.body().media();
@@ -251,7 +246,7 @@ public class TokenResponseDecoder implements Decoder<Response, TokenResponseDeco
         final Response response = Assert.notNull(encoded, "OAuth 2.x token HTTP response must not be null");
         try (response) {
             validateMedia(response);
-            final JsonValue value = jsonProvider.readValue(response.bytes(MAXIMUM_JSON_BYTES));
+            final JsonValue value = jsonProvider.readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES));
             if (!(value instanceof JsonValue.ObjectValue object)) {
                 throw new ValidateException("OAuth 2.x token response JSON root must be an object");
             }

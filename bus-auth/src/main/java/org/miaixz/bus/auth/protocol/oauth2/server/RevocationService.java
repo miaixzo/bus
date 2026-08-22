@@ -52,11 +52,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class RevocationService {
 
     /**
-     * Maximum compare-and-replace attempts for one authoritative authorization transition.
-     */
-    private static final int MAXIMUM_UPDATE_ATTEMPTS = org.miaixz.bus.auth.Builder.MAXIMUM_RETRY_ATTEMPTS;
-
-    /**
      * Provider identifier used to isolate opaque token digests.
      */
     private final String providerId;
@@ -212,7 +207,7 @@ public class RevocationService {
                         if (Boolean.TRUE.equals(updated)) {
                             return CompletableFuture.completedFuture(null);
                         }
-                        if (attempt >= MAXIMUM_UPDATE_ATTEMPTS) {
+                        if (attempt >= org.miaixz.bus.auth.Builder.MAXIMUM_RETRY_ATTEMPTS) {
                             return confirmAuthorizationInactive(authorizationKey, clientId, timeout);
                         }
                         return revokeAuthorization(authorizationId, clientId, timeout, attempt + 1);

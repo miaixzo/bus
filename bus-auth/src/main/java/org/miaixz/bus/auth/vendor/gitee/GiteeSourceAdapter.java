@@ -77,16 +77,6 @@ public class GiteeSourceAdapter implements VendorAdapter {
     private static final String USER_AGENT = "miaixz-bus-auth";
 
     /**
-     * Maximum accepted Gitee JSON response size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum accepted Gitee JSON nesting depth.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
-
-    /**
      * Registered Source identifier copied into verified identities.
      */
     private final String sourceId;
@@ -124,16 +114,16 @@ public class GiteeSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Gitee.com adapter.
      *
-     * @param namespaceId registration namespace used to isolate state and credential resolution
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Gitee manifest
-     * @param variant     exact selected default manifest
-     * @param options     decoded externally loaded Gitee options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate state and credential resolution
+     * @param sourceId registered Source identifier
+     * @param manifest selected Gitee manifest
+     * @param variant  exact selected default manifest
+     * @param options  decoded externally loaded Gitee options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, callback, or authorization is inconsistent
      */
-    public GiteeSourceAdapter(final String namespaceId, final String sourceId, final GiteeManifest manifest,
+    public GiteeSourceAdapter(final String spaceId, final String sourceId, final GiteeManifest manifest,
             final VariantManifest.Variant variant, final GiteeOptions options, final DriverServices services) {
         final GiteeManifest selectedProfile = Assert.notNull(manifest, "Gitee manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Gitee Source id must not be blank");
@@ -147,7 +137,7 @@ public class GiteeSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("Gitee adapter requires the gitee/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
@@ -728,7 +718,7 @@ public class GiteeSourceAdapter implements VendorAdapter {
             throw new ValidateException("Gitee " + operation + " response must use application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("Gitee " + operation + " response root must be a JSON object");
         }

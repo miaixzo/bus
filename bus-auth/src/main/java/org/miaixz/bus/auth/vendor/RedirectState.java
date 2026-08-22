@@ -24,11 +24,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.auth.Callback;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Credential;
-import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.shared.pkce.CodeVerifier;
@@ -63,9 +59,9 @@ final class RedirectState {
     private static final String PKCE_PURPOSE = "vendor-pkce";
 
     /**
-     * Registration namespace isolating all derived keys.
+     * Registration space isolating all derived keys.
      */
-    private final String namespaceId;
+    private final String spaceId;
     /**
      * Exact configured Source identifier.
      */
@@ -82,17 +78,73 @@ final class RedirectState {
     /**
      * Creates one Source-isolated redirect correlation store.
      *
-     * @param namespaceId registration namespace identifier
+     * @param spaceId     registration space identifier
      * @param sourceId    registration Source identifier
      * @param services    Source-scoped runtime services
      * @param pkceEnabled whether verifier persistence is required
      */
-    RedirectState(final String namespaceId, final String sourceId, final DriverServices services,
+    RedirectState(final String spaceId, final String sourceId, final DriverServices services,
             final boolean pkceEnabled) {
-        this.namespaceId = Assert.notBlank(namespaceId, "Vendor redirect namespace id must not be blank");
+        this.spaceId = Assert.notBlank(spaceId, "Vendor redirect space id must not be blank");
         this.sourceId = Assert.notBlank(sourceId, "Vendor redirect Source id must not be blank");
         this.services = Assert.notNull(services, "Vendor redirect execution services must not be null");
         this.pkceEnabled = pkceEnabled;
+    }
+
+    /**
+     * Normalizes a cache create-if-absent result into framework outcomes.
+     *
+     * @param stage                cache creation stage
+     * @param failureDescription   dependency failure description
+     * @param collisionDescription collision description
+     * @return normalized creation outcome
+     */
+    private static CompletionStage<Outcome<Void>> booleanCreation(
+            final CompletionStage<Boolean> stage,
+            final String failureDescription,
+            final String collisionDescription) {
+        if (stage == null) {
+            return completed(failed(failureDescription));
+        }
+        return stage.handle((created, cause) -> {
+            if (cause != null || created == null) {
+                return failed(failureDescription);
+            }
+            return created ? Outcome.succeeded(null) : failed(collisionDescription);
+        });
+    }
+
+    /**
+     * Wraps an outcome in an already completed stage.
+     *
+     * @param <T>     outcome value type
+     * @param outcome outcome to expose
+     * @return completed outcome stage
+     */
+    private static <T> CompletionStage<Outcome<T>> completed(final Outcome<T> outcome) {
+        return CompletableFuture.completedFuture(outcome);
+    }
+
+    /**
+     * Creates a safe expected callback rejection.
+     *
+     * @param <T>         expected value type
+     * @param description safe rejection description
+     * @return rejected outcome
+     */
+    private static <T> Outcome<T> rejected(final String description) {
+        return Outcome.rejected(new Outcome.Failure(ErrorCode._400, description, new JsonValue.ObjectValue(Map.of())));
+    }
+
+    /**
+     * Creates a safe operational callback failure.
+     *
+     * @param <T>         expected value type
+     * @param description safe failure description
+     * @return failed outcome
+     */
+    private static <T> Outcome<T> failed(final String description) {
+        return Outcome.failed(new Outcome.Failure(ErrorCode._500, description, new JsonValue.ObjectValue(Map.of())));
     }
 
     /**
@@ -353,15 +405,14 @@ final class RedirectState {
     }
 
     /**
-     * Derives a namespace- and Source-isolated irreversible storage key.
+     * Derives a space- and Source-isolated irreversible storage key.
      *
      * @param purpose exact storage purpose
      * @param binding opaque correlation binding
      * @return hexadecimal SHA-256 digest
      */
     private String digest(final String purpose, final String binding) {
-        return Builder
-                .sha256Hex(namespaceId + Symbol.C_NUL + sourceId + Symbol.C_NUL + purpose + Symbol.C_NUL + binding);
+        return Builder.sha256Hex(spaceId + Symbol.C_NUL + sourceId + Symbol.C_NUL + purpose + Symbol.C_NUL + binding);
     }
 
     /**
@@ -371,64 +422,8 @@ final class RedirectState {
      * @return Source-isolated shared-secret key
      */
     private CredentialStore.Key credentialKey(final String correlationValue) {
-        return new CredentialStore.Key(namespaceId, sourceId, PKCE_PURPOSE, digest(PKCE_PURPOSE, correlationValue),
+        return new CredentialStore.Key(spaceId, sourceId, PKCE_PURPOSE, digest(PKCE_PURPOSE, correlationValue),
                 Credential.Type.SHARED_SECRET);
-    }
-
-    /**
-     * Normalizes a cache create-if-absent result into framework outcomes.
-     *
-     * @param stage                cache creation stage
-     * @param failureDescription   dependency failure description
-     * @param collisionDescription collision description
-     * @return normalized creation outcome
-     */
-    private static CompletionStage<Outcome<Void>> booleanCreation(
-            final CompletionStage<Boolean> stage,
-            final String failureDescription,
-            final String collisionDescription) {
-        if (stage == null) {
-            return completed(failed(failureDescription));
-        }
-        return stage.handle((created, cause) -> {
-            if (cause != null || created == null) {
-                return failed(failureDescription);
-            }
-            return created ? Outcome.succeeded(null) : failed(collisionDescription);
-        });
-    }
-
-    /**
-     * Wraps an outcome in an already completed stage.
-     *
-     * @param <T>     outcome value type
-     * @param outcome outcome to expose
-     * @return completed outcome stage
-     */
-    private static <T> CompletionStage<Outcome<T>> completed(final Outcome<T> outcome) {
-        return CompletableFuture.completedFuture(outcome);
-    }
-
-    /**
-     * Creates a safe expected callback rejection.
-     *
-     * @param <T>         expected value type
-     * @param description safe rejection description
-     * @return rejected outcome
-     */
-    private static <T> Outcome<T> rejected(final String description) {
-        return Outcome.rejected(new Outcome.Failure(ErrorCode._400, description, new JsonValue.ObjectValue(Map.of())));
-    }
-
-    /**
-     * Creates a safe operational callback failure.
-     *
-     * @param <T>         expected value type
-     * @param description safe failure description
-     * @return failed outcome
-     */
-    private static <T> Outcome<T> failed(final String description) {
-        return Outcome.failed(new Outcome.Failure(ErrorCode._500, description, new JsonValue.ObjectValue(Map.of())));
     }
 
     /**
@@ -436,7 +431,6 @@ final class RedirectState {
      *
      * @param correlation consumed one-time callback correlation
      * @param verifier    optional caller-owned PKCE verifier lease
-     *
      * @author Kimi Liu
      */
     record Consumed(Callback.Correlation correlation, Optional<SecretLease> verifier) {

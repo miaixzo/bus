@@ -26,13 +26,8 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Endpoint;
-import org.miaixz.bus.auth.FabricX;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
-import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
@@ -61,16 +56,6 @@ import org.miaixz.bus.extra.json.JsonValue;
  * @author Kimi Liu
  */
 public class RevocationClient {
-
-    /**
-     * Maximum accepted RFC 7009 OAuth error document size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum accepted nesting depth for a revocation OAuth error document.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
 
     /**
      * Validated client registration and selected client authentication method.
@@ -278,7 +263,7 @@ public class RevocationClient {
      * @throws ValidateException if media metadata, size, JSON shape, or a registered member is invalid
      */
     private OAuth2ErrorResponse error(final Response response) {
-        if (response.body().length() > MAXIMUM_JSON_BYTES) {
+        if (response.body().length() > Builder.MAXIMUM_DOCUMENT_BYTES) {
             throw new ValidateException("OAuth 2.x revocation error response exceeds one MiB");
         }
         final MediaType media = response.body().media();
@@ -290,7 +275,7 @@ public class RevocationClient {
             throw new ValidateException("OAuth 2.x revocation error response charset must be UTF-8");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("OAuth 2.x revocation error JSON root must be an object");
         }

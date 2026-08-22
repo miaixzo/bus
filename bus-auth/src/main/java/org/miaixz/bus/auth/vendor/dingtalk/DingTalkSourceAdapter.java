@@ -42,7 +42,6 @@ import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -72,16 +71,6 @@ public class DingTalkSourceAdapter implements VendorAdapter {
      * Trusted authority of signed account-login responses.
      */
     private static final String ACCOUNT_AUTHORITY = "https://oapi.dingtalk.com";
-
-    /**
-     * Maximum accepted DingTalk JSON response size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = org.miaixz.bus.auth.Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum accepted DingTalk JSON nesting depth.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
 
     /**
      * Registered Source identifier copied into verified external identities.
@@ -121,16 +110,16 @@ public class DingTalkSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound DingTalk adapter for the selected frozen variant.
      *
-     * @param namespaceId registration namespace used to isolate state and credentials
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected DingTalk manifest
-     * @param variant     exact selected variant manifest
-     * @param options     decoded externally loaded options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate state and credentials
+     * @param sourceId registered Source identifier
+     * @param manifest selected DingTalk manifest
+     * @param variant  exact selected variant manifest
+     * @param options  decoded externally loaded options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, variant, protocol, or options routing is inconsistent
      */
-    public DingTalkSourceAdapter(final String namespaceId, final String sourceId, final DingTalkManifest manifest,
+    public DingTalkSourceAdapter(final String spaceId, final String sourceId, final DingTalkManifest manifest,
             final VariantManifest.Variant variant, final DingTalkOptions options, final DriverServices services) {
         final DingTalkManifest selectedProfile = Assert.notNull(manifest, "DingTalk manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "DingTalk Source id must not be blank");
@@ -141,10 +130,10 @@ public class DingTalkSourceAdapter implements VendorAdapter {
                 || !selectedProfile.variant(options.variant()).equals(variant)
                 || !options.variant().equals(variant.variant()) || !DingTalkManifest.ID.equals(options.vendor())
                 || DingTalkManifest.OAUTH2.equals(options.variant()) && variant.protocol() != Protocol.OAUTH2
-                || DingTalkManifest.ACCOUNT.equals(options.variant()) && variant.protocol() != Protocol.VENDOR_AUTH) {
+                || DingTalkManifest.ACCOUNT.equals(options.variant()) && variant.protocol() != Protocol.HTTPS) {
             throw new ValidateException("DingTalk adapter profile, variant, and options must match");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         this.authorizationEncoder = DingTalkManifest.OAUTH2.equals(options.variant())
                 ? new AuthorizationRequestEncoder(variant.targets().resolve(options).authorization().getOrNull())
                 : null;
@@ -847,7 +836,7 @@ public class DingTalkSourceAdapter implements VendorAdapter {
                                 new JsonValue.StringValue(Assert
                                         .notBlank(code, "DingTalk temporary authorization code must not be blank")))));
                 final String endpoint = variant.targets().resolve(options).userInfo().getOrNull().url().toString();
-                try (Response response = FabricX.http(services.fabric(), Protocol.VENDOR_AUTH, timeout).url(endpoint)
+                try (Response response = FabricX.http(services.fabric(), Protocol.HTTPS, timeout).url(endpoint)
                         .method(Http.Method.POST).query("accessKey", options.clientId()).query("timestamp", timestamp)
                         .query("signature", signature).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
                         .body(body, MediaType.APPLICATION_JSON_TYPE).execute()) {
@@ -976,7 +965,7 @@ public class DingTalkSourceAdapter implements VendorAdapter {
                 throw new ValidateException("DingTalk response must use HTTP 200 application/json");
             }
             final JsonValue value = services.jsonProvider()
-                    .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                    .readValue(response.bytes(org.miaixz.bus.auth.Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
             if (!(value instanceof JsonValue.ObjectValue object)) {
                 throw new ValidateException("DingTalk JSON root must be an object");
             }

@@ -86,16 +86,6 @@ public class ElemeSourceAdapter implements VendorAdapter {
     private static final String USER_ACTION = "eleme.user.getUser";
 
     /**
-     * Maximum accepted Eleme merchant JSON response size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = org.miaixz.bus.auth.Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum accepted Eleme merchant JSON nesting depth.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
-
-    /**
      * Registered Source identifier copied into verified external identities.
      */
     private final String sourceId;
@@ -148,16 +138,16 @@ public class ElemeSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Eleme adapter for the frozen default variant.
      *
-     * @param namespaceId registration namespace used to isolate state and credential resolution
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Eleme manifest
-     * @param variant     exact selected default manifest
-     * @param options     decoded externally loaded Eleme options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate state and credential resolution
+     * @param sourceId registered Source identifier
+     * @param manifest selected Eleme manifest
+     * @param variant  exact selected default manifest
+     * @param options  decoded externally loaded Eleme options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, variant, protocol, manifest, or options routing is inconsistent
      */
-    public ElemeSourceAdapter(final String namespaceId, final String sourceId, final ElemeManifest manifest,
+    public ElemeSourceAdapter(final String spaceId, final String sourceId, final ElemeManifest manifest,
             final VariantManifest.Variant variant, final ElemeOptions options, final DriverServices services) {
         final ElemeManifest selectedProfile = Assert.notNull(manifest, "Eleme manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Eleme Source id must not be blank");
@@ -171,7 +161,7 @@ public class ElemeSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("Eleme adapter requires the eleme/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         this.standardAdapter = standardAdapter(variant, options, services, redirectManager);
         this.authorizationResponseDecoder = new AuthorizationResponseDecoder();
         this.tokenRequestEncoder = new TokenRequestEncoder();
@@ -838,7 +828,7 @@ public class ElemeSourceAdapter implements VendorAdapter {
             return failed(ErrorCode._502, "Eleme merchant endpoint returned a non-JSON response");
         }
         final JsonValue parsed = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(org.miaixz.bus.auth.Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
         if (!(parsed instanceof JsonValue.ObjectValue object)) {
             return failed(ErrorCode._502, "Eleme merchant response root must be a JSON object");
         }

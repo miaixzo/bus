@@ -86,16 +86,6 @@ public class GitHubSourceAdapter implements VendorAdapter {
     private static final String REST_VERSION = "2026-03-10";
 
     /**
-     * Maximum accepted GitHub JSON response size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
-     * Maximum accepted GitHub JSON nesting depth.
-     */
-    private static final int MAXIMUM_JSON_DEPTH = Normal._64;
-
-    /**
      * Registered Source identifier copied into verified identities.
      */
     private final String sourceId;
@@ -133,16 +123,16 @@ public class GitHubSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound GitHub.com OAuth App adapter.
      *
-     * @param namespaceId registration namespace used to isolate state and credential resolution
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected GitHub manifest
-     * @param variant     exact selected default manifest
-     * @param options     decoded externally loaded GitHub options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate state and credential resolution
+     * @param sourceId registered Source identifier
+     * @param manifest selected GitHub manifest
+     * @param variant  exact selected default manifest
+     * @param options  decoded externally loaded GitHub options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, callback, or authorization is inconsistent
      */
-    public GitHubSourceAdapter(final String namespaceId, final String sourceId, final GitHubManifest manifest,
+    public GitHubSourceAdapter(final String spaceId, final String sourceId, final GitHubManifest manifest,
             final VariantManifest.Variant variant, final GitHubOptions options, final DriverServices services) {
         final GitHubManifest selected = Assert.notNull(manifest, "GitHub manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "GitHub Source id must not be blank");
@@ -155,7 +145,7 @@ public class GitHubSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("GitHub adapter requires the github/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
@@ -752,7 +742,7 @@ public class GitHubSourceAdapter implements VendorAdapter {
             throw new ValidateException("GitHub response must use application/json");
         }
         final JsonValue value = services.jsonProvider()
-                .readValue(response.bytes(MAXIMUM_JSON_BYTES), MAXIMUM_JSON_DEPTH, true);
+                .readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES), Normal._64, true);
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("GitHub response root must be a JSON object");
         }

@@ -82,16 +82,16 @@ public interface VendorAdapter extends AutoCloseable {
         /**
          * Creates one Source-isolated platform adapter from validated immutable inputs.
          *
-         * @param namespaceId namespace identifier copied from the Source registration
-         * @param sourceId    Source identifier copied from the Source registration
-         * @param manifest    exact platform manifest
-         * @param variant     exact variant selected from that manifest
-         * @param options     validated immutable deployment options
-         * @param services    complete externally supplied runtime dependency set
+         * @param spaceId  space identifier copied from the Source registration
+         * @param sourceId Source identifier copied from the Source registration
+         * @param manifest exact platform manifest
+         * @param variant  exact variant selected from that manifest
+         * @param options  validated immutable deployment options
+         * @param services complete externally supplied runtime dependency set
          * @return non-null adapter whose capability manifest equals the selected variant's capability manifest
          */
         VendorAdapter create(
-                String namespaceId,
+                String spaceId,
                 String sourceId,
                 VariantManifest<O> manifest,
                 VariantManifest.Variant variant,

@@ -39,21 +39,22 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
- * Carries externally managed Okta web-client and custom authorization-server selectors.
+ * Carries externally managed Okta login-client or service-app management selectors.
  * <p>
- * This immutable record never stores a client secret or an endpoint override. The organization label and
- * authorization-server identifier are validated before the manifest substitutes them into its fixed Okta endpoint and
- * issuer templates.
+ * This immutable record never stores credential material or an endpoint override. The default Variant combines a Client
+ * Secret reference with a custom authorization-server selector and browser callback. The management Variant combines a
+ * Private Key reference with the organization selector, fixed Management API scopes, and no browser or custom
+ * authorization-server values.
  * </p>
  *
  * @param vendor                exact Okta platform identifier
- * @param variant               exact custom authorization-server variant
- * @param clientId              public OIDC client identifier issued by Okta
- * @param credential            external client-secret reference
- * @param redirectUri           exact Sign-in redirect URI registered in Okta
- * @param scopes                ordered OIDC scopes, or empty to use the manifest defaults
+ * @param variant               exact default login or management Variant
+ * @param clientId              public OIDC client or service-app identifier issued by Okta
+ * @param credential            external Client Secret or Private Key reference selected by the Variant
+ * @param redirectUri           exact Sign-in callback for login, empty for management
+ * @param scopes                ordered OIDC or fixed Management API scopes
  * @param instance              Okta organization DNS label preceding {@code .okta.com}
- * @param authorizationServerId custom authorization-server identifier, commonly {@code default}
+ * @param authorizationServerId custom authorization-server identifier for login, empty for management
  * @author Kimi Liu
  */
 public record OktaOptions(Vendor.Id vendor, Vendor.Variant variant, String clientId, Credential.Reference credential,
@@ -61,32 +62,20 @@ public record OktaOptions(Vendor.Id vendor, Vendor.Variant variant, String clien
         implements VendorOptions<OktaOptions> {
 
     /**
-     * Maximum length accepted by the frozen authorization-server path selector.
-     */
-    private static final int MAXIMUM_AUTHORIZATION_SERVER_ID_LENGTH = Normal._128;
-
-    /**
-     * Validates and freezes one Okta registration without resolving its client secret.
+     * Validates and freezes one Okta login or management registration without resolving credential material.
      *
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential type, callback, scopes, or template selectors are invalid
      */
     public OktaOptions {
-        if (!OktaManifest.ID.equals(vendor) || !OktaManifest.DEFAULT.equals(variant)) {
-            throw new ValidateException("Okta options must select okta/default");
+        if (!OktaManifest.ID.equals(vendor)
+                || !OktaManifest.DEFAULT.equals(variant) && !OktaManifest.MANAGEMENT.equals(variant)) {
+            throw new ValidateException("Okta options must select okta/default or okta/management");
         }
         clientId = Assert.notBlank(clientId, "Okta client identifier must not be blank");
         Assert.notNull(credential, "Okta credential reference must not be null");
-        if (credential.type() != Credential.Type.CLIENT_SECRET) {
-            throw new ValidateException("Okta credential must reference a client secret");
-        }
         Assert.notNull(redirectUri, "Okta redirect URI container must not be null");
         redirectUri = Optional.ofNullable(redirectUri.getOrNull());
-        if (redirectUri.isEmpty()) {
-            throw new ValidateException("Okta options require a Sign-in redirect URI");
-        }
-        redirect(redirectUri.getOrNull());
-
         Assert.notNull(scopes, "Okta scopes must not be null");
         final List<String> copy = new ArrayList<>(scopes.size());
         for (String scope : scopes) {
@@ -97,12 +86,36 @@ public record OktaOptions(Vendor.Id vendor, Vendor.Variant variant, String clien
             }
             copy.add(checked);
         }
-        if (!copy.isEmpty() && !copy.contains("openid")) {
-            throw new ValidateException("Explicit Okta scopes must include openid");
+        instance = organization(instance);
+        Assert.notNull(authorizationServerId, "Okta authorization server identifier must not be null");
+
+        if (OktaManifest.DEFAULT.equals(variant)) {
+            if (credential.type() != Credential.Type.CLIENT_SECRET) {
+                throw new ValidateException("Okta login credential must reference a Client Secret");
+            }
+            if (redirectUri.isEmpty()) {
+                throw new ValidateException("Okta login options require a Sign-in redirect URI");
+            }
+            redirect(redirectUri.getOrNull());
+            if (!copy.isEmpty() && !copy.contains("openid")) {
+                throw new ValidateException("Explicit Okta login scopes must include openid");
+            }
+            authorizationServerId = authorizationServer(authorizationServerId);
+        } else {
+            if (credential.type() != Credential.Type.PRIVATE_KEY) {
+                throw new ValidateException("Okta management credential must reference a Private Key");
+            }
+            if (redirectUri.isPresent()) {
+                throw new ValidateException("Okta management options prohibit a redirect URI");
+            }
+            if (!copy.equals(OktaManifest.MANAGEMENT_SCOPES)) {
+                throw new ValidateException("Okta management scopes must match the frozen scope order");
+            }
+            if (!Normal.EMPTY.equals(authorizationServerId)) {
+                throw new ValidateException("Okta management options prohibit an authorization server identifier");
+            }
         }
         scopes = List.copyOf(copy);
-        instance = organization(instance);
-        authorizationServerId = authorizationServer(authorizationServerId);
     }
 
     /**
@@ -174,7 +187,7 @@ public record OktaOptions(Vendor.Id vendor, Vendor.Variant variant, String clien
      */
     private static String authorizationServer(final String value) {
         final String checked = Assert.notBlank(value, "Okta authorization server identifier must not be blank");
-        if (checked.length() > MAXIMUM_AUTHORIZATION_SERVER_ID_LENGTH || !checked.chars().allMatch(
+        if (checked.length() > Normal._128 || !checked.chars().allMatch(
                 character -> Character.isLetterOrDigit(character) || character == Symbol.C_MINUS
                         || character == Symbol.C_UNDERLINE)) {
             throw new ValidateException("Okta authorization server identifier contains unsupported characters");
@@ -203,25 +216,24 @@ public record OktaOptions(Vendor.Id vendor, Vendor.Variant variant, String clien
     }
 
     /**
-     * Returns the identifier consumed by manifest-owned authorization-server path templates.
+     * Returns the identifier consumed only by the login authorization-server path templates.
      *
-     * @return present validated authorization-server identifier
+     * @return present validated login identifier or empty for management
      */
     @Override
     public Optional<String> templateAuthorizationServerId() {
-        return Optional.of(authorizationServerId);
+        return OktaManifest.DEFAULT.equals(variant) ? Optional.of(authorizationServerId) : Optional.empty();
     }
 
     /**
-     * Returns a diagnostic representation without client, credential-reference, or callback values.
+     * Returns a diagnostic representation without client, credential, callback, scope, or selector values.
      *
      * @return redacted immutable options summary
      */
     @Override
     public String toString() {
-        return "OktaOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS + scopes
-                + ", instance=" + instance + ", authorizationServerId=" + authorizationServerId
-                + Symbol.C_BRACKET_RIGHT;
+        return "OktaOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS
+                + Builder.REDACTED_VALUE + Symbol.C_BRACKET_RIGHT;
     }
 
 }

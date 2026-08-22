@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Declares the GitHub.com OAuth App Source variant.
+ * Declares GitHub.com OAuth login and GitHub Enterprise management variants.
  * <p>
  * GitHubManifest fixes {@code github/default}, the browser, token, refresh, and REST current-user endpoints,
  * CLIENT_SECRET form authentication, required S256 PKCE, and the minimum {@code read:user} scope. It publishes Source
@@ -34,6 +34,17 @@
  * Source authentication accepts only the positive integral durable GitHub user {@code id}, rendered as unsigned decimal
  * text, as its subject. Login, node ID, email, name, company, plan, and profile links remain attributes. PKCE verifier,
  * secret, access and refresh tokens, REST request identifiers, and personal data stay inside the operation boundary.
+ * </p>
+ * <p>
+ * {@code github/enterprise} is a separate HTTPS Variant using a referenced administrator token. It exposes describe,
+ * snapshot, and retrieve for visible enterprise and organization resources normalized as ORGANIZATION, Teams normalized
+ * as GROUP, users, and membership. Coverage is PARTIAL, permission-hidden 404 responses are rejections rather than an
+ * empty complete snapshot, the fixed REST API version is always sent, and no changes capability exists.
+ * </p>
+ * <p>
+ * Organizations and Teams are platform management containers, not a natural parent-child organization chart. Equal user
+ * resources may recur on bounded Team pages without retaining tenant-wide de-duplication state. External projects
+ * invoke Dispatcher and own scheduling, mapping, synchronization, checkpoints, and persistence.
  * </p>
  *
  * @author Kimi Liu

@@ -82,16 +82,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class SamlClientDriver implements SourceDriver<SamlClientOptions> {
 
     /**
-     * Secure maximum DOM nesting depth shared by Source codecs.
-     */
-    private static final int MAXIMUM_XML_DEPTH = Normal._64;
-
-    /**
-     * Standard signing-key use supplied to the external key inventory.
-     */
-    private static final String SIGNING_USE = org.miaixz.bus.auth.Builder.SIGNING;
-
-    /**
      * Fixed lifetime of a one-time SAML browser interaction.
      */
     private static final Duration BROWSER_INTERACTION_LIFETIME = Duration.ofMinutes(10);
@@ -100,16 +90,6 @@ public class SamlClientDriver implements SourceDriver<SamlClientOptions> {
      * Isolated StateCache purpose used only by SAML browser interactions.
      */
     private static final String BROWSER_STATE_PURPOSE = "saml-browser";
-
-    /**
-     * Entity NameID format used by the service-provider Issuer.
-     */
-    private static final String ENTITY_NAME_ID = Saml.NameIdFormats.ENTITY;
-
-    /**
-     * Persistent NameID format requested for stable external identity mapping.
-     */
-    private static final String PERSISTENT_NAME_ID = Saml.NameIdFormats.PERSISTENT;
 
     /**
      * Creates a stateless SAML Source driver.
@@ -135,7 +115,7 @@ public class SamlClientDriver implements SourceDriver<SamlClientOptions> {
             }
             final Instant now = timeout.clock().now();
             final KeyLoader.Request query = new KeyLoader.Request(services.registration(), options.entityId(),
-                    Optional.of(keyId), SIGNING_USE, algorithm, now);
+                    Optional.of(keyId), org.miaixz.bus.auth.Builder.SIGNING, algorithm, now);
             final CompletionStage<Outcome<KeyMaterial>> resolution;
             try {
                 resolution = Outcome.mapStage(
@@ -309,9 +289,9 @@ public class SamlClientDriver implements SourceDriver<SamlClientOptions> {
         final Provider provider = prepared.provider();
         final Library library = prepared.library();
         final Source source = record.resource();
-        final String namespace = library.getNamespace_id();
-        if (!scheme().id().equals(source.getType()) || !supports(source.getProtocol()) || namespace == null
-                || namespace.isBlank() || !provider.getId().equals(source.getProvider_id())
+        final String space = library.getSpace_id();
+        if (!scheme().id().equals(source.getType()) || !supports(source.getProtocol()) || space == null
+                || space.isBlank() || !provider.getId().equals(source.getProvider_id())
                 || !library.getId().equals(provider.getLibrary_id())) {
             throw new ValidateException("SAML Source driver requires a matching Source registration");
         }
@@ -323,14 +303,14 @@ public class SamlClientDriver implements SourceDriver<SamlClientOptions> {
         if (options.clockSkew().compareTo(policy.maximumClockSkew()) > 0) {
             throw new ValidateException("SAML Source clock skew exceeds the security baseline");
         }
-        final SamlMessageCodec messageCodec = new SamlMessageCodec(policy.maximumMessageBytes(), MAXIMUM_XML_DEPTH);
-        final MetadataCodec metadataCodec = new MetadataCodec(policy.maximumMessageBytes(), MAXIMUM_XML_DEPTH);
+        final SamlMessageCodec messageCodec = new SamlMessageCodec(policy.maximumMessageBytes(), Normal._64);
+        final MetadataCodec metadataCodec = new MetadataCodec(policy.maximumMessageBytes(), Normal._64);
         final SamlSignatureValidator signatureValidator = new SamlSignatureValidator(services,
                 services.securityBaseline());
         final MetadataClient metadataClient = new MetadataClient(options, services, metadataCodec, signatureValidator);
         final SamlAssertionValidator assertionValidator = new SamlAssertionValidator(services.securityBaseline());
         final SamlReplayValidator replayValidator = new SamlReplayValidator(new ReplayGuard(services.replayCache()),
-                namespace);
+                space);
         final SamlDecryptionService decryptionService = new SamlDecryptionService(services, messageCodec,
                 signatureValidator, services.securityBaseline());
         final AssertionConsumerService consumer = new AssertionConsumerService(options, assertionValidator,
@@ -340,7 +320,7 @@ public class SamlClientDriver implements SourceDriver<SamlClientOptions> {
                 signingOperation(options, services));
         final SamlServiceProvider serviceProvider = new SamlServiceProvider(metadataClient, consumer, redirect,
                 options);
-        final SourceAdapter adapter = new SourceAdapter(source.getId(), namespace, options, serviceProvider, post,
+        final SourceAdapter adapter = new SourceAdapter(source.getId(), space, options, serviceProvider, post,
                 signatureValidator, services.stateCache());
         return new CompiledClient(manifest(options), serviceProvider, adapter);
     }
@@ -518,9 +498,9 @@ public class SamlClientDriver implements SourceDriver<SamlClientOptions> {
         private final String sourceId;
 
         /**
-         * Namespace used to isolate one-time state keys.
+         * Space used to isolate one-time state keys.
          */
-        private final String namespace;
+        private final String space;
 
         /**
          * Validated service-provider options.
@@ -551,7 +531,7 @@ public class SamlClientDriver implements SourceDriver<SamlClientOptions> {
          * Creates one Source-bound SAML browser adapter.
          *
          * @param sourceId           registered Source identifier
-         * @param namespace          namespace resolved from the owning Library
+         * @param space              space resolved from the owning Library
          * @param options            validated service-provider options
          * @param serviceProvider    standard SAML service-provider facade
          * @param postBindingCodec   strict HTTP-POST Binding codec
@@ -559,11 +539,11 @@ public class SamlClientDriver implements SourceDriver<SamlClientOptions> {
          * @param stateCache         atomic one-time callback state cache
          * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
          */
-        private SourceAdapter(final String sourceId, final String namespace, final SamlClientOptions options,
+        private SourceAdapter(final String sourceId, final String space, final SamlClientOptions options,
                 final SamlServiceProvider serviceProvider, final PostBindingCodec postBindingCodec,
                 final SamlSignatureValidator signatureValidator, final StateCache stateCache) {
             this.sourceId = Assert.notBlank(sourceId, "SAML Source id must not be blank");
-            this.namespace = Assert.notBlank(namespace, "SAML owning Library namespace must not be blank");
+            this.space = Assert.notBlank(space, "SAML owning Library space must not be blank");
             this.options = Assert.notNull(options, "SAML Source adapter options must not be null");
             this.serviceProvider = Assert
                     .notNull(serviceProvider, "SAML Source adapter service provider must not be null");
@@ -835,9 +815,9 @@ public class SamlClientDriver implements SourceDriver<SamlClientOptions> {
          */
         private AuthnRequest authenticationRequest(final String requestId, final Instant now) {
             final Issuer issuer = new Issuer(new NameID(options.entityId(), Optional.empty(), Optional.empty(),
-                    Optional.of(ENTITY_NAME_ID), Optional.empty()));
-            final NameIDPolicy nameIdPolicy = new NameIDPolicy(Optional.of(PERSISTENT_NAME_ID), Optional.empty(),
-                    Optional.of(Boolean.TRUE));
+                    Optional.of(Saml.NameIdFormats.ENTITY), Optional.empty()));
+            final NameIDPolicy nameIdPolicy = new NameIDPolicy(Optional.of(Saml.NameIdFormats.PERSISTENT),
+                    Optional.empty(), Optional.of(Boolean.TRUE));
             return new AuthnRequest(requestId, "2.0", now,
                     Optional.of(options.singleSignOnServiceEndpoint().url().toString()), Optional.empty(),
                     Optional.of(issuer), Optional.empty(), List.of(), Optional.empty(), Optional.of(nameIdPolicy),
@@ -891,7 +871,7 @@ public class SamlClientDriver implements SourceDriver<SamlClientOptions> {
          */
         private String stateKey(final String state) {
             return Builder.sha256Hex(
-                    namespace + Symbol.C_NUL + sourceId + Symbol.C_NUL + BROWSER_STATE_PURPOSE + Symbol.C_NUL + state);
+                    space + Symbol.C_NUL + sourceId + Symbol.C_NUL + BROWSER_STATE_PURPOSE + Symbol.C_NUL + state);
         }
 
     }

@@ -111,13 +111,6 @@ public record OAuth2ServerOptions(String issuer, Optional<Endpoint> authorizatio
             ClientAuthenticationMethod.PRIVATE_KEY_JWT);
 
     /**
-     * Creates a secure-default mutable builder for one immutable authorization-server configuration.
-     */
-    public static Builder builder(final String issuer) {
-        return new Builder(issuer);
-    }
-
-    /**
      * Normalizes immutable collections and enforces endpoint, grant, lifetime, PKCE, and rotation invariants.
      */
     public OAuth2ServerOptions {
@@ -219,6 +212,16 @@ public record OAuth2ServerOptions(String issuer, Optional<Endpoint> authorizatio
         if (refreshTokenLifetime.compareTo(accessTokenLifetime) <= 0) {
             throw new ValidateException("OAuth 2.x refresh token lifetime must exceed access token lifetime");
         }
+    }
+
+    /**
+     * Creates a secure-default mutable builder for one immutable authorization-server configuration.
+     *
+     * @param issuer exact HTTPS authorization-server issuer
+     * @return new secure-default server-options builder
+     */
+    public static Builder builder(final String issuer) {
+        return new Builder(issuer);
     }
 
     /**
@@ -406,76 +409,201 @@ public record OAuth2ServerOptions(String issuer, Optional<Endpoint> authorizatio
      */
     public static class Builder {
 
+        /**
+         * Exact HTTPS authorization-server issuer.
+         */
         private final String issuer;
+        /**
+         * Authorization endpoint configuration.
+         */
         private Endpoint authorizationEndpoint;
+        /**
+         * Token endpoint configuration.
+         */
         private Endpoint tokenEndpoint;
+        /**
+         * Token introspection endpoint configuration.
+         */
         private Endpoint introspectionEndpoint;
+        /**
+         * Token revocation endpoint configuration.
+         */
         private Endpoint revocationEndpoint;
+        /**
+         * Device authorization endpoint configuration.
+         */
         private Endpoint deviceAuthorizationEndpoint;
+        /**
+         * User-facing device verification URI.
+         */
         private String deviceVerificationUri;
+        /**
+         * Authorization-server metadata endpoint configuration.
+         */
         private Endpoint metadataEndpoint;
+        /**
+         * Supported OAuth scopes.
+         */
         private Set<String> scopes = Set.of();
+        /**
+         * Supported OAuth grant types.
+         */
         private Set<GrantType> grants = Set.of();
+        /**
+         * Supported client authentication methods.
+         */
         private Set<ClientAuthenticationMethod> authenticationMethods = Set.of();
+        /**
+         * Authorization-code lifetime.
+         */
         private Duration authorizationCodeLifetime = Duration.ofMinutes(5);
+        /**
+         * Access-token lifetime.
+         */
         private Duration accessTokenLifetime = Duration.ofMinutes(5);
+        /**
+         * Refresh-token lifetime.
+         */
         private Duration refreshTokenLifetime = Duration.ofDays(30);
+        /**
+         * Device-code lifetime.
+         */
         private Duration deviceCodeLifetime = Duration.ofMinutes(10);
+        /**
+         * Minimum device polling interval.
+         */
         private Duration devicePollingInterval = Duration.ofSeconds(5);
+        /**
+         * Whether authorization-code requests require PKCE.
+         */
         private boolean pkceRequired = true;
+        /**
+         * Whether refresh-token rotation is mandatory.
+         */
         private boolean refreshTokenRotationRequired = true;
+        /**
+         * Whether federated JWT client authentication is enabled.
+         */
         private boolean federatedJwtEnabled;
 
+        /**
+         * Creates a secure-default collector for one issuer.
+         *
+         * @param issuer exact HTTPS authorization-server issuer
+         */
         public Builder(final String issuer) {
             this.issuer = Assert.notBlank(issuer, "OAuth 2.x issuer must not be blank");
         }
 
+        /**
+         * Selects the authorization endpoint.
+         *
+         * @param value immutable authorization endpoint
+         * @return this builder
+         */
         public Builder authorizationEndpoint(final Endpoint value) {
             this.authorizationEndpoint = Assert.notNull(value, "Authorization endpoint must not be null");
             return this;
         }
 
+        /**
+         * Selects the token endpoint.
+         *
+         * @param value immutable token endpoint
+         * @return this builder
+         */
         public Builder tokenEndpoint(final Endpoint value) {
             this.tokenEndpoint = Assert.notNull(value, "Token endpoint must not be null");
             return this;
         }
 
+        /**
+         * Selects the token introspection endpoint.
+         *
+         * @param value immutable introspection endpoint
+         * @return this builder
+         */
         public Builder introspectionEndpoint(final Endpoint value) {
             this.introspectionEndpoint = Assert.notNull(value, "Introspection endpoint must not be null");
             return this;
         }
 
+        /**
+         * Selects the token revocation endpoint.
+         *
+         * @param value immutable revocation endpoint
+         * @return this builder
+         */
         public Builder revocationEndpoint(final Endpoint value) {
             this.revocationEndpoint = Assert.notNull(value, "Revocation endpoint must not be null");
             return this;
         }
 
+        /**
+         * Selects the device authorization and verification endpoints.
+         *
+         * @param value           immutable device authorization endpoint
+         * @param verificationUri exact user-facing verification URI
+         * @return this builder
+         */
         public Builder deviceAuthorizationEndpoint(final Endpoint value, final String verificationUri) {
             this.deviceAuthorizationEndpoint = Assert.notNull(value, "Device authorization endpoint must not be null");
             this.deviceVerificationUri = Assert.notBlank(verificationUri, "Device verification URI must not be blank");
             return this;
         }
 
+        /**
+         * Selects the authorization-server metadata endpoint.
+         *
+         * @param value immutable metadata endpoint
+         * @return this builder
+         */
         public Builder metadataEndpoint(final Endpoint value) {
             this.metadataEndpoint = Assert.notNull(value, "Metadata endpoint must not be null");
             return this;
         }
 
+        /**
+         * Replaces the supported scope set.
+         *
+         * @param values supported OAuth scopes
+         * @return this builder
+         */
         public Builder scopes(final Set<String> values) {
             this.scopes = Set.copyOf(Assert.notNull(values, "OAuth scopes must not be null"));
             return this;
         }
 
+        /**
+         * Replaces the supported grant-type set.
+         *
+         * @param values supported OAuth grants
+         * @return this builder
+         */
         public Builder grants(final Set<GrantType> values) {
             this.grants = Set.copyOf(Assert.notNull(values, "OAuth grants must not be null"));
             return this;
         }
 
+        /**
+         * Replaces the supported client-authentication methods.
+         *
+         * @param values supported client-authentication methods
+         * @return this builder
+         */
         public Builder authenticationMethods(final Set<ClientAuthenticationMethod> values) {
             this.authenticationMethods = Set.copyOf(Assert.notNull(values, "Authentication methods must not be null"));
             return this;
         }
 
+        /**
+         * Replaces authorization-code, access-token, and refresh-token lifetimes.
+         *
+         * @param code    authorization-code lifetime
+         * @param access  access-token lifetime
+         * @param refresh refresh-token lifetime
+         * @return this builder
+         */
         public Builder lifetimes(final Duration code, final Duration access, final Duration refresh) {
             this.authorizationCodeLifetime = Assert.notNull(code, "Authorization code lifetime must not be null");
             this.accessTokenLifetime = Assert.notNull(access, "Access token lifetime must not be null");
@@ -483,27 +611,57 @@ public record OAuth2ServerOptions(String issuer, Optional<Endpoint> authorizatio
             return this;
         }
 
+        /**
+         * Replaces device-code lifetime and polling interval.
+         *
+         * @param lifetime        device-code lifetime
+         * @param pollingInterval minimum polling interval
+         * @return this builder
+         */
         public Builder device(final Duration lifetime, final Duration pollingInterval) {
             this.deviceCodeLifetime = Assert.notNull(lifetime, "Device code lifetime must not be null");
             this.devicePollingInterval = Assert.notNull(pollingInterval, "Device polling interval must not be null");
             return this;
         }
 
+        /**
+         * Configures mandatory PKCE validation.
+         *
+         * @param value whether PKCE is mandatory
+         * @return this builder
+         */
         public Builder pkceRequired(final boolean value) {
             this.pkceRequired = value;
             return this;
         }
 
+        /**
+         * Configures mandatory refresh-token rotation.
+         *
+         * @param value whether rotation is mandatory
+         * @return this builder
+         */
         public Builder refreshTokenRotationRequired(final boolean value) {
             this.refreshTokenRotationRequired = value;
             return this;
         }
 
+        /**
+         * Configures federated JWT client authentication.
+         *
+         * @param value whether the federated profile is enabled
+         * @return this builder
+         */
         public Builder federatedJwtEnabled(final boolean value) {
             this.federatedJwtEnabled = value;
             return this;
         }
 
+        /**
+         * Builds and validates immutable server options.
+         *
+         * @return validated immutable OAuth server options
+         */
         public OAuth2ServerOptions build() {
             return new OAuth2ServerOptions(issuer, Optional.ofNullable(authorizationEndpoint),
                     Optional.ofNullable(tokenEndpoint), Optional.ofNullable(introspectionEndpoint),

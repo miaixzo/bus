@@ -82,16 +82,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class SamlSignatureValidator {
 
     /**
-     * SAML certificate use passed to the external certificate loader.
-     */
-    private static final String SIGNING_USE = Builder.SIGNING;
-
-    /**
-     * Allowed enveloped-signature transform URI.
-     */
-    private static final String ENVELOPED = Transform.ENVELOPED;
-
-    /**
      * External certificate loader and framework-owned certificate parser.
      */
     private final DriverServices services;
@@ -180,7 +170,7 @@ public class SamlSignatureValidator {
      * @return whether the transform is safe for the SAML enveloped profile
      */
     private static boolean safeTransform(final String algorithm) {
-        return ENVELOPED.equals(algorithm) || algorithm.startsWith("http://www.w3.org/2001/10/xml-exc-c14n#")
+        return Transform.ENVELOPED.equals(algorithm) || algorithm.startsWith("http://www.w3.org/2001/10/xml-exc-c14n#")
                 || algorithm.startsWith("http://www.w3.org/TR/2001/REC-xml-c14n-20010315");
     }
 
@@ -670,7 +660,7 @@ public class SamlSignatureValidator {
         if (timeout.expired())
             return completed(failed("SAML signature validation has no remaining timeout"));
         final CertificateLoader.Request request = new CertificateLoader.Request(services.registration(), issuer,
-                SIGNING_USE, timeout.clock().now());
+                Builder.SIGNING, timeout.clock().now());
         final CompletionStage<Outcome<CertificateMaterial>> resolution = Outcome.mapStage(
                 () -> services.certificateLoader().load(request, context, timeout),
                 loaded -> services.certificateParser().parse(services.registration(), request, loaded));

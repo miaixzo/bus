@@ -43,7 +43,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.protocol.saml.codec.MetadataCodec;
 import org.miaixz.bus.auth.protocol.saml.codec.SamlMessageCodec;
 import org.miaixz.bus.auth.protocol.saml.server.*;
@@ -57,7 +56,6 @@ import org.miaixz.bus.auth.worker.loader.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -74,11 +72,6 @@ import org.miaixz.bus.extra.json.JsonValue;
  * @author Kimi Liu
  */
 public class SamlServerDriver implements SourceDriver<SamlServerOptions> {
-
-    /**
-     * Secure maximum DOM nesting depth used by the SAML codecs.
-     */
-    private static final int MAXIMUM_XML_DEPTH = Normal._64;
 
     /**
      * Creates a stateless SAML Provider driver.
@@ -166,8 +159,8 @@ public class SamlServerDriver implements SourceDriver<SamlServerOptions> {
             throw new ValidateException("SAML Provider clock skew exceeds the security baseline");
         }
         final long maximumBytes = services.securityBaseline().require(Protocol.SAML).maximumMessageBytes();
-        final SamlMessageCodec messageCodec = new SamlMessageCodec(maximumBytes, MAXIMUM_XML_DEPTH);
-        final MetadataCodec metadataCodec = new MetadataCodec(maximumBytes, MAXIMUM_XML_DEPTH);
+        final SamlMessageCodec messageCodec = new SamlMessageCodec(maximumBytes, Normal._64);
+        final MetadataCodec metadataCodec = new MetadataCodec(maximumBytes, Normal._64);
         final SamlErrorMapper errorMapper = new SamlErrorMapper(options);
         final SessionCoordinator sessions = new SessionCoordinator(source.getId(), services.sessionCache(),
                 services.sessionWorker());
@@ -367,16 +360,6 @@ public class SamlServerDriver implements SourceDriver<SamlServerOptions> {
      * @author Kimi Liu
      */
     private static final class XmlSigner {
-
-        /**
-         * XML Signature namespace used to locate the generated element.
-         */
-        private static final String XML_SIGNATURE_NAMESPACE = XMLSignature.XMLNS;
-
-        /**
-         * Exact external key-inventory use for SAML signing material.
-         */
-        private static final String SIGNING_USE = Builder.SIGNING;
 
         /**
          * Immutable Provider signing policy.
@@ -667,7 +650,7 @@ public class SamlServerDriver implements SourceDriver<SamlServerOptions> {
             if (timeout.expired())
                 return completed(failed("SAML XML signing has no remaining timeout"));
             final KeyLoader.Request query = new KeyLoader.Request(services.registration(), options.entityId(),
-                    Optional.of(options.signingKeyId()), SIGNING_USE, options.signatureAlgorithm(),
+                    Optional.of(options.signingKeyId()), Builder.SIGNING, options.signatureAlgorithm(),
                     timeout.clock().now());
             try {
                 final CompletionStage<Outcome<KeyMaterial>> stage = Outcome.mapStage(
@@ -776,7 +759,7 @@ public class SamlServerDriver implements SourceDriver<SamlServerOptions> {
                 signingContext.setDefaultNamespacePrefix("ds");
                 signingContext.setProperty("org.jcp.xml.dsig.secureValidation", Boolean.TRUE);
                 factory.newXMLSignature(signedInfo, null).sign(signingContext);
-                final NodeList signatures = root.getElementsByTagNameNS(XML_SIGNATURE_NAMESPACE, "Signature");
+                final NodeList signatures = root.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
                 if (signatures.getLength() != 1) {
                     throw new ValidateException("SAML signing produced an ambiguous Signature element");
                 }

@@ -194,7 +194,7 @@ public class DouyinManifest implements VariantManifest<DouyinOptions> {
      * Complete immutable ordinary mini-program manifest.
      */
     private static final VariantManifest.Variant MINI_VARIANT = new VariantManifest.Variant(ID, MINI_PROGRAM,
-            Protocol.VENDOR_AUTH, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of(),
+            Protocol.HTTPS, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of(),
             new VendorTargets(Optional.empty(),
                     Optional.of(
                             fixed(

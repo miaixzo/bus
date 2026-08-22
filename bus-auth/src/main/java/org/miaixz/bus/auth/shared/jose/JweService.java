@@ -33,8 +33,6 @@ import javax.crypto.spec.PSource;
 import org.miaixz.bus.auth.guard.AlgorithmGuard;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.RandomKit;
@@ -92,15 +90,6 @@ public class JweService {
      * Exact General JWE JSON recipients member name.
      */
     private static final String RECIPIENTS = "recipients";
-    /**
-     * AES-GCM initialization vector size required by the JWA profile.
-     */
-    private static final int GCM_IV_BYTES = Normal._12;
-    /**
-     * AES-GCM authentication tag size required by the JWA profile.
-     */
-    private static final int GCM_TAG_BYTES = Normal._16;
-
     /**
      * Runtime-supplied provider-neutral JSON codec.
      */
@@ -262,7 +251,7 @@ public class JweService {
             final byte[] authenticatedData,
             final byte[] input,
             final byte[] tag) {
-        if (iv.length != GCM_IV_BYTES || mode == Algorithm.Type.DECRYPT && tag.length != GCM_TAG_BYTES) {
+        if (iv.length != Normal._12 || mode == Algorithm.Type.DECRYPT && tag.length != Normal._16) {
             throw new ValidateException("JWE AES-GCM IV or authentication tag length is invalid");
         }
         if (keyBits(contentKey) != contentKeyBits(algorithm)) {
@@ -271,7 +260,7 @@ public class JweService {
         final JceCipher cipher = new JceCipher("AES/GCM/NoPadding");
         cipher.init(
                 mode,
-                new JceCipher.JceParameters(contentKey, new GCMParameterSpec(GCM_TAG_BYTES * Byte.SIZE, iv),
+                new JceCipher.JceParameters(contentKey, new GCMParameterSpec(Normal._16 * Byte.SIZE, iv),
                         mode == Algorithm.Type.ENCRYPT ? RandomKit.getSecureRandom() : null));
         cipher.updateAad(authenticatedData);
         return cipher.processFinal(mode == Algorithm.Type.ENCRYPT ? input : concatenate(input, tag));
@@ -478,7 +467,7 @@ public class JweService {
             final byte[] encryptedKey = wrap(contentKey, encryption.recipients().get(index).key(), header);
             recipients.add(new Recipient(encryption.recipients().get(index).header(), encryptedKey));
         }
-        final byte[] iv = secureBytes(GCM_IV_BYTES);
+        final byte[] iv = secureBytes(Normal._12);
         final byte[] authenticatedData = authenticatedData(encodedProtected, encryption.aad());
         final byte[] combined = cryptContent(
                 Algorithm.Type.ENCRYPT,
@@ -488,8 +477,8 @@ public class JweService {
                 authenticatedData,
                 encryption.plaintext(),
                 Normal.EMPTY_BYTE_ARRAY);
-        final byte[] ciphertext = Arrays.copyOf(combined, combined.length - GCM_TAG_BYTES);
-        final byte[] tag = Arrays.copyOfRange(combined, combined.length - GCM_TAG_BYTES, combined.length);
+        final byte[] ciphertext = Arrays.copyOf(combined, combined.length - Normal._16);
+        final byte[] tag = Arrays.copyOfRange(combined, combined.length - Normal._16, combined.length);
         return new Jwe(encryption.protectedHeader(), encodedProtected, encryption.unprotectedHeader(), encryption.aad(),
                 iv, ciphertext, tag, recipients);
     }

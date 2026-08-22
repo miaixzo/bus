@@ -29,6 +29,10 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 /**
  * Immutable parsed external subject trust relation.
  *
+ * @param consumerId      Consumer that accepts the federated assertion
+ * @param issuer          trusted external issuer URI
+ * @param externalSubject stable external subject identifier
+ * @param subject         mapped project Subject key
  * @author Kimi Liu
  */
 public record FederationMetadata(String consumerId, String issuer, String externalSubject, Subject.Key subject) {

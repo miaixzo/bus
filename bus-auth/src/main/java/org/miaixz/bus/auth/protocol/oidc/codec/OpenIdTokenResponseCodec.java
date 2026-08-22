@@ -49,11 +49,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class OpenIdTokenResponseCodec {
 
     /**
-     * Maximum accepted token endpoint JSON document size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
-
-    /**
      * Provider-neutral JSON service.
      */
     private final JsonProvider jsonProvider;
@@ -89,7 +84,7 @@ public class OpenIdTokenResponseCodec {
      * @param response response to validate
      */
     private static void validateMedia(final Response response) {
-        if (response.body().length() > MAXIMUM_JSON_BYTES) {
+        if (response.body().length() > Builder.MAXIMUM_DOCUMENT_BYTES) {
             throw new ValidateException("OpenID Connect token response exceeds the maximum JSON size");
         }
         final MediaType media = response.body().media();
@@ -112,7 +107,7 @@ public class OpenIdTokenResponseCodec {
         final Response encoded = Assert.notNull(response, "OpenID Connect token HTTP response must not be null");
         try (encoded) {
             validateMedia(encoded);
-            final JsonValue value = jsonProvider.readValue(encoded.bytes(MAXIMUM_JSON_BYTES));
+            final JsonValue value = jsonProvider.readValue(encoded.bytes(Builder.MAXIMUM_DOCUMENT_BYTES));
             if (!(value instanceof JsonValue.ObjectValue object)) {
                 throw new ValidateException("OpenID Connect token response JSON root must be an object");
             }
@@ -166,7 +161,7 @@ public class OpenIdTokenResponseCodec {
         Assert.notNull(request, "OpenID Connect token HTTP request must not be null");
         Assert.notNull(response, "OpenID Connect token response must not be null");
         try (Response oauth = oauthEncoder.encode(request, response.tokenResponse())) {
-            final JsonValue value = jsonProvider.readValue(oauth.bytes(MAXIMUM_JSON_BYTES));
+            final JsonValue value = jsonProvider.readValue(oauth.bytes(Builder.MAXIMUM_DOCUMENT_BYTES));
             if (!(value instanceof JsonValue.ObjectValue object)) {
                 throw new ValidateException("OAuth token response encoder returned a non-object JSON body");
             }

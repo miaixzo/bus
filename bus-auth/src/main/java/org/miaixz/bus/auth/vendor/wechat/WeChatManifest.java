@@ -19,22 +19,17 @@
 */
 package org.miaixz.bus.auth.vendor.wechat;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Credential;
-import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
-import org.miaixz.bus.auth.vendor.VariantManifest;
-import org.miaixz.bus.auth.vendor.Vendor;
-import org.miaixz.bus.auth.vendor.VendorDeviation;
-import org.miaixz.bus.auth.vendor.VendorTargets;
+import org.miaixz.bus.auth.vendor.*;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -43,12 +38,13 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
 
 /**
- * Declares the six frozen WeChat identity-source variants and their exact platform wire boundaries.
+ * Declares the frozen WeChat identity-source and WeCom enterprise directory variants.
  * <p>
  * Open Platform and Official Account browser authorization are OAuth 2.0 authorization operations, while their
  * query-authenticated token and profile documents remain private Source-authentication steps because successful token
  * responses omit the mandatory {@code token_type}. Mini Program and all WeCom variants use proprietary platform
- * operations and therefore never expose OAuth token or UserInfo capabilities.
+ * operations and therefore never expose OAuth token or UserInfo capabilities. The independent {@code ee-enterprise}
+ * Variant exposes only provider-neutral directory operations over the official WeCom management endpoints.
  * </p>
  *
  * @author Kimi Liu
@@ -89,6 +85,11 @@ public class WeChatManifest implements VariantManifest<WeChatOptions> {
      * Stable WeCom web authorization variant identifier.
      */
     public static final Vendor.Variant EE_WEB = new Vendor.Variant("ee-web");
+
+    /**
+     * Stable WeCom enterprise directory Variant identifier retained under the WeChat Vendor.
+     */
+    public static final Vendor.Variant EE_ENTERPRISE = new Vendor.Variant("ee-enterprise");
 
     /**
      * WeChat client-secret authentication transported in endpoint query parameters.
@@ -132,6 +133,25 @@ public class WeChatManifest implements VariantManifest<WeChatOptions> {
     private static final Capability.Manifest WORK_BROWSER_CAPABILITIES = new Capability.Manifest(List.of(
             SourceWorkflow.initiate(Set.of(Capability.Interaction.REDIRECT)),
             SourceWorkflow.complete(Set.of(Capability.Interaction.REDIRECT))));
+
+    /**
+     * Exact provider-neutral capabilities implemented by the WeCom enterprise directory adapter.
+     */
+    private static final Capability.Manifest ENTERPRISE_CAPABILITIES = new Capability.Manifest(
+            List.of(Realm.describe(ID), Realm.snapshot(ID), Realm.retrieve(ID)));
+
+    /**
+     * Exact enterprise coverage description shared with the compiled WeCom enterprise adapter.
+     */
+    private static final Realm.Description ENTERPRISE_DESCRIPTION = new Realm.Description(
+            Set.of(Realm.Kind.USER, Realm.Kind.ORGANIZATION, Realm.Kind.GROUP),
+            Set.of(Realm.RelationKind.PARENT, Realm.RelationKind.MEMBER, Realm.RelationKind.MANAGER),
+            Set.of(Realm.Operation.DESCRIBE, Realm.Operation.SNAPSHOT, Realm.Operation.RETRIEVE),
+            Realm.Coverage.PARTIAL, Builder.MAXIMUM_ENTERPRISE_PAGE_SIZE,
+            List.of(
+                    Builder.ENTERPRISE_LIMITATION_APPLICATION_VISIBLE_CONTACT_SCOPE,
+                    Builder.ENTERPRISE_LIMITATION_UNPAGED_REPLAY,
+                    Builder.ENTERPRISE_LIMITATION_REPLAY_CHANGE_FAILURE));
 
     /**
      * Registered Open Platform deviations confined to authorization and private Source authentication.
@@ -426,8 +446,8 @@ public class WeChatManifest implements VariantManifest<WeChatOptions> {
     /**
      * Complete immutable WeChat Mini Program manifest.
      */
-    private static final VariantManifest.Variant MINI_VARIANT = new VariantManifest.Variant(ID, MINI,
-            Protocol.VENDOR_AUTH, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of(),
+    private static final VariantManifest.Variant MINI_VARIANT = new VariantManifest.Variant(ID, MINI, Protocol.HTTPS,
+            VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of(),
             targets(
                     null,
                     fixed("https://api.weixin.qq.com/sns/jscode2session", Http.Method.GET, CLIENT_SECRET_QUERY),
@@ -438,7 +458,7 @@ public class WeChatManifest implements VariantManifest<WeChatOptions> {
     /**
      * Complete immutable WeCom corporate QR-code manifest.
      */
-    private static final VariantManifest.Variant EE_VARIANT = new VariantManifest.Variant(ID, EE, Protocol.VENDOR_AUTH,
+    private static final VariantManifest.Variant EE_VARIANT = new VariantManifest.Variant(ID, EE, Protocol.HTTPS,
             VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of(),
             targets(
                     fixed(
@@ -457,7 +477,7 @@ public class WeChatManifest implements VariantManifest<WeChatOptions> {
      * Complete immutable WeCom service-provider QR-code manifest.
      */
     private static final VariantManifest.Variant EE_QRCODE_VARIANT = new VariantManifest.Variant(ID, EE_QRCODE,
-            Protocol.VENDOR_AUTH, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of(),
+            Protocol.HTTPS, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of(),
             targets(
                     fixed(
                             "https://open.work.weixin.qq.com/wwopen/sso/3rd_qrConnect",
@@ -478,7 +498,7 @@ public class WeChatManifest implements VariantManifest<WeChatOptions> {
      * Complete immutable WeCom web authorization manifest.
      */
     private static final VariantManifest.Variant EE_WEB_VARIANT = new VariantManifest.Variant(ID, EE_WEB,
-            Protocol.VENDOR_AUTH, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of("snsapi_base"),
+            Protocol.HTTPS, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of("snsapi_base"),
             targets(
                     fixed(
                             "https://open.weixin.qq.com/connect/oauth2/authorize",
@@ -493,11 +513,60 @@ public class WeChatManifest implements VariantManifest<WeChatOptions> {
             WORK_BROWSER_CAPABILITIES, EE_WEB_DEVIATIONS);
 
     /**
+     * Complete immutable WeCom enterprise directory Variant declaration.
+     */
+    private static final VariantManifest.Variant EE_ENTERPRISE_VARIANT = new VariantManifest.Variant(ID, EE_ENTERPRISE,
+            Protocol.HTTPS, VariantManifest.Pkce.DISABLED, Credential.Type.CLIENT_SECRET, List.of(),
+            new VendorTargets(Optional.empty(), Optional
+                    .of(fixed("https://qyapi.weixin.qq.com/cgi-bin/gettoken", Http.Method.GET, CLIENT_SECRET_QUERY)),
+                    Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                    Optional.empty(), Optional.empty(), Optional.empty(), managementTargets()),
+            ENTERPRISE_CAPABILITIES, List.of());
+
+    /**
      * Creates the stateless WeChat manifest used by Vendor directory assembly.
      */
     public WeChatManifest() {
-        // No initialization required.
-        // Immutable manifest state is retained by class constants.
+    }
+
+    /**
+     * Returns the frozen WeCom enterprise coverage description.
+     *
+     * @return immutable enterprise description
+     */
+    static Realm.Description enterpriseDescription() {
+        return ENTERPRISE_DESCRIPTION;
+    }
+
+    /**
+     * Creates the ordered official WeCom management target map.
+     *
+     * @return immutable-by-construction management target declarations
+     */
+    private static Map<String, VendorTargets.Target> managementTargets() {
+        final Map<String, VendorTargets.Target> targets = new LinkedHashMap<>();
+        final VendorTargets.Target departmentUsers = fixed(
+                "https://qyapi.weixin.qq.com/cgi-bin/user/list",
+                Http.Method.GET,
+                Endpoint.Authentication.NONE);
+        targets.put(Builder.ENTERPRISE_USERS, departmentUsers);
+        targets.put(
+                Builder.ENTERPRISE_USER,
+                fixed("https://qyapi.weixin.qq.com/cgi-bin/user/get", Http.Method.GET, Endpoint.Authentication.NONE));
+        targets.put(
+                Builder.ENTERPRISE_ORGANIZATIONS,
+                fixed(
+                        "https://qyapi.weixin.qq.com/cgi-bin/department/list",
+                        Http.Method.GET,
+                        Endpoint.Authentication.NONE));
+        targets.put(Builder.ENTERPRISE_ORGANIZATION_USERS, departmentUsers);
+        targets.put(
+                Builder.ENTERPRISE_GROUPS,
+                fixed("https://qyapi.weixin.qq.com/cgi-bin/tag/list", Http.Method.GET, Endpoint.Authentication.NONE));
+        targets.put(
+                Builder.ENTERPRISE_GROUP_MEMBERS,
+                fixed("https://qyapi.weixin.qq.com/cgi-bin/tag/get", Http.Method.GET, Endpoint.Authentication.NONE));
+        return targets;
     }
 
     /**
@@ -592,8 +661,7 @@ public class WeChatManifest implements VariantManifest<WeChatOptions> {
      */
     @Override
     public Vendor.Metadata metadata() {
-        return new Vendor.Metadata("WeChat",
-                "WeChat Open Platform, Official Account, Mini Program, and WeCom authentication", "wechat");
+        return new Vendor.Metadata("WeChat", "WeChat authentication and WeCom enterprise directory access", "wechat");
     }
 
     /**
@@ -606,13 +674,20 @@ public class WeChatManifest implements VariantManifest<WeChatOptions> {
     }
 
     /**
-     * Returns all six variants in stable management order.
+     * Returns all seven variants in stable management order.
      *
      * @return immutable ordered variant manifests
      */
     @Override
     public List<VariantManifest.Variant> variants() {
-        return List.of(OPEN_VARIANT, MP_VARIANT, MINI_VARIANT, EE_VARIANT, EE_QRCODE_VARIANT, EE_WEB_VARIANT);
+        return List.of(
+                OPEN_VARIANT,
+                MP_VARIANT,
+                MINI_VARIANT,
+                EE_VARIANT,
+                EE_QRCODE_VARIANT,
+                EE_WEB_VARIANT,
+                EE_ENTERPRISE_VARIANT);
     }
 
     /**
@@ -641,6 +716,9 @@ public class WeChatManifest implements VariantManifest<WeChatOptions> {
         }
         if (EE_WEB.equals(variant)) {
             return EE_WEB_VARIANT;
+        }
+        if (EE_ENTERPRISE.equals(variant)) {
+            return EE_ENTERPRISE_VARIANT;
         }
         throw new ValidateException("WeChat Vendor variant is not supported");
     }

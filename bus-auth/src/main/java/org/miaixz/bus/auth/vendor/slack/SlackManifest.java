@@ -19,21 +19,17 @@
 */
 package org.miaixz.bus.auth.vendor.slack;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Credential;
-import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
-import org.miaixz.bus.auth.vendor.VariantManifest;
-import org.miaixz.bus.auth.vendor.Vendor;
-import org.miaixz.bus.auth.vendor.VendorDeviation;
-import org.miaixz.bus.auth.vendor.VendorTargets;
+import org.miaixz.bus.auth.vendor.*;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -43,11 +39,13 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
 
 /**
- * Declares the Slack OAuth 2.0 browser Vendor manifest.
+ * Declares the Slack OAuth 2.0 browser and administrator SCIM Vendor manifests.
  * <p>
  * Public operations retain standard authorization, token, and revocation request/result types. The comma-delimited
  * authorization scope, query-authenticated {@code oauth.v2.access} call, Slack response envelopes, {@code users.info},
- * and {@code auth.revoke} transport remain exact registered Vendor deviations.
+ * and {@code auth.revoke} transport remain exact registered Vendor deviations. The independent SCIM Variant exposes
+ * only provider-neutral enterprise description, snapshot, and stable-key retrieval through fixed official Users and
+ * Groups resources.
  * </p>
  *
  * @author Kimi Liu
@@ -60,9 +58,14 @@ public class SlackManifest implements VariantManifest<SlackOptions> {
     public static final Vendor.Id ID = new Vendor.Id("slack");
 
     /**
-     * Stable identifier of the sole Slack variant.
+     * Stable identifier of the Slack browser-login Variant.
      */
     public static final Vendor.Variant DEFAULT = new Vendor.Variant(Normal.DEFAULT);
+
+    /**
+     * Stable identifier of the Slack administrator SCIM Variant.
+     */
+    public static final Vendor.Variant SCIM = new Vendor.Variant("scim");
 
     /**
      * Slack client-secret authentication carried in token query parameters.
@@ -79,6 +82,24 @@ public class SlackManifest implements VariantManifest<SlackOptions> {
             OAuth2ClientScheme.AUTHORIZATION,
             OAuth2ClientScheme.TOKEN,
             OAuth2ClientScheme.REVOCATION));
+
+    /**
+     * Exact provider-neutral capabilities exposed by the administrator SCIM Variant.
+     */
+    private static final Capability.Manifest ENTERPRISE_CAPABILITIES = new Capability.Manifest(
+            List.of(Realm.describe(ID), Realm.snapshot(ID), Realm.retrieve(ID)));
+
+    /**
+     * Frozen provider-neutral coverage description for Slack administrator SCIM.
+     */
+    private static final Realm.Description ENTERPRISE_DESCRIPTION = new Realm.Description(
+            Set.of(Realm.Kind.USER, Realm.Kind.GROUP), Set.of(Realm.RelationKind.MEMBER),
+            Set.of(Realm.Operation.DESCRIBE, Realm.Operation.SNAPSHOT, Realm.Operation.RETRIEVE),
+            Realm.Coverage.UNKNOWN, Builder.MAXIMUM_ENTERPRISE_PAGE_SIZE,
+            List.of(
+                    "scim-provisioned-identities-only",
+                    "business-plus-or-enterprise-plan-required",
+                    Builder.ENTERPRISE_LIMITATION_SNAPSHOT_ONLY));
 
     /**
      * Exact historical Slack wire deviations isolated from the OAuth protocol package.
@@ -170,11 +191,50 @@ public class SlackManifest implements VariantManifest<SlackOptions> {
             CAPABILITIES, DEVIATIONS);
 
     /**
+     * Complete immutable Slack administrator SCIM manifest.
+     */
+    private static final VariantManifest.Variant SCIM_VARIANT = new VariantManifest.Variant(ID, SCIM, Protocol.SCIM,
+            VariantManifest.Pkce.DISABLED, Credential.Type.SHARED_SECRET, List.of(),
+            new VendorTargets(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                    Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                    managementTargets()),
+            ENTERPRISE_CAPABILITIES, List.of());
+
+    /**
      * Creates the stateless Slack manifest used by Vendor directory assembly.
      */
     public SlackManifest() {
-        // No initialization required.
-        // Immutable manifest state is retained by class constants.
+    }
+
+    /**
+     * Returns the frozen Slack administrator SCIM coverage description.
+     *
+     * @return immutable SCIM management description
+     */
+    static Realm.Description enterpriseDescription() {
+        return ENTERPRISE_DESCRIPTION;
+    }
+
+    /**
+     * Creates the exact ordered Slack SCIM resource-target declarations.
+     *
+     * @return immutable-by-construction SCIM management target map
+     */
+    private static Map<String, VendorTargets.Target> managementTargets() {
+        final Map<String, VendorTargets.Target> targets = new LinkedHashMap<>();
+        targets.put(
+                Builder.ENTERPRISE_USERS,
+                fixed("https://api.slack.com/scim/v2/Users", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_USER,
+                fixed("https://api.slack.com/scim/v2/Users", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_GROUPS,
+                fixed("https://api.slack.com/scim/v2/Groups", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.ENTERPRISE_GROUP,
+                fixed("https://api.slack.com/scim/v2/Groups", Http.Method.GET, Endpoint.Authentication.BEARER));
+        return targets;
     }
 
     /**
@@ -238,28 +298,31 @@ public class SlackManifest implements VariantManifest<SlackOptions> {
     }
 
     /**
-     * Returns the sole supported Slack variant.
+     * Returns the login Variant followed by the administrator SCIM Variant.
      *
-     * @return immutable single-element manifest list
+     * @return immutable two-Variant manifest list
      */
     @Override
     public List<VariantManifest.Variant> variants() {
-        return List.of(VARIANT);
+        return List.of(VARIANT, SCIM_VARIANT);
     }
 
     /**
-     * Resolves the exact default Slack manifest.
+     * Resolves one exact supported Slack manifest.
      *
      * @param variant requested Slack variant
-     * @return immutable default manifest
+     * @return immutable login or SCIM manifest
      * @throws ValidateException if the requested variant is unsupported
      */
     @Override
     public VariantManifest.Variant variant(final Vendor.Variant variant) {
-        if (!DEFAULT.equals(variant)) {
-            throw new ValidateException("Slack Vendor variant is not supported");
+        if (DEFAULT.equals(variant)) {
+            return VARIANT;
         }
-        return VARIANT;
+        if (SCIM.equals(variant)) {
+            return SCIM_VARIANT;
+        }
+        throw new ValidateException("Slack Vendor variant is not supported");
     }
 
 }

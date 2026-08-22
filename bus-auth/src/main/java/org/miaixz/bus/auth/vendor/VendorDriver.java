@@ -76,6 +76,11 @@ public class VendorDriver<O extends VendorOptions<?>> {
 
     /**
      * Validates and freezes exact adapter factory coverage.
+     *
+     * @param <O>       concrete immutable Vendor options type
+     * @param manifest  contributed platform manifest
+     * @param factories candidate adapter factories keyed by exact variant
+     * @return immutable exact adapter factory map
      */
     private static <O extends VendorOptions<?>> Map<Vendor.Variant, VendorAdapter.Factory<O>> adapters(
             final VariantManifest<O> manifest,
@@ -105,6 +110,11 @@ public class VendorDriver<O extends VendorOptions<?>> {
 
     /**
      * Validates and freezes exact Options factory coverage.
+     *
+     * @param <O>       concrete immutable Vendor options type
+     * @param manifest  contributed platform manifest
+     * @param factories candidate Options factories keyed by exact variant
+     * @return immutable exact Options factory map
      */
     private static <O extends VendorOptions<?>> Map<Vendor.Variant, VendorOptions.Factory<O>> options(
             final VariantManifest<O> manifest,

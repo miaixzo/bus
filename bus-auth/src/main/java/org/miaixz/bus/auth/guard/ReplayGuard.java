@@ -39,7 +39,7 @@ import org.miaixz.bus.extra.json.JsonValue;
 /**
  * Atomically registers irreversible authentication artifact digests for replay detection.
  * <p>
- * Each digest input is isolated by namespace, industry protocol, registered authority, and artifact purpose. Length
+ * Each digest input is isolated by space, industry protocol, registered authority, and artifact purpose. Length
  * prefixes make the input tuple unambiguous. Only the SHA-256 digest and a non-sensitive purpose label cross the cache
  * boundary; raw nonce, assertion, token, code, and authenticator material never does.
  * </p>
@@ -102,7 +102,7 @@ public class ReplayGuard {
     /**
      * Atomically registers one authentication artifact until its effective expiration.
      *
-     * @param namespace external registration namespace
+     * @param space     external registration space
      * @param protocol  industry protocol that owns the artifact
      * @param authority stable Provider or Source authority identifier
      * @param purpose   non-sensitive artifact purpose such as JWT jti or SAML assertion identifier
@@ -113,14 +113,14 @@ public class ReplayGuard {
      * @throws IllegalArgumentException if any argument is {@code null} or a required string is blank
      */
     public CompletionStage<Outcome<Void>> register(
-            final String namespace,
+            final String space,
             final Protocol protocol,
             final String authority,
             final String purpose,
             final String artifact,
             final Instant expiresAt,
             final Timeout timeout) {
-        Assert.notBlank(namespace, "Replay namespace must not be blank");
+        Assert.notBlank(space, "Replay space must not be blank");
         Assert.notNull(protocol, "Replay protocol must not be null");
         Assert.notBlank(authority, "Replay authority must not be blank");
         Assert.notBlank(purpose, "Replay purpose must not be blank");
@@ -135,7 +135,7 @@ public class ReplayGuard {
         if (!expiresAt.isAfter(now)) {
             return completed(Outcome.failed(failure(ErrorCode._408, "Replay registration has no remaining lifetime")));
         }
-        final String key = Builder.sha256(tuple(namespace, protocol.name(), authority, purpose, artifact));
+        final String key = Builder.sha256(tuple(space, protocol.name(), authority, purpose, artifact));
         final ExpiringValue<String> value = new ExpiringValue<>(protocol.name() + Symbol.C_COLON + purpose, expiresAt);
         try {
             final CompletionStage<Boolean> creation = cache.mark(key, value);

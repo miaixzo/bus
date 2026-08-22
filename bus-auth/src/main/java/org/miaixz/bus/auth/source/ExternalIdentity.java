@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Represents a verified identity in the namespace of one registered external Source.
+ * Represents a verified identity in the identifier domain of one registered external Source.
  * <p>
  * The subject is the stable identifier asserted by that Source. Attributes and evidence are immutable verified or
  * safely derived values; raw tokens, protocol responses, Vendor payloads, and account-linking decisions are excluded.

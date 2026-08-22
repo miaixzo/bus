@@ -29,13 +29,7 @@ import org.miaixz.bus.auth.shared.SecurityBaseline;
 import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.auth.worker.*;
-import org.miaixz.bus.auth.worker.loader.AttributeLoader;
-import org.miaixz.bus.auth.worker.loader.CertificateLoader;
-import org.miaixz.bus.auth.worker.loader.ConsumerLoader;
-import org.miaixz.bus.auth.worker.loader.FederationLoader;
-import org.miaixz.bus.auth.worker.loader.KeyLoader;
-import org.miaixz.bus.auth.worker.loader.ResourceLoader;
-import org.miaixz.bus.auth.worker.loader.SecretLoader;
+import org.miaixz.bus.auth.worker.loader.*;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.extra.json.JsonProvider;
@@ -108,9 +102,9 @@ public class RuntimeServices {
     private final CacheX<String, Object> authenticationCache;
 
     /**
-     * Deployment-unique authentication cache namespace.
+     * Deployment identifier used to isolate authentication cache keys.
      */
-    private final String cacheNamespace;
+    private final String cacheDeployment;
     /**
      * Protocol replay-prevention cache view.
      */
@@ -123,18 +117,18 @@ public class RuntimeServices {
     /**
      * Creates the immutable protocol dependency set and framework-owned stateless parsers and cache views.
      *
-     * @param fabric         Runtime-scoped facade owning the caller-supplied Fabric execution context and security
-     *                       baseline
-     * @param jsonProvider   caller-owned JSON provider
-     * @param executor       caller-owned executor
-     * @param workers        selected project protocol data ports
-     * @param cache          shared atomic authentication cache backend whose serializer can round-trip the immutable
-     *                       AuthCache envelope graph and deterministically re-encode equal expected values
-     * @param cacheNamespace deployment-unique authentication cache namespace
+     * @param fabric          Runtime-scoped facade owning the caller-supplied Fabric execution context and security
+     *                        baseline
+     * @param jsonProvider    caller-owned JSON provider
+     * @param executor        caller-owned executor
+     * @param workers         selected project protocol data ports
+     * @param cache           shared atomic authentication cache backend whose serializer can round-trip the immutable
+     *                        AuthCache envelope graph and deterministically re-encode equal expected values
+     * @param cacheDeployment deployment identifier used to isolate authentication cache keys
      * @throws IllegalArgumentException if a dependency is {@code null}
      */
     public RuntimeServices(final FabricX fabric, final JsonProvider jsonProvider, final Executor executor,
-            final WorkerSet workers, final CacheX<String, Object> cache, final String cacheNamespace) {
+            final WorkerSet workers, final CacheX<String, Object> cache, final String cacheDeployment) {
         this.fabric = Assert.notNull(fabric, "Fabric facade must not be null");
         this.jsonProvider = Assert.notNull(jsonProvider, "JSON provider must not be null");
         this.executor = Assert.notNull(executor, "Runtime executor must not be null");
@@ -150,9 +144,10 @@ public class RuntimeServices {
         Assert.isTrue(
                 authenticationCache.supports(),
                 "Authentication cache must support the complete atomic CacheX contract");
-        this.cacheNamespace = Assert.notBlank(cacheNamespace, "Authentication cache namespace must not be blank");
+        this.cacheDeployment = Assert
+                .notBlank(cacheDeployment, "Authentication cache deployment identifier must not be blank");
         this.securityBaseline = FabricX.securityBaseline(this.fabric);
-        this.replayCache = new ReplayCache(authenticationCache, this.cacheNamespace, FabricX.clock(this.fabric));
+        this.replayCache = new ReplayCache(authenticationCache, this.cacheDeployment, FabricX.clock(this.fabric));
     }
 
     /**
@@ -303,7 +298,7 @@ public class RuntimeServices {
      * @return Source-generation-scoped callback-state cache
      */
     StateCache stateCache(final String sourceId, final long generation) {
-        return new StateCache(authenticationCache, cacheNamespace, sourceId, generation, FabricX.clock(fabric));
+        return new StateCache(authenticationCache, cacheDeployment, sourceId, generation, FabricX.clock(fabric));
     }
 
     /**
@@ -314,7 +309,7 @@ public class RuntimeServices {
      * @return Source-generation-scoped nonce cache
      */
     NonceCache nonceCache(final String sourceId, final long generation) {
-        return new NonceCache(authenticationCache, cacheNamespace, sourceId, generation, FabricX.clock(fabric));
+        return new NonceCache(authenticationCache, cacheDeployment, sourceId, generation, FabricX.clock(fabric));
     }
 
     /**
@@ -325,7 +320,7 @@ public class RuntimeServices {
      * @return Source-generation-scoped authorization-code cache
      */
     AuthorizationCodeCache authorizationCodeCache(final String sourceId, final long generation) {
-        return new AuthorizationCodeCache(authenticationCache, cacheNamespace, sourceId, generation,
+        return new AuthorizationCodeCache(authenticationCache, cacheDeployment, sourceId, generation,
                 FabricX.clock(fabric));
     }
 
@@ -337,7 +332,7 @@ public class RuntimeServices {
      * @return Source-generation-scoped device-code cache
      */
     DeviceCodeCache deviceCodeCache(final String sourceId, final long generation) {
-        return new DeviceCodeCache(authenticationCache, cacheNamespace, sourceId, generation, FabricX.clock(fabric));
+        return new DeviceCodeCache(authenticationCache, cacheDeployment, sourceId, generation, FabricX.clock(fabric));
     }
 
     /**
@@ -348,7 +343,8 @@ public class RuntimeServices {
      * @return Source-generation-scoped authorization lifecycle cache
      */
     AuthorizationCache authorizationCache(final String sourceId, final long generation) {
-        return new AuthorizationCache(authenticationCache, cacheNamespace, sourceId, generation, FabricX.clock(fabric));
+        return new AuthorizationCache(authenticationCache, cacheDeployment, sourceId, generation,
+                FabricX.clock(fabric));
     }
 
     /**
@@ -359,7 +355,7 @@ public class RuntimeServices {
      * @return Source-generation-scoped access-token cache
      */
     AccessTokenCache accessTokenCache(final String sourceId, final long generation) {
-        return new AccessTokenCache(authenticationCache, cacheNamespace, sourceId, generation, FabricX.clock(fabric));
+        return new AccessTokenCache(authenticationCache, cacheDeployment, sourceId, generation, FabricX.clock(fabric));
     }
 
     /**
@@ -370,7 +366,7 @@ public class RuntimeServices {
      * @return Source-generation-scoped refresh-token cache
      */
     RefreshTokenCache refreshTokenCache(final String sourceId, final long generation) {
-        return new RefreshTokenCache(authenticationCache, cacheNamespace, sourceId, generation, FabricX.clock(fabric));
+        return new RefreshTokenCache(authenticationCache, cacheDeployment, sourceId, generation, FabricX.clock(fabric));
     }
 
     /**
@@ -381,7 +377,7 @@ public class RuntimeServices {
      * @return Source-generation-scoped Session cache
      */
     SessionCache sessionCache(final String sourceId, final long generation) {
-        return new SessionCache(authenticationCache, cacheNamespace, sourceId, generation, FabricX.clock(fabric));
+        return new SessionCache(authenticationCache, cacheDeployment, sourceId, generation, FabricX.clock(fabric));
     }
 
     /**
@@ -392,7 +388,7 @@ public class RuntimeServices {
      * @return Source-generation-scoped ID Token binding cache
      */
     IdTokenCache idTokenCache(final String sourceId, final long generation) {
-        return new IdTokenCache(authenticationCache, cacheNamespace, sourceId, generation, FabricX.clock(fabric));
+        return new IdTokenCache(authenticationCache, cacheDeployment, sourceId, generation, FabricX.clock(fabric));
     }
 
     /**

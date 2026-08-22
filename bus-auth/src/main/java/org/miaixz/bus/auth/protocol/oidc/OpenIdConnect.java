@@ -54,7 +54,7 @@ public class OpenIdConnect {
     public static final Capability.Key END_SESSION = Capability.Key.standard(Protocol.OIDC, "end_session");
 
     /**
-     * Creates an OpenID Connect operation namespace instance with no retained state.
+     * Creates an OpenID Connect operation constant holder with no retained state.
      */
     public OpenIdConnect() {
         // No initialization required.
@@ -149,7 +149,7 @@ public class OpenIdConnect {
         public static final String UI_LOCALES = "ui_locales";
 
         /**
-         * Creates an OpenID Connect request-parameter namespace instance.
+         * Creates an OpenID Connect request-parameter constant holder.
          */
         public Parameters() {
             // No initialization required.
@@ -320,7 +320,7 @@ public class OpenIdConnect {
         public static final String VALUES = "values";
 
         /**
-         * Creates an OpenID Connect claim-name namespace instance.
+         * Creates an OpenID Connect claim-name constant holder.
          */
         public Claims() {
             // No initialization required.
@@ -355,7 +355,7 @@ public class OpenIdConnect {
         public static final String PHONE = "phone";
 
         /**
-         * Creates an OpenID Connect scope namespace instance.
+         * Creates an OpenID Connect scope constant holder.
          */
         public Scopes() {
             // No initialization required.
@@ -382,7 +382,7 @@ public class OpenIdConnect {
         public static final String FORM_POST = "form_post";
 
         /**
-         * Creates an OpenID Connect response-mode namespace instance.
+         * Creates an OpenID Connect response-mode constant holder.
          */
         public ResponseModes() {
             // No initialization required.
@@ -469,7 +469,7 @@ public class OpenIdConnect {
         public static final String USERINFO_SIGNING_ALGORITHMS_SUPPORTED = "userinfo_signing_alg_values_supported";
 
         /**
-         * Creates an OpenID Provider metadata-name namespace instance.
+         * Creates an OpenID Provider metadata-name constant holder.
          */
         public Metadata() {
             // No initialization required.

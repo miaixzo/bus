@@ -25,7 +25,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.cache.AuthorizationCodeCache;
 import org.miaixz.bus.auth.protocol.oauth2.AuthorizationResponse;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2ErrorCode;
@@ -61,11 +60,6 @@ public class AuthenticationService {
      */
     private static final OAuth2ErrorCode UNMET_AUTHENTICATION_REQUIREMENTS = new OAuth2ErrorCode(
             "unmet_authentication_requirements");
-
-    /**
-     * Safe failure-detail member consumed by the authorization error mapper.
-     */
-    private static final String OAUTH_ERROR = Builder.OAUTH_ERROR;
 
     /**
      * Internal OAuth authorization-code issuer that persists the typed OpenID Connect binding.
@@ -192,8 +186,8 @@ public class AuthenticationService {
             final Errors error,
             final OAuth2ErrorCode protocolError,
             final String description) {
-        return new Outcome.Failure(error, description,
-                new JsonValue.ObjectValue(Map.of(OAUTH_ERROR, new JsonValue.StringValue(protocolError.value()))));
+        return new Outcome.Failure(error, description, new JsonValue.ObjectValue(
+                Map.of(Builder.OAUTH_ERROR, new JsonValue.StringValue(protocolError.value()))));
     }
 
     /**

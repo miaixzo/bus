@@ -215,7 +215,6 @@ public class IntrospectionService {
      *
      * @param value   cached token validation state, or {@code null}
      * @param failure asynchronous cache failure, or {@code null}
-     *
      * @author Kimi Liu
      */
     private record CacheResult(ExpiringValue<AccessTokenCache.Entry> value, Throwable failure) {

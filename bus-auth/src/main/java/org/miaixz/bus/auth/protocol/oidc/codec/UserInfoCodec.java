@@ -24,11 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.FabricX.Body;
-import org.miaixz.bus.auth.FabricX.Challenge;
-import org.miaixz.bus.auth.FabricX.Headers;
-import org.miaixz.bus.auth.FabricX.Request;
-import org.miaixz.bus.auth.FabricX.Response;
+import org.miaixz.bus.auth.FabricX.*;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2ErrorCode;
 import org.miaixz.bus.auth.protocol.oauth2.OAuth2ErrorResponse;
@@ -37,7 +33,9 @@ import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.auth.protocol.oidc.UserInfoRequest;
 import org.miaixz.bus.auth.protocol.oidc.UserInfoResponse;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
-import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -57,11 +55,6 @@ import org.miaixz.bus.extra.json.JsonValue;
  * @author Kimi Liu
  */
 public class UserInfoCodec {
-
-    /**
-     * Maximum accepted UserInfo or OAuth error JSON response size.
-     */
-    private static final long MAXIMUM_JSON_BYTES = Builder.MAXIMUM_DOCUMENT_BYTES;
 
     /**
      * Externally selected provider-neutral JSON implementation.
@@ -566,7 +559,7 @@ public class UserInfoCodec {
     public Decoded decode(final Response response) {
         final Response encoded = Assert.notNull(response, "OpenID Connect UserInfo HTTP response must not be null");
         try (encoded) {
-            if (encoded.body().length() > MAXIMUM_JSON_BYTES) {
+            if (encoded.body().length() > Builder.MAXIMUM_DOCUMENT_BYTES) {
                 throw new ValidateException("OpenID Connect UserInfo response exceeds one MiB");
             }
             if (encoded.code() == Http.Status.OK) {
@@ -603,7 +596,7 @@ public class UserInfoCodec {
         if (charset != null && !Charset.UTF_8.equals(media.charset())) {
             throw new ValidateException("OpenID Connect UserInfo JSON response charset must be UTF-8");
         }
-        final JsonValue value = jsonProvider.readValue(response.bytes(MAXIMUM_JSON_BYTES));
+        final JsonValue value = jsonProvider.readValue(response.bytes(Builder.MAXIMUM_DOCUMENT_BYTES));
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("OpenID Connect UserInfo response JSON root must be an object");
         }

@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.auth.runtime;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Scheme;
@@ -32,7 +28,7 @@ import org.miaixz.bus.auth.source.DriverDirectory;
 import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.auth.vendor.VariantManifest;
 import org.miaixz.bus.auth.vendor.Vendor;
-import org.miaixz.bus.auth.vendor.VendorDirectory;
+import org.miaixz.bus.auth.vendor.VendorLocator;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
@@ -69,10 +65,10 @@ public class RuntimeDescriptor {
     /**
      * Freezes one runtime's implementation inventory.
      *
-     * @param drivers complete selected Source drivers
-     * @param vendors selected Vendor directory, or empty when Vendor support is not assembled
+     * @param drivers       complete selected Source drivers
+     * @param vendorLocator selected Vendor locator, or empty when Vendor support is not assembled
      */
-    public RuntimeDescriptor(final DriverDirectory drivers, final Optional<VendorDirectory> vendors) {
+    public RuntimeDescriptor(final DriverDirectory drivers, final Optional<VendorLocator> vendorLocator) {
         Assert.notNull(drivers, "Runtime descriptor drivers must not be null");
         final List<SchemeDescriptor> ordered = new ArrayList<>(drivers.drivers().size());
         final Map<String, SchemeDescriptor> indexed = new LinkedHashMap<>(drivers.drivers().size());
@@ -90,12 +86,12 @@ public class RuntimeDescriptor {
         }
         this.schemes = List.copyOf(ordered);
         this.schemesById = Map.copyOf(indexed);
-        Assert.notNull(vendors, "Runtime descriptor Vendor container must not be null");
+        Assert.notNull(vendorLocator, "Runtime descriptor Vendor locator container must not be null");
         final List<VendorDescriptor> vendorList = new ArrayList<>();
         final Map<Vendor.Id, VendorDescriptor> vendorIndex = new LinkedHashMap<>();
-        final VendorDirectory directory = vendors.getOrNull();
-        if (directory != null) {
-            for (VariantManifest<?> manifest : directory.manifests()) {
+        final VendorLocator locator = vendorLocator.getOrNull();
+        if (locator != null) {
+            for (VariantManifest<?> manifest : locator.manifests()) {
                 final VendorDescriptor descriptor = new VendorDescriptor(manifest.vendor(), manifest.metadata(),
                         manifest.form(), manifest.variants());
                 vendorList.add(descriptor);
@@ -177,7 +173,6 @@ public class RuntimeDescriptor {
      * @param manifest    capabilities exposed by the assembled scheme
      * @param conformance optional protocol conformance metadata
      * @param form        configuration form metadata
-     *
      * @author Kimi Liu
      */
     public record SchemeDescriptor(String id, Protocol protocol, Set<Protocol> protocols, Capability.Manifest manifest,
@@ -204,7 +199,6 @@ public class RuntimeDescriptor {
      * @param metadata Vendor display and classification metadata
      * @param form     common Vendor configuration form
      * @param variants immutable supported platform variants
-     *
      * @author Kimi Liu
      */
     public record VendorDescriptor(Vendor.Id id, Vendor.Metadata metadata, Scheme.Form form,

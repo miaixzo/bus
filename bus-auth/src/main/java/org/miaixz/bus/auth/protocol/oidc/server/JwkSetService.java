@@ -53,11 +53,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class JwkSetService {
 
     /**
-     * Standard public-key use value for signature keys.
-     */
-    private static final String SIGNATURE_USE = Builder.SIGNATURE;
-
-    /**
      * Frozen OpenID Provider signing options.
      */
     private final OpenIdServerOptions options;
@@ -118,7 +113,7 @@ public class JwkSetService {
         final CompletionStage<Outcome<JwkSet>> resolution;
         try {
             final KeyLoader.Criteria criteria = new KeyLoader.Criteria(services.registration(), options.issuer(),
-                    SIGNATURE_USE, now);
+                    Builder.SIGNATURE, now);
             resolution = Outcome.mapStage(
                     () -> services.keyLoader().list(criteria, context, timeout),
                     listing -> services.keyParser().parsePublic(services.registration(), criteria, listing));
@@ -167,10 +162,10 @@ public class JwkSetService {
                 if (key == null || key.hasPrivateMaterial() || "oct".equals(key.keyType())) {
                     throw new ValidateException("OpenID Connect JWK Set contains non-public key material");
                 }
-                final String use = key.publicKeyUse().orElse(SIGNATURE_USE);
+                final String use = key.publicKeyUse().orElse(Builder.SIGNATURE);
                 final String algorithm = key.algorithm().orElseThrow(
                         () -> new ValidateException("OpenID Connect published signing key must declare alg"));
-                if (!SIGNATURE_USE.equals(use) || !options.idTokenSigningAlgorithm().name().equals(algorithm)) {
+                if (!Builder.SIGNATURE.equals(use) || !options.idTokenSigningAlgorithm().name().equals(algorithm)) {
                     throw new ValidateException("OpenID Connect JWK Set contains a non-advertised signing key");
                 }
                 if (!key.keyOperations().isEmpty()

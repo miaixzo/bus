@@ -95,13 +95,13 @@ public class RedirectManager {
     /**
      * Creates one validated Source-bound redirect flow coordinator.
      *
-     * @param namespaceId   registration namespace identifier
+     * @param spaceId       registration space identifier
      * @param sourceId      registration Source identifier
      * @param variant       selected Vendor variant
      * @param vendorOptions validated deployment options
      * @param services      Source-scoped runtime services
      */
-    public RedirectManager(final String namespaceId, final String sourceId, final VariantManifest.Variant variant,
+    public RedirectManager(final String spaceId, final String sourceId, final VariantManifest.Variant variant,
             final VendorOptions<?> vendorOptions, final DriverServices services) {
         this.sourceId = Assert.notBlank(sourceId, "Vendor redirect Source id must not be blank");
         final VariantManifest.Variant checkedVariant = Assert
@@ -114,13 +114,13 @@ public class RedirectManager {
         this.pkceEnabled = checkedVariant.pkce().resolve(vendorOptions);
         this.pkceGenerator = pkceEnabled ? new PkceGenerator(policy) : null;
         this.randomBytes = (Math.max(256, policy.minimumEntropyBits()) + Byte.SIZE - 1) / Byte.SIZE;
-        this.state = new RedirectState(namespaceId, sourceId, checkedServices, pkceEnabled);
+        this.state = new RedirectState(spaceId, sourceId, checkedServices, pkceEnabled);
     }
 
     /**
      * Creates Source-isolated redirect orchestration backed by external worker and cache ports.
      *
-     * @param namespaceId   registration namespace identifier
+     * @param spaceId       registration space identifier
      * @param sourceId      registration Source identifier
      * @param variant       exact selected platform variant
      * @param vendorOptions decoded exact deployment options
@@ -128,12 +128,67 @@ public class RedirectManager {
      * @return Source-bound redirect manager
      */
     public static RedirectManager create(
-            final String namespaceId,
+            final String spaceId,
             final String sourceId,
             final VariantManifest.Variant variant,
             final VendorOptions<?> vendorOptions,
             final DriverServices services) {
-        return new RedirectManager(namespaceId, sourceId, variant, vendorOptions, services);
+        return new RedirectManager(spaceId, sourceId, variant, vendorOptions, services);
+    }
+
+    /**
+     * Validates common redirect invocation collaborators.
+     *
+     * @param context invocation context
+     * @param timeout operation timeout
+     */
+    private static void invocation(final Context context, final Timeout timeout) {
+        Assert.notNull(context, "Vendor redirect invocation context must not be null");
+        Assert.notNull(timeout, "Vendor redirect invocation timeout must not be null");
+    }
+
+    /**
+     * Closes an optional caller-owned verifier lease.
+     *
+     * @param lease optional verifier lease
+     */
+    private static void close(final Optional<SecretLease> lease) {
+        if (lease.isPresent()) {
+            lease.getOrNull().close();
+        }
+    }
+
+    /**
+     * Wraps an outcome in an already completed stage.
+     *
+     * @param <T>     outcome value type
+     * @param outcome outcome to expose
+     * @return completed outcome stage
+     */
+    private static <T> CompletionStage<Outcome<T>> completed(final Outcome<T> outcome) {
+        return CompletableFuture.completedFuture(outcome);
+    }
+
+    /**
+     * Creates a safe expected redirect rejection.
+     *
+     * @param <T>         expected value type
+     * @param description safe rejection description
+     * @return rejected outcome
+     */
+    private static <T> Outcome<T> rejected(final String description) {
+        return Outcome.rejected(new Outcome.Failure(ErrorCode._400, description, new JsonValue.ObjectValue(Map.of())));
+    }
+
+    /**
+     * Creates a safe operational redirect failure.
+     *
+     * @param <T>         expected value type
+     * @param description safe failure description
+     * @return failed outcome
+     */
+    private static <T> Outcome<T> failed(final String description) {
+        return Outcome.failed(new Outcome.Failure(ErrorCode._500, description, new JsonValue.ObjectValue(Map.of())));
     }
 
     /**
@@ -346,61 +401,6 @@ public class RedirectManager {
         } finally {
             Arrays.fill(random, (byte) 0);
         }
-    }
-
-    /**
-     * Validates common redirect invocation collaborators.
-     *
-     * @param context invocation context
-     * @param timeout operation timeout
-     */
-    private static void invocation(final Context context, final Timeout timeout) {
-        Assert.notNull(context, "Vendor redirect invocation context must not be null");
-        Assert.notNull(timeout, "Vendor redirect invocation timeout must not be null");
-    }
-
-    /**
-     * Closes an optional caller-owned verifier lease.
-     *
-     * @param lease optional verifier lease
-     */
-    private static void close(final Optional<SecretLease> lease) {
-        if (lease.isPresent()) {
-            lease.getOrNull().close();
-        }
-    }
-
-    /**
-     * Wraps an outcome in an already completed stage.
-     *
-     * @param <T>     outcome value type
-     * @param outcome outcome to expose
-     * @return completed outcome stage
-     */
-    private static <T> CompletionStage<Outcome<T>> completed(final Outcome<T> outcome) {
-        return CompletableFuture.completedFuture(outcome);
-    }
-
-    /**
-     * Creates a safe expected redirect rejection.
-     *
-     * @param <T>         expected value type
-     * @param description safe rejection description
-     * @return rejected outcome
-     */
-    private static <T> Outcome<T> rejected(final String description) {
-        return Outcome.rejected(new Outcome.Failure(ErrorCode._400, description, new JsonValue.ObjectValue(Map.of())));
-    }
-
-    /**
-     * Creates a safe operational redirect failure.
-     *
-     * @param <T>         expected value type
-     * @param description safe failure description
-     * @return failed outcome
-     */
-    private static <T> Outcome<T> failed(final String description) {
-        return Outcome.failed(new Outcome.Failure(ErrorCode._500, description, new JsonValue.ObjectValue(Map.of())));
     }
 
     /**

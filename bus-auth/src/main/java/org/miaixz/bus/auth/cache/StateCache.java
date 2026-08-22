@@ -28,9 +28,9 @@ import org.miaixz.bus.cache.CacheX;
 /**
  * Stores one-time callback correlation for OAuth, OpenID Connect, SAML, and Vendor browser interactions.
  * <p>
- * Keys are irreversible digests isolated by namespace, Source, and state purpose. Consumers must use
- * {@link #consume(String)} so a callback state succeeds at most once. This wrapper adds a fixed state namespace before
- * it delegates the atomic operation to bus-cache.
+ * Keys are irreversible digests isolated by space, Source, and state purpose. Consumers must use
+ * {@link #consume(String)} so a callback state succeeds at most once. This wrapper adds a fixed state prefix before it
+ * delegates the atomic operation to bus-cache.
  * </p>
  *
  * @author Kimi Liu
@@ -46,7 +46,7 @@ public class StateCache extends AuthCache<Callback.Correlation> {
      * Creates a callback-state cache view backed entirely by bus-cache.
      *
      * @param cache      shared bus-cache backend
-     * @param deployment deployment-unique cache namespace
+     * @param deployment deployment-unique cache scope
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
     public StateCache(final CacheX<String, Object> cache, final String deployment, final Clock clock) {
@@ -57,7 +57,7 @@ public class StateCache extends AuthCache<Callback.Correlation> {
      * Creates a Source-generation-scoped callback-state cache view for compiled runtime use.
      *
      * @param cache      shared bus-cache backend
-     * @param deployment deployment-unique cache namespace
+     * @param deployment deployment-unique cache scope
      * @param sourceId   exact Source registration identifier
      * @param generation non-negative Source configuration generation
      * @param clock      shared runtime clock used to derive entry lifetimes

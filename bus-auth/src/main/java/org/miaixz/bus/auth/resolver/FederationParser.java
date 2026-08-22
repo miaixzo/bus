@@ -40,6 +40,13 @@ public class FederationParser {
 
     /**
      * Validates exact Source, consumer, issuer, and external subject ownership.
+     *
+     * @param registration            exact Source registration requesting the relation
+     * @param expectedConsumerId      expected Consumer identifier
+     * @param expectedIssuer          expected external issuer
+     * @param expectedExternalSubject expected external subject
+     * @param record                  project-loaded federation relation
+     * @return validated immutable federation metadata
      */
     public FederationMetadata parse(
             final Blueprint.SourceEntry registration,

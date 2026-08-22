@@ -19,13 +19,17 @@
 */
 package org.miaixz.bus.auth.vendor.aliyun;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.FabricX.Url;
+import org.miaixz.bus.auth.Realm;
 import org.miaixz.bus.auth.protocol.oidc.OpenIdConnect;
 import org.miaixz.bus.auth.protocol.oidc.client.OpenIdClientScheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
@@ -40,7 +44,7 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
 
 /**
- * Declares the frozen Alibaba Cloud OpenID Connect Vendor manifest.
+ * Declares the frozen Alibaba Cloud OpenID Connect and RAM management Vendor manifests.
  *
  * @author Kimi Liu
  */
@@ -57,6 +61,16 @@ public class AliyunManifest implements VariantManifest<AliyunOptions> {
     public static final Vendor.Variant DEFAULT = new Vendor.Variant(Normal.DEFAULT);
 
     /**
+     * Stable identifier of the Alibaba Cloud RAM management Variant.
+     */
+    public static final Vendor.Variant RAM = new Vendor.Variant("ram");
+
+    /**
+     * Alibaba Cloud RAM request authentication using the official signature V3 template.
+     */
+    private static final Endpoint.Authentication ACS3 = new Endpoint.Authentication("acs3_hmac_sha256");
+
+    /**
      * Exact public operations supported by the compiled Alibaba Cloud Source.
      */
     private static final Capability.Manifest CAPABILITIES = new Capability.Manifest(List.of(
@@ -68,6 +82,25 @@ public class AliyunManifest implements VariantManifest<AliyunOptions> {
             OpenIdClientScheme.DISCOVERY,
             OpenIdClientScheme.JWK_SET,
             OpenIdClientScheme.USERINFO));
+
+    /**
+     * Exact provider-neutral capabilities exposed by the RAM management Variant.
+     */
+    private static final Capability.Manifest RAM_CAPABILITIES = new Capability.Manifest(
+            List.of(Realm.describe(ID), Realm.snapshot(ID), Realm.retrieve(ID)));
+
+    /**
+     * Frozen provider-neutral coverage of identities visible through RAM APIs.
+     */
+    private static final Realm.Description RAM_DESCRIPTION = new Realm.Description(
+            Set.of(Realm.Kind.USER, Realm.Kind.GROUP, Realm.Kind.ROLE),
+            Set.of(Realm.RelationKind.MEMBER, Realm.RelationKind.ROLE_MEMBER),
+            Set.of(Realm.Operation.DESCRIBE, Realm.Operation.SNAPSHOT, Realm.Operation.RETRIEVE),
+            Realm.Coverage.PARTIAL, Builder.MAXIMUM_ENTERPRISE_PAGE_SIZE,
+            List.of(
+                    "ram-api-visible-identities-only",
+                    "role-membership-requires-resolvable-ram-user-principal",
+                    Builder.ENTERPRISE_LIMITATION_SNAPSHOT_ONLY));
 
     /**
      * Complete immutable endpoint, client-policy, scope, capability, and form manifest for the default variant.
@@ -110,11 +143,46 @@ public class AliyunManifest implements VariantManifest<AliyunOptions> {
             CAPABILITIES, List.of());
 
     /**
+     * Complete immutable Alibaba Cloud RAM management manifest.
+     */
+    private static final VariantManifest.Variant RAM_VARIANT = new VariantManifest.Variant(ID, RAM, Protocol.HTTPS,
+            VariantManifest.Pkce.DISABLED, Credential.Type.SHARED_SECRET, List.of(),
+            new VendorTargets(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                    Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                    managementTargets()),
+            RAM_CAPABILITIES, List.of());
+
+    /**
      * Creates the stateless Alibaba Cloud manifest used by Vendor directory assembly.
      */
     public AliyunManifest() {
-        // No initialization required.
-        // All manifest state is held by immutable class constants.
+    }
+
+    /**
+     * Returns the frozen Alibaba Cloud RAM coverage description.
+     *
+     * @return immutable coverage description
+     */
+    static Realm.Description enterpriseDescription() {
+        return RAM_DESCRIPTION;
+    }
+
+    /**
+     * Creates the ordered RAM RPC management target closure.
+     *
+     * @return fresh ordered management target map consumed by the immutable manifest
+     */
+    private static Map<String, VendorTargets.Target> managementTargets() {
+        final VendorTargets.Target ram = fixed("https://ram.aliyuncs.com/", Http.Method.POST, ACS3);
+        final Map<String, VendorTargets.Target> targets = new LinkedHashMap<>();
+        targets.put(Builder.ENTERPRISE_USERS, ram);
+        targets.put(Builder.ENTERPRISE_USER, ram);
+        targets.put(Builder.ENTERPRISE_GROUPS, ram);
+        targets.put(Builder.ENTERPRISE_GROUP, ram);
+        targets.put(Builder.ENTERPRISE_GROUP_MEMBERS, ram);
+        targets.put(Builder.ENTERPRISE_ROLES, ram);
+        targets.put(Builder.ENTERPRISE_ROLE, ram);
+        return targets;
     }
 
     /**
@@ -154,17 +222,17 @@ public class AliyunManifest implements VariantManifest<AliyunOptions> {
     }
 
     /**
-     * Returns the sole supported Alibaba Cloud OpenID Connect variant.
+     * Returns the login Variant followed by the RAM management Variant.
      *
-     * @return immutable single-element variant manifest list
+     * @return immutable two-Variant manifest list
      */
     @Override
     public List<VariantManifest.Variant> variants() {
-        return List.of(VARIANT);
+        return List.of(VARIANT, RAM_VARIANT);
     }
 
     /**
-     * Returns the exact default manifest.
+     * Returns one exact supported manifest.
      *
      * @param variant requested variant
      * @return exact default Alibaba Cloud manifest
@@ -172,10 +240,13 @@ public class AliyunManifest implements VariantManifest<AliyunOptions> {
      */
     @Override
     public VariantManifest.Variant variant(final Vendor.Variant variant) {
-        if (!DEFAULT.equals(variant)) {
-            throw new ValidateException("Alibaba Cloud Vendor variant is not supported");
+        if (DEFAULT.equals(variant)) {
+            return VARIANT;
         }
-        return VARIANT;
+        if (RAM.equals(variant)) {
+            return RAM_VARIANT;
+        }
+        throw new ValidateException("Alibaba Cloud Vendor variant is not supported");
     }
 
 }

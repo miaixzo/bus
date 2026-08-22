@@ -23,8 +23,8 @@
  * DouyinManifest exposes {@code douyin/open} as OAUTH2 with fixed authorization, token, profile, and refresh endpoints,
  * CLIENT_SECRET, prohibited PKCE, required {@code user_info} scope, and Source authentication only. Its client-key
  * fields, comma scopes, forms, response envelopes, and missing token type remain registered deviations. It separately
- * exposes {@code douyin/mini-program} as VENDOR_AUTH with the fixed JSON {@code jscode2session} endpoint and
- * one-time-code Source authentication.
+ * exposes {@code douyin/mini-program} as a proprietary HTTPS Variant with the fixed JSON {@code jscode2session}
+ * endpoint and one-time-code Source authentication.
  * </p>
  * <p>
  * DouyinOptions applies the same routing and credential reference shape to two distinct variants. Open requires an

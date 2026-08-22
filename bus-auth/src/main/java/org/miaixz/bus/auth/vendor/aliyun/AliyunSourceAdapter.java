@@ -26,11 +26,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.guard.IssuerValidator;
 import org.miaixz.bus.auth.protocol.oauth2.*;
-import org.miaixz.bus.auth.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.protocol.oauth2.client.*;
 import org.miaixz.bus.auth.protocol.oauth2.codec.*;
 import org.miaixz.bus.auth.protocol.oidc.*;
@@ -74,16 +72,6 @@ public class AliyunSourceAdapter implements VendorAdapter {
      * Trusted Alibaba Cloud OpenID Provider issuer.
      */
     private static final String ISSUER = "https://oauth.aliyun.com";
-
-    /**
-     * OIDC Discovery extension carrying the RFC 7009 revocation endpoint.
-     */
-    private static final String REVOCATION_ENDPOINT = OAuth2.Metadata.REVOCATION_ENDPOINT;
-
-    /**
-     * OIDC Discovery extension carrying the supported PKCE transformation methods.
-     */
-    private static final String CODE_CHALLENGE_METHODS = OAuth2.Metadata.CODE_CHALLENGE_METHODS_SUPPORTED;
 
     /**
      * Registered Source identifier used for every produced external identity.
@@ -148,17 +136,17 @@ public class AliyunSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Alibaba Cloud adapter from an immutable Vendor manifest.
      *
-     * @param namespaceId registration namespace used to isolate browser state and credentials
-     * @param sourceId    registered Source identifier
-     * @param manifest    selected Alibaba Cloud manifest
-     * @param variant     selected default variant manifest
-     * @param options     decoded externally loaded Alibaba Cloud options
-     * @param services    caller-owned execution services
+     * @param spaceId  registration space used to isolate browser state and credentials
+     * @param sourceId registered Source identifier
+     * @param manifest selected Alibaba Cloud manifest
+     * @param variant  selected default variant manifest
+     * @param options  decoded externally loaded Alibaba Cloud options
+     * @param services caller-owned execution services
      * @throws IllegalArgumentException if an identifier is blank or a required collaborator is {@code null}
      * @throws ValidateException        if the supplied profile, manifest, options, or security baseline does not
      *                                  represent the frozen Alibaba Cloud OIDC variant
      */
-    public AliyunSourceAdapter(final String namespaceId, final String sourceId, final AliyunManifest manifest,
+    public AliyunSourceAdapter(final String spaceId, final String sourceId, final AliyunManifest manifest,
             final VariantManifest.Variant variant, final AliyunOptions options, final DriverServices services) {
         Assert.notNull(manifest, "Alibaba Cloud manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Alibaba Cloud Source id must not be blank");
@@ -174,7 +162,7 @@ public class AliyunSourceAdapter implements VendorAdapter {
         if (!baselineAlgorithms.contains(JwaAlgorithm.RS256.name())) {
             throw new ValidateException("Alibaba Cloud RS256 is not enabled by the OIDC security baseline");
         }
-        this.redirectManager = RedirectManager.create(namespaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
         this.standardAdapter = standardAdapter(variant, options, services, redirectManager);
         this.authorizationResponseDecoder = new AuthorizationResponseDecoder();
         this.jwkSetCodec = new JwkSetCodec(services.jsonProvider());
@@ -855,9 +843,10 @@ public class AliyunSourceAdapter implements VendorAdapter {
                     || !metadata.subjectTypesSupported().contains(SubjectType.PUBLIC)
                     || !metadata.scopesSupported().containsAll(List.of("openid", "profile", "aliuid"))
                     || !metadata.idTokenSigningAlgValuesSupported().contains(JwaAlgorithm.RS256)
-                    || !extension(metadata, REVOCATION_ENDPOINT)
+                    || !extension(metadata, OAuth2.Metadata.REVOCATION_ENDPOINT)
                             .equals(resolvedTargets.revocation().getOrNull().url().toString())
-                    || !extensionArray(metadata, CODE_CHALLENGE_METHODS).contains(PkceMethod.S256.value())) {
+                    || !extensionArray(metadata, OAuth2.Metadata.CODE_CHALLENGE_METHODS_SUPPORTED)
+                            .contains(PkceMethod.S256.value())) {
                 throw new ValidateException("Alibaba Cloud discovery metadata differs from the frozen manifest");
             }
             return Outcome.succeeded(metadata);
