@@ -102,9 +102,10 @@ public class MacOSFileStore extends AbstractOSFileStore {
         this.logicalVolume = logicalVolume;
         this.description = description;
         this.fsType = fsType;
-        this.freeSpace = freeSpace;
-        this.usableSpace = usableSpace;
-        this.totalSpace = totalSpace;
+        long[] space = clampSpace(freeSpace, usableSpace, totalSpace);
+        this.freeSpace = space[0];
+        this.usableSpace = space[1];
+        this.totalSpace = space[2];
         this.freeInodes = freeInodes;
         this.totalInodes = totalInodes;
     }
@@ -195,14 +196,15 @@ public class MacOSFileStore extends AbstractOSFileStore {
      * @return the update attributes result
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         try {
             Statfs stat = new Statfs();
             if (SystemB.INSTANCE.statfs64(getMount(), stat) == 0) {
                 File f = new File(getMount());
-                this.freeSpace = f.getFreeSpace();
-                this.usableSpace = f.getUsableSpace();
-                this.totalSpace = f.getTotalSpace();
+                long[] space = clampSpace(f.getFreeSpace(), f.getUsableSpace(), f.getTotalSpace());
+                this.freeSpace = space[0];
+                this.usableSpace = space[1];
+                this.totalSpace = space[2];
                 this.freeInodes = stat.f_ffree;
                 this.totalInodes = stat.f_files;
                 return true;
@@ -215,9 +217,13 @@ public class MacOSFileStore extends AbstractOSFileStore {
                 this.logicalVolume = fileStore.getLogicalVolume();
                 this.description = fileStore.getDescription();
                 this.fsType = fileStore.getType();
-                this.freeSpace = fileStore.getFreeSpace();
-                this.usableSpace = fileStore.getUsableSpace();
-                this.totalSpace = fileStore.getTotalSpace();
+                long[] space = clampSpace(
+                        fileStore.getFreeSpace(),
+                        fileStore.getUsableSpace(),
+                        fileStore.getTotalSpace());
+                this.freeSpace = space[0];
+                this.usableSpace = space[1];
+                this.totalSpace = space[2];
                 this.freeInodes = fileStore.getFreeInodes();
                 this.totalInodes = fileStore.getTotalInodes();
                 return true;

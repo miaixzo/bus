@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.health.unix.freebsd.software;
 
+import java.util.List;
+
 import com.sun.jna.Native;
 import com.sun.jna.platform.unix.LibCAPI;
 
@@ -26,7 +28,11 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.jna.ByRef;
+import org.miaixz.bus.health.builtin.software.NetworkParams;
 import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
+import org.miaixz.bus.health.unix.shared.driver.BsdRouteDump;
+import org.miaixz.bus.health.unix.shared.driver.NetstatRoute;
+import org.miaixz.bus.health.unix.shared.driver.RouteTableDump;
 import org.miaixz.bus.health.unix.shared.jna.CLibrary;
 import org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc;
 import org.miaixz.bus.logger.Logger;
@@ -104,6 +110,34 @@ final class FreeBsdNetworkParams extends AbstractNetworkParams {
     @Override
     public String getIpv6DefaultGateway() {
         return searchGateway(Executor.runNative("route -6 get default"));
+    }
+
+    /**
+     * Returns the routing table.
+     *
+     * @return the routing table
+     */
+    @Override
+    public List<NetworkParams.IPRoute> getRoutes() {
+        byte[] dump = queryRouteDump();
+        if (dump.length > 0) {
+            List<NetworkParams.IPRoute> routes = RouteTableDump
+                    .parse(dump, RouteTableDump.Layout.FREEBSD, queryInterfaceNameByIndex());
+            if (!routes.isEmpty()) {
+                return routes;
+            }
+        }
+        return NetstatRoute
+                .queryRoutes("netstat -rn -f inet", "netstat -rn -f inet6", Normal._3, queryInterfaceIndexByName());
+    }
+
+    /**
+     * Fetches the kernel routing table dump.
+     *
+     * @return the routing table dump, or an empty array
+     */
+    protected byte[] queryRouteDump() {
+        return BsdRouteDump.queryRouteDump(LIBC);
     }
 
 }

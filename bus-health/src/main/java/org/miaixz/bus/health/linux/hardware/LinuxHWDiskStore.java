@@ -692,7 +692,7 @@ public class LinuxHWDiskStore extends AbstractHWDiskStore {
      * @return the update attributes result
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         // If this returns non-empty (the same store, but updated) then we were
         // successful in the update
         return !getDisks(this).isEmpty();

@@ -165,6 +165,21 @@ public abstract class AbstractOSFileStore implements OSFileStore {
     }
 
     /**
+     * Clamps file-store space values to satisfy {@code 0 <= usable <= free <= total}.
+     *
+     * @param freeSpace   the free space in bytes
+     * @param usableSpace the usable space in bytes
+     * @param totalSpace  the total space in bytes
+     * @return an array containing free, usable, and total space in that order
+     */
+    protected long[] clampSpace(long freeSpace, long usableSpace, long totalSpace) {
+        long total = Math.max(0L, totalSpace);
+        long free = Math.min(Math.max(0L, freeSpace), total);
+        long usable = Math.min(Math.max(0L, usableSpace), free);
+        return new long[] { free, usable, total };
+    }
+
+    /**
      * Returns the to string result.
      *
      * @return the to string result

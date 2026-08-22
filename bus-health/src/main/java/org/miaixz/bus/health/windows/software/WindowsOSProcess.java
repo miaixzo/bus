@@ -771,7 +771,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
      * @param wts the wts
      * @return the update attributes result
      */
-    private boolean updateAttributes(ProcessPerformanceData.PerfCounterBlock pcb, WtsInfo wts) {
+    private synchronized boolean updateAttributes(ProcessPerformanceData.PerfCounterBlock pcb, WtsInfo wts) {
         if (pcb == null) {
             this.state = OSProcess.State.INVALID;
             return false;

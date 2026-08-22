@@ -800,7 +800,7 @@ public class MacOSProcess extends AbstractOSProcess {
      * @return {@code true} if the process attributes were successfully updated, {@code false} otherwise
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         long now = System.currentTimeMillis();
         try (Struct.CloseableProcTaskAllInfo taskAllInfo = new Struct.CloseableProcTaskAllInfo()) {
             if (0 > SystemB.INSTANCE

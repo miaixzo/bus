@@ -224,7 +224,7 @@ public class WindowsOSThread extends AbstractOSThread {
      * @param pcb      the pcb
      * @return the update attributes result
      */
-    private boolean updateAttributes(String procName, PerfCounterBlock pcb) {
+    private synchronized boolean updateAttributes(String procName, PerfCounterBlock pcb) {
         if (pcb == null) {
             this.state = OSProcess.State.INVALID;
             return false;

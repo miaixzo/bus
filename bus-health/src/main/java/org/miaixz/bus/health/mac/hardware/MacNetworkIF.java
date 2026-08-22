@@ -246,7 +246,7 @@ public class MacNetworkIF extends AbstractNetworkIF {
      * Description inherited from parent class or interface.
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         int index = queryNetworkInterface().getIndex();
         return updateNetworkStats(NetStat.queryIFdata(index));
     }

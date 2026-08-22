@@ -227,7 +227,7 @@ public class AixNetworkIF extends AbstractNetworkIF {
      * @return the update attributes result
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         perfstat_netinterface_t[] stats = netstats.get();
         long now = System.currentTimeMillis();
         for (perfstat_netinterface_t stat : stats) {

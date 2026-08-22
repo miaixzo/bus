@@ -11724,6 +11724,86 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.health.builtin.software.NetworkParams$IPRoute",
+      "fields": [
+        {
+          "name": "destination"
+        },
+        {
+          "name": "prefixLength"
+        },
+        {
+          "name": "gateway"
+        },
+        {
+          "name": "interfaceName"
+        },
+        {
+          "name": "interfaceIndex"
+        },
+        {
+          "name": "metric"
+        },
+        {
+          "name": "isGateway"
+        },
+        {
+          "name": "isHost"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "int",
+            "byte[]",
+            "java.lang.String",
+            "int",
+            "long",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "getDestination",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPrefixLength",
+          "parameterTypes": []
+        },
+        {
+          "name": "getGateway",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInterfaceName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInterfaceIndex",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMetric",
+          "parameterTypes": []
+        },
+        {
+          "name": "isGateway",
+          "parameterTypes": []
+        },
+        {
+          "name": "isHost",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.health.builtin.software.OSThread$ThreadFiltering",
       "methods": [
         {
@@ -12351,6 +12431,16 @@
           "parameterTypes": [
             "java.io.File"
           ]
+        },
+        {
+          "name": "getDisplayData",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDisplayData",
+          "parameterTypes": [
+            "java.io.File"
+          ]
         }
       ]
     },
@@ -12603,6 +12693,23 @@
         {
           "name": "values",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.linux.driver.proc.RouteTable",
+      "methods": [
+        {
+          "name": "queryIpv4Routes",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "queryIpv6Routes",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
         }
       ]
     },
@@ -16823,6 +16930,48 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.health.mac.driver.CpuFrequencyResidency",
+      "fields": [
+        {
+          "name": "UNKNOWN_RANK"
+        }
+      ],
+      "methods": [
+        {
+          "name": "activeWeightedFrequency",
+          "parameterTypes": [
+            "java.util.Map",
+            "long[]"
+          ]
+        },
+        {
+          "name": "realizedComplexStates",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "orderChannels",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "prefixRank",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "alignAtTop",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.health.mac.driver.disk.Fsstat",
       "methods": [
         {
@@ -16926,6 +17075,15 @@
         },
         {
           "name": "getTimeStamp",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.mac.driver.net.RouteDump",
+      "methods": [
+        {
+          "name": "queryRouteDump",
           "parameterTypes": []
         }
       ]
@@ -17065,6 +17223,75 @@
             "java.lang.String",
             "java.lang.String"
           ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.health.builtin.hardware.DisplayInfo"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.health.builtin.hardware.DisplayInfo",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getDevicePort",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.mac.hardware.CpuResidencySample",
+      "fields": [
+        {
+          "name": "coreStates"
+        },
+        {
+          "name": "complexStates"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "getCoreStates",
+          "parameterTypes": []
+        },
+        {
+          "name": "getComplexStates",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.mac.hardware.IOReportCpuSampler",
+      "methods": [
+        {
+          "name": "sampleResidencyDelta",
+          "parameterTypes": []
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
         }
       ]
     },
@@ -24544,6 +24771,17 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.health.Virtuality",
+      "methods": [
+        {
+          "name": "identify",
+          "parameterTypes": [
+            "org.miaixz.bus.health.builtin.hardware.HardwareAbstractionLayer"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.health.Platform",
       "fields": [
         {
@@ -28439,6 +28677,104 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.health.unix.shared.driver.BsdRouteDump",
+      "methods": [
+        {
+          "name": "queryRouteDump",
+          "parameterTypes": [
+            "org.miaixz.bus.health.unix.shared.jna.CLibrary"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.unix.shared.driver.NetstatRoute",
+      "methods": [
+        {
+          "name": "queryRoutes",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean",
+            "java.util.Map",
+            "int"
+          ]
+        },
+        {
+          "name": "queryRoutes",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean",
+            "java.util.Map",
+            "int",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "querySolarisRoutes",
+          "parameterTypes": [
+            "boolean",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "querySolarisRoutes",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean",
+            "java.util.Map"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.unix.shared.driver.RouteTableDump",
+      "methods": [
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "byte[]",
+            "org.miaixz.bus.health.unix.shared.driver.RouteTableDump$Layout",
+            "java.util.Map"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.unix.shared.driver.RouteTableDump$Layout",
+      "fields": [
+        {
+          "name": "AIX"
+        },
+        {
+          "name": "DRAGONFLY"
+        },
+        {
+          "name": "FREEBSD"
+        },
+        {
+          "name": "MACOS"
+        },
+        {
+          "name": "NETBSD"
+        },
+        {
+          "name": "OPENBSD"
+        }
+      ],
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.health.unix.shared.driver.Who",
       "methods": [
         {
@@ -28480,6 +28816,24 @@
           "name": "getEdidArrays",
           "parameterTypes": [
             "java.util.List"
+          ]
+        },
+        {
+          "name": "getDisplayData",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDisplayData",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "findOutputName",
+          "parameterTypes": [
+            "java.util.Map",
+            "int",
+            "byte[]"
           ]
         }
       ]
@@ -28685,6 +29039,28 @@
         {
           "name": "getDisplays",
           "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "getDevicePort",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOutputName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDisplays",
+          "parameterTypes": [
+            "java.util.List"
+          ]
         }
       ]
     },
@@ -36378,6 +36754,71 @@
         {
           "name": "toString",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.driver.DisplayConnector",
+      "fields": [
+        {
+          "name": "QDC_ONLY_ACTIVE_PATHS"
+        },
+        {
+          "name": "PATH_INFO_SIZE"
+        },
+        {
+          "name": "MODE_INFO_SIZE"
+        },
+        {
+          "name": "PATH_TARGET_ADAPTER_ID_OFFSET"
+        },
+        {
+          "name": "PATH_TARGET_ID_OFFSET"
+        },
+        {
+          "name": "PATH_FLAGS_OFFSET"
+        },
+        {
+          "name": "PATH_ACTIVE"
+        },
+        {
+          "name": "TARGET_DEVICE_NAME_SIZE"
+        },
+        {
+          "name": "DEVICE_INFO_GET_TARGET_NAME"
+        },
+        {
+          "name": "TDN_HEADER_SIZE_OFFSET"
+        },
+        {
+          "name": "TDN_HEADER_ADAPTER_ID_OFFSET"
+        },
+        {
+          "name": "TDN_HEADER_ID_OFFSET"
+        },
+        {
+          "name": "TDN_OUTPUT_TECHNOLOGY_OFFSET"
+        },
+        {
+          "name": "TDN_CONNECTOR_INSTANCE_OFFSET"
+        },
+        {
+          "name": "TDN_MONITOR_DEVICE_PATH_OFFSET"
+        }
+      ],
+      "methods": [
+        {
+          "name": "connectorName",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "normalizePath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -56746,6 +57187,144 @@
         },
         {
           "name": "value"
+        },
+        {
+          "name": "PF_MONITORX_INSTRUCTION_AVAILABLE"
+        },
+        {
+          "name": "PF_ERMS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SVE_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SVE2_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SVE2_1_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SVE_AES_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SVE_PMULL128_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SVE_BITPERM_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SVE_BF16_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SVE_EBF16_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SVE_B16B16_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SVE_SHA3_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SVE_SM4_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SVE_I8MM_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SVE_F32MM_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SVE_F64MM_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_BMI2_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_MOVDIR64B_INSTRUCTION_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_LSE2_AVAILABLE"
+        },
+        {
+          "name": "PF_RESERVED_FEATURE"
+        },
+        {
+          "name": "PF_ARM_SHA3_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SHA512_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_V82_I8MM_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_V82_FP16_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_V86_BF16_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_V86_EBF16_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME2_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME2_1_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME2_2_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME_AES_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME_SBITPERM_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME_SF8MM4_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME_SF8MM8_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME_SF8DP2_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME_SF8DP4_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME_SF8FMA_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME_F8F32_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME_F8F16_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME_F16F16_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME_B16B16_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME_F64F64_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME_I16I64_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME_LUTv2_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_ARM_SME_FA64_INSTRUCTIONS_AVAILABLE"
+        },
+        {
+          "name": "PF_UMONITOR_INSTRUCTION_AVAILABLE"
         }
       ],
       "methods": [
@@ -56851,6 +57430,134 @@
           "parameterTypes": [
             "long",
             "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.jna.IPHlpAPI",
+      "fields": [
+        {
+          "name": "INSTANCE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "GetIpForwardTable2",
+          "parameterTypes": [
+            "short",
+            "com.sun.jna.ptr.PointerByReference"
+          ]
+        },
+        {
+          "name": "FreeMibTable",
+          "parameterTypes": [
+            "com.sun.jna.Pointer"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.jna.IPHlpAPI$SOCKADDR_INET",
+      "fields": [
+        {
+          "name": "si_family"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "ipv4AddrOrFlowInfo"
+        },
+        {
+          "name": "ipv6Addr"
+        },
+        {
+          "name": "scopeId"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.jna.IPHlpAPI$IP_ADDRESS_PREFIX",
+      "fields": [
+        {
+          "name": "Prefix"
+        },
+        {
+          "name": "PrefixLength"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.jna.IPHlpAPI$MIB_IPFORWARD_ROW2",
+      "fields": [
+        {
+          "name": "InterfaceLuid"
+        },
+        {
+          "name": "InterfaceIndex"
+        },
+        {
+          "name": "DestinationPrefix"
+        },
+        {
+          "name": "NextHop"
+        },
+        {
+          "name": "SitePrefixLength"
+        },
+        {
+          "name": "ValidLifetime"
+        },
+        {
+          "name": "PreferredLifetime"
+        },
+        {
+          "name": "Metric"
+        },
+        {
+          "name": "Protocol"
+        },
+        {
+          "name": "Loopback"
+        },
+        {
+          "name": "AutoconfigureAddress"
+        },
+        {
+          "name": "Publish"
+        },
+        {
+          "name": "Immortal"
+        },
+        {
+          "name": "Age"
+        },
+        {
+          "name": "Origin"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "com.sun.jna.Pointer"
           ]
         }
       ]
@@ -60554,6 +61261,41 @@
           "parameterTypes": [
             "java.lang.String",
             "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.jna.User32",
+      "fields": [
+        {
+          "name": "INSTANCE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "GetDisplayConfigBufferSizes",
+          "parameterTypes": [
+            "int",
+            "com.sun.jna.ptr.IntByReference",
+            "com.sun.jna.ptr.IntByReference"
+          ]
+        },
+        {
+          "name": "QueryDisplayConfig",
+          "parameterTypes": [
+            "int",
+            "com.sun.jna.ptr.IntByReference",
+            "com.sun.jna.Pointer",
+            "com.sun.jna.ptr.IntByReference",
+            "com.sun.jna.Pointer",
+            "com.sun.jna.Pointer"
+          ]
+        },
+        {
+          "name": "DisplayConfigGetDeviceInfo",
+          "parameterTypes": [
+            "com.sun.jna.Pointer"
           ]
         }
       ]

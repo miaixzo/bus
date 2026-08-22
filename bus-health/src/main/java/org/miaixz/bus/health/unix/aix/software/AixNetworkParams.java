@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.health.unix.aix.software;
 
+import java.util.List;
+
 import com.sun.jna.Native;
 import com.sun.jna.platform.unix.LibCAPI;
 
@@ -26,7 +28,9 @@ import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
+import org.miaixz.bus.health.builtin.software.NetworkParams;
 import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
+import org.miaixz.bus.health.unix.shared.driver.NetstatRoute;
 import org.miaixz.bus.health.unix.shared.jna.AixLibc;
 
 /**
@@ -103,6 +107,17 @@ final class AixNetworkParams extends AbstractNetworkParams {
     @Override
     public String getIpv6DefaultGateway() {
         return getDefaultGateway("netstat -rnf inet6");
+    }
+
+    /**
+     * Returns the routing table.
+     *
+     * @return the routing table
+     */
+    @Override
+    public List<NetworkParams.IPRoute> getRoutes() {
+        return NetstatRoute
+                .queryRoutes("netstat -rnf inet", "netstat -rnf inet6", Normal._5, queryInterfaceIndexByName());
     }
 
 }

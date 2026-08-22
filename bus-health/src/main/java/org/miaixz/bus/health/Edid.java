@@ -41,6 +41,9 @@ import org.miaixz.bus.logger.Logger;
 @ThreadSafe
 public class Edid {
 
+    /**
+     * Creates a new EDID parser instance.
+     */
     public Edid() {
         // No initialization required.
     }

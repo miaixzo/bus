@@ -21,6 +21,7 @@ package org.miaixz.bus.health.builtin.hardware;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
@@ -39,6 +40,15 @@ public interface HardwareAbstractionLayer {
      * @return a {@link ComputerSystem} object.
      */
     ComputerSystem getComputerSystem();
+
+    /**
+     * Attempts to identify the virtualized or containerized environment.
+     *
+     * @return The virtualization platform name, or an empty optional if none was identified.
+     */
+    default Optional<String> getVirtualization() {
+        return Optional.empty();
+    }
 
     /**
      * Instantiates a {@link CentralProcessor} object. This represents one or more Logical CPUs.

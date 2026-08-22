@@ -25,11 +25,7 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
@@ -1353,8 +1349,8 @@ public class Parsing {
                         result.add(i);
                     }
                 } else {
-                    int only = Parsing.parseIntOrDefault(s, -1);
-                    if (only >= 0) {
+                    int only = Parsing.parseIntOrDefault(s, Normal.__1);
+                    if (only >= Normal._0) {
                         result.add(only);
                     }
                 }
@@ -1463,6 +1459,265 @@ public class Parsing {
     }
 
     /**
+     * Parses an IPv4 address in dotted-quad notation.
+     *
+     * @param address The address text.
+     * @return The four address bytes, or an empty array if the text is invalid.
+     */
+    public static byte[] parseIpv4AddressToBytes(String address) {
+        if (address.isEmpty()) {
+            return Normal.EMPTY_BYTE_ARRAY;
+        }
+        String[] parts = address.split("\\.", Normal.__1);
+        if (parts.length > Normal._4) {
+            return Normal.EMPTY_BYTE_ARRAY;
+        }
+        byte[] bytes = new byte[Normal._4];
+        for (int i = Normal._0; i < parts.length; i++) {
+            int octet = parseDecimalOctet(parts[i]);
+            if (octet < Normal._0) {
+                return Normal.EMPTY_BYTE_ARRAY;
+            }
+            bytes[i] = (byte) octet;
+        }
+        return bytes;
+    }
+
+    /**
+     * Parses a decimal IPv4 octet.
+     *
+     * @param part The octet text.
+     * @return The octet value, or {@code -1} if invalid.
+     */
+    private static int parseDecimalOctet(String part) {
+        if (part.isEmpty() || part.length() > Normal._3) {
+            return Normal.__1;
+        }
+        for (int i = Normal._0; i < part.length(); i++) {
+            char c = part.charAt(i);
+            if (c < Symbol.C_ZERO || c > Symbol.C_NINE) {
+                return Normal.__1;
+            }
+        }
+        int octet = parseIntOrDefault(part, Normal.__1);
+        return octet >= Normal._256 ? Normal.__1 : octet;
+    }
+
+    /**
+     * Parses an IPv6 address in RFC 4291 text form.
+     *
+     * @param address The address text.
+     * @return The sixteen address bytes, or an empty array if the text is invalid.
+     */
+    public static byte[] parseIpv6AddressToBytes(String address) {
+        int zoneIndex = address.indexOf('%');
+        String addr = zoneIndex < Normal._0 ? address : address.substring(Normal._0, zoneIndex);
+        if (addr.isEmpty() || addr.indexOf(Symbol.C_COLON) < Normal._0) {
+            return Normal.EMPTY_BYTE_ARRAY;
+        }
+        int doubleColon = addr.indexOf(Symbol.COLON + Symbol.COLON);
+        if (doubleColon >= Normal._0 && doubleColon != addr.lastIndexOf(Symbol.COLON + Symbol.COLON)) {
+            return Normal.EMPTY_BYTE_ARRAY;
+        }
+        byte[] bytes = new byte[Normal._16];
+        String head = doubleColon < Normal._0 ? addr : addr.substring(Normal._0, doubleColon);
+        int headBytes = parseIpv6Groups(head, bytes, Normal._0);
+        if (headBytes < Normal._0) {
+            return Normal.EMPTY_BYTE_ARRAY;
+        }
+        if (doubleColon < Normal._0) {
+            return headBytes == Normal._16 ? bytes : Normal.EMPTY_BYTE_ARRAY;
+        }
+        byte[] tail = new byte[Normal._16];
+        int tailBytes = parseIpv6Groups(addr.substring(doubleColon + Normal._2), tail, Normal._0);
+        if (tailBytes < Normal._0 || headBytes + tailBytes > Normal._14) {
+            return Normal.EMPTY_BYTE_ARRAY;
+        }
+        System.arraycopy(tail, Normal._0, bytes, Normal._16 - tailBytes, tailBytes);
+        return bytes;
+    }
+
+    /**
+     * Parses IPv6 groups into a byte array.
+     *
+     * @param groups The group text.
+     * @param dest   The destination byte array.
+     * @param offset The destination offset.
+     * @return The number of written bytes, or {@code -1}.
+     */
+    private static int parseIpv6Groups(String groups, byte[] dest, int offset) {
+        if (groups.isEmpty()) {
+            return Normal._0;
+        }
+        String[] parts = groups.split(Symbol.COLON, Normal.__1);
+        int pos = offset;
+        for (int i = Normal._0; i < parts.length; i++) {
+            String part = parts[i];
+            if (part.isEmpty()) {
+                return Normal.__1;
+            }
+            if (i == parts.length - Normal._1 && part.indexOf(Symbol.C_DOT) >= Normal._0) {
+                byte[] v4 = parseIpv4AddressToBytes(part);
+                if (v4.length != Normal._4 || countChar(part, Symbol.C_DOT) != Normal._3
+                        || pos + Normal._4 > dest.length) {
+                    return Normal.__1;
+                }
+                System.arraycopy(v4, Normal._0, dest, pos, Normal._4);
+                return pos - offset + Normal._4;
+            }
+            int group = parseHexGroup(part);
+            if (group < Normal._0 || pos + Normal._2 > dest.length) {
+                return Normal.__1;
+            }
+            dest[pos++] = (byte) (group >> Normal._8);
+            dest[pos++] = (byte) group;
+        }
+        return pos - offset;
+    }
+
+    /**
+     * Parses an IPv6 hexadecimal group.
+     *
+     * @param part The group text.
+     * @return The group value, or {@code -1}.
+     */
+    private static int parseHexGroup(String part) {
+        if (part.length() > Normal._4) {
+            return Normal.__1;
+        }
+        for (int i = Normal._0; i < part.length(); i++) {
+            char c = part.charAt(i);
+            if ((c < Symbol.C_ZERO || c > Symbol.C_NINE) && (c < Symbol.C_LOWER_A || c > Symbol.C_LOWER_F)
+                    && (c < Symbol.C_UPPER_A || c > Symbol.C_UPPER_F)) {
+                return Normal.__1;
+            }
+        }
+        return hexStringToInt(part, Normal.__1);
+    }
+
+    /**
+     * Counts a character in a string.
+     *
+     * @param s The string.
+     * @param c The character.
+     * @return The number of occurrences.
+     */
+    private static int countChar(String s, char c) {
+        int count = Normal._0;
+        for (int i = Normal._0; i < s.length(); i++) {
+            if (s.charAt(i) == c) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Parses a routing table destination token into address bytes and stated prefix length.
+     *
+     * @param destination The destination token.
+     * @param ipv6        Whether the token belongs to an IPv6 routing table.
+     * @return A pair of address bytes and stated prefix length.
+     */
+    public static Pair<byte[], Integer> parseRouteDestination(String destination, boolean ipv6) {
+        String token = destination;
+        int prefix = Normal.__1;
+        int slash = token.indexOf(Symbol.C_SLASH);
+        if (slash >= Normal._0) {
+            prefix = parseIntOrDefault(token.substring(slash + Normal._1), Normal.__1);
+            token = token.substring(Normal._0, slash);
+        }
+        byte[] bytes;
+        if ("default".equals(token)) {
+            bytes = new byte[ipv6 ? Normal._16 : Normal._4];
+            prefix = Normal._0;
+        } else if (token.indexOf(Symbol.C_COLON) >= Normal._0) {
+            bytes = parseIpv6AddressToBytes(token);
+        } else {
+            bytes = parseIpv4AddressToBytes(token);
+            if (slash < Normal._0 && bytes.length == Normal._4) {
+                int octets = countChar(token, Symbol.C_DOT) + Normal._1;
+                if (octets < Normal._4) {
+                    prefix = octets * Normal._8;
+                }
+            }
+        }
+        if (bytes.length == 0) {
+            return Pair.of(Normal.EMPTY_BYTE_ARRAY, Normal.__1);
+        }
+        int maxPrefix = bytes.length * Normal._8;
+        return Pair.of(bytes, prefix > maxPrefix ? maxPrefix : prefix);
+    }
+
+    /**
+     * Counts leading one bits of a subnet mask.
+     *
+     * @param netmask The mask bytes.
+     * @return The prefix length, or {@code -1}.
+     */
+    public static int netmaskToPrefixLength(byte[] netmask) {
+        if (netmask.length == 0) {
+            return Normal.__1;
+        }
+        int prefix = Normal._0;
+        for (byte b : netmask) {
+            int value = b & 0xff;
+            int bits = Normal._0;
+            while ((value & 0x80) != 0) {
+                bits++;
+                value = (value << 1) & 0xff;
+            }
+            prefix += bits;
+            if (bits < Normal._8) {
+                break;
+            }
+        }
+        for (int i = Normal._0; i < netmask.length; i++) {
+            int expected = Normal._0;
+            for (int bit = Normal._0; bit < Normal._8; bit++) {
+                if (i * Normal._8 + bit < prefix) {
+                    expected |= 0x80 >> bit;
+                }
+            }
+            if ((netmask[i] & 0xff) != expected) {
+                return Normal.__1;
+            }
+        }
+        return prefix;
+    }
+
+    /**
+     * Counts leading one bits of a subnet mask in text form.
+     *
+     * @param netmask The mask text.
+     * @return The prefix length, or {@code -1}.
+     */
+    public static int netmaskToPrefixLength(String netmask) {
+        return netmaskToPrefixLength(
+                netmask.indexOf(Symbol.C_COLON) >= Normal._0 ? parseIpv6AddressToBytes(netmask)
+                        : parseIpv4AddressToBytes(netmask));
+    }
+
+    /**
+     * Tests whether a token is a UNIX routing table flags field.
+     *
+     * @param token The token to test.
+     * @return {@code true} if the token is one to twelve ASCII letters.
+     */
+    public static boolean isRouteFlags(String token) {
+        if (token.isEmpty() || token.length() > Normal._12) {
+            return false;
+        }
+        for (int i = Normal._0; i < token.length(); i++) {
+            char c = token.charAt(i);
+            if ((c < Symbol.C_LOWER_A || c > Symbol.C_LOWER_Z) && (c < Symbol.C_UPPER_A || c > Symbol.C_UPPER_Z)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Parses a hexadecimal digit string into an integer value.
      *
      * @param hexString    The sequence of hexadecimal digits.
@@ -1473,9 +1728,9 @@ public class Parsing {
         if (hexString != null) {
             try {
                 if (hexString.startsWith("0x")) {
-                    return new BigInteger(hexString.substring(2), 16).intValue();
+                    return new BigInteger(hexString.substring(2), Normal._16).intValue();
                 } else {
-                    return new BigInteger(hexString, 16).intValue();
+                    return new BigInteger(hexString, Normal._16).intValue();
                 }
             } catch (NumberFormatException e) {
                 Logger.trace(false, "Health", DEFAULT_LOG_MSG, hexString, e);
@@ -1483,6 +1738,43 @@ public class Parsing {
         }
         // Hex parsing failed, return default integer
         return defaultValue;
+    }
+
+    /**
+     * Parses a hexadecimal string into a byte array.
+     *
+     * @param digits The string to parse.
+     * @return A byte array with each pair of characters converted to a byte, or an empty array if invalid.
+     */
+    public static byte[] hexStringToByteArray(String digits) {
+        int len = digits.length();
+        if ((len & Normal._1) != Normal._0 || !isHexString(digits)) {
+            Logger.warn(false, "Health", "Invalid hexadecimal string: {}", digits);
+            return Normal.EMPTY_BYTE_ARRAY;
+        }
+        byte[] data = new byte[len / Normal._2];
+        for (int i = Normal._0; i < len; i += Normal._2) {
+            data[i / Normal._2] = (byte) (Character.digit(digits.charAt(i), Normal._16) << Normal._4
+                    | Character.digit(digits.charAt(i + Normal._1), Normal._16));
+        }
+        return data;
+    }
+
+    /**
+     * Tests whether a string contains only hexadecimal digits.
+     *
+     * @param digits The string to test.
+     * @return {@code true} if all characters are hexadecimal digits.
+     */
+    private static boolean isHexString(String digits) {
+        for (int i = Normal._0; i < digits.length(); i++) {
+            char c = digits.charAt(i);
+            if ((c < Symbol.C_ZERO || c > Symbol.C_NINE) && (c < Symbol.C_LOWER_A || c > Symbol.C_LOWER_F)
+                    && (c < Symbol.C_UPPER_A || c > Symbol.C_UPPER_F)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -1496,9 +1788,9 @@ public class Parsing {
         if (hexString != null) {
             try {
                 if (hexString.startsWith("0x")) {
-                    return new BigInteger(hexString.substring(2), 16).longValue();
+                    return new BigInteger(hexString.substring(2), Normal._16).longValue();
                 } else {
-                    return new BigInteger(hexString, 16).longValue();
+                    return new BigInteger(hexString, Normal._16).longValue();
                 }
             } catch (NumberFormatException e) {
                 Logger.trace(false, "Health", DEFAULT_LOG_MSG, hexString, e);
@@ -1675,18 +1967,6 @@ public class Parsing {
             }
         }
         return map;
-    }
-
-    /**
-     * Checks if a value exists in the map for the given key and returns it, or {@code unknown} if not.
-     *
-     * @param map The map of string key-value pairs.
-     * @param key The key for which to get the value.
-     * @return The value associated with the key if it exists in the map; otherwise, {@code unknown}.
-     */
-    public static String getValueOrUnknown(Map<String, String> map, String key) {
-        String value = map.getOrDefault(key, Normal.EMPTY);
-        return value.isEmpty() ? Normal.UNKNOWN : value;
     }
 
     /**

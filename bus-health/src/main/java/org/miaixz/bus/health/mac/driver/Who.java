@@ -68,16 +68,20 @@ public class Who {
                     String device = Native.toString(ut.ut_line, Charset.UTF_8);
                     String host = Native.toString(ut.ut_host, Charset.UTF_8);
                     long loginTime = ut.ut_tv.tv_sec.longValue() * 1000L + ut.ut_tv.tv_usec / 1000L;
-                    // Sanity check. If errors, default to who command line
-                    if (!Builder.isSessionValid(user, device, loginTime)) {
-                        return org.miaixz.bus.health.unix.shared.driver.Who.queryWho();
+                    // The utmpx table is not reentrant. A session ending while this loop runs can hand back a partially
+                    // written entry, so drop that one rather than abandoning a read whose other entries are fine.
+                    if (Builder.isSessionValid(user, device, loginTime)) {
+                        whoList.add(new OSSession(user, device, loginTime, host));
                     }
-                    whoList.add(new OSSession(user, device, loginTime, host));
                 }
             }
         } finally {
             // Close
             SYS.endutxent();
+        }
+        // Only fall back to the who command when the native read yielded nothing at all.
+        if (whoList.isEmpty()) {
+            return org.miaixz.bus.health.unix.shared.driver.Who.queryWho();
         }
         return whoList;
     }
