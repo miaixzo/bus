@@ -58,9 +58,13 @@ public interface Payload {
          */
         private static final Payload EMPTY = Payload.owned(ByteString.EMPTY);
 
+        /**
+         * Creates an instance without per-instance state; the empty payload remains shared at the class level.
+         */
         public EmptyHolder() {
             // No initialization required.
         }
+
     }
 
     /**
