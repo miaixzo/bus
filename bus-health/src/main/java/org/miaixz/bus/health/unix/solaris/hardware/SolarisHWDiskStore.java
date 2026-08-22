@@ -255,7 +255,7 @@ public class SolarisHWDiskStore extends AbstractHWDiskStore {
      * @return the update attributes result
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         this.timeStamp = System.currentTimeMillis();
         if (SolarisOperatingSystem.HAS_KSTAT2) {
             // Use Kstat2 implementation

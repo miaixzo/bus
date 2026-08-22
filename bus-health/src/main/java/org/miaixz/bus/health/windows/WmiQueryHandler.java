@@ -55,16 +55,6 @@ public class WmiQueryHandler {
     }
 
     /**
-     * The EMPTY_CLASS_ARRAY constant.
-     */
-    private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
-
-    /**
-     * The EMPTY_OBJECT_ARRAY constant.
-     */
-    private static final Object[] EMPTY_OBJECT_ARRAY = Normal.EMPTY_OBJECT_ARRAY;
-
-    /**
      * The globalTimeout constant.
      */
     private static final int globalTimeout = Builder.get(Builder._WMI_TIMEOUT, -1);
@@ -112,7 +102,7 @@ public class WmiQueryHandler {
             return new WmiQueryHandler();
         }
         try {
-            return customClass.getConstructor(EMPTY_CLASS_ARRAY).newInstance(EMPTY_OBJECT_ARRAY);
+            return customClass.getConstructor(Normal.EMPTY_CLASS_ARRAY).newInstance(Normal.EMPTY_OBJECT_ARRAY);
         } catch (NoSuchMethodException | SecurityException e) {
             Logger.error(false, "Health", "Failed to find or access a no-arg constructor for {}", customClass);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException

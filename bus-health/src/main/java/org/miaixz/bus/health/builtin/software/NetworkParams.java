@@ -19,7 +19,15 @@
 */
 package org.miaixz.bus.health.builtin.software;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.builtin.hardware.NetworkIF;
 
 /**
  * NetworkParams presents network parameters of running OS, such as DNS, host name etc.
@@ -63,5 +71,186 @@ public interface NetworkParams {
      * @return default gateway for IPv6, or empty string if not defined.
      */
     String getIpv6DefaultGateway();
+
+    /**
+     * Gets the operating system routing table, containing both IPv4 and IPv6 routes.
+     *
+     * @return A list of {@link IPRoute} objects, or an empty list if the routing table could not be read.
+     */
+    default List<IPRoute> getRoutes() {
+        return Collections.emptyList();
+    }
+
+    /**
+     * A single entry in the operating system routing table.
+     */
+    @Immutable
+    final class IPRoute {
+
+        /**
+         * Destination network address bytes.
+         */
+        private final byte[] destination;
+
+        /**
+         * Destination prefix length.
+         */
+        private final int prefixLength;
+
+        /**
+         * Gateway address bytes.
+         */
+        private final byte[] gateway;
+
+        /**
+         * Outgoing interface name.
+         */
+        private final String interfaceName;
+
+        /**
+         * Outgoing interface index.
+         */
+        private final int interfaceIndex;
+
+        /**
+         * Route metric.
+         */
+        private final long metric;
+
+        /**
+         * Whether this route uses a gateway.
+         */
+        private final boolean isGateway;
+
+        /**
+         * Whether this route targets a single host.
+         */
+        private final boolean isHost;
+
+        /**
+         * Constructs a new IPRoute instance.
+         *
+         * @param destination    The destination network address bytes, four for IPv4 or sixteen for IPv6.
+         * @param prefixLength   The number of leading bits in the destination network mask, or {@code -1}.
+         * @param gateway        The next hop address bytes, or an empty array for a directly attached route.
+         * @param interfaceName  The name of the outgoing interface, or an empty string if not published.
+         * @param interfaceIndex The index of the outgoing interface, or {@code -1} if not published.
+         * @param metric         The route metric or priority, or {@code -1} if not published.
+         * @param isGateway      Whether the route forwards through the gateway.
+         * @param isHost         Whether the route is to a single host.
+         */
+        public IPRoute(byte[] destination, int prefixLength, byte[] gateway, String interfaceName, int interfaceIndex,
+                long metric, boolean isGateway, boolean isHost) {
+            this.destination = Arrays.copyOf(destination, destination.length);
+            this.prefixLength = prefixLength;
+            this.gateway = Arrays.copyOf(gateway, gateway.length);
+            this.interfaceName = interfaceName;
+            this.interfaceIndex = interfaceIndex;
+            this.metric = metric;
+            this.isGateway = isGateway;
+            this.isHost = isHost;
+        }
+
+        /**
+         * Gets the destination network address.
+         *
+         * @return The destination address.
+         */
+        public byte[] getDestination() {
+            return Arrays.copyOf(destination, destination.length);
+        }
+
+        /**
+         * Gets the number of leading bits in the destination network mask.
+         *
+         * @return The prefix length, or {@code -1} when unavailable.
+         */
+        public int getPrefixLength() {
+            return prefixLength;
+        }
+
+        /**
+         * Gets the next hop address that traffic matching this route is forwarded to.
+         *
+         * @return The gateway address, or an empty array for directly attached routes.
+         */
+        public byte[] getGateway() {
+            return Arrays.copyOf(gateway, gateway.length);
+        }
+
+        /**
+         * Gets the name of the interface traffic matching this route leaves by.
+         *
+         * @return The interface name, or an empty string if unavailable.
+         */
+        public String getInterfaceName() {
+            return interfaceName;
+        }
+
+        /**
+         * Gets the index of the interface traffic matching this route leaves by.
+         *
+         * @return The interface index, matching {@link NetworkIF#getIndex()}, or {@code -1}.
+         */
+        public int getInterfaceIndex() {
+            return interfaceIndex;
+        }
+
+        /**
+         * Gets the cost of this route.
+         *
+         * @return The metric, or {@code -1} when unavailable.
+         */
+        public long getMetric() {
+            return metric;
+        }
+
+        /**
+         * Tests whether traffic matching this route is forwarded through {@link #getGateway()}.
+         *
+         * @return {@code true} for a gateway route.
+         */
+        public boolean isGateway() {
+            return isGateway;
+        }
+
+        /**
+         * Tests whether this route is to a single host.
+         *
+         * @return {@code true} for a host route.
+         */
+        public boolean isHost() {
+            return isHost;
+        }
+
+        /**
+         * Returns a string representation of the route.
+         *
+         * @return A string representation of the route.
+         */
+        @Override
+        public String toString() {
+            return "IPRoute [destination=" + addressToString(destination) + "/" + prefixLength + ", gateway="
+                    + addressToString(gateway) + ", interfaceName=" + interfaceName + ", interfaceIndex="
+                    + interfaceIndex + ", metric=" + metric + ", isGateway=" + isGateway + ", isHost=" + isHost + "]";
+        }
+
+        /**
+         * Converts an address byte array to a display string.
+         *
+         * @param address The address bytes.
+         * @return The display string.
+         */
+        private static String addressToString(byte[] address) {
+            if (address.length > 0) {
+                try {
+                    return InetAddress.getByAddress(address).getHostAddress();
+                } catch (UnknownHostException e) {
+                    // Cannot happen for a length of 4 or 16.
+                }
+            }
+            return "*";
+        }
+    }
 
 }

@@ -25,6 +25,13 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  * A FileStore represents a storage pool, device, partition, volume, concrete file system or other implementation
  * specific means of file storage. This object carries the same interpretation as core Java's
  * {@link java.nio.file.FileStore} class, with additional information.
+ * <p>
+ * Space values satisfy {@code 0 <= getUsableSpace() <= getFreeSpace() <= getTotalSpace()}. Most platforms read these
+ * values from separate queries, so dynamically sized file systems may produce adjacent readings that need to be clamped
+ * downward to restore the ordering.
+ * <p>
+ * File stores are thread safe for retrieving the most recent data. External synchronization is recommended when calling
+ * {@link #updateAttributes()} alongside calculations that require multiple values from one consistent snapshot.
  *
  * @author Kimi Liu
  */
@@ -115,8 +122,11 @@ public interface OSFileStore {
 
     /**
      * Free space on the drive. This space is unallocated but may require elevated permissions to write.
+     * <p>
+     * The difference between this value and {@link #getUsableSpace()} is space reserved by the operating system.
      *
      * @return Free space on the drive (in bytes)
+     * @see #getTotalSpace()
      */
     long getFreeSpace();
 
@@ -124,11 +134,15 @@ public interface OSFileStore {
      * Usable space on the drive. This is space available to unprivileged users.
      *
      * @return Usable space on the drive (in bytes)
+     * @see #getTotalSpace()
      */
     long getUsableSpace();
 
     /**
      * Total space/capacity of the drive.
+     * <p>
+     * This value and those from {@link #getFreeSpace()} and {@link #getUsableSpace()} always satisfy
+     * {@code 0 <= usable <= free <= total}.
      *
      * @return Total capacity of the drive (in bytes)
      */

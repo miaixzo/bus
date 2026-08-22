@@ -734,7 +734,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
      * @return {@code true} if the process attributes were successfully updated, {@code false} otherwise
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         SolarisLibc.SolarisPsInfo info = psinfo.get();
         if (info == null) {
             this.state = OSProcess.State.INVALID;

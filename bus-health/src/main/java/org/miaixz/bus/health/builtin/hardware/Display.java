@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.health.builtin.hardware;
 
+import java.util.Optional;
+
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 
 /**
@@ -40,5 +43,24 @@ public interface Display {
      * @return the decoded display information
      */
     DisplayInfo getDisplayInfo();
+
+    /**
+     * Gets the system-level device identification for this display. The value is platform-specific, such as a Linux DRM
+     * connector name, a macOS framebuffer port, a Windows CCD connector name, or an X11 output name.
+     *
+     * @return the device port identifier, or {@link Normal#UNKNOWN} if it is not available
+     */
+    default String getDevicePort() {
+        return Normal.UNKNOWN;
+    }
+
+    /**
+     * Gets the X11 output name for this display as reported by {@code xrandr}.
+     *
+     * @return an optional containing the output name, or an empty optional if it is not available
+     */
+    default Optional<String> getOutputName() {
+        return Optional.empty();
+    }
 
 }

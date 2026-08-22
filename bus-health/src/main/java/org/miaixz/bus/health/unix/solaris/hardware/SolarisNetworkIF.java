@@ -216,7 +216,7 @@ public class SolarisNetworkIF extends AbstractNetworkIF {
      * @return the update attributes result
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         // Initialize to a sane default value
         this.timeStamp = System.currentTimeMillis();
         if (SolarisOperatingSystem.HAS_KSTAT2) {

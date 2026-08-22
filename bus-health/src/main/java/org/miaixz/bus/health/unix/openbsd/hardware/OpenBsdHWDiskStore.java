@@ -267,7 +267,7 @@ public class OpenBsdHWDiskStore extends AbstractHWDiskStore {
      * @return the update attributes result
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         /*-
         └─ $ ▶ systat -b iostat
                 0 users Load 2.04 4.02 3.96                          thinkpad.local 00:14:35

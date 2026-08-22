@@ -230,7 +230,7 @@ public class FreeBsdHWDiskStore extends AbstractHWDiskStore {
      * @return the update attributes result
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         List<String> output = Executor.runNative("iostat -Ix " + getName());
         long now = System.currentTimeMillis();
         boolean diskFound = false;

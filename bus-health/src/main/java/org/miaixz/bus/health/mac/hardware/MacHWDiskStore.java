@@ -411,7 +411,7 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
      * Description inherited from parent class or interface.
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         // Open a session and create CFStrings
         DASessionRef session = DA.DASessionCreate(CF.CFAllocatorGetDefault());
         if (session == null) {

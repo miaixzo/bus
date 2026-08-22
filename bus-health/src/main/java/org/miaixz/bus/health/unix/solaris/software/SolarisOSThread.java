@@ -237,7 +237,7 @@ public class SolarisOSThread extends AbstractOSThread {
      * @return the update attributes result
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         SolarisLibc.SolarisLwpsInfo info = lwpsinfo.get();
         if (info == null) {
             this.state = OSProcess.State.INVALID;

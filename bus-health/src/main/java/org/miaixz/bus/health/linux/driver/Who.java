@@ -163,11 +163,11 @@ public class Who {
                     String device = Native.toString(ut.ut_line, Charset.defaultCharset());
                     String host = Parsing.parseUtAddrV6toIP(ut.ut_addr_v6);
                     long loginTime = ut.ut_tv.tv_sec * 1000L + ut.ut_tv.tv_usec / 1000L;
-                    // Sanity check. If errors, default to who command line
-                    if (!Builder.isSessionValid(user, device, loginTime)) {
-                        return queryWho();
+                    // The utmpx table is not reentrant. A session ending while this loop runs can hand back a partially
+                    // written entry, so drop that one rather than abandoning a read whose other entries are fine.
+                    if (Builder.isSessionValid(user, device, loginTime)) {
+                        whoList.add(new OSSession(user, device, loginTime, host));
                     }
-                    whoList.add(new OSSession(user, device, loginTime, host));
                 }
             }
         } finally {

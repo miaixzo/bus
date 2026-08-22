@@ -21,7 +21,9 @@ package org.miaixz.bus.health.linux.software;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
@@ -30,10 +32,14 @@ import com.sun.jna.platform.unix.LibCAPI;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef;
+import org.miaixz.bus.health.builtin.software.NetworkParams;
 import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
+import org.miaixz.bus.health.linux.ProcPath;
+import org.miaixz.bus.health.linux.driver.proc.RouteTable;
 import org.miaixz.bus.health.linux.jna.LinuxLibc;
 import org.miaixz.bus.health.unix.shared.jna.CLibrary;
 import org.miaixz.bus.logger.Logger;
@@ -105,6 +111,10 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
      */
     @Override
     public String getHostName() {
+        String hostname = Builder.getStringFromFile(ProcPath.SYS_KERNEL_HOSTNAME);
+        if (!hostname.isEmpty()) {
+            return hostname;
+        }
         byte[] hostnameBuffer = new byte[LibCAPI.HOST_NAME_MAX + 1];
         if (0 != LibC.INSTANCE.gethostname(hostnameBuffer, hostnameBuffer.length)) {
             return super.getHostName();
@@ -168,6 +178,19 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
             }
         }
         return gateway;
+    }
+
+    /**
+     * Returns the routing table.
+     *
+     * @return the routing table
+     */
+    @Override
+    public List<NetworkParams.IPRoute> getRoutes() {
+        Map<String, Integer> ifIndexByName = queryInterfaceIndexByName();
+        List<NetworkParams.IPRoute> routes = new ArrayList<>(RouteTable.queryIpv4Routes(ifIndexByName));
+        routes.addAll(RouteTable.queryIpv6Routes(ifIndexByName));
+        return routes;
     }
 
 }

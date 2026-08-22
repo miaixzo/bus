@@ -438,7 +438,7 @@ public abstract class AbstractPowerSource implements PowerSource {
      * @return the update attributes result
      */
     @Override
-    public boolean updateAttributes() {
+    public synchronized boolean updateAttributes() {
         List<PowerSource> psArr = queryPowerSources();
         for (PowerSource ps : psArr) {
             if (ps.getName().equals(this.name)) {
