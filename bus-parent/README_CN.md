@@ -269,7 +269,7 @@ Spring Boot 无缝集成。
 | `maven-source-plugin`             | 打包源代码 JAR（发布用）                                                                            |
 | `maven-javadoc-plugin`            | 生成 Javadoc JAR（发布用）                                                                          |
 | `spotless-maven-plugin`           | 格式化源码、XML、Markdown、YAML、JSON、properties、SVG、service 和 POM 文件                         |
-| `groom-maven-plugin`              | 规范化 Bus 模块和父 POM 的发布 POM                                                                  |
+| `groom-maven-plugin`              | 规范化 Bus 模块和父 POM 的发布                                                                      |
 | `maven-gpg-plugin`                | GPG 签名（发布到 Maven Central）                                                                    |
 | `central-publishing-maven-plugin` | 通过 Central Portal 发布到 Maven Central                                                            |
 | `git-commit-id-maven-plugin`      | 构建阶段生成 `git.properties`                                                                       |

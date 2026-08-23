@@ -44,7 +44,7 @@ public class RoutePrefixHandlerMapping extends RequestMappingHandlerMapping {
     /**
      * Bound route prefix handler mapping configuration properties.
      */
-    private final RoutePrefixProperties properties;
+    private final RoutePrefixOptions options;
     /**
      * Path matcher used to compose route prefixes with controller mappings.
      */
@@ -53,10 +53,10 @@ public class RoutePrefixHandlerMapping extends RequestMappingHandlerMapping {
     /**
      * Creates the route prefix handler mapping.
      *
-     * @param properties bound configuration properties
+     * @param options route-prefix options
      */
-    public RoutePrefixHandlerMapping(RoutePrefixProperties properties) {
-        this.properties = Objects.requireNonNull(properties, "properties");
+    public RoutePrefixHandlerMapping(RoutePrefixOptions options) {
+        this.options = Objects.requireNonNull(options, "options");
     }
 
     /**
@@ -66,7 +66,7 @@ public class RoutePrefixHandlerMapping extends RequestMappingHandlerMapping {
      */
     @Override
     protected void handlerMethodsInitialized(Map<RequestMappingInfo, HandlerMethod> handlerMethods) {
-        if (properties.isInStorage()) {
+        if (options.isInStorage()) {
             Logger.debug(false, "Starter", "Request mappings initialized: count={}", handlerMethods.size());
         }
     }
@@ -84,13 +84,13 @@ public class RoutePrefixHandlerMapping extends RequestMappingHandlerMapping {
         if (mapping == null || !isController(handlerType)) {
             return mapping;
         }
-        for (String basePackage : properties.getBasePackages()) {
+        for (String basePackage : options.getBasePackages()) {
             String packageName = handlerType.getPackageName();
             if (!packageMatcher.matchStart(basePackage, packageName)
                     && !packageMatcher.matchStart(packageName, basePackage)) {
                 continue;
             }
-            String routePrefix = properties.getPrefix() + packageSuffix(basePackage, packageName);
+            String routePrefix = options.getPrefix() + packageSuffix(basePackage, packageName);
             if (routePrefix.isEmpty()) {
                 return mapping;
             }

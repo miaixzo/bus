@@ -82,7 +82,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 | [√]  | [bus-tempus](bus-tempus)       | 分布式任务调度，支持CRON表达式及集群任务协调                              |
 | [×]  | [bus-tracer](bus-tracer)       | 分布式链路追踪，集成Zipkin/Pinpoint实现全链路监控（开发中）               |
 | [√]  | [bus-validate](bus-validate)   | 参数校验框架，扩展JSR-303注解支持自定义校验规则                           |
-| [√]  | [bus-vortex](bus-vortex)       | 响应式网关，基于WebFlux构建的高性能API网关                                |
+| [√]  | [bus-vortex](bus-vortex)       | 响应式网关，基于WebFlux构建高性能API网关                                  |
 
 ### ✨ 功能概述
 
@@ -97,7 +97,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 
 #### Maven
 
-```
+```xml
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-all</artifactId>
@@ -107,7 +107,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 
 或者单独使用某个组件
 
-```
+```xml
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-xxx</artifactId>
@@ -117,11 +117,11 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 
 #### Gradle
 
-```
+```groovy
 implementation 'org.miaixz:bus-all:x.x.x'
 ```
 
-#### Downlad
+#### Download
 
 点击以下任一链接，下载`bus-*-x.x.x.jar`即可：
 

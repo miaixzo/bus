@@ -216,14 +216,14 @@ List<Project> allProjects = projectPager.all();
 ### **Java 8 Stream 支持**
 
 从 GitLab-API 4.9.2 开始，所有返回 List 结果的 GitLabJ-API 方法都有一个类似命名的返回 Java 8 Stream 的方法。返回 Stream
-的方法使用以下命名约定:```getXxxxxStream()```。
+的方法使用以下命名约定：`getXxxxxStream()`。
 
 **重要**
 内置的返回 Stream 的方法使用___急切求值___，意味着所有项目都从 GitLab 服务器预先获取，然后返回一个 Stream 来流式传输这些项目。
 **急切求值不支持从服务器的并行读取，但它确实支持获取数据后的 Stream 并行处理。**
 
-要使用___惰性求值___进行流式传输，请使用返回```Pager```实例的 GitLab-API 方法，然后在```Pager```实例上调用
-```lazyStream()```方法来创建惰性求值 Stream。Stream 使用```Pager```实例来分页浏览可用项目。 **惰性 Stream
+要使用___惰性求值___进行流式传输，请使用返回 `Pager` 实例的 GitLab-API 方法，然后在 `Pager` 实例上调用
+`lazyStream()` 方法来创建惰性求值 Stream。Stream 使用 `Pager` 实例来分页浏览可用项目。**惰性 Stream
 不支持并行操作或跳过。**
 
 #### **急切求值条件用法:**

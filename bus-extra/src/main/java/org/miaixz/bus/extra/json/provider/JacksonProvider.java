@@ -56,7 +56,7 @@ public class JacksonProvider extends AbstractJsonProvider {
     /**
      * Identifier used to attach the shared property filter to all serialized objects.
      */
-    private static final String FILTER_ID = "busJsonPropertyFilter";
+    private static final String FILTER_ID = "BusJsonPropertyFilter";
 
     /**
      * The underlying Jackson {@link ObjectMapper} used for JSON operations.

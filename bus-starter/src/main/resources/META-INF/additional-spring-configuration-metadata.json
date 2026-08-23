@@ -405,6 +405,29 @@
       "defaultValue": false
     },
     {
+      "name": "bus.wrapper.message-converters.allowed-types",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Additional JSON target types or package patterns. Supports exact names, '*' for one package segment, and '**' for any number of package segments.",
+      "defaultValue": []
+    },
+    {
+      "name": "bus.wrapper.message-converters.auto-type",
+      "type": "java.lang.String",
+      "description": "Legacy comma-separated JSON target-type rules. The special value '**' allows every target type and should only be used in trusted environments."
+    },
+    {
+      "name": "bus.wrapper.message-converters.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether Bus MVC message converters are registered.",
+      "defaultValue": true
+    },
+    {
+      "name": "bus.wrapper.message-converters.type-policy",
+      "type": "org.miaixz.bus.starter.wrapper.converter.MessageConverterProperties$TypePolicy",
+      "description": "Baseline policy used to allow JSON deserialization target types.",
+      "defaultValue": "application"
+    },
+    {
       "name": "bus.zookeeper.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether ZooKeeper integration is enabled.",
@@ -414,6 +437,25 @@
       "name": "spring.datasource.multi",
       "type": "java.util.List<org.miaixz.bus.spring.jdbc.DataSourceDefinition>",
       "description": "Additional named Spring data sources using the same fields as the primary data source."
+    }
+  ],
+  "hints": [
+    {
+      "name": "bus.wrapper.message-converters.type-policy",
+      "values": [
+        {
+          "value": "framework",
+          "description": "Allow Bus framework types and built-in safe Java types, plus explicitly configured rules."
+        },
+        {
+          "value": "application",
+          "description": "Also allow types under Spring Boot application base packages."
+        },
+        {
+          "value": "all",
+          "description": "Allow every JSON target type. Use only in trusted environments."
+        }
+      ]
     }
   ]
 }
