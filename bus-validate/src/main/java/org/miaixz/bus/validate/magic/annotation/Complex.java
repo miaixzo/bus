@@ -22,6 +22,7 @@ package org.miaixz.bus.validate.magic.annotation;
 import java.lang.annotation.*;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.validate.Registry;
 import org.miaixz.bus.validate.magic.Matcher;
 
 /**
@@ -39,9 +40,8 @@ import org.miaixz.bus.validate.magic.Matcher;
 public @interface Complex {
 
     /**
-     * Specifies the name of the validator to be used. This is used to look up the validator in the
-     * {@link org.miaixz.bus.validate.Registry}. If both {@code value} and {@code clazz} are specified, {@code clazz}
-     * takes precedence.
+     * Specifies the name of the validator to be used. This is used to look up the validator in the {@link Registry}. If
+     * both {@code value} and {@code clazz} are specified, {@code clazz} takes precedence.
      *
      * @return the name of the validator.
      */

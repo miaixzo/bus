@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import org.miaixz.bus.cortex.Vector;
 import org.miaixz.bus.cortex.builtin.Label;
 import org.miaixz.bus.cortex.builtin.LabelMapper;
 import org.miaixz.bus.cortex.builtin.Selector;
@@ -35,9 +36,9 @@ import org.miaixz.bus.cortex.builtin.Selector;
  *
  * <p>
  * Scope flags that only make sense for setting export, rebuild, or admin scan flows should stay here instead of being
- * generalized back into {@link org.miaixz.bus.cortex.Vector}. The durable item identity remains
- * {@code space + group + data_id}; {@code profile_id} and {@code app_id} are delivery filters evaluated against
- * aggregated binding sets loaded from {@code setting_item_binding}.
+ * generalized back into {@link Vector}. The durable item identity remains {@code space + group + data_id};
+ * {@code profile_id} and {@code app_id} are delivery filters evaluated against aggregated binding sets loaded from
+ * {@code setting_item_binding}.
  * </p>
  *
  * @author Kimi Liu

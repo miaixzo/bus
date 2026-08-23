@@ -354,7 +354,7 @@ public class NativeProvider implements Provider {
     }
 
     /**
-     * Returns the shared {@link org.miaixz.bus.metrics.observe.slo.SloTracker} instance.
+     * Returns the shared {@link SloTracker} instance.
      */
     @Override
     public SloTracker sloTracker() {

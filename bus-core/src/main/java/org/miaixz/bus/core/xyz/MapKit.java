@@ -31,6 +31,7 @@ import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
 import org.miaixz.bus.core.center.map.*;
+import org.miaixz.bus.core.center.map.Dictionary;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 
@@ -248,7 +249,7 @@ public class MapKit extends MapGets {
      * @param <V>           The type of values in the map.
      * @return A new {@link Map} containing the provided key-value pairs.
      * @throws IllegalArgumentException if the number of elements in {@code keysAndValues} is odd.
-     * @see org.miaixz.bus.core.center.map.Dictionary#ofKvs(Object...)
+     * @see Dictionary#ofKvs(Object...)
      */
     public static <K, V> Map<K, V> ofKvs(final boolean isLinked, final Object... keysAndValues) {
         if (ArrayKit.isEmpty(keysAndValues)) {

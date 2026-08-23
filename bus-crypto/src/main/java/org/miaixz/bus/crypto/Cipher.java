@@ -22,6 +22,7 @@ package org.miaixz.bus.crypto;
 import java.util.Arrays;
 
 import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.exception.CryptoException;
 
 /**
  * Represents a cryptographic cipher, providing a unified API for various implementations like JCE and Bouncy Castle.
@@ -76,8 +77,8 @@ public interface Cipher {
      * </p>
      *
      * @param aad additional authenticated data; an empty array is permitted
-     * @throws IllegalArgumentException                           if {@code aad} is {@code null}
-     * @throws org.miaixz.bus.core.lang.exception.CryptoException if the underlying cipher does not support AAD
+     * @throws IllegalArgumentException if {@code aad} is {@code null}
+     * @throws CryptoException          if the underlying cipher does not support AAD
      */
     void updateAad(byte[] aad);
 

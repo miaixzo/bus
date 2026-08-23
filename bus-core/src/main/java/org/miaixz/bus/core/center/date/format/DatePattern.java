@@ -25,14 +25,14 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.miaixz.bus.core.center.date.printer.FastDatePrinter;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.DateException;
 
 /**
  * A class for parsing and formatting date-time strings based on a pattern. This class is the core of the
- * {@link org.miaixz.bus.core.center.date.printer.FastDatePrinter} and handles the conversion of a format pattern into a
- * series of formatting rules.
+ * {@link FastDatePrinter} and handles the conversion of a format pattern into a series of formatting rules.
  *
  * @author Kimi Liu
  */

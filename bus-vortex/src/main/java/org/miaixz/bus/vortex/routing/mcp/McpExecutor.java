@@ -58,6 +58,7 @@ import org.miaixz.bus.vortex.Octets;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.routing.Coordinator;
 import org.miaixz.bus.vortex.routing.StreamingRelay;
+import org.miaixz.bus.vortex.routing.rest.RestExecutor;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -65,9 +66,9 @@ import reactor.core.publisher.Mono;
 /**
  * The core executor for proxying MCP Streamable HTTP requests to registered downstream MCP services.
  * <p>
- * This executor follows the same WebClient execution shape as {@link org.miaixz.bus.vortex.routing.rest.RestExecutor}:
- * it validates the resolved runtime route asset, builds a downstream request, configures headers and body content, then
- * selects buffered, realtime-streaming or download response ownership from the strict route asset mode.
+ * This executor follows the same WebClient execution shape as {@link RestExecutor}: it validates the resolved runtime
+ * route asset, builds a downstream request, configures headers and body content, then selects buffered,
+ * realtime-streaming or download response ownership from the strict route asset mode.
  *
  * @author Kimi Liu
  */

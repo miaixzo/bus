@@ -23,13 +23,15 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.Lifecycle;
+import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.vortex.registry.ServerRegistry;
 
 /**
  * A data transfer object (DTO) that provides a consolidated view of a single managed service, including its status and
  * performance metrics.
  * <p>
- * This object is typically constructed by the {@link org.miaixz.bus.vortex.registry.ServerRegistry} and returned by
- * management APIs to be consumed by a UI dashboard.
+ * This object is typically constructed by the {@link ServerRegistry} and returned by management APIs to be consumed by
+ * a UI dashboard.
  *
  * @author Kimi Liu
  */
@@ -59,7 +61,7 @@ public class Transmit {
     }
 
     /**
-     * The unique name or ID of the service, derived from {@link org.miaixz.bus.cortex.Assets#getName()}.
+     * The unique name or ID of the service, derived from {@link Assets#getName()}.
      */
     private String name;
 

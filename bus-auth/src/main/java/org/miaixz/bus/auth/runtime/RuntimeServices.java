@@ -32,6 +32,7 @@ import org.miaixz.bus.auth.worker.*;
 import org.miaixz.bus.auth.worker.loader.*;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.extra.json.JsonKit;
 
 /**
  * Immutable root container for all Source-execution dependencies.
@@ -45,7 +46,7 @@ import org.miaixz.bus.core.lang.Assert;
  * <p>
  * Blueprint loading, Roster observation, identity completion, audit, parsing execution, and project business services
  * remain outside this class. Application-wide JSON selection also remains outside this container; Source
- * implementations use {@link org.miaixz.bus.extra.json.JsonKit} directly.
+ * implementations use {@link JsonKit} directly.
  * </p>
  *
  * @author Kimi Liu

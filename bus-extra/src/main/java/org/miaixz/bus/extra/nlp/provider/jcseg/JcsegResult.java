@@ -26,12 +26,13 @@ import org.lionsoul.jcseg.IWord;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.nlp.AbstractResult;
+import org.miaixz.bus.extra.nlp.NLPResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
 import org.miaixz.bus.logger.Logger;
 
 /**
  * Jcseg word segmentation result wrapper. This class adapts the Jcseg {@link ISegment} result to the common
- * {@link org.miaixz.bus.extra.nlp.NLPResult} interface. Project homepage:
+ * {@link NLPResult} interface. Project homepage:
  * <a href="https://gitee.com/lionsoul/jcseg">https://gitee.com/lionsoul/jcseg</a>
  *
  * @author Kimi Liu

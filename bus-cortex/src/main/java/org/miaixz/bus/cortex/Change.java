@@ -19,11 +19,13 @@
 */
 package org.miaixz.bus.cortex;
 
+import org.miaixz.bus.cortex.registry.RegistryChange;
+
 /**
  * Common metadata contract shared by Cortex change notifications.
  * <p>
- * Implementations such as {@link Watch} and {@link org.miaixz.bus.cortex.registry.RegistryChange} expose their concrete
- * payload shape separately while sharing the same space, type, ordering and timestamp metadata.
+ * Implementations such as {@link Watch} and {@link RegistryChange} expose their concrete payload shape separately while
+ * sharing the same space, type, ordering and timestamp metadata.
  *
  * @param <T> domain value type described by the concrete change implementation
  * @author Kimi Liu

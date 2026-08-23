@@ -34,6 +34,7 @@ import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Strategy;
+import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.strategy.StrategyFactory;
 
@@ -73,8 +74,7 @@ public class PrimaryFilter extends AbstractFilter {
      * initial data from the request, such as headers and the HTTP method.</li>
      * <li><b>Context Fallback Registration:</b> It stores the newly created {@code Context} in the
      * {@code ServerWebExchange} attributes. This serves as a "black box" fallback, ensuring the context is accessible
-     * to the global {@link org.miaixz.bus.vortex.handler.ErrorsHandler} even if the reactive stream is disrupted by an
-     * error.</li>
+     * to the global {@link ErrorsHandler} even if the reactive stream is disrupted by an error.</li>
      * <li><b>Chain Execution:</b> It creates a new {@link Chain} and initiates its execution. Crucially, it also uses
      * {@code .contextWrite()} to inject the {@code Context} into the Reactor context, making it available to all
      * downstream reactive operators in a clean, functional way.</li>

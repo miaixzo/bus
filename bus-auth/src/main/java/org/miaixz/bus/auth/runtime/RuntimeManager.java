@@ -27,6 +27,7 @@ import org.miaixz.bus.auth.Roster;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.extra.json.JsonKit;
 
 /**
  * Owns the bus-auth framework lifecycle and exposes separate Roster and execution entries.
@@ -34,7 +35,7 @@ import org.miaixz.bus.core.lang.Assert;
  * RuntimeServices remain owned by the external project. Closing this runtime rejects new authentication and reload
  * operations, but preserves the last immutable Roster snapshot for read-only inspection. It never closes the caller's
  * executor, cache backend, loaders, audit sink, or consent service, and it does not alter the application-wide
- * {@link org.miaixz.bus.extra.json.JsonKit} provider selection.
+ * {@link JsonKit} provider selection.
  * </p>
  *
  * @author Kimi Liu

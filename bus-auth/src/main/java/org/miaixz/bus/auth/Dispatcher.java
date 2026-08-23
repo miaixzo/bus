@@ -21,6 +21,13 @@ package org.miaixz.bus.auth;
 
 import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.runtime.RuntimeManager;
+import org.miaixz.bus.auth.source.protocol.ldap.server.LdapServerScheme;
+import org.miaixz.bus.auth.source.protocol.oauth2.server.OAuth2ServerScheme;
+import org.miaixz.bus.auth.source.protocol.oidc.server.OpenIdServerScheme;
+import org.miaixz.bus.auth.source.protocol.radius.server.RadiusServerScheme;
+import org.miaixz.bus.auth.source.protocol.saml.server.SamlServerScheme;
+import org.miaixz.bus.auth.source.protocol.scim.server.ScimServerScheme;
 import org.miaixz.bus.core.lang.Optional;
 
 /**
@@ -35,9 +42,8 @@ import org.miaixz.bus.core.lang.Optional;
  *
  * <h2>Obtaining the dispatcher</h2>
  * <p>
- * {@link org.miaixz.bus.auth.runtime.RuntimeManager} owns the Dispatcher together with the Roster and runtime
- * lifecycle. Obtain and retain the Dispatcher after the runtime has successfully loaded its first complete Blueprint
- * snapshot:
+ * {@link RuntimeManager} owns the Dispatcher together with the Roster and runtime lifecycle. Obtain and retain the
+ * Dispatcher after the runtime has successfully loaded its first complete Blueprint snapshot:
  * </p>
  *
  * <pre>{@code
@@ -60,8 +66,8 @@ import org.miaixz.bus.core.lang.Optional;
  * <h3>OAuth 2.x authorization server</h3>
  * <p>
  * An OAuth-only Source normally uses a fixed {@code /oauth2} route prefix and the capability constants in
- * {@link org.miaixz.bus.auth.source.protocol.oauth2.server.OAuth2ServerScheme}. OAuth endpoint adapters accept and
- * return Fabric HTTP models, so the project preserves the complete inbound request when invoking Dispatcher.
+ * {@link OAuth2ServerScheme}. OAuth endpoint adapters accept and return Fabric HTTP models, so the project preserves
+ * the complete inbound request when invoking Dispatcher.
  * </p>
  * <table>
  * <caption>Recommended OAuth 2.x routes</caption> <thead>
@@ -108,7 +114,7 @@ import org.miaixz.bus.core.lang.Optional;
  * <p>
  * An OpenID Provider uses a distinct fixed {@code /oidc} issuer and route scope even though it composes OAuth token
  * operations. Its discovery, UserInfo, JWK Set, ID Token, subject, and end-session semantics do not exist in a generic
- * OAuth-only Source. Use the constants in {@link org.miaixz.bus.auth.source.protocol.oidc.server.OpenIdServerScheme}.
+ * OAuth-only Source. Use the constants in {@link OpenIdServerScheme}.
  * </p>
  * <table>
  * <caption>Recommended OpenID Connect routes</caption> <thead>
@@ -159,10 +165,10 @@ import org.miaixz.bus.core.lang.Optional;
  * <h3>SAML 2.0 identity provider</h3>
  * <p>
  * SAML does not use OAuth endpoints or OAuth HTTP message models. A SAML Source normally uses a fixed {@code /saml}
- * route scope and the capabilities in {@link org.miaixz.bus.auth.source.protocol.saml.server.SamlServerScheme}. The
- * project SAML transport adapter decodes the inbound HTTP-Redirect Binding into a typed {@code AuthnRequest} or
- * {@code LogoutRequest}, invokes Dispatcher, and encodes the signed typed response using the configured HTTP-POST or
- * HTTP-Redirect Binding. The metadata operation has no request model and returns a typed {@code EntityDescriptor}.
+ * route scope and the capabilities in {@link SamlServerScheme}. The project SAML transport adapter decodes the inbound
+ * HTTP-Redirect Binding into a typed {@code AuthnRequest} or {@code LogoutRequest}, invokes Dispatcher, and encodes the
+ * signed typed response using the configured HTTP-POST or HTTP-Redirect Binding. The metadata operation has no request
+ * model and returns a typed {@code EntityDescriptor}.
  * </p>
  * <table>
  * <caption>Recommended SAML 2.0 routes</caption> <thead>
@@ -198,8 +204,7 @@ import org.miaixz.bus.core.lang.Optional;
  * <h3>SCIM 2.0 service provider</h3>
  * <p>
  * SCIM uses an independent fixed {@code /scim/v2} resource scope and typed resource capabilities from
- * {@link org.miaixz.bus.auth.source.protocol.scim.server.ScimServerScheme}. The project HTTP adapter owns JSON and HTTP
- * status conversion around the typed SCIM models.
+ * {@link ScimServerScheme}. The project HTTP adapter owns JSON and HTTP status conversion around the typed SCIM models.
  * </p>
  * <table>
  * <caption>Recommended SCIM 2.0 route groups</caption> <thead>
@@ -239,13 +244,11 @@ import org.miaixz.bus.core.lang.Optional;
  * <p>
  * LDAP and RADIUS do not expose HTTP paths. The project supplies protocol listeners and connection or datagram
  * lifecycle management. An LDAP adapter typically binds {@code ldap://host:389} and/or {@code ldaps://host:636},
- * decodes BER into a complete {@code LdapMessage}, selects the matching
- * {@link org.miaixz.bus.auth.source.protocol.ldap.server.LdapServerScheme} capability, and preserves one connection
- * identifier in Context. A RADIUS adapter binds its configured UDP or TLS Access and Accounting addresses, validates
- * packet framing, decodes the typed request, and invokes
- * {@link org.miaixz.bus.auth.source.protocol.radius.server.RadiusServerScheme#ACCESS} or
- * {@link org.miaixz.bus.auth.source.protocol.radius.server.RadiusServerScheme#ACCOUNTING}. Listener address, port, TLS,
- * and connection ownership remain project deployment concerns.
+ * decodes BER into a complete {@code LdapMessage}, selects the matching {@link LdapServerScheme} capability, and
+ * preserves one connection identifier in Context. A RADIUS adapter binds its configured UDP or TLS Access and
+ * Accounting addresses, validates packet framing, decodes the typed request, and invokes
+ * {@link RadiusServerScheme#ACCESS} or {@link RadiusServerScheme#ACCOUNTING}. Listener address, port, TLS, and
+ * connection ownership remain project deployment concerns.
  * </p>
  * <p>
  * Client-role and Vendor Sources publish no inbound server address. They use Dispatcher for outbound authentication

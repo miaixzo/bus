@@ -42,6 +42,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Delivery;
 import org.miaixz.bus.vortex.Egress;
+import org.miaixz.bus.vortex.Executor;
 import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.Octets;
 import org.miaixz.bus.vortex.routing.Coordinator;
@@ -76,8 +77,8 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
     /**
      * Executes a gRPC request using the provided context and String payload.
      * <p>
-     * This method is required by the {@link org.miaixz.bus.vortex.Executor} interface. It invokes the gRPC method and
-     * selects the strict response delivery from the route asset.
+     * This method is required by the {@link Executor} interface. It invokes the gRPC method and selects the strict
+     * response delivery from the route asset.
      *
      * @param context The request context containing the assets configuration
      * @param input   The String payload to send to the gRPC service

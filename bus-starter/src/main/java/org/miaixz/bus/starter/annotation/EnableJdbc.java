@@ -23,6 +23,7 @@ import java.lang.annotation.*;
 
 import org.springframework.context.annotation.Import;
 
+import org.miaixz.bus.spring.jdbc.DataSource;
 import org.miaixz.bus.starter.jdbc.JdbcConfiguration;
 
 /**
@@ -30,7 +31,7 @@ import org.miaixz.bus.starter.jdbc.JdbcConfiguration;
  * <p>
  * This annotation imports the {@link JdbcConfiguration}, which sets up single or multiple data sources based on the
  * application's properties. It is the entry point for configuring dynamic data source routing via the
- * {@link org.miaixz.bus.spring.jdbc.DataSource} annotation.
+ * {@link DataSource} annotation.
  *
  * @author Kimi Liu
  */

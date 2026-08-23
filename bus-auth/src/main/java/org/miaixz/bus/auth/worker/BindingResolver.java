@@ -20,6 +20,7 @@
 package org.miaixz.bus.auth.worker;
 
 import org.miaixz.bus.auth.Blueprint;
+import org.miaixz.bus.auth.Loader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
@@ -27,7 +28,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * Resolves one already assembled project runtime binding for an exact source and contract.
  * <p>
  * This port performs synchronous typed dependency resolution during Source compilation. It does not load external
- * project data and therefore does not implement {@link org.miaixz.bus.auth.Loader}.
+ * project data and therefore does not implement {@link Loader}.
  * </p>
  *
  * @author Kimi Liu

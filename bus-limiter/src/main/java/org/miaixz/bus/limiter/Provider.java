@@ -25,8 +25,8 @@ import org.miaixz.bus.limiter.magic.StrategyMode;
 
 /**
  * Defines the contract for a limiter provider, which is responsible for executing limiting rules. This interface
- * extends {@link org.miaixz.bus.core.Provider} and specifies methods for retrieving the limiting strategy and
- * processing method invocations under limiting rules.
+ * extends the shared provider contract and specifies methods for retrieving the limiting strategy and processing method
+ * invocations under limiting rules.
  *
  * @author Kimi Liu
  */

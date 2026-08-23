@@ -22,6 +22,7 @@ package org.miaixz.bus.auth.registry;
 import java.util.*;
 
 import org.miaixz.bus.auth.Blueprint;
+import org.miaixz.bus.auth.Library;
 import org.miaixz.bus.auth.Provider;
 import org.miaixz.bus.auth.Roster;
 import org.miaixz.bus.auth.Source;
@@ -36,11 +37,11 @@ import org.miaixz.bus.core.xyz.StringKit;
 /**
  * Validates one complete candidate Roster snapshot before runtime compilation.
  * <p>
- * External projects supply complete {@link org.miaixz.bus.auth.Library}, {@link Provider}, and {@link Source} objects.
- * Validation follows their dependency order and checks identity, ownership relationships, lifecycle compatibility,
- * Source routing identifiers, and the presence of already materialized protocol options. Project presentation, launch,
- * ordering, and management uniqueness rules are deliberately excluded. Concrete option invariants are validated later
- * by the selected Source Driver.
+ * External projects supply complete {@link Library}, {@link Provider}, and {@link Source} objects. Validation follows
+ * their dependency order and checks identity, ownership relationships, lifecycle compatibility, Source routing
+ * identifiers, and the presence of already materialized protocol options. Project presentation, launch, ordering, and
+ * management uniqueness rules are deliberately excluded. Concrete option invariants are validated later by the selected
+ * Source Driver.
  * </p>
  *
  * @author Kimi Liu

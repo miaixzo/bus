@@ -28,16 +28,16 @@ import org.miaixz.bus.cache.Collector;
 import org.miaixz.bus.metrics.Metrics;
 
 /**
- * Bridges the {@link org.miaixz.bus.cache.Collector} interface to the bus-metrics observability backend.
+ * Bridges the {@link Collector} interface to the bus-metrics observability backend.
  * <p>
  * This adapter has two responsibilities:
  * <ol>
  * <li><b>Local resettable tracking</b> — maintains per-pattern hit/request {@link LongAdder} pairs so that
  * {@link #getHitting()}, {@link #reset(String)}, and {@link #resetAll()} behave exactly as callers of the bus-cache
  * {@code Collector} interface expect.</li>
- * <li><b>Backend publishing</b> — forwards every increment to {@link org.miaixz.bus.metrics.Metrics} counters (tagged
- * with {@code pattern}), making cache hit-rate data visible in Prometheus, Micrometer, or OpenTelemetry dashboards
- * without any additional wiring.</li>
+ * <li><b>Backend publishing</b> — forwards every increment to {@link Metrics} counters (tagged with {@code pattern}),
+ * making cache hit-rate data visible in Prometheus, Micrometer, or OpenTelemetry dashboards without any additional
+ * wiring.</li>
  * </ol>
  * <p>
  * Because bus-metrics already depends on bus-cache (not the other way around), this class can safely implement
