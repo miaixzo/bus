@@ -9,7 +9,7 @@
     <img src="https://img.shields.io/badge/Java-25+-green.svg">
   </a>
   <a target="_blank" href="https://spring.io/projects/spring-boot">
-    <img src="https://img.shields.io/badge/Spring Boot-4.1.0-brightgreen.svg">
+    <img src="https://img.shields.io/badge/Spring Boot-4.1.1-brightgreen.svg">
   </a>
   <a target="_blank" href="https://www.postgresql.org">
     <img src="https://img.shields.io/badge/postgresql-17.x-blue.svg">

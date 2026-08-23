@@ -29,6 +29,7 @@ import org.miaixz.bus.auth.Roster;
 import org.miaixz.bus.auth.worker.RosterListener;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Delivers Roster observations in acceptance order without executing project callbacks inside the commit gate.
@@ -118,6 +119,12 @@ final class RosterNotifier {
             if (pending.size() == Normal._256) {
                 pending.poll();
                 dropped++;
+                Logger.warn(
+                        false,
+                        "Auth",
+                        "Roster notification queue overflow: dropped={}, capacity={}",
+                        dropped,
+                        Normal._256);
             }
             pending.add(Assert.notNull(notification, "Roster notification must not be null"));
         }
@@ -140,12 +147,21 @@ final class RosterNotifier {
         Thread.startVirtualThread(() -> {
             try {
                 executor.execute(this::drain);
-            } catch (RuntimeException ignored) {
+            } catch (RuntimeException cause) {
+                final long droppedCount;
                 synchronized (this) {
                     dropped += pending.size();
+                    droppedCount = dropped;
                     pending.clear();
                     dispatching = false;
                 }
+                Logger.error(
+                        false,
+                        "Auth",
+                        cause,
+                        "Roster notification scheduling failed: dropped={}, exception={}",
+                        droppedCount,
+                        cause.getClass().getSimpleName());
             }
         });
     }
@@ -182,11 +198,23 @@ final class RosterNotifier {
         if (count == 0L) {
             return;
         }
+        Logger.warn(
+                false,
+                "Auth",
+                "Roster notification observation gap: dropped={}, latestRevision={}",
+                count,
+                revision.value());
         for (RosterListener listener : listeners) {
             try {
                 listener.overflow(count, revision);
-            } catch (RuntimeException ignored) {
-                // Observation failure cannot alter Roster publication.
+            } catch (RuntimeException cause) {
+                Logger.warn(
+                        false,
+                        "Auth",
+                        cause,
+                        "Roster overflow listener failed: listener={}, exception={}",
+                        listener.getClass().getName(),
+                        cause.getClass().getSimpleName());
             }
         }
     }
@@ -200,8 +228,14 @@ final class RosterNotifier {
         for (RosterListener listener : listeners) {
             try {
                 notification.deliver(listener);
-            } catch (RuntimeException ignored) {
-                // Project observations cannot alter the framework decision that has already been made.
+            } catch (RuntimeException cause) {
+                Logger.warn(
+                        false,
+                        "Auth",
+                        cause,
+                        "Roster listener failed: listener={}, exception={}",
+                        listener.getClass().getName(),
+                        cause.getClass().getSimpleName());
             }
         }
     }
@@ -212,6 +246,7 @@ final class RosterNotifier {
     synchronized void close() {
         closed = true;
         pending.clear();
+        Logger.debug(false, "Auth", "Roster notifier closed: listeners={}", listeners.size());
     }
 
     /**

@@ -34,6 +34,7 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Compiles a validated Blueprint snapshot into one complete executable runtime container.
@@ -134,8 +135,14 @@ final class SnapshotCompiler {
         for (SourceWorker worker : workers.values()) {
             try {
                 worker.close();
-            } catch (RuntimeException ignored) {
-                // Compilation failure remains primary while every already-created worker is given a close attempt.
+            } catch (RuntimeException cause) {
+                Logger.warn(
+                        false,
+                        "Auth",
+                        cause,
+                        "Partially compiled Source worker close failed: worker={}, exception={}",
+                        worker.getClass().getName(),
+                        cause.getClass().getSimpleName());
             }
         }
     }
@@ -153,12 +160,36 @@ final class SnapshotCompiler {
         final Map<String, Library> libraries = new LinkedHashMap<>();
         final Map<String, Blueprint.ProviderEntry> providerEntries = new LinkedHashMap<>();
         final Map<Roster.Reference, SourceWorker> workers = new LinkedHashMap<>();
+        Logger.debug(
+                true,
+                "Auth",
+                "Roster snapshot compilation started: revision={}, entries={}",
+                snapshot.revision().value(),
+                snapshot.entries().size());
         try {
             compileLibraries(snapshot, libraries);
             indexProviders(snapshot, libraries, providerEntries);
             compileSources(snapshot, libraries, providerEntries, workers);
-            return new RuntimeContainer(new SnapshotRoster(snapshot.revision(), snapshot), workers);
+            final RuntimeContainer container = new RuntimeContainer(new SnapshotRoster(snapshot.revision(), snapshot),
+                    workers);
+            Logger.debug(
+                    false,
+                    "Auth",
+                    "Roster snapshot compilation completed: revision={}, libraries={}, providers={}, sources={}",
+                    snapshot.revision().value(),
+                    libraries.size(),
+                    providerEntries.size(),
+                    workers.size());
+            return container;
         } catch (RuntimeException failure) {
+            Logger.error(
+                    false,
+                    "Auth",
+                    failure,
+                    "Roster snapshot compilation failed: revision={}, compiledSources={}, exception={}",
+                    snapshot.revision().value(),
+                    workers.size(),
+                    failure.getClass().getSimpleName());
             close(workers);
             throw failure;
         }
@@ -195,8 +226,22 @@ final class SnapshotCompiler {
                     throw new NotFoundException("Library for enabled Source was not indexed");
                 }
                 final Roster.Reference reference = Roster.Reference.source(source.getId());
+                Logger.debug(
+                        false,
+                        "Auth",
+                        "Source worker compilation started: revision={}, sourceId={}, sourceType={}",
+                        snapshot.revision().value(),
+                        source.getId(),
+                        source.getType());
                 final SourceWorker worker = compile(driver, entry, provider, library, snapshot.revision().value());
                 workers.put(reference, worker);
+                Logger.debug(
+                        false,
+                        "Auth",
+                        "Source worker compilation completed: revision={}, sourceId={}, worker={}",
+                        snapshot.revision().value(),
+                        source.getId(),
+                        worker.getClass().getName());
             } catch (CompilationFailure failure) {
                 throw failure;
             } catch (RuntimeException cause) {

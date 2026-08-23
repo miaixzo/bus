@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Freezes the single Source lookup shared by validation, compilation, and runtime discovery.
@@ -113,6 +114,13 @@ public class SourceLookup {
         this.driversByScheme = state.driversByScheme();
         this.descriptors = state.descriptors();
         this.descriptorsById = state.descriptorsById();
+        Logger.info(
+                false,
+                "Auth",
+                "Source lookup initialized: modules={}, drivers={}, descriptors={}",
+                modules.size(),
+                this.drivers.size(),
+                this.descriptors.size());
     }
 
     /**

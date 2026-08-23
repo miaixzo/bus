@@ -37,6 +37,7 @@ import org.miaixz.bus.auth.worker.RosterListener;
 import org.miaixz.bus.auth.worker.loader.BlueprintLoader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Performs deterministic one-time assembly of the bus-auth Roster and runtime lifecycle.
@@ -124,6 +125,7 @@ public class RuntimeBuilder {
     public synchronized RuntimeBuilder module(final SourceModule module) {
         mutable();
         modules.add(Assert.notNull(module, "Source module must not be null"));
+        Logger.debug(false, "Auth", "Runtime Source module accepted: modules={}", modules.size());
         return this;
     }
 
@@ -141,6 +143,7 @@ public class RuntimeBuilder {
         for (SourceModule module : modules) {
             this.modules.add(Assert.notNull(module, "Source module must not be null"));
         }
+        Logger.debug(false, "Auth", "Runtime Source modules accepted: modules={}", this.modules.size());
         return this;
     }
 
@@ -155,6 +158,7 @@ public class RuntimeBuilder {
     public synchronized RuntimeBuilder listener(final RosterListener listener) {
         mutable();
         listeners.add(Assert.notNull(listener, "Roster listener must not be null"));
+        Logger.debug(false, "Auth", "Runtime Roster listener accepted: listeners={}", listeners.size());
         return this;
     }
 
@@ -171,15 +175,33 @@ public class RuntimeBuilder {
     public synchronized CompletionStage<RuntimeManager> build(final Context context, final Timeout timeout) {
         Assert.notNull(context, "Runtime startup context must not be null");
         Assert.notNull(timeout, "Runtime startup timeout must not be null");
+        Logger.info(
+                true,
+                "Auth",
+                "Authentication runtime startup started: requestId={}, modules={}, listeners={}",
+                context.requestId().value(),
+                modules.size(),
+                listeners.size());
         final RuntimeManager runtime = assemble();
         return runtime.reload(context, timeout).thenApply(report -> {
             if (!report.faults().isEmpty()) {
-                runtime.close();
                 throw new ValidateException(rejection(report));
             }
+            Logger.info(
+                    false,
+                    "Auth",
+                    "Authentication runtime startup completed: requestId={}, revision={}",
+                    context.requestId().value(),
+                    report.revision().value());
             return runtime;
         }).whenComplete((started, failure) -> {
             if (failure != null) {
+                Logger.error(
+                        false,
+                        "Auth",
+                        "Authentication runtime startup failed: requestId={}, exception={}",
+                        context.requestId().value(),
+                        failure.getClass().getSimpleName());
                 runtime.close();
             }
         });
@@ -195,7 +217,15 @@ public class RuntimeBuilder {
      * @return fully assembled empty runtime
      */
     public synchronized RuntimeManager buildEmpty() {
-        return assemble();
+        Logger.info(
+                true,
+                "Auth",
+                "Empty authentication runtime assembly started: modules={}, listeners={}",
+                modules.size(),
+                listeners.size());
+        final RuntimeManager runtime = assemble();
+        Logger.info(false, "Auth", "Empty authentication runtime assembly completed: revision=0");
+        return runtime;
     }
 
     /**
@@ -206,6 +236,12 @@ public class RuntimeBuilder {
     private RuntimeManager assemble() {
         mutable();
         built = true;
+        Logger.debug(
+                true,
+                "Auth",
+                "Runtime component assembly started: modules={}, listeners={}",
+                modules.size(),
+                listeners.size());
         final SourceLookup sourceLookup = new SourceLookup(List.copyOf(modules));
         final RuntimeDescriptor descriptor = new RuntimeDescriptor(sourceLookup);
         final SnapshotCompiler snapshotCompiler = new SnapshotCompiler(sourceLookup, runtimeServices);
@@ -220,7 +256,10 @@ public class RuntimeBuilder {
         final RuntimeReloadService reloadService = new RuntimeReloadService(blueprintLoader,
                 new SnapshotValidator(new SourceValidator(sourceLookup)), snapshotCompiler, containers, notifier,
                 lifecycle);
-        return new RuntimeManager(roster, dispatcher, reloadService, descriptor, lifecycle, containers);
+        final RuntimeManager runtime = new RuntimeManager(roster, dispatcher, reloadService, descriptor, lifecycle,
+                containers);
+        Logger.debug(false, "Auth", "Runtime component assembly completed: revision=0");
+        return runtime;
     }
 
     /**

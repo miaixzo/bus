@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Holds exact platform-variant bindings to immutable Vendor Options factories.
@@ -77,6 +78,13 @@ final class OptionsBindings {
         if (binding == null) {
             throw new ValidateException("Vendor Options factory is not registered for the selected platform variant");
         }
+        Logger.debug(
+                false,
+                "Auth",
+                "Vendor Options binding resolved: vendor={}, variant={}, manifest={}",
+                vendor.value(),
+                variant.value(),
+                binding.manifest().getClass().getName());
         return binding;
     }
 

@@ -25,7 +25,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>4.1.0</version>
+        <version>4.1.1</version>
     </parent>
 
     <groupId>org.miaixz</groupId>
@@ -83,8 +83,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <logback.version>1.5.34</logback.version>
-        <elastic.version>9.4.2</elastic.version>
+        <logback.version>1.6.3</logback.version>
+        <elastic.version>9.5.1</elastic.version>
         <druid.version>1.2.28</druid.version>
         <sentinel.version>1.8.10</sentinel.version>
         <fastjson.version>2.0.62</fastjson.version>
@@ -142,16 +142,16 @@
         <javassist.version>3.31.0-GA</javassist.version>
         <jcseg.version>2.6.3</jcseg.version>
         <mybatis.version>3.5.19</mybatis.version>
-        <mybatis.spring.version>4.0.0</mybatis.spring.version>
+        <mybatis.spring.version>4.1.0</mybatis.spring.version>
         <ofdrw.version>2.3.9</ofdrw.version>
         <postgresql.version>42.7.11</postgresql.version>
         <lombok.version>1.18.46</lombok.version>
         <reflections.version>0.10.2</reflections.version>
-        <spring.boot.version>4.1.0</spring.boot.version>
+        <spring.boot.version>4.1.1</spring.boot.version>
         <thymeleaf.version>3.1.5.RELEASE</thymeleaf.version>
         <tinylog.version>2.7.0</tinylog.version>
         <yaml.version>2.6</yaml.version>
-        <jedis.version>7.5.2</jedis.version>
+        <jedis.version>8.0.0</jedis.version>
         <amazon.s3.version>2.46.15</amazon.s3.version>
         <maven.groom.version>${groom.version}</maven.groom.version>
         <maven.spotless.version>3.7.0</maven.spotless.version>

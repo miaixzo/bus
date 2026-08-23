@@ -30,6 +30,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.extra.json.JsonValue;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Routes and executes capabilities against one atomically published runtime view.
@@ -209,44 +210,103 @@ final class DefaultDispatcher implements Dispatcher {
             final Context context,
             final Timeout timeout) {
         if (!lifecycle.running()) {
+            Logger.warn(false, "Auth", "Capability invocation rejected: reason=dispatcher-closed");
             return failed(ErrorCode._503, "Dispatcher is closed");
         }
         if (reference == null || capability == null || context == null || timeout == null) {
+            Logger.warn(false, "Auth", "Capability invocation rejected: reason=missing-routing-or-context");
             return rejected(ErrorCode._100100, "Authentication invocation requires all routing and context values");
         }
+        Logger.debug(
+                true,
+                "Auth",
+                "Capability invocation started: requestId={}, sourceId={}, protocol={}, operation={}",
+                context.requestId().value(),
+                reference.id(),
+                capability.key().protocol().getOrNull(),
+                capability.key().operation());
         if (timeout.expired()) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    "Capability invocation timed out: requestId={}, sourceId={}, operation={}",
+                    context.requestId().value(),
+                    reference.id(),
+                    capability.key().operation());
             return failed(ErrorCode._408, "Authentication invocation timeout is exhausted");
         }
         final RuntimeLifecycle.Lease operation = lifecycle.enter();
         if (operation == null) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    "Capability invocation rejected: requestId={}, sourceId={}, operation={}, reason=runtime-closing",
+                    context.requestId().value(),
+                    reference.id(),
+                    capability.key().operation());
             return failed(ErrorCode._503, "Authentication runtime is closing");
         }
         final RuntimeContainer.Lease containerLease = containers.acquire();
         if (containerLease == null) {
             operation.close();
+            Logger.warn(
+                    false,
+                    "Auth",
+                    "Capability invocation rejected: requestId={}, sourceId={}, operation={}, reason=container-retired",
+                    context.requestId().value(),
+                    reference.id(),
+                    capability.key().operation());
             return failed(ErrorCode._503, "Authentication runtime container is retired");
         }
         final SourceWorker worker = containerLease.container().worker(reference).getOrNull();
         if (worker == null) {
             containerLease.close();
             operation.close();
+            Logger.warn(
+                    false,
+                    "Auth",
+                    "Capability invocation rejected: requestId={}, sourceId={}, operation={}, reason=source-unavailable",
+                    context.requestId().value(),
+                    reference.id(),
+                    capability.key().operation());
             return rejected(ErrorCode._404, "Roster reference is not available in the current revision");
         }
         final Capability<Q, S> declared = declared(worker.manifest(), capability);
         if (declared == null) {
             containerLease.close();
             operation.close();
+            Logger.warn(
+                    false,
+                    "Auth",
+                    "Capability invocation rejected: requestId={}, sourceId={}, operation={}, reason=undeclared-capability",
+                    context.requestId().value(),
+                    reference.id(),
+                    capability.key().operation());
             return rejected(ErrorCode._100101, "Capability is not declared by the selected Roster reference");
         }
         if (request == null ? declared.requestType() != Void.class : !declared.requestType().isInstance(request)) {
             containerLease.close();
             operation.close();
+            Logger.warn(
+                    false,
+                    "Auth",
+                    "Capability invocation rejected: requestId={}, sourceId={}, operation={}, reason=request-type-mismatch",
+                    context.requestId().value(),
+                    reference.id(),
+                    capability.key().operation());
             return rejected(ErrorCode._100101, "Capability request does not match its declared request type");
         }
         final String securityRejection = securityRejection(declared.security(), context);
         if (securityRejection != null) {
             containerLease.close();
             operation.close();
+            Logger.warn(
+                    false,
+                    "Auth",
+                    "Capability invocation rejected: requestId={}, sourceId={}, operation={}, reason=security-boundary",
+                    context.requestId().value(),
+                    reference.id(),
+                    capability.key().operation());
             return rejected(ErrorCode._401, securityRejection);
         }
         try {
@@ -254,11 +314,37 @@ final class DefaultDispatcher implements Dispatcher {
             if (result == null) {
                 containerLease.close();
                 operation.close();
+                Logger.error(
+                        false,
+                        "Auth",
+                        "Capability invocation failed: requestId={}, sourceId={}, operation={}, reason=no-stage",
+                        context.requestId().value(),
+                        reference.id(),
+                        capability.key().operation());
                 return failed(ErrorCode._500, "Source worker returned no invocation stage");
             }
             return result.handle((outcome, cause) -> {
                 try {
-                    if (cause != null || outcome == null) {
+                    if (cause != null) {
+                        Logger.error(
+                                false,
+                                "Auth",
+                                cause,
+                                "Capability invocation failed: requestId={}, sourceId={}, operation={}, exception={}",
+                                context.requestId().value(),
+                                reference.id(),
+                                capability.key().operation(),
+                                cause.getClass().getSimpleName());
+                        return Outcome.failed(failure(ErrorCode._500, "Source worker invocation failed"));
+                    }
+                    if (outcome == null) {
+                        Logger.error(
+                                false,
+                                "Auth",
+                                "Capability invocation failed: requestId={}, sourceId={}, operation={}, reason=no-outcome",
+                                context.requestId().value(),
+                                reference.id(),
+                                capability.key().operation());
                         return Outcome.failed(failure(ErrorCode._500, "Source worker invocation failed"));
                     }
                     if (outcome instanceof Outcome.Succeeded<?> success) {
@@ -266,11 +352,46 @@ final class DefaultDispatcher implements Dispatcher {
                         final boolean matches = declared.responseType() == Void.class ? value == null
                                 : value != null && declared.responseType().isInstance(value);
                         if (!matches) {
+                            Logger.error(
+                                    false,
+                                    "Auth",
+                                    "Capability invocation failed: requestId={}, sourceId={}, operation={}, reason=response-type-mismatch",
+                                    context.requestId().value(),
+                                    reference.id(),
+                                    capability.key().operation());
                             return Outcome.failed(
                                     failure(
                                             ErrorCode._500,
                                             "Source worker result does not match the declared response type"));
                         }
+                    }
+                    if (outcome instanceof Outcome.Succeeded<?>) {
+                        Logger.info(
+                                false,
+                                "Auth",
+                                "Capability invocation completed: requestId={}, sourceId={}, protocol={}, operation={}, outcome=succeeded",
+                                context.requestId().value(),
+                                reference.id(),
+                                capability.key().protocol().getOrNull(),
+                                capability.key().operation());
+                    } else if (outcome instanceof Outcome.Rejected<?> rejected) {
+                        Logger.warn(
+                                false,
+                                "Auth",
+                                "Capability invocation rejected: requestId={}, sourceId={}, operation={}, error={}",
+                                context.requestId().value(),
+                                reference.id(),
+                                capability.key().operation(),
+                                rejected.failure().error());
+                    } else if (outcome instanceof Outcome.Failed<?> failed) {
+                        Logger.error(
+                                false,
+                                "Auth",
+                                "Capability invocation failed: requestId={}, sourceId={}, operation={}, error={}",
+                                context.requestId().value(),
+                                reference.id(),
+                                capability.key().operation(),
+                                failed.failure().error());
                     }
                     return outcome;
                 } finally {
@@ -278,7 +399,16 @@ final class DefaultDispatcher implements Dispatcher {
                     operation.close();
                 }
             });
-        } catch (RuntimeException ignored) {
+        } catch (RuntimeException cause) {
+            Logger.error(
+                    false,
+                    "Auth",
+                    cause,
+                    "Capability invocation failed before stage creation: requestId={}, sourceId={}, operation={}, exception={}",
+                    context.requestId().value(),
+                    reference.id(),
+                    capability.key().operation(),
+                    cause.getClass().getSimpleName());
             containerLease.close();
             operation.close();
             return failed(ErrorCode._500, "Source worker failed before returning an invocation stage");

@@ -19,293 +19,367 @@
 */
 package org.miaixz.bus.starter.auth;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Set;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Executor;
 
+import org.springframework.boot.context.properties.bind.Bindable;
+import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.core.env.Environment;
+
+import org.miaixz.bus.auth.Authorize;
 import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Provider;
-import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.nimble.afdian.AfDianProvider;
-import org.miaixz.bus.auth.nimble.alipay.AlipayProvider;
-import org.miaixz.bus.auth.nimble.aliyun.AliyunProvider;
-import org.miaixz.bus.auth.nimble.amazon.AmazonProvider;
-import org.miaixz.bus.auth.nimble.baidu.BaiduProvider;
-import org.miaixz.bus.auth.nimble.coding.CodingProvider;
-import org.miaixz.bus.auth.nimble.dingtalk.DingTalkProvider;
-import org.miaixz.bus.auth.nimble.douyin.DouyinProvider;
-import org.miaixz.bus.auth.nimble.eleme.ElemeProvider;
-import org.miaixz.bus.auth.nimble.facebook.FacebookProvider;
-import org.miaixz.bus.auth.nimble.feishu.FeishuProvider;
-import org.miaixz.bus.auth.nimble.gitee.GiteeProvider;
-import org.miaixz.bus.auth.nimble.github.GithubProvider;
-import org.miaixz.bus.auth.nimble.gitlab.GitlabProvider;
-import org.miaixz.bus.auth.nimble.google.GoogleProvider;
-import org.miaixz.bus.auth.nimble.huawei.HuaweiProvider;
-import org.miaixz.bus.auth.nimble.jd.JdProvider;
-import org.miaixz.bus.auth.nimble.kujiale.KujialeProvider;
-import org.miaixz.bus.auth.nimble.line.LineProvider;
-import org.miaixz.bus.auth.nimble.linkedin.LinkedinProvider;
-import org.miaixz.bus.auth.nimble.meituan.MeituanProvider;
-import org.miaixz.bus.auth.nimble.mi.MiProvider;
-import org.miaixz.bus.auth.nimble.microsoft.MicrosoftCnProvider;
-import org.miaixz.bus.auth.nimble.microsoft.MicrosoftProvider;
-import org.miaixz.bus.auth.nimble.oidc.OIDCProvider;
-import org.miaixz.bus.auth.nimble.okta.OktaProvider;
-import org.miaixz.bus.auth.nimble.oschina.OschinaProvider;
-import org.miaixz.bus.auth.nimble.pinterest.PinterestProvider;
-import org.miaixz.bus.auth.nimble.proginn.ProginnProvider;
-import org.miaixz.bus.auth.nimble.qq.QqProvider;
-import org.miaixz.bus.auth.nimble.renren.RenrenProvider;
-import org.miaixz.bus.auth.nimble.slack.SlackProvider;
-import org.miaixz.bus.auth.nimble.stackoverflow.StackOverflowProvider;
-import org.miaixz.bus.auth.nimble.taobao.TaobaoProvider;
-import org.miaixz.bus.auth.nimble.teambition.TeambitionProvider;
-import org.miaixz.bus.auth.nimble.toutiao.ToutiaoProvider;
-import org.miaixz.bus.auth.nimble.twitter.TwitterProvider;
-import org.miaixz.bus.auth.nimble.wechat.ee.WeChatEeQrcodeProvider;
-import org.miaixz.bus.auth.nimble.wechat.ee.WeChatEeThirdQrcodeProvider;
-import org.miaixz.bus.auth.nimble.wechat.ee.WeChatEeWebProvider;
-import org.miaixz.bus.auth.nimble.wechat.mp.WeChatMpProvider;
-import org.miaixz.bus.auth.nimble.wechat.open.WeChatOpenProvider;
-import org.miaixz.bus.auth.nimble.weibo.WeiboProvider;
-import org.miaixz.bus.auth.nimble.ximalaya.XimalayaProvider;
+import org.miaixz.bus.auth.Credential;
+import org.miaixz.bus.auth.Outcome;
+import org.miaixz.bus.auth.Policies;
+import org.miaixz.bus.auth.Scheme;
+import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.runtime.RuntimeBuilder;
+import org.miaixz.bus.auth.runtime.RuntimeServices;
+import org.miaixz.bus.auth.shared.SecretLease;
+import org.miaixz.bus.auth.source.SourceAggregate;
+import org.miaixz.bus.auth.source.vendor.Vendor;
+import org.miaixz.bus.auth.source.vendor.VendorConfigurer;
+import org.miaixz.bus.auth.source.vendor.VendorCredentialWriter;
+import org.miaixz.bus.auth.source.vendor.VendorLocator;
+import org.miaixz.bus.auth.source.vendor.VendorManifest;
+import org.miaixz.bus.auth.source.vendor.VendorModule;
+import org.miaixz.bus.auth.source.vendor.VendorOptions;
+import org.miaixz.bus.auth.worker.WorkerSet;
+import org.miaixz.bus.auth.worker.loader.BlueprintLoader;
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.extra.json.JsonValue;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Authorization service provider class for managing and creating various third-party login/authorization service
- * provider instances. This class maintains a cache of authorization components and supports adding them through
- * configuration or manual registration. It supports a wide range of third-party platforms, including but not limited
- * to:
- * <ul>
- * <li>Domestic Platforms: WeChat, QQ, Weibo, Alipay, Taobao, Baidu, Huawei, etc.</li>
- * <li>International Platforms: GitHub, Google, Facebook, Twitter, Microsoft, etc.</li>
- * <li>Enterprise Platforms: DingTalk, Feishu, WeChat Work, etc.</li>
- * </ul>
- *
+ * Adapts Spring Boot client configuration to the bus-auth Source architecture.
  * <p>
- * <strong>Usage Example:</strong>
+ * One immutable {@link SourceAggregate} is shared by client configuration and Runtime assembly. Enabled
+ * {@code bus.auth.<vendor>} entries are validated against its {@link VendorLocator} and converted to short-lived
+ * {@link Vendor.Configuration} commands. Plaintext client secrets are never placed in {@link VendorOptions} or the
+ * authentication cache; {@link VendorConfigurer} transfers them to the project-owned {@link VendorCredentialWriter}.
  * </p>
- *
- * <pre>{@code
- *
- * // Create configuration properties
- * AuthProperties properties = new AuthProperties();
- * // Create the authorization service
- * AuthService service = new AuthService(properties, cache);
- * // Get the GitHub authorization provider
- * Provider provider = service.require(Registry.GITHUB);
- * }</pre>
+ * <p>
+ * This service does not maintain a second registry, instantiate legacy Provider classes, switch on platform enums,
+ * execute authentication, or persist project Blueprint data.
+ * </p>
  *
  * @author Kimi Liu
  */
-public class AuthService implements AutoCloseable {
+public class AuthService {
 
     /**
-     * Cache for storing registered authorization components. Uses {@link ConcurrentHashMap} for thread safety.
+     * Standard form fields supplied by the starter configuration.
      */
-    private final Map<Registry, Context> contexts = new ConcurrentHashMap<>();
+    private static final Set<String> STANDARD_FIELDS = Set
+            .of("clientId", "credential", "redirectUri", "scopes", "pkce");
 
     /**
-     * Authorization configuration properties, containing settings for various authorization components.
+     * Credential types representable by the standard {@code clientSecret} property.
      */
-    private final AuthProperties properties;
+    private static final Set<Credential.Type> CLIENT_SECRET_TYPES = Set
+            .of(Credential.Type.PASSWORD, Credential.Type.CLIENT_SECRET, Credential.Type.SHARED_SECRET);
 
     /**
-     * Cache interface for storing temporary data during the authorization process.
+     * Immutable protocol and Vendor Source registration snapshot.
+     */
+    private final SourceAggregate sources;
+
+    /**
+     * Immutable Vendor manifest and variant locator.
+     */
+    private final VendorLocator locator;
+
+    /**
+     * Enabled standard clients indexed in manifest order.
+     */
+    private final Map<Vendor.Id, AuthProperties.Client> clients;
+
+    /**
+     * Atomic authentication state backend configured through {@code bus.auth.cache}.
      */
     private final CacheX<String, Object> cache;
 
     /**
-     * Constructs an instance of the authorization service provider with a specified cache.
-     *
-     * @param properties The authorization configuration properties (must not be null).
-     * @param cache      The cache implementation to use (must not be null).
+     * Executor used by the default Runtime assembly path.
      */
-    public AuthService(AuthProperties properties, CacheX<String, Object> cache) {
-        this.properties = properties;
-        this.cache = cache;
+    private final Executor executor;
+
+    /**
+     * Stable deployment identifier used to isolate authentication cache keys.
+     */
+    private final String deployment;
+
+    /**
+     * Creates the Spring authentication facade over one frozen Source aggregate.
+     *
+     * @param environment protected Spring configuration environment
+     * @param cache       authentication-specific atomic cache backend
+     * @param executor    authentication Runtime executor
+     * @param sources     immutable Source aggregate shared by every operation
+     */
+    public AuthService(Environment environment, CacheX<String, Object> cache, Executor executor,
+            SourceAggregate sources) {
+        Environment configured = Assert.notNull(environment, "Authentication environment must not be null");
+        this.cache = Assert.notNull(cache, "Authentication cache must not be null");
+        this.executor = Assert.notNull(executor, "Authentication executor must not be null");
+        this.sources = Assert.notNull(sources, "Authentication Source aggregate must not be null");
+        this.locator = this.sources.vendorModule().locator();
+        this.clients = bind(configured, locator);
+        this.deployment = deployment(configured);
     }
 
     /**
-     * Registers an authorization component in the cache. Throws an exception if a component of the same type is already
-     * registered.
+     * Returns the immutable Source aggregate shared by configuration and Runtime assembly.
      *
-     * @param registry The type of the authorization component (must not be null).
-     * @param context  The context of the authorization component (must not be null).
-     * @throws InternalException if a component of the same type already exists.
+     * @return protocol and Vendor Source registration snapshot
      */
-    public void register(Registry registry, Context context) {
-        if (contexts.containsKey(registry)) {
-            throw new InternalException("A component with the same name is already registered: " + registry.name());
-        }
-        contexts.putIfAbsent(registry, context);
+    public SourceAggregate sources() {
+        return sources;
     }
 
     /**
-     * Retrieves the corresponding authorization service provider instance based on the component type. It first
-     * searches the cache; if not found, it retrieves from the configuration.
+     * Returns the frozen Vendor module retained by the shared Source aggregate.
      *
-     * @param registry The type of the authorization component (must not be null).
-     * @return The corresponding authorization service provider instance.
-     * @throws InternalException if the corresponding authorization component cannot be found.
+     * @return immutable Vendor module
      */
-    public Provider require(Registry registry) {
-        // Get the authorization component context from the cache
-        Context context = contexts.get(registry);
-        // If not in the cache, get it from the properties
-        if (ObjectKit.isEmpty(context)) {
-            context = properties.getType().get(registry);
+    public VendorModule vendors() {
+        return sources.vendorModule();
+    }
+
+    /**
+     * Returns the immutable Vendor locator used by management and configuration clients.
+     *
+     * @return immutable Vendor manifest locator
+     */
+    public VendorLocator locator() {
+        return locator;
+    }
+
+    /**
+     * Returns enabled Vendor identifiers in deterministic manifest order.
+     *
+     * @return immutable enabled Vendor identifier set
+     */
+    public Set<Vendor.Id> configured() {
+        return Collections.unmodifiableSet(new LinkedHashSet<>(clients.keySet()));
+    }
+
+    /**
+     * Creates a Vendor configuration coordinator over the shared module.
+     *
+     * @param writer project-owned recoverable credential storage port
+     * @return client-side Vendor configuration coordinator
+     */
+    public VendorConfigurer clients(VendorCredentialWriter writer) {
+        return Authorize.clients(vendors(), Assert.notNull(writer, "Vendor credential writer must not be null"));
+    }
+
+    /**
+     * Creates a short-lived command for the first manifest-declared Variant of an enabled Vendor.
+     *
+     * @param vendor exact enabled Vendor identifier
+     * @return standard command owning a fresh client-secret lease
+     */
+    public Vendor.Configuration configuration(Vendor.Id vendor) {
+        VendorManifest<?> manifest = locator.require(Assert.notNull(vendor, "Vendor identifier must not be null"));
+        return configuration(vendor, manifest.variants().getFirst().variant());
+    }
+
+    /**
+     * Creates a short-lived command for an exact enabled Vendor Variant.
+     *
+     * @param vendor  exact enabled Vendor identifier
+     * @param variant exact Vendor variant
+     * @return standard command owning a fresh client-secret lease
+     */
+    public Vendor.Configuration configuration(Vendor.Id vendor, Vendor.Variant variant) {
+        AuthProperties.Client client = requireClient(vendor);
+        VendorManifest.Variant selected = locator.require(vendor, variant);
+        requireStandard(vendor, selected);
+        return new Vendor.Configuration(vendor, variant, client.clientId(),
+                new SecretLease(client.clientSecret().toCharArray()),
+                org.miaixz.bus.core.lang.Optional.ofNullable(client.redirectUri()), client.scopes(),
+                new JsonValue.ObjectValue(Map.of()));
+    }
+
+    /**
+     * Configures the first manifest-declared Variant of an enabled Vendor.
+     *
+     * @param vendor  exact enabled Vendor identifier
+     * @param writer  project-owned recoverable credential storage port
+     * @param context immutable non-secret invocation context
+     * @param timeout shared end-to-end operation timeout
+     * @return asynchronous immutable Vendor Options outcome
+     */
+    public CompletionStage<Outcome<VendorOptions<?>>> configure(
+            Vendor.Id vendor,
+            VendorCredentialWriter writer,
+            Context context,
+            Timeout timeout) {
+        return clients(writer).configure(configuration(vendor), context, timeout);
+    }
+
+    /**
+     * Configures an exact enabled Vendor Variant.
+     *
+     * @param vendor  exact enabled Vendor identifier
+     * @param variant exact Vendor variant
+     * @param writer  project-owned recoverable credential storage port
+     * @param context immutable non-secret invocation context
+     * @param timeout shared end-to-end operation timeout
+     * @return asynchronous immutable Vendor Options outcome
+     */
+    public CompletionStage<Outcome<VendorOptions<?>>> configure(
+            Vendor.Id vendor,
+            Vendor.Variant variant,
+            VendorCredentialWriter writer,
+            Context context,
+            Timeout timeout) {
+        return clients(writer).configure(configuration(vendor, variant), context, timeout);
+    }
+
+    /**
+     * Creates a Runtime builder using the shared Source aggregate and starter-owned infrastructure.
+     *
+     * @param policies        immutable non-relaxable authentication policies
+     * @param workers         project Worker ports required by selected Sources
+     * @param blueprintLoader project Blueprint input
+     * @return one-shot Runtime builder containing the shared Source modules
+     */
+    public RuntimeBuilder runtime(Policies policies, WorkerSet workers, BlueprintLoader blueprintLoader) {
+        return runtime(policies, executor, workers, blueprintLoader);
+    }
+
+    /**
+     * Creates a Runtime builder with an explicitly selected Source executor.
+     *
+     * @param policies        immutable non-relaxable authentication policies
+     * @param executor        caller-owned Source executor
+     * @param workers         project Worker ports required by selected Sources
+     * @param blueprintLoader project Blueprint input
+     * @return one-shot Runtime builder containing the shared Source modules
+     */
+    public RuntimeBuilder runtime(
+            Policies policies,
+            Executor executor,
+            WorkerSet workers,
+            BlueprintLoader blueprintLoader) {
+        RuntimeServices services = new RuntimeServices(
+                Assert.notNull(policies, "Authentication policies must not be null"),
+                Assert.notNull(executor, "Authentication Runtime executor must not be null"),
+                Assert.notNull(workers, "Authentication Worker set must not be null"), cache, deployment);
+        return Authorize
+                .custom(services, Assert.notNull(blueprintLoader, "Authentication Blueprint loader must not be null"))
+                .modules(sources.modules());
+    }
+
+    /**
+     * Binds enabled direct Vendor property blocks known by the frozen module.
+     *
+     * @param environment protected Spring configuration environment
+     * @param locator     exact frozen Vendor locator
+     * @return immutable enabled client map
+     */
+    private static Map<Vendor.Id, AuthProperties.Client> bind(Environment environment, VendorLocator locator) {
+        Binder binder = Binder.get(environment);
+        Map<Vendor.Id, AuthProperties.Client> configured = new LinkedHashMap<>();
+        for (VendorManifest<?> manifest : locator.manifests()) {
+            Vendor.Id vendor = manifest.vendor();
+            binder.bind(prefix(vendor), Bindable.of(AuthProperties.Client.class)).ifBound(client -> {
+                if (client.enabled()) {
+                    validate(vendor, client);
+                    configured.put(vendor, client);
+                }
+            });
         }
+        return Collections.unmodifiableMap(configured);
+    }
 
-        // Create the corresponding provider instance based on the authorization type
-        switch (registry) {
-            case AFDIAN:
-                return new AfDianProvider(context, cache);
+    /**
+     * Resolves the stable cache deployment identifier from the Spring application name.
+     *
+     * @param environment protected Spring configuration environment
+     * @return non-blank cache deployment identifier
+     */
+    private static String deployment(Environment environment) {
+        String application = environment.getProperty("spring.application.name");
+        return application == null || application.isBlank() ? Normal.DEFAULT : application.trim();
+    }
 
-            case ALIPAY:
-                return new AlipayProvider(context, cache);
+    /**
+     * Returns the direct property prefix of one Vendor client.
+     *
+     * @param vendor exact Vendor identifier
+     * @return direct {@code bus.auth.<vendor>} prefix
+     */
+    private static String prefix(Vendor.Id vendor) {
+        return GeniusBuilder.AUTH + Symbol.DOT + vendor.value();
+    }
 
-            case ALIYUN:
-                return new AliyunProvider(context, cache);
-
-            case AMAZON:
-                return new AmazonProvider(context, cache);
-
-            case BAIDU:
-                return new BaiduProvider(context, cache);
-
-            case CODING:
-                return new CodingProvider(context, cache);
-
-            case DINGTALK:
-                return new DingTalkProvider(context, cache);
-
-            case DOUYIN:
-                return new DouyinProvider(context, cache);
-
-            case ELEME:
-                return new ElemeProvider(context, cache);
-
-            case FACEBOOK:
-                return new FacebookProvider(context, cache);
-
-            case FEISHU:
-                return new FeishuProvider(context, cache);
-
-            case GITEE:
-                return new GiteeProvider(context, cache);
-
-            case GITHUB:
-                return new GithubProvider(context, cache);
-
-            case GITLAB:
-                return new GitlabProvider(context, cache);
-
-            case GOOGLE:
-                return new GoogleProvider(context, cache);
-
-            case HUAWEI:
-                return new HuaweiProvider(context, cache);
-
-            case JD:
-                return new JdProvider(context, cache);
-
-            case KUJIALE:
-                return new KujialeProvider(context, cache);
-
-            case LINE:
-                return new LineProvider(context, cache);
-
-            case LINKEDIN:
-                return new LinkedinProvider(context, cache);
-
-            case MEITUAN:
-                return new MeituanProvider(context, cache);
-
-            case MI:
-                return new MiProvider(context, cache);
-
-            case MICROSOFT_CN:
-                return new MicrosoftCnProvider(context, cache);
-
-            case MICROSOFT:
-                return new MicrosoftProvider(context, cache);
-
-            case OIDC:
-                return new OIDCProvider(context, cache);
-
-            case OKTA:
-                return new OktaProvider(context, cache);
-
-            case OSCHINA:
-                return new OschinaProvider(context, cache);
-
-            case PINTEREST:
-                return new PinterestProvider(context, cache);
-
-            case PROGINN:
-                return new ProginnProvider(context, cache);
-
-            case QQ:
-                return new QqProvider(context, cache);
-
-            case RENREN:
-                return new RenrenProvider(context, cache);
-
-            case SLACK:
-                return new SlackProvider(context, cache);
-
-            case STACK_OVERFLOW:
-                return new StackOverflowProvider(context, cache);
-
-            case TAOBAO:
-                return new TaobaoProvider(context, cache);
-
-            case TEAMBITION:
-                return new TeambitionProvider(context, cache);
-
-            case TOUTIAO:
-                return new ToutiaoProvider(context, cache);
-
-            case TWITTER:
-                return new TwitterProvider(context, cache);
-
-            case WECHAT_EE:
-                return new WeChatEeQrcodeProvider(context, cache);
-
-            case WECHAT_EE_QRCODE:
-                return new WeChatEeThirdQrcodeProvider(context, cache);
-
-            case WECHAT_EE_WEB:
-                return new WeChatEeWebProvider(context, cache);
-
-            case WECHAT_MP:
-                return new WeChatMpProvider(context, cache);
-
-            case WECHAT_OPEN:
-                return new WeChatOpenProvider(context, cache);
-
-            case WEIBO:
-                return new WeiboProvider(context, cache);
-
-            case XIMALAYA:
-                return new XimalayaProvider(context, cache);
-
-            default:
-                // If no matching authorization type is found, throw an exception
-                throw new InternalException(ErrorCode._100803.getValue());
+    /**
+     * Validates one enabled standard client without logging secret material.
+     *
+     * @param vendor exact Vendor identifier
+     * @param client bound standard client settings
+     */
+    private static void validate(Vendor.Id vendor, AuthProperties.Client client) {
+        String prefix = prefix(vendor);
+        Assert.notBlank(client.clientId(), prefix + ".client-id must not be blank");
+        Assert.notBlank(client.clientSecret(), prefix + ".client-secret must not be blank");
+        Set<String> scopes = new HashSet<>();
+        for (String scope : client.scopes()) {
+            String checked = Assert.notBlank(scope, prefix + ".scopes must not contain blanks");
+            if (!scopes.add(checked)) {
+                throw new ValidateException(prefix + ".scopes must not contain duplicates");
+            }
         }
     }
 
     /**
-     * Clears only the authorization contexts owned by this service instance.
+     * Returns the enabled standard client bound to a Vendor.
+     *
+     * @param vendor exact Vendor identifier
+     * @return validated enabled client
      */
-    @Override
-    public void close() {
-        contexts.clear();
+    private AuthProperties.Client requireClient(Vendor.Id vendor) {
+        Vendor.Id checked = Assert.notNull(vendor, "Vendor identifier must not be null");
+        AuthProperties.Client client = clients.get(checked);
+        if (client == null) {
+            throw new ValidateException("Authentication Vendor is not enabled: " + checked.value());
+        }
+        return client;
+    }
+
+    /**
+     * Verifies that a Variant can use only the standard starter fields.
+     *
+     * @param vendor   exact Vendor identifier
+     * @param selected exact manifest Variant
+     */
+    private void requireStandard(Vendor.Id vendor, VendorManifest.Variant selected) {
+        if (!CLIENT_SECRET_TYPES.contains(selected.credentialType())) {
+            throw new ValidateException("Authentication Vendor Variant requires a key or certificate loader: "
+                    + vendor.value() + Symbol.C_SLASH + selected.variant().value());
+        }
+        Scheme.Form form = locator.require(vendor).form(selected.variant());
+        for (Scheme.Form.Section section : form.sections()) {
+            for (Scheme.Form.Field field : section.fields()) {
+                if (field.required() && !STANDARD_FIELDS.contains(field.key()) && field.defaultValue().isEmpty()) {
+                    throw new ValidateException("Authentication Vendor Variant requires platform-specific field '"
+                            + field.key() + "': " + vendor.value() + Symbol.C_SLASH + selected.variant().value());
+                }
+            }
+        }
     }
 
 }
