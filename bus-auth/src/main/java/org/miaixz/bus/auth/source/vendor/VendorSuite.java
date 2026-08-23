@@ -25,6 +25,7 @@ import org.miaixz.bus.auth.source.SourceDiscovery;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Registers Vendor connectors atomically and freezes their declared platform bindings into one module.
@@ -272,6 +273,14 @@ public class VendorSuite implements VendorRegistry {
         final VendorModule module = new VendorModule(new VendorLocator(manifests), new AdapterBindings(adapterBindings),
                 new OptionsBindings(optionBindings));
         frozen = true;
+        Logger.info(
+                false,
+                "Auth",
+                "Vendor registry frozen: manifests={}, variants={}, adapterFactories={}, optionFactories={}",
+                bindings.size(),
+                module.descriptors().size(),
+                adapterBindings.size(),
+                optionBindings.size());
         return module;
     }
 
@@ -293,6 +302,16 @@ public class VendorSuite implements VendorRegistry {
                 throw new ValidateException("Vendor connector must submit one complete binding: " + key.value());
             }
             bindings.put(key, emitted);
+        } catch (RuntimeException cause) {
+            Logger.error(
+                    false,
+                    "Auth",
+                    cause,
+                    "Vendor connector registration failed: key={}, connector={}, exception={}",
+                    key.value(),
+                    connector.getClass().getName(),
+                    cause.getClass().getSimpleName());
+            throw cause;
         } finally {
             active = null;
             emitted = null;

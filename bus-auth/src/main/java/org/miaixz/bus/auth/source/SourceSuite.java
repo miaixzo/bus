@@ -28,6 +28,7 @@ import org.miaixz.bus.auth.source.vendor.Vendor;
 import org.miaixz.bus.auth.source.vendor.VendorConnector;
 import org.miaixz.bus.auth.source.vendor.VendorSuite;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Assembles every discovered Source connector through one visitor and freezes both registration families together.
@@ -75,6 +76,11 @@ public final class SourceSuite implements SourceConnector.Visitor {
      * @return mutable suite containing the selected visible Source implementation set
      */
     public static SourceSuite load(final Set<Vendor.Id> selected) {
+        Logger.info(
+                true,
+                "Auth",
+                "Source suite assembly started: vendorSelection={}",
+                selected == null ? "all" : selected.size());
         final SourceDiscovery.Discovered discovered = SourceDiscovery.load();
         final SourceSuite suite = new SourceSuite();
         for (ProtocolConnector connector : discovered.requireProtocols()) {
@@ -83,6 +89,12 @@ public final class SourceSuite implements SourceConnector.Visitor {
         for (VendorConnector connector : discovered.vendors(selected)) {
             connector.accept(suite);
         }
+        Logger.info(
+                false,
+                "Auth",
+                "Source suite assembly completed: protocols={}, vendors={}",
+                discovered.protocols().size(),
+                selected == null ? discovered.vendors().size() : selected.size());
         return suite;
     }
 
@@ -148,7 +160,17 @@ public final class SourceSuite implements SourceConnector.Visitor {
      * @return immutable Source aggregate
      */
     public SourceAggregate freeze() {
-        return new SourceAggregate(protocolSuite.freeze(), vendorSuite.freeze());
+        final var protocols = protocolSuite.freeze();
+        final var vendors = vendorSuite.freeze();
+        Logger.info(
+                false,
+                "Auth",
+                "Source suite frozen: protocolDrivers={}, protocolDescriptors={}, vendorDrivers={}, vendorDescriptors={}",
+                protocols.drivers().size(),
+                protocols.descriptors().size(),
+                vendors.drivers().size(),
+                vendors.descriptors().size());
+        return new SourceAggregate(protocols, vendors);
     }
 
 }

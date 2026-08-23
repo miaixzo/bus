@@ -33,6 +33,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Compiles one complete externally loaded Vendor Source through an exact platform manifest and adapter factory.
@@ -306,11 +307,30 @@ public class VendorDriver implements SourceDriver<VendorOptions<?>> {
         final VendorOptions<?> options = prepared.options();
         final VendorManifest<?> manifest = locator.require(options.vendor());
         final VendorManifest.Variant variant = locator.require(options.vendor(), options.variant());
+        Logger.debug(
+                true,
+                "Auth",
+                "Vendor Source compilation started: sourceId={}, vendor={}, variant={}, manifest={}, options={}",
+                source.getId(),
+                options.vendor().value(),
+                options.variant().value(),
+                manifest.getClass().getName(),
+                options.getClass().getName());
         requireRoute(source, manifest, variant, options);
         requireOptions(variant, options);
         requireManifest(manifest, variant);
         variant.targets().resolve(options);
-        return bindings.create(library.getSpace_id(), source.getId(), manifest, variant, options, runtime);
+        final SourceWorker worker = bindings
+                .create(library.getSpace_id(), source.getId(), manifest, variant, options, runtime);
+        Logger.debug(
+                false,
+                "Auth",
+                "Vendor Source compilation completed: sourceId={}, vendor={}, variant={}, worker={}",
+                source.getId(),
+                options.vendor().value(),
+                options.variant().value(),
+                worker.getClass().getName());
+        return worker;
     }
 
 }

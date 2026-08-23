@@ -25,6 +25,7 @@ import java.util.Map;
 import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Holds exact platform, variant, manifest, and adapter-factory bindings.
@@ -179,6 +180,15 @@ final class AdapterBindings {
         if (adapter == null || !adapter.manifest().equals(checkedVariant.capabilityManifest())) {
             throw new ValidateException("Vendor adapter must expose the selected variant capabilities");
         }
+        Logger.debug(
+                false,
+                "Auth",
+                "Vendor adapter created: sourceId={}, vendor={}, variant={}, options={}, adapter={}",
+                sourceId,
+                checkedManifest.vendor().value(),
+                checkedVariant.variant().value(),
+                checkedOptions.getClass().getName(),
+                adapter.getClass().getName());
         return adapter;
     }
 

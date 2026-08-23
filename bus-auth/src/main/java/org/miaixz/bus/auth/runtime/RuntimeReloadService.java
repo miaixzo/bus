@@ -35,6 +35,7 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Loads, validates, compiles, and atomically publishes complete external Blueprint snapshots.
@@ -133,6 +134,12 @@ final class RuntimeReloadService {
     public CompletionStage<Roster.Report> reload(final Context context, final Timeout timeout) {
         Assert.notNull(context, "Runtime reload context must not be null");
         Assert.notNull(timeout, "Runtime reload timeout must not be null");
+        Logger.info(
+                true,
+                "Auth",
+                "Runtime reload started: requestId={}, currentRevision={}",
+                context.requestId().value(),
+                containers.current().roster().revision().value());
         final RuntimeLifecycle.Lease lease = lifecycle.enter();
         if (lease == null) {
             return CompletableFuture.completedFuture(
@@ -156,8 +163,20 @@ final class RuntimeReloadService {
         final RuntimeContainer expected = containers.current();
         final CompletionStage<Outcome<BlueprintLoader.Snapshot>> loading;
         try {
+            Logger.debug(
+                    false,
+                    "Auth",
+                    "Blueprint snapshot load started: currentRevision={}",
+                    expected.roster().revision().value());
             loading = loader.load(new BlueprintLoader.Request(expected.roster().revision().value()), context, timeout);
         } catch (RuntimeException cause) {
+            Logger.error(
+                    false,
+                    "Auth",
+                    cause,
+                    "Blueprint loader invocation failed: revision={}, exception={}",
+                    expected.roster().revision().value() + 1L,
+                    cause.getClass().getSimpleName());
             final Roster.Report report = report(
                     expected.roster().revision().value() + 1L,
                     Roster.Fault.Stage.LOAD,
@@ -261,6 +280,12 @@ final class RuntimeReloadService {
                             "Blueprint loader returned no snapshot"));
         }
         final Roster.Snapshot snapshot = new Roster.Snapshot(new Roster.Revision(loaded.revision()), loaded.entries());
+        Logger.debug(
+                false,
+                "Auth",
+                "Blueprint snapshot loaded: revision={}, entries={}",
+                snapshot.revision().value(),
+                snapshot.entries().size());
         if (snapshot.revision().value() <= expected.roster().revision().value()) {
             return reject(
                     report(
@@ -283,6 +308,13 @@ final class RuntimeReloadService {
         try {
             report = validator.validate(snapshot);
         } catch (RuntimeException cause) {
+            Logger.error(
+                    false,
+                    "Auth",
+                    cause,
+                    "Roster snapshot validation failed: revision={}, exception={}",
+                    snapshot.revision().value(),
+                    cause.getClass().getSimpleName());
             return reject(
                     report(
                             snapshot.revision().value(),
@@ -299,8 +331,21 @@ final class RuntimeReloadService {
         try {
             replacement = compiler.compile(snapshot);
         } catch (SnapshotCompiler.CompilationFailure failure) {
+            Logger.error(
+                    false,
+                    "Auth",
+                    "Roster snapshot Source compilation rejected: revision={}, sourceId={}",
+                    snapshot.revision().value(),
+                    failure.fault().id().getOrNull());
             return reject(new Roster.Report(snapshot.revision(), List.of(failure.fault())));
         } catch (RuntimeException cause) {
+            Logger.error(
+                    false,
+                    "Auth",
+                    cause,
+                    "Roster snapshot compilation failed: revision={}, exception={}",
+                    snapshot.revision().value(),
+                    cause.getClass().getSimpleName());
             return reject(
                     report(
                             snapshot.revision().value(),
@@ -348,6 +393,12 @@ final class RuntimeReloadService {
         }
         expected.retire();
         notifier.dispatch();
+        Logger.info(
+                false,
+                "Auth",
+                "Runtime reload committed: revision={}, entries={}",
+                snapshot.revision().value(),
+                snapshot.entries().size());
         return CompletableFuture.completedFuture(report);
     }
 
@@ -368,6 +419,17 @@ final class RuntimeReloadService {
      * @param report rejection report
      */
     private void rejected(final Roster.Report report) {
+        final Roster.Fault fault = report.faults().isEmpty() ? null : report.faults().getFirst();
+        if (fault != null) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    "Runtime reload rejected: revision={}, stage={}, field={}, error={}",
+                    report.revision().value(),
+                    fault.stage(),
+                    fault.field().getOrNull(),
+                    fault.error());
+        }
         notifier.rejected(report);
     }
 
@@ -376,6 +438,7 @@ final class RuntimeReloadService {
      */
     void close() {
         notifier.close();
+        Logger.debug(false, "Auth", "Runtime reload service closed");
     }
 
 }

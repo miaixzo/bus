@@ -27,6 +27,7 @@ import org.miaixz.bus.auth.source.vendor.VendorConnector;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Discovers the single {@link SourceConnector} SPI and returns its strongly typed registration families.
@@ -53,11 +54,30 @@ public final class SourceDiscovery {
      * @throws ValidateException if no Source connector is visible
      */
     public static Discovered load() {
-        final Collector collector = new Collector();
-        for (SourceConnector connector : services()) {
-            Assert.notNull(connector, "Source connector must not be null").accept(collector);
+        Logger.debug(true, "Auth", "Source connector discovery started");
+        try {
+            final Collector collector = new Collector();
+            for (SourceConnector connector : services()) {
+                Assert.notNull(connector, "Source connector must not be null").accept(collector);
+            }
+            final Discovered discovered = collector.freeze();
+            Logger.info(
+                    false,
+                    "Auth",
+                    "Source connector discovery completed: connectors={}, protocols={}, vendors={}",
+                    discovered.protocols().size() + discovered.vendors().size(),
+                    discovered.protocols().size(),
+                    discovered.vendors().size());
+            return discovered;
+        } catch (RuntimeException cause) {
+            Logger.error(
+                    false,
+                    "Auth",
+                    cause,
+                    "Source connector discovery failed: exception={}",
+                    cause.getClass().getSimpleName());
+            throw cause;
         }
-        return collector.freeze();
     }
 
     /**

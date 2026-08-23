@@ -28,6 +28,7 @@ import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Owns the bus-auth framework lifecycle and exposes separate Roster and execution entries.
@@ -165,9 +166,21 @@ public class RuntimeManager implements Lifecycle, AutoCloseable {
      */
     @Override
     public void close() {
+        Logger.info(
+                true,
+                "Auth",
+                "Authentication runtime close started: revision={}, state={}",
+                roster.revision().value(),
+                lifecycle.state());
         lifecycle.close();
         containers.current().retire();
         reloadService.close();
+        Logger.info(
+                false,
+                "Auth",
+                "Authentication runtime close completed: revision={}, state={}",
+                roster.revision().value(),
+                lifecycle.state());
     }
 
 }

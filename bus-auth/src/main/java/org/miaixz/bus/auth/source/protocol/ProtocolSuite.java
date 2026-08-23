@@ -25,6 +25,7 @@ import org.miaixz.bus.auth.source.SourceDiscovery;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Registers protocol connectors atomically and freezes their declared drivers for runtime assembly.
@@ -222,6 +223,12 @@ public class ProtocolSuite implements ProtocolRegistry {
             drivers.addAll(registration);
         }
         frozen = true;
+        Logger.info(
+                false,
+                "Auth",
+                "Protocol registry frozen: protocols={}, drivers={}",
+                registrations.size(),
+                drivers.size());
         return new ProtocolModule(drivers);
     }
 
@@ -243,6 +250,16 @@ public class ProtocolSuite implements ProtocolRegistry {
                 throw new ValidateException("Protocol connector must bind at least one driver: " + key.name());
             }
             registrations.put(key, List.copyOf(emitted));
+        } catch (RuntimeException cause) {
+            Logger.error(
+                    false,
+                    "Auth",
+                    cause,
+                    "Protocol connector registration failed: key={}, connector={}, exception={}",
+                    key,
+                    connector.getClass().getName(),
+                    cause.getClass().getSimpleName());
+            throw cause;
         } finally {
             active = null;
             emitted = null;

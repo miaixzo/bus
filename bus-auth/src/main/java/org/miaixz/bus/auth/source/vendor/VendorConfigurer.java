@@ -30,6 +30,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonValue;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Coordinates one short-lived client-side Vendor configuration into immutable concrete Options.
@@ -169,8 +170,22 @@ public class VendorConfigurer {
                     || options.credential().type() != binding.variant().credentialType()) {
                 return failed("Vendor Options factory returned inconsistent routing data");
             }
+            Logger.debug(
+                    false,
+                    "Auth",
+                    "Vendor Options created: vendor={}, variant={}, options={}",
+                    options.vendor().value(),
+                    options.variant().value(),
+                    options.getClass().getName());
             return Outcome.succeeded(options);
         } catch (RuntimeException cause) {
+            Logger.warn(
+                    false,
+                    "Auth",
+                    "Vendor Options creation rejected: vendor={}, variant={}, exception={}",
+                    binding.variant().platform().value(),
+                    binding.variant().variant().value(),
+                    cause.getClass().getSimpleName());
             return rejected("Vendor Options validation failed");
         }
     }
@@ -235,6 +250,12 @@ public class VendorConfigurer {
         final Vendor.Configuration checked = Assert.notNull(configuration, "Vendor configuration must not be null");
         final Context checkedContext = Assert.notNull(context, "Vendor configuration context must not be null");
         final Timeout checkedTimeout = Assert.notNull(timeout, "Vendor configuration timeout must not be null");
+        Logger.debug(
+                true,
+                "Auth",
+                "Vendor configuration started: vendor={}, variant={}",
+                checked.vendor().value(),
+                checked.variant().value());
         final OptionsBindings.Binding binding;
         final List<String> scopes;
         final JsonValue.ObjectValue parameters;
@@ -245,6 +266,13 @@ public class VendorConfigurer {
             parameters = parameters(binding.manifest().form(binding.variant().variant()), checked.parameters());
         } catch (RuntimeException cause) {
             checked.credential().close();
+            Logger.warn(
+                    false,
+                    "Auth",
+                    "Vendor configuration rejected: vendor={}, variant={}, exception={}",
+                    checked.vendor().value(),
+                    checked.variant().value(),
+                    cause.getClass().getSimpleName());
             return completed(rejected("Vendor client configuration is invalid"));
         }
 
@@ -260,6 +288,14 @@ public class VendorConfigurer {
                     checkedContext,
                     checkedTimeout);
         } catch (RuntimeException cause) {
+            Logger.error(
+                    false,
+                    "Auth",
+                    cause,
+                    "Vendor credential storage invocation failed: vendor={}, variant={}, exception={}",
+                    checked.vendor().value(),
+                    checked.variant().value(),
+                    cause.getClass().getSimpleName());
             return completed(failed("Vendor credential storage failed"));
         } finally {
             credential.close();
