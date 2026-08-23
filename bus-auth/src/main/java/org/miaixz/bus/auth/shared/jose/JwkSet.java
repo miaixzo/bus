@@ -30,7 +30,7 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Represents an RFC 7517 JWK Set with ordered keys and provider-neutral top-level extension members.
+ * Represents an RFC 7517 JWK Set with ordered keys and implementation-neutral top-level extension members.
  *
  * @param keys       JWK values in wire order, which does not imply selection priority
  * @param extensions top-level members other than the reserved {@code keys} member
@@ -60,7 +60,7 @@ public record JwkSet(List<Jwk> keys, JsonValue.ObjectValue extensions) {
     }
 
     /**
-     * Parses a provider-neutral RFC 7517 JWK Set object.
+     * Parses a implementation-neutral RFC 7517 JWK Set object.
      *
      * @param value complete JSON object containing the required {@code keys} array
      * @return immutable JWK Set retaining all non-keys members
@@ -86,7 +86,7 @@ public record JwkSet(List<Jwk> keys, JsonValue.ObjectValue extensions) {
     /**
      * Encodes the set using the exact RFC 7517 {@code keys} member and retained extensions.
      *
-     * @return provider-neutral JWK Set JSON object
+     * @return implementation-neutral JWK Set JSON object
      */
     public JsonValue.ObjectValue toJson() {
         final Map<String, JsonValue> values = new LinkedHashMap<>();

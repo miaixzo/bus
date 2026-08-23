@@ -34,19 +34,19 @@ import org.miaixz.bus.extra.json.JsonValue;
 public interface AttributeLoader extends Loader<AttributeLoader.Request, AttributeLoader.Record> {
 
     /**
-     * Identifies the subject attributes requested within one exact Source registration.
+     * Identifies the subject attributes requested within one exact Source Blueprint entry.
      *
-     * @param registration exact Source registration requesting the data
-     * @param subject      exact external subject key
+     * @param source  exact Source Blueprint entry requesting the data
+     * @param subject exact external subject key
      * @author Kimi Liu
      */
-    record Request(Blueprint.SourceEntry registration, Subject.Key subject) {
+    record Request(Blueprint.SourceEntry source, Subject.Key subject) {
 
         /**
          * Validates one complete attribute-loading request.
          */
         public Request {
-            Assert.notNull(registration, "Attribute registration must not be null");
+            Assert.notNull(source, "Attribute source must not be null");
             Assert.notNull(subject, "Attribute subject must not be null");
         }
 

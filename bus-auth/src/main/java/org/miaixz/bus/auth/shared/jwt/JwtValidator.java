@@ -256,7 +256,7 @@ public class JwtValidator {
     /**
      * Supplies formal protocol isolation fields required by ReplayGuard for a JWT jti.
      *
-     * @param space     external registration space
+     * @param space     external Source space
      * @param protocol  formal protocol that owns the JWT
      * @param authority stable Provider or Source authority
      * @author Kimi Liu

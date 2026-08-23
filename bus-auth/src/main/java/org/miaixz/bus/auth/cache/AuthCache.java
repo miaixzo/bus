@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * versioned {@link Envelope}; the complete envelope graph must be serializable by the configured bus-cache serializer
  * and must produce a stable representation when the same immutable value is encoded again, because distributed
  * {@link CacheX#replace(Object, Object, Object, long)} implementations compare the encoded expected value atomically. A
- * runtime-scoped view includes an irreversible Source identifier and the complete Registry snapshot revision in its
+ * runtime-scoped view includes an irreversible Source identifier and the complete Roster snapshot revision in its
  * prefix. A successful explicit runtime reload therefore invalidates state for every Source in that runtime by
  * switching key prefixes instead of requiring backend key scans or non-atomic bulk deletion. The ordinary and scoped
  * prefixes intentionally contain no Redis hash tag: every operation is single-key atomic, so forcing a complete
@@ -94,14 +94,14 @@ public abstract class AuthCache<V> {
      * Creates one Source-generation-scoped typed view over a bus-cache backend.
      * <p>
      * The Source identifier is hashed before it enters the backend key. The generation must be the revision of the
-     * complete Registry snapshot from which the Source was compiled.
+     * complete Roster snapshot from which the Source was compiled.
      * </p>
      *
      * @param cache      shared bus-cache backend
      * @param deployment deployment-unique cache scope
      * @param purpose    authentication-state purpose within the deployment
      * @param valueType  exact outer value class stored for this purpose
-     * @param sourceId   exact Source registration identifier
+     * @param sourceId   exact Source identifier
      * @param generation non-negative Source configuration generation
      * @param clock      shared runtime clock used to derive backend TTL
      */
@@ -273,6 +273,9 @@ public abstract class AuthCache<V> {
      */
     public record Envelope(int version, String purpose, String valueType, Object value) implements Serializable {
 
+        /**
+         * Stable serialization version for cached authentication envelopes.
+         */
         @Serial
         private static final long serialVersionUID = 2898166305821L;
 

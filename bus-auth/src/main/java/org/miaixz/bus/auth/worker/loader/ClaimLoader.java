@@ -21,10 +21,10 @@ package org.miaixz.bus.auth.worker.loader;
 
 import java.util.List;
 
+import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Loader;
 import org.miaixz.bus.auth.Subject;
 import org.miaixz.bus.auth.shared.claim.ClaimSet;
-import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
@@ -42,7 +42,7 @@ public interface ClaimLoader extends Loader<ClaimLoader.Request, ClaimLoader.Rec
      * @param identity verified completed external identity
      * @author Kimi Liu
      */
-    record Request(Subject subject, ExternalIdentity identity) {
+    record Request(Subject subject, Identity identity) {
 
         /**
          * Validates one complete claim-loading request.

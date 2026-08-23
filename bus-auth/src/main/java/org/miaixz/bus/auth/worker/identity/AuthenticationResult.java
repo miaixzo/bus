@@ -21,11 +21,10 @@ package org.miaixz.bus.auth.worker.identity;
 
 import java.util.List;
 
-import org.miaixz.bus.auth.Evidence;
-import org.miaixz.bus.auth.Principal;
+import org.miaixz.bus.auth.Identity;
+import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.Subject;
 import org.miaixz.bus.auth.shared.claim.ClaimSet;
-import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
@@ -35,13 +34,12 @@ import org.miaixz.bus.core.lang.Assert;
  * protocol credential. The external project decides how to establish its login state after receiving this value.
  * </p>
  *
- * @param subject   stable project Subject loaded by the project and accepted by the framework parser
- * @param principal framework authenticated-principal view
- * @param identity  verified Source-scoped external identity
- * @param claims    provider-neutral claims and their provenance
+ * @param subject  stable project Subject loaded by the project and accepted by the framework parser
+ * @param identity verified Source-scoped external identity
+ * @param claims   implementation-neutral claims and their provenance
  * @author Kimi Liu
  */
-public record AuthenticationResult(Subject subject, Principal principal, ExternalIdentity identity, ClaimSet claims) {
+public record AuthenticationResult(Subject subject, Identity identity, ClaimSet claims) {
 
     /**
      * Creates an immutable completed authentication result.
@@ -50,7 +48,6 @@ public record AuthenticationResult(Subject subject, Principal principal, Externa
      */
     public AuthenticationResult {
         Assert.notNull(subject, "Authentication result Subject must not be null");
-        Assert.notNull(principal, "Authentication result Principal must not be null");
         Assert.notNull(identity, "Authentication result external identity must not be null");
         Assert.notNull(claims, "Authentication result ClaimSet must not be null");
     }

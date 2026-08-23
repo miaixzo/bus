@@ -92,7 +92,7 @@ public class AlgorithmGuard {
      * Validates one explicit algorithm selection before a cryptographic operation begins.
      *
      * @param algorithm       exact protocol-registered algorithm identifier
-     * @param allowed         usage-specific algorithm allowlist from the security baseline and selected profile
+     * @param allowed         usage-specific algorithm allowlist from the required security rule and selected scheme
      * @param key             explicit JCA key accepted by the key parser
      * @param requiredKeyType key category declared by the selected algorithm profile
      * @param usage           cryptographic direction requested by the calling service

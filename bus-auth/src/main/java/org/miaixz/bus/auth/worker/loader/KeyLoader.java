@@ -49,22 +49,22 @@ public interface KeyLoader extends Loader<KeyLoader.Request, KeyLoader.Record> {
     /**
      * Identifies one exact cryptographic key required by a protocol operation.
      *
-     * @param registration exact Source registration requesting the key
-     * @param issuer       expected key issuer
-     * @param keyId        optional exact key identifier
-     * @param use          expected protocol use
-     * @param algorithm    expected registered algorithm
-     * @param at           required validity instant
+     * @param source    exact Source Blueprint entry requesting the key
+     * @param issuer    expected key issuer
+     * @param keyId     optional exact key identifier
+     * @param use       expected protocol use
+     * @param algorithm expected registered algorithm
+     * @param at        required validity instant
      * @author Kimi Liu
      */
-    record Request(Blueprint.SourceEntry registration, String issuer, Optional<String> keyId, String use,
-            String algorithm, Instant at) {
+    record Request(Blueprint.SourceEntry source, String issuer, Optional<String> keyId, String use, String algorithm,
+            Instant at) {
 
         /**
          * Validates one exact cryptographic key lookup request.
          */
         public Request {
-            Assert.notNull(registration, "Key registration must not be null");
+            Assert.notNull(source, "Key source must not be null");
             Assert.notBlank(issuer, "Key request issuer must not be blank");
             Assert.notNull(keyId, "Key request identifier container must not be null");
             final String identifier = keyId.getOrNull();
@@ -82,19 +82,19 @@ public interface KeyLoader extends Loader<KeyLoader.Request, KeyLoader.Record> {
     /**
      * Identifies the public key set required by a protocol operation.
      *
-     * @param registration exact Source registration requesting the keys
-     * @param issuer       expected key issuer
-     * @param use          expected protocol use
-     * @param at           required validity instant
+     * @param source exact Source Blueprint entry requesting the keys
+     * @param issuer expected key issuer
+     * @param use    expected protocol use
+     * @param at     required validity instant
      * @author Kimi Liu
      */
-    record Criteria(Blueprint.SourceEntry registration, String issuer, String use, Instant at) {
+    record Criteria(Blueprint.SourceEntry source, String issuer, String use, Instant at) {
 
         /**
          * Validates one public-key-set listing criteria.
          */
         public Criteria {
-            Assert.notNull(registration, "Public key registration must not be null");
+            Assert.notNull(source, "Public key source must not be null");
             Assert.notBlank(issuer, "Public key criteria issuer must not be blank");
             Assert.notBlank(use, "Public key criteria use must not be blank");
             Assert.notNull(at, "Public key criteria validity instant must not be null");

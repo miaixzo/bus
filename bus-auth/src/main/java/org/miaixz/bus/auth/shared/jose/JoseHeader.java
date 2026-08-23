@@ -32,8 +32,9 @@ import org.miaixz.bus.extra.json.JsonValue;
  * Represents the protected and unprotected parameter sections whose union forms one RFC 7515 or RFC 7516 JOSE Header.
  * <p>
  * Registered JOSE parameters are decoded into explicit immutable components. Unknown extension parameters retain their
- * provider-neutral JSON representation because their value grammar belongs to the defining extension. JSON objects are
- * exposed only at the JOSE serialization boundary; algorithm policy and execution-key resolution remain external.
+ * implementation-neutral JSON representation because their value grammar belongs to the defining extension. JSON
+ * objects are exposed only at the JOSE serialization boundary; algorithm policy and execution-key resolution remain
+ * external.
  * </p>
  *
  * @author Kimi Liu

@@ -20,20 +20,26 @@
 /**
  * Defines management and compilation contracts for protocol and Vendor Sources.
  * <p>
- * {@link org.miaixz.bus.auth.Scheme}, {@link org.miaixz.bus.auth.Options},
+ * {@link org.miaixz.bus.auth.Scheme}, {@link org.miaixz.bus.auth.Scheme.Options},
  * {@link org.miaixz.bus.auth.source.SourceDriver}, {@link org.miaixz.bus.auth.registry.SourceValidator}, and
  * {@link org.miaixz.bus.auth.runtime.RuntimeDescriptor} define the typed compilation and supported-implementation
  * boundary shared by client-role and server-role protocol Sources. {@link org.miaixz.bus.auth.source.SourceWorkflow}
  * supplies the redirect, device, or direct authentication capabilities; its nested Request and Stage contracts converge
- * every successfully verified platform account directly on {@link org.miaixz.bus.auth.source.ExternalIdentity}. Each
- * protocol or Vendor implementation owns its private mapping code and cannot use this package as an account-linking
- * layer.
+ * every successfully verified platform account directly on {@link Identity}. Each protocol or Vendor implementation
+ * owns its private mapping code and cannot use this package as an account-linking layer.
+ * </p>
+ * <p>
+ * {@link org.miaixz.bus.auth.source.protocol.ProtocolConnector} groups every role-specific driver owned by one
+ * protocol, and {@link org.miaixz.bus.auth.source.protocol.ProtocolRegistry} applies that group atomically before
+ * runtime assembly. Standard connectors are discovered through the Bus SPI loader; a protocol package therefore owns
+ * its registration and can be added or removed without modifying RuntimeBuilder.
  * </p>
  * <p>
  * Protocol clients, protocol servers, and Vendor adapters depend on these contracts. RuntimeDescriptor exposes only
- * public immutable Vendor manifest contracts and never imports a concrete platform implementation, protocol
- * implementation, token model, UserInfo model, or wire codec. Vendor definitions remain in VendorLocator while
- * VendorModule exposes their single aggregate Source driver for runtime assembly.
+ * immutable SourceDescriptor values contributed by ProtocolModule and VendorModule; it never exposes a concrete
+ * platform adapter, protocol implementation, token model, UserInfo model, wire codec, or factory. VendorLocator retains
+ * read-only Vendor manifest lookup, while VendorModule exposes the aggregate Vendor Source driver and its exact
+ * management descriptors for runtime assembly.
  * </p>
  * <p>
  * This package owns driver selection, one-time preparation, dependency declarations, and the Driver-visible service
@@ -42,15 +48,17 @@
  * moving it here would merge the compilation contract with its execution result and invert the project-port boundary.
  * </p>
  * <p>
- * {@code Scheme} declares immutable authentication metadata, while {@code Options} carries typed deployment input and
- * alone declares its exact implementation type. The integrating project materializes Options before loading a Source;
- * {@code SourceDriver} only validates the matching concrete value and compiles it. Source authentication represents a
- * completed account-verification flow, not a substitute OAuth or proprietary protocol. Only a stable identifier
- * verified under the selected Source may become the external subject; access tokens, authorization codes, session keys,
- * client secrets, unverified email addresses, and display names must never be used as fallback subjects or exposed in
- * attributes and failures.
+ * {@code Scheme} declares immutable authentication metadata, while {@code Scheme.Options} carries typed deployment
+ * input and alone declares its exact implementation type. The integrating project materializes Scheme.Options before
+ * loading a Source; {@code SourceDriver} only validates the matching concrete value and compiles it. Source
+ * authentication represents a completed account-verification flow, not a substitute OAuth or proprietary protocol. Only
+ * a stable identifier verified under the selected Source may become the external subject; access tokens, authorization
+ * codes, session keys, client secrets, unverified email addresses, and display names must never be used as fallback
+ * subjects or exposed in attributes and failures.
  * </p>
  *
  * @author Kimi Liu
  */
 package org.miaixz.bus.auth.source;
+
+import org.miaixz.bus.auth.Identity;

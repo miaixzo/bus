@@ -33,20 +33,16 @@ import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.extra.json.JsonProvider;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Issues profile-bounded compact signed JWTs using the runtime JSON provider, Fabric clock, and shared JWS service.
+ * Issues profile-bounded compact signed JWTs using {@link JsonKit}, the Fabric clock, and a shared JWS service.
  *
  * @author Kimi Liu
  */
 public class JwtIssuer {
 
-    /**
-     * Provider-neutral JSON codec used for exact payload serialization.
-     */
-    private final JsonProvider jsonProvider;
     /**
      * Profile-scoped JWS execution service.
      */
@@ -59,12 +55,10 @@ public class JwtIssuer {
     /**
      * Creates a signed JWT issuer with no system-clock or global-JSON fallback.
      *
-     * @param jsonProvider runtime JSON provider
-     * @param jwsService   profile-scoped JWS service
-     * @param clock        shared Fabric clock
+     * @param jwsService profile-scoped JWS service
+     * @param clock      shared Fabric clock
      */
-    public JwtIssuer(final JsonProvider jsonProvider, final JwsService jwsService, final Clock clock) {
-        this.jsonProvider = Assert.notNull(jsonProvider, "JWT issuer JSON provider must not be null");
+    public JwtIssuer(final JwsService jwsService, final Clock clock) {
         this.jwsService = Assert.notNull(jwsService, "JWT issuer JWS service must not be null");
         this.clock = Assert.notNull(clock, "JWT issuer clock must not be null");
     }
@@ -99,7 +93,7 @@ public class JwtIssuer {
                 Optional.of(expiresAt), supplied.notBefore(), Optional.of(issuedAt),
                 Optional.of(UUID.randomUUID().toString()));
         final JwtClaims claims = new JwtClaims(registered, supplied.extensions());
-        final byte[] payload = jsonProvider.writeValue(claims.values());
+        final byte[] payload = JsonKit.writeValue(claims.values());
         final JwsService.Signature signature = jwsService.sign(request.header(), payload, key);
         final String compact = jwsService.compact(new JwsService.Jws(payload, List.of(signature)));
         return new Jwt(compact, request.header(), claims);

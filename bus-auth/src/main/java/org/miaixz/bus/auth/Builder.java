@@ -31,109 +31,89 @@ import org.miaixz.bus.core.lang.Normal;
 public class Builder {
 
     /**
-     * Prefix shared by every Vendor application capability key.
-     */
-    public static final String VENDOR_OPERATION_PREFIX = "vendor.";
-    /**
-     * Suffix identifying the local enterprise capability-description operation.
-     */
-    public static final String ENTERPRISE_DESCRIBE_SUFFIX = ".enterprise.describe";
-    /**
-     * Suffix identifying the enterprise full-snapshot operation.
-     */
-    public static final String ENTERPRISE_SNAPSHOT_SUFFIX = ".enterprise.snapshot";
-    /**
-     * Suffix identifying the enterprise recoverable-change operation.
-     */
-    public static final String ENTERPRISE_CHANGES_SUFFIX = ".enterprise.changes";
-    /**
-     * Suffix identifying the enterprise stable-key retrieval operation.
-     */
-    public static final String ENTERPRISE_RETRIEVE_SUFFIX = ".enterprise.retrieve";
-    /**
      * Limitation stating that returned contacts follow the application's configured visibility scope.
      */
-    public static final String ENTERPRISE_LIMITATION_APPLICATION_VISIBLE_CONTACT_SCOPE = "application-visible-contact-scope";
+    public static final String REALM_LIMITATION_APPLICATION_VISIBLE_CONTACT_SCOPE = "application-visible-contact-scope";
     /**
      * Limitation stating that hierarchical continuation pages replay traversal from the root.
      */
-    public static final String ENTERPRISE_LIMITATION_HIERARCHY_PAGES_REPLAY_FROM_ROOT = "hierarchy-pages-replay-from-root";
+    public static final String REALM_LIMITATION_HIERARCHY_PAGES_REPLAY_FROM_ROOT = "hierarchy-pages-replay-from-root";
     /**
      * Limitation stating that an upstream unpaged endpoint is fully reread for each continuation page.
      */
-    public static final String ENTERPRISE_LIMITATION_UNPAGED_REPLAY = "unpaged-endpoint-requires-full-response-replay";
+    public static final String REALM_LIMITATION_UNPAGED_REPLAY = "unpaged-endpoint-requires-full-response-replay";
     /**
      * Limitation stating that a changed replay projection invalidates the current snapshot continuation.
      */
-    public static final String ENTERPRISE_LIMITATION_REPLAY_CHANGE_FAILURE = "snapshot-replay-fails-when-source-projection-changes";
+    public static final String REALM_LIMITATION_REPLAY_CHANGE_FAILURE = "snapshot-replay-fails-when-source-projection-changes";
     /**
      * Limitation stating that a Variant provides snapshots without a recoverable change feed.
      */
-    public static final String ENTERPRISE_LIMITATION_SNAPSHOT_ONLY = "snapshot-only-no-change-feed";
+    public static final String REALM_LIMITATION_SNAPSHOT_ONLY = "snapshot-only-no-change-feed";
     /**
      * Limitation stating that an identical resource key may be emitted again on later snapshot pages.
      */
-    public static final String ENTERPRISE_LIMITATION_REPEATED_RESOURCES = "snapshot-may-repeat-identical-resource-keys-across-pages";
+    public static final String REALM_LIMITATION_REPEATED_RESOURCES = "snapshot-may-repeat-identical-resource-keys-across-pages";
     /**
-     * Management target key for listing enterprise users.
+     * Management target key for listing Realm users.
      */
-    public static final String ENTERPRISE_USERS = "users";
+    public static final String REALM_USERS = "users";
     /**
-     * Management target key for retrieving one enterprise user.
+     * Management target key for retrieving one Realm user.
      */
-    public static final String ENTERPRISE_USER = "user";
+    public static final String REALM_USER = "user";
     /**
-     * Management target key for listing enterprise organizations.
+     * Management target key for listing Realm organizations.
      */
-    public static final String ENTERPRISE_ORGANIZATIONS = "organizations";
+    public static final String REALM_ORGANIZATIONS = "organizations";
     /**
-     * Management target key for retrieving one enterprise organization.
+     * Management target key for retrieving one Realm organization.
      */
-    public static final String ENTERPRISE_ORGANIZATION = "organization";
+    public static final String REALM_ORGANIZATION = "organization";
     /**
      * Management target key for listing users belonging to an organization.
      */
-    public static final String ENTERPRISE_ORGANIZATION_USERS = "organization-users";
+    public static final String REALM_ORGANIZATION_USERS = "organization-users";
     /**
-     * Management target key for listing enterprise groups.
+     * Management target key for listing Realm groups.
      */
-    public static final String ENTERPRISE_GROUPS = "groups";
+    public static final String REALM_GROUPS = "groups";
     /**
-     * Management target key for retrieving one enterprise group.
+     * Management target key for retrieving one Realm group.
      */
-    public static final String ENTERPRISE_GROUP = "group";
+    public static final String REALM_GROUP = "group";
     /**
-     * Management target key for listing members of an enterprise group.
+     * Management target key for listing members of a Realm group.
      */
-    public static final String ENTERPRISE_GROUP_MEMBERS = "group-members";
+    public static final String REALM_GROUP_MEMBERS = "group-members";
     /**
-     * Management target key for listing enterprise roles.
+     * Management target key for listing Realm roles.
      */
-    public static final String ENTERPRISE_ROLES = "roles";
+    public static final String REALM_ROLES = "roles";
     /**
-     * Management target key for retrieving one enterprise role.
+     * Management target key for retrieving one Realm role.
      */
-    public static final String ENTERPRISE_ROLE = "role";
+    public static final String REALM_ROLE = "role";
     /**
      * Management target key for listing members assigned to a role.
      */
-    public static final String ENTERPRISE_ROLE_MEMBERS = "role-members";
+    public static final String REALM_ROLE_MEMBERS = "role-members";
     /**
      * Management target key for listing role-assignment resources.
      */
-    public static final String ENTERPRISE_ROLE_ASSIGNMENTS = "role-assignments";
+    public static final String REALM_ROLE_ASSIGNMENTS = "role-assignments";
     /**
      * Management target key for listing service accounts or service principals.
      */
-    public static final String ENTERPRISE_SERVICE_ACCOUNTS = "service-accounts";
+    public static final String REALM_SERVICE_ACCOUNTS = "service-accounts";
     /**
-     * Management target key for reading a recoverable enterprise change feed.
+     * Management target key for reading a recoverable Realm change feed.
      */
-    public static final String ENTERPRISE_CHANGES = "changes";
+    public static final String REALM_CHANGES = "changes";
     /**
      * Management target key for listing organization assignments.
      */
-    public static final String ENTERPRISE_ORGANIZATION_ASSIGNMENTS = "organization-assignments";
+    public static final String REALM_ORGANIZATION_ASSIGNMENTS = "organization-assignments";
     /**
      * Cursor envelope field carrying the stable Vendor identifier.
      */
@@ -143,7 +123,7 @@ public class Builder {
      */
     public static final String VARIANT_FIELD = "variant";
     /**
-     * Cursor envelope field carrying the enterprise operation identifier.
+     * Cursor envelope field carrying the Realm operation identifier.
      */
     public static final String OPERATION_FIELD = "operation";
     /**
@@ -191,17 +171,17 @@ public class Builder {
      */
     public static final String RETRY_AFTER_SECONDS_FIELD = "retry_after_seconds";
     /**
-     * Maximum number of resources or relations returned in one enterprise page collection.
+     * Maximum number of resources or relations returned in one Realm page collection.
      */
-    public static final int MAXIMUM_ENTERPRISE_PAGE_SIZE = Normal._500;
+    public static final int MAXIMUM_REALM_PAGE_SIZE = Normal._500;
     /**
-     * Maximum encoded character length accepted for an opaque enterprise cursor.
+     * Maximum encoded character length accepted for an opaque Realm cursor.
      */
-    public static final int MAXIMUM_ENTERPRISE_CURSOR_LENGTH = Normal._8192;
+    public static final int MAXIMUM_REALM_CURSOR_LENGTH = Normal._8192;
     /**
-     * Maximum JSON nesting depth accepted from enterprise management APIs.
+     * Maximum JSON nesting depth accepted from Realm management APIs.
      */
-    public static final int MAXIMUM_ENTERPRISE_JSON_DEPTH = Normal._64;
+    public static final int MAXIMUM_REALM_JSON_DEPTH = Normal._64;
     /**
      * Lifetime assigned to locally constructed upstream JWT assertions.
      */
@@ -280,7 +260,7 @@ public class Builder {
     public static final String REDACTED_ACCESS_TOKEN = "Access[accessToken=[REDACTED], expiresIn=";
 
     /**
-     * Creates an authentication constant constant holder with no retained state.
+     * Creates an authentication constant holder with no retained state.
      */
     public Builder() {
         // No initialization required.

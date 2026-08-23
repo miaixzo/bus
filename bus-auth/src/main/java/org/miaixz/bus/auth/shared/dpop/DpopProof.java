@@ -91,7 +91,7 @@ public class DpopProof {
      *
      * @param compact exact three-segment compact JWS
      * @param header  parsed protected JOSE header
-     * @param claims  complete provider-neutral DPoP Claims Set
+     * @param claims  complete implementation-neutral DPoP Claims Set
      * @throws IllegalArgumentException if an argument is {@code null} or a required string is blank
      * @throws ValidateException        if the header, key, URI, method, or claims violate RFC 9449 grammar
      */

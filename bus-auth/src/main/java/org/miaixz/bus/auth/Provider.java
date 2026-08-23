@@ -35,7 +35,7 @@ import org.miaixz.bus.core.basic.entity.Tracer;
  * <p>
  * Provider has no second persistent {@code space_id}: its resource space is resolved through
  * {@code library_id -> Library.space_id}. The inherited Tracer {@code x_space_id} remains transient request context and
- * must not be used as registration ownership.
+ * must not be used as configuration ownership.
  * </p>
  * <p>
  * This mutable persistence model is intended for external projects to extend and map to their storage model. It has no
@@ -89,7 +89,7 @@ public class Provider extends Tracer {
     private String description;
 
     /**
-     * Creates an empty persistence model for an external provider service implementation.
+     * Creates an empty project-owned Provider grouping model for persistence-framework population.
      */
     public Provider() {
         // No initialization required.

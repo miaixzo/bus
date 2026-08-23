@@ -23,8 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.registry.SnapshotFault;
-import org.miaixz.bus.auth.registry.SnapshotRegistry;
+import org.miaixz.bus.auth.Scheme.Options;
+import org.miaixz.bus.auth.registry.SnapshotRoster;
 import org.miaixz.bus.auth.source.DriverDirectory;
 import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.auth.worker.SourceWorker;
@@ -36,13 +36,13 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Compiles a validated registration snapshot into one complete executable runtime container.
+ * Compiles a validated Blueprint snapshot into one complete executable runtime container.
  * <p>
- * The compiler builds all indexes in local state and returns a container only after every enabled record compiles. A
+ * The compiler builds all indexes in local state and returns a container only after every enabled entry compiles. A
  * failure therefore exposes no partial container and leaves atomic publication to the reload service. Complete Library
  * resources are indexed first, followed by protocol-neutral Provider resources and executable Source resources. Each
  * Source receives its resolved owning Provider and Library. The complete snapshot revision is also bound to every
- * Source-scoped protocol-state cache as its generation. This class does not access committed Registry state or import
+ * Source-scoped protocol-state cache as its generation. This class does not access committed Roster state or import
  * protocol or Vendor implementations.
  * </p>
  *
@@ -91,10 +91,10 @@ final class SnapshotCompiler {
      * @param snapshot  validated complete snapshot
      * @param libraries mutable local Library index
      */
-    private static void compileLibraries(final Registry.Snapshot snapshot, final Map<String, Library> libraries) {
-        for (Blueprint.Entry record : snapshot.records()) {
-            if (record.kind() == Blueprint.Kind.LIBRARY && record.enabled()) {
-                final Library library = (Library) record.resource();
+    private static void compileLibraries(final Roster.Snapshot snapshot, final Map<String, Library> libraries) {
+        for (Blueprint.Entry entry : snapshot.entries()) {
+            if (entry.kind() == Blueprint.Kind.LIBRARY && entry.enabled()) {
+                final Library library = (Library) entry.resource();
                 libraries.put(library.getId(), library);
             }
         }
@@ -105,24 +105,24 @@ final class SnapshotCompiler {
      *
      * @param snapshot        validated complete snapshot
      * @param libraries       resolved enabled Library index
-     * @param providerRecords mutable enabled Provider registration index
+     * @param providerEntries mutable enabled Provider Blueprint index
      */
     private static void indexProviders(
-            final Registry.Snapshot snapshot,
+            final Roster.Snapshot snapshot,
             final Map<String, Library> libraries,
-            final Map<String, Blueprint.ProviderEntry> providerRecords) {
-        for (Blueprint.Entry candidate : snapshot.records()) {
+            final Map<String, Blueprint.ProviderEntry> providerEntries) {
+        for (Blueprint.Entry candidate : snapshot.entries()) {
             if (candidate.kind() != Blueprint.Kind.PROVIDER || !candidate.enabled()) {
                 continue;
             }
-            final Blueprint.ProviderEntry record = (Blueprint.ProviderEntry) candidate;
-            final Provider provider = record.resource();
+            final Blueprint.ProviderEntry entry = (Blueprint.ProviderEntry) candidate;
+            final Provider provider = entry.resource();
             final Library library = libraries.get(provider.getLibrary_id());
             if (library == null) {
                 throw new CompilationFailure(Blueprint.Kind.PROVIDER, provider.getId(), "library_id",
                         "Enabled Provider could not resolve its Library");
             }
-            providerRecords.put(provider.getId(), record);
+            providerEntries.put(provider.getId(), entry);
         }
     }
 
@@ -131,7 +131,7 @@ final class SnapshotCompiler {
      *
      * @param workers partially compiled worker index
      */
-    private static void close(final Map<Registry.Reference, SourceWorker> workers) {
+    private static void close(final Map<Roster.Reference, SourceWorker> workers) {
         for (SourceWorker worker : workers.values()) {
             try {
                 worker.close();
@@ -142,23 +142,23 @@ final class SnapshotCompiler {
     }
 
     /**
-     * Compiles every enabled record in a previously validated snapshot.
+     * Compiles every enabled entry in a previously validated snapshot.
      *
      * @param snapshot complete snapshot that has passed {@code SnapshotValidator}
-     * @return runtime container containing the Snapshot Registry and compiled Source workers
+     * @return runtime container containing the Roster snapshot and compiled Source workers
      * @throws IllegalArgumentException if the snapshot, a required type, or a driver result is invalid
-     * @throws RuntimeException         if a required relationship or selected driver rejects a record
+     * @throws RuntimeException         if a required relationship or selected driver rejects an entry
      */
-    RuntimeContainer compile(final Registry.Snapshot snapshot) {
-        Assert.notNull(snapshot, "Registry snapshot must not be null");
+    RuntimeContainer compile(final Roster.Snapshot snapshot) {
+        Assert.notNull(snapshot, "Roster snapshot must not be null");
         final Map<String, Library> libraries = new LinkedHashMap<>();
-        final Map<String, Blueprint.ProviderEntry> providerRecords = new LinkedHashMap<>();
-        final Map<Registry.Reference, SourceWorker> workers = new LinkedHashMap<>();
+        final Map<String, Blueprint.ProviderEntry> providerEntries = new LinkedHashMap<>();
+        final Map<Roster.Reference, SourceWorker> workers = new LinkedHashMap<>();
         try {
             compileLibraries(snapshot, libraries);
-            indexProviders(snapshot, libraries, providerRecords);
-            compileSources(snapshot, libraries, providerRecords, workers);
-            return new RuntimeContainer(new SnapshotRegistry(snapshot.revision(), snapshot), workers);
+            indexProviders(snapshot, libraries, providerEntries);
+            compileSources(snapshot, libraries, providerEntries, workers);
+            return new RuntimeContainer(new SnapshotRoster(snapshot.revision(), snapshot), workers);
         } catch (RuntimeException failure) {
             close(workers);
             throw failure;
@@ -170,33 +170,33 @@ final class SnapshotCompiler {
      *
      * @param snapshot        validated complete snapshot
      * @param libraries       resolved enabled Library index
-     * @param providerRecords resolved enabled Provider registration index
+     * @param providerEntries resolved enabled Provider Blueprint index
      * @param workers         mutable local Source-worker index
      */
     private void compileSources(
-            final Registry.Snapshot snapshot,
+            final Roster.Snapshot snapshot,
             final Map<String, Library> libraries,
-            final Map<String, Blueprint.ProviderEntry> providerRecords,
-            final Map<Registry.Reference, SourceWorker> workers) {
-        for (Blueprint.Entry candidate : snapshot.records()) {
+            final Map<String, Blueprint.ProviderEntry> providerEntries,
+            final Map<Roster.Reference, SourceWorker> workers) {
+        for (Blueprint.Entry candidate : snapshot.entries()) {
             if (candidate.kind() != Blueprint.Kind.SOURCE || !candidate.enabled()) {
                 continue;
             }
-            final Blueprint.SourceEntry record = (Blueprint.SourceEntry) candidate;
-            final Source source = record.resource();
+            final Blueprint.SourceEntry entry = (Blueprint.SourceEntry) candidate;
+            final Source source = entry.resource();
             try {
                 final SourceDriver<?> driver = sources.require(source.getType());
-                final Blueprint.ProviderEntry providerRecord = providerRecords.get(source.getProvider_id());
-                if (providerRecord == null) {
-                    throw new NotFoundException("Enabled Source Provider was not indexed");
+                final Blueprint.ProviderEntry providerEntry = providerEntries.get(source.getProvider_id());
+                if (providerEntry == null) {
+                    throw new NotFoundException("Owning Provider for enabled Source was not indexed");
                 }
-                final Provider provider = providerRecord.resource();
+                final Provider provider = providerEntry.resource();
                 final Library library = libraries.get(provider.getLibrary_id());
                 if (library == null) {
-                    throw new NotFoundException("Enabled Source Library was not indexed");
+                    throw new NotFoundException("Library for enabled Source was not indexed");
                 }
-                final Registry.Reference reference = Registry.Reference.source(source.getId());
-                final SourceWorker worker = compile(driver, record, provider, library, snapshot.revision().value());
+                final Roster.Reference reference = Roster.Reference.source(source.getId());
+                final SourceWorker worker = compile(driver, entry, provider, library, snapshot.revision().value());
                 workers.put(reference, worker);
             } catch (CompilationFailure failure) {
                 throw failure;
@@ -212,7 +212,7 @@ final class SnapshotCompiler {
      *
      * @param <O>        concrete Source options type
      * @param driver     exact typed Source driver
-     * @param record     Source registration
+     * @param entry      Source Blueprint entry
      * @param provider   resolved Provider
      * @param library    resolved Library
      * @param generation complete snapshot revision used as the Source security-state generation
@@ -220,15 +220,15 @@ final class SnapshotCompiler {
      */
     private <O extends Options<?>> SourceWorker compile(
             final SourceDriver<O> driver,
-            final Blueprint.SourceEntry record,
+            final Blueprint.SourceEntry entry,
             final Provider provider,
             final Library library,
             final long generation) {
-        final SourceDriver.Prepared<O> prepared = driver.prepare(record, provider, library);
+        final SourceDriver.Prepared<O> prepared = driver.prepare(entry, provider, library);
         return Assert.notNull(
                 driver.compile(
                         prepared,
-                        services.scope(prepared.registration(), prepared.slots(), prepared.dependencies(), generation)),
+                        services.scope(prepared.entry(), prepared.slots(), prepared.dependencies(), generation)),
                 "Source driver result must not be null");
     }
 
@@ -240,11 +240,11 @@ final class SnapshotCompiler {
     static final class CompilationFailure extends RuntimeException {
 
         /**
-         * Registration kind that failed compilation.
+         * Blueprint kind that failed compilation.
          */
         private final Blueprint.Kind kind;
         /**
-         * Safe registration identifier.
+         * Safe Blueprint entry identifier.
          */
         private final String id;
         /**
@@ -259,8 +259,8 @@ final class SnapshotCompiler {
         /**
          * Creates a compilation failure without an underlying cause.
          *
-         * @param kind            registration kind
-         * @param id              registration identifier
+         * @param kind            Blueprint kind
+         * @param id              Blueprint entry identifier
          * @param field           failing field
          * @param safeDescription safe description
          */
@@ -272,8 +272,8 @@ final class SnapshotCompiler {
         /**
          * Creates a compilation failure retaining an internal cause.
          *
-         * @param kind            registration kind
-         * @param id              registration identifier
+         * @param kind            Blueprint kind
+         * @param id              Blueprint entry identifier
          * @param field           failing field
          * @param safeDescription safe description
          * @param cause           internal cause
@@ -291,9 +291,9 @@ final class SnapshotCompiler {
         /**
          * {@return the safe structured snapshot fault}
          */
-        SnapshotFault fault() {
-            return SnapshotFault
-                    .entry(kind, id, SnapshotFault.Stage.COMPILE, Optional.of(field), ErrorCode._500, safeDescription);
+        Roster.Fault fault() {
+            return Roster.Fault
+                    .entry(kind, id, Roster.Fault.Stage.COMPILE, Optional.of(field), ErrorCode._500, safeDescription);
         }
 
     }

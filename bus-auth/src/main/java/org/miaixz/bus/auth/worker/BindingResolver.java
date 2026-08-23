@@ -24,7 +24,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
- * Resolves one already assembled project runtime binding for an exact registration and contract.
+ * Resolves one already assembled project runtime binding for an exact source and contract.
  * <p>
  * This port performs synchronous typed dependency resolution during Source compilation. It does not load external
  * project data and therefore does not implement {@link org.miaixz.bus.auth.Loader}.
@@ -36,14 +36,14 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public interface BindingResolver {
 
     /**
-     * Resolves one project binding for the exact Source registration and typed key.
+     * Resolves one project binding for the exact Source Blueprint entry and typed key.
      *
-     * @param <T>          binding contract type
-     * @param registration exact Source registration requesting the binding
-     * @param key          stable typed binding key
+     * @param <T>    binding contract type
+     * @param source exact Source Blueprint entry requesting the binding
+     * @param key    stable typed binding key
      * @return resolved binding implementing the requested contract
      */
-    <T> T resolve(Blueprint.SourceEntry registration, Key<T> key);
+    <T> T resolve(Blueprint.SourceEntry source, Key<T> key);
 
     /**
      * Identifies one project binding without using a raw class as a service-locator key.

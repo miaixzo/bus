@@ -29,7 +29,7 @@
  * <p>
  * JWT, OpenID Connect, OAuth extensions, SAML integrations, and Vendor adapters call these typed services. JOSE
  * delegates cryptographic implementation to bus-crypto and obtains key material through resolvers; it does not invoke
- * JCA primitives directly, load keys globally, select a protocol role, access Registry, or perform remote key lookup.
+ * JCA primitives directly, load keys globally, select a protocol role, access Roster, or perform remote key lookup.
  * </p>
  * <p>
  * Callers provide an explicit algorithm allow-list, intended use, key identifier policy, critical-header policy, and

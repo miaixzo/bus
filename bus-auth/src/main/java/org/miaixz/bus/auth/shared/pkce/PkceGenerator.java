@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.auth.shared.pkce;
 
-import org.miaixz.bus.auth.shared.SecurityBaseline;
+import org.miaixz.bus.auth.Policies;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
@@ -29,7 +29,7 @@ import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.crypto.Builder;
 
 /**
- * Generates a high-entropy verifier and its RFC 7636 S256 challenge under the shared security baseline.
+ * Generates a high-entropy verifier and its RFC 7636 S256 challenge under the shared security rules.
  *
  * @author Kimi Liu
  */
@@ -41,17 +41,17 @@ public class PkceGenerator {
     private final int bytes;
 
     /**
-     * Creates a generator using the stronger of RFC and shared baseline entropy.
+     * Creates a generator using the stronger of RFC and shared required entropy.
      *
-     * @param policy selected protocol security policy
-     * @throws IllegalArgumentException if policy is {@code null}
+     * @param rule selected protocol security rule
+     * @throws IllegalArgumentException if rule is {@code null}
      * @throws ValidateException        if required entropy cannot fit RFC verifier grammar
      */
-    public PkceGenerator(final SecurityBaseline.Policy policy) {
-        Assert.notNull(policy, "PKCE security policy must not be null");
-        this.bytes = (Math.max(Normal._256, policy.minimumEntropyBits()) + Byte.SIZE - 1) / Byte.SIZE;
+    public PkceGenerator(final Policies.Rule rule) {
+        Assert.notNull(rule, "PKCE security rule must not be null");
+        this.bytes = (Math.max(Normal._256, rule.minimumEntropyBits()) + Byte.SIZE - 1) / Byte.SIZE;
         if (bytes > Normal._96) {
-            throw new ValidateException("PKCE baseline entropy exceeds code_verifier capacity");
+            throw new ValidateException("PKCE required entropy exceeds code_verifier capacity");
         }
     }
 

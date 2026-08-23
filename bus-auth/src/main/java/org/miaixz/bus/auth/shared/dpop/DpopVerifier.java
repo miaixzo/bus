@@ -42,25 +42,21 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.crypto.Builder;
-import org.miaixz.bus.extra.json.JsonProvider;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
  * Verifies an RFC 9449 compact proof against its embedded public JWK and the exact receiving HTTP request.
  * <p>
  * Public-key conversion is delegated to a narrow typed factory because the JWK is carried by the proof rather than
- * discovered through Registry or network access. Replay registration and access-token {@code cnf.jkt} binding remain
- * the responsibility of {@link DpopValidator} after this cryptographic and request-binding verification succeeds.
+ * discovered through Roster or network access. Replay registration and access-token {@code cnf.jkt} binding remain the
+ * responsibility of {@link DpopValidator} after this cryptographic and request-binding verification succeeds.
  * </p>
  *
  * @author Kimi Liu
  */
 public class DpopVerifier {
 
-    /**
-     * Provider-neutral JSON codec used only after signature validation for the Claims Set.
-     */
-    private final JsonProvider jsonProvider;
     /**
      * Profile-scoped shared JWS parser and verifier.
      */
@@ -81,15 +77,13 @@ public class DpopVerifier {
     /**
      * Creates a verifier with explicit JSON, JWS, key conversion, time, and secret comparison dependencies.
      *
-     * @param jsonProvider     provider-neutral JSON codec
      * @param jwsService       profile-scoped JWS service
      * @param publicKeyFactory typed public JWK converter
      * @param timeGuard        shared issued-at and operation-timeout guard
      * @param secretGuard      shared constant-time comparison primitive
      */
-    public DpopVerifier(final JsonProvider jsonProvider, final JwsService jwsService,
-            final PublicKeyFactory publicKeyFactory, final TimeGuard timeGuard, final SecretGuard secretGuard) {
-        this.jsonProvider = Assert.notNull(jsonProvider, "DPoP verifier JSON provider must not be null");
+    public DpopVerifier(final JwsService jwsService, final PublicKeyFactory publicKeyFactory, final TimeGuard timeGuard,
+            final SecretGuard secretGuard) {
         this.jwsService = Assert.notNull(jwsService, "DPoP verifier JWS service must not be null");
         this.publicKeyFactory = Assert.notNull(publicKeyFactory, "DPoP public-key factory must not be null");
         this.timeGuard = Assert.notNull(timeGuard, "DPoP time guard must not be null");
@@ -171,7 +165,7 @@ public class DpopVerifier {
         final Key publicKey = Assert
                 .notNull(publicKeyFactory.create(publicJwk), "DPoP public-key factory result must not be null");
         jwsService.verify(signature, parsed.payload(), publicKey, request.critical());
-        final JsonValue value = jsonProvider.readValue(parsed.payload());
+        final JsonValue value = JsonKit.readValue(parsed.payload());
         if (!(value instanceof JsonValue.ObjectValue object)) {
             throw new ValidateException("DPoP proof payload must be a JSON object Claims Set");
         }
@@ -244,8 +238,8 @@ public class DpopVerifier {
     /**
      * Converts a structurally validated public JWK into the exact asymmetric verification key used by JWS.
      * <p>
-     * Implementations must be deterministic and local. They must not perform Registry access, remote discovery, or
-     * trust decisions; the proof itself supplies the public key.
+     * Implementations must be deterministic and local. They must not perform Roster access, remote discovery, or trust
+     * decisions; the proof itself supplies the public key.
      * </p>
      *
      * @author Kimi Liu

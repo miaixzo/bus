@@ -23,17 +23,18 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Dispatcher;
-import org.miaixz.bus.auth.Registry;
+import org.miaixz.bus.auth.Roster;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * Owns the bus-auth framework lifecycle and exposes separate registration and execution entries.
+ * Owns the bus-auth framework lifecycle and exposes separate Roster and execution entries.
  * <p>
  * RuntimeServices remain owned by the external project. Closing this runtime rejects new authentication and reload
- * operations, but preserves the last immutable Registry snapshot for read-only inspection. It never closes the caller's
- * executor, FabricX facade, cache backend, loaders, JSON provider, audit sink, or consent service.
+ * operations, but preserves the last immutable Roster snapshot for read-only inspection. It never closes the caller's
+ * executor, cache backend, loaders, audit sink, or consent service, and it does not alter the application-wide
+ * {@link org.miaixz.bus.extra.json.JsonKit} provider selection.
  * </p>
  *
  * @author Kimi Liu
@@ -41,12 +42,12 @@ import org.miaixz.bus.core.lang.Assert;
 public class RuntimeManager implements Lifecycle, AutoCloseable {
 
     /**
-     * Only public gateway to compiled Source capabilities.
+     * Read-only gateway to the currently committed Blueprint state.
      */
-    private final Registry registry;
+    private final Roster roster;
 
     /**
-     * Capability dispatch gateway, kept separate from registration state access.
+     * Capability dispatch gateway, kept separate from Roster state access.
      */
     private final Dispatcher dispatcher;
 
@@ -56,7 +57,7 @@ public class RuntimeManager implements Lifecycle, AutoCloseable {
     private final RuntimeReloadService reloadService;
 
     /**
-     * Immutable implementation inventory assembled for this runtime.
+     * Immutable implementation description assembled for this runtime.
      */
     private final RuntimeDescriptor descriptor;
 
@@ -73,18 +74,18 @@ public class RuntimeManager implements Lifecycle, AutoCloseable {
     /**
      * Creates a running runtime from completely assembled framework services.
      *
-     * @param registry      initialized revision-zero Registry
+     * @param roster        initialized revision-zero Roster
      * @param dispatcher    capability dispatch gateway
      * @param reloadService complete-snapshot reload service
-     * @param descriptor    frozen description of the assembled schemes and Vendors
+     * @param descriptor    implementation-neutral description of all assembled Source choices
      * @param lifecycle     shared runtime lifecycle gate
      * @param containers    current executable container cell
      * @throws IllegalArgumentException if a dependency is {@code null}
      */
-    public RuntimeManager(final Registry registry, final Dispatcher dispatcher,
-            final RuntimeReloadService reloadService, final RuntimeDescriptor descriptor,
-            final RuntimeLifecycle lifecycle, final RuntimeContainer.Cell containers) {
-        this.registry = Assert.notNull(registry, "Authentication Registry must not be null");
+    public RuntimeManager(final Roster roster, final Dispatcher dispatcher, final RuntimeReloadService reloadService,
+            final RuntimeDescriptor descriptor, final RuntimeLifecycle lifecycle,
+            final RuntimeContainer.Cell containers) {
+        this.roster = Assert.notNull(roster, "Authentication Roster must not be null");
         this.dispatcher = Assert.notNull(dispatcher, "Capability dispatcher must not be null");
         this.reloadService = Assert.notNull(reloadService, "Runtime reload service must not be null");
         this.descriptor = Assert.notNull(descriptor, "Runtime descriptor must not be null");
@@ -93,12 +94,12 @@ public class RuntimeManager implements Lifecycle, AutoCloseable {
     }
 
     /**
-     * Returns the read-only registration state gateway.
+     * Returns the read-only Blueprint state gateway.
      *
-     * @return runtime Registry
+     * @return runtime Roster
      */
-    public Registry registry() {
-        return registry;
+    public Roster roster() {
+        return roster;
     }
 
     /**
@@ -111,7 +112,7 @@ public class RuntimeManager implements Lifecycle, AutoCloseable {
     }
 
     /**
-     * Returns the implementation inventory selected at runtime assembly.
+     * Returns the implementation description selected at runtime assembly.
      *
      * @return immutable runtime descriptor
      */
@@ -120,9 +121,9 @@ public class RuntimeManager implements Lifecycle, AutoCloseable {
     }
 
     /**
-     * Loads, validates, compiles, and atomically publishes one complete external registration snapshot.
+     * Loads, validates, compiles, and atomically publishes one complete external Blueprint snapshot.
      * <p>
-     * Reload is an explicit security boundary, not a passive Registry refresh. On a successful commit, the strictly
+     * Reload is an explicit security boundary, not a passive Roster refresh. On a successful commit, the strictly
      * increasing snapshot revision becomes the cache generation of every compiled Source. New invocations can no longer
      * redeem or validate authorization codes, device codes, access tokens, refresh tokens, framework protocol sessions,
      * callback states, nonces, authorization lifecycle entries, or ID Token logout bindings created by an older
@@ -141,7 +142,7 @@ public class RuntimeManager implements Lifecycle, AutoCloseable {
      * @return stage containing the validation or commit report for the attempted snapshot
      * @throws IllegalArgumentException if an argument is {@code null}
      */
-    public CompletionStage<Registry.Report> reload(final Context context, final Timeout timeout) {
+    public CompletionStage<Roster.Report> reload(final Context context, final Timeout timeout) {
         Assert.notNull(context, "Runtime reload context must not be null");
         Assert.notNull(timeout, "Runtime reload timeout must not be null");
         return reloadService.reload(context, timeout);
@@ -159,7 +160,7 @@ public class RuntimeManager implements Lifecycle, AutoCloseable {
 
     /**
      * Idempotently rejects new authentication and reload operations without closing externally owned dependencies. The
-     * Registry remains readable and continues to expose the last successfully committed immutable snapshot.
+     * Roster remains readable and continues to expose the last successfully committed immutable snapshot.
      */
     @Override
     public void close() {

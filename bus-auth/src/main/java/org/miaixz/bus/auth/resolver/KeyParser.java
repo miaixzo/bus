@@ -45,16 +45,16 @@ public class KeyParser {
     /**
      * Validates Source ownership, key lookup coordinates, and validity interval.
      *
-     * @param registration exact Source registration that requested the key
-     * @param request      exact key lookup request
-     * @param record       project-loaded key record
+     * @param source  exact Source Blueprint entry that requested the key
+     * @param request exact key lookup request
+     * @param record  project-loaded key record
      * @return validated key material
      */
     public KeyMaterial parse(
-            final Blueprint.SourceEntry registration,
+            final Blueprint.SourceEntry source,
             final KeyLoader.Request request,
             final KeyLoader.Record record) {
-        final String sourceId = Assert.notNull(registration, "Key Source registration must not be null").resource()
+        final String sourceId = Assert.notNull(source, "Key Source Blueprint entry must not be null").resource()
                 .getId();
         final KeyLoader.Request expected = Assert.notNull(request, "Key request must not be null");
         final KeyLoader.Record loaded = Assert.notNull(record, "Loaded key record must not be null");
@@ -85,17 +85,17 @@ public class KeyParser {
     /**
      * Validates Source ownership and rejects private or symmetric material from a public key set.
      *
-     * @param registration exact Source registration that requested the keys
-     * @param criteria     exact public-key listing criteria
-     * @param listing      project-loaded public-key listing
+     * @param source   exact Source Blueprint entry that requested the keys
+     * @param criteria exact public-key listing criteria
+     * @param listing  project-loaded public-key listing
      * @return detached public-only key set
      */
     public JwkSet parsePublic(
-            final Blueprint.SourceEntry registration,
+            final Blueprint.SourceEntry source,
             final KeyLoader.Criteria criteria,
             final KeyLoader.Listing listing) {
-        final String sourceId = Assert.notNull(registration, "Public key Source registration must not be null")
-                .resource().getId();
+        final String sourceId = Assert.notNull(source, "Public key Source Blueprint entry must not be null").resource()
+                .getId();
         final KeyLoader.Criteria expected = Assert.notNull(criteria, "Public key criteria must not be null");
         final KeyLoader.Listing loaded = Assert.notNull(listing, "Loaded public key listing must not be null");
         if (!sourceId.equals(loaded.sourceId()) || !expected.issuer().equals(loaded.issuer())

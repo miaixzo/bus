@@ -26,8 +26,8 @@ import org.miaixz.bus.extra.json.JsonValue;
  * Represents a stable framework identity subject independently of protocol wire subjects and active sessions.
  * <p>
  * The key identifies the stored subject, the reference is passed to project subject and attribute loaders, and
- * attributes are an immutable provider-neutral snapshot. This type must not be used in place of the formal SAML Subject
- * model or as a container for session and token state.
+ * attributes are an immutable protocol- and Source-neutral snapshot. This type must not be used in place of the formal
+ * SAML Subject model or as a container for session and token state.
  * </p>
  *
  * @param key        stable framework subject key
@@ -42,7 +42,7 @@ public record Subject(Key key, Reference reference, JsonValue.ObjectValue attrib
      *
      * @param key        stable framework subject key
      * @param reference  external subject loader reference
-     * @param attributes provider-neutral subject attributes
+     * @param attributes protocol- and Source-neutral subject attributes
      * @throws IllegalArgumentException if any component is {@code null}
      */
     public Subject {

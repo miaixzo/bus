@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.Enumers;
 /**
  * Represents the framework's single immutable authenticated-session concept.
  * <p>
- * Session lifecycle is separate from Registry snapshots, protocol-specific session identifiers, and tokens. The record
+ * Session lifecycle is separate from Roster snapshots, protocol-specific session identifiers, and tokens. The record
  * contains only its stable key, lifecycle state, and validity interval; token and credential material must be retained
  * by their dedicated stores or external loaders.
  * </p>

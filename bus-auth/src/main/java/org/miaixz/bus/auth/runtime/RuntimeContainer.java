@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.miaixz.bus.auth.Registry;
+import org.miaixz.bus.auth.Roster;
 import org.miaixz.bus.auth.worker.SourceWorker;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
@@ -37,14 +37,14 @@ import org.miaixz.bus.core.lang.Optional;
 final class RuntimeContainer {
 
     /**
-     * Fixed Snapshot Registry published with this container.
+     * Fixed Roster snapshot published with this container.
      */
-    private final Registry registry;
+    private final Roster roster;
 
     /**
-     * Compiled Source workers keyed by exact Registry reference.
+     * Compiled Source workers keyed by exact Roster reference.
      */
-    private final Map<Registry.Reference, SourceWorker> workers;
+    private final Map<Roster.Reference, SourceWorker> workers;
 
     /**
      * Monitor protecting retirement and lease accounting.
@@ -67,15 +67,15 @@ final class RuntimeContainer {
     private int leases;
 
     /**
-     * Creates one detached container from a fixed Snapshot Registry and worker index.
+     * Creates one detached container from a fixed Roster snapshot and worker index.
      *
-     * @param registry fixed Snapshot Registry
-     * @param workers  compiled Source worker index
+     * @param roster  fixed Roster snapshot
+     * @param workers compiled Source worker index
      */
-    RuntimeContainer(final Registry registry, final Map<Registry.Reference, SourceWorker> workers) {
-        this.registry = Assert.notNull(registry, "Runtime container Registry must not be null");
+    RuntimeContainer(final Roster roster, final Map<Roster.Reference, SourceWorker> workers) {
+        this.roster = Assert.notNull(roster, "Runtime container Roster must not be null");
         Assert.notNull(workers, "Runtime container Source worker index must not be null");
-        final Map<Registry.Reference, SourceWorker> copy = new LinkedHashMap<>(workers.size());
+        final Map<Roster.Reference, SourceWorker> copy = new LinkedHashMap<>(workers.size());
         workers.forEach(
                 (reference, worker) -> copy.put(
                         Assert.notNull(reference, "Runtime container Source worker reference must not be null"),
@@ -84,21 +84,21 @@ final class RuntimeContainer {
     }
 
     /**
-     * Returns the fixed Snapshot Registry published with this container.
+     * Returns the fixed Roster snapshot published with this container.
      *
-     * @return container Registry
+     * @return container Roster
      */
-    Registry registry() {
-        return registry;
+    Roster roster() {
+        return roster;
     }
 
     /**
-     * Resolves one compiled Source worker without crossing into Registry responsibilities.
+     * Resolves one compiled Source worker without crossing into Roster responsibilities.
      *
-     * @param reference exact Source Registry reference
+     * @param reference exact Source Roster reference
      * @return optional compiled worker
      */
-    Optional<SourceWorker> worker(final Registry.Reference reference) {
+    Optional<SourceWorker> worker(final Roster.Reference reference) {
         return Optional.ofNullable(
                 workers.get(Assert.notNull(reference, "Runtime container Source worker reference must not be null")));
     }

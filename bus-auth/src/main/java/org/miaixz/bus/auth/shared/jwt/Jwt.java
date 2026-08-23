@@ -44,7 +44,7 @@ public class Jwt {
      */
     private final JoseHeader header;
     /**
-     * Parsed provider-neutral JWT Claims Set.
+     * Parsed implementation-neutral JWT Claims Set.
      */
     private final JwtClaims claims;
     /**

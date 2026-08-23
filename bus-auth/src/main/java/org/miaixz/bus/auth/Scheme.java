@@ -19,19 +19,22 @@
 */
 package org.miaixz.bus.auth;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.miaixz.bus.auth.protocol.Conformance;
+import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Declares the immutable identity, protocol, capabilities, conformance and management shape of one authentication or
- * authorization scheme.
+ * Aggregates the immutable configuration, protocol, capability, conformance, and management descriptions of one
+ * authentication or authorization scheme.
  * <p>
  * A scheme is descriptive only. It does not register itself, decode persistence data, resolve credentials, compile a
  * worker, invoke protocol operations, or perform security and audit processing.
@@ -40,7 +43,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  * @param <O> exact immutable configuration value accepted by this scheme
  * @author Kimi Liu
  */
-public interface Scheme<O extends Options<?>> {
+public interface Scheme<O extends Scheme.Options<?>> {
 
     /**
      * Returns the stable identifier used by Source type lookup.
@@ -50,24 +53,18 @@ public interface Scheme<O extends Options<?>> {
     String id();
 
     /**
-     * Returns the exact protocol classification represented by this scheme.
+     * Returns the management presentation metadata shared by every selection described by this scheme.
      *
-     * @return protocol classification
+     * @return immutable scheme metadata
      */
-    Protocol protocol();
+    Metadata metadata();
 
     /**
      * Returns every protocol accepted by this scheme.
-     * <p>
-     * Ordinary schemes accept only their primary protocol. Aggregate schemes may override this method while retaining
-     * {@link #protocol()} as their management classification.
-     * </p>
      *
      * @return immutable non-empty accepted protocol set
      */
-    default Set<Protocol> protocols() {
-        return Set.of(protocol());
-    }
+    Set<Protocol> protocols();
 
     /**
      * Returns only the capabilities implemented by the matching runtime.
@@ -96,6 +93,138 @@ public interface Scheme<O extends Options<?>> {
      * @return defaults, or empty when deployment input is required
      */
     Optional<O> defaults();
+
+    /**
+     * Marks an immutable decoded configuration value accepted by one {@link Scheme}.
+     * <p>
+     * An options value contains deployment input and external credential references only. It does not describe
+     * management presentation, select a protocol, decode persistence JSON, compile workers, or execute authentication
+     * operations.
+     * </p>
+     * <p>
+     * Persistence and transport serialization belong to the integrating project. This runtime contract deliberately
+     * does not require Java object serialization.
+     * </p>
+     *
+     * @param <O> exact immutable implementation type
+     * @author Kimi Liu
+     */
+    interface Options<O extends Options<O>> {
+
+        /**
+         * Returns this immutable configuration implementation type.
+         *
+         * @return exact options implementation class
+         */
+        Class<O> type();
+
+        /**
+         * Returns an immutable detached value safe to retain in one compiled runtime container.
+         * <p>
+         * Immutable value implementations may return {@code this}. Mutable project implementations must return a
+         * detached immutable copy. The framework does not serialize deployment options to manufacture a snapshot.
+         * </p>
+         *
+         * @return non-null immutable options snapshot
+         */
+        O snapshot();
+
+    }
+
+    /**
+     * Declares the exact formal standard version, profile, and normative citations implemented by one protocol profile.
+     * <p>
+     * This descriptive metadata is not protocol discovery or wire content and does not repeat capability declarations.
+     * Vendor-specific behavior without a formal standard must use an explicit vendor-deviation declaration rather than
+     * fabricate conformance metadata.
+     * </p>
+     *
+     * @param protocol  existing Bus protocol identifier
+     * @param version   formal protocol version
+     * @param citations non-empty set of normative standard locations
+     * @param profile   exact formal standard profile name
+     * @author Kimi Liu
+     */
+    record Conformance(Protocol protocol, Version version, Set<Citation> citations, String profile) {
+
+        /**
+         * Validates and freezes formal conformance metadata.
+         *
+         * @throws IllegalArgumentException if a component or citation is {@code null} or text is blank
+         * @throws ValidateException        if no normative citation is supplied
+         */
+        public Conformance {
+            Assert.notNull(protocol, "Conformance protocol must not be null");
+            Assert.notNull(version, "Conformance version must not be null");
+            Assert.notNull(citations, "Conformance citations must not be null");
+            citations = Set.copyOf(citations);
+            if (citations.isEmpty()) {
+                throw new ValidateException("Conformance must cite at least one formal standard section");
+            }
+            for (Citation citation : citations) {
+                Assert.notNull(citation, "Conformance citation must not be null");
+            }
+            Assert.notBlank(profile, "Conformance standard profile must not be blank");
+        }
+
+        /**
+         * Identifies one normative section of a formal specification without copying specification content into
+         * runtime.
+         *
+         * @param standardUrl absolute stable HTTP(S) specification URL without query or fragment
+         * @param section     exact normative section identifier
+         * @author Kimi Liu
+         */
+        public record Citation(String standardUrl, String section) {
+
+            /**
+             * Validates the stable formal-standard location and section identifier.
+             *
+             * @throws IllegalArgumentException if text is blank
+             * @throws ValidateException        if the URL is not an absolute credential-free HTTP(S) specification URL
+             */
+            public Citation {
+                Assert.notBlank(standardUrl, "Conformance standard URL must not be blank");
+                Assert.notBlank(section, "Conformance standard section must not be blank");
+                try {
+                    final URI uri = new URI(standardUrl);
+                    if (!uri.isAbsolute() || uri.getHost() == null
+                            || !(Protocol.HTTP.name.equalsIgnoreCase(uri.getScheme())
+                                    || Protocol.HTTPS.name.equalsIgnoreCase(uri.getScheme()))
+                            || uri.getRawUserInfo() != null || uri.getRawQuery() != null
+                            || uri.getRawFragment() != null) {
+                        throw new ValidateException(
+                                "Conformance standard URL must be an absolute HTTP(S) URL without credentials, query, or fragment");
+                    }
+                } catch (URISyntaxException cause) {
+                    throw new ValidateException("Conformance standard URL is malformed", cause);
+                }
+            }
+
+        }
+
+    }
+
+    /**
+     * Carries implementation-neutral management presentation data for one scheme or exact Source selection.
+     *
+     * @param name        non-blank display name
+     * @param description non-null human-readable description, which may be empty
+     * @param icon        non-null stable icon reference, which may be empty
+     * @author Kimi Liu
+     */
+    record Metadata(String name, String description, String icon) {
+
+        /**
+         * Validates one immutable presentation metadata value without interpreting its icon reference.
+         */
+        public Metadata {
+            Assert.notBlank(name, "Scheme metadata name must not be blank");
+            Assert.notNull(description, "Scheme metadata description must not be null");
+            Assert.notNull(icon, "Scheme metadata icon must not be null");
+        }
+
+    }
 
     /**
      * Describes immutable management input fields for a scheme without rendering, binding, decoding or executing them.
@@ -217,7 +346,7 @@ public interface Scheme<O extends Options<?>> {
         }
 
         /**
-         * Declares one external management validation and its immutable provider-neutral arguments.
+         * Declares one external management validation and its immutable implementation-neutral arguments.
          *
          * @param validator stable external validator identifier
          * @param arguments immutable validator arguments

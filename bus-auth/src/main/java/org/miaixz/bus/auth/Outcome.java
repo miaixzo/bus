@@ -229,7 +229,7 @@ public interface Outcome<T> {
      *
      * @param error           existing Bus error definition
      * @param safeDescription non-sensitive description suitable for framework diagnostics
-     * @param details         provider-neutral non-sensitive structured details
+     * @param details         implementation-neutral non-sensitive structured details
      * @author Kimi Liu
      */
     record Failure(Errors error, String safeDescription, JsonValue.ObjectValue details) {

@@ -24,9 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.miaixz.bus.auth.protocol.oauth2.ClientAuthenticationMethod;
-import org.miaixz.bus.auth.protocol.oauth2.GrantType;
-import org.miaixz.bus.auth.protocol.oidc.SubjectType;
+import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -53,10 +51,10 @@ import org.miaixz.bus.extra.json.JsonValue;
  * @param metadata                   detached non-core protocol metadata
  * @author Kimi Liu
  */
-public record ConsumerMetadata(String id, String name, ApplicationType applicationType, List<String> redirectUris,
-        List<String> postLogoutRedirectUris, Set<GrantType> grantTypes, Set<String> responseTypes, Set<String> scopes,
-        Set<ClientAuthenticationMethod> authenticationMethods, Optional<String> clientAssertionKeyId,
-        SubjectType subjectType, Optional<String> sectorIdentifier, Optional<String> idTokenEncryptionKeyId,
+public record ConsumerMetadata(String id, String name, Optional<String> applicationType, List<String> redirectUris,
+        List<String> postLogoutRedirectUris, Set<String> grantTypes, Set<String> responseTypes, Set<String> scopes,
+        Set<Endpoint.Authentication> authenticationMethods, Optional<String> clientAssertionKeyId,
+        Optional<String> subjectType, Optional<String> sectorIdentifier, Optional<String> idTokenEncryptionKeyId,
         Optional<String> idTokenEncryptionAlgorithm, Optional<String> idTokenEncryptionMethod,
         JsonValue.ObjectValue metadata) {
 
@@ -66,7 +64,7 @@ public record ConsumerMetadata(String id, String name, ApplicationType applicati
     public ConsumerMetadata {
         Assert.notBlank(id, "Consumer identifier must not be blank");
         Assert.notBlank(name, "Consumer name must not be blank");
-        Assert.notNull(applicationType, "Consumer application type must not be null");
+        applicationType = normalized(applicationType, "Consumer application type");
         redirectUris = immutableList(redirectUris, "Consumer redirect URI");
         postLogoutRedirectUris = immutableList(postLogoutRedirectUris, "Consumer post logout redirect URI");
         grantTypes = immutableSet(grantTypes, "Consumer grant type");
@@ -74,26 +72,11 @@ public record ConsumerMetadata(String id, String name, ApplicationType applicati
         scopes = immutableSet(scopes, "Consumer scope");
         authenticationMethods = immutableSet(authenticationMethods, "Consumer authentication method");
         clientAssertionKeyId = normalized(clientAssertionKeyId, "Consumer assertion key identifier");
-        Assert.notNull(subjectType, "Consumer subject type must not be null");
+        subjectType = normalized(subjectType, "Consumer subject type");
         sectorIdentifier = normalized(sectorIdentifier, "Consumer sector identifier");
         idTokenEncryptionKeyId = normalized(idTokenEncryptionKeyId, "Consumer ID Token encryption key identifier");
         idTokenEncryptionAlgorithm = normalized(idTokenEncryptionAlgorithm, "Consumer ID Token encryption algorithm");
         idTokenEncryptionMethod = normalized(idTokenEncryptionMethod, "Consumer ID Token encryption method");
-        if (authenticationMethods.contains(ClientAuthenticationMethod.NONE) && authenticationMethods.size() != 1) {
-            throw new ValidateException("Public client authentication cannot be combined with confidential methods");
-        }
-        if (authenticationMethods.contains(ClientAuthenticationMethod.PRIVATE_KEY_JWT) != clientAssertionKeyId
-                .isPresent()) {
-            throw new ValidateException("Private-key JWT authentication requires exactly one assertion key identifier");
-        }
-        if (SubjectType.PAIRWISE.equals(subjectType) != sectorIdentifier.isPresent()) {
-            throw new ValidateException("Pairwise subject type requires exactly one sector identifier");
-        }
-        final int encryptionParts = (idTokenEncryptionKeyId.isPresent() ? 1 : 0)
-                + (idTokenEncryptionAlgorithm.isPresent() ? 1 : 0) + (idTokenEncryptionMethod.isPresent() ? 1 : 0);
-        if (encryptionParts != 0 && encryptionParts != 3) {
-            throw new ValidateException("ID Token encryption key, algorithm, and method must be configured together");
-        }
         Assert.notNull(metadata, "Consumer metadata must not be null");
         metadata = new JsonValue.ObjectValue(metadata.values());
     }
@@ -149,46 +132,6 @@ public record ConsumerMetadata(String id, String name, ApplicationType applicati
             }
         }
         return Set.copyOf(values);
-    }
-
-    /**
-     * {@return whether this consumer is an unauthenticated public client}
-     */
-    public boolean publicClient() {
-        return authenticationMethods.equals(Set.of(ClientAuthenticationMethod.NONE));
-    }
-
-    /**
-     * {@return whether this consumer has one or more confidential authentication methods}
-     */
-    public boolean confidentialClient() {
-        return !authenticationMethods.isEmpty() && !authenticationMethods.contains(ClientAuthenticationMethod.NONE);
-    }
-
-    /**
-     * {@return whether issued ID Tokens must be encrypted for this consumer}
-     */
-    public boolean encryptsIdToken() {
-        return idTokenEncryptionKeyId.isPresent();
-    }
-
-    /**
-     * Consumer application categories relevant to redirect and PKCE policy.
-     *
-     * @author Kimi Liu
-     */
-    public enum ApplicationType {
-
-        /**
-         * Browser-hosted web application with a confidential backend when configured accordingly.
-         */
-        WEB,
-
-        /**
-         * Installed native application treated as a public client.
-         */
-        NATIVE
-
     }
 
 }

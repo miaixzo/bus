@@ -31,7 +31,7 @@ import org.miaixz.bus.core.net.Protocol;
 /**
  * Declares one strongly typed authentication capability implemented by a compiled Source worker.
  * <p>
- * Request and response classes are part of the declaration, allowing Registry invocation to retain compile-time type
+ * Request and response classes are part of the declaration, allowing Dispatcher invocation to retain compile-time type
  * relationships instead of reducing protocol operations to generic requests. Capability declarations are internal
  * routing metadata and must never be serialized as protocol wire messages or Discovery documents.
  * </p>
@@ -74,8 +74,8 @@ public record Capability<Q, S>(Key key, Class<Q> requestType, Class<S> responseT
     /**
      * Identifies the protocol role implemented by a compiled Source worker.
      * <p>
-     * The enum names are historical role names and do not identify the persistence {@link Provider} or {@link Source}
-     * entity category. Both directions are selected and configured by a Source registration.
+     * These values describe protocol roles and do not identify the persistence {@link Provider} or {@link Source}
+     * entity category. Both directions are selected and configured by a Source configuration.
      * </p>
      *
      * @author Kimi Liu
@@ -85,12 +85,12 @@ public record Capability<Q, S>(Key key, Class<Q> requestType, Class<S> responseT
         /**
          * Server-role capability implemented by a Source runtime.
          */
-        PROVIDER,
+        SERVER,
 
         /**
          * Client-role capability implemented by a Source runtime.
          */
-        SOURCE
+        CLIENT
 
     }
 

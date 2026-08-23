@@ -51,7 +51,7 @@ public class Callback {
     /**
      * Identifies the source and registered redirect URI used to initiate a browser interaction.
      *
-     * @param sourceId    registered Source identifier
+     * @param sourceId    Source identifier
      * @param redirectUri registered redirect URI lexical value
      * @author Kimi Liu
      */
@@ -60,7 +60,7 @@ public class Callback {
         /**
          * Creates a callback target without resolving or normalizing its URI.
          *
-         * @param sourceId    registered Source identifier
+         * @param sourceId    Source identifier
          * @param redirectUri registered redirect URI lexical value
          * @throws IllegalArgumentException if either value is blank
          */
@@ -74,7 +74,7 @@ public class Callback {
     /**
      * Stores one-time browser interaction correlation data before a callback arrives.
      *
-     * @param sourceId  registered Source identifier bound to the interaction
+     * @param sourceId  Source identifier bound to the interaction
      * @param state     opaque one-time state value
      * @param nonce     optional protocol nonce bound to the same interaction
      * @param expiresAt absolute correlation expiration time
@@ -86,7 +86,7 @@ public class Callback {
         /**
          * Creates an immutable callback correlation value.
          *
-         * @param sourceId  registered Source identifier
+         * @param sourceId  Source identifier
          * @param state     opaque one-time state value
          * @param nonce     optional protocol nonce
          * @param expiresAt absolute expiration time

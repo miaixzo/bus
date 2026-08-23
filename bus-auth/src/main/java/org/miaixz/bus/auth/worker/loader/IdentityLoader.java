@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.auth.worker.loader;
 
+import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Loader;
 import org.miaixz.bus.auth.Subject;
-import org.miaixz.bus.auth.source.ExternalIdentity;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -30,7 +30,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  * @author Kimi Liu
  */
 @FunctionalInterface
-public interface IdentityLoader extends Loader<ExternalIdentity, IdentityLoader.Record> {
+public interface IdentityLoader extends Loader<Identity, IdentityLoader.Record> {
 
     /**
      * Project-adapted subject data awaiting framework parsing.

@@ -38,19 +38,19 @@ public interface CertificateLoader extends Loader<CertificateLoader.Request, Cer
     /**
      * Identifies certificate material required by one protocol operation.
      *
-     * @param registration exact Source registration requesting the certificate
-     * @param issuer       expected certificate issuer
-     * @param use          expected protocol use
-     * @param at           required validity instant
+     * @param source exact Source Blueprint entry requesting the certificate
+     * @param issuer expected certificate issuer
+     * @param use    expected protocol use
+     * @param at     required validity instant
      * @author Kimi Liu
      */
-    record Request(Blueprint.SourceEntry registration, String issuer, String use, Instant at) {
+    record Request(Blueprint.SourceEntry source, String issuer, String use, Instant at) {
 
         /**
          * Validates one complete certificate lookup request.
          */
         public Request {
-            Assert.notNull(registration, "Certificate registration must not be null");
+            Assert.notNull(source, "Certificate source must not be null");
             Assert.notBlank(issuer, "Certificate request issuer must not be blank");
             Assert.notBlank(use, "Certificate request use must not be blank");
             Assert.notNull(at, "Certificate request validity instant must not be null");

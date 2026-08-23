@@ -18,7 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines provider-neutral encoding contracts and reusable HTTP value primitives.
+ * Defines implementation-neutral encoding contracts and reusable HTTP value primitives.
  * <p>
  * {@link org.miaixz.bus.auth.codec.DualCodec} supplies a typed encode/decode boundary.
  * {@link org.miaixz.bus.auth.codec.FormCodec} and {@link org.miaixz.bus.auth.codec.QueryCodec} preserve ordered
@@ -29,7 +29,7 @@
  * <p>
  * Protocol-specific codecs compose these primitives and remain responsible for formal field vocabularies and wire
  * models. This package reuses bus-core URL, encoder, decoder, charset, and HTTP constants plus Fabric-neutral values;
- * it does not import OAuth, OpenID Connect, SAML, SCIM, LDAP, RADIUS, Vendor, Registry, or runtime types and does not
+ * it does not import OAuth, OpenID Connect, SAML, SCIM, LDAP, RADIUS, Vendor, Roster, or runtime types and does not
  * define a generic protocol envelope.
  * </p>
  * <p>

@@ -34,19 +34,19 @@ import org.miaixz.bus.core.lang.Assert;
 public interface SecretLoader extends Loader<SecretLoader.Request, SecretLoader.Record> {
 
     /**
-     * Identifies one credential requested within an exact Source registration.
+     * Identifies one credential requested within an exact Source Blueprint entry.
      *
-     * @param registration exact Source registration requesting the secret
-     * @param reference    exact project credential reference
+     * @param source    exact Source Blueprint entry requesting the secret
+     * @param reference exact project credential reference
      * @author Kimi Liu
      */
-    record Request(Blueprint.SourceEntry registration, Credential.Reference reference) {
+    record Request(Blueprint.SourceEntry source, Credential.Reference reference) {
 
         /**
          * Validates one complete secret-loading request.
          */
         public Request {
-            Assert.notNull(registration, "Secret registration must not be null");
+            Assert.notNull(source, "Secret source must not be null");
             Assert.notNull(reference, "Secret credential reference must not be null");
         }
 

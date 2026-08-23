@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * Carries the shared deadline propagated through one authentication operation.
  * <p>
  * This value does not introduce a second timeout model. It combines an absolute deadline with the configured Fabric
- * timeout so Registry, worker, parser, codec, and transport layers consume one decreasing total duration instead of
+ * timeout so Roster, worker, parser, codec, and transport layers consume one decreasing total duration instead of
  * resetting timeouts at every boundary.
  * </p>
  *

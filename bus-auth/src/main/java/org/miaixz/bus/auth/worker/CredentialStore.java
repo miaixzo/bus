@@ -104,7 +104,7 @@ public interface CredentialStore {
      * Identifies dynamic credential material without containing its raw protocol binding.
      *
      * @param spaceId       space isolation identifier
-     * @param ownerId       Provider or Source registration identifier
+     * @param ownerId       Provider or Source identifier
      * @param purpose       stable protocol-specific use label
      * @param bindingDigest lowercase SHA-256 hexadecimal digest of the opaque protocol binding
      * @param type          exact stored credential material type

@@ -40,7 +40,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  * </p>
  *
  * @param requestId            stable correlation identifier for this invocation
- * @param attributes           immutable provider-neutral invocation attributes
+ * @param attributes           immutable protocol- and Source-neutral invocation attributes
  * @param locale               locale selected for framework management messages, never protocol parameter localization
  * @param network              immutable observed network metadata
  * @param clientId             optional protocol client identifier verified by the owning client authenticator
@@ -56,7 +56,7 @@ public record Context(RequestId requestId, Attributes attributes, Locale locale,
      * Creates one immutable invocation context.
      *
      * @param requestId            stable invocation correlation identifier
-     * @param attributes           provider-neutral invocation attributes
+     * @param attributes           protocol- and Source-neutral invocation attributes
      * @param locale               management-message locale
      * @param network              observed network metadata
      * @param clientId             optional verified protocol client identifier
@@ -97,7 +97,7 @@ public record Context(RequestId requestId, Attributes attributes, Locale locale,
     }
 
     /**
-     * Identifies one framework invocation across Registry, worker ports, parsers, and protocol layers.
+     * Identifies one framework invocation across Roster, worker ports, parsers, and protocol layers.
      *
      * @param value non-blank request correlation value
      * @author Kimi Liu
@@ -117,7 +117,7 @@ public record Context(RequestId requestId, Attributes attributes, Locale locale,
     }
 
     /**
-     * Wraps an immutable provider-neutral attribute object for framework extensions.
+     * Wraps an immutable implementation-neutral attribute object for framework extensions.
      *
      * @param value attributes that contain no credential, code, or token material
      * @author Kimi Liu
@@ -127,7 +127,7 @@ public record Context(RequestId requestId, Attributes attributes, Locale locale,
         /**
          * Creates a detached immutable attributes snapshot.
          *
-         * @param value provider-neutral attributes
+         * @param value protocol- and Source-neutral attributes
          * @throws IllegalArgumentException if the value is {@code null}
          */
         public Attributes {

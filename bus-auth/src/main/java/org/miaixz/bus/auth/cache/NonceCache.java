@@ -58,7 +58,7 @@ public class NonceCache extends AuthCache<NonceCache.Nonce> {
      *
      * @param cache      shared bus-cache backend
      * @param deployment deployment-unique cache scope
-     * @param sourceId   exact Source registration identifier
+     * @param sourceId   exact Source identifier
      * @param generation non-negative Source configuration generation
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
@@ -110,7 +110,7 @@ public class NonceCache extends AuthCache<NonceCache.Nonce> {
         /**
          * Creates an immutable Source nonce binding.
          *
-         * @param sourceId registered Source identifier
+         * @param sourceId Source identifier
          * @param nonce    opaque nonce value
          * @throws IllegalArgumentException if either value is blank
          */

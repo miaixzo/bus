@@ -35,14 +35,14 @@ import org.miaixz.bus.core.lang.Optional;
  *
  * <h2>Obtaining the dispatcher</h2>
  * <p>
- * {@link org.miaixz.bus.auth.runtime.RuntimeManager} owns the Dispatcher together with the Registry and runtime
- * lifecycle. Obtain and retain the Dispatcher after the runtime has successfully loaded its first complete registration
+ * {@link org.miaixz.bus.auth.runtime.RuntimeManager} owns the Dispatcher together with the Roster and runtime
+ * lifecycle. Obtain and retain the Dispatcher after the runtime has successfully loaded its first complete Blueprint
  * snapshot:
  * </p>
  *
  * <pre>{@code
  *
- * RuntimeManager runtime = Authorizer.standard(services, registrationLoader).build(startupContext, startupBudget)
+ * RuntimeManager runtime = Authorize.standard(services, blueprintLoader).build(startupContext, startupBudget)
  *         .toCompletableFuture().join();
  * Dispatcher dispatcher = runtime.dispatcher();
  * }</pre>
@@ -52,16 +52,16 @@ import org.miaixz.bus.core.lang.Optional;
  * Dispatcher is shared infrastructure; public addresses are not shared protocol semantics. The project must configure a
  * separate route or listener scope for every server protocol and map each scope only to capabilities declared by the
  * matching Scheme. Public paths must not expose the bus-auth Source identifier. The project route assembly binds each
- * fixed protocol route set to one exact {@link Registry.Reference} inside the Space already selected by the upper
- * project boundary. Space selection is complete before the request enters bus-auth; Dispatcher never routes across
- * Spaces. The path fragments below are recommendations rather than Controller implementations.
+ * fixed protocol route set to one exact {@link Roster.Reference} inside the Space already selected by the upper project
+ * boundary. Space selection is complete before the request enters bus-auth; Dispatcher never routes across Spaces. The
+ * path fragments below are recommendations rather than Controller implementations.
  * </p>
  *
  * <h3>OAuth 2.x authorization server</h3>
  * <p>
  * An OAuth-only Source normally uses a fixed {@code /oauth2} route prefix and the capability constants in
- * {@link org.miaixz.bus.auth.protocol.oauth2.server.OAuth2ServerScheme}. OAuth endpoint adapters accept and return
- * Fabric HTTP models, so the project preserves the complete inbound request when invoking Dispatcher.
+ * {@link org.miaixz.bus.auth.source.protocol.oauth2.server.OAuth2ServerScheme}. OAuth endpoint adapters accept and
+ * return Fabric HTTP models, so the project preserves the complete inbound request when invoking Dispatcher.
  * </p>
  * <table>
  * <caption>Recommended OAuth 2.x routes</caption> <thead>
@@ -108,7 +108,7 @@ import org.miaixz.bus.core.lang.Optional;
  * <p>
  * An OpenID Provider uses a distinct fixed {@code /oidc} issuer and route scope even though it composes OAuth token
  * operations. Its discovery, UserInfo, JWK Set, ID Token, subject, and end-session semantics do not exist in a generic
- * OAuth-only Source. Use the constants in {@link org.miaixz.bus.auth.protocol.oidc.server.OpenIdServerScheme}.
+ * OAuth-only Source. Use the constants in {@link org.miaixz.bus.auth.source.protocol.oidc.server.OpenIdServerScheme}.
  * </p>
  * <table>
  * <caption>Recommended OpenID Connect routes</caption> <thead>
@@ -152,15 +152,15 @@ import org.miaixz.bus.core.lang.Optional;
  * </table>
  * <p>
  * Optional OAuth introspection, revocation, device authorization, and authorization-server metadata remain under the
- * same OIDC Source route scope when enabled. Do not publish one registration simultaneously as unrelated OAuth and OIDC
- * route roots; the selected server Scheme and its frozen endpoint metadata must remain unambiguous.
+ * same OIDC Source route scope when enabled. Do not publish one Source simultaneously as unrelated OAuth and OIDC route
+ * roots; the selected server Scheme and its frozen endpoint metadata must remain unambiguous.
  * </p>
  *
  * <h3>SAML 2.0 identity provider</h3>
  * <p>
  * SAML does not use OAuth endpoints or OAuth HTTP message models. A SAML Source normally uses a fixed {@code /saml}
- * route scope and the capabilities in {@link org.miaixz.bus.auth.protocol.saml.server.SamlServerScheme}. The project
- * SAML transport adapter decodes the inbound HTTP-Redirect Binding into a typed {@code AuthnRequest} or
+ * route scope and the capabilities in {@link org.miaixz.bus.auth.source.protocol.saml.server.SamlServerScheme}. The
+ * project SAML transport adapter decodes the inbound HTTP-Redirect Binding into a typed {@code AuthnRequest} or
  * {@code LogoutRequest}, invokes Dispatcher, and encodes the signed typed response using the configured HTTP-POST or
  * HTTP-Redirect Binding. The metadata operation has no request model and returns a typed {@code EntityDescriptor}.
  * </p>
@@ -198,8 +198,8 @@ import org.miaixz.bus.core.lang.Optional;
  * <h3>SCIM 2.0 service provider</h3>
  * <p>
  * SCIM uses an independent fixed {@code /scim/v2} resource scope and typed resource capabilities from
- * {@link org.miaixz.bus.auth.protocol.scim.server.ScimServerScheme}. The project HTTP adapter owns JSON and HTTP status
- * conversion around the typed SCIM models.
+ * {@link org.miaixz.bus.auth.source.protocol.scim.server.ScimServerScheme}. The project HTTP adapter owns JSON and HTTP
+ * status conversion around the typed SCIM models.
  * </p>
  * <table>
  * <caption>Recommended SCIM 2.0 route groups</caption> <thead>
@@ -240,12 +240,12 @@ import org.miaixz.bus.core.lang.Optional;
  * LDAP and RADIUS do not expose HTTP paths. The project supplies protocol listeners and connection or datagram
  * lifecycle management. An LDAP adapter typically binds {@code ldap://host:389} and/or {@code ldaps://host:636},
  * decodes BER into a complete {@code LdapMessage}, selects the matching
- * {@link org.miaixz.bus.auth.protocol.ldap.server.LdapServerScheme} capability, and preserves one connection identifier
- * in Context. A RADIUS adapter binds its configured UDP or TLS Access and Accounting addresses, validates packet
- * framing, decodes the typed request, and invokes
- * {@link org.miaixz.bus.auth.protocol.radius.server.RadiusServerScheme#ACCESS} or
- * {@link org.miaixz.bus.auth.protocol.radius.server.RadiusServerScheme#ACCOUNTING}. Listener address, port, TLS, and
- * connection ownership remain project deployment concerns.
+ * {@link org.miaixz.bus.auth.source.protocol.ldap.server.LdapServerScheme} capability, and preserves one connection
+ * identifier in Context. A RADIUS adapter binds its configured UDP or TLS Access and Accounting addresses, validates
+ * packet framing, decodes the typed request, and invokes
+ * {@link org.miaixz.bus.auth.source.protocol.radius.server.RadiusServerScheme#ACCESS} or
+ * {@link org.miaixz.bus.auth.source.protocol.radius.server.RadiusServerScheme#ACCOUNTING}. Listener address, port, TLS,
+ * and connection ownership remain project deployment concerns.
  * </p>
  * <p>
  * Client-role and Vendor Sources publish no inbound server address. They use Dispatcher for outbound authentication
@@ -255,6 +255,28 @@ import org.miaixz.bus.core.lang.Optional;
  * Fixed routes are valid because route assembly already binds each route set to exactly one compatible Source.
  * Dispatcher deliberately does not inspect an unverified {@code client_id}, SAML issuer, LDAP bind name, or packet
  * attribute to guess across Sources, Spaces, or protocols.
+ * </p>
+ *
+ * <h3>Protocol-neutral Realm resource access</h3>
+ * <p>
+ * Realm is the shared resource contract for a Source that can describe, snapshot, change-track, or retrieve managed
+ * identities and relationships. It does not add a second runtime access service: the project selects the configured
+ * Source by {@link Roster.Reference#source(String)} and invokes the shared {@link Realm} Capability through this
+ * Dispatcher. Because the Capability key is intentionally the same for every implementation, the Roster reference
+ * remains the sole Source-routing fact.
+ * </p>
+ *
+ * <pre>{@code
+ *
+ * Roster.Reference realmReference = Roster.Reference.source(sourceId);
+ * Realm.Snapshot request = new Realm.Snapshot(kinds, limit, Optional.empty());
+ * CompletionStage<Outcome<Realm.Page>> stage = dispatcher
+ *         .invoke(realmReference, Realm.SNAPSHOT, request, authenticatedContext, timeout);
+ * }</pre>
+ * <p>
+ * The external project owns scheduling, synchronization, mapping, transactions, persistence, and authorization around
+ * the returned page. It must not construct a Vendor adapter, invoke a Source worker directly, or infer a Source from a
+ * caller-supplied Capability key.
  * </p>
  *
  * <h2>Protocol-specific invocation forms</h2>
@@ -267,7 +289,7 @@ import org.miaixz.bus.core.lang.Optional;
  *
  * <pre>{@code
  * CompletionStage<Outcome<HttpResponse>> stage = dispatcher
- *         .invoke(oidcReference, OpenIdServerScheme.TOKEN, request, context, timeout);
+ *         .invoke(oidcReference, OAuth2ServerScheme.TOKEN, request, context, timeout);
  *
  * stage.thenAccept(outcome -> {
  *     switch (outcome) {
@@ -327,9 +349,9 @@ import org.miaixz.bus.core.lang.Optional;
  * definition until a dedicated endpoint publication integration is provided.
  * </p>
  * <p>
- * This contract owns capability lookup, boundary validation, and invocation only. It does not load or mutate
- * registrations, configure public URLs, persist protocol or business data, authenticate project users, bind accounts,
- * create business sessions, apply project permissions, or emit project audit events.
+ * This contract owns capability lookup, boundary validation, and invocation only. It does not load or mutate Blueprint
+ * entries, configure public URLs, persist protocol or business data, authenticate project users, bind accounts, create
+ * business sessions, apply project permissions, or emit project audit events.
  * </p>
  *
  * @author Kimi Liu
@@ -347,21 +369,21 @@ public interface Dispatcher {
      * @param reference Source reference
      * @return {@code true} when the reference is currently invocable
      */
-    boolean available(Registry.Reference reference);
+    boolean available(Roster.Reference reference);
 
     /**
      * Returns the capabilities exposed by a Source in the current runtime container.
      * <p>
      * The manifest allows management or route-assembly code to determine whether the selected Source exposes token,
-     * discovery, UserInfo, logout, or another operation. It contains capability declarations, not public URLs or
-     * mutable route state. Request-time routing should still use a fixed project allow-list rather than accepting a
-     * capability key directly from an untrusted request.
+     * discovery, UserInfo, logout, Realm snapshot, or another operation. It contains capability declarations, not
+     * public URLs or mutable route state. Request-time routing should still use a fixed project allow-list rather than
+     * accepting a capability key directly from an untrusted request.
      * </p>
      *
      * @param reference Source reference
      * @return immutable manifest, or empty when the Source is unavailable
      */
-    Optional<Capability.Manifest> manifest(Registry.Reference reference);
+    Optional<Capability.Manifest> manifest(Roster.Reference reference);
 
     /**
      * Executes one capability declared by the referenced Source.
@@ -369,9 +391,9 @@ public interface Dispatcher {
      * Request and success types are defined by the selected capability. OAuth and OIDC server endpoints use Fabric
      * {@code HttpRequest} and {@code HttpResponse}; SAML, SCIM, LDAP, and RADIUS use their declared typed protocol
      * models. The caller must preserve the transport information required by that protocol, provide the exact Source
-     * reference selected by its route or listener, select a constant from the matching server Scheme, supply trusted
-     * Context data, and propagate one existing Timeout. Dispatcher validates lifecycle, reference, manifest, request
-     * type, and declared security before delegating to the compiled Source worker.
+     * reference selected by its route or listener, select a constant from the matching server Scheme or {@link Realm},
+     * supply trusted Context data, and propagate one existing Timeout. Dispatcher validates lifecycle, reference,
+     * manifest, request type, and declared security before delegating to the compiled Source worker.
      * </p>
      * <p>
      * Ordinary protocol errors are returned by the endpoint as a successful {@code HttpResponse} containing the
@@ -380,7 +402,7 @@ public interface Dispatcher {
      * exceptionally for cancellation or an unrecoverable caller/programming failure.
      * </p>
      *
-     * @param reference  registered Source reference
+     * @param reference  Source reference
      * @param capability strongly typed requested capability
      * @param request    request matching the capability request type
      * @param context    immutable invocation context
@@ -390,7 +412,7 @@ public interface Dispatcher {
      * @return asynchronous protocol-neutral outcome
      */
     <Q, S> CompletionStage<Outcome<S>> invoke(
-            Registry.Reference reference,
+            Roster.Reference reference,
             Capability<Q, S> capability,
             Q request,
             Context context,

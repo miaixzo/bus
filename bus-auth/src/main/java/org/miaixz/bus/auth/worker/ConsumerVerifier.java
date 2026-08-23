@@ -23,9 +23,9 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Blueprint;
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.protocol.oauth2.ClientAuthenticationMethod;
 import org.miaixz.bus.auth.shared.SecretLease;
 
 /**
@@ -44,18 +44,18 @@ public interface ConsumerVerifier {
     /**
      * Verifies one submitted client secret using the project-owned credential backend.
      *
-     * @param registration immutable Source registration
-     * @param consumerId   public consumer identifier
-     * @param method       submitted endpoint authentication method
-     * @param evidence     short-lived submitted secret lease
-     * @param context      immutable non-secret invocation context
-     * @param timeout      shared end-to-end operation timeout
+     * @param source     immutable Source Blueprint entry
+     * @param consumerId public consumer identifier
+     * @param method     submitted endpoint authentication method
+     * @param evidence   short-lived submitted secret lease
+     * @param context    immutable non-secret invocation context
+     * @param timeout    shared end-to-end operation timeout
      * @return asynchronous success, stable rejection, or operational failure without credential material
      */
     CompletionStage<Outcome<Void>> verify(
-            Blueprint.SourceEntry registration,
+            Blueprint.SourceEntry source,
             String consumerId,
-            ClientAuthenticationMethod method,
+            Endpoint.Authentication method,
             SecretLease evidence,
             Context context,
             Timeout timeout);

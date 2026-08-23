@@ -97,7 +97,7 @@ public interface ConsentService {
     /**
      * Carries the minimum validated, non-secret authorization context displayed by an external consent implementation.
      *
-     * @param sourceId    exact registered Source owning the authorization server
+     * @param sourceId    exact configured Source owning the authorization server
      * @param providerId  exact Provider owning the Source
      * @param subject     stable subject reference considering the grant
      * @param clientId    validated registered client identifier
@@ -185,7 +185,7 @@ public interface ConsentService {
     /**
      * Represents an externally persisted OAuth/OIDC authorization consent snapshot.
      *
-     * @param sourceId   exact registered Source owning the authorization server
+     * @param sourceId   exact configured Source owning the authorization server
      * @param providerId exact Provider owning the Source
      * @param subject    stable subject reference that granted authorization
      * @param clientId   exact registered client identifier

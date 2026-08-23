@@ -33,22 +33,21 @@ import org.miaixz.bus.core.lang.Assert;
 public interface FederationLoader extends Loader<FederationLoader.Request, FederationLoader.Record> {
 
     /**
-     * Identifies one federation relation within an exact Source registration.
+     * Identifies one federation relation within an exact Source Blueprint entry.
      *
-     * @param registration    exact Source registration requesting the relation
+     * @param source          exact Source Blueprint entry requesting the relation
      * @param consumerId      public consumer identifier
      * @param assertedIssuer  verified external assertion issuer
      * @param assertedSubject verified external assertion subject
      * @author Kimi Liu
      */
-    record Request(Blueprint.SourceEntry registration, String consumerId, String assertedIssuer,
-            String assertedSubject) {
+    record Request(Blueprint.SourceEntry source, String consumerId, String assertedIssuer, String assertedSubject) {
 
         /**
          * Validates one complete federation-loading request.
          */
         public Request {
-            Assert.notNull(registration, "Federation registration must not be null");
+            Assert.notNull(source, "Federation source must not be null");
             Assert.notBlank(consumerId, "Federaion consumer identifier must not be blank");
             Assert.notBlank(assertedIssuer, "Federation asserted issuer must not be blank");
             Assert.notBlank(assertedSubject, "Federation asserted subject must not be blank");

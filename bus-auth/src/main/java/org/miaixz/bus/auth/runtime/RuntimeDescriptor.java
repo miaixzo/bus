@@ -19,26 +19,20 @@
 */
 package org.miaixz.bus.auth.runtime;
 
-import java.util.*;
+import java.util.List;
 
-import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Scheme;
-import org.miaixz.bus.auth.protocol.Conformance;
+import org.miaixz.bus.auth.Source;
 import org.miaixz.bus.auth.source.DriverDirectory;
-import org.miaixz.bus.auth.source.SourceDriver;
-import org.miaixz.bus.auth.vendor.VariantManifest;
-import org.miaixz.bus.auth.vendor.Vendor;
-import org.miaixz.bus.auth.vendor.VendorLocator;
+import org.miaixz.bus.auth.source.SourceDescriptor;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
-import org.miaixz.bus.core.net.Protocol;
 
 /**
- * Describes exactly which authentication schemes and Vendor variants were assembled into one runtime.
+ * Exposes the exact Source choices assembled into one runtime through a single implementation-neutral discovery
+ * surface.
  * <p>
- * The descriptor is startup metadata only. It does not read Registry registrations, decide which Source is enabled,
- * compile workers, load project data, or execute a capability.
+ * This projection delegates identity and reverse routing to the runtime's shared frozen DriverDirectory. It does not
+ * read Roster state, create Options, expose implementation factories, compile workers, or execute capabilities.
  * </p>
  *
  * @author Kimi Liu
@@ -46,174 +40,68 @@ import org.miaixz.bus.core.net.Protocol;
 public class RuntimeDescriptor {
 
     /**
-     * Schemes in deterministic runtime assembly order.
+     * Shared immutable driver and descriptor directory used by validation and compilation.
      */
-    private final List<SchemeDescriptor> schemes;
-    /**
-     * Exact scheme identifier index over {@link #schemes}.
-     */
-    private final Map<String, SchemeDescriptor> schemesById;
-    /**
-     * Vendor manifests in deterministic module order.
-     */
-    private final List<VendorDescriptor> vendors;
-    /**
-     * Exact Vendor identifier index over {@link #vendors}.
-     */
-    private final Map<Vendor.Id, VendorDescriptor> vendorsById;
+    private final DriverDirectory directory;
 
     /**
-     * Freezes one runtime's implementation inventory.
+     * Creates a read-only Source discovery projection over one frozen directory.
      *
-     * @param drivers       complete selected Source drivers
-     * @param vendorLocator selected Vendor locator, or empty when Vendor support is not assembled
+     * @param directory runtime's shared driver and descriptor directory
      */
-    public RuntimeDescriptor(final DriverDirectory drivers, final Optional<VendorLocator> vendorLocator) {
-        Assert.notNull(drivers, "Runtime descriptor drivers must not be null");
-        final List<SchemeDescriptor> ordered = new ArrayList<>(drivers.drivers().size());
-        final Map<String, SchemeDescriptor> indexed = new LinkedHashMap<>(drivers.drivers().size());
-        for (SourceDriver<?> driver : drivers.drivers()) {
-            final Scheme<?> scheme = Assert.notNull(
-                    Assert.notNull(driver, "Runtime descriptor driver must not be null").scheme(),
-                    "Runtime descriptor scheme must not be null");
-            final String id = Assert.notBlank(scheme.id(), "Runtime descriptor scheme id must not be blank");
-            final SchemeDescriptor descriptor = new SchemeDescriptor(id, scheme.protocol(), scheme.protocols(),
-                    scheme.manifest(), scheme.conformance(), scheme.form());
-            if (indexed.putIfAbsent(id, descriptor) != null) {
-                throw new AlreadyExistsException("Duplicate runtime descriptor scheme: " + id);
-            }
-            ordered.add(descriptor);
-        }
-        this.schemes = List.copyOf(ordered);
-        this.schemesById = Map.copyOf(indexed);
-        Assert.notNull(vendorLocator, "Runtime descriptor Vendor locator container must not be null");
-        final List<VendorDescriptor> vendorList = new ArrayList<>();
-        final Map<Vendor.Id, VendorDescriptor> vendorIndex = new LinkedHashMap<>();
-        final VendorLocator locator = vendorLocator.getOrNull();
-        if (locator != null) {
-            for (VariantManifest<?> manifest : locator.manifests()) {
-                final VendorDescriptor descriptor = new VendorDescriptor(manifest.vendor(), manifest.metadata(),
-                        manifest.form(), manifest.variants());
-                vendorList.add(descriptor);
-                vendorIndex.put(descriptor.id(), descriptor);
-            }
-        }
-        this.vendors = List.copyOf(vendorList);
-        this.vendorsById = Map.copyOf(vendorIndex);
+    public RuntimeDescriptor(final DriverDirectory directory) {
+        this.directory = Assert.notNull(directory, "Runtime descriptor directory must not be null");
     }
 
     /**
-     * Returns schemes in deterministic runtime assembly order.
+     * Returns all exact Source choices in deterministic module order.
      *
-     * @return immutable assembled scheme descriptors
+     * @return immutable Source descriptor list
      */
-    public List<SchemeDescriptor> schemes() {
-        return schemes;
+    public List<SourceDescriptor> sources() {
+        return directory.descriptors();
     }
 
     /**
-     * Finds one assembled scheme by its exact Source type identifier.
+     * Finds one exact Source choice by its stable descriptor identifier.
      *
-     * @param id exact Source type identifier
-     * @return optional assembled scheme descriptor
+     * @param id stable descriptor identifier
+     * @return matching descriptor or empty
      */
-    public Optional<SchemeDescriptor> scheme(final String id) {
-        Assert.notBlank(id, "Runtime descriptor scheme id must not be blank");
-        return Optional.ofNullable(schemesById.get(id));
+    public Optional<SourceDescriptor> source(final String id) {
+        return directory.source(id);
     }
 
     /**
-     * Returns every assembled Vendor manifest in deterministic module order.
+     * Resolves the unique descriptor represented by a persisted Source route.
      *
-     * @return immutable assembled Vendor descriptors
+     * @param source persisted Source
+     * @return matching descriptor or empty
      */
-    public List<VendorDescriptor> vendors() {
-        return vendors;
+    public Optional<SourceDescriptor> source(final Source source) {
+        return directory.descriptor(Assert.notNull(source, "Runtime descriptor Source must not be null"));
     }
 
     /**
-     * Finds one assembled Vendor manifest.
+     * Returns exact Source choices backed by one Source driver type.
      *
-     * @param id Vendor platform identifier
-     * @return optional assembled Vendor descriptor
+     * @param type stable Source type
+     * @return immutable matching descriptor list
      */
-    public Optional<VendorDescriptor> vendor(final Vendor.Id id) {
-        Assert.notNull(id, "Vendor id must not be null");
-        return Optional.ofNullable(vendorsById.get(id));
+    public List<SourceDescriptor> sources(final String type) {
+        Assert.notBlank(type, "Runtime descriptor Source type must not be blank");
+        return directory.descriptors().stream().filter(descriptor -> type.equals(descriptor.type())).toList();
     }
 
     /**
-     * Finds one exact assembled Vendor variant without selecting a configured Source.
+     * Returns exact Source choices in one explicit management group.
      *
-     * @param id      Vendor platform identifier
-     * @param variant platform-specific variant identifier
-     * @return optional exact assembled variant
+     * @param kind Source descriptor kind
+     * @return immutable matching descriptor list
      */
-    public Optional<VariantManifest.Variant> variant(final Vendor.Id id, final Vendor.Variant variant) {
-        Assert.notNull(id, "Vendor id must not be null");
-        Assert.notNull(variant, "Vendor variant must not be null");
-        final VendorDescriptor descriptor = vendorsById.get(id);
-        if (descriptor == null) {
-            return Optional.empty();
-        }
-        for (VariantManifest.Variant candidate : descriptor.variants()) {
-            if (candidate.variant().equals(variant)) {
-                return Optional.of(candidate);
-            }
-        }
-        return Optional.empty();
-    }
-
-    /**
-     * Immutable runtime projection of one assembled scheme.
-     *
-     * @param id          exact Source type identifier
-     * @param protocol    primary transport protocol
-     * @param protocols   all transport protocols accepted by the scheme
-     * @param manifest    capabilities exposed by the assembled scheme
-     * @param conformance optional protocol conformance metadata
-     * @param form        configuration form metadata
-     * @author Kimi Liu
-     */
-    public record SchemeDescriptor(String id, Protocol protocol, Set<Protocol> protocols, Capability.Manifest manifest,
-            Optional<Conformance> conformance, Scheme.Form form) {
-
-        /**
-         * Validates and freezes one assembled scheme projection.
-         */
-        public SchemeDescriptor {
-            Assert.notBlank(id, "Scheme descriptor id must not be blank");
-            Assert.notNull(protocol, "Scheme descriptor protocol must not be null");
-            protocols = Set.copyOf(protocols);
-            Assert.notNull(manifest, "Scheme descriptor capabilities must not be null");
-            Assert.notNull(conformance, "Scheme descriptor conformance container must not be null");
-            Assert.notNull(form, "Scheme descriptor form must not be null");
-        }
-
-    }
-
-    /**
-     * Immutable runtime projection of one assembled Vendor manifest.
-     *
-     * @param id       Vendor platform identifier
-     * @param metadata Vendor display and classification metadata
-     * @param form     common Vendor configuration form
-     * @param variants immutable supported platform variants
-     * @author Kimi Liu
-     */
-    public record VendorDescriptor(Vendor.Id id, Vendor.Metadata metadata, Scheme.Form form,
-            List<VariantManifest.Variant> variants) {
-
-        /**
-         * Validates and freezes one assembled Vendor manifest projection.
-         */
-        public VendorDescriptor {
-            Assert.notNull(id, "Vendor descriptor id must not be null");
-            Assert.notNull(metadata, "Vendor descriptor metadata must not be null");
-            Assert.notNull(form, "Vendor descriptor form must not be null");
-            variants = List.copyOf(variants);
-        }
-
+    public List<SourceDescriptor> sources(final SourceDescriptor.Kind kind) {
+        Assert.notNull(kind, "Runtime descriptor Source kind must not be null");
+        return directory.descriptors().stream().filter(descriptor -> kind == descriptor.kind()).toList();
     }
 
 }

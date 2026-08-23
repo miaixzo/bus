@@ -22,7 +22,7 @@
  * <p>
  * Data-loading interfaces belong exclusively to {@link org.miaixz.bus.auth.worker.loader}. This package contains
  * runtime actions, output ports, binding resolution, project verification contracts, integration-slot assembly, and
- * compiled Source workers. RegistryListener is assembled directly by RuntimeBuilder, while identity completion remains
+ * compiled Source workers. RosterListener is assembled directly by RuntimeBuilder, while identity completion remains
  * optional under {@code worker.identity}.
  * </p>
  * <p>

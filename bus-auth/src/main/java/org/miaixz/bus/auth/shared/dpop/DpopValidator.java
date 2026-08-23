@@ -169,7 +169,7 @@ public class DpopValidator {
     /**
      * Defines replay isolation and optional access-token proof-of-possession binding for one validation.
      *
-     * @param space                  external registration space
+     * @param space                  external Source space
      * @param protocol               formal protocol owning the DPoP operation
      * @param authority              stable Provider or Source authority
      * @param confirmationThumbprint optional access-token {@code cnf.jkt} value

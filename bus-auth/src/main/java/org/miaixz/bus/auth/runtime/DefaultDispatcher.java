@@ -102,7 +102,7 @@ final class DefaultDispatcher implements Dispatcher {
      * Checks the authentication boundary declared by one compiled capability.
      * <p>
      * The invocation boundary owns this check because it is the last framework-controlled point before arbitrary
-     * Source-worker code executes. Registry remains responsible only for registration state and lookup.
+     * Source-worker code executes. Roster remains responsible only for Blueprint state and lookup.
      * </p>
      *
      * @param security declared minimum authentication boundary
@@ -144,8 +144,14 @@ final class DefaultDispatcher implements Dispatcher {
         return null;
     }
 
+    /**
+     * Tests whether the current running container exposes a worker for one Source reference.
+     *
+     * @param reference exact Source reference
+     * @return whether the reference is currently invocable
+     */
     @Override
-    public boolean available(final Registry.Reference reference) {
+    public boolean available(final Roster.Reference reference) {
         if (!lifecycle.running() || reference == null) {
             return false;
         }
@@ -160,8 +166,14 @@ final class DefaultDispatcher implements Dispatcher {
         }
     }
 
+    /**
+     * Returns the currently compiled capability manifest for one Source reference.
+     *
+     * @param reference exact Source reference
+     * @return capability manifest or empty when unavailable
+     */
     @Override
-    public Optional<Capability.Manifest> manifest(final Registry.Reference reference) {
+    public Optional<Capability.Manifest> manifest(final Roster.Reference reference) {
         if (!lifecycle.running() || reference == null) {
             return Optional.empty();
         }
@@ -179,10 +191,19 @@ final class DefaultDispatcher implements Dispatcher {
 
     /**
      * Resolves and invokes one exact capability in the current runtime container.
+     *
+     * @param <Q>        capability request type
+     * @param <S>        capability success value type
+     * @param reference  exact Roster reference selecting the compiled worker
+     * @param capability exact capability declaration requested by the caller
+     * @param request    capability request value
+     * @param context    trusted invocation context
+     * @param timeout    invocation deadline and timeout policy
+     * @return asynchronous terminal capability outcome
      */
     @Override
     public <Q, S> CompletionStage<Outcome<S>> invoke(
-            final Registry.Reference reference,
+            final Roster.Reference reference,
             final Capability<Q, S> capability,
             final Q request,
             final Context context,
@@ -209,13 +230,13 @@ final class DefaultDispatcher implements Dispatcher {
         if (worker == null) {
             containerLease.close();
             operation.close();
-            return rejected(ErrorCode._404, "Registry reference is not available in the current revision");
+            return rejected(ErrorCode._404, "Roster reference is not available in the current revision");
         }
         final Capability<Q, S> declared = declared(worker.manifest(), capability);
         if (declared == null) {
             containerLease.close();
             operation.close();
-            return rejected(ErrorCode._100101, "Capability is not declared by the selected Registry reference");
+            return rejected(ErrorCode._100101, "Capability is not declared by the selected Roster reference");
         }
         if (request == null ? declared.requestType() != Void.class : !declared.requestType().isInstance(request)) {
             containerLease.close();

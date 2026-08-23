@@ -41,7 +41,7 @@ public class FederationParser {
     /**
      * Validates exact Source, consumer, issuer, and external subject ownership.
      *
-     * @param registration            exact Source registration requesting the relation
+     * @param source                  exact Source Blueprint entry requesting the relation
      * @param expectedConsumerId      expected Consumer identifier
      * @param expectedIssuer          expected external issuer
      * @param expectedExternalSubject expected external subject
@@ -49,13 +49,13 @@ public class FederationParser {
      * @return validated immutable federation metadata
      */
     public FederationMetadata parse(
-            final Blueprint.SourceEntry registration,
+            final Blueprint.SourceEntry source,
             final String expectedConsumerId,
             final String expectedIssuer,
             final String expectedExternalSubject,
             final FederationLoader.Record record) {
         final FederationLoader.Record loaded = Assert.notNull(record, "Loaded federation record must not be null");
-        final String sourceId = Assert.notNull(registration, "Federation Source must not be null").resource().getId();
+        final String sourceId = Assert.notNull(source, "Federation Source must not be null").resource().getId();
         if (!sourceId.equals(loaded.sourceId()) || !expectedConsumerId.equals(loaded.consumerId())
                 || !expectedIssuer.equals(loaded.issuer())
                 || !expectedExternalSubject.equals(loaded.externalSubject())) {

@@ -1,0 +1,59 @@
+#############################################################################
+#                                                                           #
+# Copyright (c) 2015-2026 miaixz.org and other contributors.                #
+#                                                                           #
+# Licensed under the Apache License, Version 2.0 (the "License");           #
+# you may not use this file except in compliance with the License.          #
+# You may obtain a copy of the License at                                   #
+#                                                                           #
+#      https://www.apache.org/licenses/LICENSE-2.0                          #
+#                                                                           #
+# Unless required by applicable law or agreed to in writing, software       #
+# distributed under the License is distributed on an "AS IS" BASIS,         #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  #
+# See the License for the specific language governing permissions and       #
+# limitations under the License.                                            #
+#                                                                           #
+#############################################################################
+
+org.miaixz.bus.auth.source.vendor.afdian.AfdianConnector
+org.miaixz.bus.auth.source.vendor.alipay.AlipayConnector
+org.miaixz.bus.auth.source.vendor.aliyun.AliyunConnector
+org.miaixz.bus.auth.source.vendor.amazon.AmazonConnector
+org.miaixz.bus.auth.source.vendor.apple.AppleConnector
+org.miaixz.bus.auth.source.vendor.baidu.BaiduConnector
+org.miaixz.bus.auth.source.vendor.coding.CodingConnector
+org.miaixz.bus.auth.source.vendor.dingtalk.DingTalkConnector
+org.miaixz.bus.auth.source.vendor.douyin.DouyinConnector
+org.miaixz.bus.auth.source.vendor.eleme.ElemeConnector
+org.miaixz.bus.auth.source.vendor.facebook.FacebookConnector
+org.miaixz.bus.auth.source.vendor.feishu.FeishuConnector
+org.miaixz.bus.auth.source.vendor.figma.FigmaConnector
+org.miaixz.bus.auth.source.vendor.gitee.GiteeConnector
+org.miaixz.bus.auth.source.vendor.github.GitHubConnector
+org.miaixz.bus.auth.source.vendor.gitlab.GitLabConnector
+org.miaixz.bus.auth.source.vendor.google.GoogleConnector
+org.miaixz.bus.auth.source.vendor.huawei.HuaweiConnector
+org.miaixz.bus.auth.source.vendor.jd.JdConnector
+org.miaixz.bus.auth.source.vendor.kujiale.KujialeConnector
+org.miaixz.bus.auth.source.vendor.line.LineConnector
+org.miaixz.bus.auth.source.vendor.linkedin.LinkedInConnector
+org.miaixz.bus.auth.source.vendor.meituan.MeituanConnector
+org.miaixz.bus.auth.source.vendor.mi.MiConnector
+org.miaixz.bus.auth.source.vendor.microsoft.MicrosoftConnector
+org.miaixz.bus.auth.source.vendor.okta.OktaConnector
+org.miaixz.bus.auth.source.vendor.oschina.OsChinaConnector
+org.miaixz.bus.auth.source.vendor.pinterest.PinterestConnector
+org.miaixz.bus.auth.source.vendor.proginn.ProginnConnector
+org.miaixz.bus.auth.source.vendor.qq.QqConnector
+org.miaixz.bus.auth.source.vendor.rednote.RedNoteConnector
+org.miaixz.bus.auth.source.vendor.slack.SlackConnector
+org.miaixz.bus.auth.source.vendor.stackoverflow.StackOverflowConnector
+org.miaixz.bus.auth.source.vendor.taobao.TaobaoConnector
+org.miaixz.bus.auth.source.vendor.teambition.TeambitionConnector
+org.miaixz.bus.auth.source.vendor.toutiao.ToutiaoConnector
+org.miaixz.bus.auth.source.vendor.twitter.TwitterConnector
+org.miaixz.bus.auth.source.vendor.vk.VkConnector
+org.miaixz.bus.auth.source.vendor.wechat.WeChatConnector
+org.miaixz.bus.auth.source.vendor.weibo.WeiboConnector
+org.miaixz.bus.auth.source.vendor.ximalaya.XimalayaConnector

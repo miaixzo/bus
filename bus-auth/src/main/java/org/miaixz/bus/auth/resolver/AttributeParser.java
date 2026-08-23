@@ -43,17 +43,17 @@ public class AttributeParser {
     /**
      * Validates Source and subject ownership and detaches the returned attribute object.
      *
-     * @param registration exact Source registration that requested the data
-     * @param subject      exact requested subject key
-     * @param record       project-loaded attribute record
+     * @param source  exact Source Blueprint entry that requested the data
+     * @param subject exact requested subject key
+     * @param record  project-loaded attribute record
      * @return detached validated attributes
      */
     public JsonValue.ObjectValue parse(
-            final Blueprint.SourceEntry registration,
+            final Blueprint.SourceEntry source,
             final Subject.Key subject,
             final AttributeLoader.Record record) {
-        final String sourceId = Assert.notNull(registration, "Attribute Source registration must not be null")
-                .resource().getId();
+        final String sourceId = Assert.notNull(source, "Attribute Source Blueprint entry must not be null").resource()
+                .getId();
         final Subject.Key expected = Assert.notNull(subject, "Subject key must not be null");
         final AttributeLoader.Record loaded = Assert.notNull(record, "Loaded attribute record must not be null");
         if (!sourceId.equals(loaded.sourceId())) {

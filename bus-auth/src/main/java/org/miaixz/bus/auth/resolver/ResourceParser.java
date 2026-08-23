@@ -41,16 +41,16 @@ public class ResourceParser {
     /**
      * Validates Source ownership and the exact resource lookup coordinates.
      *
-     * @param registration exact Source registration that requested the resource
-     * @param request      exact resource lookup request
-     * @param record       project-loaded resource record
+     * @param source  exact Source Blueprint entry that requested the resource
+     * @param request exact resource lookup request
+     * @param record  project-loaded resource record
      * @return validated immutable protected-resource metadata
      */
     public ProtectedResource parse(
-            final Blueprint.SourceEntry registration,
+            final Blueprint.SourceEntry source,
             final ResourceLoader.Request request,
             final ResourceLoader.Record record) {
-        final String sourceId = Assert.notNull(registration, "Resource Source registration must not be null").resource()
+        final String sourceId = Assert.notNull(source, "Resource Source Blueprint entry must not be null").resource()
                 .getId();
         final ResourceLoader.Request expected = Assert.notNull(request, "Resource request must not be null");
         final ResourceLoader.Record loaded = Assert.notNull(record, "Loaded resource record must not be null");

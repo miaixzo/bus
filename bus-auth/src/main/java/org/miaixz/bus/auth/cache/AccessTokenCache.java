@@ -63,7 +63,7 @@ public class AccessTokenCache extends AuthCache<AccessTokenCache.Entry> {
      *
      * @param cache      shared bus-cache backend
      * @param deployment deployment-unique cache scope
-     * @param sourceId   exact Source registration identifier
+     * @param sourceId   exact Source identifier
      * @param generation non-negative Source configuration generation
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
@@ -106,7 +106,7 @@ public class AccessTokenCache extends AuthCache<AccessTokenCache.Entry> {
     /**
      * Carries immutable access-token validation metadata.
      *
-     * @param providerId      OAuth Provider identifier
+     * @param sourceId        OAuth authorization-server Source identifier
      * @param clientId        OAuth client identifier
      * @param subjectId       authorized subject identifier
      * @param authorizationId authoritative authorization identifier shared by derived credentials
@@ -117,14 +117,14 @@ public class AccessTokenCache extends AuthCache<AccessTokenCache.Entry> {
      * @param openIdBinding   optional OpenID Connect authorization context inherited from an authorization code
      * @author Kimi Liu
      */
-    public record Entry(String providerId, String clientId, String subjectId, String authorizationId,
-            List<String> scope, List<String> audience, Optional<String> actorSubjectId, Optional<String> confirmation,
+    public record Entry(String sourceId, String clientId, String subjectId, String authorizationId, List<String> scope,
+            List<String> audience, Optional<String> actorSubjectId, Optional<String> confirmation,
             Optional<AuthorizationCodeCache.OpenIdBinding> openIdBinding) implements Serializable {
 
         /**
          * Creates immutable access-token validation metadata.
          *
-         * @param providerId     OAuth Provider identifier
+         * @param sourceId       OAuth authorization-server Source identifier
          * @param clientId       OAuth client identifier
          * @param subjectId      authorized subject identifier
          * @param scope          granted scope values
@@ -136,7 +136,7 @@ public class AccessTokenCache extends AuthCache<AccessTokenCache.Entry> {
          *                                  container is invalid
          */
         public Entry {
-            Assert.notBlank(providerId, "Access token Provider id must not be blank");
+            Assert.notBlank(sourceId, "Access token Source id must not be blank");
             Assert.notBlank(clientId, "Access token client id must not be blank");
             Assert.notBlank(subjectId, "Access token subject id must not be blank");
             Assert.notBlank(authorizationId, "Access token authorization id must not be blank");

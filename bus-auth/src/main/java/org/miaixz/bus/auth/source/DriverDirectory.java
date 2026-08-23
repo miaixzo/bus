@@ -20,21 +20,23 @@
 package org.miaixz.bus.auth.source;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.auth.Scheme;
+import org.miaixz.bus.auth.Source;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
 
 /**
- * Freezes the single Source driver inventory shared by validation, compilation, and runtime discovery.
+ * Freezes the single Source driver directory shared by validation, compilation, and runtime discovery.
  * <p>
- * This directory owns driver registration order and exact scheme lookup only. It does not validate Source
- * registrations, compile workers, load project data, or execute authentication capabilities.
+ * This directory owns driver declaration order and exact scheme lookup only. It does not validate Source registrations,
+ * compile workers, load project data, or execute authentication capabilities.
  * </p>
  *
  * @author Kimi Liu
@@ -52,14 +54,82 @@ public class DriverDirectory {
     private final Map<String, SourceDriver<?>> driversByScheme;
 
     /**
-     * Creates one immutable driver directory and rejects duplicate scheme identifiers.
-     *
-     * @param drivers drivers in deterministic assembly order
-     * @throws IllegalArgumentException if the list, a driver, or a scheme identifier is invalid
-     * @throws AlreadyExistsException   if two drivers declare the same scheme identifier
+     * Exact management selections in deterministic module and descriptor order.
      */
-    public DriverDirectory(final List<? extends SourceDriver<?>> drivers) {
+    private final List<SourceDescriptor> descriptors;
+
+    /**
+     * Exact descriptor identifier index over the immutable selection list.
+     */
+    private final Map<String, SourceDescriptor> descriptorsById;
+
+    /**
+     * Creates the single immutable driver and descriptor directory from complete Source modules.
+     *
+     * @param modules modules in deterministic assembly order
+     * @throws IllegalArgumentException if a module or one of its members is invalid
+     * @throws AlreadyExistsException   if driver or descriptor identifiers collide
+     */
+    public DriverDirectory(final Collection<? extends SourceModule> modules) {
+        Assert.notNull(modules, "Source module collection must not be null");
+        final List<SourceDriver<?>> moduleDrivers = new ArrayList<>();
+        final List<SourceDescriptor> moduleDescriptors = new ArrayList<>();
+        for (SourceModule candidate : modules) {
+            final SourceModule module = Assert.notNull(candidate, "Source module must not be null");
+            final List<SourceDriver<?>> drivers = Assert
+                    .notNull(module.drivers(), "Source module driver list must not be null");
+            final List<SourceDescriptor> descriptors = Assert
+                    .notNull(module.descriptors(), "Source module descriptor list must not be null");
+            if (drivers.isEmpty() || descriptors.isEmpty()) {
+                throw new IllegalArgumentException("Source module drivers and descriptors must not be empty");
+            }
+            final Map<String, SourceDriver<?>> owned = new LinkedHashMap<>();
+            for (SourceDriver<?> driver : drivers) {
+                final SourceDriver<?> checked = Assert.notNull(driver, "Source module driver must not be null");
+                final String type = Assert.notBlank(
+                        Assert.notNull(checked.scheme(), "Source module driver scheme must not be null").id(),
+                        "Source module driver type must not be blank");
+                if (owned.putIfAbsent(type, checked) != null) {
+                    throw new AlreadyExistsException("Duplicate Source module driver type: " + type);
+                }
+                moduleDrivers.add(checked);
+            }
+            for (SourceDescriptor descriptor : descriptors) {
+                final SourceDescriptor checked = Assert
+                        .notNull(descriptor, "Source module descriptor must not be null");
+                final SourceDriver<?> owner = owned
+                        .get(Assert.notBlank(checked.type(), "Source descriptor type must not be blank"));
+                if (owner == null) {
+                    throw new IllegalArgumentException(
+                            "Source descriptor type is not owned by its module: " + checked.type());
+                }
+                if (!owner.supports(
+                        Assert.notNull(checked.protocol(), "Source descriptor protocol must not be null").name())) {
+                    throw new IllegalArgumentException(
+                            "Source descriptor protocol is not supported by its driver: " + checked.id());
+                }
+                moduleDescriptors.add(checked);
+            }
+        }
+        final State state = state(moduleDrivers, moduleDescriptors);
+        this.drivers = state.drivers();
+        this.driversByScheme = state.driversByScheme();
+        this.descriptors = state.descriptors();
+        this.descriptorsById = state.descriptorsById();
+    }
+
+    /**
+     * Validates and freezes the flattened directory indexes exactly once.
+     *
+     * @param drivers     flattened drivers
+     * @param descriptors flattened descriptors
+     * @return detached immutable directory state
+     */
+    private static State state(
+            final List<? extends SourceDriver<?>> drivers,
+            final List<? extends SourceDescriptor> descriptors) {
         Assert.notNull(drivers, "Source driver list must not be null");
+        Assert.notNull(descriptors, "Source descriptor list must not be null");
         final List<SourceDriver<?>> ordered = new ArrayList<>(drivers.size());
         final Map<String, SourceDriver<?>> indexed = new LinkedHashMap<>(drivers.size());
         for (SourceDriver<?> driver : drivers) {
@@ -71,8 +141,32 @@ public class DriverDirectory {
             }
             ordered.add(checked);
         }
-        this.drivers = List.copyOf(ordered);
-        this.driversByScheme = Map.copyOf(indexed);
+        final List<SourceDescriptor> selections = new ArrayList<>(descriptors.size());
+        final Map<String, SourceDescriptor> selectionIndex = new LinkedHashMap<>(descriptors.size());
+        for (SourceDescriptor candidate : descriptors) {
+            final SourceDescriptor descriptor = Assert.notNull(candidate, "Source descriptor must not be null");
+            final String id = Assert.notBlank(descriptor.id(), "Source descriptor id must not be blank");
+            final String type = Assert.notBlank(descriptor.type(), "Source descriptor type must not be blank");
+            final SourceDriver<?> driver = indexed.get(type);
+            if (driver == null) {
+                throw new NotFoundException("Source descriptor driver not found: " + type);
+            }
+            if (!driver.supports(
+                    Assert.notNull(descriptor.protocol(), "Source descriptor protocol must not be null").name())) {
+                throw new IllegalArgumentException("Source descriptor protocol is not supported: " + id);
+            }
+            Assert.notNull(descriptor.kind(), "Source descriptor kind must not be null");
+            Assert.notNull(descriptor.metadata(), "Source descriptor metadata must not be null");
+            Assert.notNull(descriptor.manifest(), "Source descriptor manifest must not be null");
+            Assert.notNull(descriptor.conformance(), "Source descriptor conformance must not be null");
+            Assert.notNull(descriptor.form(), "Source descriptor form must not be null");
+            if (selectionIndex.putIfAbsent(id, descriptor) != null) {
+                throw new AlreadyExistsException("Duplicate Source descriptor id: " + id);
+            }
+            selections.add(descriptor);
+        }
+        return new State(List.copyOf(ordered), Map.copyOf(indexed), List.copyOf(selections),
+                Map.copyOf(selectionIndex));
     }
 
     /**
@@ -85,6 +179,15 @@ public class DriverDirectory {
     }
 
     /**
+     * Returns exact Source selections in deterministic assembly order.
+     *
+     * @return immutable descriptor list
+     */
+    public List<SourceDescriptor> descriptors() {
+        return descriptors;
+    }
+
+    /**
      * Finds the driver registered for an exact scheme identifier.
      *
      * @param scheme exact scheme identifier
@@ -93,6 +196,38 @@ public class DriverDirectory {
     public Optional<SourceDriver<?>> find(final String scheme) {
         Assert.notBlank(scheme, "Source driver scheme must not be blank");
         return Optional.ofNullable(driversByScheme.get(scheme));
+    }
+
+    /**
+     * Finds one exact selection by its stable descriptor identifier.
+     *
+     * @param id exact descriptor identifier
+     * @return optional matching descriptor
+     */
+    public Optional<SourceDescriptor> source(final String id) {
+        Assert.notBlank(id, "Source descriptor id must not be blank");
+        return Optional.ofNullable(descriptorsById.get(id));
+    }
+
+    /**
+     * Resolves the unique descriptor matching a persisted Source routing identity.
+     *
+     * @param source persisted Source
+     * @return matching descriptor or empty when no assembled selection matches
+     * @throws AlreadyExistsException if more than one descriptor matches the Source
+     */
+    public Optional<SourceDescriptor> descriptor(final Source source) {
+        final Source checked = Assert.notNull(source, "Source descriptor lookup value must not be null");
+        SourceDescriptor matched = null;
+        for (SourceDescriptor descriptor : descriptors) {
+            if (descriptor.matches(checked)) {
+                if (matched != null) {
+                    throw new AlreadyExistsException("Ambiguous Source descriptor route: " + checked.getId());
+                }
+                matched = descriptor;
+            }
+        }
+        return Optional.ofNullable(matched);
     }
 
     /**
@@ -108,6 +243,20 @@ public class DriverDirectory {
             throw new NotFoundException("Source driver not found: " + scheme);
         }
         return driver;
+    }
+
+    /**
+     * Holds one detached immutable directory construction result.
+     *
+     * @param drivers         ordered drivers
+     * @param driversByScheme driver type index
+     * @param descriptors     ordered descriptors
+     * @param descriptorsById descriptor identifier index
+     * @author Kimi Liu
+     */
+    private record State(List<SourceDriver<?>> drivers, Map<String, SourceDriver<?>> driversByScheme,
+            List<SourceDescriptor> descriptors, Map<String, SourceDescriptor> descriptorsById) {
+
     }
 
 }

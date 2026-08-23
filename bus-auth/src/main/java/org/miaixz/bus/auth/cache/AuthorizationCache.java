@@ -61,7 +61,7 @@ public class AuthorizationCache extends AuthCache<AuthorizationCache.Entry> {
      *
      * @param cache      shared bus-cache backend
      * @param deployment deployment-unique cache scope
-     * @param sourceId   exact Source registration identifier
+     * @param sourceId   exact Source identifier
      * @param generation non-negative Source configuration generation
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
@@ -71,23 +71,22 @@ public class AuthorizationCache extends AuthCache<AuthorizationCache.Entry> {
     }
 
     /**
-     * Produces the irreversible Provider-isolated key shared by token issuance and validation paths.
+     * Produces the irreversible Source-isolated key shared by token issuance and validation paths.
      *
-     * @param providerId      authorization-server Source identifier
+     * @param sourceId        authorization-server Source identifier
      * @param authorizationId random internal authorization identifier
      * @return hexadecimal SHA-256 cache key
      */
-    public static String key(final String providerId, final String authorizationId) {
+    public static String key(final String sourceId, final String authorizationId) {
         return Builder.sha256Hex(
-                Assert.notBlank(providerId, "Authorization Provider id must not be blank") + Symbol.C_NUL
-                        + "authorization" + Symbol.C_NUL
-                        + Assert.notBlank(authorizationId, "Authorization id must not be blank"));
+                Assert.notBlank(sourceId, "Authorization Source id must not be blank") + Symbol.C_NUL + "authorization"
+                        + Symbol.C_NUL + Assert.notBlank(authorizationId, "Authorization id must not be blank"));
     }
 
     /**
      * Stores a new authoritative authorization lifecycle when its key is absent.
      *
-     * @param key   Provider-isolated authorization digest
+     * @param key   Source-isolated authorization digest
      * @param value lifecycle state and its absolute expiry instant
      * @return stage containing whether the lifecycle was stored
      */
@@ -98,7 +97,7 @@ public class AuthorizationCache extends AuthCache<AuthorizationCache.Entry> {
     /**
      * Finds an authoritative authorization lifecycle without changing it.
      *
-     * @param key Provider-isolated authorization digest
+     * @param key Source-isolated authorization digest
      * @return stage containing lifecycle state or {@code null}
      */
     public CompletionStage<ExpiringValue<Entry>> find(final String key) {
@@ -108,7 +107,7 @@ public class AuthorizationCache extends AuthCache<AuthorizationCache.Entry> {
     /**
      * Atomically replaces an exact authorization lifecycle value.
      *
-     * @param key      Provider-isolated authorization digest
+     * @param key      Source-isolated authorization digest
      * @param expected exact current lifecycle value
      * @param update   replacement lifecycle value
      * @return stage containing whether replacement succeeded
@@ -123,7 +122,7 @@ public class AuthorizationCache extends AuthCache<AuthorizationCache.Entry> {
     /**
      * Removes an authorization lifecycle.
      *
-     * @param key Provider-isolated authorization digest
+     * @param key Source-isolated authorization digest
      * @return stage containing whether the lifecycle was removed
      */
     public CompletionStage<Boolean> delete(final String key) {
@@ -157,18 +156,18 @@ public class AuthorizationCache extends AuthCache<AuthorizationCache.Entry> {
     /**
      * Carries the minimal client-bound authoritative authorization state.
      *
-     * @param providerId owning authorization-server Source
-     * @param clientId   authorized OAuth client
-     * @param status     current authorization lifecycle state
+     * @param sourceId owning authorization-server Source
+     * @param clientId authorized OAuth client
+     * @param status   current authorization lifecycle state
      * @author Kimi Liu
      */
-    public record Entry(String providerId, String clientId, Status status) implements Serializable {
+    public record Entry(String sourceId, String clientId, Status status) implements Serializable {
 
         /**
          * Validates the minimal authoritative authorization lifecycle state.
          */
         public Entry {
-            Assert.notBlank(providerId, "Authorization Provider id must not be blank");
+            Assert.notBlank(sourceId, "Authorization Source id must not be blank");
             Assert.notBlank(clientId, "Authorization client id must not be blank");
             Assert.notNull(status, "Authorization status must not be null");
         }

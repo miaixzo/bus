@@ -21,13 +21,13 @@
  * Defines immutable claim sets and explicit attribute-to-claim mapping.
  * <p>
  * {@link org.miaixz.bus.auth.shared.claim.ClaimSet} retains standard and registered extension values as a typed
- * provider-neutral JSON object. {@link org.miaixz.bus.auth.shared.claim.ClaimMapping} declares one explicit source,
- * target, conversion, and release rule, while {@link org.miaixz.bus.auth.shared.claim.ClaimMapper} applies a frozen
- * ordered mapping to verified subject attributes.
+ * implementation-neutral JSON object. {@link org.miaixz.bus.auth.shared.claim.ClaimMapping} declares one explicit
+ * source, target, conversion, and release rule, while {@link org.miaixz.bus.auth.shared.claim.ClaimMapper} applies a
+ * frozen ordered mapping to verified subject attributes.
  * </p>
  * <p>
  * Identity and protocol token or assertion services compose this package after subject resolution and consent. Claim
- * mapping depends on typed JSON values and explicit project-provided declarations; it does not inspect Registry, call a
+ * mapping depends on typed JSON values and explicit project-provided declarations; it does not inspect Roster, call a
  * Source, load attributes implicitly, run scripts or expressions, or expose {@code Map<String,Object>} as a wire model.
  * </p>
  * <p>

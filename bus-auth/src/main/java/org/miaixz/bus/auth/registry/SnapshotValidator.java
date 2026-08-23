@@ -23,7 +23,7 @@ import java.util.*;
 
 import org.miaixz.bus.auth.Blueprint;
 import org.miaixz.bus.auth.Provider;
-import org.miaixz.bus.auth.Registry;
+import org.miaixz.bus.auth.Roster;
 import org.miaixz.bus.auth.Source;
 import org.miaixz.bus.core.basic.entity.Entity;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Validates one complete candidate Registry snapshot before runtime compilation.
+ * Validates one complete candidate Roster snapshot before runtime compilation.
  * <p>
  * External projects supply complete {@link org.miaixz.bus.auth.Library}, {@link Provider}, and {@link Source} objects.
  * Validation follows their dependency order and checks identity, ownership relationships, lifecycle compatibility,
@@ -53,7 +53,7 @@ public class SnapshotValidator {
     private final SourceValidator sourceValidator;
 
     /**
-     * Creates a validator for complete candidate snapshots and the frozen runtime Source inventory.
+     * Creates a validator for complete candidate snapshots and the frozen runtime Source directory.
      *
      * @param sourceValidator Source-specific validator bound to assembled drivers
      */
@@ -65,42 +65,36 @@ public class SnapshotValidator {
      * Adds one safe validation fault without including options or credential material.
      *
      * @param faults      mutable fault accumulator
-     * @param record      owning registration
+     * @param entry       owning Blueprint entry
      * @param field       safe entity field identifier
      * @param error       shared Bus error code
      * @param description non-sensitive diagnostic description
      */
     private static void fault(
-            final List<SnapshotFault> faults,
-            final Blueprint.Entry record,
+            final List<Roster.Fault> faults,
+            final Blueprint.Entry entry,
             final String field,
             final Errors error,
             final String description) {
-        final String id = StringKit.isBlank(record.resource().getId()) ? record.kind().name()
-                : record.resource().getId();
+        final String id = StringKit.isBlank(entry.resource().getId()) ? entry.kind().name() : entry.resource().getId();
         faults.add(
-                SnapshotFault.entry(
-                        record.kind(),
-                        id,
-                        SnapshotFault.Stage.VALIDATE,
-                        Optional.of(field),
-                        error,
-                        description));
+                Roster.Fault
+                        .entry(entry.kind(), id, Roster.Fault.Stage.VALIDATE, Optional.of(field), error, description));
     }
 
     /**
      * Converts field violations into structured snapshot faults.
      *
      * @param faults     destination fault list
-     * @param record     registration being validated
+     * @param entry      Blueprint entry being validated
      * @param violations field violations to convert
      */
     private static void violations(
-            final List<SnapshotFault> faults,
-            final Blueprint.Entry record,
+            final List<Roster.Fault> faults,
+            final Blueprint.Entry entry,
             final List<FieldViolation> violations) {
         for (FieldViolation violation : violations) {
-            fault(faults, record, violation.field(), violation.error(), violation.description());
+            fault(faults, entry, violation.field(), violation.error(), violation.description());
         }
     }
 
@@ -114,20 +108,20 @@ public class SnapshotValidator {
     private void validateProviders(
             final Map<String, Blueprint.Entry> providers,
             final Map<String, Blueprint.Entry> libraries,
-            final List<SnapshotFault> faults) {
-        for (Blueprint.Entry record : providers.values()) {
-            final Provider provider = (Provider) record.resource();
+            final List<Roster.Fault> faults) {
+        for (Blueprint.Entry entry : providers.values()) {
+            final Provider provider = (Provider) entry.resource();
             final String libraryId = provider.getLibrary_id();
             if (StringKit.isBlank(libraryId)) {
-                fault(faults, record, "library_id", ErrorCode._100100, "Provider Library id must not be blank");
+                fault(faults, entry, "library_id", ErrorCode._100100, "Provider Library id must not be blank");
             } else {
-                final Blueprint.Entry libraryRecord = libraries.get(libraryId);
-                if (libraryRecord == null) {
-                    fault(faults, record, "library_id", ErrorCode._404, "Provider references an unknown Library");
-                } else if (record.enabled() && !libraryRecord.enabled()) {
+                final Blueprint.Entry libraryEntry = libraries.get(libraryId);
+                if (libraryEntry == null) {
+                    fault(faults, entry, "library_id", ErrorCode._404, "Provider references an unknown Library");
+                } else if (entry.enabled() && !libraryEntry.enabled()) {
                     fault(
                             faults,
-                            record,
+                            entry,
                             "library_id",
                             ErrorCode._100101,
                             "An enabled Provider requires an enabled Library");
@@ -146,19 +140,19 @@ public class SnapshotValidator {
     private void validateSources(
             final Map<String, Blueprint.Entry> sources,
             final Map<String, Blueprint.Entry> providers,
-            final List<SnapshotFault> faults) {
-        for (Blueprint.Entry record : sources.values()) {
-            final Source source = (Source) record.resource();
-            violations(faults, record, sourceValidator.validate(source));
+            final List<Roster.Fault> faults) {
+        for (Blueprint.Entry entry : sources.values()) {
+            final Source source = (Source) entry.resource();
+            violations(faults, entry, sourceValidator.validate(source));
             final String providerId = source.getProvider_id();
             if (StringKit.isNotBlank(providerId)) {
-                final Blueprint.Entry providerRecord = providers.get(providerId);
-                if (providerRecord == null) {
-                    fault(faults, record, "provider_id", ErrorCode._404, "Source references an unknown Provider");
-                } else if (record.enabled() && !providerRecord.enabled()) {
+                final Blueprint.Entry providerEntry = providers.get(providerId);
+                if (providerEntry == null) {
+                    fault(faults, entry, "provider_id", ErrorCode._404, "Source references an unknown Provider");
+                } else if (entry.enabled() && !providerEntry.enabled()) {
                     fault(
                             faults,
-                            record,
+                            entry,
                             "provider_id",
                             ErrorCode._100101,
                             "An enabled Source requires an enabled Provider");
@@ -170,38 +164,38 @@ public class SnapshotValidator {
     /**
      * Validates a complete desired snapshot and returns safe resource-addressable faults.
      *
-     * @param snapshot complete desired registration snapshot
+     * @param snapshot complete desired Blueprint snapshot
      * @return report for the supplied revision
      * @throws IllegalArgumentException if the snapshot is {@code null}
      */
-    public Registry.Report validate(final Registry.Snapshot snapshot) {
-        Assert.notNull(snapshot, "Registry snapshot must not be null");
-        final List<SnapshotFault> faults = new ArrayList<>();
+    public Roster.Report validate(final Roster.Snapshot snapshot) {
+        Assert.notNull(snapshot, "Roster snapshot must not be null");
+        final List<Roster.Fault> faults = new ArrayList<>();
         final Map<String, Blueprint.Entry> libraries = new HashMap<>();
         final Map<String, Blueprint.Entry> providers = new HashMap<>();
         final Map<String, Blueprint.Entry> sources = new HashMap<>();
         final Set<String> identities = new HashSet<>();
-        for (Blueprint.Entry record : snapshot.records()) {
-            final Entity resource = record.resource();
+        for (Blueprint.Entry entry : snapshot.entries()) {
+            final Entity resource = entry.resource();
             final String id = resource.getId();
             if (StringKit.isBlank(id)) {
-                fault(faults, record, "id", ErrorCode._100100, "Registration resource identifier must not be blank");
+                fault(faults, entry, "id", ErrorCode._100100, "Blueprint resource identifier must not be blank");
                 continue;
             }
-            final String identity = record.kind().name() + Symbol.C_COLON + id;
+            final String identity = entry.kind().name() + Symbol.C_COLON + id;
             if (!identities.add(identity)) {
-                fault(faults, record, "id", ErrorCode._409, "Duplicate registration resource identifier");
+                fault(faults, entry, "id", ErrorCode._409, "Duplicate Blueprint resource identifier");
                 continue;
             }
-            switch (record.kind()) {
-                case LIBRARY -> libraries.put(id, record);
-                case PROVIDER -> providers.put(id, record);
-                case SOURCE -> sources.put(id, record);
+            switch (entry.kind()) {
+                case LIBRARY -> libraries.put(id, entry);
+                case PROVIDER -> providers.put(id, entry);
+                case SOURCE -> sources.put(id, entry);
             }
         }
         validateProviders(providers, libraries, faults);
         validateSources(sources, providers, faults);
-        return new Registry.Report(snapshot.revision(), faults);
+        return new Roster.Report(snapshot.revision(), faults);
     }
 
 }

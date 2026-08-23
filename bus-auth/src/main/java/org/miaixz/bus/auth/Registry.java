@@ -19,167 +19,96 @@
 */
 package org.miaixz.bus.auth;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.miaixz.bus.auth.registry.SnapshotFault;
-import org.miaixz.bus.core.lang.Assert;
+import java.util.Collection;
 
 /**
- * Provides read-only access to the currently committed registration state.
+ * Aggregates registration lifecycle operations for keyed {@link Connector} declarations during framework assembly.
  * <p>
- * The {@link #snapshot()} method exposes detached framework registration records. Implementations atomically replace
- * immutable Snapshot Registries and preserve the previous Registry when validation or compilation fails. Capability
- * execution belongs exclusively to {@link Dispatcher}.
+ * Implementations invoke {@link Connector#connect(Registry)} only inside an atomic build-time registration operation. A
+ * failed callback must leave the registry unchanged. Unregistration removes the complete set owned by a stable key
+ * without calling back into the connector. A registry does not execute adapters, perform network I/O, load project
+ * data, or expose the committed runtime {@link Roster}; mutation must be rejected after assembly is frozen.
  * </p>
  *
+ * @param <K> stable registration key type
+ * @param <C> exact connector type accepted by the registry
  * @author Kimi Liu
  */
-public interface Registry {
+public interface Registry<K, C extends Registry.Connector<K, ?>> {
 
     /**
-     * Returns the complete registration snapshot associated with the currently committed Registry.
+     * Registers one complete registration.
+     *
+     * @param connector connector whose complete registration set is registered
+     * @return this registry
+     */
+    Registry<K, C> register(C connector);
+
+    /**
+     * Atomically registers all supplied registrations in iteration order.
+     *
+     * @param connectors connectors whose complete registration sets are registered
+     * @return this registry
+     */
+    Registry<K, C> registerAll(Collection<? extends C> connectors);
+
+    /**
+     * Removes the complete registration owned by one stable key.
+     *
+     * @param key registration key to remove
+     * @return this registry
+     */
+    Registry<K, C> unregister(K key);
+
+    /**
+     * Atomically removes every registration owned by the supplied stable keys.
+     *
+     * @param keys registration keys to remove
+     * @return this registry
+     */
+    Registry<K, C> unregisterAll(Collection<? extends K> keys);
+
+    /**
+     * Reports whether a registration is registered under one stable key.
+     *
+     * @param key registration key to inspect
+     * @return {@code true} when the key is registered
+     */
+    boolean contains(K key);
+
+    /**
+     * Declares one complete, independently removable registration set for a build-scoped {@link Registry}.
      * <p>
-     * The snapshot owns an unmodifiable record list. Each record returns a detached framework entity copy.
+     * A connector owns one stable key and declares every registration associated with that key through the supplied
+     * typed registry. {@link #connect(Registry)} is a synchronous build-time callback: it does not establish a remote
+     * connection, perform network I/O, load project data, access a runtime {@link Roster}, or retain the registry after
+     * the callback returns. Registration removal remains exclusively owned by {@link Registry#unregister(Object)}.
      * </p>
      *
-     * @return current immutable registration snapshot
-     */
-    Snapshot snapshot();
-
-    /**
-     * Returns the revision of the currently committed Registry.
-     *
-     * @return current Registry snapshot revision
-     */
-    Revision revision();
-
-    /**
-     * Returns every configured Source owned by one Provider in snapshot order.
-     *
-     * @param providerId owning Provider identifier
-     * @return detached configured Source registrations, including disabled records
-     */
-    List<Blueprint.SourceEntry> sources(String providerId);
-
-    /**
-     * Returns enabled Source registrations owned by one Provider in snapshot order.
-     *
-     * @param providerId owning Provider identifier
-     * @return detached enabled Source registrations
-     */
-    List<Blueprint.SourceEntry> enabledSources(String providerId);
-
-    /**
-     * Identifies the monotonically increasing version of a complete committed Registry snapshot.
-     *
-     * @param value non-negative snapshot revision
+     * @param <K> stable registration key type
+     * @param <R> exact build-scoped registry accepted by the connector
      * @author Kimi Liu
      */
-    record Revision(long value) {
+    interface Connector<K, R extends Registry<K, ?>> {
 
         /**
-         * Creates a Registry snapshot revision.
+         * Returns the stable key that owns every registration emitted by this connector.
          *
-         * @param value non-negative snapshot revision
-         * @throws IllegalArgumentException if the revision is negative
+         * @return stable registration key
          */
-        public Revision {
-            Assert.isTrue(value >= 0, "Registry revision must not be negative");
-        }
-
-    }
-
-    /**
-     * Identifies one invocable Source registration without exposing its runtime implementation.
-     *
-     * @param kind invocable registration kind, restricted to Source
-     * @param id   managed resource identifier
-     * @author Kimi Liu
-     */
-    record Reference(Blueprint.Kind kind, String id) {
+        K key();
 
         /**
-         * Creates an invocable Registry reference.
+         * Connects the complete registration set owned by this connector to the supplied build-scoped registry.
+         * <p>
+         * Implementations may invoke only the binding operations exposed by the registry. They must not retain the
+         * registry or perform runtime, project-data, persistence, cache, adapter-execution, or network
+         * responsibilities.
+         * </p>
          *
-         * @param kind Source registration kind
-         * @param id   non-blank managed resource identifier
-         * @throws IllegalArgumentException if the kind is not Source or the identifier is blank
+         * @param registry mutable build-scoped registry
          */
-        public Reference {
-            Assert.notNull(kind, "Registry reference kind must not be null");
-            Assert.isTrue(kind == Blueprint.Kind.SOURCE, "Registry references only support Source registrations");
-            Assert.notBlank(id, "Registry reference id must not be blank");
-        }
-
-        /**
-         * Creates a reference to one client-side Source registration.
-         *
-         * @param id non-blank Source resource identifier
-         * @return Source Registry reference
-         */
-        public static Reference source(final String id) {
-            return new Reference(Blueprint.Kind.SOURCE, id);
-        }
-
-    }
-
-    /**
-     * Carries one complete immutable desired registration state loaded by an external project.
-     *
-     * @param revision version assigned to the complete snapshot
-     * @param records  all Library, Provider, and Source records in loading order
-     * @author Kimi Liu
-     */
-    record Snapshot(Revision revision, List<Blueprint.Entry> records) {
-
-        /**
-         * Creates a snapshot with a detached unmodifiable record list.
-         *
-         * @param revision snapshot revision
-         * @param records  complete registration records
-         * @throws IllegalArgumentException if a component or record is {@code null}
-         */
-        public Snapshot {
-            Assert.notNull(revision, "Registry snapshot revision must not be null");
-            Assert.notNull(records, "Registry snapshot records must not be null");
-            final List<Blueprint.Entry> copy = new ArrayList<>(records.size());
-            for (Blueprint.Entry record : records) {
-                copy.add(Assert.notNull(record, "Registry snapshot entry must not be null"));
-            }
-            records = List.copyOf(copy);
-        }
-
-    }
-
-    /**
-     * Carries immutable faults for one attempted Registry snapshot.
-     * <p>
-     * A successful validation and commit is represented by an empty fault list for the committed revision.
-     * </p>
-     *
-     * @param revision attempted snapshot revision
-     * @param faults   ordered safe faults that identify their resource and processing stage
-     * @author Kimi Liu
-     */
-    record Report(Revision revision, List<SnapshotFault> faults) {
-
-        /**
-         * Creates an immutable snapshot-processing report.
-         *
-         * @param revision attempted snapshot revision
-         * @param faults   ordered Snapshot faults
-         * @throws IllegalArgumentException if a component or fault is {@code null}
-         */
-        public Report {
-            Assert.notNull(revision, "Registry report revision must not be null");
-            Assert.notNull(faults, "Registry report faults must not be null");
-            final List<SnapshotFault> copy = new ArrayList<>(faults.size());
-            for (SnapshotFault fault : faults) {
-                copy.add(Assert.notNull(fault, "Registry report fault must not be null"));
-            }
-            faults = List.copyOf(copy);
-        }
+        void connect(R registry);
 
     }
 

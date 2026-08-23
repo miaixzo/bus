@@ -65,7 +65,7 @@ public class DeviceCodeCache extends AuthCache<DeviceCodeCache.Entry> {
      *
      * @param cache      shared bus-cache backend
      * @param deployment deployment-unique cache scope
-     * @param sourceId   exact Source registration identifier
+     * @param sourceId   exact Source identifier
      * @param generation non-negative Source configuration generation
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
@@ -142,7 +142,7 @@ public class DeviceCodeCache extends AuthCache<DeviceCodeCache.Entry> {
     /**
      * Carries the immutable state of one RFC 8628 device authorization.
      *
-     * @param providerId   OAuth Provider identifier
+     * @param sourceId     OAuth authorization-server Source identifier
      * @param clientId     OAuth client identifier
      * @param userCode     short verification code displayed to the user
      * @param scope        requested and approved OAuth scope values
@@ -152,13 +152,13 @@ public class DeviceCodeCache extends AuthCache<DeviceCodeCache.Entry> {
      * @param subjectId    authorized subject for approved or consumed state
      * @author Kimi Liu
      */
-    public record Entry(String providerId, String clientId, String userCode, List<String> scope, Status status,
+    public record Entry(String sourceId, String clientId, String userCode, List<String> scope, Status status,
             Duration interval, Optional<Instant> lastPolledAt, Optional<String> subjectId) implements Serializable {
 
         /**
          * Creates an immutable device authorization state value.
          *
-         * @param providerId   OAuth Provider identifier
+         * @param sourceId     OAuth authorization-server Source identifier
          * @param clientId     OAuth client identifier
          * @param userCode     user-facing verification code
          * @param scope        OAuth scope values
@@ -170,7 +170,7 @@ public class DeviceCodeCache extends AuthCache<DeviceCodeCache.Entry> {
          *                                  positive, or subject presence conflicts with status
          */
         public Entry {
-            Assert.notBlank(providerId, "Device code Provider id must not be blank");
+            Assert.notBlank(sourceId, "Device code Source id must not be blank");
             Assert.notBlank(clientId, "Device code client id must not be blank");
             Assert.notBlank(userCode, "Device user code must not be blank");
             Assert.notNull(scope, "Device code scope must not be null");
