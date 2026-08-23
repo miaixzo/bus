@@ -31,20 +31,19 @@ import org.miaixz.bus.auth.worker.loader.*;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
- * Defines the protocol execution services visible to a compiled Source driver.
+ * Defines the capability-limited execution services visible to one compiled Source.
  * <p>
- * Runtime assembly owns the implementation. Protocol and Vendor packages depend only on this lower-level contract and
- * therefore never import the runtime assembly package.
+ * Runtime assembly owns the implementation. A Source driver receives this view during compilation and may pass it to
+ * the resulting protocol or Vendor implementation; neither layer imports the runtime assembly package.
  * </p>
  * <p>
- * Application-wide stateless facilities are deliberately absent from this capability view. Drivers use
- * {@link JsonKit} and {@link FabricX} directly instead of receiving
- * secondary runtime aliases.
+ * Application-wide stateless facilities are deliberately absent from this capability view. Source implementations use
+ * {@link JsonKit} and {@link FabricX} directly instead of receiving secondary runtime aliases.
  * </p>
  *
  * @author Kimi Liu
  */
-public interface DriverServices {
+public interface SourceServices {
 
     /**
      * Returns the exact immutable Blueprint entry bound to this Source service view.

@@ -32,13 +32,12 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.FabricX.UrlBuilder;
-import org.miaixz.bus.auth.Realm;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
 import org.miaixz.bus.auth.shared.jose.JoseHeader;
 import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
 import org.miaixz.bus.auth.shared.jose.JwsService;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.source.vendor.VendorAdapter;
@@ -120,7 +119,7 @@ public class OktaRealmAdapter implements VendorAdapter {
     /**
      * Caller-owned execution services used without taking lifecycle ownership.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Resolved token and Management API endpoints declared by the selected manifest.
@@ -145,12 +144,12 @@ public class OktaRealmAdapter implements VendorAdapter {
      * @param manifest exact Okta manifest
      * @param variant  exact selected management Variant
      * @param options  validated management options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if manifest, Variant, protocol, targets, or options are inconsistent
      */
     public OktaRealmAdapter(final String spaceId, final String sourceId, final OktaManifest manifest,
-            final VendorManifest.Variant variant, final OktaOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final OktaOptions options, final SourceServices services) {
         Assert.notBlank(spaceId, "Okta management space id must not be blank");
         Assert.notBlank(sourceId, "Okta management Source id must not be blank");
         final OktaManifest selectedManifest = Assert.notNull(manifest, "Okta manifest must not be null");

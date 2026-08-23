@@ -25,16 +25,12 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import org.miaixz.bus.auth.Callback;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Identity;
-import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.shared.pkce.CodeChallenge;
 import org.miaixz.bus.auth.shared.pkce.CodeVerifier;
 import org.miaixz.bus.auth.shared.pkce.PkceGenerator;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.convert.Convert;
@@ -99,15 +95,15 @@ public class RedirectManager {
      * @param sourceId      Source identifier
      * @param variant       selected Vendor variant
      * @param vendorOptions validated deployment options
-     * @param services      Source-scoped runtime services
+     * @param services      capability-limited Source services
      */
     public RedirectManager(final String spaceId, final String sourceId, final VendorManifest.Variant variant,
-            final VendorOptions<?> vendorOptions, final DriverServices services) {
+            final VendorOptions<?> vendorOptions, final SourceServices services) {
         this.sourceId = Assert.notBlank(sourceId, "Vendor redirect Source id must not be blank");
         final VendorManifest.Variant checkedVariant = Assert
                 .notNull(variant, "Vendor redirect manifest must not be null");
         this.vendorOptions = Assert.notNull(vendorOptions, "Vendor redirect options must not be null");
-        final DriverServices checkedServices = Assert
+        final SourceServices checkedServices = Assert
                 .notNull(services, "Vendor redirect execution services must not be null");
         final var rule = checkedServices.policies().require(checkedVariant.protocol());
         this.nonceEnabled = checkedVariant.protocol() == Protocol.OIDC;
@@ -124,7 +120,7 @@ public class RedirectManager {
      * @param sourceId      Source identifier
      * @param variant       exact selected platform variant
      * @param vendorOptions decoded exact deployment options
-     * @param services      externally supplied protocol execution services
+     * @param services      capability-limited Source services
      * @return Source-bound redirect manager
      */
     public static RedirectManager create(
@@ -132,7 +128,7 @@ public class RedirectManager {
             final String sourceId,
             final VendorManifest.Variant variant,
             final VendorOptions<?> vendorOptions,
-            final DriverServices services) {
+            final SourceServices services) {
         return new RedirectManager(spaceId, sourceId, variant, vendorOptions, services);
     }
 

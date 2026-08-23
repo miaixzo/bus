@@ -30,7 +30,7 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.saml.*;
 import org.miaixz.bus.auth.source.protocol.saml.codec.SamlMessageCodec;
 import org.miaixz.bus.auth.worker.loader.AttributeLoader;
@@ -72,7 +72,7 @@ public class AssertionIssuer {
     /**
      * External attribute loader and framework-owned attribute parser.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Strict SAML XML value codec.
@@ -83,11 +83,11 @@ public class AssertionIssuer {
      * Creates an assertion issuer from identity-provider policy and external attribute resolution.
      *
      * @param options      validated SAML identity-provider options
-     * @param services     external loaders and pure parsers
+     * @param services     capability-limited Source services
      * @param messageCodec strict SAML message and AttributeValue codec
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public AssertionIssuer(final SamlServerOptions options, final DriverServices services,
+    public AssertionIssuer(final SamlServerOptions options, final SourceServices services,
             final SamlMessageCodec messageCodec) {
         this.options = Assert.notNull(options, "SAML identity-provider options must not be null");
         this.services = Assert.notNull(services, "SAML execution services must not be null");

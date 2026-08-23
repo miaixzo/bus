@@ -29,9 +29,8 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.*;
@@ -95,7 +94,7 @@ public class MicrosoftSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime, JSON, network, and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Shared standard OAuth authorization and token implementation.
@@ -120,12 +119,12 @@ public class MicrosoftSourceAdapter implements VendorAdapter {
      * @param manifest selected Microsoft platform manifest
      * @param variant  exact selected global or China manifest
      * @param options  decoded externally loaded Microsoft options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, variant, protocol, options, or required standard operations disagree
      */
     public MicrosoftSourceAdapter(final String spaceId, final String sourceId, final MicrosoftManifest manifest,
-            final VendorManifest.Variant variant, final MicrosoftOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final MicrosoftOptions options, final SourceServices services) {
         final MicrosoftManifest selected = Assert.notNull(manifest, "Microsoft manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Microsoft Source id must not be blank");
         this.variant = Assert.notNull(variant, "Microsoft manifest must not be null");

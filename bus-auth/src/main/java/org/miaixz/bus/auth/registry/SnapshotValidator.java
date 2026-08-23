@@ -53,7 +53,7 @@ public class SnapshotValidator {
     private final SourceValidator sourceValidator;
 
     /**
-     * Creates a validator for complete candidate snapshots and the frozen runtime Source directory.
+     * Creates a validator for complete candidate snapshots and the frozen runtime Source lookup.
      *
      * @param sourceValidator Source-specific validator bound to assembled drivers
      */

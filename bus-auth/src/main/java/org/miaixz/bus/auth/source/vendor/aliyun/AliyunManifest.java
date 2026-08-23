@@ -24,13 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Credential;
-import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Realm;
-import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.protocol.oidc.OpenIdConnect;
@@ -53,7 +48,7 @@ import org.miaixz.bus.core.net.tls.TlsClientAuth;
 public class AliyunManifest implements VendorManifest<AliyunOptions> {
 
     /**
-     * Stable platform routing identifier shared by registration, catalog, and runtime compilation.
+     * Stable platform routing identifier shared by registration, Source lookup, and runtime compilation.
      */
     public static final Vendor.Id ID = new Vendor.Id("aliyun");
 

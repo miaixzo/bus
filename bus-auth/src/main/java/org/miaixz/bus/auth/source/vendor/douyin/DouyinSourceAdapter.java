@@ -29,13 +29,12 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.codec.QueryCodec;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
@@ -105,7 +104,7 @@ public class DouyinSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned replay, loaders, parsers, JSON, network, clock, and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Browser correlation lifecycle present only for the open variant.
@@ -130,12 +129,12 @@ public class DouyinSourceAdapter implements VendorAdapter {
      * @param manifest selected Douyin manifest
      * @param variant  exact selected variant manifest
      * @param options  decoded externally loaded options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, variant, protocol, or options routing is inconsistent
      */
     public DouyinSourceAdapter(final String spaceId, final String sourceId, final DouyinManifest manifest,
-            final VendorManifest.Variant variant, final DouyinOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final DouyinOptions options, final SourceServices services) {
         final DouyinManifest selectedProfile = Assert.notNull(manifest, "Douyin manifest must not be null");
         this.spaceId = Assert.notBlank(spaceId, "Douyin space id must not be blank");
         this.sourceId = Assert.notBlank(sourceId, "Douyin Source id must not be blank");

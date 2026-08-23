@@ -224,7 +224,7 @@ public class KujialeManifest implements VendorManifest<KujialeOptions> {
                             true)));
 
     /**
-     * Creates the stateless Kujiale manifest used by Vendor directory assembly.
+     * Creates the stateless Kujiale manifest used by Vendor module assembly.
      */
     public KujialeManifest() {
         // No initialization required.
@@ -281,7 +281,7 @@ public class KujialeManifest implements VendorManifest<KujialeOptions> {
     }
 
     /**
-     * Returns non-sensitive Kujiale catalog metadata.
+     * Returns non-sensitive Kujiale management metadata.
      *
      * @return immutable presentation metadata
      */

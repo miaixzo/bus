@@ -47,7 +47,7 @@ import org.miaixz.bus.core.net.tls.TlsClientAuth;
 public class AmazonManifest implements VendorManifest<AmazonOptions> {
 
     /**
-     * Stable platform routing identifier shared by registration, catalog, and runtime compilation.
+     * Stable platform routing identifier shared by registration, Source lookup, and runtime compilation.
      */
     public static final Vendor.Id ID = new Vendor.Id("amazon");
 
@@ -97,7 +97,7 @@ public class AmazonManifest implements VendorManifest<AmazonOptions> {
             CAPABILITIES, List.of());
 
     /**
-     * Creates the stateless Login with Amazon manifest used by Vendor directory assembly.
+     * Creates the stateless Login with Amazon manifest used by Vendor module assembly.
      */
     public AmazonManifest() {
         // No initialization required.

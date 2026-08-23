@@ -29,12 +29,11 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientScheme;
@@ -104,7 +103,7 @@ public class QqSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned replay, secret, JSON, network, clock, and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Browser correlation lifecycle present only for the open variant.
@@ -134,12 +133,12 @@ public class QqSourceAdapter implements VendorAdapter {
      * @param manifest selected QQ manifest
      * @param variant  exact selected variant manifest
      * @param options  decoded externally loaded options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, variant, protocol, or options routing is inconsistent
      */
     public QqSourceAdapter(final String spaceId, final String sourceId, final QqManifest manifest,
-            final VendorManifest.Variant variant, final QqOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final QqOptions options, final SourceServices services) {
         final QqManifest selected = Assert.notNull(manifest, "QQ manifest must not be null");
         this.spaceId = Assert.notBlank(spaceId, "QQ space id must not be blank");
         this.sourceId = Assert.notBlank(sourceId, "QQ Source id must not be blank");
@@ -950,6 +949,8 @@ public class QqSourceAdapter implements VendorAdapter {
 
     /**
      * Identifies each private QQ wire document admitted by the adapter.
+     *
+     * @author Kimi Liu
      */
     private enum WireKind {
 
@@ -983,6 +984,8 @@ public class QqSourceAdapter implements VendorAdapter {
      * @param refreshToken optional sensitive refresh token
      * @param errorCode    failed platform error code
      * @param errorMessage failed platform error message
+     *
+     * @author Kimi Liu
      */
     private record TextTokenWire(String accessToken, String expiresIn, String refreshToken, String errorCode,
             String errorMessage) {
@@ -1074,6 +1077,8 @@ public class QqSourceAdapter implements VendorAdapter {
      * @param year        optional birth year text
      * @param smallAvatar optional small QQ avatar URL
      * @param largeAvatar optional large QQ avatar URL
+     *
+     * @author Kimi Liu
      */
     private record ProfileWire(String nickname, String gender, String province, String city, String year,
             String smallAvatar, String largeAvatar) {

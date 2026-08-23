@@ -33,6 +33,8 @@ import org.miaixz.bus.core.lang.Assert;
  * Implementations are project code and must be idempotent. They may map the minimal framework {@link Session} to a
  * database, web session, cookie, or SSO record, but no such business model is defined or implemented by bus-auth.
  * </p>
+ *
+ * @author Kimi Liu
  */
 public interface SessionWorker {
 
@@ -73,6 +75,7 @@ public interface SessionWorker {
      *
      * @param sourceId exact Source identifier
      * @param session  immutable framework Session state
+     * @author Kimi Liu
      */
     record Binding(String sourceId, Session session) {
 

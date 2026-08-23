@@ -29,7 +29,6 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
@@ -39,7 +38,7 @@ import org.miaixz.bus.auth.shared.jose.*;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientOptions;
@@ -121,7 +120,7 @@ public class LineSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime, secret, JSON, crypto, network, clock, and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Unified router for LINE's public standard OIDC and OAuth capabilities.
@@ -191,13 +190,13 @@ public class LineSourceAdapter implements VendorAdapter {
      * @param manifest selected LINE manifest
      * @param variant  exact selected default manifest
      * @param options  decoded externally loaded LINE options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, options, or the security rules differ from the frozen LINE
      *                                  web profile
      */
     public LineSourceAdapter(final String spaceId, final String sourceId, final LineManifest manifest,
-            final VendorManifest.Variant variant, final LineOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final LineOptions options, final SourceServices services) {
         final LineManifest selectedProfile = Assert.notNull(manifest, "LINE manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "LINE Source id must not be blank");
         this.variant = Assert.notNull(variant, "LINE manifest must not be null");

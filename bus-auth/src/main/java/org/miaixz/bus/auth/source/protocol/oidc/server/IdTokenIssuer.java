@@ -36,10 +36,10 @@ import org.miaixz.bus.auth.shared.jose.JoseHeader;
 import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
 import org.miaixz.bus.auth.shared.jose.JweService;
 import org.miaixz.bus.auth.shared.jose.JwsService;
-import org.miaixz.bus.auth.shared.jwt.Jwt;
+import org.miaixz.bus.auth.shared.jwt.JWT;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtIssuer;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2ErrorCode;
 import org.miaixz.bus.auth.source.protocol.oauth2.TokenEndpointResponse;
@@ -84,7 +84,7 @@ public class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
     /**
      * External key, attribute, clock, JSON, and policy dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Shared signed JWT issuer scoped to the OpenID Provider's exact algorithm.
@@ -105,11 +105,11 @@ public class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
      * Creates an ID Token response augmenter for one compiled OpenID Provider.
      *
      * @param options  validated OpenID Provider options
-     * @param services externally implemented runtime dependencies
+     * @param services capability-limited Source services
      * @param codec    typed ID Token codec
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public IdTokenIssuer(final OpenIdServerOptions options, final DriverServices services, final IdTokenCodec codec) {
+    public IdTokenIssuer(final OpenIdServerOptions options, final SourceServices services, final IdTokenCodec codec) {
         this.options = Assert.notNull(options, "OpenID Provider options must not be null");
         this.services = Assert.notNull(services, "OpenID Provider execution services must not be null");
         this.codec = Assert.notNull(codec, "OpenID Connect ID Token codec must not be null");
@@ -432,7 +432,7 @@ public class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
                     Optional.of(artifactHash(response.accessToken(), options.idTokenSigningAlgorithm().name())),
                     Optional.empty(), Optional.empty(), Optional.of(binding.sessionKey().value()),
                     requestedClaims(binding, attributes));
-            final Jwt jwt = jwtIssuer.issue(
+            final JWT jwt = jwtIssuer.issue(
                     new JwtIssuer.Request(
                             new JwtIssuer.Profile(options.issuer(), List.of(grant.clientId()),
                                     options.idTokenLifetime(), true),

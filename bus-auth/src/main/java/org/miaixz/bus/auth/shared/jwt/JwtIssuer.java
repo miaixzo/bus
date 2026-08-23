@@ -70,7 +70,7 @@ public class JwtIssuer {
      * @param key     explicit private or symmetric signing key
      * @return immutable issued JWT
      */
-    public Jwt issue(final Request request, final Key key) {
+    public JWT issue(final Request request, final Key key) {
         Assert.notNull(request, "JWT issue request must not be null");
         Assert.notNull(key, "JWT signing key must not be null");
         final JwtClaims supplied = new JwtClaims(request.claims());
@@ -96,7 +96,7 @@ public class JwtIssuer {
         final byte[] payload = JsonKit.writeValue(claims.values());
         final JwsService.Signature signature = jwsService.sign(request.header(), payload, key);
         final String compact = jwsService.compact(new JwsService.Jws(payload, List.of(signature)));
-        return new Jwt(compact, request.header(), claims);
+        return new JWT(compact, request.header(), claims);
     }
 
     /**

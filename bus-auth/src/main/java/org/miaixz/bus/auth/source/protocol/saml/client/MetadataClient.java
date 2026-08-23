@@ -27,7 +27,7 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.FabricX;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.saml.EntityDescriptor;
 import org.miaixz.bus.auth.source.protocol.saml.IdpSsoDescriptor;
 import org.miaixz.bus.auth.source.protocol.saml.SamlBinding;
@@ -61,7 +61,7 @@ public class MetadataClient {
     /**
      * Capability-limited Source services supplying security policies and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Strict secure XML Metadata codec.
@@ -77,12 +77,12 @@ public class MetadataClient {
      * Creates a SAML Metadata client for one compiled Source.
      *
      * @param options            validated SAML Source options
-     * @param services           externally owned execution services
+     * @param services           capability-limited Source services
      * @param codec              strict SAML Metadata codec
      * @param signatureValidator SAML XML signature validator
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public MetadataClient(final SamlClientOptions options, final DriverServices services, final MetadataCodec codec,
+    public MetadataClient(final SamlClientOptions options, final SourceServices services, final MetadataCodec codec,
             final SamlSignatureValidator signatureValidator) {
         this.options = Assert.notNull(options, "SAML Source options must not be null");
         this.services = Assert.notNull(services, "SAML execution services must not be null");

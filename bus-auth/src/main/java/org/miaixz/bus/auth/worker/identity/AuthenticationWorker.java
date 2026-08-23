@@ -25,7 +25,6 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.resolver.ClaimParser;
 import org.miaixz.bus.auth.resolver.SubjectParser;
 import org.miaixz.bus.auth.shared.claim.ClaimSet;
@@ -250,6 +249,8 @@ public class AuthenticationWorker {
      * Supplies one asynchronous project-port invocation.
      *
      * @param <T> successful project-port value type
+     *
+     * @author Kimi Liu
      */
     @FunctionalInterface
     private interface StageSupplier<T> {

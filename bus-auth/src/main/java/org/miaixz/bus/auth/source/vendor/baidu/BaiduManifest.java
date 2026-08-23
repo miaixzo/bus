@@ -22,12 +22,8 @@ package org.miaixz.bus.auth.source.vendor.baidu;
 import java.util.List;
 import java.util.Set;
 
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Credential;
-import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientScheme;
@@ -56,7 +52,7 @@ import org.miaixz.bus.core.net.tls.TlsClientAuth;
 public class BaiduManifest implements VendorManifest<BaiduOptions> {
 
     /**
-     * Stable platform routing identifier shared by catalog and runtime compilation.
+     * Stable platform routing identifier shared by Source lookup and runtime compilation.
      */
     public static final Vendor.Id ID = new Vendor.Id("baidu");
 
@@ -133,7 +129,7 @@ public class BaiduManifest implements VendorManifest<BaiduOptions> {
             CAPABILITIES, DEVIATIONS);
 
     /**
-     * Creates the stateless Baidu manifest used by Vendor directory assembly.
+     * Creates the stateless Baidu manifest used by Vendor module assembly.
      */
     public BaiduManifest() {
         // No initialization required.

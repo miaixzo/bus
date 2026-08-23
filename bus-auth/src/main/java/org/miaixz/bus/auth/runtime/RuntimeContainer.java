@@ -169,6 +169,8 @@ final class RuntimeContainer {
 
     /**
      * Atomically publishes the current complete runtime container.
+     *
+     * @author Kimi Liu
      */
     static final class Cell {
 
@@ -230,6 +232,8 @@ final class RuntimeContainer {
 
     /**
      * Retains one container until an invocation finishes.
+     *
+     * @author Kimi Liu
      */
     static final class Lease implements AutoCloseable {
 

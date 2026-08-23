@@ -42,13 +42,9 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Outcome;
-import org.miaixz.bus.auth.Policies;
-import org.miaixz.bus.auth.Timeout;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.resolver.CertificateMaterial;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.saml.*;
 import org.miaixz.bus.auth.source.protocol.saml.client.SamlClientOptions;
 import org.miaixz.bus.auth.source.protocol.saml.codec.RedirectBindingCodec;
@@ -84,7 +80,7 @@ public class SamlSignatureValidator {
     /**
      * External certificate loader and framework-owned certificate parser.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Shared non-relaxable algorithm and resource policy.
@@ -94,11 +90,11 @@ public class SamlSignatureValidator {
     /**
      * Creates a SAML signature validator.
      *
-     * @param services external loaders and pure parsers
+     * @param services capability-limited Source services
      * @param policies shared SAML security policies
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public SamlSignatureValidator(final DriverServices services, final Policies policies) {
+    public SamlSignatureValidator(final SourceServices services, final Policies policies) {
         this.services = Assert.notNull(services, "SAML execution services must not be null");
         this.policies = Assert.notNull(policies, "SAML security policies must not be null");
     }

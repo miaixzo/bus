@@ -26,11 +26,10 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.AuthorizationClient;
@@ -88,7 +87,7 @@ public class FeishuSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned secret, JSON, network, clock, and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Shared standard OAuth authorization implementation.
@@ -108,12 +107,12 @@ public class FeishuSourceAdapter implements VendorAdapter {
      * @param manifest selected Feishu manifest
      * @param variant  exact selected default manifest
      * @param options  decoded externally loaded Feishu options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, callback, or authorization is inconsistent
      */
     public FeishuSourceAdapter(final String spaceId, final String sourceId, final FeishuManifest manifest,
-            final VendorManifest.Variant variant, final FeishuOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final FeishuOptions options, final SourceServices services) {
         final FeishuManifest selectedProfile = Assert.notNull(manifest, "Feishu manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Feishu Source id must not be blank");
         this.variant = Assert.notNull(variant, "Feishu manifest must not be null");

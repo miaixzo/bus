@@ -122,7 +122,7 @@ public class TaobaoManifest implements VendorManifest<TaobaoOptions> {
             CAPABILITIES, DEVIATIONS);
 
     /**
-     * Creates the stateless Taobao manifest used by Vendor directory assembly.
+     * Creates the stateless Taobao manifest used by Vendor module assembly.
      */
     public TaobaoManifest() {
         // No initialization required.

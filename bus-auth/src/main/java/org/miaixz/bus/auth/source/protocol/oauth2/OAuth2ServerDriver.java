@@ -31,7 +31,7 @@ import org.miaixz.bus.auth.guard.RedirectUriValidator;
 import org.miaixz.bus.auth.guard.ScopeValidator;
 import org.miaixz.bus.auth.guard.SecretGuard;
 import org.miaixz.bus.auth.shared.pkce.PkceValidator;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.ProtocolDriver;
 import org.miaixz.bus.auth.source.protocol.oauth2.codec.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.grant.AccessTokenIssuer;
@@ -191,13 +191,13 @@ public class OAuth2ServerDriver implements ProtocolDriver<OAuth2ServerOptions> {
      * Consumes typed options and assembles one endpoint-accurate OAuth 2.x server-role Source runtime.
      *
      * @param prepared one-time validated Source graph, Options and dependency declaration
-     * @param services dependency-scoped runtime services
+     * @param services capability-limited Source services
      * @return executable immutable Source worker
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if the Source routing fields do not match this driver
      */
     @Override
-    public SourceWorker compile(final Prepared<OAuth2ServerOptions> prepared, final DriverServices services) {
+    public SourceWorker compile(final Prepared<OAuth2ServerOptions> prepared, final SourceServices services) {
         Assert.notNull(prepared, "OAuth 2.x authorization server preparation must not be null");
         Assert.notNull(services, "OAuth 2.x authorization server execution services must not be null");
         final Blueprint.SourceEntry entry = prepared.entry();

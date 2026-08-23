@@ -26,13 +26,12 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.AuthorizationClient;
@@ -93,7 +92,7 @@ public class GitLabSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned execution services.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Shared standard OAuth authorization implementation.
@@ -123,12 +122,12 @@ public class GitLabSourceAdapter implements VendorAdapter {
      * @param manifest selected GitLab manifest
      * @param variant  exact selected default manifest
      * @param options  decoded externally loaded GitLab options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, callback, or capabilities are inconsistent
      */
     public GitLabSourceAdapter(final String spaceId, final String sourceId, final GitLabManifest manifest,
-            final VendorManifest.Variant variant, final GitLabOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final GitLabOptions options, final SourceServices services) {
         final GitLabManifest selected = Assert.notNull(manifest, "GitLab manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "GitLab Source id must not be blank");
         this.variant = Assert.notNull(variant, "GitLab manifest must not be null");

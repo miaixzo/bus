@@ -27,7 +27,7 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.FabricX;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oidc.OpenIdProviderMetadata;
 import org.miaixz.bus.auth.source.protocol.oidc.codec.OpenIdProviderMetadataCodec;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
@@ -52,7 +52,7 @@ public class DiscoveryClient {
     /**
      * Capability-limited Source services supplying security policies and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Strict OpenID Provider Metadata codec.
@@ -67,7 +67,7 @@ public class DiscoveryClient {
      * @param codec    strict OpenID Provider Metadata codec
      * @throws IllegalArgumentException if a collaborator is {@code null} or discovery is not configured
      */
-    public DiscoveryClient(final OpenIdClientOptions options, final DriverServices services,
+    public DiscoveryClient(final OpenIdClientOptions options, final SourceServices services,
             final OpenIdProviderMetadataCodec codec) {
         this.options = Assert.notNull(options, "OpenID Connect client options must not be null");
         Assert.notNull(options.discoveryEndpoint().getOrNull(), "OpenID Connect discovery endpoint must be configured");

@@ -39,14 +39,13 @@ import org.w3c.dom.Node;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.Scheme.Options;
 import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.cache.StateCache;
 import org.miaixz.bus.auth.guard.ReplayGuard;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.ProtocolDriver;
 import org.miaixz.bus.auth.source.protocol.saml.client.*;
@@ -73,7 +72,7 @@ import org.miaixz.bus.extra.json.JsonValue;
 /**
  * Compiles one registered SAML 2.0 service-provider Source into its typed protocol runtime.
  * <p>
- * The driver obtains trust, replay, decryption, execution, and signing dependencies from DriverServices and uses the
+ * The driver obtains trust, replay, decryption, execution, and signing dependencies from SourceServices and uses the
  * guarded static FabricX entry for transport. It exposes both standard SAML operations and the two protocol-neutral
  * Source-authentication capabilities. Its internal adapter performs browser correlation, POST decoding,
  * original-document signature verification, assertion consumption, and verified identity mapping without exposing those
@@ -105,12 +104,12 @@ public class SamlClientDriver implements ProtocolDriver<SamlClientOptions> {
      * Creates the Redirect Binding signing operation backed by the exact external key loader and pure parser.
      *
      * @param options  trusted Source options
-     * @param services runtime key and clock dependencies
+     * @param services capability-limited Source services
      * @return asynchronous exact-byte signing operation
      */
     private static RedirectBindingCodec.SigningOperation signingOperation(
             final SamlClientOptions options,
-            final DriverServices services) {
+            final SourceServices services) {
         return (keyId, algorithm, input, context, timeout) -> {
             if (!options.signingKeyId().equals(keyId) || !options.signatureAlgorithm().equals(algorithm)
                     || !services.policies().require(Protocol.SAML).algorithms().contains(algorithm)) {
@@ -298,13 +297,13 @@ public class SamlClientDriver implements ProtocolDriver<SamlClientOptions> {
      * Consumes typed options and assembles one endpoint-accurate service-provider runtime.
      *
      * @param prepared one-time validated Source graph, Options and dependency declaration
-     * @param services dependency-scoped runtime services
+     * @param services capability-limited Source services
      * @return immutable executable SAML Source
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if routing, options, or a required security rule is invalid
      */
     @Override
-    public SourceWorker compile(final Prepared<SamlClientOptions> prepared, final DriverServices services) {
+    public SourceWorker compile(final Prepared<SamlClientOptions> prepared, final SourceServices services) {
         Assert.notNull(prepared, "SAML Source preparation must not be null");
         Assert.notNull(services, "SAML Source execution services must not be null");
         final Blueprint.SourceEntry entry = prepared.entry();

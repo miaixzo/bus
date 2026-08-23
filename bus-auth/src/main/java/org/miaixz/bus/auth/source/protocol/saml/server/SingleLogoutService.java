@@ -32,7 +32,7 @@ import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Session;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.saml.*;
 import org.miaixz.bus.auth.worker.SessionCoordinator;
 import org.miaixz.bus.auth.worker.loader.ConsumerLoader;
@@ -65,7 +65,7 @@ public class SingleLogoutService {
     /**
      * External loaders and framework-owned parsers used by this service.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Standard SAML error response mapper.
@@ -80,12 +80,12 @@ public class SingleLogoutService {
      * Creates a SingleLogoutService with explicit registration and session dependencies.
      *
      * @param options     validated SAML identity-provider options
-     * @param services    externally owned execution services
+     * @param services    capability-limited Source services
      * @param errorMapper standard SAML error response mapper
      * @param sessions    Source-isolated Session lifecycle coordinator
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public SingleLogoutService(final SamlServerOptions options, final DriverServices services,
+    public SingleLogoutService(final SamlServerOptions options, final SourceServices services,
             final SamlErrorMapper errorMapper, final SessionCoordinator sessions) {
         this.options = Assert.notNull(options, "SAML identity-provider options must not be null");
         this.services = Assert.notNull(services, "SAML execution services must not be null");

@@ -293,7 +293,7 @@ public class VendorModule implements SourceModule {
          */
         public synchronized VendorModule build() {
             mutable();
-            final VendorModule module = suite.module();
+            final VendorModule module = suite.freeze();
             built = true;
             return module;
         }

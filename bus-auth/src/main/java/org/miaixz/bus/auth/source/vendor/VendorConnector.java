@@ -19,17 +19,30 @@
 */
 package org.miaixz.bus.auth.source.vendor;
 
-import org.miaixz.bus.auth.Registry.Connector;
+import org.miaixz.bus.auth.source.SourceConnector;
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * Connects one complete third-party platform manifest and all of its variant factories to a build-scoped registry.
  * <p>
- * Implementations are discovered through the Bus SPI loader and must expose a public no-argument constructor. Each
- * implementation belongs in its Vendor package as a registration-only peer of the manifest, options, and adapters.
- * Connection performs no platform API call, credential loading, adapter construction, or runtime Roster mutation.
+ * Implementations are discovered through the unified {@link SourceConnector} SPI and must expose a public no-argument
+ * constructor. Each implementation belongs in its Vendor package as a registration-only peer of the manifest, options,
+ * and adapters. The connect callback performs no platform API call, credential loading, adapter construction, or
+ * runtime Roster mutation.
  * </p>
  *
  * @author Kimi Liu
  */
-public interface VendorConnector extends Connector<Vendor.Id, VendorRegistry> {
+public non-sealed interface VendorConnector extends SourceConnector<Vendor.Id, VendorRegistry> {
+
+    /**
+     * Dispatches this connector to the Vendor registration branch.
+     *
+     * @param visitor unified Source connector visitor
+     */
+    @Override
+    default void accept(final Visitor visitor) {
+        Assert.notNull(visitor, "Source connector visitor must not be null").visit(this);
+    }
+
 }

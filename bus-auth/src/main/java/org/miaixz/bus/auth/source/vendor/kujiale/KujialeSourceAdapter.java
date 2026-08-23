@@ -28,10 +28,9 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientScheme;
@@ -88,7 +87,7 @@ public class KujialeSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime, secret, JSON, network, clock, and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Unified public OAuth capability router for Kujiale authorization.
@@ -108,12 +107,12 @@ public class KujialeSourceAdapter implements VendorAdapter {
      * @param manifest selected Kujiale manifest
      * @param variant  exact selected default manifest
      * @param options  decoded externally loaded Kujiale options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, or callback options differ from the manifest
      */
     public KujialeSourceAdapter(final String spaceId, final String sourceId, final KujialeManifest manifest,
-            final VendorManifest.Variant variant, final KujialeOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final KujialeOptions options, final SourceServices services) {
         final KujialeManifest selectedProfile = Assert.notNull(manifest, "Kujiale manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Kujiale Source id must not be blank");
         this.variant = Assert.notNull(variant, "Kujiale manifest must not be null");

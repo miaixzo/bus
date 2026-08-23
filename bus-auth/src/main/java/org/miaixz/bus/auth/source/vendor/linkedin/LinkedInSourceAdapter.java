@@ -30,7 +30,6 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
@@ -40,7 +39,7 @@ import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.shared.jose.*;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientOptions;
@@ -127,7 +126,7 @@ public class LinkedInSourceAdapter implements VendorAdapter {
     /**
      * Capability-limited Source services supplying JSON, loaders, caches, executor, and security policies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Unified router for LinkedIn's public Authentication, JWK Set, and UserInfo capabilities.
@@ -197,13 +196,13 @@ public class LinkedInSourceAdapter implements VendorAdapter {
      * @param manifest selected LinkedIn manifest
      * @param variant  selected default variant manifest
      * @param options  decoded externally loaded LinkedIn options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a required collaborator is {@code null}
      * @throws ValidateException        if the Vendor manifest, variant manifest, options, or security rules differ from
      *                                  the frozen LinkedIn OIDC variant
      */
     public LinkedInSourceAdapter(final String spaceId, final String sourceId, final LinkedInManifest manifest,
-            final VendorManifest.Variant variant, final LinkedInOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final LinkedInOptions options, final SourceServices services) {
         Assert.notNull(manifest, "LinkedIn manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "LinkedIn Source id must not be blank");
         this.variant = Assert.notNull(variant, "LinkedIn manifest must not be null");

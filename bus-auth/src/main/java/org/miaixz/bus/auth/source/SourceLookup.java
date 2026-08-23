@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.auth.source;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.Source;
@@ -33,15 +29,16 @@ import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
 
 /**
- * Freezes the single Source driver directory shared by validation, compilation, and runtime discovery.
+ * Freezes the single Source lookup shared by validation, compilation, and runtime discovery.
  * <p>
- * This directory owns driver declaration order and exact scheme lookup only. It does not validate Source registrations,
- * compile workers, load project data, or execute authentication capabilities.
+ * This lookup owns driver declaration order, exact scheme and descriptor indexes, and persisted Source reverse routing.
+ * It does not validate Source registrations, compile workers, load project data, or execute authentication
+ * capabilities.
  * </p>
  *
  * @author Kimi Liu
  */
-public class DriverDirectory {
+public class SourceLookup {
 
     /**
      * Drivers in deterministic runtime assembly order.
@@ -64,13 +61,13 @@ public class DriverDirectory {
     private final Map<String, SourceDescriptor> descriptorsById;
 
     /**
-     * Creates the single immutable driver and descriptor directory from complete Source modules.
+     * Creates the single immutable driver and descriptor lookup from complete Source modules.
      *
      * @param modules modules in deterministic assembly order
      * @throws IllegalArgumentException if a module or one of its members is invalid
      * @throws AlreadyExistsException   if driver or descriptor identifiers collide
      */
-    public DriverDirectory(final Collection<? extends SourceModule> modules) {
+    public SourceLookup(final Collection<? extends SourceModule> modules) {
         Assert.notNull(modules, "Source module collection must not be null");
         final List<SourceDriver<?>> moduleDrivers = new ArrayList<>();
         final List<SourceDescriptor> moduleDescriptors = new ArrayList<>();
@@ -119,11 +116,11 @@ public class DriverDirectory {
     }
 
     /**
-     * Validates and freezes the flattened directory indexes exactly once.
+     * Validates and freezes the flattened lookup indexes exactly once.
      *
      * @param drivers     flattened drivers
      * @param descriptors flattened descriptors
-     * @return detached immutable directory state
+     * @return detached immutable lookup state
      */
     private static State state(
             final List<? extends SourceDriver<?>> drivers,
@@ -141,8 +138,8 @@ public class DriverDirectory {
             }
             ordered.add(checked);
         }
-        final List<SourceDescriptor> selections = new ArrayList<>(descriptors.size());
-        final Map<String, SourceDescriptor> selectionIndex = new LinkedHashMap<>(descriptors.size());
+        final List<SourceDescriptor> orderedDescriptors = new ArrayList<>(descriptors.size());
+        final Map<String, SourceDescriptor> descriptorsById = new LinkedHashMap<>(descriptors.size());
         for (SourceDescriptor candidate : descriptors) {
             final SourceDescriptor descriptor = Assert.notNull(candidate, "Source descriptor must not be null");
             final String id = Assert.notBlank(descriptor.id(), "Source descriptor id must not be blank");
@@ -160,13 +157,13 @@ public class DriverDirectory {
             Assert.notNull(descriptor.manifest(), "Source descriptor manifest must not be null");
             Assert.notNull(descriptor.conformance(), "Source descriptor conformance must not be null");
             Assert.notNull(descriptor.form(), "Source descriptor form must not be null");
-            if (selectionIndex.putIfAbsent(id, descriptor) != null) {
+            if (descriptorsById.putIfAbsent(id, descriptor) != null) {
                 throw new AlreadyExistsException("Duplicate Source descriptor id: " + id);
             }
-            selections.add(descriptor);
+            orderedDescriptors.add(descriptor);
         }
-        return new State(List.copyOf(ordered), Map.copyOf(indexed), List.copyOf(selections),
-                Map.copyOf(selectionIndex));
+        return new State(List.copyOf(ordered), Map.copyOf(indexed), List.copyOf(orderedDescriptors),
+                Map.copyOf(descriptorsById));
     }
 
     /**
@@ -193,7 +190,7 @@ public class DriverDirectory {
      * @param scheme exact scheme identifier
      * @return optional matching driver
      */
-    public Optional<SourceDriver<?>> find(final String scheme) {
+    public Optional<SourceDriver<?>> driver(final String scheme) {
         Assert.notBlank(scheme, "Source driver scheme must not be blank");
         return Optional.ofNullable(driversByScheme.get(scheme));
     }
@@ -204,7 +201,7 @@ public class DriverDirectory {
      * @param id exact descriptor identifier
      * @return optional matching descriptor
      */
-    public Optional<SourceDescriptor> source(final String id) {
+    public Optional<SourceDescriptor> descriptor(final String id) {
         Assert.notBlank(id, "Source descriptor id must not be blank");
         return Optional.ofNullable(descriptorsById.get(id));
     }
@@ -237,8 +234,8 @@ public class DriverDirectory {
      * @return matching driver
      * @throws NotFoundException if no matching driver was assembled
      */
-    public SourceDriver<?> require(final String scheme) {
-        final SourceDriver<?> driver = find(scheme).getOrNull();
+    public SourceDriver<?> requireDriver(final String scheme) {
+        final SourceDriver<?> driver = driver(scheme).getOrNull();
         if (driver == null) {
             throw new NotFoundException("Source driver not found: " + scheme);
         }
@@ -246,7 +243,7 @@ public class DriverDirectory {
     }
 
     /**
-     * Holds one detached immutable directory construction result.
+     * Holds one detached immutable lookup construction result.
      *
      * @param drivers         ordered drivers
      * @param driversByScheme driver type index

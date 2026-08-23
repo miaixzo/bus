@@ -31,7 +31,7 @@ import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.registry.CurrentRoster;
 import org.miaixz.bus.auth.registry.SnapshotValidator;
 import org.miaixz.bus.auth.registry.SourceValidator;
-import org.miaixz.bus.auth.source.DriverDirectory;
+import org.miaixz.bus.auth.source.SourceLookup;
 import org.miaixz.bus.auth.source.SourceModule;
 import org.miaixz.bus.auth.worker.RosterListener;
 import org.miaixz.bus.auth.worker.loader.BlueprintLoader;
@@ -46,12 +46,46 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * mutation. Build freezes the resulting indexes and validates driver and descriptor uniqueness. Normal build loads and
  * commits the project's first complete Blueprint snapshot before exposing the runtime. Empty startup is available only
  * through the explicitly named {@link #buildEmpty()} method. BlueprintLoader and RosterListener are direct assembly
- * inputs and never become protocol execution services.
+ * inputs and never become Source execution services.
  * </p>
  *
  * @author Kimi Liu
  */
 public class RuntimeBuilder {
+
+    /**
+     * Externally supplied runtime service container.
+     */
+    private final RuntimeServices runtimeServices;
+    /**
+     * External complete Blueprint snapshot loader.
+     */
+    private final BlueprintLoader blueprintLoader;
+    /**
+     * Explicit Source modules retained in caller-provided order.
+     */
+    private final List<SourceModule> modules;
+    /**
+     * Explicit Roster listeners retained in caller-provided order.
+     */
+    private final List<RosterListener> listeners;
+    /**
+     * Whether the one-shot build process has begun.
+     */
+    private boolean built;
+
+    /**
+     * Creates an empty private builder used only by the two named assembly factories.
+     *
+     * @param runtimeServices complete externally owned runtime services
+     * @param blueprintLoader project Blueprint input
+     */
+    public RuntimeBuilder(final RuntimeServices runtimeServices, final BlueprintLoader blueprintLoader) {
+        this.runtimeServices = Assert.notNull(runtimeServices, "Runtime services must not be null");
+        this.blueprintLoader = Assert.notNull(blueprintLoader, "Blueprint loader must not be null");
+        this.modules = new ArrayList<>();
+        this.listeners = new ArrayList<>();
+    }
 
     /**
      * Formats the first structured, non-sensitive startup fault for an actionable build failure.
@@ -68,53 +102,15 @@ public class RuntimeBuilder {
     }
 
     /**
-     * Externally supplied protocol execution service set.
-     */
-    private final RuntimeServices services;
-
-    /**
-     * External complete Blueprint snapshot loader.
-     */
-    private final BlueprintLoader blueprintLoader;
-
-    /**
-     * Explicit Source modules retained in caller-provided order.
-     */
-    private final List<SourceModule> modules;
-
-    /**
-     * Explicit Roster listeners retained in caller-provided order.
-     */
-    private final List<RosterListener> listeners;
-
-    /**
-     * Whether the one-shot build process has begun.
-     */
-    private boolean built;
-
-    /**
-     * Creates an empty private builder used only by the two named assembly factories.
-     *
-     * @param services        complete externally owned execution services
-     * @param blueprintLoader project Blueprint input
-     */
-    public RuntimeBuilder(final RuntimeServices services, final BlueprintLoader blueprintLoader) {
-        this.services = Assert.notNull(services, "Runtime execution services must not be null");
-        this.blueprintLoader = Assert.notNull(blueprintLoader, "Blueprint loader must not be null");
-        this.modules = new ArrayList<>();
-        this.listeners = new ArrayList<>();
-    }
-
-    /**
      * Creates an empty one-shot builder for an explicitly selected implementation set.
      *
-     * @param services        complete externally owned execution services
+     * @param runtimeServices complete externally owned runtime services
      * @param blueprintLoader project Blueprint input
      * @return empty custom builder
      * @throws IllegalArgumentException if an argument is {@code null}
      */
-    public static RuntimeBuilder custom(final RuntimeServices services, final BlueprintLoader blueprintLoader) {
-        return new RuntimeBuilder(services, blueprintLoader);
+    public static RuntimeBuilder custom(final RuntimeServices runtimeServices, final BlueprintLoader blueprintLoader) {
+        return new RuntimeBuilder(runtimeServices, blueprintLoader);
     }
 
     /**
@@ -210,9 +206,9 @@ public class RuntimeBuilder {
     private RuntimeManager assemble() {
         mutable();
         built = true;
-        final DriverDirectory directory = new DriverDirectory(List.copyOf(modules));
-        final RuntimeDescriptor descriptor = new RuntimeDescriptor(directory);
-        final SnapshotCompiler snapshotCompiler = new SnapshotCompiler(directory, services);
+        final SourceLookup sourceLookup = new SourceLookup(List.copyOf(modules));
+        final RuntimeDescriptor descriptor = new RuntimeDescriptor(sourceLookup);
+        final SnapshotCompiler snapshotCompiler = new SnapshotCompiler(sourceLookup, runtimeServices);
         final Roster.Revision revision = new Roster.Revision(0L);
         final Roster.Snapshot snapshot = new Roster.Snapshot(revision, List.of());
         final RuntimeContainer initial = snapshotCompiler.compile(snapshot);
@@ -220,9 +216,9 @@ public class RuntimeBuilder {
         final RuntimeLifecycle lifecycle = new RuntimeLifecycle();
         final Roster roster = new CurrentRoster(() -> containers.current().roster());
         final Dispatcher dispatcher = new DefaultDispatcher(containers, lifecycle);
-        final RosterNotifier notifier = new RosterNotifier(List.copyOf(listeners), services.executor());
+        final RosterNotifier notifier = new RosterNotifier(List.copyOf(listeners), runtimeServices.executor());
         final RuntimeReloadService reloadService = new RuntimeReloadService(blueprintLoader,
-                new SnapshotValidator(new SourceValidator(directory)), snapshotCompiler, containers, notifier,
+                new SnapshotValidator(new SourceValidator(sourceLookup)), snapshotCompiler, containers, notifier,
                 lifecycle);
         return new RuntimeManager(roster, dispatcher, reloadService, descriptor, lifecycle, containers);
     }

@@ -45,7 +45,7 @@ import org.w3c.dom.NodeList;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Scheme.Options;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.ProtocolDriver;
 import org.miaixz.bus.auth.source.protocol.saml.codec.MetadataCodec;
 import org.miaixz.bus.auth.source.protocol.saml.codec.SamlMessageCodec;
@@ -154,13 +154,13 @@ public class SamlServerDriver implements ProtocolDriver<SamlServerOptions> {
      * Consumes typed options and assembles one endpoint-accurate identity-provider runtime.
      *
      * @param prepared one-time validated Source graph, Options and dependency declaration
-     * @param services dependency-scoped runtime services
+     * @param services capability-limited Source services
      * @return immutable executable SAML identity-provider Source runtime
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if registration routing, options, or algorithms are invalid
      */
     @Override
-    public SourceWorker compile(final Prepared<SamlServerOptions> prepared, final DriverServices services) {
+    public SourceWorker compile(final Prepared<SamlServerOptions> prepared, final SourceServices services) {
         Assert.notNull(prepared, "SAML identity-provider preparation must not be null");
         Assert.notNull(services, "SAML identity-provider execution services must not be null");
         final Blueprint.SourceEntry entry = prepared.entry();
@@ -391,7 +391,7 @@ public class SamlServerDriver implements ProtocolDriver<SamlServerOptions> {
         /**
          * External exact-key loader and framework-owned key parser.
          */
-        private final DriverServices services;
+        private final SourceServices services;
 
         /**
          * Deterministic SAML protocol serializer.
@@ -407,12 +407,12 @@ public class SamlServerDriver implements ProtocolDriver<SamlServerOptions> {
          * Creates an XML signer bound to one compiled server-role Source runtime.
          *
          * @param options       validated identity-provider options
-         * @param services      external loaders and pure parsers
+         * @param services      capability-limited Source services
          * @param messageCodec  deterministic SAML message codec
          * @param metadataCodec deterministic SAML metadata codec
          * @throws IllegalArgumentException if a collaborator is {@code null}
          */
-        private XmlSigner(final SamlServerOptions options, final DriverServices services,
+        private XmlSigner(final SamlServerOptions options, final SourceServices services,
                 final SamlMessageCodec messageCodec, final MetadataCodec metadataCodec) {
             this.options = Assert.notNull(options, "SAML signing options must not be null");
             this.services = Assert.notNull(services, "SAML execution services must not be null");

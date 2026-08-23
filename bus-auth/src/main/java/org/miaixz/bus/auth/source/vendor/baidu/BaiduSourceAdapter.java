@@ -29,10 +29,9 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.AuthorizationClient;
@@ -90,7 +89,7 @@ public class BaiduSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime, secret, JSON, network, and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Shared one-time state lifecycle for the browser flow.
@@ -110,13 +109,13 @@ public class BaiduSourceAdapter implements VendorAdapter {
      * @param manifest selected Baidu manifest
      * @param variant  selected default variant manifest
      * @param options  decoded externally loaded Baidu options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, or callback options differ from the frozen
      *                                  profile
      */
     public BaiduSourceAdapter(final String spaceId, final String sourceId, final BaiduManifest manifest,
-            final VendorManifest.Variant variant, final BaiduOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final BaiduOptions options, final SourceServices services) {
         Assert.notNull(manifest, "Baidu manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Baidu Source id must not be blank");
         this.variant = Assert.notNull(variant, "Baidu manifest must not be null");

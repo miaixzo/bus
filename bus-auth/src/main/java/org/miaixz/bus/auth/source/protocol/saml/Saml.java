@@ -82,6 +82,8 @@ public class Saml {
 
     /**
      * Defines namespaces used by the SAML protocol, assertion, metadata, signature, and encryption vocabularies.
+     *
+     * @author Kimi Liu
      */
     public static class Namespaces {
 
@@ -121,6 +123,8 @@ public class Saml {
 
     /**
      * Defines SAML 2.0 binding identifiers implemented by this framework.
+     *
+     * @author Kimi Liu
      */
     public static class Bindings {
 
@@ -144,6 +148,8 @@ public class Saml {
 
     /**
      * Defines standard top-level and commonly emitted SAML StatusCode values.
+     *
+     * @author Kimi Liu
      */
     public static class Statuses {
 
@@ -199,6 +205,8 @@ public class Saml {
 
     /**
      * Defines standard SAML NameID format identifiers used by the implemented profiles.
+     *
+     * @author Kimi Liu
      */
     public static class NameIdFormats {
 
@@ -234,6 +242,8 @@ public class Saml {
 
     /**
      * Defines standard SubjectConfirmation method identifiers used by the profiles.
+     *
+     * @author Kimi Liu
      */
     public static class ConfirmationMethods {
 
@@ -261,6 +271,8 @@ public class Saml {
 
     /**
      * Defines HTTP Binding form and query parameter names.
+     *
+     * @author Kimi Liu
      */
     public static class Parameters {
 
@@ -300,6 +312,8 @@ public class Saml {
 
     /**
      * Defines XML local names used by the implemented SAML protocol and assertion model.
+     *
+     * @author Kimi Liu
      */
     public static class Xml {
 

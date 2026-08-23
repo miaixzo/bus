@@ -27,7 +27,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.radius.*;
 import org.miaixz.bus.auth.source.protocol.radius.codec.EapMessageCodec;
 import org.miaixz.bus.auth.worker.loader.SecretLoader;
@@ -66,7 +66,7 @@ public class AccessService {
     /**
      * External short-lived shared-secret loader and framework-owned parser.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Historic security and RADIUS/1.1 response correlator.
@@ -84,13 +84,13 @@ public class AccessService {
      * @param sourceId      compiled server-role Source identifier
      * @param options       validated RADIUS options
      * @param handler       exact external request handler binding
-     * @param services      external loaders and pure parsers
+     * @param services      capability-limited Source services
      * @param authenticator packet security implementation
      * @param eapCodec      EAP-Message fragment codec
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
     public AccessService(final String sourceId, final RadiusServerOptions options, final RadiusRequestHandler handler,
-            final DriverServices services, final RadiusAuthenticator authenticator, final EapMessageCodec eapCodec) {
+            final SourceServices services, final RadiusAuthenticator authenticator, final EapMessageCodec eapCodec) {
         this.sourceId = Assert.notBlank(sourceId, "RADIUS Access Source id must not be blank");
         this.options = Assert.notNull(options, "RADIUS Access options must not be null");
         this.handler = Assert.notNull(handler, "RADIUS Access handler must not be null");

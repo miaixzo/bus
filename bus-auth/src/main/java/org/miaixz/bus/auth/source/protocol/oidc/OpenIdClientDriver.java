@@ -28,7 +28,7 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Scheme.Options;
 import org.miaixz.bus.auth.shared.jose.JwkSet;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.ProtocolDriver;
 import org.miaixz.bus.auth.source.protocol.oauth2.DeviceAuthorizationRequest;
 import org.miaixz.bus.auth.source.protocol.oauth2.IntrospectionRequest;
@@ -72,10 +72,10 @@ public class OpenIdClientDriver implements ProtocolDriver<OpenIdClientOptions> {
      * Ensures every configured ID Token algorithm is permitted by the OIDC security rules.
      *
      * @param options  validated Source options
-     * @param services runtime security dependencies
+     * @param services capability-limited Source services
      * @throws ValidateException if the local Source configuration enables an algorithm prohibited by its security rule
      */
-    private static void validateAlgorithms(final OpenIdClientOptions options, final DriverServices services) {
+    private static void validateAlgorithms(final OpenIdClientOptions options, final SourceServices services) {
         final var allowed = services.policies().require(Protocol.OIDC).algorithms();
         for (var algorithm : options.idTokenSigningAlgorithms()) {
             if (!allowed.contains(algorithm.name())) {
@@ -88,12 +88,12 @@ public class OpenIdClientDriver implements ProtocolDriver<OpenIdClientOptions> {
      * Creates the optional token introspection client.
      *
      * @param options  composed OAuth client options
-     * @param services runtime dependencies
+     * @param services capability-limited Source services
      * @return normalized optional client
      */
     private static Optional<IntrospectionClient> optionalIntrospection(
             final OAuth2ClientOptions options,
-            final DriverServices services) {
+            final SourceServices services) {
         return options.introspectionEndpoint().isEmpty() ? Optional.empty()
                 : Optional.of(new IntrospectionClient(options, services, new IntrospectionCodec()));
     }
@@ -102,12 +102,12 @@ public class OpenIdClientDriver implements ProtocolDriver<OpenIdClientOptions> {
      * Creates the optional token revocation client.
      *
      * @param options  composed OAuth client options
-     * @param services runtime dependencies
+     * @param services capability-limited Source services
      * @return normalized optional client
      */
     private static Optional<RevocationClient> optionalRevocation(
             final OAuth2ClientOptions options,
-            final DriverServices services) {
+            final SourceServices services) {
         return options.revocationEndpoint().isEmpty() ? Optional.empty()
                 : Optional.of(new RevocationClient(options, services, new RevocationRequestEncoder()));
     }
@@ -116,12 +116,12 @@ public class OpenIdClientDriver implements ProtocolDriver<OpenIdClientOptions> {
      * Creates the optional device authorization client.
      *
      * @param options  composed OAuth client options
-     * @param services runtime dependencies
+     * @param services capability-limited Source services
      * @return normalized optional client
      */
     private static Optional<DeviceAuthorizationClient> optionalDeviceAuthorization(
             final OAuth2ClientOptions options,
-            final DriverServices services) {
+            final SourceServices services) {
         return options.deviceAuthorizationEndpoint().isEmpty() ? Optional.empty()
                 : Optional.of(new DeviceAuthorizationClient(options, services, new DeviceAuthorizationCodec()));
     }
@@ -130,12 +130,12 @@ public class OpenIdClientDriver implements ProtocolDriver<OpenIdClientOptions> {
      * Creates the optional Authorization Server Metadata client.
      *
      * @param options  composed OAuth client options
-     * @param services runtime dependencies
+     * @param services capability-limited Source services
      * @return normalized optional client
      */
     private static Optional<AuthorizationServerMetadataClient> optionalMetadata(
             final OAuth2ClientOptions options,
-            final DriverServices services) {
+            final SourceServices services) {
         return options.authorizationServerMetadataEndpoint().isEmpty() ? Optional.empty()
                 : Optional.of(
                         new AuthorizationServerMetadataClient(options, services,
@@ -146,12 +146,12 @@ public class OpenIdClientDriver implements ProtocolDriver<OpenIdClientOptions> {
      * Creates the optional UserInfo client.
      *
      * @param options  OpenID Connect Source options
-     * @param services runtime dependencies
+     * @param services capability-limited Source services
      * @return normalized optional client
      */
     private static Optional<UserInfoClient> optionalUserInfo(
             final OpenIdClientOptions options,
-            final DriverServices services) {
+            final SourceServices services) {
         return options.userInfoEndpoint().isEmpty() ? Optional.empty()
                 : Optional.of(new UserInfoClient(options, services, new UserInfoCodec()));
     }
@@ -278,13 +278,13 @@ public class OpenIdClientDriver implements ProtocolDriver<OpenIdClientOptions> {
      * Consumes typed options and assembles only operations backed by declared endpoints.
      *
      * @param prepared one-time validated Source graph, Options and dependency declaration
-     * @param services dependency-scoped runtime services
+     * @param services capability-limited Source services
      * @return immutable executable Source runtime
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if routing, options, or signing policy is invalid
      */
     @Override
-    public SourceWorker compile(final Prepared<OpenIdClientOptions> prepared, final DriverServices services) {
+    public SourceWorker compile(final Prepared<OpenIdClientOptions> prepared, final SourceServices services) {
         Assert.notNull(prepared, "OpenID Connect Source preparation must not be null");
         Assert.notNull(services, "OpenID Connect Source execution services must not be null");
         final Blueprint.SourceEntry entry = prepared.entry();
@@ -327,7 +327,7 @@ public class OpenIdClientDriver implements ProtocolDriver<OpenIdClientOptions> {
         /**
          * Externally owned runtime dependencies and HTTP execution context.
          */
-        private final DriverServices services;
+        private final SourceServices services;
 
         /**
          * Strict public JWK Set response codec.
@@ -338,10 +338,10 @@ public class OpenIdClientDriver implements ProtocolDriver<OpenIdClientOptions> {
          * Creates one operation bound to the Source's exact configured JWK Set URI.
          *
          * @param options  validated OpenID Connect Source options
-         * @param services externally owned runtime dependencies
+         * @param services capability-limited Source services
          * @param codec    strict public-key resource codec
          */
-        private JwkSetOperation(final OpenIdClientOptions options, final DriverServices services,
+        private JwkSetOperation(final OpenIdClientOptions options, final SourceServices services,
                 final JwkSetCodec codec) {
             this.endpoint = Assert.notNull(
                     options.jwkSetEndpoint().getOrNull(),

@@ -40,7 +40,7 @@ import org.miaixz.bus.auth.shared.pkce.CodeChallenge;
 import org.miaixz.bus.auth.shared.pkce.CodeVerifier;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
 import org.miaixz.bus.auth.shared.pkce.PkceValidator;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.server.ClientAuthentication;
 import org.miaixz.bus.auth.worker.loader.ResourceLoader;
@@ -80,7 +80,7 @@ public class AccessTokenIssuer {
     /**
      * Externally implemented registration, resource, and atomic state ports.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Standard scope subset validator shared across all supported grants.
@@ -107,14 +107,14 @@ public class AccessTokenIssuer {
      *
      * @param sourceId       compiled server-role Source identifier
      * @param options        validated authorization-server options
-     * @param services       caller-owned runtime dependencies
+     * @param services       capability-limited Source services
      * @param scopeValidator standard scope validator
      * @param pkceValidator  strict constant-time PKCE validator
      * @param augmenter      compile-time selected token-response augmenter
      * @param tokenMaterial  Source-isolated token generator and digest service
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public AccessTokenIssuer(final String sourceId, final GrantPolicy options, final DriverServices services,
+    public AccessTokenIssuer(final String sourceId, final GrantPolicy options, final SourceServices services,
             final ScopeValidator scopeValidator, final PkceValidator pkceValidator, final Augmenter augmenter,
             final TokenMaterial tokenMaterial) {
         this.sourceId = Assert.notBlank(sourceId, "OAuth 2.x Source id must not be blank");

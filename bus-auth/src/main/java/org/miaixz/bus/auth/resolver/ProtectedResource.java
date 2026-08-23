@@ -32,6 +32,7 @@ import org.miaixz.bus.extra.json.JsonValue;
  * @param audience   accepted token audience values
  * @param scopes     scopes exposed by the protected resource
  * @param attributes detached protocol-specific metadata
+ * @author Kimi Liu
  */
 public record ProtectedResource(String id, List<String> audience, List<String> scopes,
         JsonValue.ObjectValue attributes) {

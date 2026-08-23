@@ -23,8 +23,7 @@
  * Authorization request and response codecs preserve query or form response parameters; token request and response
  * codecs preserve grant-specific form members and the JSON token response; the remaining codecs own RFC 8414 metadata,
  * RFC 8628 device authorization, RFC 7662 introspection, and RFC 7009 revocation representations. The codecs map only
- * between protocol models and shared query, form, header, and application-wide
- * {@link JsonKit} primitives.
+ * between protocol models and shared query, form, header, and application-wide {@link JsonKit} primitives.
  * </p>
  * <p>
  * OAuth clients and endpoints call this package after transport and client-authentication boundaries have selected the

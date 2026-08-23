@@ -25,10 +25,9 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.AuthorizationRequest;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
@@ -95,7 +94,7 @@ public class FacebookSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned secret, JSON, network, clock, and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Shared standard OAuth authorization implementation.
@@ -115,13 +114,13 @@ public class FacebookSourceAdapter implements VendorAdapter {
      * @param manifest selected Facebook manifest
      * @param variant  exact selected default manifest
      * @param options  decoded externally loaded Facebook options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, callback, or standard authorization is
      *                                  inconsistent
      */
     public FacebookSourceAdapter(final String spaceId, final String sourceId, final FacebookManifest manifest,
-            final VendorManifest.Variant variant, final FacebookOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final FacebookOptions options, final SourceServices services) {
         final FacebookManifest selectedProfile = Assert.notNull(manifest, "Facebook manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Facebook Source id must not be blank");
         this.variant = Assert.notNull(variant, "Facebook manifest must not be null");

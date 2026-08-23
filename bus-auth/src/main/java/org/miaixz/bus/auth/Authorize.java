@@ -19,12 +19,10 @@
 */
 package org.miaixz.bus.auth;
 
-import java.util.List;
-
 import org.miaixz.bus.auth.runtime.RuntimeBuilder;
 import org.miaixz.bus.auth.runtime.RuntimeServices;
-import org.miaixz.bus.auth.source.protocol.ProtocolSuite;
-import org.miaixz.bus.auth.source.vendor.Vendor;
+import org.miaixz.bus.auth.source.SourceAggregate;
+import org.miaixz.bus.auth.source.SourceSuite;
 import org.miaixz.bus.auth.source.vendor.VendorConfigurer;
 import org.miaixz.bus.auth.source.vendor.VendorCredentialWriter;
 import org.miaixz.bus.auth.source.vendor.VendorModule;
@@ -54,35 +52,36 @@ public class Authorize {
     /**
      * Creates a one-shot runtime builder containing every built-in protocol and Vendor implementation.
      * <p>
-     * The returned builder owns only framework assembly. The supplied services and Blueprint loader remain externally
-     * owned project integrations.
+     * The returned builder owns only framework assembly. The supplied runtime services and Blueprint loader remain
+     * externally owned project integrations.
      * </p>
      *
-     * @param services        complete externally supplied runtime services
+     * @param runtimeServices complete externally supplied runtime services
      * @param blueprintLoader project Blueprint input
      * @return builder containing the complete built-in implementation set
      * @throws IllegalArgumentException if an argument is {@code null} or a built-in module declaration is invalid
      */
-    public static RuntimeBuilder standard(final RuntimeServices services, final BlueprintLoader blueprintLoader) {
-        final VendorModule vendors = Vendor.module();
-        return RuntimeBuilder.custom(services, blueprintLoader)
-                .modules(List.of(ProtocolSuite.load().freeze(), vendors));
+    public static RuntimeBuilder standard(
+            final RuntimeServices runtimeServices,
+            final BlueprintLoader blueprintLoader) {
+        final SourceAggregate aggregate = SourceSuite.load().freeze();
+        return RuntimeBuilder.custom(runtimeServices, blueprintLoader).modules(aggregate.modules());
     }
 
     /**
      * Creates an empty one-shot runtime builder for an explicitly selected implementation set.
      * <p>
-     * No protocol or Vendor driver is installed automatically. The integrating project must connect every required
-     * Source driver before building the runtime.
+     * No protocol or Vendor module is installed automatically. The integrating project must add every required
+     * {@link org.miaixz.bus.auth.source.SourceModule} before building the runtime.
      * </p>
      *
-     * @param services        complete externally supplied runtime services
+     * @param runtimeServices complete externally supplied runtime services
      * @param blueprintLoader project Blueprint input
      * @return empty custom runtime builder
      * @throws IllegalArgumentException if an argument is {@code null}
      */
-    public static RuntimeBuilder custom(final RuntimeServices services, final BlueprintLoader blueprintLoader) {
-        return RuntimeBuilder.custom(services, blueprintLoader);
+    public static RuntimeBuilder custom(final RuntimeServices runtimeServices, final BlueprintLoader blueprintLoader) {
+        return RuntimeBuilder.custom(runtimeServices, blueprintLoader);
     }
 
     /**

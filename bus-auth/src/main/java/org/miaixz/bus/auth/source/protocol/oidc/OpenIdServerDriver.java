@@ -35,7 +35,7 @@ import org.miaixz.bus.auth.shared.jose.JweService;
 import org.miaixz.bus.auth.shared.jose.JwsService;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
 import org.miaixz.bus.auth.shared.pkce.PkceValidator;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.ProtocolDriver;
 import org.miaixz.bus.auth.source.protocol.oauth2.codec.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.grant.AccessTokenIssuer;
@@ -220,13 +220,13 @@ public class OpenIdServerDriver implements ProtocolDriver<OpenIdServerOptions> {
      * Consumes typed options and assembles one endpoint-accurate OpenID Provider Source runtime.
      *
      * @param prepared one-time validated Source graph, Options and dependency declaration
-     * @param services dependency-scoped runtime services
+     * @param services capability-limited Source services
      * @return immutable executable Source worker
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if Source routing, options, or signing policy is invalid
      */
     @Override
-    public SourceWorker compile(final Prepared<OpenIdServerOptions> prepared, final DriverServices services) {
+    public SourceWorker compile(final Prepared<OpenIdServerOptions> prepared, final SourceServices services) {
         Assert.notNull(prepared, "OpenID Provider Source preparation must not be null");
         Assert.notNull(services, "OpenID Provider execution services must not be null");
         final Blueprint.SourceEntry entry = prepared.entry();

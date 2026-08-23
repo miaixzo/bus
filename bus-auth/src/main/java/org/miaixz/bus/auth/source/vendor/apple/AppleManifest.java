@@ -48,7 +48,7 @@ import org.miaixz.bus.core.net.tls.TlsClientAuth;
 public class AppleManifest implements VendorManifest<AppleOptions> {
 
     /**
-     * Stable platform routing identifier shared by registration, catalog, and runtime compilation.
+     * Stable platform routing identifier shared by registration, Source lookup, and runtime compilation.
      */
     public static final Vendor.Id ID = new Vendor.Id("apple");
 
@@ -121,7 +121,7 @@ public class AppleManifest implements VendorManifest<AppleOptions> {
             CAPABILITIES, DEVIATIONS);
 
     /**
-     * Creates the stateless Sign in with Apple manifest used by Vendor directory assembly.
+     * Creates the stateless Sign in with Apple manifest used by Vendor module assembly.
      */
     public AppleManifest() {
         // No initialization required.

@@ -27,7 +27,7 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.FabricX;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.AuthorizationServerMetadata;
 import org.miaixz.bus.auth.source.protocol.oauth2.codec.AuthorizationServerMetadataCodec;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
@@ -52,7 +52,7 @@ public class AuthorizationServerMetadataClient {
     /**
      * Capability-limited Source services supplying security policies and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Strict RFC 8414 JSON codec.
@@ -67,7 +67,7 @@ public class AuthorizationServerMetadataClient {
      * @param codec    strict RFC 8414 metadata codec
      * @throws IllegalArgumentException if a collaborator is {@code null} or no metadata endpoint is configured
      */
-    public AuthorizationServerMetadataClient(final OAuth2ClientOptions options, final DriverServices services,
+    public AuthorizationServerMetadataClient(final OAuth2ClientOptions options, final SourceServices services,
             final AuthorizationServerMetadataCodec codec) {
         this.options = Assert.notNull(options, "OAuth 2.x client options must not be null");
         Assert.notNull(

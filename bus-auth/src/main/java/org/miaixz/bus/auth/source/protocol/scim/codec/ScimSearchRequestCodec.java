@@ -295,6 +295,8 @@ public class ScimSearchRequestCodec {
      * @param sortOrder          optional sort direction
      * @param startIndex         optional one-based start index
      * @param count              optional result count
+     *
+     * @author Kimi Liu
      */
     private record SearchDocument(JsonValue schemas, Optional<JsonValue> filter, Optional<JsonValue> attributes,
             Optional<JsonValue> excludedAttributes, Optional<JsonValue> sortBy, Optional<JsonValue> sortOrder,

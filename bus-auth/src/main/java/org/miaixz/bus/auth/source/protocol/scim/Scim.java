@@ -160,6 +160,8 @@ public class Scim {
 
     /**
      * Defines standard relative endpoint paths used by SCIM HTTP bindings.
+     *
+     * @author Kimi Liu
      */
     public static class Paths {
 
@@ -203,6 +205,8 @@ public class Scim {
 
     /**
      * Defines standard resource type names used by routing and membership values.
+     *
+     * @author Kimi Liu
      */
     public static class ResourceTypes {
 
@@ -226,6 +230,8 @@ public class Scim {
 
     /**
      * Defines standard PatchOp operation values.
+     *
+     * @author Kimi Liu
      */
     public static class Operations {
 
@@ -253,6 +259,8 @@ public class Scim {
 
     /**
      * Defines standard SCIM JSON attribute and message member names.
+     *
+     * @author Kimi Liu
      */
     public static class Attributes {
 

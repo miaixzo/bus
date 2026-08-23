@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.auth.source.vendor.wechat;
 
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.vendor.VendorManifest;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
@@ -38,11 +38,11 @@ public class WeChatOpenAdapter extends WeChatAdapterSupport {
      * @param manifest selected WeChat manifest
      * @param variant  selected Open Platform variant manifest
      * @param options  validated Open Platform options
-     * @param services externally supplied execution services
+     * @param services capability-limited Source services
      * @throws ValidateException if the selected variant is not {@code open}
      */
     public WeChatOpenAdapter(final String spaceId, final String sourceId, final WeChatManifest manifest,
-            final VendorManifest.Variant variant, final WeChatOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final WeChatOptions options, final SourceServices services) {
         super(spaceId, sourceId, manifest, variant, options, services);
         if (!WeChatManifest.OPEN.equals(options.variant())) {
             throw new ValidateException("WeChat Open adapter requires the open variant");

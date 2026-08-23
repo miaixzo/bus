@@ -36,7 +36,7 @@ import org.miaixz.bus.auth.guard.RedirectUriValidator;
 import org.miaixz.bus.auth.guard.ScopeValidator;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.worker.ConsentService;
 import org.miaixz.bus.auth.worker.loader.ConsumerLoader;
@@ -92,7 +92,7 @@ public class AuthorizationCodeIssuer {
     /**
      * Caller-owned runtime ports used for registration, consent, and atomic state.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Exact registered redirect URI validator shared with other OAuth operations.
@@ -114,12 +114,12 @@ public class AuthorizationCodeIssuer {
      *
      * @param sourceId             compiled server-role Source identifier used for state isolation
      * @param options              validated authorization-server options
-     * @param services             externally implemented runtime dependencies
+     * @param services             capability-limited Source services
      * @param redirectUriValidator exact redirect URI validator
      * @param scopeValidator       standard scope validator
      * @throws IllegalArgumentException if the identifier is blank or a collaborator is {@code null}
      */
-    public AuthorizationCodeIssuer(final String sourceId, final GrantPolicy options, final DriverServices services,
+    public AuthorizationCodeIssuer(final String sourceId, final GrantPolicy options, final SourceServices services,
             final RedirectUriValidator redirectUriValidator, final ScopeValidator scopeValidator) {
         this(sourceId, options, services, redirectUriValidator, scopeValidator,
                 (subject, consumer, binding, context, timeout) -> CompletableFuture
@@ -131,13 +131,13 @@ public class AuthorizationCodeIssuer {
      *
      * @param sourceId             compiled server-role Source identifier used for state isolation
      * @param options              validated authorization-server options
-     * @param services             externally implemented runtime dependencies
+     * @param services             capability-limited Source services
      * @param redirectUriValidator exact redirect URI validator
      * @param scopeValidator       standard scope validator
      * @param openIdBinder         compile-time selected OpenID wire-subject binder
      * @throws IllegalArgumentException if the identifier is blank or a collaborator is {@code null}
      */
-    public AuthorizationCodeIssuer(final String sourceId, final GrantPolicy options, final DriverServices services,
+    public AuthorizationCodeIssuer(final String sourceId, final GrantPolicy options, final SourceServices services,
             final RedirectUriValidator redirectUriValidator, final ScopeValidator scopeValidator,
             final OpenIdBinder openIdBinder) {
         this.sourceId = Assert.notBlank(sourceId, "OAuth 2.x Source id must not be blank");

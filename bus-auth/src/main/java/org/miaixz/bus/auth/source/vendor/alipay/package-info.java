@@ -26,11 +26,11 @@
  * deviations. AlipayOptions adds the Alipay response-verification key identifier to the common configuration values.
  * </p>
  * <p>
- * Vendor catalog and compilation consume this package; the signed gateway adapter is co-located and instantiated only
- * by the framework Vendor suite. Users supply the application ID, private signing-key reference, public
- * verification-key ID, exact callback, and optional registered scope only. They do not supply fixed endpoints, key
- * material, gateway method names, response envelopes, or timestamp and signing fields. No platform scope enum, OAuth
- * TokenResponse, UserInfo model, refresh capability, or private DTO is exported.
+ * Vendor module assembly and runtime compilation consume this package; the signed gateway adapter is co-located and
+ * instantiated only by the framework Vendor suite. Users supply the application ID, private signing-key reference,
+ * public verification-key ID, exact callback, and optional registered scope only. They do not supply fixed endpoints,
+ * key material, gateway method names, response envelopes, or timestamp and signing fields. No platform scope enum,
+ * OAuth TokenResponse, UserInfo model, refresh capability, or private DTO is exported.
  * </p>
  * <p>
  * Routing is exact, signing credentials must reference PRIVATE_KEY, {@code auth_user} occurs at most once, callbacks

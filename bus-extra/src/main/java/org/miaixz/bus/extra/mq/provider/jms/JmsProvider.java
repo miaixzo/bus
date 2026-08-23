@@ -41,6 +41,13 @@ import org.miaixz.bus.logger.Logger;
 public abstract class JmsProvider implements MQProvider, Closeable {
 
     /**
+     * Constructs a JMS provider with the default queue mode and group names.
+     */
+    public JmsProvider() {
+        // No initialization required.
+    }
+
+    /**
      * The JMS connection object.
      */
     private Connection connection;

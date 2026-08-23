@@ -30,9 +30,8 @@ import java.util.function.Function;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Realm;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.vendor.VendorAdapter;
 import org.miaixz.bus.auth.source.vendor.VendorManifest;
 import org.miaixz.bus.auth.source.vendor.VendorTargets;
@@ -124,7 +123,7 @@ public class FeishuRealmAdapter implements VendorAdapter {
     /**
      * Caller-owned execution services used without taking lifecycle ownership.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Resolved manifest-owned token and Contact v3 endpoints.
@@ -144,12 +143,12 @@ public class FeishuRealmAdapter implements VendorAdapter {
      * @param manifest exact Feishu manifest
      * @param variant  exact selected Realm Variant
      * @param options  validated Feishu Realm options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if the manifest, Variant, protocol, targets, or options are inconsistent
      */
     public FeishuRealmAdapter(final String spaceId, final String sourceId, final FeishuManifest manifest,
-            final VendorManifest.Variant variant, final FeishuOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final FeishuOptions options, final SourceServices services) {
         Assert.notBlank(spaceId, "Feishu Realm space id must not be blank");
         Assert.notBlank(sourceId, "Feishu Realm Source id must not be blank");
         final FeishuManifest selectedManifest = Assert.notNull(manifest, "Feishu Realm manifest must not be null");

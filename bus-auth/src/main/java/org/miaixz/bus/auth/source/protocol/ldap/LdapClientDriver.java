@@ -30,10 +30,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Scheme.Options;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.ProtocolDriver;
 import org.miaixz.bus.auth.source.protocol.ldap.client.LdapClient;
@@ -126,13 +125,13 @@ public class LdapClientDriver implements ProtocolDriver<LdapClientOptions> {
      * Validates typed options, enforces the LDAP security rule, and assembles one direct-authentication runtime.
      *
      * @param prepared one-time validated Source graph, Options and dependency declaration
-     * @param services dependency-scoped runtime services
+     * @param services capability-limited Source services
      * @return immutable executable LDAP Source
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if Source configuration, options, or security-rule validation fails
      */
     @Override
-    public SourceWorker compile(final Prepared<LdapClientOptions> prepared, final DriverServices services) {
+    public SourceWorker compile(final Prepared<LdapClientOptions> prepared, final SourceServices services) {
         Assert.notNull(prepared, "LDAP Source preparation must not be null");
         Assert.notNull(services, "LDAP Source execution services must not be null");
         final Blueprint.SourceEntry entry = prepared.entry();
@@ -182,7 +181,7 @@ public class LdapClientDriver implements ProtocolDriver<LdapClientOptions> {
         /**
          * Capability-limited Source services supplying the executor and security policies.
          */
-        private final DriverServices services;
+        private final SourceServices services;
 
         /**
          * LDAP stream frame codec template.
@@ -215,7 +214,7 @@ public class LdapClientDriver implements ProtocolDriver<LdapClientOptions> {
          * @param decoder    LDAPMessage decoder
          * @param identity   verified identity mapper
          */
-        private CompiledClient(final String sourceId, final LdapClientOptions options, final DriverServices services,
+        private CompiledClient(final String sourceId, final LdapClientOptions options, final SourceServices services,
                 final BerCodec frameCodec, final LdapMessageEncoder encoder, final LdapMessageDecoder decoder,
                 final LdapIdentityParser identity) {
             this.sourceId = Assert.notBlank(sourceId, "LDAP Source id must not be blank");

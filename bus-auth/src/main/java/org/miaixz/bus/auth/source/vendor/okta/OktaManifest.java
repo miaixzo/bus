@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.miaixz.bus.auth.*;
-import org.miaixz.bus.auth.Realm;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.protocol.oidc.client.OpenIdClientScheme;

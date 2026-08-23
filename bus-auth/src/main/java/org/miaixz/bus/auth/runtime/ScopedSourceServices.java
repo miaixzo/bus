@@ -25,8 +25,8 @@ import org.miaixz.bus.auth.Blueprint;
 import org.miaixz.bus.auth.Policies;
 import org.miaixz.bus.auth.cache.*;
 import org.miaixz.bus.auth.resolver.*;
-import org.miaixz.bus.auth.source.DriverServices;
 import org.miaixz.bus.auth.source.SourceDriver;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.worker.*;
 import org.miaixz.bus.auth.worker.loader.*;
 import org.miaixz.bus.core.lang.Assert;
@@ -43,12 +43,12 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  *
  * @author Kimi Liu
  */
-final class ScopedDriverServices implements DriverServices {
+final class ScopedSourceServices implements SourceServices {
 
     /**
      * Complete runtime service set behind this capability boundary.
      */
-    private final RuntimeServices services;
+    private final RuntimeServices runtimeServices;
 
     /**
      * Exact immutable Source Blueprint entry owning this view.
@@ -113,30 +113,30 @@ final class ScopedDriverServices implements DriverServices {
     /**
      * Creates one capability-limited Source service view.
      *
-     * @param services     complete runtime service set
-     * @param entry        exact Source Blueprint entry
-     * @param slots        declared project data slots
-     * @param dependencies declared framework dependencies
-     * @param generation   security-state generation assigned during Source compilation
+     * @param runtimeServices complete runtime service set
+     * @param entry           exact Source Blueprint entry
+     * @param slots           declared project data slots
+     * @param dependencies    declared framework dependencies
+     * @param generation      security-state generation assigned during Source compilation
      */
-    ScopedDriverServices(final RuntimeServices services, final Blueprint.SourceEntry entry, final WorkerSlots slots,
-            final SourceDriver.Dependencies dependencies, final long generation) {
-        this.services = Assert.notNull(services, "Runtime services must not be null");
+    ScopedSourceServices(final RuntimeServices runtimeServices, final Blueprint.SourceEntry entry,
+            final WorkerSlots slots, final SourceDriver.Dependencies dependencies, final long generation) {
+        this.runtimeServices = Assert.notNull(runtimeServices, "Runtime services must not be null");
         this.entry = Assert.notNull(entry, "Scoped Source Blueprint entry must not be null");
-        this.slots = Assert.notNull(slots, "Driver service slots must not be null");
-        this.dependencies = Assert.notNull(dependencies, "Driver framework dependencies must not be null");
+        this.slots = Assert.notNull(slots, "Source service slots must not be null");
+        this.dependencies = Assert.notNull(dependencies, "Source framework dependencies must not be null");
         Assert.isTrue(generation >= 0L, "Scoped Source generation must not be negative");
         final String sourceId = Assert
                 .notBlank(this.entry.resource().getId(), "Scoped Source Blueprint entry id must not be blank");
-        this.stateCache = services.stateCache(sourceId, generation);
-        this.nonceCache = services.nonceCache(sourceId, generation);
-        this.authorizationCodeCache = services.authorizationCodeCache(sourceId, generation);
-        this.deviceCodeCache = services.deviceCodeCache(sourceId, generation);
-        this.authorizationCache = services.authorizationCache(sourceId, generation);
-        this.accessTokenCache = services.accessTokenCache(sourceId, generation);
-        this.refreshTokenCache = services.refreshTokenCache(sourceId, generation);
-        this.sessionCache = services.sessionCache(sourceId, generation);
-        this.idTokenCache = services.idTokenCache(sourceId, generation);
+        this.stateCache = runtimeServices.stateCache(sourceId, generation);
+        this.nonceCache = runtimeServices.nonceCache(sourceId, generation);
+        this.authorizationCodeCache = runtimeServices.authorizationCodeCache(sourceId, generation);
+        this.deviceCodeCache = runtimeServices.deviceCodeCache(sourceId, generation);
+        this.authorizationCache = runtimeServices.authorizationCache(sourceId, generation);
+        this.accessTokenCache = runtimeServices.accessTokenCache(sourceId, generation);
+        this.refreshTokenCache = runtimeServices.refreshTokenCache(sourceId, generation);
+        this.sessionCache = runtimeServices.sessionCache(sourceId, generation);
+        this.idTokenCache = runtimeServices.idTokenCache(sourceId, generation);
     }
 
     /**
@@ -179,7 +179,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public Executor executor() {
         require(SourceDriver.Dependencies.Service.EXECUTOR);
-        return services.executor();
+        return runtimeServices.executor();
     }
 
     /**
@@ -190,7 +190,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public BindingResolver bindingResolver() {
         require(WorkerSlots.Slot.BINDING);
-        return services.bindingResolver();
+        return runtimeServices.bindingResolver();
     }
 
     /**
@@ -201,7 +201,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public ConsumerLoader consumerLoader() {
         require(WorkerSlots.Slot.CONSUMER);
-        return services.consumerLoader();
+        return runtimeServices.consumerLoader();
     }
 
     /**
@@ -212,7 +212,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public ConsumerParser consumerParser() {
         require(WorkerSlots.Slot.CONSUMER);
-        return services.consumerParser();
+        return runtimeServices.consumerParser();
     }
 
     /**
@@ -223,7 +223,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public ConsumerVerifier consumerVerifier() {
         require(WorkerSlots.Slot.CONSUMER_VERIFIER);
-        return services.consumerVerifier();
+        return runtimeServices.consumerVerifier();
     }
 
     /**
@@ -234,7 +234,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public FederationLoader federationLoader() {
         require(WorkerSlots.Slot.FEDERATION);
-        return services.federationLoader();
+        return runtimeServices.federationLoader();
     }
 
     /**
@@ -245,7 +245,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public FederationParser federationParser() {
         require(WorkerSlots.Slot.FEDERATION);
-        return services.federationParser();
+        return runtimeServices.federationParser();
     }
 
     /**
@@ -256,7 +256,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public SecretLoader secretLoader() {
         require(WorkerSlots.Slot.SECRET);
-        return services.secretLoader();
+        return runtimeServices.secretLoader();
     }
 
     /**
@@ -267,7 +267,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public SecretParser secretParser() {
         require(WorkerSlots.Slot.SECRET);
-        return services.secretParser();
+        return runtimeServices.secretParser();
     }
 
     /**
@@ -278,7 +278,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public CredentialStore credentialStore() {
         require(WorkerSlots.Slot.CREDENTIAL);
-        return services.credentialStore();
+        return runtimeServices.credentialStore();
     }
 
     /**
@@ -289,7 +289,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public KeyLoader keyLoader() {
         require(WorkerSlots.Slot.KEY);
-        return services.keyLoader();
+        return runtimeServices.keyLoader();
     }
 
     /**
@@ -300,7 +300,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public KeyParser keyParser() {
         require(WorkerSlots.Slot.KEY);
-        return services.keyParser();
+        return runtimeServices.keyParser();
     }
 
     /**
@@ -311,7 +311,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public CertificateLoader certificateLoader() {
         require(WorkerSlots.Slot.CERTIFICATE);
-        return services.certificateLoader();
+        return runtimeServices.certificateLoader();
     }
 
     /**
@@ -322,7 +322,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public CertificateParser certificateParser() {
         require(WorkerSlots.Slot.CERTIFICATE);
-        return services.certificateParser();
+        return runtimeServices.certificateParser();
     }
 
     /**
@@ -333,7 +333,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public AttributeLoader attributeLoader() {
         require(WorkerSlots.Slot.ATTRIBUTE);
-        return services.attributeLoader();
+        return runtimeServices.attributeLoader();
     }
 
     /**
@@ -344,7 +344,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public AttributeParser attributeParser() {
         require(WorkerSlots.Slot.ATTRIBUTE);
-        return services.attributeParser();
+        return runtimeServices.attributeParser();
     }
 
     /**
@@ -355,7 +355,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public ResourceLoader resourceLoader() {
         require(WorkerSlots.Slot.RESOURCE);
-        return services.resourceLoader();
+        return runtimeServices.resourceLoader();
     }
 
     /**
@@ -366,7 +366,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public ResourceParser resourceParser() {
         require(WorkerSlots.Slot.RESOURCE);
-        return services.resourceParser();
+        return runtimeServices.resourceParser();
     }
 
     /**
@@ -476,7 +476,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public ReplayCache replayCache() {
         require(SourceDriver.Dependencies.Service.REPLAY_CACHE);
-        return services.replayCache();
+        return runtimeServices.replayCache();
     }
 
     /**
@@ -487,7 +487,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public ConsentService consentService() {
         require(WorkerSlots.Slot.CONSENT);
-        return services.consentService();
+        return runtimeServices.consentService();
     }
 
     /**
@@ -498,7 +498,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public SessionWorker sessionWorker() {
         require(WorkerSlots.Slot.SESSION);
-        return services.sessionWorker();
+        return runtimeServices.sessionWorker();
     }
 
     /**
@@ -509,7 +509,7 @@ final class ScopedDriverServices implements DriverServices {
     @Override
     public Policies policies() {
         require(SourceDriver.Dependencies.Service.POLICIES);
-        return services.policies();
+        return runtimeServices.policies();
     }
 
 }

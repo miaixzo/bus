@@ -31,9 +31,8 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.FabricX.UrlBuilder;
-import org.miaixz.bus.auth.Realm;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.source.vendor.VendorAdapter;
@@ -129,7 +128,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
     /**
      * Caller-owned services used without taking lifecycle ownership.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Resolved token and Graph endpoints declared by the selected manifest.
@@ -154,12 +153,12 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
      * @param manifest exact Microsoft manifest
      * @param variant  exact selected Microsoft Realm Variant
      * @param options  validated Microsoft Realm options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if manifest, Variant, protocol, targets, or options are inconsistent
      */
     public MicrosoftRealmAdapter(final String spaceId, final String sourceId, final MicrosoftManifest manifest,
-            final VendorManifest.Variant variant, final MicrosoftOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final MicrosoftOptions options, final SourceServices services) {
         Assert.notBlank(spaceId, "Microsoft Realm space id must not be blank");
         Assert.notBlank(sourceId, "Microsoft Realm Source id must not be blank");
         final MicrosoftManifest selectedManifest = Assert

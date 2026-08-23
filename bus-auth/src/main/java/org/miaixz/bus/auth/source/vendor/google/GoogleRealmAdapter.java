@@ -32,13 +32,12 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.FabricX.UrlBuilder;
-import org.miaixz.bus.auth.Realm;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
 import org.miaixz.bus.auth.shared.jose.JoseHeader;
 import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
 import org.miaixz.bus.auth.shared.jose.JwsService;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.source.vendor.VendorAdapter;
 import org.miaixz.bus.auth.source.vendor.VendorManifest;
@@ -137,7 +136,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
     /**
      * Caller-owned execution services used without taking lifecycle ownership.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Resolved token and Admin SDK endpoints declared by the selected manifest.
@@ -162,12 +161,12 @@ public class GoogleRealmAdapter implements VendorAdapter {
      * @param manifest exact Google manifest
      * @param variant  exact selected Workspace Variant
      * @param options  validated Workspace options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if manifest, Variant, protocol, targets, or options are inconsistent
      */
     public GoogleRealmAdapter(final String spaceId, final String sourceId, final GoogleManifest manifest,
-            final VendorManifest.Variant variant, final GoogleOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final GoogleOptions options, final SourceServices services) {
         Assert.notBlank(spaceId, "Google Workspace space id must not be blank");
         Assert.notBlank(sourceId, "Google Workspace Source id must not be blank");
         final GoogleManifest selectedManifest = Assert.notNull(manifest, "Google manifest must not be null");

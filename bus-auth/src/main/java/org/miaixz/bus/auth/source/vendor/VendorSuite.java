@@ -19,20 +19,12 @@
 */
 package org.miaixz.bus.auth.source.vendor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import org.miaixz.bus.auth.source.SourceDiscovery;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 
 /**
  * Registers Vendor connectors atomically and freezes their declared platform bindings into one module.
@@ -85,38 +77,44 @@ public class VendorSuite implements VendorRegistry {
     }
 
     /**
-     * Loads every visible Vendor connector through the Bus SPI loader in stable platform order.
+     * Loads every visible Vendor connector from the unified Source SPI in stable platform order.
      *
      * @param selected selected platform keys, or {@code null} for every visible registration
      * @return immutable ordered connector list
      * @throws ValidateException if no connector is visible or a selected key is unknown
      */
     static List<VendorConnector> connectors(final Set<Vendor.Id> selected) {
-        final List<VendorConnector> connectors = new ArrayList<>();
-        for (VendorConnector connector : NormalSpiLoader.loadList(VendorConnector.class)) {
-            connectors.add(Assert.notNull(connector, "Vendor connector must not be null"));
-        }
-        if (connectors.isEmpty()) {
-            throw new ValidateException("No Vendor connectors were discovered");
-        }
-        connectors.sort(Comparator.comparing(connector -> connector.key().value()));
-        if (selected == null) {
-            return List.copyOf(connectors);
-        }
-        final Set<Vendor.Id> requested = new LinkedHashSet<>();
-        for (Vendor.Id candidate : selected) {
-            requested.add(Assert.notNull(candidate, "Selected Vendor id must not be null"));
-        }
-        final List<VendorConnector> filtered = new ArrayList<>();
-        for (VendorConnector connector : connectors) {
-            if (requested.remove(Assert.notNull(connector.key(), "Vendor connector key must not be null"))) {
-                filtered.add(connector);
+        return SourceDiscovery.load().vendors(selected);
+    }
+
+    /**
+     * Expands one exact typed binding into the immutable module indexes.
+     *
+     * @param binding         typed Vendor binding
+     * @param manifests       mutable ordered manifest list
+     * @param adapterBindings mutable exact adapter binding index
+     * @param optionBindings  mutable exact Options binding index
+     * @param <O>             exact immutable Vendor options type
+     */
+    private static <O extends VendorOptions<?>> void assemble(
+            final VendorBinding<O> binding,
+            final List<VendorManifest<?>> manifests,
+            final Map<AdapterBindings.Key, AdapterBindings.Binding> adapterBindings,
+            final Map<OptionsBindings.Key, OptionsBindings.Binding> optionBindings) {
+        final VendorManifest<O> manifest = binding.manifest();
+        manifests.add(manifest);
+        for (VendorManifest.Variant variant : manifest.variants()) {
+            final AdapterBindings.Key adapterKey = new AdapterBindings.Key(manifest.vendor(), variant.variant());
+            if (adapterBindings.putIfAbsent(adapterKey, binding.binding(variant.variant())) != null) {
+                throw new ValidateException("Duplicate Vendor adapter factory: " + manifest.vendor().value()
+                        + Symbol.C_SLASH + variant.variant().value());
+            }
+            final OptionsBindings.Key optionKey = new OptionsBindings.Key(manifest.vendor(), variant.variant());
+            if (optionBindings.putIfAbsent(optionKey, binding.optionsBinding(variant.variant())) != null) {
+                throw new ValidateException("Duplicate Vendor Options factory: " + manifest.vendor().value()
+                        + Symbol.C_SLASH + variant.variant().value());
             }
         }
-        if (!requested.isEmpty()) {
-            throw new ValidateException("Unknown Vendor connector selection");
-        }
-        return List.copyOf(filtered);
     }
 
     /**
@@ -129,7 +127,7 @@ public class VendorSuite implements VendorRegistry {
     public synchronized VendorRegistry bind(final VendorBinding<?> binding) {
         mutable();
         if (active == null) {
-            throw new ValidateException("Vendor bindings may be bound only during Vendor connector connection");
+            throw new ValidateException("Vendor bindings may be bound only during a Vendor connector callback");
         }
         if (emitted != null) {
             throw new ValidateException("Vendor connector must submit exactly one complete binding");
@@ -260,7 +258,7 @@ public class VendorSuite implements VendorRegistry {
      * @return immutable Vendor module
      * @throws ValidateException if no platform has been registered or this suite is already frozen
      */
-    public synchronized VendorModule module() {
+    public synchronized VendorModule freeze() {
         mutable();
         if (bindings.isEmpty()) {
             throw new ValidateException("Vendor module must contain at least one platform registration");
@@ -275,36 +273,6 @@ public class VendorSuite implements VendorRegistry {
                 new OptionsBindings(optionBindings));
         frozen = true;
         return module;
-    }
-
-    /**
-     * Expands one exact typed binding into the immutable module indexes.
-     *
-     * @param binding         typed Vendor binding
-     * @param manifests       mutable ordered manifest list
-     * @param adapterBindings mutable exact adapter binding index
-     * @param optionBindings  mutable exact Options binding index
-     * @param <O>             exact immutable Vendor options type
-     */
-    private static <O extends VendorOptions<?>> void assemble(
-            final VendorBinding<O> binding,
-            final List<VendorManifest<?>> manifests,
-            final Map<AdapterBindings.Key, AdapterBindings.Binding> adapterBindings,
-            final Map<OptionsBindings.Key, OptionsBindings.Binding> optionBindings) {
-        final VendorManifest<O> manifest = binding.manifest();
-        manifests.add(manifest);
-        for (VendorManifest.Variant variant : manifest.variants()) {
-            final AdapterBindings.Key adapterKey = new AdapterBindings.Key(manifest.vendor(), variant.variant());
-            if (adapterBindings.putIfAbsent(adapterKey, binding.binding(variant.variant())) != null) {
-                throw new ValidateException("Duplicate Vendor adapter factory: " + manifest.vendor().value()
-                        + Symbol.C_SLASH + variant.variant().value());
-            }
-            final OptionsBindings.Key optionKey = new OptionsBindings.Key(manifest.vendor(), variant.variant());
-            if (optionBindings.putIfAbsent(optionKey, binding.optionsBinding(variant.variant())) != null) {
-                throw new ValidateException("Duplicate Vendor Options factory: " + manifest.vendor().value()
-                        + Symbol.C_SLASH + variant.variant().value());
-            }
-        }
     }
 
     /**

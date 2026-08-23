@@ -25,7 +25,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Scheme.Options;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.ProtocolDriver;
 import org.miaixz.bus.auth.source.protocol.radius.codec.EapMessageCodec;
 import org.miaixz.bus.auth.source.protocol.radius.codec.RadiusAttributeCodec;
@@ -110,13 +110,13 @@ public class RadiusServerDriver implements ProtocolDriver<RadiusServerOptions> {
      * Consumes typed options, resolves the exact handler binding, and assembles both RADIUS operations.
      *
      * @param prepared one-time validated Source graph, Options and dependency declaration
-     * @param services dependency-scoped runtime services
+     * @param services capability-limited Source services
      * @return immutable executable RADIUS server-role Source runtime
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if Source configuration, options, security-rule, or binding validation fails
      */
     @Override
-    public SourceWorker compile(final Prepared<RadiusServerOptions> prepared, final DriverServices services) {
+    public SourceWorker compile(final Prepared<RadiusServerOptions> prepared, final SourceServices services) {
         Assert.notNull(prepared, "RADIUS server preparation must not be null");
         Assert.notNull(services, "RADIUS server execution services must not be null");
         final Blueprint.SourceEntry entry = prepared.entry();

@@ -30,7 +30,7 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.DeviceAuthorizationRequest;
 import org.miaixz.bus.auth.source.protocol.oauth2.DeviceAuthorizationResponse;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
@@ -61,7 +61,7 @@ public class DeviceAuthorizationClient {
     /**
      * Capability-limited Source services supplying security policies and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Strict RFC 8628 request and response codec.
@@ -81,7 +81,7 @@ public class DeviceAuthorizationClient {
      * @param codec    strict RFC 8628 codec
      * @throws IllegalArgumentException if a collaborator is {@code null} or no device endpoint is configured
      */
-    public DeviceAuthorizationClient(final OAuth2ClientOptions options, final DriverServices services,
+    public DeviceAuthorizationClient(final OAuth2ClientOptions options, final SourceServices services,
             final DeviceAuthorizationCodec codec) {
         this.options = Assert.notNull(options, "OAuth 2.x client options must not be null");
         Assert.notNull(

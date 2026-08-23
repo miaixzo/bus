@@ -1147,7 +1147,7 @@
       "allDeclaredMethods": true
     },
     {
-      "type": "org.miaixz.bus.auth.runtime.ScopedDriverServices",
+      "type": "org.miaixz.bus.auth.runtime.ScopedSourceServices",
       "allDeclaredConstructors": true,
       "allDeclaredFields": true,
       "allDeclaredMethods": true
@@ -1459,13 +1459,19 @@
       "allDeclaredMethods": true
     },
     {
-      "type": "org.miaixz.bus.auth.shared.jwt.Jwt",
+      "type": "org.miaixz.bus.auth.shared.jwt.JWT",
       "allDeclaredConstructors": true,
       "allDeclaredFields": true,
       "allDeclaredMethods": true
     },
     {
-      "type": "org.miaixz.bus.auth.shared.jwt.Jwt$Kind",
+      "type": "org.miaixz.bus.auth.shared.jwt.JWT$Kind",
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.auth.shared.jwt.JWT$Requirements",
       "allDeclaredConstructors": true,
       "allDeclaredFields": true,
       "allDeclaredMethods": true
@@ -1508,6 +1514,12 @@
     },
     {
       "type": "org.miaixz.bus.auth.shared.jwt.JwtIssuer$Request",
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.auth.shared.jwt.JwtService",
       "allDeclaredConstructors": true,
       "allDeclaredFields": true,
       "allDeclaredMethods": true
@@ -1591,19 +1603,43 @@
       "allDeclaredMethods": true
     },
     {
-      "type": "org.miaixz.bus.auth.source.DriverDirectory",
+      "type": "org.miaixz.bus.auth.source.SourceLookup",
       "allDeclaredConstructors": true,
       "allDeclaredFields": true,
       "allDeclaredMethods": true
     },
     {
-      "type": "org.miaixz.bus.auth.source.DriverDirectory$State",
+      "type": "org.miaixz.bus.auth.source.SourceLookup$State",
       "allDeclaredConstructors": true,
       "allDeclaredFields": true,
       "allDeclaredMethods": true
     },
     {
-      "type": "org.miaixz.bus.auth.source.DriverServices",
+      "type": "org.miaixz.bus.auth.source.SourceServices",
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.auth.source.SourceConnector",
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.auth.source.SourceConnector$Visitor",
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.auth.source.SourceDiscovery",
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.auth.source.SourceDiscovery$Discovered",
       "allDeclaredConstructors": true,
       "allDeclaredFields": true,
       "allDeclaredMethods": true
@@ -1652,6 +1688,18 @@
     },
     {
       "type": "org.miaixz.bus.auth.source.SourceModule$Fixed",
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.auth.source.SourceAggregate",
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.auth.source.SourceSuite",
       "allDeclaredConstructors": true,
       "allDeclaredFields": true,
       "allDeclaredMethods": true

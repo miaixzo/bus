@@ -22,12 +22,8 @@ package org.miaixz.bus.auth.source.vendor.twitter;
 import java.util.List;
 import java.util.Set;
 
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Capability;
-import org.miaixz.bus.auth.Credential;
-import org.miaixz.bus.auth.Endpoint;
+import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Scheme;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientScheme;
 import org.miaixz.bus.auth.source.vendor.Vendor;
@@ -113,7 +109,7 @@ public class TwitterManifest implements VendorManifest<TwitterOptions> {
             CAPABILITIES, DEVIATIONS);
 
     /**
-     * Creates the stateless Twitter manifest used by Vendor directory assembly.
+     * Creates the stateless Twitter manifest used by Vendor module assembly.
      */
     public TwitterManifest() {
         // No initialization required.

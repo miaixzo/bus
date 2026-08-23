@@ -31,7 +31,7 @@ import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.source.vendor.VendorAdapter;
 import org.miaixz.bus.auth.source.vendor.VendorManifest;
@@ -76,7 +76,7 @@ public class RedNoteSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned secret, JSON, network, and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Shared strict application-form encoder.
@@ -91,12 +91,12 @@ public class RedNoteSourceAdapter implements VendorAdapter {
      * @param manifest selected RedNote manifest
      * @param variant  exact marketing manifest
      * @param options  decoded externally loaded marketing options
-     * @param services caller-owned runtime dependencies
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, or options differ from marketing
      */
     public RedNoteSourceAdapter(final String spaceId, final String sourceId, final RedNoteManifest manifest,
-            final VendorManifest.Variant variant, final RedNoteOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final RedNoteOptions options, final SourceServices services) {
         Assert.notBlank(spaceId, "RedNote space id must not be blank");
         Assert.notBlank(sourceId, "RedNote Source id must not be blank");
         final RedNoteManifest selected = Assert.notNull(manifest, "RedNote manifest must not be null");

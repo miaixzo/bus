@@ -31,7 +31,7 @@ import org.miaixz.bus.auth.cache.AccessTokenCache;
 import org.miaixz.bus.auth.cache.AuthorizationCache;
 import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.cache.RefreshTokenCache;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.RevocationRequest;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -59,16 +59,16 @@ public class RevocationService {
     /**
      * Runtime dependencies containing both token caches.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Creates a revocation service for one compiled server-role Source runtime.
      *
      * @param sourceId compiled server-role Source identifier
-     * @param services externally owned runtime dependencies
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if the identifier is blank or services are {@code null}
      */
-    public RevocationService(final String sourceId, final DriverServices services) {
+    public RevocationService(final String sourceId, final SourceServices services) {
         this.sourceId = Assert.notBlank(sourceId, "OAuth 2.x Source id must not be blank");
         this.services = Assert.notNull(services, "OAuth 2.x execution services must not be null");
     }

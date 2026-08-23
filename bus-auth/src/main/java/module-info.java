@@ -23,7 +23,7 @@
  * The module exports protocol-neutral contracts including the non-entity {@code Realm} resource model, project data
  * loaders, pure parsers, runtime and Roster services, standard LDAP, OAuth 2.0, OpenID Connect, RADIUS, SAML, and SCIM
  * models and services, shared security value types, build-time Connector and Registry contracts, and immutable Vendor
- * Source schemes. Protocol and Vendor connectors are discovered as typed SPI services and connect declarations only to
+ * Source schemes. Protocol and Vendor connectors are discovered through one sealed Source SPI and dispatched to typed
  * build-scoped registries before runtime assembly. They do not establish remote connections; HTTP transport remains
  * owned by {@code bus.fabric}.
  * </p>
@@ -49,19 +49,15 @@ module bus.auth {
 
     requires static lombok;
 
-    uses org.miaixz.bus.auth.source.protocol.ProtocolConnector;
-    uses org.miaixz.bus.auth.source.vendor.VendorConnector;
+    uses org.miaixz.bus.auth.source.SourceConnector;
 
-    provides org.miaixz.bus.auth.source.protocol.ProtocolConnector
-            with org.miaixz.bus.auth.source.protocol.ldap.LdapConnector,
+    provides org.miaixz.bus.auth.source.SourceConnector with org.miaixz.bus.auth.source.protocol.ldap.LdapConnector,
             org.miaixz.bus.auth.source.protocol.oauth2.OAuth2Connector,
             org.miaixz.bus.auth.source.protocol.oidc.OpenIdConnector,
             org.miaixz.bus.auth.source.protocol.radius.RadiusConnector,
             org.miaixz.bus.auth.source.protocol.saml.SamlConnector,
-            org.miaixz.bus.auth.source.protocol.scim.ScimConnector;
-
-    provides org.miaixz.bus.auth.source.vendor.VendorConnector
-            with org.miaixz.bus.auth.source.vendor.afdian.AfdianConnector,
+            org.miaixz.bus.auth.source.protocol.scim.ScimConnector,
+            org.miaixz.bus.auth.source.vendor.afdian.AfdianConnector,
             org.miaixz.bus.auth.source.vendor.alipay.AlipayConnector,
             org.miaixz.bus.auth.source.vendor.aliyun.AliyunConnector,
             org.miaixz.bus.auth.source.vendor.amazon.AmazonConnector,

@@ -20,9 +20,10 @@
 /**
  * Defines implementation-neutral JWT values, issuance, signature verification, and registered-claim validation.
  * <p>
- * {@link org.miaixz.bus.auth.shared.jwt.Jwt} retains the encoded JOSE header, claims, and signature relationship;
+ * {@link org.miaixz.bus.auth.shared.jwt.JWT} retains the encoded JOSE header, claims, and signature relationship;
  * {@link org.miaixz.bus.auth.shared.jwt.JwtClaims} preserves typed JSON claim values.
- * {@link org.miaixz.bus.auth.shared.jwt.JwtIssuer} signs tokens through JOSE,
+ * {@link org.miaixz.bus.auth.shared.jwt.JwtService} coordinates reusable application and protocol operations behind the
+ * static {@code JWT} entry points. {@link org.miaixz.bus.auth.shared.jwt.JwtIssuer} signs tokens through JOSE,
  * {@link org.miaixz.bus.auth.shared.jwt.JwtVerifier} verifies their protected representation, and
  * {@link org.miaixz.bus.auth.shared.jwt.JwtValidator} applies issuer, audience, subject, time, and caller-selected
  * claim requirements.

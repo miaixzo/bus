@@ -32,7 +32,7 @@ import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 import org.miaixz.bus.auth.shared.jose.Jwk;
 import org.miaixz.bus.auth.shared.jose.JwkSet;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.worker.loader.KeyLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -60,16 +60,16 @@ public class JwkSetService {
     /**
      * External key set and shared clock dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Creates a public JWK Set service for one compiled OpenID Provider.
      *
      * @param options  validated OpenID Provider options
-     * @param services externally implemented runtime dependencies
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if a collaborator is {@code null}
      */
-    public JwkSetService(final OpenIdServerOptions options, final DriverServices services) {
+    public JwkSetService(final OpenIdServerOptions options, final SourceServices services) {
         this.options = Assert.notNull(options, "OpenID Connect JWK Set options must not be null");
         this.services = Assert.notNull(services, "OpenID Connect JWK Set execution services must not be null");
     }

@@ -27,11 +27,10 @@
  * ScimFilterEncoder implement the formal filter grammar rather than a project query language.
  * </p>
  * <p>
- * SCIM services call this package at the HTTP boundary. Codecs consume the application-wide strict
- * {@link JsonKit} facade, typed {@link JsonValue} values, standard
- * HTTP values, and SCIM models. They do not access persistence, authorize callers, apply mutations, resolve
- * credentials, invoke Roster, create identities, interpret Vendor data, or introduce a framework request, response,
- * page, or error envelope.
+ * SCIM services call this package at the HTTP boundary. Codecs consume the application-wide strict {@link JsonKit}
+ * facade, typed {@link JsonValue} values, standard HTTP values, and SCIM models. They do not access persistence,
+ * authorize callers, apply mutations, resolve credentials, invoke Roster, create identities, interpret Vendor data, or
+ * introduce a framework request, response, page, or error envelope.
  * </p>
  * <p>
  * Decoding enforces schema URNs, required and singleton fields, exact JSON types, duplicate rejection, attribute

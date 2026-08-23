@@ -22,16 +22,18 @@ package org.miaixz.bus.auth.source.vendor;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Holds exact platform, variant, manifest, and adapter-factory bindings.
  * <p>
- * Concrete options identify their own runtime type through {@link VendorOptions#type()}; this directory deliberately
- * stores no second options class token.
+ * Concrete options identify their own runtime type through {@link VendorOptions#type()}; this binding index
+ * deliberately stores no second options class token.
  * </p>
+ *
+ * @author Kimi Liu
  */
 final class AdapterBindings {
 
@@ -41,7 +43,7 @@ final class AdapterBindings {
     private final Map<Key, Binding> bindings;
 
     /**
-     * Validates and freezes the complete Vendor adapter binding directory.
+     * Validates and freezes the complete Vendor adapter binding index.
      *
      * @param bindings exact binding map assembled for the runtime
      */
@@ -62,7 +64,7 @@ final class AdapterBindings {
      * @param <O>          concrete Vendor options type
      * @param manifestType runtime manifest class used to validate the selected manifest
      * @param factory      typed adapter factory bound to the manifest
-     * @return checked erased binding stored by the directory
+     * @return checked erased binding stored by the index
      */
     static <D extends VendorManifest<O>, O extends VendorOptions<?>> Binding binding(
             final Class<D> manifestType,
@@ -80,7 +82,7 @@ final class AdapterBindings {
      * @param <O>      concrete Vendor options type
      * @param manifest exact externally registered manifest instance
      * @param factory  typed adapter factory bound to that instance
-     * @return checked erased binding stored by the directory
+     * @return checked erased binding stored by the index
      */
     static <O extends VendorOptions<?>> Binding binding(
             final VendorManifest<O> manifest,
@@ -121,7 +123,7 @@ final class AdapterBindings {
     }
 
     /**
-     * Returns the immutable exact-key binding directory.
+     * Returns the immutable exact-key binding index.
      *
      * @return immutable Vendor adapter bindings
      */
@@ -137,7 +139,7 @@ final class AdapterBindings {
      * @param manifest selected Vendor manifest
      * @param variant  selected manifest variant
      * @param options  validated options for the selected variant
-     * @param services runtime services exposed to the adapter
+     * @param services capability-limited Source services
      * @return adapter exposing exactly the selected variant capabilities
      * @throws ValidateException if routing is inconsistent, no factory exists, or factory construction fails
      */
@@ -147,14 +149,14 @@ final class AdapterBindings {
             final VendorManifest<?> manifest,
             final VendorManifest.Variant variant,
             final VendorOptions<?> options,
-            final DriverServices services) {
+            final SourceServices services) {
         Assert.notBlank(spaceId, "Vendor adapter space id must not be blank");
         Assert.notBlank(sourceId, "Vendor adapter Source id must not be blank");
         final VendorManifest<?> checkedManifest = Assert.notNull(manifest, "Vendor adapter manifest must not be null");
         final VendorManifest.Variant checkedVariant = Assert
                 .notNull(variant, "Vendor adapter variant must not be null");
         final VendorOptions<?> checkedOptions = Assert.notNull(options, "Vendor adapter options must not be null");
-        final DriverServices checkedServices = Assert.notNull(services, "Vendor adapter services must not be null");
+        final SourceServices checkedServices = Assert.notNull(services, "Vendor adapter services must not be null");
         if (!checkedOptions.vendor().equals(checkedManifest.vendor())
                 || !checkedVariant.platform().equals(checkedManifest.vendor())
                 || !checkedOptions.variant().equals(checkedVariant.variant())) {
@@ -182,6 +184,8 @@ final class AdapterBindings {
 
     /**
      * Erased, package-private invocation boundary retained inside one checked binding.
+     *
+     * @author Kimi Liu
      */
     @FunctionalInterface
     interface Invoker {
@@ -194,7 +198,7 @@ final class AdapterBindings {
          * @param manifest selected Vendor manifest
          * @param variant  selected manifest variant
          * @param options  selected runtime options
-         * @param services runtime services exposed to the adapter
+         * @param services capability-limited Source services
          * @return constructed Vendor adapter
          */
         VendorAdapter create(
@@ -203,7 +207,7 @@ final class AdapterBindings {
                 VendorManifest<?> manifest,
                 VendorManifest.Variant variant,
                 VendorOptions<?> options,
-                DriverServices services);
+                SourceServices services);
 
     }
 
@@ -211,6 +215,7 @@ final class AdapterBindings {
      * Stores one checked erased factory invocation.
      *
      * @param invoker factory invocation boundary
+     * @author Kimi Liu
      */
     record Binding(Invoker invoker) {
 
@@ -228,6 +233,7 @@ final class AdapterBindings {
      *
      * @param vendor  Vendor platform identifier
      * @param variant platform-specific variant identifier
+     * @author Kimi Liu
      */
     record Key(Vendor.Id vendor, Vendor.Variant variant) {
 

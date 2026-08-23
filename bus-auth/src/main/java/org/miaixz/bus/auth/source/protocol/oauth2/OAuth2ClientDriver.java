@@ -27,7 +27,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Scheme.Options;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.ProtocolDriver;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.codec.*;
@@ -152,13 +152,13 @@ public class OAuth2ClientDriver implements ProtocolDriver<OAuth2ClientOptions> {
      * Consumes typed options and creates only clients backed by configured endpoints.
      *
      * @param prepared one-time validated Source graph, Options and dependency declaration
-     * @param services dependency-scoped runtime services
+     * @param services capability-limited Source services
      * @return executable immutable Source worker
      * @throws IllegalArgumentException if an argument is {@code null}
      * @throws ValidateException        if Source routing fields do not match this driver
      */
     @Override
-    public SourceWorker compile(final Prepared<OAuth2ClientOptions> prepared, final DriverServices services) {
+    public SourceWorker compile(final Prepared<OAuth2ClientOptions> prepared, final SourceServices services) {
         Assert.notNull(prepared, "OAuth 2.x Source preparation must not be null");
         Assert.notNull(services, "OAuth 2.x Source execution services must not be null");
         final Blueprint.SourceEntry entry = prepared.entry();

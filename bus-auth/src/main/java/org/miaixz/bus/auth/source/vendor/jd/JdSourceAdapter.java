@@ -31,12 +31,11 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.FabricX.UrlBuilder;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientScheme;
@@ -112,7 +111,7 @@ public class JdSourceAdapter implements VendorAdapter {
     /**
      * Capability-limited Source services supplying loaders, parsers, JSON, executor, and security policies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Unified public OAuth capability router for the JD authorization operation.
@@ -137,12 +136,12 @@ public class JdSourceAdapter implements VendorAdapter {
      * @param manifest selected JD manifest
      * @param variant  selected default manifest
      * @param options  decoded externally loaded JD options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing or protocol differs from jd/default
      */
     public JdSourceAdapter(final String spaceId, final String sourceId, final JdManifest manifest,
-            final VendorManifest.Variant variant, final JdOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final JdOptions options, final SourceServices services) {
         Assert.notNull(manifest, "JD manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "JD Source id must not be blank");
         this.variant = Assert.notNull(variant, "JD manifest must not be null");

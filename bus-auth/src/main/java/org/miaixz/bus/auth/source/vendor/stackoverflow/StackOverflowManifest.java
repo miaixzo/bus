@@ -143,7 +143,7 @@ public class StackOverflowManifest implements VendorManifest<StackOverflowOption
             CAPABILITIES, DEVIATIONS);
 
     /**
-     * Creates the stateless Stack Overflow manifest used by Vendor directory assembly.
+     * Creates the stateless Stack Overflow manifest used by Vendor module assembly.
      */
     public StackOverflowManifest() {
         // No initialization required.

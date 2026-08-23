@@ -35,7 +35,7 @@ import org.miaixz.bus.auth.cache.DeviceCodeCache;
 import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.guard.ScopeValidator;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -79,7 +79,7 @@ public class DeviceAuthorizationService {
     /**
      * External client loader and framework atomic device-code cache.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Standard scope validator used for client and authorization-server subset checks.
@@ -96,12 +96,12 @@ public class DeviceAuthorizationService {
      *
      * @param sourceId       compiled server-role Source identifier
      * @param options        validated authorization-server options
-     * @param services       caller-owned runtime dependencies
+     * @param services       capability-limited Source services
      * @param scopeValidator standard scope validator
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
     public DeviceAuthorizationService(final String sourceId, final OAuth2ServerOptions options,
-            final DriverServices services, final ScopeValidator scopeValidator) {
+            final SourceServices services, final ScopeValidator scopeValidator) {
         this.sourceId = Assert.notBlank(sourceId, "OAuth 2.x Source id must not be blank");
         this.options = Assert.notNull(options, "OAuth 2.x authorization server options must not be null");
         this.services = Assert.notNull(services, "OAuth 2.x execution services must not be null");

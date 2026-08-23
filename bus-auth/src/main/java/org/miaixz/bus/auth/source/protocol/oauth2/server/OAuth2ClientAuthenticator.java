@@ -35,7 +35,7 @@ import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.ClientAuthenticationMethod;
 import org.miaixz.bus.auth.source.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
@@ -75,7 +75,7 @@ public class OAuth2ClientAuthenticator implements ClientAuthenticator<Request> {
     /**
      * Source-scoped project loaders and framework parsers.
      */
-    private final DriverServices services;
+    private final SourceServices services;
     /**
      * Strict application/x-www-form-urlencoded codec.
      */
@@ -90,9 +90,9 @@ public class OAuth2ClientAuthenticator implements ClientAuthenticator<Request> {
      * Creates an authenticator for one exact configured endpoint.
      *
      * @param endpoint configured OAuth endpoint and its accepted methods
-     * @param services selected Source execution services
+     * @param services capability-limited Source services
      */
-    public OAuth2ClientAuthenticator(final Endpoint endpoint, final DriverServices services) {
+    public OAuth2ClientAuthenticator(final Endpoint endpoint, final SourceServices services) {
         this(endpoint, services, null);
     }
 
@@ -100,9 +100,9 @@ public class OAuth2ClientAuthenticator implements ClientAuthenticator<Request> {
      * Creates the token-endpoint authenticator with standard and federated JWT assertion support.
      *
      * @param options  frozen OAuth authorization server options
-     * @param services selected Source execution services
+     * @param services capability-limited Source services
      */
-    public OAuth2ClientAuthenticator(final OAuth2ServerOptions options, final DriverServices services) {
+    public OAuth2ClientAuthenticator(final OAuth2ServerOptions options, final SourceServices services) {
         this(Assert.notNull(options, "OAuth 2.x client options must not be null").tokenEndpoint().getOrNull(), services,
                 jwt(options, services));
     }
@@ -111,10 +111,10 @@ public class OAuth2ClientAuthenticator implements ClientAuthenticator<Request> {
      * Creates an authenticator with an optional JWT assertion verifier.
      *
      * @param endpoint         configured OAuth endpoint and its accepted methods
-     * @param services         selected Source execution services
+     * @param services         capability-limited Source services
      * @param jwtAuthenticator optional token-endpoint JWT verifier
      */
-    private OAuth2ClientAuthenticator(final Endpoint endpoint, final DriverServices services,
+    private OAuth2ClientAuthenticator(final Endpoint endpoint, final SourceServices services,
             final JwtClientAuthenticator jwtAuthenticator) {
         this.endpoint = Assert.notNull(endpoint, "OAuth 2.x authenticated endpoint must not be null");
         this.services = Assert.notNull(services, "OAuth 2.x client authentication services must not be null");
@@ -126,10 +126,10 @@ public class OAuth2ClientAuthenticator implements ClientAuthenticator<Request> {
      * Creates a JWT verifier only when one configured authentication profile requires it.
      *
      * @param options  frozen OAuth authorization server options
-     * @param services selected Source execution services
+     * @param services capability-limited Source services
      * @return configured verifier or {@code null} when JWT authentication is disabled
      */
-    private static JwtClientAuthenticator jwt(final OAuth2ServerOptions options, final DriverServices services) {
+    private static JwtClientAuthenticator jwt(final OAuth2ServerOptions options, final SourceServices services) {
         return options.federatedJwtEnabled()
                 || options.tokenEndpointAuthMethodsSupported().contains(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
                         ? new JwtClientAuthenticator(options, services)
@@ -213,6 +213,20 @@ public class OAuth2ClientAuthenticator implements ClientAuthenticator<Request> {
         } finally {
             Arrays.fill(bytes, (byte) 0);
         }
+    }
+
+    /**
+     * Validates the OAuth-specific relationship between registered authentication methods and assertion keys.
+     *
+     * @param consumer protocol-neutral consumer metadata
+     * @return whether the authentication registration is internally consistent for OAuth
+     */
+    private static boolean validAuthenticationRegistration(final ConsumerMetadata consumer) {
+        final Set<Endpoint.Authentication> methods = consumer.authenticationMethods();
+        if (methods.contains(Endpoint.Authentication.NONE) && methods.size() != 1) {
+            return false;
+        }
+        return methods.contains(Endpoint.Authentication.PRIVATE_KEY_JWT) == consumer.clientAssertionKeyId().isPresent();
     }
 
     /**
@@ -383,20 +397,6 @@ public class OAuth2ClientAuthenticator implements ClientAuthenticator<Request> {
                     ? Outcome.failed(failure(true, "OAuth 2.x client verification failed"))
                     : Outcome.rejected(failure(false, "OAuth 2.x client authentication failed"));
         });
-    }
-
-    /**
-     * Validates the OAuth-specific relationship between registered authentication methods and assertion keys.
-     *
-     * @param consumer protocol-neutral consumer metadata
-     * @return whether the authentication registration is internally consistent for OAuth
-     */
-    private static boolean validAuthenticationRegistration(final ConsumerMetadata consumer) {
-        final Set<Endpoint.Authentication> methods = consumer.authenticationMethods();
-        if (methods.contains(Endpoint.Authentication.NONE) && methods.size() != 1) {
-            return false;
-        }
-        return methods.contains(Endpoint.Authentication.PRIVATE_KEY_JWT) == consumer.clientAssertionKeyId().isPresent();
     }
 
     /**

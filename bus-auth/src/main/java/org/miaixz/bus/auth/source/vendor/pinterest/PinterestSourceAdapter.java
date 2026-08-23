@@ -29,10 +29,9 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.shared.SecretLease;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientScheme;
@@ -100,7 +99,7 @@ public class PinterestSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime, secret, JSON, network, clock, and execution dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Shared one-time browser-state coordinator.
@@ -125,12 +124,12 @@ public class PinterestSourceAdapter implements VendorAdapter {
      * @param manifest selected Pinterest manifest
      * @param variant  selected default variant manifest
      * @param options  decoded externally loaded Pinterest options
-     * @param services caller-owned runtime dependencies
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
     public PinterestSourceAdapter(final String spaceId, final String sourceId, final PinterestManifest manifest,
-            final VendorManifest.Variant variant, final PinterestOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final PinterestOptions options, final SourceServices services) {
         final PinterestManifest selected = Assert.notNull(manifest, "Pinterest manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Pinterest Source id must not be blank");
         this.variant = Assert.notNull(variant, "Pinterest manifest must not be null");
@@ -811,6 +810,8 @@ public class PinterestSourceAdapter implements VendorAdapter {
      * @param lastName  optional family name
      * @param bio       optional public biography
      * @param image     optional validated image projection
+     *
+     * @author Kimi Liu
      */
     private record ProfileWire(String id, String username, String firstName, String lastName, String bio,
             JsonValue image) {

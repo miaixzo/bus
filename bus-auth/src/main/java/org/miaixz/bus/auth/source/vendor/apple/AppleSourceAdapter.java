@@ -32,7 +32,6 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
-import org.miaixz.bus.auth.Identity;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
@@ -41,7 +40,7 @@ import org.miaixz.bus.auth.resolver.KeyMaterial;
 import org.miaixz.bus.auth.shared.jose.*;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
-import org.miaixz.bus.auth.source.DriverServices;
+import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.SourceWorkflow;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientScheme;
@@ -111,7 +110,7 @@ public class AppleSourceAdapter implements VendorAdapter {
     /**
      * Caller-owned runtime, cryptographic, network, and JSON dependencies.
      */
-    private final DriverServices services;
+    private final SourceServices services;
 
     /**
      * Shared one-time state and OpenID Connect nonce lifecycle.
@@ -186,13 +185,13 @@ public class AppleSourceAdapter implements VendorAdapter {
      * @param manifest selected Sign in with Apple manifest
      * @param variant  selected default variant manifest
      * @param options  decoded externally loaded Sign in with Apple options
-     * @param services caller-owned execution services
+     * @param services capability-limited Source services
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, callback, or algorithm policy differs from the frozen
      *                                  profile
      */
     public AppleSourceAdapter(final String spaceId, final String sourceId, final AppleManifest manifest,
-            final VendorManifest.Variant variant, final AppleOptions options, final DriverServices services) {
+            final VendorManifest.Variant variant, final AppleOptions options, final SourceServices services) {
         Assert.notNull(manifest, "Sign in with Apple manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Sign in with Apple Source id must not be blank");
         this.variant = Assert.notNull(variant, "Sign in with Apple manifest must not be null");

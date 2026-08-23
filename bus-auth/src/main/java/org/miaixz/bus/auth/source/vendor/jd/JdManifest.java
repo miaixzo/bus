@@ -171,7 +171,7 @@ public class JdManifest implements VendorManifest<JdOptions> {
                             true)));
 
     /**
-     * Creates the stateless JD manifest used by Vendor directory assembly.
+     * Creates the stateless JD manifest used by Vendor module assembly.
      */
     public JdManifest() {
         // No initialization required.
@@ -228,7 +228,7 @@ public class JdManifest implements VendorManifest<JdOptions> {
     }
 
     /**
-     * Returns non-sensitive JD catalog metadata.
+     * Returns non-sensitive JD management metadata.
      *
      * @return immutable presentation metadata
      */
