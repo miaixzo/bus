@@ -25,9 +25,11 @@ import org.apache.poi.sl.usermodel.TextParagraph;
 import org.apache.poi.xslf.usermodel.XSLFTextParagraph;
 import org.apache.poi.xslf.usermodel.XSLFTextRun;
 
+import org.miaixz.bus.office.word.FontStyle;
+
 /**
- * Represents a font and paragraph style configuration for PowerPoint documents. Similar to
- * {@link org.miaixz.bus.office.word.FontStyle} but adapted for XSLF (PowerPoint) text runs.
+ * Represents a font and paragraph style configuration for PowerPoint documents. Similar to {@link FontStyle} but
+ * adapted for XSLF (PowerPoint) text runs.
  *
  * @author Kimi Liu
  */

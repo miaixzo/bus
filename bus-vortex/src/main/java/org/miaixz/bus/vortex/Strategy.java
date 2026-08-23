@@ -21,6 +21,9 @@ package org.miaixz.bus.vortex;
 
 import org.springframework.web.server.ServerWebExchange;
 
+import org.miaixz.bus.vortex.filter.PrimaryFilter;
+import org.miaixz.bus.vortex.strategy.StrategyFactory;
+
 import reactor.core.publisher.Mono;
 
 /**
@@ -31,9 +34,8 @@ import reactor.core.publisher.Mono;
  * treated as singletons and reused for concurrent requests.
  * <p>
  * The state for a specific request is held in the {@link Context} object, which must be accessed from the Reactor
- * context. Implementations are composed into a dynamic chain by the
- * {@link org.miaixz.bus.vortex.strategy.StrategyFactory} and executed by the
- * {@link org.miaixz.bus.vortex.filter.PrimaryFilter}.
+ * context. Implementations are composed into a dynamic chain by the {@link StrategyFactory} and executed by the
+ * {@link PrimaryFilter}.
  *
  * @author Kimi Liu
  */

@@ -72,7 +72,7 @@ public interface SourceDriver<O extends Options<?>> {
      *
      * @param options candidate options value
      * @return options narrowed to this driver's exact type
-     * @throws org.miaixz.bus.core.lang.exception.ValidateException if the options type does not match this driver
+     * @throws ValidateException if the options type does not match this driver
      */
     O require(Options<?> options);
 

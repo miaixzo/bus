@@ -21,14 +21,15 @@ package org.miaixz.bus.vortex;
 
 import java.util.Collection;
 
+import org.miaixz.bus.vortex.registry.AbstractRegistry;
+
 import reactor.core.publisher.Mono;
 
 /**
  * A generic contract for an in-memory registry that stores and manages objects of type {@code T}.
  * <p>
  * This interface defines the basic CRUD (Create, Read, Update, Delete) operations for a thread-safe, key-value based
- * registry. Concrete implementations, like {@link org.miaixz.bus.vortex.registry.AbstractRegistry}, provide the
- * underlying storage mechanism.
+ * registry. Concrete implementations, like {@link AbstractRegistry}, provide the underlying storage mechanism.
  *
  * @param <T> The type of objects to be stored in the registry.
  * @author Kimi Liu

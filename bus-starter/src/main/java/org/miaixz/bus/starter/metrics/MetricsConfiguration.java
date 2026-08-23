@@ -47,7 +47,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 
 /**
  * Configures bus-metrics providers, guards, collectors, and management endpoint. It is imported through
- * {@link org.miaixz.bus.starter.annotation.EnableMetrics}.
+ * {@link EnableMetrics}.
  * <p>
  * When {@code bus-health} is on the classpath, {@link HealthMetrics} is used for system/JVM metrics (JNA-backed,
  * hardware-accurate). Otherwise falls back to {@link JvmMetrics} and {@link SystemMetrics} (JVM MXBean-backed).
@@ -123,7 +123,7 @@ public class MetricsConfiguration {
      * <p>
      * Inject this bean into the bus-cache {@code Context} via {@code Context.newBuilder().hitting(adapter)} to activate
      * automatic hit-rate tracking for all {@code @Cached} methods. Skipped when the application provides its own
-     * {@link org.miaixz.bus.cache.Collector} bean.
+     * {@link Collector} bean.
      *
      * @return cache metrics adapter
      */

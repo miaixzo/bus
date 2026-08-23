@@ -25,9 +25,9 @@ import org.miaixz.bus.core.center.date.culture.Loops;
  * Abstract base class for date components containing year information.
  *
  * <p>
- * This class extends {@link org.miaixz.bus.core.center.date.culture.Loops} and adds the year field, serving as the
- * fundamental building block for cultural calendar implementations. All other part classes extend this class directly
- * or indirectly, creating a hierarchy of date components.
+ * This class extends {@link Loops} and adds the year field, serving as the fundamental building block for cultural
+ * calendar implementations. All other part classes extend this class directly or indirectly, creating a hierarchy of
+ * date components.
  * </p>
  *
  * @author Kimi Liu

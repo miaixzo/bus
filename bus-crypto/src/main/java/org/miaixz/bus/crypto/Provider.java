@@ -20,8 +20,8 @@
 package org.miaixz.bus.crypto;
 
 /**
- * Represents a cryptographic service provider that extends the core {@link org.miaixz.bus.core.Provider} interface.
- * This interface defines methods for encrypting and decrypting data using various cryptographic keys.
+ * Represents a cryptographic service provider that extends the shared provider contract. This interface defines methods
+ * for encrypting and decrypting data using various cryptographic keys.
  *
  * @author Kimi Liu
  */

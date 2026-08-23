@@ -23,16 +23,17 @@ import java.util.List;
 
 import org.miaixz.bus.auth.Blueprint;
 import org.miaixz.bus.auth.Loader;
+import org.miaixz.bus.auth.Scheme;
 
 /**
  * Loads the complete desired authentication Blueprint from an integrating project.
  * <p>
  * Implementations may obtain records from databases, files, remote services, or project settings, but those loading
  * details remain outside bus-auth. Before returning, an implementation must convert every persisted Source options
- * representation into the matching typed {@link org.miaixz.bus.auth.Scheme.Options} value. Every invocation returns one
- * complete snapshot whose entry list is structurally frozen; incremental events, persistence decoding, and
- * protocol-specific resource loading are not part of the framework boundary. Each Blueprint entry immediately detaches
- * the framework fields from the project entity, so later project mutation cannot alter the returned snapshot.
+ * representation into the matching typed {@link Scheme.Options} value. Every invocation returns one complete snapshot
+ * whose entry list is structurally frozen; incremental events, persistence decoding, and protocol-specific resource
+ * loading are not part of the framework boundary. Each Blueprint entry immediately detaches the framework fields from
+ * the project entity, so later project mutation cannot alter the returned snapshot.
  * </p>
  *
  * @author Kimi Liu

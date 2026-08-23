@@ -173,7 +173,7 @@ public class Dcm2Xml {
      * Sets the mode for including bulk data in the XML output.
      *
      * @param includeBulkData The bulk data inclusion mode (e.g., URI, inline).
-     * @see org.miaixz.bus.image.galaxy.io.ImageInputStream.IncludeBulkData
+     * @see ImageInputStream.IncludeBulkData
      */
     public void setIncludeBulkData(ImageInputStream.IncludeBulkData includeBulkData) {
         this.includeBulkData = includeBulkData;

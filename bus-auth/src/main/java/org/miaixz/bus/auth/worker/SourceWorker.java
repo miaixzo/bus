@@ -23,6 +23,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.Capability;
 import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Dispatcher;
 import org.miaixz.bus.auth.Outcome;
 import org.miaixz.bus.auth.Timeout;
 
@@ -31,8 +32,8 @@ import org.miaixz.bus.auth.Timeout;
  * <p>
  * Protocol and Vendor {@code SourceDriver} implementations return this contract to runtime compilation. The runtime
  * retains each instance in one runtime container and invokes it only after reference lookup, lifecycle, timeout,
- * manifest, and request-type checks. Applications execute registered capabilities through
- * {@link org.miaixz.bus.auth.Dispatcher}; they do not construct or invoke Source workers directly.
+ * manifest, and request-type checks. Applications execute registered capabilities through {@link Dispatcher}; they do
+ * not construct or invoke Source workers directly.
  * </p>
  * <p>
  * This interface owns only the immutable capability declaration and typed execution entry. It does not load or mutate

@@ -23,6 +23,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.vortex.Monitor;
+import org.miaixz.bus.vortex.magic.Metrics;
+import org.miaixz.bus.vortex.registry.AbstractRegistry;
 
 /**
  * Cache statistics data structure for tracking cache access metrics.
@@ -36,7 +38,7 @@ import org.miaixz.bus.vortex.Monitor;
  * </p>
  * <ul>
  * <li>Located in the {@code nimble} package as part of performance metrics collection</li>
- * <li>Coexists with {@link Monitor} and {@link org.miaixz.bus.vortex.magic.Metrics}</li>
+ * <li>Coexists with {@link Monitor} and {@link Metrics}</li>
  * <li>Focuses on being a data carrier without involving cache implementation details</li>
  * </ul>
  *
@@ -44,7 +46,7 @@ import org.miaixz.bus.vortex.Monitor;
  * <b>Use Cases:</b>
  * </p>
  * <ul>
- * <li>Two-level cache statistics for {@link org.miaixz.bus.vortex.registry.AbstractRegistry}</li>
+ * <li>Two-level cache statistics for {@link AbstractRegistry}</li>
  * <li>Statistics for other cache implementations</li>
  * </ul>
  *

@@ -53,6 +53,7 @@ import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Delivery;
 import org.miaixz.bus.vortex.Egress;
+import org.miaixz.bus.vortex.Executor;
 import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.Octets;
 import org.miaixz.bus.vortex.routing.Coordinator;
@@ -89,8 +90,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
     /**
      * Executes the HTTP request using the provided context and ServerRequest.
      * <p>
-     * This method is required by the {@link org.miaixz.bus.vortex.Executor} interface. For REST executors, the
-     * {@code input} parameter is typed as {@link ServerRequest} for compile-time type safety.
+     * This method is required by the {@link Executor} interface. For REST executors, the {@code input} parameter is
+     * typed as {@link ServerRequest} for compile-time type safety.
      *
      * @param context The request context
      * @param request The ServerRequest object (strongly typed)

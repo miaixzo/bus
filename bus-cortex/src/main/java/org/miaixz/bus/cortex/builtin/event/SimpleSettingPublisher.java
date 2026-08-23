@@ -23,12 +23,13 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
+import org.miaixz.bus.cortex.setting.SettingPublisher;
 import org.miaixz.bus.cortex.setting.delivery.RuntimeItemOverlayPublisher;
 
 /**
  * Lightweight setting publisher that writes directly to the shared cache without revision history.
  * <p>
- * Use {@code org.miaixz.bus.cortex.setting.SettingPublisher} when revision history is required.
+ * Use {@link SettingPublisher} when revision history is required.
  * </p>
  *
  * @author Kimi Liu

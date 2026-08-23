@@ -23,13 +23,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import org.miaixz.bus.cortex.Vector;
+
 /**
  * Lookup criteria for a specific setting entry or a filtered setting list.
  *
  * <p>
- * Setting-only resolution semantics should accumulate here rather than backflowing into
- * {@link org.miaixz.bus.cortex.Vector}. Application scope is inherited from {@code app_id}, and profile remains the
- * environment dimension. The logical entry coordinate is {@code data_id}.
+ * Setting-only resolution semantics should accumulate here rather than backflowing into {@link Vector}. Application
+ * scope is inherited from {@code app_id}, and profile remains the environment dimension. The logical entry coordinate
+ * is {@code data_id}.
  * </p>
  *
  * @author Kimi Liu

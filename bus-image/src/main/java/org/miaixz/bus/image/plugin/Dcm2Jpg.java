@@ -427,7 +427,7 @@ public class Dcm2Jpg {
     }
 
     /**
-     * Reads a {@link BufferedImage} from a DICOM file using a {@link org.miaixz.bus.image.galaxy.io.ImageInputStream}.
+     * Reads a {@link BufferedImage} from a DICOM file using an {@link ImageInputStream}.
      *
      * @param file The DICOM file.
      * @return The read image.

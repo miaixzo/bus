@@ -26,6 +26,8 @@ import java.util.Objects;
 import org.miaixz.bus.core.center.map.multiple.RowKeyTable;
 import org.miaixz.bus.core.center.map.multiple.Table;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.annotation.Alias;
+import org.miaixz.bus.core.lang.annotation.Link;
 import org.miaixz.bus.core.lang.annotation.resolve.processor.SynthesizedAnnotationAttributeProcessor;
 
 /**
@@ -37,8 +39,7 @@ import org.miaixz.bus.core.lang.annotation.resolve.processor.SynthesizedAnnotati
  * <p>
  * When retrieving attribute values via this processor, an implicit alias effect occurs: if a child annotation and a
  * meta-annotation both have an attribute with the same name and type, the child annotation's attribute always overrides
- * the meta-annotation's attribute. This override is not propagated through
- * {@link org.miaixz.bus.core.lang.annotation.Alias} or {@link org.miaixz.bus.core.lang.annotation.Link} to related
+ * the meta-annotation's attribute. This override is not propagated through {@link Alias} or {@link Link} to related
  * attributes.
  *
  * @author Kimi Liu

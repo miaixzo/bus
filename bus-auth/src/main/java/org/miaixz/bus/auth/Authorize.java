@@ -22,6 +22,7 @@ package org.miaixz.bus.auth;
 import org.miaixz.bus.auth.runtime.RuntimeBuilder;
 import org.miaixz.bus.auth.runtime.RuntimeServices;
 import org.miaixz.bus.auth.source.SourceAggregate;
+import org.miaixz.bus.auth.source.SourceModule;
 import org.miaixz.bus.auth.source.SourceSuite;
 import org.miaixz.bus.auth.source.vendor.VendorConfigurer;
 import org.miaixz.bus.auth.source.vendor.VendorCredentialWriter;
@@ -72,7 +73,7 @@ public class Authorize {
      * Creates an empty one-shot runtime builder for an explicitly selected implementation set.
      * <p>
      * No protocol or Vendor module is installed automatically. The integrating project must add every required
-     * {@link org.miaixz.bus.auth.source.SourceModule} before building the runtime.
+     * {@link SourceModule} before building the runtime.
      * </p>
      *
      * @param runtimeServices complete externally supplied runtime services
